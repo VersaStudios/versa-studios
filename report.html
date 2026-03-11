@@ -1,6 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+const _SB_URL = 'https://dttwgmoyxthczlzxjgag.supabase.co';
+const _SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ';
+const _SB_HDR = {'Content-Type':'application/json','apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY};
+async function saveReport(data){
+  try{
+    const r=await fetch(_SB_URL+'/rest/v1/engineering_reports',{method:'POST',headers:{..._SB_HDR,'Prefer':'return=minimal'},body:JSON.stringify(data)});
+    return r.ok;
+  }catch(e){console.warn('saveReport:',e);return false;}
+}
+async function loadKitFromDB(){
+  try{
+    const r=await fetch(_SB_URL+'/rest/v1/app_data?key=eq.kit&select=value',{headers:_SB_HDR});
+    const rows=await r.json();
+    if(rows&&rows[0]&&Array.isArray(rows[0].value)){
+      kitData.length=0;
+      rows[0].value.forEach(k=>kitData.push({id:k.id,name:k.name,cat:k.cat||'',tag:k.tag||''}));
+      window._kitCatFilter='';initCatBtns();renderKitPicker();
+    }
+  }catch(e){console.warn('loadKitFromDB:',e);}
+}
+const _EJS_SERVICE='service_883826m',_EJS_TEMPLATE='template_hhvnzss',_EJS_KEY='-WB5uUr8yu-oIKc5v';
+async function sendSTREmail(p){
+  try{
+    if(window.emailjs){emailjs.init({publicKey:_EJS_KEY});await emailjs.send(_EJS_SERVICE,_EJS_TEMPLATE,p);}
+  }catch(e){console.warn('EmailJS:',e);}
+}
+</script>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Versa Studios — Morning Live Engineering Report</title>
@@ -24,8 +53,8 @@ html,body{min-height:100%;background:var(--black);color:var(--white);font-family
 .header-left{flex:1}
 .header-logo-right{flex-shrink:0}
 .logo{margin-bottom:14px}
-.logo img{width:120px;opacity:0.93}
-.header-logo-right img{width:120px;opacity:0.93}
+.logo img{width:120px;filter:invert(1);opacity:0.93}
+.header-logo-right img{width:120px;filter:invert(1);opacity:0.93}
 .report-title{font-family:var(--font-cond);font-weight:800;font-size:32px;text-transform:uppercase;letter-spacing:0.04em;color:var(--pure);line-height:1.1}
 .report-subtitle{font-family:var(--font-cond);font-size:17px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--white);margin-top:5px}
 .header-badge{background:var(--near-black);border:1px solid var(--border);border-radius:6px;padding:14px 18px;text-align:center;flex-shrink:0}
@@ -118,8 +147,8 @@ html,body{min-height:100%;background:var(--black);color:var(--white);font-family
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
 .hidden{display:none!important}
 input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(0.6);cursor:pointer}
-</style>
-</head>
+<\/style>
+<\/head>
 <body>
 <div class="wrap">
 
@@ -277,38 +306,36 @@ input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(0.6);cursor:
 
 </div><!-- /wrap -->
 
-<script>
-
-let kitData=[];
-// Load kit from Supabase
-(async function() {
-  try {
-    const r = await fetch('https://dttwgmoyxthczlzxjgag.supabase.co/rest/v1/app_data?key=eq.kit&select=value', {
-      headers: {
-        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ',
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ'
-      }
-    });
-    const data = await r.json();
-    if(data && data[0] && Array.isArray(data[0].value)) {
-      kitData = data[0].value.map(k => ({id:k.id, name:k.name, cat:k.cat||'', tag:k.tag||'', subcat:k.subcat||''}));
-    }
-  } catch(e) { console.warn('Kit load error:', e); }
-  renderKitPicker();
-  initCatBtns();
-})();
+<scr"+"ipt>
+const kitData=[
+  {id:1,name:'Sony FX6 Camera',cat:'Camera',tag:'VS-CAM-001'},
+  {id:2,name:'Sony FX6 Camera',cat:'Camera',tag:'VS-CAM-002'},
+  {id:3,name:'Canon C70',cat:'Camera',tag:'VS-CAM-003'},
+  {id:4,name:'Sennheiser EW 500',cat:'Audio',tag:'VS-AUD-001'},
+  {id:5,name:'Rode NTG5 Boom Mic',cat:'Audio',tag:'VS-AUD-002'},
+  {id:6,name:'LED Panel 60x60 (x4)',cat:'Lighting',tag:'VS-LIT-001'},
+  {id:7,name:'Aputure 300D MkII',cat:'Lighting',tag:'VS-LIT-002'},
+  {id:8,name:'DJI RS3 Pro Gimbal',cat:'Grip',tag:'VS-GRP-001'},
+  {id:9,name:'Sachtler FSB 8 Tripod',cat:'Grip',tag:'VS-GRP-002'},
+  {id:10,name:'Teradek Bolt 4K XT',cat:'Vision',tag:'VS-VIS-001'},
+  {id:11,name:'SmallHD 703 Monitor',cat:'Vision',tag:'VS-VIS-002'},
+  {id:12,name:'Anton Bauer Gold Mount Kit',cat:'Power',tag:'VS-PWR-001'},
+  {id:13,name:'V-Lock Battery Pack x6',cat:'Power',tag:'VS-PWR-002'},
+  {id:14,name:'Hollyland Mars 300 IEM',cat:'Comms',tag:'VS-COM-001'},
+  {id:15,name:'Pelican 1650 Case',cat:'Other',tag:'VS-OTH-001'},
+];
 
 let summaryMode = null; // 'ntr' | 'str'
 let selectedDate = null;
 let useTodayDate = true;
 let tags = [];
 
-// \u2500\u2500 DATE \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+// ── DATE ──────────────────────────────────────────────────────────────────────
 function formatDate(d){
   return d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
 }
 function formatDateShort(ds){
-  if(!ds) return '\u2014';
+  if(!ds) return '—';
   return new Date(ds).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
 }
 function setDateToday(){
@@ -337,7 +364,7 @@ function setDateOther(){
   updateStatus();
 }
 
-// \u2500\u2500 SUMMARY \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+// ── SUMMARY ───────────────────────────────────────────────────────────────────
 function setSummary(mode){
   summaryMode=mode;
   const ntrBtn=document.getElementById('btnNTR');
@@ -364,7 +391,7 @@ function setSummary(mode){
   updateStatus();
 }
 
-// \u2500\u2500 URGENT \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+// ── URGENT ────────────────────────────────────────────────────────────────────
 function pickVersa(name) {
   if(name === '__other__') {
     document.getElementById('versaOtherInput').style.display = 'block';
@@ -445,7 +472,7 @@ function handleUrgent(){
   updateStatus();
 }
 
-// \u2500\u2500 KIT PICKER \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+// ── KIT PICKER ────────────────────────────────────────────────────────────────
 function initCatBtns(){
   const wrap=document.getElementById('kitCatBtns');
   if(!wrap) return;
@@ -491,12 +518,12 @@ function toggleTag(id){
     wrap.classList.remove('hidden');
     document.getElementById('taggedList').innerHTML=tags.map(tid=>{
       const k=kitData.find(x=>x.id===tid);
-      return k?`<span class="tagged-chip">${k.name} (${k.tag})<button onclick="toggleTag(${tid})">\u00d7</button></span>`:'';
+      return k?`<span class="tagged-chip">${k.name} (${k.tag})<button onclick="toggleTag(${tid})">×</button></span>`:'';
     }).join('');
   } else { wrap.classList.add('hidden'); }
 }
 
-// \u2500\u2500 VALIDATION & STATUS \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+// ── VALIDATION & STATUS ───────────────────────────────────────────────────────
 function isComplete(){
   const vtm=document.getElementById('versaTechManager').value.trim();
   const date=useTodayDate?true:(document.getElementById('otherDate').value!=='');
@@ -524,7 +551,7 @@ function updateStatus(){
   if(missing.length===0){
     dot.style.background='#4a8a4a';
     txt.style.color='var(--accent-green-text)';
-    txt.textContent='Report complete \u2014 ready to submit';
+    txt.textContent='Report complete — ready to submit';
     btn.disabled=false;
     btn.textContent='Submit Engineering Report';
   } else {
@@ -536,7 +563,7 @@ function updateStatus(){
   }
 }
 
-// \u2500\u2500 SUBMIT \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+// ── SUBMIT ────────────────────────────────────────────────────────────────────
 function submitReport(){
   if(!isComplete()) return;
   const vtm=document.getElementById('versaTechManager').value.trim();
@@ -549,45 +576,36 @@ function submitReport(){
   const showDate=useTodayDate?new Date().toISOString().split('T')[0]:selectedDate;
 
   const reportData={
-    versaTechManager:vtm,
-    bbcTechManager:bbc,
-    showDate,
-    summaryMode,
-    summaryText,
-    taggedKit:tags,
-    urgentAction:urgent,
-    urgentDetails:urgentText,
-    submittedAt:new Date().toISOString()
+    versa_tech_manager:vtm,bbc_tech_manager:bbc,show_date:showDate,
+    summary_mode:summaryMode,summary_text:summaryText,
+    tagged_kit:tags,tagged_kit_names:taggedKitNames,
+    urgent_action:urgent,urgent_details:urgentText,
+    submitted_at:new Date().toISOString()
   };
-  // Save to Supabase
-  (async function() {
-    try {
-      await fetch('https://dttwgmoyxthczlzxjgag.supabase.co/rest/v1/reports', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ',
-          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ',
-          'Prefer': 'return=minimal'
-        },
-        body: JSON.stringify(reportData)
-      });
-    } catch(e) { console.warn('Report save error:', e); }
-  })();
+  saveReport(reportData);
+  if(isSTR){
+    sendSTREmail({
+      show_date:showDate,versa_tech:vtm,bbc_tech:bbc,
+      summary:summaryText||'(no details provided)',
+      urgent:urgent,urgent_details:urgentText||'--',
+      tagged_kit:taggedKitNames.join(', ')||'None',
+      submitted_at:new Date().toLocaleString('en-GB')
+    });
+  }
 
-  // \u2500\u2500 SUCCESS SCREEN \u2500\u2500
+  // ── SUCCESS SCREEN ──
   document.getElementById('formView').style.display='none';
   const sv=document.getElementById('successView');
   sv.style.display='block';
 
   const isUrgent=urgent==='Yes';
-  document.getElementById('successIcon').textContent=isUrgent?'\u26a0\ufe0f':(isSTR?'\ud83d\udccb':'\u2705');
-  document.getElementById('successTitle').textContent=isUrgent?'Report Submitted \u2014 Urgent Action Flagged':(isSTR?'Report Submitted \u2014 Summary Logged':'Report Submitted \u2014 NTR');
+  document.getElementById('successIcon').textContent=isUrgent?'⚠️':(isSTR?'??':'✅');
+  document.getElementById('successTitle').textContent=isUrgent?'Report Submitted — Urgent Action Flagged':(isSTR?'Report Submitted — Summary Logged':'Report Submitted — NTR');
   document.getElementById('successSub').textContent=isSTR
     ?'Your report has been logged. An email notification will be sent to Andrew Rowell once the server deployment is active.'
-    :'Morning Live Engineering Report recorded \u2014 Nothing to Report.';
+    :'Morning Live Engineering Report recorded — Nothing to Report.';
   document.getElementById('successDetail').style.color='var(--white)';document.getElementById('successDetail').style.fontSize='14px';document.getElementById('successDetail').style.fontWeight='600';document.getElementById('successDetail').textContent=isUrgent
-    ?'\u26a0 This report has been marked as requiring urgent action. Once the server deployment is active, an alert email will be sent automatically.'
+    ?'⚠ This report has been marked as requiring urgent action. Once the server deployment is active, an alert email will be sent automatically.'
     :'';
 
   const rows=[
@@ -597,7 +615,7 @@ function submitReport(){
     {label:'Daily Summary',val:isSTR?'Something to Report':'Nothing to Report'},
     summaryText?{label:'Summary Details',val:summaryText}:null,
     taggedKitNames.length?{label:'Tagged Kit',val:taggedKitNames.join(', ')}:null,
-    {label:'Urgent Action',val:urgent+(urgentText?' \u2014 '+urgentText:'')},
+    {label:'Urgent Action',val:urgent+(urgentText?' — '+urgentText:'')},
   ].filter(Boolean);
 
   document.getElementById('summaryRows').innerHTML=rows.map(r=>`
@@ -607,7 +625,7 @@ function submitReport(){
     </div>`).join('');
 }
 
-// \u2500\u2500 RESET \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+// ── RESET ─────────────────────────────────────────────────────────────────────
 function resetForm(){
   document.getElementById('formView').style.display='block';
   document.getElementById('successView').style.display='none';
@@ -630,14 +648,14 @@ function resetForm(){
   updateStatus();
 }
 
-// \u2500\u2500 INIT \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+// ── INIT ──────────────────────────────────────────────────────────────────────
 setDateToday();
 setSummary('ntr');
 window._kitCatFilter='';
 initCatBtns();
 renderKitPicker();
 updateStatus();
-
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',loadKitFromDB);}else{setTimeout(loadKitFromDB,100);}
 </script>
 </body>
 </html>
