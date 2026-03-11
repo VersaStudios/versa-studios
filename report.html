@@ -147,8 +147,8 @@ html,body{min-height:100%;background:var(--black);color:var(--white);font-family
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
 .hidden{display:none!important}
 input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(0.6);cursor:pointer}
-<\/style>
-<\/head>
+</style>
+</head>
 <body>
 <div class="wrap">
 
@@ -306,7 +306,7 @@ input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(0.6);cursor:
 
 </div><!-- /wrap -->
 
-<scr"+"ipt>
+<script>
 const kitData=[
   {id:1,name:'Sony FX6 Camera',cat:'Camera',tag:'VS-CAM-001'},
   {id:2,name:'Sony FX6 Camera',cat:'Camera',tag:'VS-CAM-002'},
@@ -649,6 +649,7 @@ function resetForm(){
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
 setDateToday();
 setSummary('ntr');
 window._kitCatFilter='';
@@ -656,6 +657,7 @@ initCatBtns();
 renderKitPicker();
 updateStatus();
 if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',loadKitFromDB);}else{setTimeout(loadKitFromDB,100);}
+});
 </script>
 </body>
 </html>
