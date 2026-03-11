@@ -497,6 +497,25 @@ body.ops-sa .main-content{margin-left:0!important;}
 </style>
 </head>
 <div id="appLoadingOverlay" style="position:fixed;inset:0;background:#0a0a0a;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px"><div style="font-family:Arial,sans-serif;font-size:28px;font-weight:900;letter-spacing:.08em;color:#fff;text-transform:uppercase">Versa Studios</div><div style="font-size:13px;color:#666;letter-spacing:.06em;text-transform:uppercase" id="appLoadingMsg">Connecting...</div><div style="width:180px;height:3px;background:#1a1a1a;border-radius:999px;overflow:hidden;margin-top:4px"><div id="appLoadingBar" style="height:100%;width:0%;background:#e8b84b;border-radius:999px;transition:width .4s"></div></div></div>
+<div id="appLoginOverlay" style="display:none;position:fixed;inset:0;background:#0a0a0a;z-index:99998;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px">
+  <div style="width:100%;max-width:360px">
+    <div style="font-family:Arial,sans-serif;font-size:26px;font-weight:900;letter-spacing:.08em;color:#fff;text-transform:uppercase;text-align:center;margin-bottom:6px">Versa Studios</div>
+    <div style="font-size:12px;color:#555;letter-spacing:.1em;text-transform:uppercase;text-align:center;margin-bottom:32px">Operations Platform</div>
+    <div style="background:#111;border:1px solid #222;border-radius:12px;padding:24px;display:flex;flex-direction:column;gap:14px">
+      <div>
+        <div style="font-size:11px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Email</div>
+        <input id="loginEmail" type="email" autocomplete="email" style="width:100%;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:6px;padding:10px 12px;color:#fff;font-size:14px;box-sizing:border-box;outline:none" placeholder="your@email.com"/>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Password</div>
+        <input id="loginPassword" type="password" autocomplete="current-password" style="width:100%;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:6px;padding:10px 12px;color:#fff;font-size:14px;box-sizing:border-box;outline:none" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
+      </div>
+      <div id="loginError" style="display:none;font-size:12px;color:#e05555;background:rgba(224,85,85,.1);border:1px solid rgba(224,85,85,.2);border-radius:5px;padding:8px 10px"></div>
+      <button id="loginBtn" onclick="doLogin()" style="width:100%;background:#e8b84b;color:#000;border:none;border-radius:6px;padding:12px;font-size:14px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;margin-top:4px">Sign In</button>
+    </div>
+  </div>
+</div>
+
 <div id="ops-standalone-bar">
   <div style="font-family:var(--cond);font-size:20px;font-weight:900;color:#d85a61;letter-spacing:.04em;">Ops Planner</div>
   <div style="flex:1"></div>
@@ -1302,7 +1321,7 @@ function saveData() {
 async function loadData() {
   const setMsg = m => { const el=document.getElementById('appLoadingMsg'); if(el) el.textContent=m; };
   const setBar = p => { const el=document.getElementById('appLoadingBar'); if(el) el.style.width=p+'%'; };
-  const dismiss = () => { setTimeout(()=>{ const ov=document.getElementById('appLoadingOverlay'); if(ov) ov.style.display='none'; }, 300); };
+  const dismissLoading = () => { setTimeout(()=>{ const ov=document.getElementById('appLoadingOverlay'); if(ov) ov.style.display='none'; }, 300); };
   try {
     setMsg('Connecting...'); setBar(15);
     const rows = await _sbGet();
@@ -1328,11 +1347,113 @@ async function loadData() {
         } catch(e){ console.warn('Error loading key:', row.key, e); }
       });
     }
-    setBar(100); setMsg('Ready'); dismiss();
+    setBar(100); setMsg('Ready'); dismissLoading();
   } catch(e) {
     console.error('loadData error:', e);
-    setMsg('Could not connect — working offline'); dismiss();
+    setMsg('Could not connect — working offline'); dismissLoading();
   }
+}
+
+// ── AUTH ──────────────────────────────────────────────────────────────────────
+// Role map by email — single source of truth
+const _ROLE_MAP = {
+  'andrew.rowell@versastudios.com': {fn:'Andrew',ln:'Rowell',role:'Admin'},
+  'chris.warden@versastudios.com':  {fn:'Chris', ln:'Warden',role:'Staff'},
+  'ian.curry@versastudios.com':     {fn:'Ian',   ln:'Curry', role:'Staff'},
+  'lily.britten@versastudios.com':  {fn:'Lily',  ln:'Britten',role:'Staff'},
+  'esther.brazil@versastudios.com': {fn:'Esther',ln:'Brazil',role:'Staff'},
+};
+
+let _authToken = null;
+
+function _showLogin() {
+  const ov = document.getElementById('appLoginOverlay');
+  if (ov) { ov.style.display='flex'; }
+  const lo = document.getElementById('appLoadingOverlay');
+  if (lo) lo.style.display='none';
+}
+
+function _hideLogin() {
+  const ov = document.getElementById('appLoginOverlay');
+  if (ov) ov.style.display='none';
+}
+
+function _setCurrentUser(email) {
+  const profile = _ROLE_MAP[email.toLowerCase()];
+  if (!profile) return false;
+  // Update CU
+  CU = users.find(u => u.email.toLowerCase()===email.toLowerCase());
+  if (!CU) {
+    // Create a minimal CU from role map
+    CU = {id:0, fn:profile.fn, ln:profile.ln, email:email, role:profile.role, mustChange:false, patEmail:false, perms:null};
+  }
+  CU.role = profile.role;
+  return true;
+}
+
+async function doLogin() {
+  const email = (document.getElementById('loginEmail').value||'').trim().toLowerCase();
+  const password = document.getElementById('loginPassword').value||'';
+  const btn = document.getElementById('loginBtn');
+  const err = document.getElementById('loginError');
+  err.style.display='none';
+  if (!email || !password) { err.textContent='Please enter your email and password.'; err.style.display=''; return; }
+  btn.textContent='Signing in...'; btn.disabled=true;
+  try {
+    const resp = await fetch(_SB_URL+'/auth/v1/token?grant_type=password', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','apikey':_SB_KEY},
+      body:JSON.stringify({email, password})
+    });
+    const data = await resp.json();
+    if (!resp.ok || !data.access_token) {
+      throw new Error(data.error_description || data.msg || 'Invalid email or password.');
+    }
+    _authToken = data.access_token;
+    sessionStorage.setItem('_vsToken', _authToken);
+    sessionStorage.setItem('_vsEmail', email);
+    if (!_setCurrentUser(email)) {
+      throw new Error('Your account is not set up. Please contact an admin.');
+    }
+    _hideLogin();
+    _initApp();
+  } catch(e) {
+    err.textContent = e.message || 'Sign in failed. Please try again.';
+    err.style.display='';
+    btn.textContent='Sign In'; btn.disabled=false;
+  }
+}
+
+function signOut() {
+  if (!confirm('Sign out?')) return;
+  sessionStorage.removeItem('_vsToken');
+  sessionStorage.removeItem('_vsEmail');
+  _authToken = null;
+  location.reload();
+}
+
+function _initApp() {
+  // Update sidebar
+  document.getElementById('sbAv').textContent = CU.fn[0]+CU.ln[0];
+  document.getElementById('sbName').textContent = CU.fn+' '+CU.ln;
+  document.getElementById('sbRole').textContent = CU.role;
+  if(CU.mustChange) { const fl=document.getElementById('flOv'); if(fl) fl.classList.add('open'); }
+  // Apply nav permission hiding
+  _applyNavPerms();
+  populateCatSelect('nkCat');
+  renderDash();
+  renderNotifs();
+  initHolSelectors();
+  checkStandaloneMode();
+}
+
+function _applyNavPerms() {
+  const p = ROLE_PERMS[CU.role] || ROLE_PERMS['Crew'];
+  // Hide nav items based on role
+  const hide = (pg) => { const el=document.querySelector('[data-pg="'+pg+'"]'); if(el) el.style.display='none'; };
+  if (!p.viewAdmin) hide('admin');
+  if (!p.viewMaint) hide('maintenance');
+  if (!p.viewFaults) hide('faults');
 }
 
 var _appPromptCB = null;
@@ -1359,12 +1480,19 @@ const KIT_SUBCATS = {
 };
 const ROLE_PERMS = {
   Admin:   {viewKit:true,editKit:true,viewJobs:true,editJobs:true,viewMaint:true,editMaint:true,viewAdmin:true,editAdmin:true,viewFaults:true,editFaults:true},
+  Staff:   {viewKit:true,editKit:true,viewJobs:true,editJobs:true,viewMaint:true,editMaint:false,viewAdmin:false,editAdmin:false,viewFaults:true,editFaults:false},
+  Crew:    {viewKit:true,editKit:false,viewJobs:true,editJobs:false,viewMaint:false,editMaint:false,viewAdmin:false,editAdmin:false,viewFaults:false,editFaults:false},
   Manager: {viewKit:true,editKit:true,viewJobs:true,editJobs:true,viewMaint:true,editMaint:false,viewAdmin:false,editAdmin:false,viewFaults:true,editFaults:false},
   Engineer:{viewKit:true,editKit:true,viewJobs:false,editJobs:false,viewMaint:true,editMaint:true,viewAdmin:false,editAdmin:false,viewFaults:true,editFaults:true},
-  Crew:    {viewKit:true,editKit:false,viewJobs:true,editJobs:false,viewMaint:false,editMaint:false,viewAdmin:false,editAdmin:false,viewFaults:false,editFaults:false},
 };
 const PERM_LABELS = {viewKit:'View Kit',editKit:'Edit Kit',viewJobs:'View Jobs',editJobs:'Edit Jobs',viewMaint:'View Maintenance',editMaint:'Edit Maintenance',viewFaults:'View Faults',editFaults:'Edit Faults',viewAdmin:'View Admin',editAdmin:'Edit Admin'};
-let users = [{id:1,fn:'Andrew',ln:'Rowell',email:'andrew.rowell@versastudios.com',role:'Admin',pw:'Versa',mustChange:false,patEmail:true,perms:null}];
+let users = [
+  {id:1,fn:'Andrew',ln:'Rowell',email:'andrew.rowell@versastudios.com',role:'Admin',pw:'',mustChange:false,patEmail:true,perms:null},
+  {id:2,fn:'Chris',ln:'Warden',email:'chris.warden@versastudios.com',role:'Staff',pw:'',mustChange:false,patEmail:false,perms:null},
+  {id:3,fn:'Ian',ln:'Curry',email:'ian.curry@versastudios.com',role:'Staff',pw:'',mustChange:false,patEmail:false,perms:null},
+  {id:4,fn:'Lily',ln:'Britten',email:'lily.britten@versastudios.com',role:'Staff',pw:'',mustChange:false,patEmail:false,perms:null},
+  {id:5,fn:'Esther',ln:'Brazil',email:'esther.brazil@versastudios.com',role:'Staff',pw:'',mustChange:false,patEmail:false,perms:null},
+];
 let nextUid = 2;
 let suppliers = []; let nextSid = 1; let editSuppId = null;
 let binItems = [];
@@ -8808,7 +8936,20 @@ function delHol(id) {
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded',async ()=>{
-  await loadData();
+  // Check for existing session
+  const savedToken = sessionStorage.getItem('_vsToken');
+  const savedEmail = sessionStorage.getItem('_vsEmail');
+  if (savedToken && savedEmail && _ROLE_MAP[savedEmail.toLowerCase()]) {
+    _authToken = savedToken;
+    _setCurrentUser(savedEmail);
+    await loadData();
+    _initApp();
+  } else {
+    // No session — show login
+    const lo = document.getElementById('appLoadingOverlay');
+    if (lo) lo.style.display='none';
+    _showLogin();
+  }
   if(location.hash==='#ops'){
     document.body.classList.add('ops-sa');
     setTimeout(function(){
@@ -8816,20 +8957,11 @@ window.addEventListener('DOMContentLoaded',async ()=>{
       setPlanView('ops');
     },60);
   }
-  if(CU&&CU.mustChange) document.getElementById('flOv').classList.add('open');
-  document.getElementById('sbAv').textContent=CU.fn[0]+CU.ln[0];
-  document.getElementById('sbName').textContent=CU.fn+' '+CU.ln;
-  document.getElementById('sbRole').textContent=CU.role;
-  populateCatSelect('nkCat');
-  renderDash();
-  renderNotifs();
-  initHolSelectors();
-  checkStandaloneMode();
   // Close notif panel on outside click
   document.addEventListener('click', e=>{
     const panel = document.getElementById('notifPanel');
     const btn = document.getElementById('notifBtn');
-    if(panel.classList.contains('open') && !panel.contains(e.target) && !btn.contains(e.target))
+    if(panel&&btn&&panel.classList.contains('open') && !panel.contains(e.target) && !btn.contains(e.target))
       panel.classList.remove('open');
   });
 });
