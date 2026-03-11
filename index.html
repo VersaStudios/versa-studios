@@ -15,7 +15,7 @@ html,body{height:100%;background:#0a0a0a;color:#f2f2f2;font-family:var(--font);f
 .app{display:flex;height:100vh;overflow:hidden}
 .sb{width:216px;background:var(--near-black);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
 .sb-logo{padding:20px 18px 16px;border-bottom:1px solid var(--border)}
-.sb-logo img{width:124px;filter:invert(1);opacity:.92}
+.sb-logo img{width:124px;opacity:.92}
 .sb-nav{flex:1;overflow-y:auto;padding:7px 0}
 .nav-lbl{font-family:var(--cond);font-size:17px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);padding:11px 16px 4px}
 .nav-item{display:flex;align-items:center;gap:9px;padding:10px 16px;cursor:pointer;transition:all .13s;border-left:2px solid transparent;color:var(--subtle);font-family:var(--cond);font-size:17px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;user-select:none}
@@ -1305,7 +1305,9 @@ function _getDataMap() {
 }
 
 var _saveTimer = null;
+var _appReady = false; // prevents saveData firing before loadData completes
 function saveData() {
+  if (!_appReady) return; // not loaded yet — don't overwrite DB with defaults
   // Debounce — batch rapid consecutive saves into one request
   clearTimeout(_saveTimer);
   _saveTimer = setTimeout(async function() {
@@ -1346,10 +1348,10 @@ async function loadData() {
         } catch(e){ console.warn('Error loading key:', row.key, e); }
       });
     }
-    setBar(100); setMsg('Ready'); dismissLoading();
+    setBar(100); setMsg('Ready'); _appReady = true; dismissLoading();
   } catch(e) {
     console.error('loadData error:', e);
-    setMsg('Could not connect — working offline'); dismissLoading();
+    setMsg('Could not connect — working offline'); _appReady = true; dismissLoading();
   }
 }
 
