@@ -420,9 +420,25 @@ html,body{height:100%;background:#0a0a0a;color:#f2f2f2;font-family:var(--font);f
 
 
 /* ── JOB DETAIL TABS ─────────────────────────────────────────────────────── */
-.jd-tab{font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;padding:8px 14px;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap;transition:all .12s}
-.jd-tab:hover{color:var(--white)}
-.jd-tab.active{color:var(--pure);border-bottom-color:var(--pure)}
+.jd-tab{font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;padding:7px 13px;cursor:pointer;white-space:nowrap;transition:all .15s;border-radius:4px;border:1px solid transparent;color:var(--muted);background:transparent;opacity:.55}
+.jd-tab:hover{opacity:.8;color:var(--white)}
+.jd-tab.active{opacity:1;color:#fff;border-color:transparent}
+.jd-tab:nth-child(1).active{background:rgba(60,90,160,.85);box-shadow:0 2px 8px rgba(60,90,160,.4)}
+.jd-tab:nth-child(2).active{background:rgba(160,100,30,.85);box-shadow:0 2px 8px rgba(160,100,30,.4)}
+.jd-tab:nth-child(3).active{background:rgba(50,120,70,.85);box-shadow:0 2px 8px rgba(50,120,70,.4)}
+.jd-tab:nth-child(4).active{background:rgba(120,60,140,.85);box-shadow:0 2px 8px rgba(120,60,140,.4)}
+.jd-tab:nth-child(5).active{background:rgba(30,115,125,.85);box-shadow:0 2px 8px rgba(30,115,125,.4)}
+.jd-tab:nth-child(6).active{background:rgba(150,65,65,.85);box-shadow:0 2px 8px rgba(150,65,65,.4)}
+.jd-tab:nth-child(7).active{background:rgba(50,105,80,.85);box-shadow:0 2px 8px rgba(50,105,80,.4)}
+.jd-tab:nth-child(8).active{background:rgba(100,65,130,.85);box-shadow:0 2px 8px rgba(100,65,130,.4)}
+.jd-tab:nth-child(9).active{background:rgba(130,85,35,.85);box-shadow:0 2px 8px rgba(130,85,35,.4)}
+.jd-tab:nth-child(10).active{background:rgba(35,95,145,.85);box-shadow:0 2px 8px rgba(35,95,145,.4)}
+.jd-tab:nth-child(11).active{background:rgba(75,125,45,.85);box-shadow:0 2px 8px rgba(75,125,45,.4)}
+.jd-tab:nth-child(12).active{background:rgba(145,55,95,.85);box-shadow:0 2px 8px rgba(145,55,95,.4)}
+.jd-tab:nth-child(13).active{background:rgba(40,105,105,.85);box-shadow:0 2px 8px rgba(40,105,105,.4)}
+.jd-tab:nth-child(14).active{background:rgba(135,75,35,.85);box-shadow:0 2px 8px rgba(135,75,35,.4)}
+.jd-tab:nth-child(15).active{background:rgba(55,85,155,.85);box-shadow:0 2px 8px rgba(55,85,155,.4)}
+.jd-tab:nth-child(16).active{background:rgba(75,115,55,.85);box-shadow:0 2px 8px rgba(75,115,55,.4)}
 
 
 
@@ -5009,7 +5025,7 @@ function renderJobDet(j) {
   const exportBtn = isAdmin
     ? '<button class="ibtn" style="margin-left:auto;flex-shrink:0;font-size:12px;padding:4px 12px" onclick="exportJobData('+j.id+')">&#8659; Export</button>'
     : '';
-  const tabBar = '<div style="display:flex;gap:0;overflow-x:auto;border-bottom:2px solid var(--border);margin-bottom:18px;flex-shrink:0;align-items:flex-end">'
+  const tabBar = '<div style="display:flex;gap:5px;overflow-x:auto;padding:14px 0 10px;margin-bottom:6px;flex-shrink:0;align-items:center;flex-wrap:wrap">'
     +tabs.map(function(t){return '<div class="jd-tab'+(t.id===_jdTab?' active':'')+'" onclick="jdSwitch(\''+t.id+'\','+j.id+')">'+t.label+'</div>';}).join('')
     +'</div>';
   let content = '';
