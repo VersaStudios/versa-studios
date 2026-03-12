@@ -1318,7 +1318,8 @@ function _getDataMap() {
     jobs: jobs, kit: kit, hiredCatalogue: hiredCatalogue, users: users,
     maintenance: maintenance, faults: faults, binItems: binItems,
     repairItems: repairItems, holidays: holidays, activity: activity,
-    slogData: slogData, studioInfo: studioInfo, camPlans: camPlans, jobNotes: jobNotes
+    slogData: slogData, studioInfo: studioInfo, camPlans: camPlans, jobNotes: jobNotes,
+    opsPlanner: Object.assign({}, _opsD), opsBrk: _opsBrk.slice()
   };
 }
 
@@ -1363,6 +1364,8 @@ async function loadData() {
           else if(row.key==='studioInfo'&&v&&typeof v==='object'){Object.assign(studioInfo,v);}
           else if(row.key==='camPlans'&&v&&typeof v==='object'){Object.assign(camPlans,v);}
           else if(row.key==='jobNotes'&&v&&typeof v==='object'){Object.assign(jobNotes,v);}
+          else if(row.key==='opsPlanner'&&v&&typeof v==='object'){Object.keys(v).forEach(function(k){_opsD[k]=v[k];});}
+          else if(row.key==='opsBrk'&&Array.isArray(v)){_opsBrk.length=0;v.forEach(function(x){_opsBrk.push(x);});}
         } catch(e){ console.warn('Error loading key:', row.key, e); }
       });
     }
@@ -3387,7 +3390,7 @@ function setKV(v) {
 }
 
 // ── KIT LANDING ───────────────────────────────────────────────────────────────
-var CAT_COLORS={'Camera':'#B5472A','Audio':'#1B6B8A','Vision':'#00356B','Monitors':'#4A849C','Lighting':'#C9A227','Grip & Support':'#4A5E1A','Power':'#7A4B28','Comms':'#5B2182','Cables':'#8A7A32','Other':'#E0601A','Hardware Spares':'#8B5E3C','Floor Monitors':'#002B5C'};
+var CAT_COLORS={'Camera':'#B5472A','Audio':'#1B6B8A','Vision':'#00356B','Monitors':'#4A849C','Lighting':'#C9A227','Grip & Support':'#4A5E1A','Power':'#7A4B28','Comms':'#5B2182','Cables':'#8A7A32','Other':'#E0601A','Hardware Spares':'#8B5E3C','Floor Monitors':'#002B5C','Engineering':'#1A3A5C','Glue':'#3A3A5C','Convertors':'#1A4A3A','Systems':'#2A2A2A','Record':'#5C1A1A','Record/Playback':'#5C1A1A','Connectivity':'#1A4A5C','Offair':'#3A4A1A'};
 var LOC_COLORS={'Manchester':'#2d7dd2','London':'#e63946','ABC':'#2d7dd2'};
 var CARD_COLS={Confirmed:{bg:'#1a6b3a',bg2:'#0f4526'},Likely:{bg:'#9a7010',bg2:'#6b4d08'},Possible:{bg:'#8b2020',bg2:'#5c1414'},Ongoing:{bg:'#1a5a9a',bg2:'#0f3d6b'},Cancelled:{bg:'#444',bg2:'#2a2a2a'}};
 var DEF={bg:'#2a2a2a',bg2:'#1a1a1a'};
@@ -7778,7 +7781,7 @@ const OPS_TODAY = new Date().toISOString().split('T')[0];
 const OPS_MPX = {'March 2026':'2026-03','April 2026':'2026-04','May 2026':'2026-05','June 2026':'2026-06','July 2026':'2026-07','August 2026':'2026-08','September 2026':'2026-09','October 2026':'2026-10','November 2026':'2026-11','December 2026':'2026-12'};
 const _opsD={};
 function og(m,d,r){return _opsD[m+'|'+d+'|'+r]||[];}
-function os(m,d,r,v){_opsD[m+'|'+d+'|'+r]=v;}
+function os(m,d,r,v){_opsD[m+'|'+d+'|'+r]=v;saveData();}
 const _opsBrk=[];const _opsStu=new Set();const _opsHidStu=new Set();
 function opsIsWk(dow){const d=(dow||'').toUpperCase();return d==='SATURDAY'||d==='SUNDAY';}
 function opsDStr(month,day){return(OPS_MPX[month]||'2026-03')+'-'+String(day).padStart(2,'0');}
