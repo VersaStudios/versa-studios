@@ -51,6 +51,7 @@ html,body{height:100%;background:#0a0a0a;color:#f2f2f2;font-family:var(--font);f
 .stat-val{font-family:var(--cond);font-size:34px;font-weight:800;color:var(--pure);line-height:1}
 .stat-sub{font-size:17px;color:var(--muted);margin-top:3px}
 .dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.dash-eng-full{grid-column:1/-1}
 .panel{background:var(--near-black);border:1px solid var(--border);border-radius:5px;overflow:hidden}
 .panel-hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 17px;border-bottom:1px solid var(--border)}
 .panel-title{font-family:var(--cond);font-size:17px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--white)}
@@ -520,10 +521,11 @@ body.ops-sa .main-content{margin-left:0!important;}
 
 </style>
 </head>
-<div id="appLoadingOverlay" style="position:fixed;inset:0;background:#0a0a0a;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px"><img src="data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMzY2IDk2Mi45MiI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiNmZmY7fTwvc3R5bGU+PC9kZWZzPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTE5NC4xNiw1MDcuMzN2LTE0LjdjOS4wOSw0LjQ1LDIzLjQsOS42NywzOC42Nyw5LjY3LDE4LjE3LDAsMzIuMDktOC4xMiwzMi4wOS0yMi4yM3MtNy41NC0yMS42NS0zMi4wOS0zMC4zNWMtMjcuNjQtOS44Ni0zOS4wNS0yMS42Ni0zOS4wNS00MS43NiwwLTIzLDE5LjcyLTM2LjE1LDQ0LjY2LTM2LjE1QTg2LjYsODYuNiwwLDAsMSwyNzIuMjcsMzc5djE0LjMxYy03LjU0LTMuODctMjAuODgtOC4xMy0zMy4yNS04LjEzLTE3Ljc5LDAtMzAuNzQsOC43MS0zMC43NCwyMi4yNCwwLDEyLjU3LDYuNzcsMjEuMjYsMzEuNywzMC4zNSwyNy44NCw5Ljg2LDM5LjQ0LDIxLjA3LDM5LjQ0LDQxLjM3LDAsMjMtMTguNTYsMzYuNTQtNDUuODIsMzYuNTRBOTkuMiw5OS4yLDAsMCwxLDE5NC4xNiw1MDcuMzNaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMzcxLjgzLDM4Ni41VjUxMy4zMkgzNTcuMTRWMzg2LjVIMzE0LjQyVjM3NC4xM0g0MTQuNzVWMzg2LjVaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNNTY1Ljc1LDQ2NS4zOGMwLDMxLjUxLTE5LjUzLDUwLjI2LTUyLjIsNTAuMjYtMzIuNDgsMC01Mi0xOC43NS01Mi01MC4yNlYzNzQuMTNoMTQuNjlWNDY0LjZjMCwyMy40LDEzLjkyLDM3LjMyLDM3LjMyLDM3LjMyczM3LjUtMTMuOTIsMzcuNS0zNy4zMlYzNzQuMTNoMTQuN1oiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik02MjguNTgsNTEzLjMyVjM3NC4xM2gzOC40N2M0MS41NiwwLDczLjQ2LDI2LjY4LDczLjQ2LDY5LjZTNzA5LDUxMy4zMiw2NjcuODIsNTEzLjMyWk02NDMuMjcsMzg2LjVWNTAxaDI0LjU1YzMyLjY4LDAsNTcuNjEtMjIuMjMsNTcuNjEtNTcuMjJTNzAwLjMsMzg2LjUsNjY2Ljg2LDM4Ni41WiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTc5NS4yMyw1MTMuMzJWMzc0LjEzaDE0LjY5VjUxMy4zMloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik05MzguMSwzNzEuODFjNDAsMCw3MC43NiwzMS43LDcwLjc2LDcxLjkyLDAsNDAuNC0zMC4zNiw3MS45MS03MC43Niw3MS45MS00MC4yMSwwLTcwLjc2LTMxLjUxLTcwLjc2LTcxLjkxQzg2Ny4zNCw0MDMuOSw4OTcuODksMzcxLjgxLDkzOC4xLDM3MS44MVptMCwxMzAuMTFjMzIuNDgsMCw1NS42OC0yNS4xNCw1NS42OC01OC4xOXMtMjMuMi01OC4yLTU1LjY4LTU4LjJjLTMyLjI5LDAtNTUuODcsMjUuMTQtNTUuODcsNTguMlM5MDUuODEsNTAxLjkyLDkzOC4xLDUwMS45MloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0xMDU1LjI1LDUwNy4zM3YtMTQuN2M5LjA5LDQuNDUsMjMuNCw5LjY3LDM4LjY3LDkuNjcsMTguMTcsMCwzMi4wOS04LjEyLDMyLjA5LTIyLjIzcy03LjU0LTIxLjY1LTMyLjA5LTMwLjM1Yy0yNy42NC05Ljg2LTM5LjA1LTIxLjY2LTM5LjA1LTQxLjc2LDAtMjMsMTkuNzItMzYuMTUsNDQuNjYtMzYuMTVhODYuNiw4Ni42LDAsMCwxLDMzLjgzLDcuMTV2MTQuMzFjLTcuNTQtMy44Ny0yMC44OC04LjEzLTMzLjI1LTguMTMtMTcuNzksMC0zMC43NCw4LjcxLTMwLjc0LDIyLjI0LDAsMTIuNTcsNi43NywyMS4yNiwzMS43LDMwLjM1LDI3Ljg0LDkuODYsMzkuNDQsMjEuMDcsMzkuNDQsNDEuMzcsMCwyMy0xOC41NiwzNi41NC00NS44MiwzNi41NEE5OS4yLDk5LjIsMCwwLDEsMTA1NS4yNSw1MDcuMzNaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMTMxLjIzLDI3MC44MmgtMi4xOEwwLDUuMDlINjEuMDdMOTUuMjQsODAuN2MxMy40NSwzMC4xNywyNS40NCw1NiwzNC41Myw4MS40M0MxMzcuNCwxNDMuNTgsMTUzLjQsMTA2LjUxLDE2NSw4MC43TDE5OS4yLDUuMDloNjAuNzFaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMzM0Ljc3LDI2Ni44MlY1LjA5SDUwMy4wOFY1MkgzOTAuNzVWMTExLjZINDg2djQ1LjA3SDM5MC43NXY2My4yNUg1MDguNTN2NDYuOVoiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik02OTEuMzYsNS4wOWM2MC43MSwwLDEwMSwzMC4xNywxMDEsODYuMTUsMCwzOC4xNy0yMS40NCw2My4yNS00OS44LDc0LjUyTDc5Ny41LDI2Ni44Mkg3MzguMjVsLTQ2LjE2LTkxLjYxSDY1NC4yOHY5MS42MUg1OTkuMzlWNS4wOVpNNjU0LjI4LDUydjc4LjE2aDQwYzI0LjcyLDAsNDEuOC0xMi4zNiw0MS44LTM4LjksMC0yNi4xNy0xNy44MS0zOS4yNi00My4yNi0zOS4yNloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik04NzUuNjQsMjU3VjIwMy4yYzE4LjE4LDkuNDUsNDIuMTcsMTcuNDUsNjUuOCwxOC45MWE5NS4wOCw5NS4wOCwwLDAsMCwyMy4yNi0xLjQ2YzIwLTIuOTEsMzEuNjMtMTAuNTQsMzEuNjMtMjMuMjYsMC0xNy40NS0xNS42My0yNi41NC01MS42Mi0zOS42My00NS44LTE2LjcyLTcyLjctMzYtNzIuNy04MS40MkM4NzIsMjkuODEsOTEwLjU0LDAsOTY2Ljg4LDBjMjYuMTgsMCw1Miw1LjgyLDY4LjM0LDEzLjA5VjY0LjcxYy0xNS4yNi05LjA5LTQwLTE2LTY0LTE2LTI2LjksMC00NC4zNSwxMC41NC00NC4zNSwyNy4yNywwLDE1LjI2LDE0LjE3LDI1LjgsNDkuOCwzOS4yNSw0NS44LDE3LjgxLDc0LjE1LDM3LjA4LDc0LjE1LDgxLjA3LDAsNDcuMjUtMzUuNjIsNzUuNjEtOTcuNDIsNzUuNjFDOTIzLjYzLDI3MS45MSw4OTQuNTQsMjY1LjM2LDg3NS42NCwyNTdaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMTIzOC43NywxLjA5aC0yLjE4TDExMDkuNzMsMjY2LjgyaDU4LjUybDEyLTI3LjIyYzExLTI0LjgxLDUwLjE3LTExNy44NCw1Ny43OS0xMzYsOCwyMi45LDQ4LjgxLDExNy4wNiw2MC44MSwxNDQuMzJoMGw4LjYyLDE4LjlIMTM2NloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik03NzQuNDYsNzA2Ljc4bC0zMS44OS02NS42NWgtMi42NGwtODYuMjIsMTc4LTUuNCwxMS4xNmMtMTEtMzAuNTEtMjUuMzUtNjEuNDktNDEuNDctOTcuNjVsLTQxLjM4LTkxLjU2aC03NEw2MTUuOSw4OTcuMjdsMzEuODgsNjUuNjVoMi42NGw4Ni4yMi0xNzgsNS40MS0xMS4xNmMxMSwzMC41LDI1LjM1LDYxLjQ5LDQxLjQ2LDk3LjY1bDQxLjM4LDkxLjU2aDc0WiIvPjwvc3ZnPg==" style="width:200px;opacity:.95"/><div style="font-size:22px;color:#aaa;letter-spacing:.1em;text-transform:uppercase;margin-top:-4px;font-weight:700">Technical Dashboard</div><div style="font-size:13px;color:#666;letter-spacing:.06em;text-transform:uppercase" id="appLoadingMsg">Connecting...</div><div style="width:180px;height:3px;background:#1a1a1a;border-radius:999px;overflow:hidden;margin-top:4px"><div id="appLoadingBar" style="height:100%;width:0%;background:#e8b84b;border-radius:999px;transition:width .4s"></div></div></div>
-<div id="appLoginOverlay" style="display:none;position:fixed;inset:0;background:#0a0a0a;z-index:99998;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px">
+<div id="appLoadingOverlay" style="position:fixed;inset:0;background:#0a0a0a;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px"><img src="data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMzY2IDk2Mi45MiI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiNmZmY7fTwvc3R5bGU+PC9kZWZzPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTE5NC4xNiw1MDcuMzN2LTE0LjdjOS4wOSw0LjQ1LDIzLjQsOS42NywzOC42Nyw5LjY3LDE4LjE3LDAsMzIuMDktOC4xMiwzMi4wOS0yMi4yM3MtNy41NC0yMS42NS0zMi4wOS0zMC4zNWMtMjcuNjQtOS44Ni0zOS4wNS0yMS42Ni0zOS4wNS00MS43NiwwLTIzLDE5LjcyLTM2LjE1LDQ0LjY2LTM2LjE1QTg2LjYsODYuNiwwLDAsMSwyNzIuMjcsMzc5djE0LjMxYy03LjU0LTMuODctMjAuODgtOC4xMy0zMy4yNS04LjEzLTE3Ljc5LDAtMzAuNzQsOC43MS0zMC43NCwyMi4yNCwwLDEyLjU3LDYuNzcsMjEuMjYsMzEuNywzMC4zNSwyNy44NCw5Ljg2LDM5LjQ0LDIxLjA3LDM5LjQ0LDQxLjM3LDAsMjMtMTguNTYsMzYuNTQtNDUuODIsMzYuNTRBOTkuMiw5OS4yLDAsMCwxLDE5NC4xNiw1MDcuMzNaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMzcxLjgzLDM4Ni41VjUxMy4zMkgzNTcuMTRWMzg2LjVIMzE0LjQyVjM3NC4xM0g0MTQuNzVWMzg2LjVaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNNTY1Ljc1LDQ2NS4zOGMwLDMxLjUxLTE5LjUzLDUwLjI2LTUyLjIsNTAuMjYtMzIuNDgsMC01Mi0xOC43NS01Mi01MC4yNlYzNzQuMTNoMTQuNjlWNDY0LjZjMCwyMy40LDEzLjkyLDM3LjMyLDM3LjMyLDM3LjMyczM3LjUtMTMuOTIsMzcuNS0zNy4zMlYzNzQuMTNoMTQuN1oiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik02MjguNTgsNTEzLjMyVjM3NC4xM2gzOC40N2M0MS41NiwwLDczLjQ2LDI2LjY4LDczLjQ2LDY5LjZTNzA5LDUxMy4zMiw2NjcuODIsNTEzLjMyWk02NDMuMjcsMzg2LjVWNTAxaDI0LjU1YzMyLjY4LDAsNTcuNjEtMjIuMjMsNTcuNjEtNTcuMjJTNzAwLjMsMzg2LjUsNjY2Ljg2LDM4Ni41WiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTc5NS4yMyw1MTMuMzJWMzc0LjEzaDE0LjY5VjUxMy4zMloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik05MzguMSwzNzEuODFjNDAsMCw3MC43NiwzMS43LDcwLjc2LDcxLjkyLDAsNDAuNC0zMC4zNiw3MS45MS03MC43Niw3MS45MS00MC4yMSwwLTcwLjc2LTMxLjUxLTcwLjc2LTcxLjkxQzg2Ny4zNCw0MDMuOSw4OTcuODksMzcxLjgxLDkzOC4xLDM3MS44MVptMCwxMzAuMTFjMzIuNDgsMCw1NS42OC0yNS4xNCw1NS42OC01OC4xOXMtMjMuMi01OC4yLTU1LjY4LTU4LjJjLTMyLjI5LDAtNTUuODcsMjUuMTQtNTUuODcsNTguMlM5MDUuODEsNTAxLjkyLDkzOC4xLDUwMS45MloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0xMDU1LjI1LDUwNy4zM3YtMTQuN2M5LjA5LDQuNDUsMjMuNCw5LjY3LDM4LjY3LDkuNjcsMTguMTcsMCwzMi4wOS04LjEyLDMyLjA5LTIyLjIzcy03LjU0LTIxLjY1LTMyLjA5LTMwLjM1Yy0yNy42NC05Ljg2LTM5LjA1LTIxLjY2LTM5LjA1LTQxLjc2LDAtMjMsMTkuNzItMzYuMTUsNDQuNjYtMzYuMTVhODYuNiw4Ni42LDAsMCwxLDMzLjgzLDcuMTV2MTQuMzFjLTcuNTQtMy44Ny0yMC44OC04LjEzLTMzLjI1LTguMTMtMTcuNzksMC0zMC43NCw4LjcxLTMwLjc0LDIyLjI0LDAsMTIuNTcsNi43NywyMS4yNiwzMS43LDMwLjM1LDI3Ljg0LDkuODYsMzkuNDQsMjEuMDcsMzkuNDQsNDEuMzcsMCwyMy0xOC41NiwzNi41NC00NS44MiwzNi41NEE5OS4yLDk5LjIsMCwwLDEsMTA1NS4yNSw1MDcuMzNaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMTMxLjIzLDI3MC44MmgtMi4xOEwwLDUuMDlINjEuMDdMOTUuMjQsODAuN2MxMy40NSwzMC4xNywyNS40NCw1NiwzNC41Myw4MS40M0MxMzcuNCwxNDMuNTgsMTUzLjQsMTA2LjUxLDE2NSw4MC43TDE5OS4yLDUuMDloNjAuNzFaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMzM0Ljc3LDI2Ni44MlY1LjA5SDUwMy4wOFY1MkgzOTAuNzVWMTExLjZINDg2djQ1LjA3SDM5MC43NXY2My4yNUg1MDguNTN2NDYuOVoiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik02OTEuMzYsNS4wOWM2MC43MSwwLDEwMSwzMC4xNywxMDEsODYuMTUsMCwzOC4xNy0yMS40NCw2My4yNS00OS44LDc0LjUyTDc5Ny41LDI2Ni44Mkg3MzguMjVsLTQ2LjE2LTkxLjYxSDY1NC4yOHY5MS42MUg1OTkuMzlWNS4wOVpNNjU0LjI4LDUydjc4LjE2aDQwYzI0LjcyLDAsNDEuOC0xMi4zNiw0MS44LTM4LjksMC0yNi4xNy0xNy44MS0zOS4yNi00My4yNi0zOS4yNloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik04NzUuNjQsMjU3VjIwMy4yYzE4LjE4LDkuNDUsNDIuMTcsMTcuNDUsNjUuOCwxOC45MWE5NS4wOCw5NS4wOCwwLDAsMCwyMy4yNi0xLjQ2YzIwLTIuOTEsMzEuNjMtMTAuNTQsMzEuNjMtMjMuMjYsMC0xNy40NS0xNS42My0yNi41NC01MS42Mi0zOS42My00NS44LTE2LjcyLTcyLjctMzYtNzIuNy04MS40MkM4NzIsMjkuODEsOTEwLjU0LDAsOTY2Ljg4LDBjMjYuMTgsMCw1Miw1LjgyLDY4LjM0LDEzLjA5VjY0LjcxYy0xNS4yNi05LjA5LTQwLTE2LTY0LTE2LTI2LjksMC00NC4zNSwxMC41NC00NC4zNSwyNy4yNywwLDE1LjI2LDE0LjE3LDI1LjgsNDkuOCwzOS4yNSw0NS44LDE3LjgxLDc0LjE1LDM3LjA4LDc0LjE1LDgxLjA3LDAsNDcuMjUtMzUuNjIsNzUuNjEtOTcuNDIsNzUuNjFDOTIzLjYzLDI3MS45MSw4OTQuNTQsMjY1LjM2LDg3NS42NCwyNTdaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMTIzOC43NywxLjA5aC0yLjE4TDExMDkuNzMsMjY2LjgyaDU4LjUybDEyLTI3LjIyYzExLTI0LjgxLDUwLjE3LTExNy44NCw1Ny43OS0xMzYsOCwyMi45LDQ4LjgxLDExNy4wNiw2MC44MSwxNDQuMzJoMGw4LjYyLDE4LjlIMTM2NloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik03NzQuNDYsNzA2Ljc4bC0zMS44OS02NS42NWgtMi42NGwtODYuMjIsMTc4LTUuNCwxMS4xNmMtMTEtMzAuNTEtMjUuMzUtNjEuNDktNDEuNDctOTcuNjVsLTQxLjM4LTkxLjU2aC03NEw2MTUuOSw4OTcuMjdsMzEuODgsNjUuNjVoMi42NGw4Ni4yMi0xNzgsNS40MS0xMS4xNmMxMSwzMC41LDI1LjM1LDYxLjQ5LDQxLjQ2LDk3LjY1bDQxLjM4LDkxLjU2aDc0WiIvPjwvc3ZnPg==" style="width:200px;opacity:.95"/><div style="font-size:22px;color:#aaa;letter-spacing:.1em;text-transform:uppercase;margin-top:-4px;font-weight:700;color:#ffffff">Technical Dashboard</div><div style="font-size:13px;color:#666;letter-spacing:.06em;text-transform:uppercase" id="appLoadingMsg">Connecting...</div><div style="width:180px;height:3px;background:#1a1a1a;border-radius:999px;overflow:hidden;margin-top:4px"><div id="appLoadingBar" style="height:100%;width:0%;background:#e8b84b;border-radius:999px;transition:width .4s"></div></div></div>
+<div id="appLoginOverlay" style="display:none;position:fixed;inset:0;background:#0a0a0a;z-index:99998;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;overflow-y:auto;padding:48px 24px 40px">
   <div style="width:100%;max-width:360px">
-    <img src="data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMzY2IDk2Mi45MiI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiNmZmY7fTwvc3R5bGU+PC9kZWZzPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTE5NC4xNiw1MDcuMzN2LTE0LjdjOS4wOSw0LjQ1LDIzLjQsOS42NywzOC42Nyw5LjY3LDE4LjE3LDAsMzIuMDktOC4xMiwzMi4wOS0yMi4yM3MtNy41NC0yMS42NS0zMi4wOS0zMC4zNWMtMjcuNjQtOS44Ni0zOS4wNS0yMS42Ni0zOS4wNS00MS43NiwwLTIzLDE5LjcyLTM2LjE1LDQ0LjY2LTM2LjE1QTg2LjYsODYuNiwwLDAsMSwyNzIuMjcsMzc5djE0LjMxYy03LjU0LTMuODctMjAuODgtOC4xMy0zMy4yNS04LjEzLTE3Ljc5LDAtMzAuNzQsOC43MS0zMC43NCwyMi4yNCwwLDEyLjU3LDYuNzcsMjEuMjYsMzEuNywzMC4zNSwyNy44NCw5Ljg2LDM5LjQ0LDIxLjA3LDM5LjQ0LDQxLjM3LDAsMjMtMTguNTYsMzYuNTQtNDUuODIsMzYuNTRBOTkuMiw5OS4yLDAsMCwxLDE5NC4xNiw1MDcuMzNaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMzcxLjgzLDM4Ni41VjUxMy4zMkgzNTcuMTRWMzg2LjVIMzE0LjQyVjM3NC4xM0g0MTQuNzVWMzg2LjVaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNNTY1Ljc1LDQ2NS4zOGMwLDMxLjUxLTE5LjUzLDUwLjI2LTUyLjIsNTAuMjYtMzIuNDgsMC01Mi0xOC43NS01Mi01MC4yNlYzNzQuMTNoMTQuNjlWNDY0LjZjMCwyMy40LDEzLjkyLDM3LjMyLDM3LjMyLDM3LjMyczM3LjUtMTMuOTIsMzcuNS0zNy4zMlYzNzQuMTNoMTQuN1oiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik02MjguNTgsNTEzLjMyVjM3NC4xM2gzOC40N2M0MS41NiwwLDczLjQ2LDI2LjY4LDczLjQ2LDY5LjZTNzA5LDUxMy4zMiw2NjcuODIsNTEzLjMyWk02NDMuMjcsMzg2LjVWNTAxaDI0LjU1YzMyLjY4LDAsNTcuNjEtMjIuMjMsNTcuNjEtNTcuMjJTNzAwLjMsMzg2LjUsNjY2Ljg2LDM4Ni41WiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTc5NS4yMyw1MTMuMzJWMzc0LjEzaDE0LjY5VjUxMy4zMloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik05MzguMSwzNzEuODFjNDAsMCw3MC43NiwzMS43LDcwLjc2LDcxLjkyLDAsNDAuNC0zMC4zNiw3MS45MS03MC43Niw3MS45MS00MC4yMSwwLTcwLjc2LTMxLjUxLTcwLjc2LTcxLjkxQzg2Ny4zNCw0MDMuOSw4OTcuODksMzcxLjgxLDkzOC4xLDM3MS44MVptMCwxMzAuMTFjMzIuNDgsMCw1NS42OC0yNS4xNCw1NS42OC01OC4xOXMtMjMuMi01OC4yLTU1LjY4LTU4LjJjLTMyLjI5LDAtNTUuODcsMjUuMTQtNTUuODcsNTguMlM5MDUuODEsNTAxLjkyLDkzOC4xLDUwMS45MloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0xMDU1LjI1LDUwNy4zM3YtMTQuN2M5LjA5LDQuNDUsMjMuNCw5LjY3LDM4LjY3LDkuNjcsMTguMTcsMCwzMi4wOS04LjEyLDMyLjA5LTIyLjIzcy03LjU0LTIxLjY1LTMyLjA5LTMwLjM1Yy0yNy42NC05Ljg2LTM5LjA1LTIxLjY2LTM5LjA1LTQxLjc2LDAtMjMsMTkuNzItMzYuMTUsNDQuNjYtMzYuMTVhODYuNiw4Ni42LDAsMCwxLDMzLjgzLDcuMTV2MTQuMzFjLTcuNTQtMy44Ny0yMC44OC04LjEzLTMzLjI1LTguMTMtMTcuNzksMC0zMC43NCw4LjcxLTMwLjc0LDIyLjI0LDAsMTIuNTcsNi43NywyMS4yNiwzMS43LDMwLjM1LDI3Ljg0LDkuODYsMzkuNDQsMjEuMDcsMzkuNDQsNDEuMzcsMCwyMy0xOC41NiwzNi41NC00NS44MiwzNi41NEE5OS4yLDk5LjIsMCwwLDEsMTA1NS4yNSw1MDcuMzNaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMTMxLjIzLDI3MC44MmgtMi4xOEwwLDUuMDlINjEuMDdMOTUuMjQsODAuN2MxMy40NSwzMC4xNywyNS40NCw1NiwzNC41Myw4MS40M0MxMzcuNCwxNDMuNTgsMTUzLjQsMTA2LjUxLDE2NSw4MC43TDE5OS4yLDUuMDloNjAuNzFaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMzM0Ljc3LDI2Ni44MlY1LjA5SDUwMy4wOFY1MkgzOTAuNzVWMTExLjZINDg2djQ1LjA3SDM5MC43NXY2My4yNUg1MDguNTN2NDYuOVoiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik02OTEuMzYsNS4wOWM2MC43MSwwLDEwMSwzMC4xNywxMDEsODYuMTUsMCwzOC4xNy0yMS40NCw2My4yNS00OS44LDc0LjUyTDc5Ny41LDI2Ni44Mkg3MzguMjVsLTQ2LjE2LTkxLjYxSDY1NC4yOHY5MS42MUg1OTkuMzlWNS4wOVpNNjU0LjI4LDUydjc4LjE2aDQwYzI0LjcyLDAsNDEuOC0xMi4zNiw0MS44LTM4LjksMC0yNi4xNy0xNy44MS0zOS4yNi00My4yNi0zOS4yNloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik04NzUuNjQsMjU3VjIwMy4yYzE4LjE4LDkuNDUsNDIuMTcsMTcuNDUsNjUuOCwxOC45MWE5NS4wOCw5NS4wOCwwLDAsMCwyMy4yNi0xLjQ2YzIwLTIuOTEsMzEuNjMtMTAuNTQsMzEuNjMtMjMuMjYsMC0xNy40NS0xNS42My0yNi41NC01MS42Mi0zOS42My00NS44LTE2LjcyLTcyLjctMzYtNzIuNy04MS40MkM4NzIsMjkuODEsOTEwLjU0LDAsOTY2Ljg4LDBjMjYuMTgsMCw1Miw1LjgyLDY4LjM0LDEzLjA5VjY0LjcxYy0xNS4yNi05LjA5LTQwLTE2LTY0LTE2LTI2LjksMC00NC4zNSwxMC41NC00NC4zNSwyNy4yNywwLDE1LjI2LDE0LjE3LDI1LjgsNDkuOCwzOS4yNSw0NS44LDE3LjgxLDc0LjE1LDM3LjA4LDc0LjE1LDgxLjA3LDAsNDcuMjUtMzUuNjIsNzUuNjEtOTcuNDIsNzUuNjFDOTIzLjYzLDI3MS45MSw4OTQuNTQsMjY1LjM2LDg3NS42NCwyNTdaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMTIzOC43NywxLjA5aC0yLjE4TDExMDkuNzMsMjY2LjgyaDU4LjUybDEyLTI3LjIyYzExLTI0LjgxLDUwLjE3LTExNy44NCw1Ny43OS0xMzYsOCwyMi45LDQ4LjgxLDExNy4wNiw2MC44MSwxNDQuMzJoMGw4LjYyLDE4LjlIMTM2NloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik03NzQuNDYsNzA2Ljc4bC0zMS44OS02NS42NWgtMi42NGwtODYuMjIsMTc4LTUuNCwxMS4xNmMtMTEtMzAuNTEtMjUuMzUtNjEuNDktNDEuNDctOTcuNjVsLTQxLjM4LTkxLjU2aC03NEw2MTUuOSw4OTcuMjdsMzEuODgsNjUuNjVoMi42NGw4Ni4yMi0xNzgsNS40MS0xMS4xNmMxMSwzMC41LDI1LjM1LDYxLjQ5LDQxLjQ2LDk3LjY1bDQxLjM4LDkxLjU2aDc0WiIvPjwvc3ZnPg==" style="width:180px;display:block;margin:0 auto 28px"/>
+    <img src="data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMzY2IDk2Mi45MiI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiNmZmY7fTwvc3R5bGU+PC9kZWZzPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTE5NC4xNiw1MDcuMzN2LTE0LjdjOS4wOSw0LjQ1LDIzLjQsOS42NywzOC42Nyw5LjY3LDE4LjE3LDAsMzIuMDktOC4xMiwzMi4wOS0yMi4yM3MtNy41NC0yMS42NS0zMi4wOS0zMC4zNWMtMjcuNjQtOS44Ni0zOS4wNS0yMS42Ni0zOS4wNS00MS43NiwwLTIzLDE5LjcyLTM2LjE1LDQ0LjY2LTM2LjE1QTg2LjYsODYuNiwwLDAsMSwyNzIuMjcsMzc5djE0LjMxYy03LjU0LTMuODctMjAuODgtOC4xMy0zMy4yNS04LjEzLTE3Ljc5LDAtMzAuNzQsOC43MS0zMC43NCwyMi4yNCwwLDEyLjU3LDYuNzcsMjEuMjYsMzEuNywzMC4zNSwyNy44NCw5Ljg2LDM5LjQ0LDIxLjA3LDM5LjQ0LDQxLjM3LDAsMjMtMTguNTYsMzYuNTQtNDUuODIsMzYuNTRBOTkuMiw5OS4yLDAsMCwxLDE5NC4xNiw1MDcuMzNaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMzcxLjgzLDM4Ni41VjUxMy4zMkgzNTcuMTRWMzg2LjVIMzE0LjQyVjM3NC4xM0g0MTQuNzVWMzg2LjVaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNNTY1Ljc1LDQ2NS4zOGMwLDMxLjUxLTE5LjUzLDUwLjI2LTUyLjIsNTAuMjYtMzIuNDgsMC01Mi0xOC43NS01Mi01MC4yNlYzNzQuMTNoMTQuNjlWNDY0LjZjMCwyMy40LDEzLjkyLDM3LjMyLDM3LjMyLDM3LjMyczM3LjUtMTMuOTIsMzcuNS0zNy4zMlYzNzQuMTNoMTQuN1oiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik02MjguNTgsNTEzLjMyVjM3NC4xM2gzOC40N2M0MS41NiwwLDczLjQ2LDI2LjY4LDczLjQ2LDY5LjZTNzA5LDUxMy4zMiw2NjcuODIsNTEzLjMyWk02NDMuMjcsMzg2LjVWNTAxaDI0LjU1YzMyLjY4LDAsNTcuNjEtMjIuMjMsNTcuNjEtNTcuMjJTNzAwLjMsMzg2LjUsNjY2Ljg2LDM4Ni41WiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTc5NS4yMyw1MTMuMzJWMzc0LjEzaDE0LjY5VjUxMy4zMloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik05MzguMSwzNzEuODFjNDAsMCw3MC43NiwzMS43LDcwLjc2LDcxLjkyLDAsNDAuNC0zMC4zNiw3MS45MS03MC43Niw3MS45MS00MC4yMSwwLTcwLjc2LTMxLjUxLTcwLjc2LTcxLjkxQzg2Ny4zNCw0MDMuOSw4OTcuODksMzcxLjgxLDkzOC4xLDM3MS44MVptMCwxMzAuMTFjMzIuNDgsMCw1NS42OC0yNS4xNCw1NS42OC01OC4xOXMtMjMuMi01OC4yLTU1LjY4LTU4LjJjLTMyLjI5LDAtNTUuODcsMjUuMTQtNTUuODcsNTguMlM5MDUuODEsNTAxLjkyLDkzOC4xLDUwMS45MloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0xMDU1LjI1LDUwNy4zM3YtMTQuN2M5LjA5LDQuNDUsMjMuNCw5LjY3LDM4LjY3LDkuNjcsMTguMTcsMCwzMi4wOS04LjEyLDMyLjA5LTIyLjIzcy03LjU0LTIxLjY1LTMyLjA5LTMwLjM1Yy0yNy42NC05Ljg2LTM5LjA1LTIxLjY2LTM5LjA1LTQxLjc2LDAtMjMsMTkuNzItMzYuMTUsNDQuNjYtMzYuMTVhODYuNiw4Ni42LDAsMCwxLDMzLjgzLDcuMTV2MTQuMzFjLTcuNTQtMy44Ny0yMC44OC04LjEzLTMzLjI1LTguMTMtMTcuNzksMC0zMC43NCw4LjcxLTMwLjc0LDIyLjI0LDAsMTIuNTcsNi43NywyMS4yNiwzMS43LDMwLjM1LDI3Ljg0LDkuODYsMzkuNDQsMjEuMDcsMzkuNDQsNDEuMzcsMCwyMy0xOC41NiwzNi41NC00NS44MiwzNi41NEE5OS4yLDk5LjIsMCwwLDEsMTA1NS4yNSw1MDcuMzNaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMTMxLjIzLDI3MC44MmgtMi4xOEwwLDUuMDlINjEuMDdMOTUuMjQsODAuN2MxMy40NSwzMC4xNywyNS40NCw1NiwzNC41Myw4MS40M0MxMzcuNCwxNDMuNTgsMTUzLjQsMTA2LjUxLDE2NSw4MC43TDE5OS4yLDUuMDloNjAuNzFaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMzM0Ljc3LDI2Ni44MlY1LjA5SDUwMy4wOFY1MkgzOTAuNzVWMTExLjZINDg2djQ1LjA3SDM5MC43NXY2My4yNUg1MDguNTN2NDYuOVoiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik02OTEuMzYsNS4wOWM2MC43MSwwLDEwMSwzMC4xNywxMDEsODYuMTUsMCwzOC4xNy0yMS40NCw2My4yNS00OS44LDc0LjUyTDc5Ny41LDI2Ni44Mkg3MzguMjVsLTQ2LjE2LTkxLjYxSDY1NC4yOHY5MS42MUg1OTkuMzlWNS4wOVpNNjU0LjI4LDUydjc4LjE2aDQwYzI0LjcyLDAsNDEuOC0xMi4zNiw0MS44LTM4LjksMC0yNi4xNy0xNy44MS0zOS4yNi00My4yNi0zOS4yNloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik04NzUuNjQsMjU3VjIwMy4yYzE4LjE4LDkuNDUsNDIuMTcsMTcuNDUsNjUuOCwxOC45MWE5NS4wOCw5NS4wOCwwLDAsMCwyMy4yNi0xLjQ2YzIwLTIuOTEsMzEuNjMtMTAuNTQsMzEuNjMtMjMuMjYsMC0xNy40NS0xNS42My0yNi41NC01MS42Mi0zOS42My00NS44LTE2LjcyLTcyLjctMzYtNzIuNy04MS40MkM4NzIsMjkuODEsOTEwLjU0LDAsOTY2Ljg4LDBjMjYuMTgsMCw1Miw1LjgyLDY4LjM0LDEzLjA5VjY0LjcxYy0xNS4yNi05LjA5LTQwLTE2LTY0LTE2LTI2LjksMC00NC4zNSwxMC41NC00NC4zNSwyNy4yNywwLDE1LjI2LDE0LjE3LDI1LjgsNDkuOCwzOS4yNSw0NS44LDE3LjgxLDc0LjE1LDM3LjA4LDc0LjE1LDgxLjA3LDAsNDcuMjUtMzUuNjIsNzUuNjEtOTcuNDIsNzUuNjFDOTIzLjYzLDI3MS45MSw4OTQuNTQsMjY1LjM2LDg3NS42NCwyNTdaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMTIzOC43NywxLjA5aC0yLjE4TDExMDkuNzMsMjY2LjgyaDU4LjUybDEyLTI3LjIyYzExLTI0LjgxLDUwLjE3LTExNy44NCw1Ny43OS0xMzYsOCwyMi45LDQ4LjgxLDExNy4wNiw2MC44MSwxNDQuMzJoMGw4LjYyLDE4LjlIMTM2NloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik03NzQuNDYsNzA2Ljc4bC0zMS44OS02NS42NWgtMi42NGwtODYuMjIsMTc4LTUuNCwxMS4xNmMtMTEtMzAuNTEtMjUuMzUtNjEuNDktNDEuNDctOTcuNjVsLTQxLjM4LTkxLjU2aC03NEw2MTUuOSw4OTcuMjdsMzEuODgsNjUuNjVoMi42NGw4Ni4yMi0xNzgsNS40MS0xMS4xNmMxMSwzMC41LDI1LjM1LDYxLjQ5LDQxLjQ2LDk3LjY1bDQxLjM4LDkxLjU2aDc0WiIvPjwvc3ZnPg==" style="width:180px;display:block;margin:0 auto 14px"/>
+    <div style="text-align:center;margin-bottom:24px"><div style="font-size:26px;font-weight:900;color:#ffffff;letter-spacing:.12em;text-transform:uppercase;font-family:var(--cond,sans-serif);text-shadow:0 0 20px rgba(255,255,255,.15)">Technical Dashboard</div><div style="font-size:11px;color:#888;letter-spacing:.1em;text-transform:uppercase;margin-top:5px">Morning Live Production</div></div>
     <div style="background:#111;border:1px solid #222;border-radius:12px;padding:24px;display:flex;flex-direction:column;gap:14px">
       <div>
         <div style="font-size:11px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Email</div>
@@ -910,6 +912,7 @@ body.ops-sa .main-content{margin-left:0!important;}
       <!-- Bin hidden from nav, accessible via admin -->
       <div class="nav-lbl">Studio Log</div>
       <div class="nav-item" data-pg="studios" onclick="nav('studios',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="2" width="14" height="12" rx="1"/><path d="M1 6h14M5 9h6M5 12h4"/></svg>Tech Log</div>
+      <div class="nav-item" data-pg="engreport" onclick="nav('engreport',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 2h10a1 1 0 011 1v10a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1z"/><path d="M5 5h6M5 8h6M5 11h3"/><circle cx="11.5" cy="11" r="2" fill="none"/><path d="M13 12.5l1.5 1.5"/></svg>Eng Report</div>
       <div class="nav-lbl">Jobs</div>
       <div class="nav-item" data-pg="jobs" onclick="nav('jobs',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="12" height="11" rx="1"/><path d="M5 3V2M11 3V2M2 7h12"/></svg>Jobs<span class="nav-badge" id="nbJob">0</span></div>
 
@@ -966,6 +969,7 @@ body.ops-sa .main-content{margin-left:0!important;}
           <div class="panel"><div class="panel-hdr"><div class="panel-title">Current Jobs</div><button class="panel-act" onclick="nav('jobs',document.querySelector('[data-pg=jobs]'))">View All</button></div><div id="dJobsCurrent"></div></div>
           <div class="panel"><div class="panel-hdr"><div class="panel-title">Upcoming Jobs</div></div><div id="dJobsUpcoming"></div></div>
           <div class="panel"><div class="panel-hdr"><div class="panel-title">Recent Activity</div></div><div id="dActivity"></div></div>
+          
         </div>
       </div>
 
@@ -1063,7 +1067,18 @@ body.ops-sa .main-content{margin-left:0!important;}
             <button id="abcTabLog" onclick="switchStudioTab('abc','log')" style="padding:6px 16px;font-size:12px;font-family:var(--cond);font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:none;border:none;border-bottom:2px solid #40a070;color:#80d0a0;cursor:pointer">Log</button>
             <button id="abcTabInfo" onclick="switchStudioTab('abc','info')" style="padding:6px 16px;font-size:12px;font-family:var(--cond);font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer">Studio Info</button>
           </div>
-          <div id="abcPanelLog"><div class="panel"><div class="panel-hdr"><div class="panel-title">Tech Log</div></div><div id="slog-abc"></div></div></div>
+          <div id="abcPanelLog">
+            <div id="abcLastReportBox" style="margin-bottom:12px;border:2px solid rgba(74,158,255,.3);border-radius:8px;background:rgba(74,158,255,.06);overflow:hidden">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid rgba(74,158,255,.2);background:rgba(74,158,255,.08)">
+                <div style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(74,158,255,.9)">&#x2022; Latest Engineering Report</div>
+                <button onclick="nav('engreport',document.querySelector('[data-pg=engreport]'))" style="font-family:var(--cond);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:4px;border:1px solid rgba(74,158,255,.3);background:rgba(74,158,255,.1);color:rgba(74,158,255,.9);cursor:pointer">+ New Report</button>
+              </div>
+              <div id="abcLastReportContent" style="padding:14px 16px">
+                <div style="font-size:13px;color:var(--muted)">Loading…</div>
+              </div>
+            </div>
+            <div class="panel"><div class="panel-hdr"><div class="panel-title">Tech Log</div></div><div id="slog-abc"></div></div>
+          </div>
           <div id="abcPanelInfo" style="display:none"><div id="studioInfoPanel_abc" style="padding:4px 0"></div></div>
         </div>
         <div class="loc-content active" id="sc-manchester">
@@ -1114,7 +1129,279 @@ body.ops-sa .main-content{margin-left:0!important;}
         </div>
       </div>
 
-      <div class="page" id="page-jobs">
+      <div class="page" id="page-engreport">
+<style>
+.er-device{background:#EFEFED;border-radius:10px;max-width:620px;margin:0 auto;box-shadow:0 0 0 1px rgba(0,0,0,.1),0 4px 20px rgba(0,0,0,.15);overflow:hidden;padding-bottom:24px}
+.er-face{background:#111;padding:16px 22px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.er-face-left .er-brand{font-size:9px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:3px}
+.er-face-left .er-title{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#fff}
+.er-leds{display:flex;gap:5px;align-items:center}
+.er-led{width:7px;height:7px;border-radius:50%}
+.er-led.or{background:#FF4D1C;box-shadow:0 0 5px rgba(255,77,28,.8)}
+.er-led.gn{background:#00C472;box-shadow:0 0 5px rgba(0,196,114,.8)}
+.er-led.of{background:#222}
+.er-logo{width:60px;filter:brightness(0) invert(1);opacity:.6}
+.er-pbody{padding:16px 20px 0}
+.er-sec{background:#F8F8F6;border-radius:7px;margin-bottom:10px;border:1px solid #C8C7C3;overflow:hidden;box-shadow:0 1px 0 rgba(255,255,255,.9),0 -1px 0 rgba(0,0,0,.06),0 2px 4px rgba(0,0,0,.1)}
+.er-shead{background:#E0DFDC;border-bottom:1px solid #AEADA9;padding:7px 14px;display:flex;align-items:center;gap:8px}
+.er-snum{font-size:9px;font-weight:700;letter-spacing:.14em;color:#777770;font-family:"IBM Plex Mono",monospace;background:#C8C7C3;padding:2px 5px;border-radius:2px}
+.er-stitle{font-size:10px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:#333;font-family:"IBM Plex Mono",monospace}
+.er-sbody{padding:12px 14px}
+.er-btnrow{display:flex;flex-wrap:wrap;gap:7px}
+.er-hwbtn{display:inline-flex;align-items:center;justify-content:center;padding:11px 18px;border-radius:5px;font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:600;cursor:pointer;transition:all .08s;border:1px solid #AEADA9;background:#EFEFED;color:#333;box-shadow:0 1px 0 rgba(255,255,255,.9),0 -1px 0 rgba(0,0,0,.07),0 2px 3px rgba(0,0,0,.1);user-select:none;position:relative}
+.er-hwbtn:hover{background:#F8F8F6;color:#111}
+.er-hwbtn:active{box-shadow:inset 0 1px 3px rgba(0,0,0,.15);transform:translateY(1px)}
+.er-hwbtn.er-active{background:#111;color:#FFD000;border-color:#111;box-shadow:inset 0 1px 3px rgba(0,0,0,.2)}
+.er-hwbtn.er-active::before{content:"";position:absolute;top:5px;right:5px;width:4px;height:4px;border-radius:50%;background:#00C472;box-shadow:0 0 4px rgba(0,196,114,.9)}
+.er-hwbtn-xl{padding:20px 32px;font-size:15px;font-weight:700;border-radius:7px}
+.er-hwbtn-sm{padding:7px 12px;font-size:10px;border-radius:4px}
+.er-subexp{display:none;flex-wrap:wrap;gap:5px;margin-top:9px;padding-top:9px;border-top:1px dashed #C8C7C3}
+.er-subexp.open{display:flex}
+.er-oinput{width:100%;margin-top:8px;border:1px solid #AEADA9;border-radius:4px;padding:9px 12px;font-family:"IBM Plex Mono",monospace;font-size:12px;color:#111;background:#E0DFDC;outline:none}
+.er-oinput:focus{border-color:#111;background:#fff}
+.er-oinput::placeholder{color:#C8C7C3}
+.er-datechips{display:flex;gap:7px;margin-bottom:10px}
+.er-datechip{flex:1;padding:10px 14px;border-radius:5px;font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border:1px solid #AEADA9;background:#EFEFED;color:#777770;text-align:center;transition:all .1s;box-shadow:0 1px 0 rgba(255,255,255,.9),0 2px 3px rgba(0,0,0,.08)}
+.er-datechip:hover{color:#111}
+.er-datechip.er-active{background:#111;color:#FFD000;border-color:#111;box-shadow:inset 0 1px 3px rgba(0,0,0,.2)}
+.er-datedisp{font-family:"IBM Plex Mono",monospace;font-size:11px;color:#111;padding:8px 12px;background:#E0DFDC;border-radius:4px;border:1px solid #AEADA9}
+.er-dinput{width:100%;margin-top:7px;border:1px solid #AEADA9;border-radius:4px;padding:9px 12px;font-family:"IBM Plex Mono",monospace;font-size:12px;background:#E0DFDC;color:#111;outline:none}
+.er-dinput:focus{border-color:#111}
+input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;cursor:pointer}
+.er-modegrid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.er-modebtn{padding:18px 14px;border-radius:7px;font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border:1px solid #AEADA9;background:#EFEFED;color:#777770;text-align:center;transition:all .1s;box-shadow:0 1px 0 rgba(255,255,255,.9),0 2px 3px rgba(0,0,0,.1)}
+.er-modebtn .er-micon{font-size:20px;display:block;margin-bottom:8px;opacity:.3;transition:opacity .15s}
+.er-modebtn:hover{color:#333}.er-modebtn:hover .er-micon{opacity:.6}
+.er-modebtn.er-ntr{background:#111;color:#fff;border-color:#111;box-shadow:inset 0 1px 3px rgba(0,0,0,.2)}
+.er-modebtn.er-ntr .er-micon{opacity:1}
+.er-modebtn.er-str{background:#FFD000;color:#111;border-color:#cc9900;box-shadow:inset 0 1px 3px rgba(0,0,0,.15)}
+.er-modebtn.er-str .er-micon{opacity:1}
+.er-strfields{display:none;flex-direction:column;gap:9px;margin-top:10px;padding-top:10px;border-top:1px dashed #C8C7C3}
+.er-strfields.open{display:flex}
+.er-flabel{font-size:9px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#777770;margin-bottom:5px;font-family:"IBM Plex Mono",monospace}
+.er-ftxt{width:100%;border:1px solid #AEADA9;border-radius:4px;padding:10px 12px;font-family:"IBM Plex Mono",monospace;font-size:11px;color:#111;background:#E0DFDC;resize:vertical;min-height:90px;outline:none;line-height:1.7}
+.er-ftxt:focus{border-color:#111;background:#fff}
+.er-ftxt::placeholder{color:#C8C7C3}
+.er-catbar{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:7px}
+.er-catbtn{padding:3px 8px;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:1px solid #AEADA9;background:#EFEFED;color:#777770;cursor:pointer;border-radius:3px;font-family:"IBM Plex Mono",monospace}
+.er-catbtn.er-active{background:#111;color:#FFD000;border-color:#111}
+.er-ksearch{width:100%;border:1px solid #AEADA9;border-radius:4px;padding:8px 12px;font-family:"IBM Plex Mono",monospace;font-size:11px;background:#E0DFDC;color:#111;outline:none;margin-bottom:5px}
+.er-ksearch:focus{border-color:#111}.er-ksearch::placeholder{color:#C8C7C3}
+.er-klist{max-height:160px;overflow-y:auto;border:1px solid #AEADA9;border-radius:4px;background:#fff}
+.er-krow{display:flex;align-items:center;gap:7px;padding:7px 11px;border-bottom:1px solid #E0DFDC;cursor:pointer;transition:background .08s}
+.er-krow:last-child{border-bottom:none}.er-krow:hover{background:#E0DFDC}
+.er-krow.er-sel{background:rgba(17,17,17,.05)}
+.er-kchk{width:13px;height:13px;border:1.5px solid #AEADA9;border-radius:2px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .1s}
+.er-krow.er-sel .er-kchk{background:#111;border-color:#111}
+.er-krow.er-sel .er-kchk::after{content:"";width:3px;height:6px;border:1.5px solid #FFD000;border-top:none;border-left:none;transform:rotate(45deg);display:block;margin-top:-1px}
+.er-kname{font-size:11px;font-weight:500;color:#111;flex:1;font-family:"IBM Plex Mono",monospace}
+.er-kpill{font-size:8px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:1px 5px;background:#E0DFDC;color:#777770;border-radius:2px;font-family:"IBM Plex Mono",monospace}
+.er-ktag{font-size:10px;color:#777770;font-family:"IBM Plex Mono",monospace}
+.er-tagchips{display:flex;flex-wrap:wrap;gap:4px;margin-top:7px}
+.er-tagchip{display:inline-flex;align-items:center;gap:4px;padding:3px 8px 3px 9px;background:#111;color:#FFD000;font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:700;border-radius:3px}
+.er-tagchip button{background:rgba(255,208,0,.2);border:none;cursor:pointer;color:#FFD000;width:13px;height:13px;border-radius:50%;font-size:10px;display:flex;align-items:center;justify-content:center;line-height:1}
+.er-urgpanel{margin:0 20px 10px;background:#F8F8F6;border-radius:7px;border:1px solid #C8C7C3;overflow:hidden;box-shadow:0 1px 0 rgba(255,255,255,.9),0 2px 4px rgba(0,0,0,.1)}
+.er-urghead{background:#1A1A1A;border-bottom:1px solid #333;padding:7px 14px;display:flex;align-items:center;gap:8px}
+.er-urgledR{width:6px;height:6px;border-radius:50%;background:#E8002A;box-shadow:0 0 5px rgba(232,0,42,.7)}
+.er-urgtitle{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.6);font-family:"IBM Plex Mono",monospace}
+.er-urgbody{padding:12px 14px}
+.er-urgrow{display:flex;gap:7px}
+.er-urgbtn{flex:1;padding:14px 10px;border-radius:6px;font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border:1px solid #AEADA9;background:#EFEFED;color:#777770;text-align:center;transition:all .1s;position:relative;box-shadow:0 1px 0 rgba(255,255,255,.9),0 2px 3px rgba(0,0,0,.08)}
+.er-urgbtn:hover{color:#333}
+.er-urgbtn::after{content:"";position:absolute;bottom:6px;left:50%;transform:translateX(-50%);width:5px;height:5px;border-radius:50%;background:#C8C7C3;transition:all .15s}
+.er-urgbtn.er-urg-no::after{background:#00C472;box-shadow:0 0 4px rgba(0,196,114,.8)}
+.er-urgbtn.er-urg-yes::after{background:#E8002A;box-shadow:0 0 4px rgba(232,0,42,.8)}
+.er-urgbtn.er-urg-oth::after{background:#FFD000;box-shadow:0 0 4px rgba(255,208,0,.8)}
+.er-urgbtn.er-urg-no{border-color:#00C472;color:#111;box-shadow:0 0 0 1px #00C472,0 2px 3px rgba(0,0,0,.08)}
+.er-urgbtn.er-urg-yes{border-color:#E8002A;color:#111;box-shadow:0 0 0 1px #E8002A,0 2px 3px rgba(0,0,0,.08)}
+.er-urgbtn.er-urg-oth{border-color:#cc9900;color:#111;box-shadow:0 0 0 1px #FFD000,0 2px 3px rgba(0,0,0,.08)}
+.er-urgdet{margin-top:10px;display:none}
+.er-urgdet.open{display:block}
+.er-urgtxt{width:100%;border:1px solid #AEADA9;border-radius:4px;padding:9px 12px;background:#E0DFDC;color:#111;font-family:"IBM Plex Mono",monospace;font-size:11px;resize:vertical;min-height:65px;outline:none;line-height:1.6}
+.er-urgtxt:focus{border-color:#111}.er-urgtxt::placeholder{color:#C8C7C3}
+.er-bottom{padding:0 20px}
+.er-statusbar{background:#F8F8F6;border:1px solid #C8C7C3;border-radius:6px;padding:10px 14px;display:flex;align-items:center;gap:9px;margin-bottom:8px;box-shadow:0 1px 0 rgba(255,255,255,.9),0 2px 4px rgba(0,0,0,.08);transition:all .25s}
+.er-statusbar.er-ready{border-color:#00C472;background:rgba(0,196,114,.07)}
+.er-statusled{width:7px;height:7px;border-radius:50%;background:#C8C7C3;flex-shrink:0;transition:all .25s}
+.er-statusbar.er-ready .er-statusled{background:#00C472;box-shadow:0 0 5px rgba(0,196,114,.8)}
+.er-statustxt{font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#777770;transition:color .2s}
+.er-statusbar.er-ready .er-statustxt{color:#111}
+.er-submit{width:100%;padding:16px;border:none;background:#111;color:#fff;font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;border-radius:6px;transition:all .15s;box-shadow:0 2px 0 rgba(0,0,0,.25)}
+.er-submit:hover:not(:disabled){background:#222}
+.er-submit:disabled{opacity:.3;cursor:not-allowed;box-shadow:none}
+.er-submit:active:not(:disabled){transform:translateY(1px);box-shadow:none}
+.er-submit.er-ready{color:#FFD000}
+/* SUCCESS */
+.er-success{display:none}
+.er-suchero{background:#111;padding:28px 22px}
+.er-sucledrow{display:flex;gap:7px;margin-bottom:16px}
+.er-sucled{width:9px;height:9px;border-radius:50%}
+.er-sucled.gn{background:#00C472;box-shadow:0 0 7px rgba(0,196,114,.9)}
+.er-sucled.of{background:#333}
+.er-suctitle{font-size:26px;font-weight:700;letter-spacing:-.02em;color:#fff;line-height:1;margin-bottom:6px}
+.er-suctitle span{color:#00C472}
+.er-sucsub{font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.35)}
+.er-sucbody{padding:0 20px}
+.er-suctblhd{font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#777770;padding:12px 0 7px;border-bottom:1px solid #C8C7C3}
+.er-sucrow{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid #E0DFDC}
+.er-sucrow:last-child{border-bottom:none}
+.er-suclbl{font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#777770;width:120px;flex-shrink:0}
+.er-sucval{font-family:"IBM Plex Mono",monospace;font-size:11px;color:#111;flex:1}
+.er-sucdet{font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#E8002A;padding:12px 0 4px;display:none}
+.er-newrpt{width:100%;margin-top:14px;padding:14px;border:1px solid #AEADA9;background:#EFEFED;color:#333;font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;border-radius:6px;box-shadow:0 1px 0 rgba(255,255,255,.9),0 2px 3px rgba(0,0,0,.1);transition:all .15s}
+.er-newrpt:hover{background:#111;color:#fff}
+</style>
+
+<div class="er-device">
+
+  <!-- FORM VIEW -->
+  <div id="erFormView">
+    <div class="er-face">
+      <div class="er-face-left">
+        <div class="er-brand">Versa Studios</div>
+        <div class="er-title">Morning Live &middot; Engineering Report</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="er-leds">
+          <div class="er-led or"></div>
+          <div class="er-led of"></div>
+          <div class="er-led gn"></div>
+        </div>
+        <img class="er-logo" src="data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMzY2IDk2Mi45MiI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiNmZmY7fTwvc3R5bGU+PC9kZWZzPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTE5NC4xNiw1MDcuMzN2LTE0LjdjOS4wOSw0LjQ1LDIzLjQsOS42NywzOC42Nyw5LjY3LDE4LjE3LDAsMzIuMDktOC4xMiwzMi4wOS0yMi4yM3MtNy41NC0yMS42NS0zMi4wOS0zMC4zNWMtMjcuNjQtOS44Ni0zOS4wNS0yMS42Ni0zOS4wNS00MS43NiwwLTIzLDE5LjcyLTM2LjE1LDQ0LjY2LTM2LjE1QTg2LjYsODYuNiwwLDAsMSwyNzIuMjcsMzc5djE0LjMxYy03LjU0LTMuODctMjAuODgtOC4xMy0zMy4yNS04LjEzLTE3Ljc5LDAtMzAuNzQsOC43MS0zMC43NCwyMi4yNCwwLDEyLjU3LDYuNzcsMjEuMjYsMzEuNywzMC4zNSwyNy44NCw5Ljg2LDM5LjQ0LDIxLjA3LDM5LjQ0LDQxLjM3LDAsMjMtMTguNTYsMzYuNTQtNDUuODIsMzYuNTRBOTkuMiw5OS4yLDAsMCwxLDE5NC4xNiw1MDcuMzNaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMzcxLjgzLDM4Ni41VjUxMy4zMkgzNTcuMTRWMzg2LjVIMzE0LjQyVjM3NC4xM0g0MTQuNzVWMzg2LjVaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNNTY1Ljc1LDQ2NS4zOGMwLDMxLjUxLTE5LjUzLDUwLjI2LTUyLjIsNTAuMjYtMzIuNDgsMC01Mi0xOC43NS01Mi01MC4yNlYzNzQuMTNoMTQuNjlWNDY0LjZjMCwyMy40LDEzLjkyLDM3LjMyLDM3LjMyLDM3LjMyczM3LjUtMTMuOTIsMzcuNS0zNy4zMlYzNzQuMTNoMTQuN1oiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik02MjguNTgsNTEzLjMyVjM3NC4xM2gzOC40N2M0MS41NiwwLDczLjQ2LDI2LjY4LDczLjQ2LDY5LjZTNzA5LDUxMy4zMiw2NjcuODIsNTEzLjMyWk02NDMuMjcsMzg2LjVWNTAxaDI0LjU1YzMyLjY4LDAsNTcuNjEtMjIuMjMsNTcuNjEtNTcuMjJTNzAwLjMsMzg2LjUsNjY2Ljg2LDM4Ni41WiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTc5NS4yMyw1MTMuMzJWMzc0LjEzaDE0LjY5VjUxMy4zMloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik05MzguMSwzNzEuODFjNDAsMCw3MC43NiwzMS43LDcwLjc2LDcxLjkyLDAsNDAuNC0zMC4zNiw3MS45MS03MC43Niw3MS45MS00MC4yMSwwLTcwLjc2LTMxLjUxLTcwLjc2LTcxLjkxQzg2Ny4zNCw0MDMuOSw4OTcuODksMzcxLjgxLDkzOC4xLDM3MS44MVptMCwxMzAuMTFjMzIuNDgsMCw1NS42OC0yNS4xNCw1NS42OC01OC4xOXMtMjMuMi01OC4yLTU1LjY4LTU4LjJjLTMyLjI5LDAtNTUuODcsMjUuMTQtNTUuODcsNTguMlM5MDUuODEsNTAxLjkyLDkzOC4xLDUwMS45MloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0xMDU1LjI1LDUwNy4zM3YtMTQuN2M5LjA5LDQuNDUsMjMuNCw5LjY3LDM4LjY3LDkuNjcsMTguMTcsMCwzMi4wOS04LjEyLDMyLjA5LTIyLjIzcy03LjU0LTIxLjY1LTMyLjA5LTMwLjM1Yy0yNy42NC05Ljg2LTM5LjA1LTIxLjY2LTM5LjA1LTQxLjc2LDAtMjMsMTkuNzItMzYuMTUsNDQuNjYtMzYuMTVhODYuNiw4Ni42LDAsMCwxLDMzLjgzLDcuMTV2MTQuMzFjLTcuNTQtMy44Ny0yMC44OC04LjEzLTMzLjI1LTguMTMtMTcuNzksMC0zMC43NCw4LjcxLTMwLjc0LDIyLjI0LDAsMTIuNTcsNi43NywyMS4yNiwzMS43LDMwLjM1LDI3Ljg0LDkuODYsMzkuNDQsMjEuMDcsMzkuNDQsNDEuMzcsMCwyMy0xOC41NiwzNi41NC00NS44MiwzNi41NEE5OS4yLDk5LjIsMCwwLDEsMTA1NS4yNSw1MDcuMzNaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMTMxLjIzLDI3MC44MmgtMi4xOEwwLDUuMDlINjEuMDdMOTUuMjQsODAuN2MxMy40NSwzMC4xNywyNS40NCw1NiwzNC41Myw4MS40M0MxMzcuNCwxNDMuNTgsMTUzLjQsMTA2LjUxLDE2NSw4MC43TDE5OS4yLDUuMDloNjAuNzFaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMzM0Ljc3LDI2Ni44MlY1LjA5SDUwMy4wOFY1MkgzOTAuNzVWMTExLjZINDg2djQ1LjA3SDM5MC43NXY2My4yNUg1MDguNTN2NDYuOVoiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik02OTEuMzYsNS4wOWM2MC43MSwwLDEwMSwzMC4xNywxMDEsODYuMTUsMCwzOC4xNy0yMS40NCw2My4yNS00OS44LDc0LjUyTDc5Ny41LDI2Ni44Mkg3MzguMjVsLTQ2LjE2LTkxLjYxSDY1NC4yOHY5MS42MUg1OTkuMzlWNS4wOVpNNjU0LjI4LDUydjc4LjE2aDQwYzI0LjcyLDAsNDEuOC0xMi4zNiw0MS44LTM4LjksMC0yNi4xNy0xNy44MS0zOS4yNi00My4yNi0zOS4yNloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik04NzUuNjQsMjU3VjIwMy4yYzE4LjE4LDkuNDUsNDIuMTcsMTcuNDUsNjUuOCwxOC45MWE5NS4wOCw5NS4wOCwwLDAsMCwyMy4yNi0xLjQ2YzIwLTIuOTEsMzEuNjMtMTAuNTQsMzEuNjMtMjMuMjYsMC0xNy40NS0xNS42My0yNi41NC01MS42Mi0zOS42My00NS44LTE2LjcyLTcyLjctMzYtNzIuNy04MS40MkM4NzIsMjkuODEsOTEwLjU0LDAsOTY2Ljg4LDBjMjYuMTgsMCw1Miw1LjgyLDY4LjM0LDEzLjA5VjY0LjcxYy0xNS4yNi05LjA5LTQwLTE2LTY0LTE2LTI2LjksMC00NC4zNSwxMC41NC00NC4zNSwyNy4yNywwLDE1LjI2LDE0LjE3LDI1LjgsNDkuOCwzOS4yNSw0NS44LDE3LjgxLDc0LjE1LDM3LjA4LDc0LjE1LDgxLjA3LDAsNDcuMjUtMzUuNjIsNzUuNjEtOTcuNDIsNzUuNjFDOTIzLjYzLDI3MS45MSw4OTQuNTQsMjY1LjM2LDg3NS42NCwyNTdaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMTIzOC43NywxLjA5aC0yLjE4TDExMDkuNzMsMjY2LjgyaDU4LjUybDEyLTI3LjIyYzExLTI0LjgxLDUwLjE3LTExNy44NCw1Ny43OS0xMzYsOCwyMi45LDQ4LjgxLDExNy4wNiw2MC44MSwxNDQuMzJoMGw4LjYyLDE4LjlIMTM2NloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik03NzQuNDYsNzA2Ljc4bC0zMS44OS02NS42NWgtMi42NGwtODYuMjIsMTc4LTUuNCwxMS4xNmMtMTEtMzAuNTEtMjUuMzUtNjEuNDktNDEuNDctOTcuNjVsLTQxLjM4LTkxLjU2aC03NEw2MTUuOSw4OTcuMjdsMzEuODgsNjUuNjVoMi42NGw4Ni4yMi0xNzgsNS40MS0xMS4xNmMxMSwzMC41LDI1LjM1LDYxLjQ5LDQxLjQ2LDk3LjY1bDQxLjM4LDkxLjU2aDc0WiIvPjwvc3ZnPg==" alt="VS"/>
+      </div>
+    </div>
+
+    <div class="er-pbody">
+
+      <!-- CH 01 -->
+      <div class="er-sec">
+        <div class="er-shead"><span class="er-snum">CH 01</span><span class="er-stitle">Versa Tech Manager</span></div>
+        <div class="er-sbody">
+          <input type="hidden" id="erVTM" value="Andrew Rowell"/>
+          <div class="er-btnrow">
+            <div class="er-hwbtn er-hwbtn-xl er-active" id="erVersaMain" onclick="erPickVersa('Andrew Rowell')">Andrew Rowell</div>
+            <div class="er-hwbtn er-hwbtn-sm" onclick="erToggleVersaSub()">Other &#9662;</div>
+          </div>
+          <div class="er-subexp" id="erVersaSub">
+            <div class="er-hwbtn er-hwbtn-sm" onclick="erPickVersa('Ian Curry')">Ian Curry</div>
+            <div class="er-hwbtn er-hwbtn-sm" onclick="erPickVersa('Marcus Lamb')">Marcus Lamb</div>
+            <div class="er-hwbtn er-hwbtn-sm" onclick="erPickVersa('Andy McLannahan')">Andy McLannahan</div>
+            <div class="er-hwbtn er-hwbtn-sm" onclick="erPickVersa('James Laishley')">James Laishley</div>
+            <div class="er-hwbtn er-hwbtn-sm" onclick="erPickVersa('James Forshaw')">James Forshaw</div>
+            <div class="er-hwbtn er-hwbtn-sm" onclick="erPickVersa('__other__')">… Other</div>
+          </div>
+          <input class="er-oinput" id="erVersaOther" placeholder="Enter name…" style="display:none" oninput="erVersaTyped()"/>
+        </div>
+      </div>
+
+      <!-- CH 02 -->
+      <div class="er-sec">
+        <div class="er-shead"><span class="er-snum">CH 02</span><span class="er-stitle">Show Date</span></div>
+        <div class="er-sbody">
+          <div class="er-datechips">
+            <div class="er-datechip er-active" id="erBtnToday" onclick="erSetDateToday()">Today</div>
+            <div class="er-datechip" id="erBtnOther" onclick="erSetDateOther()">Other Date</div>
+          </div>
+          <div class="er-datedisp" id="erDateDisp"></div>
+          <div id="erOtherDateWrap" style="display:none">
+            <input type="date" class="er-dinput" id="erOtherDate" onchange="erUpdateStatus()"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- CH 03 -->
+      <div class="er-sec">
+        <div class="er-shead"><span class="er-snum">CH 03</span><span class="er-stitle">BBC Tech Manager</span></div>
+        <div class="er-sbody">
+          <input type="hidden" id="erBBC" value="Andy McLannahan"/>
+          <div class="er-btnrow">
+            <div class="er-hwbtn er-hwbtn-xl er-active" id="erBBCMain" onclick="erPickBBC('Andy McLannahan')">Andy McLannahan</div>
+            <div class="er-hwbtn er-hwbtn-sm" onclick="erToggleBBCSub()">Other &#9662;</div>
+          </div>
+          <div class="er-subexp" id="erBBCSub">
+            <div class="er-hwbtn er-hwbtn-sm" onclick="erPickBBC('James Laishley')">James Laishley</div>
+            <div class="er-hwbtn er-hwbtn-sm" onclick="erPickBBC('Trevor Bishop')">Trevor Bishop</div>
+            <div class="er-hwbtn er-hwbtn-sm" onclick="erPickBBC('__other__')">… Other</div>
+          </div>
+          <input class="er-oinput" id="erBBCOther" placeholder="Enter name…" style="display:none" oninput="erBBCTyped()"/>
+        </div>
+      </div>
+
+      <!-- CH 04 -->
+      <div class="er-sec">
+        <div class="er-shead"><span class="er-snum">CH 04</span><span class="er-stitle">Daily Summary</span></div>
+        <div class="er-sbody">
+          <div class="er-modegrid">
+            <div class="er-modebtn" id="erBtnNTR" onclick="erSetSummary('ntr')"><span class="er-micon">&#x2713;</span><span>Nothing<br>to Report</span></div>
+            <div class="er-modebtn" id="erBtnSTR" onclick="erSetSummary('str')"><span class="er-micon">&#x270E;</span><span>Something<br>to Report</span></div>
+          </div>
+          <div class="er-strfields" id="erStrFields">
+            <div>
+              <div class="er-flabel">Report Details</div>
+              <textarea class="er-ftxt" id="erSummaryTxt" placeholder="Describe the issue, observation or action taken…" oninput="erUpdateStatus()"></textarea>
+            </div>
+            <div>
+              <div class="er-flabel">Tag Kit Items <span style="font-weight:400;letter-spacing:0;text-transform:none;color:#C8C7C3">(optional)</span></div>
+              <div class="er-catbar" id="erCatBtns"></div>
+              <input class="er-ksearch" id="erKitSearch" placeholder="Search name or tag…" oninput="erRenderKit()"/>
+              <div class="er-klist" id="erKitPicker"></div>
+              <div id="erTaggedWrap" style="display:none"><div class="er-tagchips" id="erTaggedList"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- CH 05 URGENT -->
+    <div id="erSec5" style="padding:0 20px;margin-bottom:10px">
+      <div class="er-urgpanel" style="margin:0">
+        <div class="er-urghead"><div class="er-urgledR"></div><span class="er-urgtitle">CH 05 &mdash; Urgent Action Required</span></div>
+        <div class="er-urgbody">
+          <input type="hidden" id="erUrgent" value="No"/>
+          <div class="er-urgrow" id="erUrgPicker">
+            <div class="er-urgbtn er-urg-no" onclick="erPickUrgent('No')">No</div>
+            <div class="er-urgbtn" onclick="erPickUrgent('Yes')">Yes</div>
+            <div class="er-urgbtn" onclick="erPickUrgent('Other')">Other</div>
+          </div>
+          <div class="er-urgdet" id="erUrgDet">
+            <textarea class="er-urgtxt" id="erUrgTxt" placeholder="Provide details…"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="er-bottom">
+      <div class="er-statusbar" id="erStatusBar">
+        <div class="er-statusled" id="erStatusLed"></div>
+        <div class="er-statustxt" id="erStatusTxt">Complete all channels to submit</div>
+      </div>
+      <button class="er-submit" id="erSubmitBtn" onclick="erSubmit()" disabled>Complete All Channels to Submit</button>
+    </div>
+  </div>
+
+  <!-- SUCCESS VIEW -->
+  <div class="er-success" id="erSuccessView">
+    <div class="er-suchero">
+      <div class="er-sucledrow">
+        <div class="er-sucled gn"></div><div class="er-sucled gn"></div>
+        <div class="er-sucled of"></div><div class="er-sucled of"></div>
+      </div>
+      <div class="er-suctitle" id="erSucTitle">Report<br><span>Submitted</span></div>
+      <div class="er-sucsub" style="margin-top:8px" id="erSucSub">Signal confirmed &middot; Morning Live Engineering</div>
+    </div>
+    <div class="er-sucbody">
+      <div class="er-suctblhd">Report Summary</div>
+      <div id="erSucRows"></div>
+      <div class="er-sucdet" id="erSucDet"></div>
+      <button class="er-newrpt" onclick="erReset()">Submit New Report</button>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<div class="page" id="page-jobs">
         <div class="filters">
           <select class="fsel" id="fJobLoc" onchange="renderJobs()"><option value="">All Locations</option><option>Manchester</option><option>London</option></select>
           <button class="btn-add" onclick="openAddJob()">+ New Job</button>
@@ -3072,6 +3359,8 @@ const titles = {dashboard:'Dashboard',kit:'Kit List',maintenance:'Maintenance',h
   faults:'Fault Log',bin:'Bin',studios:'Tech Log',jobs:'Jobs',
   jobdet:'Job Detail',calendar:'Planner',admin:'Admin',ops:'Ops Planner',tools:'Tools'};
 function nav(page, el) {
+  if(page==='engreport') setTimeout(erInitPage, 50);
+  if(page==='studios') setTimeout(renderAbcLastReport, 200);
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   const pg = document.getElementById('page-'+page);
@@ -3303,6 +3592,7 @@ function opsShareLink(){
 
 // ── DASHBOARD ─────────────────────────────────────────────────────────────────
 function renderDash() {
+  loadDashEngReports();
   const now = new Date();
   const nbJobEl = document.getElementById('nbJob');
   const nbKitEl = document.getElementById('nbKit');
@@ -5064,7 +5354,7 @@ function renderJobDet(j) {
          +'<div><div class="dfl">Season End</div><input type="month" class="fi" style="max-width:160px;font-size:14px;padding:5px 8px" value="'+(j.end?j.end.slice(0,7):'')+'" onchange="jdSetField('+j.id+',\'end\',this.value+\'-01\')" /></div>')
         :(mkDate('Start Date','start',j.start)
          +mkDate('End Date','end',j.end)))
-      +'<div><div class="dfl">Status</div><select class="fi" style="max-width:160px;font-size:14px;padding:5px 8px" onchange="jdSetField('+j.id+',\'status\',this.value);renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))">'+stOpts+'</select></div>'
+      +(function(){var sts=['Confirmed','Ongoing','Likely','Possible','Cancelled'];var btns=sts.map(function(s){var sc=STATUS_CFG[s]||{color:'#888',bg:'rgba(128,128,128,.1)'};var act=s===(j.status||'Confirmed');return '<button style="display:inline-flex;align-items:center;padding:5px 12px;border-radius:4px;border:2px solid '+(act?sc.color:sc.color+'99')+';background:'+(act?sc.bg:sc.bg.replace(',.',',0.')+'aa')+';color:'+(act?sc.color:sc.color+'cc')+';font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;opacity:'+(act?'1':'.6')+'" onclick="jdSetField('+j.id+',\'status\',\''+s+'\');renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))">'+(act?'&#9679; ':'')+s+'</button>';}).join('');return '<div><div class="dfl">Status</div><div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px">'+btns+'</div></div>';}())
       +'</div></div>'
       +(j.status!=='Ongoing'
       ?('<div class="det-sec"><div class="det-sec-lbl">Key Production Dates</div>'
@@ -9229,6 +9519,53 @@ function delHol(id) {
   renderHolidays();
 }
 
+// ── DASHBOARD ENG REPORTS ─────────────────────────────────────────────────────
+var _dEngReports=[],_dEngFilter='all';
+async function loadDashEngReports(){
+  try{
+    const _SB_URL2='https://dttwgmoyxthczlzxjgag.supabase.co';
+    const _SB_KEY2='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ';
+    const r=await fetch(_SB_URL2+'/rest/v1/engineering_reports?select=*&order=show_date.desc&limit=30',{headers:{'Content-Type':'application/json','apikey':_SB_KEY2,'Authorization':'Bearer '+_SB_KEY2}});
+    if(!r.ok)return;
+    _dEngReports=await r.json();
+    renderDashEng();
+  }catch(e){}
+}
+function dEngFilter(f){
+  _dEngFilter=f;
+  ['all','ntr','str','urgent'].forEach(v=>{
+    const btn=document.getElementById('dEngFilter'+v.charAt(0).toUpperCase()+v.slice(1));
+    if(btn){btn.style.background=v===f?'var(--border)':'transparent';btn.style.color=v===f?'var(--white)':'var(--muted)';}
+  });
+  renderDashEng();
+}
+function renderDashEng(){
+  const total=_dEngReports.length,ntr=_dEngReports.filter(r=>r.summary_mode==='ntr').length,str=_dEngReports.filter(r=>r.summary_mode==='str').length,urg=_dEngReports.filter(r=>r.urgent_action==='Yes').length;
+  const setTxt=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  setTxt('dEngTotal',total);setTxt('dEngNtr',ntr);setTxt('dEngStr',str);setTxt('dEngUrgent',urg);
+  const filtered=_dEngReports.filter(r=>{
+    if(_dEngFilter==='ntr')return r.summary_mode==='ntr';
+    if(_dEngFilter==='str')return r.summary_mode==='str';
+    if(_dEngFilter==='urgent')return r.urgent_action==='Yes';
+    return true;
+  });
+  const list=document.getElementById('dEngList');if(!list)return;
+  if(!filtered.length){list.innerHTML='<div style="padding:16px 18px;font-size:13px;color:var(--muted)">No reports</div>';return;}
+  list.innerHTML=filtered.slice(0,10).map(r=>{
+    const isUrgent=r.urgent_action==='Yes',isStr=r.summary_mode==='str';
+    const dot=isUrgent?'#E8002A':(isStr?'#E8A000':'#00C472');
+    const badgeTxt=isUrgent?'URGENT':(isStr?'STR':'NTR');
+    const dateStr=r.show_date?new Date(r.show_date+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'—';
+    return '<div style="display:flex;align-items:center;gap:12px;padding:10px 18px;border-bottom:1px solid var(--border);cursor:default">'
+      +'<div style="width:8px;height:8px;border-radius:50%;background:'+dot+';flex-shrink:0"></div>'
+      +'<div style="font-family:var(--cond);font-size:13px;font-weight:700;color:var(--white);flex:1">'+dateStr+'</div>'
+      +'<div style="font-size:12px;color:var(--muted);flex:1">'+( r.versa_tech_manager||'')+'</div>'
+      +'<div style="font-size:12px;color:var(--muted);flex:1">'+( r.bbc_tech_manager||'')+'</div>'
+      +'<div style="font-family:var(--cond);font-size:9px;font-weight:700;letter-spacing:.1em;padding:2px 7px;border-radius:3px;background:rgba(255,255,255,.06);color:'+dot+'">'+badgeTxt+'</div>'
+      +'</div>';
+  }).join('');
+}
+
 // ── INIT ──────────────────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded',async ()=>{
   // Check for existing session
@@ -9384,6 +9721,185 @@ document.addEventListener('mouseup',function(){
   document.querySelectorAll('.ops-drag-src,.ops-drag-over').forEach(function(el){el.classList.remove('ops-drag-src','ops-drag-over');});
   _opsDrag={active:false,val:null,row:null,month:null,mi:null,cells:[]};
 });
+
+// ─── ENG REPORT PAGE ──────────────────────────────────────────────────────────
+var _erSummaryMode=null,_erSelectedDate=null,_erUseTodayDate=true,_erTags=[];
+var _erKitData=[];
+
+const _ER_SB_URL='https://dttwgmoyxthczlzxjgag.supabase.co';
+const _ER_SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ';
+const _ER_SB_HDR={'Content-Type':'application/json','apikey':_ER_SB_KEY,'Authorization':'Bearer '+_ER_SB_KEY};
+const _ER_EJS_SVC='service_883826m',_ER_EJS_TPL='template_hhvnzss',_ER_EJS_KEY='-WB5uUr8yu-oIKc5v';
+
+async function erSaveReport(d){try{const r=await fetch(_ER_SB_URL+'/rest/v1/engineering_reports',{method:'POST',headers:{..._ER_SB_HDR,'Prefer':'return=minimal'},body:JSON.stringify(d)});return r.ok;}catch(e){return false;}}
+async function erSendEmail(p){try{if(window.emailjs){emailjs.init({publicKey:_ER_EJS_KEY});await emailjs.send(_ER_EJS_SVC,_ER_EJS_TPL,p);}}catch(e){}}
+async function erLoadKit(){
+  try{
+    const r=await fetch(_ER_SB_URL+'/rest/v1/app_data?key=eq.kit&select=value',{headers:_ER_SB_HDR});
+    const rows=await r.json();
+    if(rows&&rows[0]&&Array.isArray(rows[0].value)){
+      _erKitData=rows[0].value.map(k=>({id:k.id,name:k.name,cat:k.cat||'',tag:k.tag||''}));
+      erInitCatBtns();erRenderKit();
+    }
+  }catch(e){}
+}
+
+function erFmtDate(d){return d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});}
+
+function erSetDateToday(){
+  _erUseTodayDate=true;_erSelectedDate=new Date().toISOString().split('T')[0];
+  document.getElementById('erBtnToday').classList.add('er-active');
+  document.getElementById('erBtnOther').classList.remove('er-active');
+  document.getElementById('erOtherDateWrap').style.display='none';
+  document.getElementById('erDateDisp').textContent=erFmtDate(new Date());
+  erUpdateStatus();
+}
+function erSetDateOther(){
+  _erUseTodayDate=false;
+  document.getElementById('erBtnToday').classList.remove('er-active');
+  document.getElementById('erBtnOther').classList.add('er-active');
+  document.getElementById('erOtherDateWrap').style.display='block';
+  const v=document.getElementById('erOtherDate').value;
+  document.getElementById('erDateDisp').textContent=v?erFmtDate(new Date(v+'T12:00:00')):'Select a date';
+  _erSelectedDate=v||null;erUpdateStatus();
+}
+function erSetSummary(mode){
+  _erSummaryMode=mode;
+  document.getElementById('erBtnNTR').classList.remove('er-ntr','er-str');
+  document.getElementById('erBtnSTR').classList.remove('er-ntr','er-str');
+  if(mode==='ntr'){document.getElementById('erBtnNTR').classList.add('er-ntr');document.getElementById('erStrFields').classList.remove('open');document.getElementById('erSec5').style.display='none';erPickUrgent('No');}
+  else{document.getElementById('erBtnSTR').classList.add('er-str');document.getElementById('erStrFields').classList.add('open');document.getElementById('erSec5').style.display='';erRenderKit();}
+  erUpdateStatus();
+}
+function erPickVersa(name){
+  if(name==='__other__'){document.getElementById('erVersaOther').style.display='block';document.getElementById('erVersaOther').focus();document.getElementById('erVersaMain').classList.remove('er-active');document.getElementById('erVTM').value='';erUpdateStatus();return;}
+  document.getElementById('erVTM').value=name;document.getElementById('erVersaOther').style.display='none';
+  const mb=document.getElementById('erVersaMain');mb.textContent=name;
+  document.querySelectorAll('#erVersaSub .er-hwbtn').forEach(e=>e.classList.remove('er-active'));mb.classList.add('er-active');
+  document.getElementById('erVersaSub').classList.remove('open');erUpdateStatus();
+}
+function erToggleVersaSub(){document.getElementById('erVersaSub').classList.toggle('open');}
+function erVersaTyped(){document.getElementById('erVTM').value=document.getElementById('erVersaOther').value.trim();erUpdateStatus();}
+function erPickBBC(name){
+  if(name==='__other__'){document.getElementById('erBBCOther').style.display='block';document.getElementById('erBBCOther').focus();document.getElementById('erBBCMain').classList.remove('er-active');document.getElementById('erBBC').value='';erUpdateStatus();return;}
+  document.getElementById('erBBC').value=name;document.getElementById('erBBCOther').style.display='none';
+  const mb=document.getElementById('erBBCMain');mb.textContent=name;
+  document.querySelectorAll('#erBBCSub .er-hwbtn').forEach(e=>e.classList.remove('er-active'));mb.classList.add('er-active');
+  document.getElementById('erBBCSub').classList.remove('open');erUpdateStatus();
+}
+function erToggleBBCSub(){document.getElementById('erBBCSub').classList.toggle('open');}
+function erBBCTyped(){document.getElementById('erBBC').value=document.getElementById('erBBCOther').value.trim();erUpdateStatus();}
+function erPickUrgent(val){
+  document.getElementById('erUrgent').value=val;
+  document.querySelectorAll('#erUrgPicker .er-urgbtn').forEach(e=>e.classList.remove('er-urg-no','er-urg-yes','er-urg-oth'));
+  const map={No:'er-urg-no',Yes:'er-urg-yes',Other:'er-urg-oth'};
+  const el=[...document.querySelectorAll('#erUrgPicker .er-urgbtn')].find(e=>e.textContent.trim()===val);
+  if(el&&map[val])el.classList.add(map[val]);
+  document.getElementById('erUrgDet').classList.toggle('open',val==='Yes'||val==='Other');
+  erUpdateStatus();
+}
+function erInitCatBtns(){
+  const wrap=document.getElementById('erCatBtns');if(!wrap)return;
+  const cats=[...new Set(_erKitData.map(k=>k.cat))].sort(),cur=window._erCatFilter||'';
+  wrap.innerHTML='';
+  const mk=(label,val)=>{const b=document.createElement('button');b.textContent=label;b.className='er-catbtn'+(cur===val?' er-active':'');b.onclick=()=>{window._erCatFilter=val;erInitCatBtns();erRenderKit();};return b;};
+  wrap.appendChild(mk('All',''));cats.forEach(c=>wrap.appendChild(mk(c,c)));
+}
+function erRenderKit(){
+  const q=(document.getElementById('erKitSearch')||{}).value||'';const ql=q.toLowerCase();
+  const cf=window._erCatFilter||'';
+  const data=_erKitData.length?_erKitData:[];
+  const filtered=data.filter(k=>(!ql||k.name.toLowerCase().includes(ql)||k.tag.toLowerCase().includes(ql))&&(!cf||k.cat===cf));
+  const picker=document.getElementById('erKitPicker');if(!picker)return;
+  picker.innerHTML=filtered.map(k=>{
+    const s=_erTags.includes(k.id);
+    return '<div class="er-krow'+(s?' er-sel':'')+'" onclick="erToggleTag('+k.id+')">'
+      +'<div class="er-kchk"></div><div class="er-kname">'+k.name+'</div>'
+      +'<span class="er-kpill">'+k.cat+'</span><div class="er-ktag">'+k.tag+'</div></div>';
+  }).join('')||'<div style="padding:9px 11px;color:#AEADA9;font-size:10px;font-family:IBM Plex Mono,monospace">No items</div>';
+}
+function erToggleTag(id){
+  const i=_erTags.indexOf(id);if(i>=0)_erTags.splice(i,1);else _erTags.push(id);
+  erRenderKit();
+  const wrap=document.getElementById('erTaggedWrap');
+  if(_erTags.length){wrap.style.display='block';document.getElementById('erTaggedList').innerHTML=_erTags.map(tid=>{const k=_erKitData.find(x=>x.id===tid);return k?'<span class="er-tagchip">'+k.name+'<button onclick="erToggleTag('+tid+')">x</button></span>':''}).join('');}
+  else wrap.style.display='none';
+}
+function erUpdateStatus(){
+  if(!_erUseTodayDate&&document.getElementById('erOtherDate').value){_erSelectedDate=document.getElementById('erOtherDate').value;document.getElementById('erDateDisp').textContent=erFmtDate(new Date(_erSelectedDate+'T12:00:00'));}
+  const missing=[];
+  if(!document.getElementById('erVTM').value.trim())missing.push('CH01');
+  if(!_erUseTodayDate&&!document.getElementById('erOtherDate').value)missing.push('CH02');
+  if(!document.getElementById('erBBC').value)missing.push('CH03');
+  if(!_erSummaryMode)missing.push('CH04');
+  if(!document.getElementById('erUrgent').value)missing.push('CH05');
+  const bar=document.getElementById('erStatusBar'),led=document.getElementById('erStatusLed'),txt=document.getElementById('erStatusTxt'),btn=document.getElementById('erSubmitBtn');
+  if(missing.length===0){
+    bar.classList.add('er-ready');led.style.background='#00C472';txt.textContent='SIGNAL READY — ALL CHANNELS CONFIRMED';txt.style.color='#111';
+    btn.disabled=false;btn.textContent='Submit Engineering Report';btn.classList.add('er-ready');
+  }else{
+    bar.classList.remove('er-ready');led.style.background='#C8C7C3';txt.textContent='PENDING: '+missing.join(' · ');txt.style.color='#777770';
+    btn.disabled=true;btn.textContent='Complete All Channels to Submit';btn.classList.remove('er-ready');
+  }
+}
+async function erSubmit(){
+  const vtm=document.getElementById('erVTM').value.trim(),bbc=document.getElementById('erBBC').value,urgent=document.getElementById('erUrgent').value,urgTxt=document.getElementById('erUrgTxt').value.trim(),isSTR=_erSummaryMode==='str',sumTxt=isSTR?document.getElementById('erSummaryTxt').value.trim():'',tagNames=_erTags.map(id=>{const k=_erKitData.find(x=>x.id===id);return k?k.name+' ('+k.tag+')':'';}).filter(Boolean),showDate=_erUseTodayDate?new Date().toISOString().split('T')[0]:_erSelectedDate;
+  await erSaveReport({versa_tech_manager:vtm,bbc_tech_manager:bbc,show_date:showDate,summary_mode:_erSummaryMode,summary_text:sumTxt,tagged_kit:_erTags,tagged_kit_names:tagNames,urgent_action:urgent,urgent_details:urgTxt,submitted_at:new Date().toISOString()});
+  if(isSTR)erSendEmail({show_date:showDate,versa_tech:vtm,bbc_tech:bbc,summary:sumTxt||'(no details)',urgent,urgent_details:urgTxt||'--',tagged_kit:tagNames.join(', ')||'None',submitted_at:new Date().toLocaleString('en-GB')});
+  // Refresh last report box
+  renderAbcLastReport();
+  // Also refresh _dEngReports for dashboard
+  if(typeof loadDashEngReports==='function') setTimeout(loadDashEngReports,500);
+  document.getElementById('erFormView').style.display='none';
+  document.getElementById('erSuccessView').style.display='block';
+  const isUrgent=urgent==='Yes';
+  document.getElementById('erSucTitle').innerHTML=isUrgent?'Urgent<br><span>Action Flagged</span>':(isSTR?'Report<br><span>Logged</span>':'Nothing<br><span>To Report</span>');
+  const rows=[{l:'Show Date',v:erFmtDate(new Date(showDate+'T12:00:00'))},{l:'Versa Tech',v:vtm},{l:'BBC Tech',v:bbc},{l:'Summary',v:isSTR?'STR':'NTR'},sumTxt?{l:'Details',v:sumTxt}:null,tagNames.length?{l:'Kit',v:tagNames.join(', ')}:null,{l:'Urgent',v:urgent+(urgTxt?' — '+urgTxt:'')}].filter(Boolean);
+  document.getElementById('erSucRows').innerHTML=rows.map(r=>'<div class="er-sucrow"><div class="er-suclbl">'+r.l+'</div><div class="er-sucval">'+r.v+'</div></div>').join('');
+  const det=document.getElementById('erSucDet');if(isUrgent){det.style.display='block';det.textContent='⚠ WARNING: URGENT ACTION REQUIRED';}else det.style.display='none';
+}
+function erReset(){
+  document.getElementById('erFormView').style.display='block';document.getElementById('erSuccessView').style.display='none';
+  document.getElementById('erVTM').value='';document.getElementById('erBBC').value='';document.getElementById('erUrgent').value='';
+  document.getElementById('erUrgDet').classList.remove('open');document.getElementById('erUrgTxt').value='';document.getElementById('erSummaryTxt').value='';
+  document.getElementById('erStrFields').classList.remove('open');document.getElementById('erTaggedWrap').style.display='none';
+  document.getElementById('erBtnNTR').classList.remove('er-ntr','er-str');document.getElementById('erBtnSTR').classList.remove('er-ntr','er-str');
+  _erSummaryMode=null;_erTags=[];window._erCatFilter='';
+  document.getElementById('erVersaMain').textContent='Andrew Rowell';document.getElementById('erVersaMain').classList.add('er-active');document.getElementById('erVersaSub').classList.remove('open');document.getElementById('erVersaOther').style.display='none';
+  document.getElementById('erBBCMain').textContent='Andy McLannahan';document.getElementById('erBBCMain').classList.add('er-active');document.getElementById('erBBCSub').classList.remove('open');document.getElementById('erBBCOther').style.display='none';
+  erSetDateToday();erInitCatBtns();erRenderKit();erUpdateStatus();
+}
+function erInitPage(){
+  erSetDateToday();erSetSummary('ntr');window._erCatFilter='';erInitCatBtns();erRenderKit();erUpdateStatus();
+  setTimeout(erLoadKit,100);
+}
+
+// ─── LAST REPORT BOX ──────────────────────────────────────────────────────────
+async function renderAbcLastReport(){
+  const box=document.getElementById('abcLastReportContent');if(!box)return;
+  try{
+    const r=await fetch(_ER_SB_URL+'/rest/v1/engineering_reports?select=*&order=show_date.desc&limit=1',{headers:_ER_SB_HDR});
+    const rows=await r.json();
+    if(!rows||!rows.length){box.innerHTML='<div style="font-family:var(--cond);font-size:13px;color:var(--muted)">No reports submitted yet.</div>';return;}
+    const rep=rows[0];
+    const isStr=rep.summary_mode==='str',isUrgent=rep.urgent_action==='Yes';
+    const dateStr=rep.show_date?new Date(rep.show_date+'T12:00:00').toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'}):'—';
+    const badge=isUrgent?'<span style="background:#E8002A;color:#fff;font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.1em;padding:2px 8px;border-radius:3px;text-transform:uppercase">URGENT</span>':(isStr?'<span style="background:rgba(232,160,0,.2);color:#E8A000;font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.1em;padding:2px 8px;border-radius:3px;text-transform:uppercase">STR</span>':'<span style="background:rgba(0,196,114,.15);color:#00C472;font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.1em;padding:2px 8px;border-radius:3px;text-transform:uppercase">NTR</span>');
+    const row=(label,val)=>'<div style="display:flex;gap:10px;padding:5px 0;border-bottom:1px solid rgba(74,158,255,.1)">'
+      +'<div style="font-family:var(--cond);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(74,158,255,.6);width:120px;flex-shrink:0">'+label+'</div>'
+      +'<div style="font-size:13px;font-weight:500;color:var(--white);flex:1">'+val+'</div>'
+      +'</div>';
+    let html='<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">'+badge;
+    html+='<span style="font-family:var(--cond);font-size:13px;font-weight:700;color:var(--white)">'+dateStr+'</span></div>';
+    html+='<div style="border-top:1px solid rgba(74,158,255,.15);margin-bottom:2px">';
+    html+=row('Versa Tech',rep.versa_tech_manager||'—');
+    html+=row('BBC Tech',rep.bbc_tech_manager||'—');
+    if(isStr&&rep.summary_text)html+=row('Summary',rep.summary_text);
+    if(isUrgent&&rep.urgent_details)html+=row('Urgent',rep.urgent_details);
+    html+='</div>';
+    box.innerHTML=html;
+  }catch(e){box.innerHTML='<div style="font-size:13px;color:var(--muted)">Could not load report.</div>';}
+}
 </script>
   <!-- PICK CAM KIT MODAL -->
   <div class="modal-ov" id="mPickCamKit">
