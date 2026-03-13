@@ -156,7 +156,7 @@ const _SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJl
 var _authToken = localStorage.getItem('_vsToken') || '';
 function _sbH(extra){return Object.assign({'Content-Type':'application/json','apikey':_SB_KEY,'Authorization':'Bearer '+(_authToken||_SB_KEY),'Prefer':'resolution=merge-duplicates'},extra||{});}
 var _appReady=false,_saveTimer=null,jobs=[];
-const _opsD={},_opsBrk=[],_opsHidStu=new Set();
+const _opsD={},_opsBrk=[],_opsHidStu=new Set(),_opsStu=new Set();
 function og(m,d,r){return _opsD[m+'|'+d+'|'+r]||[];}
 function os(m,d,r,v){_opsD[m+'|'+d+'|'+r]=v;saveData();}
 function om(id){document.getElementById(id).classList.add('open');}
