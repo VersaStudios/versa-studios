@@ -19,47 +19,47 @@ html,body{height:100%;background:#0a0a0a;color:#f2f2f2;font-family:var(--font);f
 .sb-nav{flex:1;overflow-y:auto;padding:7px 0}
 .nav-lbl{font-family:var(--cond);font-size:17px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);padding:11px 16px 4px}
 .nav-item{display:flex;align-items:center;gap:9px;padding:10px 16px;cursor:pointer;transition:all .13s;border-left:2px solid transparent;color:var(--subtle);font-family:var(--cond);font-size:17px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;user-select:none}
-.nav-item:hover{color:var(--white);background:rgba(255,255,255,.04)}
+.nav-item:hover{color:#fff;background:rgba(255,255,255,.04)}
 .nav-item.active{color:var(--pure);border-left-color:var(--pure);background:rgba(255,255,255,.06)}
-.nav-item[data-pg="dashboard"]{background:rgba(60,90,160,.22);border-left-color:rgba(60,90,160,.5);color:#fff}
-.nav-item[data-pg="dashboard"].active{background:rgba(60,90,160,.55);border-left-color:rgba(60,90,160,1);color:#fff}
-.nav-item[data-pg="dashboard"]:hover{background:rgba(60,90,160,.38);color:#fff}
-.nav-item[data-pg="kit"]{background:rgba(160,100,30,.22);border-left-color:rgba(160,100,30,.5);color:#fff}
-.nav-item[data-pg="kit"].active{background:rgba(160,100,30,.55);border-left-color:rgba(160,100,30,1);color:#fff}
-.nav-item[data-pg="kit"]:hover{background:rgba(160,100,30,.38);color:#fff}
-.nav-item[data-pg="maintenance"]{background:rgba(50,120,70,.22);border-left-color:rgba(50,120,70,.5);color:#fff}
-.nav-item[data-pg="maintenance"].active{background:rgba(50,120,70,.55);border-left-color:rgba(50,120,70,1);color:#fff}
-.nav-item[data-pg="maintenance"]:hover{background:rgba(50,120,70,.38);color:#fff}
-.nav-item[data-pg="faults"]{background:rgba(180,50,50,.22);border-left-color:rgba(180,50,50,.5);color:#fff}
-.nav-item[data-pg="faults"].active{background:rgba(180,50,50,.55);border-left-color:rgba(180,50,50,1);color:#fff}
-.nav-item[data-pg="faults"]:hover{background:rgba(180,50,50,.38);color:#fff}
-.nav-item[data-pg="studios"]{background:rgba(30,115,125,.22);border-left-color:rgba(30,115,125,.5);color:#fff}
-.nav-item[data-pg="studios"].active{background:rgba(30,115,125,.55);border-left-color:rgba(30,115,125,1);color:#fff}
-.nav-item[data-pg="studios"]:hover{background:rgba(30,115,125,.38);color:#fff}
-.nav-item[data-pg="engreport"]{background:rgba(216,90,97,.22);border-left-color:rgba(216,90,97,.5);color:#fff}
-.nav-item[data-pg="engreport"].active{background:rgba(216,90,97,.55);border-left-color:rgba(216,90,97,1);color:#fff}
-.nav-item[data-pg="engreport"]:hover{background:rgba(216,90,97,.38);color:#fff}
-.nav-item[data-pg="jobs"]{background:rgba(50,120,70,.22);border-left-color:rgba(50,120,70,.5);color:#fff}
-.nav-item[data-pg="jobs"].active{background:rgba(50,120,70,.55);border-left-color:rgba(50,120,70,1);color:#fff}
-.nav-item[data-pg="jobs"]:hover{background:rgba(50,120,70,.38);color:#fff}
-.nav-item[data-pg="calendar"]{background:rgba(100,65,155,.22);border-left-color:rgba(100,65,155,.5);color:#fff}
-.nav-item[data-pg="calendar"].active{background:rgba(100,65,155,.55);border-left-color:rgba(100,65,155,1);color:#fff}
-.nav-item[data-pg="calendar"]:hover{background:rgba(100,65,155,.38);color:#fff}
-.nav-item[data-pg="admin"]{background:rgba(135,75,35,.22);border-left-color:rgba(135,75,35,.5);color:#fff}
-.nav-item[data-pg="admin"].active{background:rgba(135,75,35,.55);border-left-color:rgba(135,75,35,1);color:#fff}
-.nav-item[data-pg="admin"]:hover{background:rgba(135,75,35,.38);color:#fff}
-.nav-item[data-pg="tools"]{background:rgba(35,95,145,.22);border-left-color:rgba(35,95,145,.5);color:#fff}
-.nav-item[data-pg="tools"].active{background:rgba(35,95,145,.55);border-left-color:rgba(35,95,145,1);color:#fff}
-.nav-item[data-pg="tools"]:hover{background:rgba(35,95,145,.38);color:#fff}
-.nav-item[data-pg="info"]{background:rgba(75,125,45,.22);border-left-color:rgba(75,125,45,.5);color:#fff}
-.nav-item[data-pg="info"].active{background:rgba(75,125,45,.55);border-left-color:rgba(75,125,45,1);color:#fff}
-.nav-item[data-pg="info"]:hover{background:rgba(75,125,45,.38);color:#fff}
-.nav-item[data-pg="holidays"]{background:rgba(120,60,140,.22);border-left-color:rgba(120,60,140,.5);color:#fff}
-.nav-item[data-pg="holidays"].active{background:rgba(120,60,140,.55);border-left-color:rgba(120,60,140,1);color:#fff}
-.nav-item[data-pg="holidays"]:hover{background:rgba(120,60,140,.38);color:#fff}
-.nav-item[data-pg="ops"]{background:rgba(30,115,125,.22);border-left-color:rgba(30,115,125,.5);color:#fff}
-.nav-item[data-pg="ops"].active{background:rgba(30,115,125,.55);border-left-color:rgba(30,115,125,1);color:#fff}
-.nav-item[data-pg="ops"]:hover{background:rgba(30,115,125,.38);color:#fff}
+.nav-item[data-pg="dashboard"]{background:rgba(60,90,160,.22);border-left-color:rgba(60,90,160,.5);color:#fff !important}
+.nav-item[data-pg="dashboard"].active{background:rgba(60,90,160,.55);border-left-color:rgba(60,90,160,1);color:#fff !important}
+.nav-item[data-pg="dashboard"]:hover{background:rgba(60,90,160,.38);color:#fff !important}
+.nav-item[data-pg="kit"]{background:rgba(160,100,30,.22);border-left-color:rgba(160,100,30,.5);color:#fff !important}
+.nav-item[data-pg="kit"].active{background:rgba(160,100,30,.55);border-left-color:rgba(160,100,30,1);color:#fff !important}
+.nav-item[data-pg="kit"]:hover{background:rgba(160,100,30,.38);color:#fff !important}
+.nav-item[data-pg="maintenance"]{background:rgba(50,120,70,.22);border-left-color:rgba(50,120,70,.5);color:#fff !important}
+.nav-item[data-pg="maintenance"].active{background:rgba(50,120,70,.55);border-left-color:rgba(50,120,70,1);color:#fff !important}
+.nav-item[data-pg="maintenance"]:hover{background:rgba(50,120,70,.38);color:#fff !important}
+.nav-item[data-pg="faults"]{background:rgba(180,50,50,.22);border-left-color:rgba(180,50,50,.5);color:#fff !important}
+.nav-item[data-pg="faults"].active{background:rgba(180,50,50,.55);border-left-color:rgba(180,50,50,1);color:#fff !important}
+.nav-item[data-pg="faults"]:hover{background:rgba(180,50,50,.38);color:#fff !important}
+.nav-item[data-pg="studios"]{background:rgba(30,115,125,.22);border-left-color:rgba(30,115,125,.5);color:#fff !important}
+.nav-item[data-pg="studios"].active{background:rgba(30,115,125,.55);border-left-color:rgba(30,115,125,1);color:#fff !important}
+.nav-item[data-pg="studios"]:hover{background:rgba(30,115,125,.38);color:#fff !important}
+.nav-item[data-pg="engreport"]{background:rgba(216,90,97,.22);border-left-color:rgba(216,90,97,.5);color:#fff !important}
+.nav-item[data-pg="engreport"].active{background:rgba(216,90,97,.55);border-left-color:rgba(216,90,97,1);color:#fff !important}
+.nav-item[data-pg="engreport"]:hover{background:rgba(216,90,97,.38);color:#fff !important}
+.nav-item[data-pg="jobs"]{background:rgba(50,120,70,.22);border-left-color:rgba(50,120,70,.5);color:#fff !important}
+.nav-item[data-pg="jobs"].active{background:rgba(50,120,70,.55);border-left-color:rgba(50,120,70,1);color:#fff !important}
+.nav-item[data-pg="jobs"]:hover{background:rgba(50,120,70,.38);color:#fff !important}
+.nav-item[data-pg="calendar"]{background:rgba(100,65,155,.22);border-left-color:rgba(100,65,155,.5);color:#fff !important}
+.nav-item[data-pg="calendar"].active{background:rgba(100,65,155,.55);border-left-color:rgba(100,65,155,1);color:#fff !important}
+.nav-item[data-pg="calendar"]:hover{background:rgba(100,65,155,.38);color:#fff !important}
+.nav-item[data-pg="admin"]{background:rgba(135,75,35,.22);border-left-color:rgba(135,75,35,.5);color:#fff !important}
+.nav-item[data-pg="admin"].active{background:rgba(135,75,35,.55);border-left-color:rgba(135,75,35,1);color:#fff !important}
+.nav-item[data-pg="admin"]:hover{background:rgba(135,75,35,.38);color:#fff !important}
+.nav-item[data-pg="tools"]{background:rgba(35,95,145,.22);border-left-color:rgba(35,95,145,.5);color:#fff !important}
+.nav-item[data-pg="tools"].active{background:rgba(35,95,145,.55);border-left-color:rgba(35,95,145,1);color:#fff !important}
+.nav-item[data-pg="tools"]:hover{background:rgba(35,95,145,.38);color:#fff !important}
+.nav-item[data-pg="info"]{background:rgba(75,125,45,.22);border-left-color:rgba(75,125,45,.5);color:#fff !important}
+.nav-item[data-pg="info"].active{background:rgba(75,125,45,.55);border-left-color:rgba(75,125,45,1);color:#fff !important}
+.nav-item[data-pg="info"]:hover{background:rgba(75,125,45,.38);color:#fff !important}
+.nav-item[data-pg="holidays"]{background:rgba(120,60,140,.22);border-left-color:rgba(120,60,140,.5);color:#fff !important}
+.nav-item[data-pg="holidays"].active{background:rgba(120,60,140,.55);border-left-color:rgba(120,60,140,1);color:#fff !important}
+.nav-item[data-pg="holidays"]:hover{background:rgba(120,60,140,.38);color:#fff !important}
+.nav-item[data-pg="ops"]{background:rgba(30,115,125,.22);border-left-color:rgba(30,115,125,.5);color:#fff !important}
+.nav-item[data-pg="ops"].active{background:rgba(30,115,125,.55);border-left-color:rgba(30,115,125,1);color:#fff !important}
+.nav-item[data-pg="ops"]:hover{background:rgba(30,115,125,.38);color:#fff !important}
 .nav-icon{width:15px;height:15px;flex-shrink:0;opacity:.65}.nav-item.active .nav-icon,.nav-item:hover .nav-icon{opacity:1}
 .nav-badge{margin-left:auto;background:var(--border);color:var(--subtle);font-size:10px;font-family:var(--cond);font-weight:700;padding:2px 6px;border-radius:2px}
 .sb-foot{padding:12px 16px;border-top:1px solid var(--border);flex-shrink:0}
@@ -460,41 +460,41 @@ html,body{height:100%;background:#0a0a0a;color:#f2f2f2;font-family:var(--font);f
 
 
 /* ── JOB DETAIL TABS ─────────────────────────────────────────────────────── */
-.jd-tab{font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;padding:7px 13px;cursor:pointer;white-space:nowrap;transition:all .15s;border-radius:4px;border:1px solid transparent;color:var(--muted);background:rgba(255,255,255,.06);opacity:.8}
+.jd-tab{font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;padding:7px 13px;cursor:pointer;white-space:nowrap;transition:all .15s;border-radius:4px;border:1px solid transparent;color:#fff;background:rgba(255,255,255,.06);opacity:.85}
 .jd-tab:hover{opacity:.8;color:var(--white)}
 .jd-tab.active{opacity:1;color:#fff;border-color:transparent}
-.jd-tab[data-tid="info"]{background:rgba(60,90,160,.35);border-color:rgba(60,90,160,.5);color:#fff}
-.jd-tab[data-tid="info"].active{background:rgba(60,90,160,.85);box-shadow:0 2px 8px rgba(60,90,160,.4);color:#fff}
-.jd-tab[data-tid="tech"]{background:rgba(160,100,30,.35);border-color:rgba(160,100,30,.5);color:#fff}
-.jd-tab[data-tid="tech"].active{background:rgba(160,100,30,.85);box-shadow:0 2px 8px rgba(160,100,30,.4);color:#fff}
-.jd-tab[data-tid="camspec"]{background:rgba(50,120,70,.35);border-color:rgba(50,120,70,.5);color:#fff}
-.jd-tab[data-tid="camspec"].active{background:rgba(50,120,70,.85);box-shadow:0 2px 8px rgba(50,120,70,.4);color:#fff}
-.jd-tab[data-tid="set"]{background:rgba(120,60,140,.35);border-color:rgba(120,60,140,.5);color:#fff}
-.jd-tab[data-tid="set"].active{background:rgba(120,60,140,.85);box-shadow:0 2px 8px rgba(120,60,140,.4);color:#fff}
-.jd-tab[data-tid="lv"]{background:rgba(30,115,125,.35);border-color:rgba(30,115,125,.5);color:#fff}
-.jd-tab[data-tid="lv"].active{background:rgba(30,115,125,.85);box-shadow:0 2px 8px rgba(30,115,125,.4);color:#fff}
-.jd-tab[data-tid="gallery"]{background:rgba(150,65,65,.35);border-color:rgba(150,65,65,.5);color:#fff}
-.jd-tab[data-tid="gallery"].active{background:rgba(150,65,65,.85);box-shadow:0 2px 8px rgba(150,65,65,.4);color:#fff}
-.jd-tab[data-tid="crew"]{background:rgba(50,105,80,.35);border-color:rgba(50,105,80,.5);color:#fff}
-.jd-tab[data-tid="crew"].active{background:rgba(50,105,80,.85);box-shadow:0 2px 8px rgba(50,105,80,.4);color:#fff}
-.jd-tab[data-tid="audio"]{background:rgba(100,65,130,.35);border-color:rgba(100,65,130,.5);color:#fff}
-.jd-tab[data-tid="audio"].active{background:rgba(100,65,130,.85);box-shadow:0 2px 8px rgba(100,65,130,.4);color:#fff}
-.jd-tab[data-tid="post"]{background:rgba(130,85,35,.35);border-color:rgba(130,85,35,.5);color:#fff}
-.jd-tab[data-tid="post"].active{background:rgba(130,85,35,.85);box-shadow:0 2px 8px rgba(130,85,35,.4);color:#fff}
-.jd-tab[data-tid="monitors"]{background:rgba(35,95,145,.35);border-color:rgba(35,95,145,.5);color:#fff}
-.jd-tab[data-tid="monitors"].active{background:rgba(35,95,145,.85);box-shadow:0 2px 8px rgba(35,95,145,.4);color:#fff}
-.jd-tab[data-tid="ingest"]{background:rgba(75,125,45,.35);border-color:rgba(75,125,45,.5);color:#fff}
-.jd-tab[data-tid="ingest"].active{background:rgba(75,125,45,.85);box-shadow:0 2px 8px rgba(75,125,45,.4);color:#fff}
-.jd-tab[data-tid="comms"]{background:rgba(145,55,95,.35);border-color:rgba(145,55,95,.5);color:#fff}
-.jd-tab[data-tid="comms"].active{background:rgba(145,55,95,.85);box-shadow:0 2px 8px rgba(145,55,95,.4);color:#fff}
-.jd-tab[data-tid="ip"]{background:rgba(40,105,105,.35);border-color:rgba(40,105,105,.5);color:#fff}
-.jd-tab[data-tid="ip"].active{background:rgba(40,105,105,.85);box-shadow:0 2px 8px rgba(40,105,105,.4);color:#fff}
-.jd-tab[data-tid="kit"]{background:rgba(135,75,35,.35);border-color:rgba(135,75,35,.5);color:#fff}
-.jd-tab[data-tid="kit"].active{background:rgba(135,75,35,.85);box-shadow:0 2px 8px rgba(135,75,35,.4);color:#fff}
-.jd-tab[data-tid="englog"]{background:rgba(55,85,155,.35);border-color:rgba(55,85,155,.5);color:#fff}
-.jd-tab[data-tid="englog"].active{background:rgba(55,85,155,.85);box-shadow:0 2px 8px rgba(55,85,155,.4);color:#fff}
-.jd-tab[data-tid="improve"]{background:rgba(75,115,55,.35);border-color:rgba(75,115,55,.5);color:#fff}
-.jd-tab[data-tid="improve"].active{background:rgba(75,115,55,.85);box-shadow:0 2px 8px rgba(75,115,55,.4);color:#fff}
+.jd-tab[data-tid="info"]{background:rgba(60,90,160,.35);border-color:rgba(60,90,160,.5);color:#fff !important}
+.jd-tab[data-tid="info"].active{background:rgba(60,90,160,.85);box-shadow:0 2px 8px rgba(60,90,160,.4);color:#fff !important}
+.jd-tab[data-tid="tech"]{background:rgba(160,100,30,.35);border-color:rgba(160,100,30,.5);color:#fff !important}
+.jd-tab[data-tid="tech"].active{background:rgba(160,100,30,.85);box-shadow:0 2px 8px rgba(160,100,30,.4);color:#fff !important}
+.jd-tab[data-tid="camspec"]{background:rgba(50,120,70,.35);border-color:rgba(50,120,70,.5);color:#fff !important}
+.jd-tab[data-tid="camspec"].active{background:rgba(50,120,70,.85);box-shadow:0 2px 8px rgba(50,120,70,.4);color:#fff !important}
+.jd-tab[data-tid="set"]{background:rgba(120,60,140,.35);border-color:rgba(120,60,140,.5);color:#fff !important}
+.jd-tab[data-tid="set"].active{background:rgba(120,60,140,.85);box-shadow:0 2px 8px rgba(120,60,140,.4);color:#fff !important}
+.jd-tab[data-tid="lv"]{background:rgba(30,115,125,.35);border-color:rgba(30,115,125,.5);color:#fff !important}
+.jd-tab[data-tid="lv"].active{background:rgba(30,115,125,.85);box-shadow:0 2px 8px rgba(30,115,125,.4);color:#fff !important}
+.jd-tab[data-tid="gallery"]{background:rgba(150,65,65,.35);border-color:rgba(150,65,65,.5);color:#fff !important}
+.jd-tab[data-tid="gallery"].active{background:rgba(150,65,65,.85);box-shadow:0 2px 8px rgba(150,65,65,.4);color:#fff !important}
+.jd-tab[data-tid="crew"]{background:rgba(50,105,80,.35);border-color:rgba(50,105,80,.5);color:#fff !important}
+.jd-tab[data-tid="crew"].active{background:rgba(50,105,80,.85);box-shadow:0 2px 8px rgba(50,105,80,.4);color:#fff !important}
+.jd-tab[data-tid="audio"]{background:rgba(100,65,130,.35);border-color:rgba(100,65,130,.5);color:#fff !important}
+.jd-tab[data-tid="audio"].active{background:rgba(100,65,130,.85);box-shadow:0 2px 8px rgba(100,65,130,.4);color:#fff !important}
+.jd-tab[data-tid="post"]{background:rgba(130,85,35,.35);border-color:rgba(130,85,35,.5);color:#fff !important}
+.jd-tab[data-tid="post"].active{background:rgba(130,85,35,.85);box-shadow:0 2px 8px rgba(130,85,35,.4);color:#fff !important}
+.jd-tab[data-tid="monitors"]{background:rgba(35,95,145,.35);border-color:rgba(35,95,145,.5);color:#fff !important}
+.jd-tab[data-tid="monitors"].active{background:rgba(35,95,145,.85);box-shadow:0 2px 8px rgba(35,95,145,.4);color:#fff !important}
+.jd-tab[data-tid="ingest"]{background:rgba(75,125,45,.35);border-color:rgba(75,125,45,.5);color:#fff !important}
+.jd-tab[data-tid="ingest"].active{background:rgba(75,125,45,.85);box-shadow:0 2px 8px rgba(75,125,45,.4);color:#fff !important}
+.jd-tab[data-tid="comms"]{background:rgba(145,55,95,.35);border-color:rgba(145,55,95,.5);color:#fff !important}
+.jd-tab[data-tid="comms"].active{background:rgba(145,55,95,.85);box-shadow:0 2px 8px rgba(145,55,95,.4);color:#fff !important}
+.jd-tab[data-tid="ip"]{background:rgba(40,105,105,.35);border-color:rgba(40,105,105,.5);color:#fff !important}
+.jd-tab[data-tid="ip"].active{background:rgba(40,105,105,.85);box-shadow:0 2px 8px rgba(40,105,105,.4);color:#fff !important}
+.jd-tab[data-tid="kit"]{background:rgba(135,75,35,.35);border-color:rgba(135,75,35,.5);color:#fff !important}
+.jd-tab[data-tid="kit"].active{background:rgba(135,75,35,.85);box-shadow:0 2px 8px rgba(135,75,35,.4);color:#fff !important}
+.jd-tab[data-tid="englog"]{background:rgba(55,85,155,.35);border-color:rgba(55,85,155,.5);color:#fff !important}
+.jd-tab[data-tid="englog"].active{background:rgba(55,85,155,.85);box-shadow:0 2px 8px rgba(55,85,155,.4);color:#fff !important}
+.jd-tab[data-tid="improve"]{background:rgba(75,115,55,.35);border-color:rgba(75,115,55,.5);color:#fff !important}
+.jd-tab[data-tid="improve"].active{background:rgba(75,115,55,.85);box-shadow:0 2px 8px rgba(75,115,55,.4);color:#fff !important}
 
 
 
@@ -5750,7 +5750,6 @@ function renderJobDet(j) {
     var ALL_CAM_FIELDS=[
       {key:'op',       label:'Operator',         type:'text',  ph:'Operator name'},
       {key:'focusPuller',label:'Focus Puller',   type:'text',  ph:'Focus puller'},
-      {key:'body',     label:'Body & Mount',      type:'sel',   opts:'Body'},
       {key:'grip',     label:'Grip & Track',      type:'sel',   opts:'Grip'},
       {key:'support',  label:'Support',           type:'sel',   opts:'Support'},
       {key:'matteBox', label:'Matte Box',         type:'sel',   opts:'Matte Box'},
@@ -5854,8 +5853,23 @@ function renderJobDet(j) {
       var ld=cd.lensData;
       var lensInvItems=kit.filter(function(k){return (k.subcat==='Lens'||k.subcat==='Lens Range')&&k.status!=='Bin';});
       var aLensKit=ld.kitId?kit.find(function(x){return x.id===ld.kitId;}):null;
-      var aLensHired=ld.hiredId?kit.find(function(x){return x.id===ld.hiredId;}):null;
-      var lensModeBar='<div style="display:flex;margin-bottom:4px">'        +[['inv','Inventory'],['hired','Hired']].map(function(opt,oi){          var active=(ld.mode||'inv')===opt[0];          return '<button onclick="jdCamLensMode('+jid+','+i+',\''+opt[0]+'\')" style="padding:2px 7px;font-size:10px;font-family:var(--cond);font-weight:800;border:1px solid rgba(255,255,255,.12);'+(oi===0?'border-right:none;':'')+'background:'+(active?'rgba(74,158,255,.3)':'rgba(255,255,255,.04)')+';color:'+(active?'#4a9eff':'var(--muted)')+';cursor:pointer">'+opt[1]+'</button>';        }).join('')+'</div>';      var lensInput='';      if(ld.mode==='hired'){        var hiredLensOpts='<option value="">-- select lens --</option>'          +lensInvItems.map(function(k){return '<option value="'+k.id+'"'+(ld.hiredId===k.id?' selected':'')+'>'+k.name+'</option>';}).join('');        lensInput=aLensHired          ?'<div style="display:flex;flex-direction:column;gap:3px">'            +'<span style="background:rgba(250,160,0,.12);border:1px solid rgba(250,160,0,.35);border-radius:3px;font-size:12px;padding:2px 8px;color:#fa0">'+aLensHired.name+'</span>'            +'<div style="display:flex;gap:4px"><select class="fi" style="font-size:11px;flex:1" onchange="jdCamLensSetHired('+jid+','+i+',parseInt(this.value)||null)">'+hiredLensOpts+'</select>'            +'<button class="rm-btn" style="font-size:11px" onclick="jdCamLensSetHired('+jid+','+i+',null)">×</button></div></div>'          :'<select class="fi" style="font-size:12px;width:100%" onchange="jdCamLensSetHired('+jid+','+i+',parseInt(this.value)||null)">'+hiredLensOpts+'</select>';      } else {        lensInput=aLensKit          ?'<div style="display:flex;flex-direction:column;gap:3px"><span style="background:rgba(60,180,100,.12);border:1px solid rgba(60,180,100,.35);border-radius:3px;font-size:12px;padding:2px 8px;color:#7de0a0">'+aLensKit.name+'</span>'           +'<div style="display:flex;gap:4px"><button class="ibtn" style="font-size:11px;flex:1" onclick="jdPickCamLens('+jid+','+i+')">Change</button>'           +'<button class="rm-btn" style="font-size:11px" onclick="jdCamLensSetInv('+jid+','+i+',null)">×</button></div></div>'          :'<button class="ibtn" style="font-size:12px;width:100%" onclick="jdPickCamLens('+jid+','+i+')">From Inventory</button>';      }      var lensRow='<div style="margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--border-l)">'        +'<div class="dfl" style="margin-bottom:4px">Lens</div>'        +lensModeBar+lensInput+'</div>';
+      var aLensHired=ld.hiredCatId?hiredCatalogue.find(function(x){return x.id===ld.hiredCatId;}):null;
+      var lensModeBar='<div style="display:flex;margin-bottom:4px">'        +[['inv','Inventory'],['hired','Hired']].map(function(opt,oi){          var active=(ld.mode||'inv')===opt[0];          return '<button onclick="jdCamLensMode('+jid+','+i+',\''+opt[0]+'\')" style="padding:2px 7px;font-size:10px;font-family:var(--cond);font-weight:800;border:1px solid rgba(255,255,255,.12);'+(oi===0?'border-right:none;':'')+'background:'+(active?'rgba(74,158,255,.3)':'rgba(255,255,255,.04)')+';color:'+(active?'#4a9eff':'var(--muted)')+';cursor:pointer">'+opt[1]+'</button>';        }).join('')+'</div>';      var lensInput='';      if(ld.mode==='hired'){
+        var hiredLensCat=hiredCatalogue.filter(function(h){return h.subcat==='Lens'||h.subcat==='Lens Range';});
+        var hiredLensOpts='<option value="">-- select hired lens --</option>'
+          +hiredLensCat.map(function(h){return '<option value="h'+h.id+'"'+(ld.hiredCatId===h.id?' selected':'')+'>'+h.name+'</option>';}).join('')
+          +'<option value="custom" style="color:#4a9eff;font-style:italic">+ Type custom...</option>';
+        var selVal=ld.hiredCatId?'h'+ld.hiredCatId:(ld.hiredCustom?'custom':'');
+        lensInput=ld.hiredCatId||ld.hiredCustom
+          ?'<div style="display:flex;flex-direction:column;gap:3px">'
+            +'<span style="background:rgba(250,160,0,.12);border:1px solid rgba(250,160,0,.35);border-radius:3px;font-size:12px;padding:2px 8px;color:#fa0">'+(ld.hiredCustom||hiredLensCat.find(function(h){return h.id===ld.hiredCatId;})||{name:'?'}).name+'</span>'
+            +'<div style="display:flex;gap:4px"><select class="fi" style="font-size:11px;flex:1" onchange="jdCamLensHiredPick('+jid+','+i+',this.value)"><option value="">change...</option>'+hiredLensOpts+'</select>'
+            +'<button class="rm-btn" style="font-size:11px" onclick="jdCamLensSetHired('+jid+','+i+',null)">×</button></div>'
+            +(ld.hiredCustom!==undefined&&ld.hiredCatId===undefined?'<input class="fi" style="font-size:11px;padding:2px 6px;margin-top:2px" value="'+(ld.hiredCustom||'')+'" placeholder="Lens description..." onchange="jdCamLensSetCustom('+jid+','+i+',this.value)"/>':'')
+            +'</div>'
+          :'<select class="fi" style="font-size:12px;width:100%" onchange="jdCamLensHiredPick('+jid+','+i+',this.value)">'+hiredLensOpts+'</select>'
+          +'<div id="lensCustom_'+jid+'_'+i+'" style="display:none;margin-top:4px"><input class="fi" style="font-size:12px;padding:3px 6px;width:100%" placeholder="Describe the hired lens..." onchange="jdCamLensSetCustom('+jid+','+i+',this.value)"/></div>';
+      } else {        lensInput=aLensKit          ?'<div style="display:flex;flex-direction:column;gap:3px"><span style="background:rgba(60,180,100,.12);border:1px solid rgba(60,180,100,.35);border-radius:3px;font-size:12px;padding:2px 8px;color:#7de0a0">'+aLensKit.name+'</span>'           +'<div style="display:flex;gap:4px"><button class="ibtn" style="font-size:11px;flex:1" onclick="jdPickCamLens('+jid+','+i+')">Change</button>'           +'<button class="rm-btn" style="font-size:11px" onclick="jdCamLensSetInv('+jid+','+i+',null)">×</button></div></div>'          :'<button class="ibtn" style="font-size:12px;width:100%" onclick="jdPickCamLens('+jid+','+i+')">From Inventory</button>';      }      var lensRow='<div style="margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--border-l)">'        +'<div class="dfl" style="margin-bottom:4px">Lens</div>'        +lensModeBar+lensInput+'</div>';
       var camNum=cd.camNum!==undefined?cd.camNum:(i+1);
       return '<div style="min-width:200px;max-width:200px;background:rgba(255,255,255,.025);border:2px solid '+_rc.bg+';border-radius:6px;padding:12px;flex-shrink:0">'
         +'<div style="font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;display:flex;align-items:center;gap:4px">'
@@ -6235,27 +6249,6 @@ function renderJobDet(j) {
   else if(_jdTab==='improve'){content=renderImproveTab(j);}
   else if(_jdTab==='kit'){content=renderKitPrepTab(j);}
 
-  // Append meeting notes section to all tabs
-  if(_jdTab!=='kit'){
-    if(!j.meetingNotes)j.meetingNotes=[];
-    var noteRows=j.meetingNotes.map(function(n,ni){
-      return '<div style="background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.08);border-radius:5px;padding:10px 12px;margin-bottom:6px">'
-        +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">'
-        +'<input class="fi" style="font-size:11px;padding:2px 7px;max-width:160px;color:var(--muted)" value="'+(n.date||'')+'" type="date" onchange="noteSet('+j.id+','+ni+',\'date\',this.value)"/>'
-        +'<input class="fi" style="font-size:12px;padding:2px 7px;flex:1;font-weight:600" value="'+(n.subject||'')+'" placeholder="Subject..." onchange="noteSet('+j.id+','+ni+',\'subject\',this.value)"/>'
-        +'<button class="rm-btn" style="font-size:11px" onclick="noteRm('+j.id+','+ni+')">×</button>'
-        +'</div>'
-        +'<textarea class="fta" style="min-height:60px;font-size:13px;resize:vertical" placeholder="Notes..." onchange="noteSet('+j.id+','+ni+',\'body\',this.value)">'+(n.body||'')+'</textarea>'
-        +'</div>';
-    }).join('');
-    content+='<div class="det-sec" style="border-top:2px solid rgba(255,255,255,.06);margin-top:4px;padding-top:16px">'
-      +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">'
-      +'<div class="det-sec-lbl" style="margin-bottom:0">Meeting Notes</div>'
-      +'<button class="ibtn" style="font-size:12px" onclick="noteAdd('+j.id+')">+ Add Note</button>'
-      +'</div>'
-      +(j.meetingNotes.length?noteRows:'<div style="color:var(--muted);font-size:13px;padding:4px 0">No meeting notes yet.</div>')
-      +'</div>';
-  }
 
   const _tcCols=CARD_COLS[j.status||'Confirmed']||{bg:'#1a5a9a',bg2:'#0f3d6b'};
   const _tcGrad='linear-gradient(135deg,'+_tcCols.bg+' 0%,'+_tcCols.bg2+' 100%)';
@@ -6886,6 +6879,38 @@ function jdCamLensSetHired(jid,i,kid){
   }
   saveData();renderJobDet(j);
 }
+function jdCamLensHiredPick(jid,i,val){
+  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.camDetails||!j.camDetails[i])return;
+  if(!j.camDetails[i].lensData)j.camDetails[i].lensData={mode:'hired',kitId:null,hiredId:null};
+  var ld=j.camDetails[i].lensData;
+  ld.mode='hired';
+  if(val==='custom'){
+    ld.hiredCatId=undefined; ld.hiredCustom='';
+    saveData(); renderJobDet(j);
+    setTimeout(function(){
+      var inp=document.getElementById('lensCustom_'+jid+'_'+i);
+      if(inp){inp.style.display='';inp.querySelector('input').focus();}
+    },50);
+    return;
+  }
+  if(val&&val.charAt(0)==='h'){
+    ld.hiredCatId=parseInt(val.slice(1));
+    ld.hiredCustom=undefined;
+  } else {
+    ld.hiredCatId=undefined; ld.hiredCustom=undefined;
+  }
+  saveData(); renderJobDet(j);
+}
+
+function jdCamLensSetCustom(jid,i,val){
+  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.camDetails||!j.camDetails[i])return;
+  if(!j.camDetails[i].lensData)j.camDetails[i].lensData={mode:'hired',kitId:null,hiredId:null};
+  j.camDetails[i].lensData.hiredCustom=val;
+  j.camDetails[i].lensData.hiredCatId=undefined;
+  saveData();
+}
+
+
 function jdPickCamLens(jid,i){
   var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
   var allocMap=getAllocatedKitMap();
