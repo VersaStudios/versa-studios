@@ -906,7 +906,7 @@ body.ops-sa .main-content{margin-left:0!important;}
       <div class="nav-lbl">Overview</div>
       <div class="nav-item" data-pg="dashboard" onclick="nav('dashboard',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>Dashboard</div>
       <div class="nav-lbl">Kit</div>
-      <div class="nav-item active" data-pg="kit" onclick="nav('kit',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12v9a1 1 0 01-1 1H3a1 1 0 01-1-1V4z"/><path d="M5 4V3a1 1 0 011-1h4a1 1 0 011 1v1"/></svg>Kit List<span class="nav-badge" id="nbKit">0</span></div>
+      <div class="nav-item" data-pg="kit" onclick="nav('kit',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12v9a1 1 0 01-1 1H3a1 1 0 01-1-1V4z"/><path d="M5 4V3a1 1 0 011-1h4a1 1 0 011 1v1"/></svg>Kit List<span class="nav-badge" id="nbKit">0</span></div>
       <div class="nav-item" data-pg="maintenance" onclick="nav('maintenance',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><path d="M11 11l3 3"/></svg>Maintenance</div>
       <div class="nav-item" data-pg="faults" onclick="nav('faults',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2l6 12H2z"/><path d="M8 7v3M8 12v.5"/></svg>Fault Log</div>
       <!-- Bin hidden from nav, accessible via admin -->
@@ -1834,10 +1834,15 @@ function _initApp() {
   // Apply nav permission hiding
   _applyNavPerms();
   populateCatSelect('nkCat');
-  renderDash();
   renderNotifs();
   initHolSelectors();
   checkStandaloneMode();
+  // Activate the correct starting page so nav highlight + page are in sync
+  if (CU.role === 'Client') {
+    nav('jobs', document.querySelector('[data-pg="jobs"]'));
+  } else {
+    nav('dashboard', document.querySelector('[data-pg="dashboard"]'));
+  }
 }
 
 function _applyNavPerms() {
