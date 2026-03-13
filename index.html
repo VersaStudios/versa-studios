@@ -21,6 +21,19 @@ html,body{height:100%;background:#0a0a0a;color:#f2f2f2;font-family:var(--font);f
 .nav-item{display:flex;align-items:center;gap:9px;padding:10px 16px;cursor:pointer;transition:all .13s;border-left:2px solid transparent;color:var(--subtle);font-family:var(--cond);font-size:17px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;user-select:none}
 .nav-item:hover{color:var(--white);background:rgba(255,255,255,.04)}
 .nav-item.active{color:var(--pure);border-left-color:var(--pure);background:rgba(255,255,255,.06)}
+.nav-item[data-pg="dashboard"].active{background:rgba(60,90,160,.18);border-left-color:#6a8fd8;color:#a8bfff}
+.nav-item[data-pg="kit"].active{background:rgba(160,100,30,.18);border-left-color:#d4902a;color:#f5b860}
+.nav-item[data-pg="maintenance"].active{background:rgba(50,120,70,.18);border-left-color:#3a8a55;color:#6ec48a}
+.nav-item[data-pg="faults"].active{background:rgba(180,50,50,.18);border-left-color:#c04040;color:#f08080}
+.nav-item[data-pg="studios"].active{background:rgba(30,115,125,.18);border-left-color:#2a8a96;color:#60c4d0}
+.nav-item[data-pg="engreport"].active{background:rgba(216,90,97,.18);border-left-color:#d85a61;color:#f09095}
+.nav-item[data-pg="jobs"].active{background:rgba(50,120,70,.18);border-left-color:#3a8a55;color:#6ec48a}
+.nav-item[data-pg="calendar"].active{background:rgba(100,65,155,.18);border-left-color:#8a4ab8;color:#c090e8}
+.nav-item[data-pg="admin"].active{background:rgba(135,75,35,.18);border-left-color:#b06030;color:#e8a060}
+.nav-item[data-pg="tools"].active{background:rgba(35,95,145,.18);border-left-color:#2a6ea8;color:#70a8e0}
+.nav-item[data-pg="info"].active{background:rgba(75,125,45,.18);border-left-color:#5a9835;color:#90cc60}
+.nav-item[data-pg="holidays"].active{background:rgba(120,60,140,.18);border-left-color:#9040b0;color:#c880e8}
+.nav-item[data-pg="ops"].active{background:rgba(30,115,125,.18);border-left-color:#2a8a96;color:#60c4d0}
 .nav-icon{width:15px;height:15px;flex-shrink:0;opacity:.65}.nav-item.active .nav-icon,.nav-item:hover .nav-icon{opacity:1}
 .nav-badge{margin-left:auto;background:var(--border);color:var(--subtle);font-size:10px;font-family:var(--cond);font-weight:700;padding:2px 6px;border-radius:2px}
 .sb-foot{padding:12px 16px;border-top:1px solid var(--border);flex-shrink:0}
@@ -424,22 +437,22 @@ html,body{height:100%;background:#0a0a0a;color:#f2f2f2;font-family:var(--font);f
 .jd-tab{font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;padding:7px 13px;cursor:pointer;white-space:nowrap;transition:all .15s;border-radius:4px;border:1px solid transparent;color:var(--muted);background:transparent;opacity:.55}
 .jd-tab:hover{opacity:.8;color:var(--white)}
 .jd-tab.active{opacity:1;color:#fff;border-color:transparent}
-.jd-tab:nth-child(1).active{background:rgba(60,90,160,.85);box-shadow:0 2px 8px rgba(60,90,160,.4)}
-.jd-tab:nth-child(2).active{background:rgba(160,100,30,.85);box-shadow:0 2px 8px rgba(160,100,30,.4)}
-.jd-tab:nth-child(3).active{background:rgba(50,120,70,.85);box-shadow:0 2px 8px rgba(50,120,70,.4)}
-.jd-tab:nth-child(4).active{background:rgba(120,60,140,.85);box-shadow:0 2px 8px rgba(120,60,140,.4)}
-.jd-tab:nth-child(5).active{background:rgba(30,115,125,.85);box-shadow:0 2px 8px rgba(30,115,125,.4)}
-.jd-tab:nth-child(6).active{background:rgba(150,65,65,.85);box-shadow:0 2px 8px rgba(150,65,65,.4)}
-.jd-tab:nth-child(7).active{background:rgba(50,105,80,.85);box-shadow:0 2px 8px rgba(50,105,80,.4)}
-.jd-tab:nth-child(8).active{background:rgba(100,65,130,.85);box-shadow:0 2px 8px rgba(100,65,130,.4)}
-.jd-tab:nth-child(9).active{background:rgba(130,85,35,.85);box-shadow:0 2px 8px rgba(130,85,35,.4)}
-.jd-tab:nth-child(10).active{background:rgba(35,95,145,.85);box-shadow:0 2px 8px rgba(35,95,145,.4)}
-.jd-tab:nth-child(11).active{background:rgba(75,125,45,.85);box-shadow:0 2px 8px rgba(75,125,45,.4)}
-.jd-tab:nth-child(12).active{background:rgba(145,55,95,.85);box-shadow:0 2px 8px rgba(145,55,95,.4)}
-.jd-tab:nth-child(13).active{background:rgba(40,105,105,.85);box-shadow:0 2px 8px rgba(40,105,105,.4)}
-.jd-tab:nth-child(14).active{background:rgba(135,75,35,.85);box-shadow:0 2px 8px rgba(135,75,35,.4)}
-.jd-tab:nth-child(15).active{background:rgba(55,85,155,.85);box-shadow:0 2px 8px rgba(55,85,155,.4)}
-.jd-tab:nth-child(16).active{background:rgba(75,115,55,.85);box-shadow:0 2px 8px rgba(75,115,55,.4)}
+.jd-tab[data-tid="info"].active{background:rgba(60,90,160,.85);box-shadow:0 2px 8px rgba(60,90,160,.4)}
+.jd-tab[data-tid="tech"].active{background:rgba(160,100,30,.85);box-shadow:0 2px 8px rgba(160,100,30,.4)}
+.jd-tab[data-tid="camspec"].active{background:rgba(50,120,70,.85);box-shadow:0 2px 8px rgba(50,120,70,.4)}
+.jd-tab[data-tid="set"].active{background:rgba(120,60,140,.85);box-shadow:0 2px 8px rgba(120,60,140,.4)}
+.jd-tab[data-tid="lv"].active{background:rgba(30,115,125,.85);box-shadow:0 2px 8px rgba(30,115,125,.4)}
+.jd-tab[data-tid="gallery"].active{background:rgba(150,65,65,.85);box-shadow:0 2px 8px rgba(150,65,65,.4)}
+.jd-tab[data-tid="crew"].active{background:rgba(50,105,80,.85);box-shadow:0 2px 8px rgba(50,105,80,.4)}
+.jd-tab[data-tid="audio"].active{background:rgba(100,65,130,.85);box-shadow:0 2px 8px rgba(100,65,130,.4)}
+.jd-tab[data-tid="post"].active{background:rgba(130,85,35,.85);box-shadow:0 2px 8px rgba(130,85,35,.4)}
+.jd-tab[data-tid="monitors"].active{background:rgba(35,95,145,.85);box-shadow:0 2px 8px rgba(35,95,145,.4)}
+.jd-tab[data-tid="ingest"].active{background:rgba(75,125,45,.85);box-shadow:0 2px 8px rgba(75,125,45,.4)}
+.jd-tab[data-tid="comms"].active{background:rgba(145,55,95,.85);box-shadow:0 2px 8px rgba(145,55,95,.4)}
+.jd-tab[data-tid="ip"].active{background:rgba(40,105,105,.85);box-shadow:0 2px 8px rgba(40,105,105,.4)}
+.jd-tab[data-tid="kit"].active{background:rgba(135,75,35,.85);box-shadow:0 2px 8px rgba(135,75,35,.4)}
+.jd-tab[data-tid="englog"].active{background:rgba(55,85,155,.85);box-shadow:0 2px 8px rgba(55,85,155,.4)}
+.jd-tab[data-tid="improve"].active{background:rgba(75,115,55,.85);box-shadow:0 2px 8px rgba(75,115,55,.4)}
 
 
 
@@ -1406,13 +1419,11 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
 
 </div>
 </div><!-- /erSubPanelReport -->
-<div id="erSubPanelCal" style="display:none;margin-top:8px">
-  <div style="background:rgba(216,90,97,.06);border:1px solid rgba(216,90,97,.18);border-radius:8px;padding:20px 24px;text-align:center">
-    <div style="font-family:var(--cond);font-size:28px;margin-bottom:10px">&#128197;</div>
-    <div style="font-family:var(--cond);font-size:15px;font-weight:800;letter-spacing:.06em;color:var(--white);margin-bottom:6px">Jobs Calendar</div>
-    <div style="font-size:13px;color:var(--muted);margin-bottom:16px">View and navigate the full jobs calendar</div>
-    <button class="ibtn" style="font-size:14px;padding:8px 20px" onclick="nav('calendar',document.querySelector('[data-pg=calendar]'));setPlanView('cal')">Open Calendar &#8594;</button>
+<div id="erSubPanelCal" style="display:none;margin-top:8px;max-width:680px;margin-left:auto;margin-right:auto">
+  <div id="erCalWrap">
+    <!-- rendered by erCalRender() -->
   </div>
+  <div id="erCalReport" style="margin-top:16px"></div>
 </div>
 </div>
 
@@ -2959,10 +2970,156 @@ function erSubTab(tab){
   var rb=document.getElementById('erSubTabReport');
   var cb=document.getElementById('erSubTabCal');
   if(rp)rp.style.display=tab==='report'?'':'none';
-  if(cp)cp.style.display=tab==='cal'?'':'none';
+  if(cp){cp.style.display=tab==='cal'?'':'none'; if(tab==='cal') erCalRender(_erCalYr,_erCalMo);}
   if(rb){rb.style.borderBottomColor=tab==='report'?'var(--accent)':'transparent';rb.style.color=tab==='report'?'var(--accent)':'var(--muted)';}
   if(cb){cb.style.borderBottomColor=tab==='cal'?'var(--accent)':'transparent';cb.style.color=tab==='cal'?'var(--accent)':'var(--muted)';}
 }
+// ── ER CALENDAR — Morning Live report browser ─────────────────────────────────
+var _erCalYr = null, _erCalMo = null;
+
+function erCalRender(yr, mo) {
+  if(yr == null) { var n=new Date(); yr=n.getFullYear(); mo=n.getMonth(); }
+  _erCalYr=yr; _erCalMo=mo;
+  var wrap = document.getElementById('erCalWrap'); if(!wrap) return;
+  var now = new Date();
+  var monthNames=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var prevMo=new Date(yr,mo-1,1), nextMo=new Date(yr,mo+1,1);
+  var prevStr=prevMo.getFullYear()+'-'+String(prevMo.getMonth()+1).padStart(2,'0');
+  var nextStr=nextMo.getFullYear()+'-'+String(nextMo.getMonth()+1).padStart(2,'0');
+  var canNext = nextMo <= new Date(now.getFullYear(), now.getMonth(), 1);
+  var todayStr=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+
+  var h = '<div style="display:flex;align-items:center;gap:12px;margin-bottom:18px">'
+    +'<button class="ibtn" style="font-size:16px;padding:2px 10px" onclick="erCalNav(\''+prevStr+'\')">&#8592;</button>'
+    +'<div style="font-family:var(--cond);font-size:20px;font-weight:900;color:var(--white);min-width:180px;text-align:center">'+monthNames[mo]+' '+yr+'</div>'
+    +'<button class="ibtn" style="font-size:16px;padding:2px 10px" '+(canNext?'onclick="erCalNav(\''+nextStr+'\')"':'disabled style="opacity:.3;font-size:16px;padding:2px 10px"')+'>&#8594;</button>'
+    +'</div>';
+
+  // Grid
+  var firstDay=(new Date(yr,mo,1).getDay()+6)%7; // Mon=0
+  var daysInMonth=new Date(yr,mo+1,0).getDate();
+  h+='<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:5px">';
+  ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].forEach(function(d){
+    h+='<div style="font-family:var(--cond);font-size:11px;font-weight:800;color:var(--muted);text-align:center;padding:4px 0">'+d+'</div>';
+  });
+  for(var e=0;e<firstDay;e++) h+='<div></div>';
+  for(var d=1;d<=daysInMonth;d++){
+    var ds=yr+'-'+String(mo+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    var dow=new Date(yr,mo,d).getDay();
+    var isWknd=dow===0||dow===6;
+    var isFuture=ds>todayStr;
+    var isToday=ds===todayStr;
+    var rep=_engReportCache[ds];
+    var hasRep=rep!=null;
+    var bg,border,col,cursor,click='';
+    if(isWknd){bg='transparent';border='1px solid #1a1a1a';col='#252525';cursor='default';}
+    else if(isFuture){bg='#111';border='1px dashed #2a2a2a';col='#333';cursor='default';}
+    else if(hasRep){
+      var isUrgent=rep.urgent_action==='Yes';
+      bg=isUrgent?'rgba(200,60,60,.18)':'rgba(232,184,75,.12)';
+      border='1px solid '+(isUrgent?'#c04040':'#e8b84b');
+      col='var(--white)';cursor='pointer';
+      click='onclick="erCalOpenDay(\''+ds+'\')"';
+    } else {
+      bg='#1a1a1a';border='1px solid var(--border)';col='var(--subtle)';cursor='pointer';
+      click='onclick="erCalOpenDay(\''+ds+'\')"';
+    }
+    var ring=isToday?'outline:2px solid var(--accent);outline-offset:1px;':'';
+    var dot=hasRep?'<div style="width:5px;height:5px;border-radius:50%;background:'+(rep&&rep.urgent_action==='Yes'?'#e05555':'#e8b84b')+';margin:2px auto 0"></div>':'';
+    h+='<div '+click+' style="background:'+bg+';border:'+border+';border-radius:6px;padding:6px 4px 4px;text-align:center;cursor:'+cursor+';'+ring+'">'
+      +'<div style="font-size:13px;font-weight:700;color:'+col+'">'+d+'</div>'+dot+'</div>';
+  }
+  h+='</div>';
+
+  // Legend
+  h+='<div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:12px">'
+    +'<div style="display:flex;align-items:center;gap:5px"><div style="width:10px;height:10px;border-radius:2px;background:#1a1a1a;border:1px solid var(--border)"></div><span style="font-size:11px;color:var(--muted)">No report</span></div>'
+    +'<div style="display:flex;align-items:center;gap:5px"><div style="width:10px;height:10px;border-radius:2px;background:rgba(232,184,75,.12);border:1px solid #e8b84b"></div><span style="font-size:11px;color:var(--muted)">Report filed</span></div>'
+    +'<div style="display:flex;align-items:center;gap:5px"><div style="width:10px;height:10px;border-radius:2px;background:rgba(200,60,60,.18);border:1px solid #c04040"></div><span style="font-size:11px;color:var(--muted)">Urgent action</span></div>'
+    +'</div>';
+
+  wrap.innerHTML=h;
+
+  // Fetch all reports for this month in background then re-render
+  _fetchEngReportsForMonth(yr,mo).then(function(){ erCalRender(yr,mo); });
+}
+
+function erCalNav(yrmo) {
+  var p=yrmo.split('-'); erCalRender(parseInt(p[0]),parseInt(p[1])-1);
+  document.getElementById('erCalReport').innerHTML='';
+}
+
+function erCalOpenDay(dateStr) {
+  // Highlight selected cell
+  var cells=document.querySelectorAll('#erCalWrap [onclick]');
+  cells.forEach(function(c){ c.style.outline=''; c.style.outlineOffset=''; });
+  // Find and highlight clicked cell
+  event.currentTarget.style.outline='2px solid var(--accent)';
+  event.currentTarget.style.outlineOffset='2px';
+
+  var box=document.getElementById('erCalReport');
+  if(!box) return;
+  var rep=_engReportCache[dateStr];
+  var parts=dateStr.split('-');
+  var dObj=new Date(parseInt(parts[0]),parseInt(parts[1])-1,parseInt(parts[2]));
+  var dayNames=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  var monNames=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var niceDate=dayNames[dObj.getDay()]+' '+parseInt(parts[2])+' '+monNames[dObj.getMonth()]+' '+parts[0];
+
+  if(!rep) {
+    // Try to fetch
+    box.innerHTML='<div style="text-align:center;color:var(--muted);font-size:13px;padding:20px">Loading...</div>';
+    _fetchEngReport(dateStr).then(function(r){
+      if(r) erCalOpenDay(dateStr);
+      else box.innerHTML='<div style="background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:18px 20px;text-align:center;color:var(--muted);font-size:13px">No report filed for '+niceDate+'</div>';
+    });
+    return;
+  }
+
+  var isSTR=rep.summary_mode==='str';
+  var isNTR=rep.summary_mode==='ntr';
+  var isUrgent=rep.urgent_action==='Yes';
+  var badgeColor=isUrgent?'#e05555':isSTR?'#e8b84b':'#4a8a4a';
+  var badgeText=isUrgent?'⚠ Urgent Action':isSTR?'Something to Report':'Nothing to Report';
+  var kitNames=Array.isArray(rep.tagged_kit_names)?rep.tagged_kit_names.join(', '):'';
+  var submittedTime=rep.submitted_at?new Date(rep.submitted_at).toLocaleString('en-GB'):'';
+
+  var h='<div style="background:rgba(232,184,75,.06);border:1px solid rgba(232,184,75,.2);border-radius:10px;padding:18px 20px">'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">'
+    +'<div style="font-family:var(--cond);font-size:16px;font-weight:900;color:var(--white)">'+niceDate+'</div>'
+    +'<span style="font-size:11px;background:'+badgeColor+';color:#fff;padding:3px 10px;border-radius:4px;font-weight:700;letter-spacing:.05em">'+badgeText+'</span>'
+    +'</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">'
+    +'<div style="background:rgba(255,255,255,.04);border-radius:6px;padding:10px 12px">'
+    +'<div style="font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Versa Tech Manager</div>'
+    +'<div style="font-size:14px;color:var(--white)">'+(rep.versa_tech_manager||'—')+'</div></div>'
+    +'<div style="background:rgba(255,255,255,.04);border-radius:6px;padding:10px 12px">'
+    +'<div style="font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px">BBC Tech Manager</div>'
+    +'<div style="font-size:14px;color:var(--white)">'+(rep.bbc_tech_manager||'—')+'</div></div>'
+    +'</div>';
+
+  if(isSTR && rep.summary_text)
+    h+='<div style="background:rgba(232,184,75,.08);border-radius:6px;padding:10px 12px;margin-bottom:10px">'
+      +'<div style="font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#e8b84b;margin-bottom:4px">Summary</div>'
+      +'<div style="font-size:14px;color:var(--white);line-height:1.5">'+rep.summary_text+'</div></div>';
+
+  if(isUrgent && rep.urgent_details)
+    h+='<div style="background:rgba(200,60,60,.1);border:1px solid rgba(200,60,60,.3);border-radius:6px;padding:10px 12px;margin-bottom:10px">'
+      +'<div style="font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#e05555;margin-bottom:4px">⚠ Urgent Action Required</div>'
+      +'<div style="font-size:14px;color:var(--white);line-height:1.5">'+rep.urgent_details+'</div></div>';
+
+  if(kitNames)
+    h+='<div style="margin-bottom:10px">'
+      +'<div style="font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px">Tagged Kit</div>'
+      +'<div style="display:flex;flex-wrap:wrap;gap:6px">'+kitNames.split(', ').map(function(k){return '<span style="font-size:12px;background:rgba(74,158,255,.12);border:1px solid rgba(74,158,255,.3);border-radius:4px;padding:2px 8px;color:#6ab0ff">'+k+'</span>';}).join('')+'</div></div>';
+
+  h+='<div style="font-size:11px;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.06)">Submitted '+submittedTime+'</div>'
+    +'</div>';
+
+  box.innerHTML=h;
+}
+// ── END ER CALENDAR ───────────────────────────────────────────────────────────
+
 function showToolsTab(tab){
   // Only signal flow tab remains on tools page
   if(!_toolsLoaded.signal){
@@ -5383,7 +5540,7 @@ function renderJobDet(j) {
     : '';
   const JD_TAB_COLS={info:'rgba(60,90,160,.85)',tech:'rgba(160,100,30,.85)',camspec:'rgba(50,120,70,.85)',set:'rgba(120,60,140,.85)',lv:'rgba(30,115,125,.85)',gallery:'rgba(150,65,65,.85)',crew:'rgba(50,105,80,.85)',audio:'rgba(100,65,130,.85)',post:'rgba(130,85,35,.85)',monitors:'rgba(35,95,145,.85)',ingest:'rgba(75,125,45,.85)',comms:'rgba(145,55,95,.85)',ip:'rgba(40,105,105,.85)',kit:'rgba(135,75,35,.85)',englog:'rgba(55,85,155,.85)',improve:'rgba(75,115,55,.85)'};
   const tabBar = '<div style="display:flex;gap:5px;overflow-x:auto;padding:14px 0 10px;margin-bottom:6px;flex-shrink:0;align-items:center;flex-wrap:wrap">'
-    +tabs.map(function(t){var isAct=t.id===_jdTab;var col=JD_TAB_COLS[t.id]||'rgba(60,90,160,.85)';var sty=isAct?'background:'+col+';color:#fff;opacity:1;border-color:transparent;box-shadow:0 2px 8px '+col.replace('.85','.4')+';':'';return '<div class="jd-tab'+(isAct?' active':'')+'" style="'+sty+'" onclick="jdSwitch(\''+t.id+'\','+j.id+')">'+t.label+'</div>';}).join('')+'</div>';
+    +tabs.map(function(t){var isAct=t.id===_jdTab;var col=JD_TAB_COLS[t.id]||'rgba(60,90,160,.85)';return '<div class="jd-tab'+(isAct?' active':'')+'" data-tid="'+t.id+'"'+(isAct?' style="background:'+col+';box-shadow:0 2px 8px '+col.replace('.85','.4')+';"':'  ')+' onclick="jdSwitch(\''+t.id+'\','+j.id+')">'+t.label+'</div>';}).join('')+'</div>';
   let content = '';
 
   if(_jdTab==='info') {
