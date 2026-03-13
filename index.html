@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Versa Studios</title>
+<title>Versa Studios</title><!-- v-crew-englog-2 -->
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet"/>
 <style>
 
@@ -5230,14 +5230,7 @@ function drawerFault() {
   document.getElementById('fDesc').value='';
   om('mFault');
 }
-function submitFault() {
-  const desc=document.getElementById('fDesc').value.trim();
-  if(!desc){toast('Enter description');return;}
-  faults.push({id:nextFid++,item:document.getElementById('fItem').value,sev:document.getElementById('fSev').value,
-    reporter:document.getElementById('fReporter').value,date:today(),desc,status:'Open'});
-  activity.unshift({icon:'⚠️',text:'Fault logged: '+document.getElementById('fItem').value,time:'Just now'});
-  cm('mFault'); toast('Fault logged'); renderFaults();
-}
+
 
 // ── MAINTENANCE ───────────────────────────────────────────────────────────────
 function switchMtab(t,el) {
@@ -5617,17 +5610,15 @@ function jobStatusBadge(s) {
 
 // ── JOB DETAIL — FULL TABBED PAGE ────────────────────────────────────────────
 const VERSA_ROSTER = [
-  {name:'Andrew Rowell',   role:'Tech Manager', calRow:'andrew'},
-  {name:'Ian Curry',       role:'Tech Manager', calRow:'ian'},
-  {name:'Marcus Lamb',     role:'Senior Camera Operator', calRow:null},
-  {name:'Andy McLannahan', role:'Camera Operator', calRow:null},
-  {name:'James Laishley',  role:'Camera Operator', calRow:null},
-  {name:'James Forshaw',   role:'Lighting Director', calRow:null},
-  {name:'Chris Buckley',   role:'Vision Mixer', calRow:'chris'},
+  {name:'Andrew Rowell', role:'Technical Manager', calRow:'andrew'},
+  {name:'Chris Warden',  role:'Technical Manager', calRow:'chris'},
+  {name:'Ian Curry',     role:'Senior Engineer',   calRow:'ian'},
 ];
 const VERSA_FREELANCE = [
-  {name:'TBC Freelance Camera 1', role:'Camera Operator'},
-  {name:'TBC Freelance Camera 2', role:'Camera Operator'},
+  {name:'Marcus Lamb'},
+  {name:'Andy McLannahan'},
+  {name:'James Laishley'},
+  {name:'James Forshaw'},
 ];
 
 // ── FREELANCE CREW PLANNER ─────────────────────────────────────────────────
@@ -8288,41 +8279,60 @@ function monToggleRig(jid,i){
 
 
 // Crew tab
-function _crewSuggAdd(btn,jid){
+function _crewSuggAdd(btn,jid,type){
   var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
   var pi=parseInt(btn.getAttribute('data-pi'));
-  var prodNames=[];
-  if(j.lvSpec&&j.lvSpec.ld&&j.lvSpec.ld.trim())prodNames.push({name:j.lvSpec.ld.trim(),role:'Lighting Director'});
-  if(j.lvSpec&&j.lvSpec.vm&&j.lvSpec.vm.trim())prodNames.push({name:j.lvSpec.vm.trim(),role:'Vision Mixer'});
-  if(j.camDetails)j.camDetails.forEach(function(cd,ci){if(cd.operator&&cd.operator.trim())prodNames.push({name:cd.operator.trim(),role:'Camera Operator (Cam '+(cd.camNum||ci+1)+')'});});
-  if(j.audio&&j.audio.supervisor&&j.audio.supervisor.trim())prodNames.push({name:j.audio.supervisor.trim(),role:'Sound Supervisor'});
+  var allTabNames=[];
+  if(j.lvSpec&&j.lvSpec.ld&&j.lvSpec.ld.trim())allTabNames.push({name:j.lvSpec.ld.trim(),role:'Lighting Director'});
+  if(j.lvSpec&&j.lvSpec.vm&&j.lvSpec.vm.trim())allTabNames.push({name:j.lvSpec.vm.trim(),role:'Vision Mixer'});
+  if(j.camDetails)j.camDetails.forEach(function(cd,ci){if(cd.operator&&cd.operator.trim())allTabNames.push({name:cd.operator.trim(),role:'Camera Operator (Cam '+(cd.camNum||ci+1)+')'});});
+  if(j.audio&&j.audio.supervisor&&j.audio.supervisor.trim())allTabNames.push({name:j.audio.supervisor.trim(),role:'Sound Supervisor'});
+  if(j.comms&&j.comms.supervisor&&j.comms.supervisor.trim())allTabNames.push({name:j.comms.supervisor.trim(),role:'Comms Supervisor'});
   var alreadyAdded=(j.crew||[]).map(function(c){return c.name;});
-  var suggestions=prodNames.filter(function(p){return !alreadyAdded.includes(p.name);});
-  var p=suggestions[pi];if(!p)return;
-  crewAddProd(jid,p.name,p.role);
+  var filtered=allTabNames.filter(function(p){
+    if(alreadyAdded.includes(p.name))return false;
+    var isFreelance=VERSA_FREELANCE.some(function(f){return f.name===p.name;});
+    return type==='freelance'?isFreelance:!isFreelance;
+  });
+  var p=filtered[pi];if(!p)return;
+  if(!j.crew)j.crew=[];
+  if(!j.crew.find(function(c){return c.name===p.name;})){
+    j.crew.push({name:p.name,role:p.role||'',type:type});
+  }
+  saveData();renderJobDet(j);
 }
 function renderCrewTab(j) {
   if(!j.crew)j.crew=[];
 
-  // Gather names from other tabs as "production crew" suggestions
-  var prodNames=[];
-  if(j.lvSpec&&j.lvSpec.ld&&j.lvSpec.ld.trim()){prodNames.push({name:j.lvSpec.ld.trim(),role:'Lighting Director',src:'lv'});}
-  if(j.lvSpec&&j.lvSpec.vm&&j.lvSpec.vm.trim()){prodNames.push({name:j.lvSpec.vm.trim(),role:'Vision Mixer',src:'lv'});}
-  if(j.camDetails){j.camDetails.forEach(function(cd,ci){if(cd.operator&&cd.operator.trim())prodNames.push({name:cd.operator.trim(),role:'Camera Operator (Cam '+(cd.camNum||ci+1)+')',src:'cam'});});}
-  if(j.audio&&j.audio.supervisor&&j.audio.supervisor.trim()){prodNames.push({name:j.audio.supervisor.trim(),role:'Sound Supervisor',src:'audio'});}
+  // Gather names entered in other tabs
+  var allTabNames=[];
+  if(j.lvSpec&&j.lvSpec.ld&&j.lvSpec.ld.trim())allTabNames.push({name:j.lvSpec.ld.trim(),role:'Lighting Director'});
+  if(j.lvSpec&&j.lvSpec.vm&&j.lvSpec.vm.trim())allTabNames.push({name:j.lvSpec.vm.trim(),role:'Vision Mixer'});
+  if(j.camDetails){j.camDetails.forEach(function(cd,ci){if(cd.operator&&cd.operator.trim())allTabNames.push({name:cd.operator.trim(),role:'Camera Operator (Cam '+(cd.camNum||ci+1)+')'});});}
+  if(j.audio&&j.audio.supervisor&&j.audio.supervisor.trim())allTabNames.push({name:j.audio.supervisor.trim(),role:'Sound Supervisor'});
+  if(j.comms&&j.comms.supervisor&&j.comms.supervisor.trim())allTabNames.push({name:j.comms.supervisor.trim(),role:'Comms Supervisor'});
+
+  var alreadyAdded=(j.crew||[]).map(function(c){return c.name;});
+
+  // Split tab names: freelance if in VERSA_FREELANCE, otherwise production
+  var flSugg=allTabNames.filter(function(p){
+    return !alreadyAdded.includes(p.name)&&VERSA_FREELANCE.some(function(f){return f.name===p.name;});
+  });
+  var prodSugg=allTabNames.filter(function(p){
+    return !alreadyAdded.includes(p.name)&&!VERSA_FREELANCE.some(function(f){return f.name===p.name;});
+  });
 
   var versaCrew=j.crew.filter(function(c){return c.type==='versa';});
   var flCrew=j.crew.filter(function(c){return c.type==='freelance';});
   var prodCrew=j.crew.filter(function(c){return c.type==='production';});
 
   var mkCrewRow=function(c,ci,type){
-    var rostered=VERSA_ROSTER.find(function(r){return r.name===c.name;});
     var roleOpts='';
     if(type==='versa'){
       var allRoles=['Technical Manager','Senior Engineer','Engineer','Senior Camera Operator','Camera Operator','Lighting Director','Vision Mixer','Sound Supervisor','Rigger','Driver'];
       roleOpts='<select class="fi" style="font-size:12px;padding:2px 6px;max-width:180px" onchange="crewSetRole('+j.id+',\''+type+'\','+ci+',this.value)">'+allRoles.map(function(r){return '<option'+(r===c.role?' selected':'')+'>'+r+'</option>';}).join('')+'</select>';
     } else {
-      roleOpts='<span style="font-size:13px;color:var(--muted)">'+c.role+'</span>';
+      roleOpts=c.role?'<span style="font-size:13px;color:var(--muted)">'+c.role+'</span>':'';
     }
     var moveBtn='';
     if(type==='versa'){
@@ -8332,33 +8342,56 @@ function renderCrewTab(j) {
     }
     return '<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);flex-wrap:wrap">'
       +'<div style="flex:1;min-width:120px;font-size:14px;font-weight:600;color:var(--white)">'+c.name+'</div>'
-      +roleOpts
-      +moveBtn
+      +roleOpts+moveBtn
       +'<button onclick="crewRm('+j.id+',\''+type+'\','+ci+')" class="rm-btn" style="font-size:11px">×</button>'
       +'</div>';
   };
 
-  // Production crew: show sourced names as chips if not already added
-  var alreadyAdded=prodCrew.map(function(c){return c.name;});
-  var suggestions=prodNames.filter(function(p){return !alreadyAdded.includes(p.name);});
-  var suggHtml=suggestions.length
-    ?'<div style="margin-bottom:8px">'+suggestions.map(function(p,pi){
-        return '<button data-jid="'+j.id+'" data-pi="'+pi+'" onclick="_crewSuggAdd(this,'+j.id+')" style="display:inline-flex;align-items:center;gap:4px;background:rgba(74,158,255,.12);border:1px solid rgba(74,158,255,.35);color:#4a9eff;border-radius:3px;font-size:12px;padding:3px 9px;cursor:pointer;margin:2px">+ '+p.name+' <span style="opacity:.6;font-size:11px">('+p.role+')</span></button>';
-      }).join('')+'</div>'
-    :'';
+  var mkSuggChips=function(suggestions,type){
+    return suggestions.map(function(p,pi){
+      return '<button data-jid="'+j.id+'" data-pi="'+pi+'" data-type="'+type+'" onclick="_crewSuggAdd(this,'+j.id+',\''+type+'\')" style="display:inline-flex;align-items:center;gap:4px;background:rgba(74,158,255,.12);border:1px solid rgba(74,158,255,.35);color:#4a9eff;border-radius:3px;font-size:12px;padding:3px 9px;cursor:pointer;margin:2px">+ '+p.name+(p.role?' <span style="opacity:.6;font-size:11px">('+p.role+')</span>':'')+'</button>';
+    }).join('');
+  };
+
+  var flSuggHtml=flSugg.length?'<div style="margin-bottom:8px">'+mkSuggChips(flSugg,'freelance')+'</div>':'';
+  var prodSuggHtml=prodSugg.length?'<div style="margin-bottom:8px">'+mkSuggChips(prodSugg,'production')+'</div>':'';
+
+  // Camera operators from camDetails, sorted by cam number
+  var camOps=[];
+  if(j.camDetails){
+    var sorted=j.camDetails.slice().sort(function(a,b){return (a.camNum||0)-(b.camNum||0);});
+    sorted.forEach(function(cd){
+      if(cd.operator&&cd.operator.trim()){
+        camOps.push({camNum:cd.camNum||'?',label:cd.camLabel||'',name:cd.operator.trim()});
+      }
+    });
+  }
+  var camOpsHtml='';
+  if(camOps.length){
+    camOpsHtml='<div class="det-sec"><div class="det-sec-lbl">Camera Operators</div>'
+      +camOps.map(function(op){
+        return '<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border)">'
+          +'<div style="font-family:var(--cond);font-size:12px;font-weight:800;color:var(--accent);min-width:52px">CAM '+op.camNum+(op.label?' · '+op.label:'')+'</div>'
+          +'<div style="flex:1;font-size:14px;font-weight:600;color:var(--white)">'+op.name+'</div>'
+          +'</div>';
+      }).join('')
+      +'</div>';
+  }
 
   var versaSection='<div class="det-sec"><div class="det-sec-lbl" style="display:flex;align-items:center;justify-content:space-between">Versa Staff <button class="panel-act" onclick="addCrew('+j.id+',\'versa\')">+ Add</button></div>'
     +(versaCrew.length?versaCrew.map(function(c,ci){return mkCrewRow(c,ci,'versa');}).join(''):'<div style="color:var(--muted);font-size:14px;padding:6px 0">None assigned.</div>')
     +'</div>';
   var flSection='<div class="det-sec"><div class="det-sec-lbl" style="display:flex;align-items:center;justify-content:space-between">Versa Freelance <button class="panel-act" onclick="addCrew('+j.id+',\'freelance\')">+ Add</button></div>'
+    +flSuggHtml
     +(flCrew.length?flCrew.map(function(c,ci){return mkCrewRow(c,ci,'freelance');}).join(''):'<div style="color:var(--muted);font-size:14px;padding:6px 0">None assigned.</div>')
     +'</div>';
   var prodSection='<div class="det-sec"><div class="det-sec-lbl" style="display:flex;align-items:center;justify-content:space-between">Production Crew <button class="panel-act" onclick="addCrew('+j.id+',\'production\')">+ Add</button></div>'
-    +suggHtml
-    +(prodCrew.length?prodCrew.map(function(c,ci){return mkCrewRow(c,ci,'production');}).join(''):'<div style="color:var(--muted);font-size:14px;padding:6px 0">None assigned — names entered in Camera Spec, Lighting/Vision and Audio tabs appear here automatically.</div>')
+    +prodSuggHtml
+    +(prodCrew.length?prodCrew.map(function(c,ci){return mkCrewRow(c,ci,'production');}).join(''):'<div style="color:var(--muted);font-size:14px;padding:6px 0">None assigned.</div>')
     +'</div>';
-  return versaSection+flSection+prodSection;
+  return camOpsHtml+versaSection+flSection+prodSection;
 }
+
 function crewSetRole(jid,type,ci,role){
   var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.crew)return;
   var arr=j.crew.filter(function(c){return c.type===type;});
@@ -8398,7 +8431,7 @@ function addCrew(jid, type) {
       return '<div onclick="'+(already?'':'crewPick('+jid+',\'versa\',\''+r.name+'\',\''+r.role+'\')')+'" class="ops-co" style="padding:10px 14px;font-size:14px;'+(already?'opacity:.4;cursor:default':'cursor:pointer')+'">'+r.name+'<span style="color:var(--muted);font-size:12px;margin-left:8px">'+r.role+'</span>'+(already?' <span style="color:#3dbf7a;font-size:11px">✓ Added</span>':'')+'</div>';
     }).join('');
   } else if(type==='freelance'){
-    opts=VERSA_FREELANCE.map(r=>'<div onclick="crewPick('+jid+',\'freelance\',\''+r.name+'\',\''+r.role+'\')" class="ops-co" style="padding:10px 14px;font-size:14px">'+r.name+'<span style="color:var(--muted);font-size:12px;margin-left:8px">'+r.role+'</span></div>').join('');
+    opts=VERSA_FREELANCE.map(function(r){var roleStr=r.role||'';return '<div onclick="crewPick('+jid+',\'freelance\',\''+r.name+'\',\''+roleStr+'\')" class="ops-co" style="padding:10px 14px;font-size:14px">'+r.name+(roleStr?'<span style="color:var(--muted);font-size:12px;margin-left:8px">'+roleStr+'</span>':'')+'</div>';}).join('');
     opts+='<div class="ops-div"></div><div style="padding:8px 14px"><input class="ops-ci" id="crewCustomName" placeholder="Or type a name..."/><input class="ops-ci" id="crewCustomRole" placeholder="Role..." style="margin-top:4px"/><button class="ops-ca" onclick="crewPickCustom('+jid+',\'freelance\')">+ Add Custom</button></div>';
   } else {
     opts='<div style="padding:8px 14px"><input class="ops-ci" id="crewCustomName" placeholder="Name..."/><input class="ops-ci" id="crewCustomRole" placeholder="Role..." style="margin-top:4px"/><button class="ops-ca" onclick="crewPickCustom('+jid+',\'production\')">+ Add</button></div>';
@@ -8422,7 +8455,6 @@ function crewPickCustom(jid,type){
   if(!n.trim())return;
   crewPick(jid,type,n.trim(),r.trim());
 }
-function rmCrew(jid,ci,type){crewRm(jid,type,ci);}
 function _rmCrewOld(jid,idx,type){
   const j=jobs.find(x=>x.id===jid);if(!j||!j.crew)return;
   const ofType=j.crew.filter(c=>c.type===type);
@@ -10261,7 +10293,7 @@ function parseCSVLine(line) {
 function exportCpCSV() {
   const rows = camPlans[currentCpJid]||[];
   if(!rows.length) { toast('No data to export'); return; }
-  function esc(v) { return '"'+String(v||'').replace(/"/g,'""')+'"'; }
+  
   const lines = [['Camera','Role','Lens','Notes'].map(esc).join(',')];
   rows.forEach(r => lines.push([r.camera,r.role,r.lens,r.notes].map(esc).join(',')));
   const j = jobs.find(x=>x.id===currentCpJid);
