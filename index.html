@@ -10306,4 +10306,15 @@ async function renderAbcLastReport(){
           <div><div class="dfl">Date Sent</div>
             <input type="date" class="fi" id="repairDate" style="font-size:14px;padding:6px 8px;width:100%"></div>
         </div>
-        <div style="margin-bo
+        <div style="margin-bottom:16px"><div class="dfl">Notes</div>
+          <input class="fi" id="repairNotes" style="font-size:14px;padding:6px 8px;width:100%" placeholder="Reference number, contact, etc."></div>
+        <div style="display:flex;gap:8px;justify-content:flex-end">
+          <button class="btn-sec" onclick="cm('mRepair')">Cancel</button>
+          <button class="btn-p" onclick="confirmSendToRepair()">Send to Repair</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
