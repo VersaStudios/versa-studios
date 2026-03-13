@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Versa Studios — Ops Planner</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--black:#0a0a0a;--near-black:#111111;--dark:#1c1c1c;--mid:#242424;--border:#333333;--muted:#aaaaaa;--white:#f4f4f4;--font:'Barlow',sans-serif;--cond:'Barlow Condensed',sans-serif;}
+html,body{height:100%;background:var(--black);color:var(--white);font-family:var(--font);font-size:15px;-webkit-font-smoothing:antialiased;overflow:hidden}
+#app{display:flex;height:100vh;flex-direction:column}
+.top-bar{display:flex;align-items:center;gap:12px;padding:10px 16px;background:#0d0d0f;border-bottom:1px solid rgba(216,90,97,.2);flex-shrink:0}
+.top-logo img{width:80px;opacity:.85}
+.top-title{font-family:var(--cond);font-size:16px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:rgba(216,90,97,.9);flex:1}
+.btn-p{background:var(--white);color:var(--black);border:none;border-radius:4px;padding:6px 14px;font-family:var(--cond);font-weight:800;font-size:13px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
+.btn-p:hover{opacity:.88}
+.btn-sec{background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:4px;padding:5px 12px;font-family:var(--cond);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+.fi{background:var(--dark);border:1px solid var(--border);color:var(--white);font-family:var(--font);font-size:14px;padding:8px 10px;border-radius:4px;outline:none}
+.fi:focus{border-color:#555}
+.ops-wrap{display:flex;flex-direction:column;flex:1;overflow:hidden}
+.ops-bar{display:flex;align-items:center;gap:8px;padding:9px 16px;border-bottom:1px solid var(--border);flex-shrink:0;flex-wrap:wrap;background:var(--near-black)}
+.ops-qrow{display:flex;gap:4px;overflow-x:auto;flex:1}
+.ops-qrow::-webkit-scrollbar{height:0}
+.ops-qbtn{font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:6px 14px;border-radius:999px;border:1px solid rgba(216,90,97,.22);background:rgba(255,255,255,.8);color:rgba(184,79,85,.8);cursor:pointer;white-space:nowrap;transition:all .15s}
+.ops-qbtn:hover{background:#fff;color:#d85a61}
+.ops-qbtn.active{background:#d85a61;border-color:transparent;color:#fff}
+.ops-leg-row{display:flex;flex-wrap:wrap;gap:4px 12px;padding:10px 16px;border-bottom:1px solid rgba(216,90,97,.15);flex-shrink:0;background:rgba(255,251,246,.95)}
+.ops-leg{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:rgba(184,79,85,.8)}
+.ops-ldot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+.ops-ldiv{width:1px;height:12px;background:rgba(216,90,97,.3)}
+.ops-scroll{overflow:auto;flex:1}
+.ops-mhdr td{padding:9px 14px;background:#0d0d0f;border-bottom:2px solid var(--border);white-space:nowrap}
+.ops-dhdr td{border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:0;width:36px;min-width:36px}
+.ops-dhdr td:first-child{border-right:2px solid var(--border);width:110px;min-width:90px}
+.ops-dh{padding:6px 2px 5px;text-align:center;font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:rgba(184,79,85,.7)}
+.ops-dh.wk{background:rgba(216,90,97,.06);color:rgba(184,79,85,.5)}
+.ops-dh .dn{display:block;font-size:13px;font-weight:900;margin-top:1px;color:#666}
+.ops-dh.td .dn{color:var(--white)}
+.ops-srow td{background:rgba(255,255,255,.015);border-top:2px solid var(--border);border-bottom:1px solid var(--border);padding:3px 10px;font-family:var(--cond);font-size:9px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#3a3a3a}
+.ops-gap td{height:3px;background:rgba(0,0,0,.5);border-top:2px solid var(--border)}
+.ops-mt::after{content:'+';display:block;padding:2px 4px;color:#252525;font-size:12px;font-weight:800}
+.ops-ced{position:fixed;background:var(--dark);border:1px solid rgba(255,255,255,.12);border-radius:4px;z-index:900;width:220px;box-shadow:0 8px 32px rgba(0,0,0,.9);padding:4px 0;max-height:72vh;overflow-y:auto}
+.ops-cs{padding:3px 11px 2px;font-family:var(--cond);font-size:9px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+.ops-co{display:flex;align-items:center;gap:7px;padding:6px 12px;cursor:pointer;font-size:12px;color:var(--white)}
+.ops-co:hover,.ops-co.sel{background:rgba(255,255,255,.06)}
+.ops-cd{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.ops-ck{margin-left:auto;color:#55b07a;font-size:11px}
+.ops-div{height:1px;background:var(--border);margin:4px 0}
+.ops-ci{width:calc(100% - 20px);margin:3px 10px;background:var(--near-black);border:1px solid var(--border);color:var(--white);padding:5px 7px;border-radius:3px;font-family:var(--font);font-size:12px;outline:none}
+.ops-ci:focus{border-color:#555}
+.ops-ca{display:block;width:calc(100% - 20px);margin:3px 10px 5px;background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--muted);font-family:var(--cond);font-size:10px;font-weight:700;text-transform:uppercase;padding:4px;border-radius:3px;cursor:pointer;text-align:center}
+.ops-ca:hover{background:rgba(255,255,255,.08);color:var(--white)}
+.ops-tbl{border-collapse:collapse;table-layout:fixed;background:rgba(255,253,248,.94)}
+.ops-mhdr-txt{font-size:clamp(36px,5vw,64px);font-weight:900;letter-spacing:-0.05em;line-height:.88;color:#d85a61}
+.ops-dh.td .dn-wrap{background:#d85a61;color:#fff;border-radius:50%;width:26px;height:26px;line-height:26px;margin:auto;box-shadow:0 4px 10px rgba(216,90,97,.3)}
+.ops-dh.td{color:#fff}
+.ops-rlbl{font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;padding:5px 12px;white-space:nowrap;border-right:2px solid rgba(216,90,97,.2);border-bottom:1px solid rgba(216,90,97,.12);vertical-align:middle;width:106px;min-width:106px;color:rgba(184,79,85,.8);background:rgba(255,251,246,.9)}
+.ops-cell{border-right:1px solid rgba(216,90,97,.1);border-bottom:1px solid rgba(216,90,97,.1);vertical-align:top;padding:3px;width:44px;min-width:44px;cursor:pointer;background:rgba(255,253,248,.85);transition:background .12s}
+.ops-cell.wk{background:rgba(216,90,97,.04)}
+.ops-cell.td{background:rgba(216,90,97,.1)}
+.ops-cell:hover{background:rgba(216,90,97,.08)}
+.ops-chip{display:block;font-size:11px;font-weight:800;letter-spacing:.01em;padding:3px 7px;border-radius:999px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px;line-height:1.3;box-shadow:0 2px 6px rgba(0,0,0,.1)}
+.ops-brk{background:rgba(216,90,97,.08);color:rgba(184,79,85,.6);border:1px solid rgba(216,90,97,.2);text-align:center;font-size:10px;border-radius:999px}
+.ops-ml{color:#fff}
+.ops-event{background:rgba(32,160,160,.18);color:#0a6a6a;border:1px solid rgba(32,160,160,.3)}
+.ops-prod{background:rgba(200,160,32,.2);color:#7a5c08;border:1px solid rgba(200,160,32,.35)}
+.ops-show{background:rgba(192,48,48,.18);color:#8b2020;border:1px solid rgba(192,48,48,.3)}
+.ops-note{background:rgba(216,90,97,.08);color:#7a3a40;border:1px solid rgba(216,90,97,.2)}
+.ops-mcr{background:rgba(42,110,58,.18);color:#1a4e28;border:1px solid rgba(42,110,58,.35)}
+.ops-ldn{background:rgba(26,78,138,.18);color:#0f3468;border:1px solid rgba(26,78,138,.35)}
+.ops-andrew{background:rgba(42,122,79,.2);color:#1a5c38;border:1px solid rgba(42,122,79,.35)}
+.ops-chris{background:rgba(176,138,16,.2);color:#7a5c08;border:1px solid rgba(176,138,16,.35)}
+.ops-ian{background:rgba(32,96,176,.2);color:#18407a;border:1px solid rgba(32,96,176,.35)}
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;z-index:800}
+.modal-ov.open{display:flex}
+.modal{background:var(--dark);border:1px solid var(--border);border-radius:6px;width:100%;max-width:480px;max-height:90vh;overflow:hidden;display:flex;flex-direction:column}
+.modal-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border);flex-shrink:0}
+.modal-title{font-family:var(--cond);font-size:16px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--white)}
+.x-btn{background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;padding:0;line-height:1}
+.x-btn:hover{color:var(--white)}
+.modal-body{padding:16px 18px;overflow-y:auto;flex:1}
+.modal-foot{display:flex;gap:8px;justify-content:flex-end;padding:12px 18px;border-top:1px solid var(--border)}
+.flbl{font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.rm-btn{background:rgba(224,85,85,.12);border:1px solid rgba(224,85,85,.25);color:#e05555;border-radius:3px;padding:3px 8px;font-size:13px;cursor:pointer}
+#saveInd{position:fixed;bottom:10px;right:12px;font-size:11px;font-family:var(--cond);font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#3a8a55;background:rgba(42,110,58,.12);border:1px solid rgba(42,110,58,.3);border-radius:3px;padding:3px 9px;opacity:0;transition:opacity .3s;z-index:999}
+#saveInd.show{opacity:1}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="top-bar">
+    <div class="top-logo"><img src="data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMzY2IDk2Mi45MiI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiNmZmY7fTwvc3R5bGU+PC9kZWZzPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTE5NC4xNiw1MDcuMzN2LTE0LjdjOS4wOSw0LjQ1LDIzLjQsOS42NywzOC42Nyw5LjY3LDE4LjE3LDAsMzIuMDktOC4xMiwzMi4wOS0yMi4yM3MtNy41NC0yMS42NS0zMi4wOS0zMC4zNWMtMjcuNjQtOS44Ni0zOS4wNS0yMS42Ni0zOS4wNS00MS43NiwwLTIzLDE5LjcyLTM2LjE1LDQ0LjY2LTM2LjE1QTg2LjYsODYuNiwwLDAsMSwyNzIuMjcsMzc5djE0LjMxYy03LjU0LTMuODctMjAuODgtOC4xMy0zMy4yNS04LjEzLTE3Ljc5LDAtMzAuNzQsOC43MS0zMC43NCwyMi4yNCwwLDEyLjU3LDYuNzcsMjEuMjYsMzEuNywzMC4zNSwyNy44NCw5Ljg2LDM5LjQ0LDIxLjA3LDM5LjQ0LDQxLjM3LDAsMjMtMTguNTYsMzYuNTQtNDUuODIsMzYuNTRBOTkuMiw5OS4yLDAsMCwxLDE5NC4xNiw1MDcuMzNaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMzcxLjgzLDM4Ni41VjUxMy4zMkgzNTcuMTRWMzg2LjVIMzE0LjQyVjM3NC4xM0g0MTQuNzVWMzg2LjVaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNNTY1Ljc1LDQ2NS4zOGMwLDMxLjUxLTE5LjUzLDUwLjI2LTUyLjIsNTAuMjYtMzIuNDgsMC01Mi0xOC43NS01Mi01MC4yNlYzNzQuMTNoMTQuNjlWNDY0LjZjMCwyMy40LDEzLjkyLDM3LjMyLDM3LjMyLDM3LjMyczM3LjUtMTMuOTIsMzcuNS0zNy4zMlYzNzQuMTNoMTQuN1oiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik02MjguNTgsNTEzLjMyVjM3NC4xM2gzOC40N2M0MS41NiwwLDczLjQ2LDI2LjY4LDczLjQ2LDY5LjZTNzA5LDUxMy4zMiw2NjcuODIsNTEzLjMyWk02NDMuMjcsMzg2LjVWNTAxaDI0LjU1YzMyLjY4LDAsNTcuNjEtMjIuMjMsNTcuNjEtNTcuMjJTNzAwLjMsMzg2LjUsNjY2Ljg2LDM4Ni41WiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTc5NS4yMyw1MTMuMzJWMzc0LjEzaDE0LjY5VjUxMy4zMloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik05MzguMSwzNzEuODFjNDAsMCw3MC43NiwzMS43LDcwLjc2LDcxLjkyLDAsNDAuNC0zMC4zNiw3MS45MS03MC43Niw3MS45MS00MC4yMSwwLTcwLjc2LTMxLjUxLTcwLjc2LTcxLjkxQzg2Ny4zNCw0MDMuOSw4OTcuODksMzcxLjgxLDkzOC4xLDM3MS44MVptMCwxMzAuMTFjMzIuNDgsMCw1NS42OC0yNS4xNCw1NS42OC01OC4xOXMtMjMuMi01OC4yLTU1LjY4LTU4LjJjLTMyLjI5LDAtNTUuODcsMjUuMTQtNTUuODcsNTguMlM5MDUuODEsNTAxLjkyLDkzOC4xLDUwMS45MloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0xMDU1LjI1LDUwNy4zM3YtMTQuN2M5LjA5LDQuNDUsMjMuNCw5LjY3LDM4LjY3LDkuNjcsMTguMTcsMCwzMi4wOS04LjEyLDMyLjA5LTIyLjIzcy03LjU0LTIxLjY1LTMyLjA5LTMwLjM1Yy0yNy42NC05Ljg2LTM5LjA1LTIxLjY2LTM5LjA1LTQxLjc2LDAtMjMsMTkuNzItMzYuMTUsNDQuNjYtMzYuMTVhODYuNiw4Ni42LDAsMCwxLDMzLjgzLDcuMTV2MTQuMzFjLTcuNTQtMy44Ny0yMC44OC04LjEzLTMzLjI1LTguMTMtMTcuNzksMC0zMC43NCw4LjcxLTMwLjc0LDIyLjI0LDAsMTIuNTcsNi43NywyMS4yNiwzMS43LDMwLjM1LDI3Ljg0LDkuODYsMzkuNDQsMjEuMDcsMzkuNDQsNDEuMzcsMCwyMy0xOC41NiwzNi41NC00NS44MiwzNi41NEE5OS4yLDk5LjIsMCwwLDEsMTA1NS4yNSw1MDcuMzNaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMTMxLjIzLDI3MC44MmgtMi4xOEwwLDUuMDlINjEuMDdMOTUuMjQsODAuN2MxMy40NSwzMC4xNywyNS40NCw1NiwzNC41Myw4MS40M0MxMzcuNCwxNDMuNTgsMTUzLjQsMTA2LjUxLDE2NSw4MC43TDE5OS4yLDUuMDloNjAuNzFaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMzM0Ljc3LDI2Ni44MlY1LjA5SDUwMy4wOFY1MkgzOTAuNzVWMTExLjZINDg2djQ1LjA3SDM5MC43NXY2My4yNUg1MDguNTN2NDYuOVoiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik02OTEuMzYsNS4wOWM2MC43MSwwLDEwMSwzMC4xNywxMDEsODYuMTUsMCwzOC4xNy0yMS40NCw2My4yNS00OS44LDc0LjUyTDc5Ny41LDI2Ni44Mkg3MzguMjVsLTQ2LjE2LTkxLjYxSDY1NC4yOHY5MS42MUg1OTkuMzlWNS4wOVpNNjU0LjI4LDUydjc4LjE2aDQwYzI0LjcyLDAsNDEuOC0xMi4zNiw0MS44LTM4LjksMC0yNi4xNy0xNy44MS0zOS4yNi00My4yNi0zOS4yNloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik04NzUuNjQsMjU3VjIwMy4yYzE4LjE4LDkuNDUsNDIuMTcsMTcuNDUsNjUuOCwxOC45MWE5NS4wOCw5NS4wOCwwLDAsMCwyMy4yNi0xLjQ2YzIwLTIuOTEsMzEuNjMtMTAuNTQsMzEuNjMtMjMuMjYsMC0xNy40NS0xNS42My0yNi41NC01MS42Mi0zOS42My00NS44LTE2LjcyLTcyLjctMzYtNzIuNy04MS40MkM4NzIsMjkuODEsOTEwLjU0LDAsOTY2Ljg4LDBjMjYuMTgsMCw1Miw1LjgyLDY4LjM0LDEzLjA5VjY0LjcxYy0xNS4yNi05LjA5LTQwLTE2LTY0LTE2LTI2LjksMC00NC4zNSwxMC41NC00NC4zNSwyNy4yNywwLDE1LjI2LDE0LjE3LDI1LjgsNDkuOCwzOS4yNSw0NS44LDE3LjgxLDc0LjE1LDM3LjA4LDc0LjE1LDgxLjA3LDAsNDcuMjUtMzUuNjIsNzUuNjEtOTcuNDIsNzUuNjFDOTIzLjYzLDI3MS45MSw4OTQuNTQsMjY1LjM2LDg3NS42NCwyNTdaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMTIzOC43NywxLjA5aC0yLjE4TDExMDkuNzMsMjY2LjgyaDU4LjUybDEyLTI3LjIyYzExLTI0LjgxLDUwLjE3LTExNy44NCw1Ny43OS0xMzYsOCwyMi45LDQ4LjgxLDExNy4wNiw2MC44MSwxNDQuMzJoMGw4LjYyLDE4LjlIMTM2NloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik03NzQuNDYsNzA2Ljc4bC0zMS44OS02NS42NWgtMi42NGwtODYuMjIsMTc4LTUuNCwxMS4xNmMtMTEtMzAuNTEtMjUuMzUtNjEuNDktNDEuNDctOTcuNjVsLTQxLjM4LTkxLjU2aC03NEw2MTUuOSw4OTcuMjdsMzEuODgsNjUuNjVoMi42NGw4Ni4yMi0xNzgsNS40MS0xMS4xNmMxMSwzMC41LDI1LjM1LDYxLjQ5LDQxLjQ2LDk3LjY1bDQxLjM4LDkxLjU2aDc0WiIvPjwvc3ZnPg==" alt="VS"/></div>
+    <div class="top-title">Ops Planner</div>
+    <button class="btn-p" style="font-size:13px;flex-shrink:0" onclick="opsOpenEmail()">&#9993; ML Email</button>
+    <button class="btn-sec" style="flex-shrink:0" onclick="om('opsBrkModal')">&#128197; Breaks</button>
+  </div>
+  <div class="ops-wrap">
+    <div class="ops-bar"><div class="ops-qrow" id="opsQnav"></div></div>
+    <div class="ops-leg-row">
+      <div class="ops-leg"><div class="ops-ldot" style="background:#3a8a55"></div>Andrew</div>
+      <div class="ops-leg"><div class="ops-ldot" style="background:#907010"></div>Chris</div>
+      <div class="ops-leg"><div class="ops-ldot" style="background:#3a5aaa"></div>Ian</div>
+      <div class="ops-ldiv"></div>
+      <div class="ops-leg"><div class="ops-ldot" style="background:#2d7dd2"></div>Morning Live</div>
+      <div class="ops-leg"><div class="ops-ldot" style="background:#c03030"></div>Projects</div>
+      <div class="ops-leg"><div class="ops-ldot" style="background:#20a0a0"></div>Events</div>
+      <div class="ops-leg"><div class="ops-ldot" style="background:#a08010"></div>Stages</div>
+    </div>
+    <div class="ops-scroll" id="opsBody"></div>
+  </div>
+  <div class="ops-ced" id="opsCed" style="display:none"><div id="opsCedIn"></div></div>
+  <div class="modal-ov" id="opsBrkModal">
+    <div class="modal">
+      <div class="modal-hdr"><div class="modal-title">Off Air Breaks</div><button class="x-btn" onclick="cm('opsBrkModal')">&#215;</button></div>
+      <div class="modal-body">
+        <div style="padding-bottom:14px;margin-bottom:14px;border-bottom:1px solid var(--border)">
+          <div class="flbl" style="margin-bottom:8px">New Break Period</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end">
+            <div><div class="flbl" style="margin-bottom:3px">Name</div><input id="opsBrkName" class="fi" placeholder="e.g. Summer Break" style="width:148px"/></div>
+            <div><div class="flbl" style="margin-bottom:3px">Start</div><input id="opsBrkStart" class="fi" type="date" style="width:138px"/></div>
+            <div><div class="flbl" style="margin-bottom:3px">End</div><input id="opsBrkEnd" class="fi" type="date" style="width:138px"/></div>
+            <button class="btn-p" onclick="opsSaveBrk()">Add</button>
+          </div>
+        </div>
+        <div id="opsBrkList"></div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-ov" id="opsEmailModal">
+    <div class="modal" style="max-width:620px">
+      <div class="modal-hdr"><div class="modal-title">&#9993; Morning Live Email</div><button class="x-btn" onclick="cm('opsEmailModal')">&#215;</button></div>
+      <div class="modal-body">
+        <div id="opsFriBanner" style="display:none;background:rgba(200,160,32,.08);border:1px solid rgba(200,160,32,.25);border-radius:3px;padding:8px 12px;margin-bottom:12px;font-size:14px;color:#d4aa30">&#128197; It's Friday — time to send next week's Morning Live schedule.</div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+          <div class="flbl">Week starting</div>
+          <input type="date" id="opsEmailWeek" class="fi" style="width:160px" onchange="opsBuildPreview()"/>
+        </div>
+        <div id="opsEmailPrev" style="background:#fff;border-radius:3px;overflow:hidden;margin-top:10px"></div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn-sec" onclick="cm('opsEmailModal')">Close</button>
+        <button class="btn-p" onclick="opsCopyEmail()">Copy Plain Text</button>
+        <button class="btn-p" onclick="opsMailto()">Open in Mail &#8599;</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="saveInd">Saved</div>
+<script>
+const _SB_URL='https://dttwgmoyxthczlzxjgag.supabase.co';
+const _SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ';
+var _authToken = localStorage.getItem('_vsToken') || '';
+function _sbH(extra){return Object.assign({'Content-Type':'application/json','apikey':_SB_KEY,'Authorization':'Bearer '+(_authToken||_SB_KEY),'Prefer':'resolution=merge-duplicates'},extra||{});}
+var _appReady=false,_saveTimer=null,jobs=[];
+const _opsD={},_opsBrk=[],_opsHidStu=new Set(),_opsStu=new Set();
+function og(m,d,r){return _opsD[m+'|'+d+'|'+r]||[];}
+function os(m,d,r,v){_opsD[m+'|'+d+'|'+r]=v;saveData();}
+function om(id){document.getElementById(id).classList.add('open');}
+function cm(id){document.getElementById(id).classList.remove('open');}
+function saveData(){
+  if(!_appReady)return;
+  clearTimeout(_saveTimer);
+  _saveTimer=setTimeout(async function(){
+    try{
+      const rows=[
+        {key:'opsPlanner',value:Object.assign({},_opsD),updated_at:new Date().toISOString()},
+        {key:'opsBrk',value:_opsBrk.slice(),updated_at:new Date().toISOString()},
+      ];
+      await fetch(_SB_URL+'/rest/v1/app_data',{method:'POST',headers:_sbH(),body:JSON.stringify(rows)});
+      const ind=document.getElementById('saveInd');
+      ind.classList.add('show');setTimeout(()=>ind.classList.remove('show'),1200);
+    }catch(e){console.warn('save error',e);}
+  },800);
+}
+async function loadData(){
+  try{
+    const r=await fetch(_SB_URL+'/rest/v1/app_data?select=key,value',{headers:_sbH()});
+    const rows=await r.json();
+    if(Array.isArray(rows)){
+      rows.forEach(function(row){
+        try{
+          const v=row.value;
+          if(row.key==='opsPlanner'&&v&&typeof v==='object'){Object.keys(v).forEach(function(k){_opsD[k]=v[k];});}
+          else if(row.key==='opsBrk'&&Array.isArray(v)){_opsBrk.length=0;v.forEach(function(x){_opsBrk.push(x);});}
+          else if(row.key==='jobs'&&Array.isArray(v)){jobs.length=0;v.forEach(function(x){jobs.push(x);});}
+        }catch(e){}
+      });
+    }
+    _appReady=true;
+  }catch(e){console.warn('load error',e);_appReady=true;}
+}
+const OPS_TM=['Andrew Rowell','Ian Curry','Marcus Lamb','Andy McLannahan','James Laishley'];
+const OPS_STUDIOS=['Studio 12','Studio 8','Studio 7','Studio 5','Studio 4','ABC','London'];
+const OPS_STU_LOC={'Studio 12':'Manchester','Studio 8':'Manchester','Studio 7':'Manchester','Studio 5':'Manchester','Studio 4':'Manchester','ABC':'Manchester','London':'London'};
+const OPS_ML_COLORS={"Andrew Rowell":"#3a8a55","Ian Curry":"#3a5aaa","Marcus Lamb":"#7a4aaa","Andy McLannahan":"#1a8a8a","James Laishley":"#aa6a2a"};
+const OPS_TODAY=new Date().toISOString().split('T')[0];
+const OPS_MPX={'March 2026':'2026-03','April 2026':'2026-04','May 2026':'2026-05','June 2026':'2026-06','July 2026':'2026-07','August 2026':'2026-08','September 2026':'2026-09','October 2026':'2026-10','November 2026':'2026-11','December 2026':'2026-12'};
+const OPS_CAL = [{"month": "March 2026", "days": [{"date": "Mar-01", "day": 1, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-02", "day": 2, "dow": "MONDAY", "ml": [{"text": "MORNING LIVE Andy", "person": "Andy"}], "andrew": ["Morning Live — Ep173"], "ian": ["Ian Off"], "chris": ["CHRIS OFF"], "other": []}, {"date": "Mar-03", "day": 3, "dow": "TUESDAY", "ml": [], "andrew": ["Morning Live — Ep174"], "ian": [], "chris": [], "other": []}, {"date": "Mar-04", "day": 4, "dow": "WEDNESDAY", "ml": [], "andrew": ["Morning Live — Ep175"], "ian": [], "chris": [], "other": []}, {"date": "Mar-05", "day": 5, "dow": "THURSDAY", "ml": [], "andrew": ["Morning Live — Ep176"], "ian": [], "chris": [], "other": []}, {"date": "Mar-06", "day": 6, "dow": "FRIDAY", "ml": [], "andrew": ["Morning Live — Ep177"], "ian": [], "chris": [], "other": []}, {"date": "Mar-07", "day": 7, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-08", "day": 8, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-09", "day": 9, "dow": "MONDAY", "ml": [{"text": "MORNING LIVE Andy", "person": "Andy"}], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-10", "day": 10, "dow": "TUESDAY", "ml": [], "andrew": ["Morning Live — Ep179"], "ian": [], "chris": [], "other": [{"text": "Dragons Tech Meeting 2.30pm", "cat": "dragons"}]}, {"date": "Mar-11", "day": 11, "dow": "WEDNESDAY", "ml": [], "andrew": ["Morning Live — Ep180"], "ian": [], "chris": [], "other": []}, {"date": "Mar-12", "day": 12, "dow": "THURSDAY", "ml": [], "andrew": ["Morning Live — Ep181"], "ian": [], "chris": [], "other": []}, {"date": "Mar-13", "day": 13, "dow": "FRIDAY", "ml": [], "andrew": ["Morning Live — Ep182"], "ian": [], "chris": [], "other": []}, {"date": "Mar-14", "day": 14, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-15", "day": 15, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-16", "day": 16, "dow": "MONDAY", "ml": [{"text": "MORNING LIVE Andy", "person": "Andy"}], "andrew": ["Morning Live — Ep178"], "ian": [], "chris": [], "other": [{"text": "KATE AWAY", "cat": "absence"}]}, {"date": "Mar-17", "day": 17, "dow": "TUESDAY", "ml": [{"text": "ML James Laishley", "person": "James Laishley"}], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-18", "day": 18, "dow": "WEDNESDAY", "ml": [], "andrew": ["Andy Away"], "ian": [], "chris": [], "other": [{"text": "Felsted London", "cat": "note"}]}, {"date": "Mar-19", "day": 19, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-20", "day": 20, "dow": "FRIDAY", "ml": [{"text": "MORNING LIVE Andy", "person": "Andy"}], "andrew": ["Morning Live — Ep182"], "ian": [], "chris": [], "other": []}, {"date": "Mar-21", "day": 21, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-22", "day": 22, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-23", "day": 23, "dow": "MONDAY", "ml": [{"text": "MORNING LIVE Ian", "person": "Ian"}], "andrew": [], "ian": ["Morning Live — Ep183"], "chris": [], "other": [{"text": "Sherwood S8", "cat": "note"}]}, {"date": "Mar-24", "day": 24, "dow": "TUESDAY", "ml": [{"text": "MORNING LIVE Andy", "person": "Andy"}], "andrew": ["Morning Live — Ep184"], "ian": [], "chris": [], "other": []}, {"date": "Mar-25", "day": 25, "dow": "WEDNESDAY", "ml": [], "andrew": ["Morning Live — Ep185"], "ian": [], "chris": [], "other": []}, {"date": "Mar-26", "day": 26, "dow": "THURSDAY", "ml": [], "andrew": ["Morning Live — Ep186"], "ian": [], "chris": [], "other": []}, {"date": "Mar-27", "day": 27, "dow": "FRIDAY", "ml": [], "andrew": ["Morning Live — Ep187"], "ian": [], "chris": [], "other": []}, {"date": "Mar-28", "day": 28, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": [{"text": "litter pick", "cat": "note"}, {"text": "Tina", "cat": "staff"}, {"text": "Turner", "cat": "staff"}]}, {"date": "Mar-29", "day": 29, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-30", "day": 30, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-31", "day": 31, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}]}, {"month": "April 2026", "days": [{"date": "Apr-01", "day": 1, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-02", "day": 2, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-03", "day": 3, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-04", "day": 4, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-05", "day": 5, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-06", "day": 6, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-07", "day": 7, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-08", "day": 8, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-09", "day": 9, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-10", "day": 10, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-11", "day": 11, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-12", "day": 12, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-13", "day": 13, "dow": "MONDAY", "ml": [], "andrew": ["Morning Live — Ep1"], "ian": [], "chris": [], "other": []}, {"date": "Apr-14", "day": 14, "dow": "TUESDAY", "ml": [], "andrew": ["Morning Live — Ep2"], "ian": [], "chris": [], "other": []}, {"date": "Apr-15", "day": 15, "dow": "WEDNESDAY", "ml": [], "andrew": ["Morning Live — Ep3"], "ian": [], "chris": [], "other": []}, {"date": "Apr-16", "day": 16, "dow": "THURSDAY", "ml": [], "andrew": ["Morning Live — Ep4"], "ian": [], "chris": [], "other": []}, {"date": "Apr-17", "day": 17, "dow": "FRIDAY", "ml": [], "andrew": ["Morning Live — Ep5"], "ian": [], "chris": [], "other": []}, {"date": "Apr-18", "day": 18, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-19", "day": 19, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-20", "day": 20, "dow": "MONDAY", "ml": [], "andrew": ["Dragons Den — Versa Rig", "Morning Live — Ep6"], "ian": ["Dragons Den — Versa Rig"], "chris": [], "other": []}, {"date": "Apr-21", "day": 21, "dow": "TUESDAY", "ml": [], "andrew": ["Dragons Den — Versa Rig"], "ian": ["Dragons Den — Versa Rig"], "chris": [], "other": []}, {"date": "Apr-22", "day": 22, "dow": "WEDNESDAY", "ml": [], "andrew": ["Dragons Den — Versa Rig"], "ian": ["Dragons Den — Versa Rig"], "chris": [], "other": []}, {"date": "Apr-23", "day": 23, "dow": "THURSDAY", "ml": [], "andrew": ["Dragons Den — Versa Rig"], "ian": ["Dragons Den — Versa Rig"], "chris": [], "other": []}, {"date": "Apr-24", "day": 24, "dow": "FRIDAY", "ml": [], "andrew": ["Dragons Den — Versa Rig"], "ian": ["Dragons Den — Versa Rig", "Morning Live — Ep10"], "chris": [], "other": []}, {"date": "Apr-25", "day": 25, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-26", "day": 26, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": ["Dragons Den — Cam Rig"], "chris": [], "other": []}, {"date": "Apr-27", "day": 27, "dow": "MONDAY", "ml": [], "andrew": ["Dragons Den — Cam Rig"], "ian": ["Morning Live — Ep11"], "chris": [], "other": []}, {"date": "Apr-28", "day": 28, "dow": "TUESDAY", "ml": [], "andrew": ["Dragons Den — Tech Reh"], "ian": ["Morning Live — Ep12"], "chris": [], "other": []}, {"date": "Apr-29", "day": 29, "dow": "WEDNESDAY", "ml": [], "andrew": ["Dragons Den — RX1"], "ian": ["Morning Live — Ep13"], "chris": [], "other": []}, {"date": "Apr-30", "day": 30, "dow": "THURSDAY", "ml": [], "andrew": ["Dragons Den — RX2"], "ian": ["Morning Live — Ep14"], "chris": [], "other": []}]}, {"month": "May 2026", "days": [{"date": "May-01", "day": 1, "dow": "FRIDAY", "ml": [], "andrew": ["Dragons Den — RX3"], "ian": ["Morning Live — Ep15"], "chris": [], "other": []}, {"date": "May-02", "day": 2, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "May-03", "day": 3, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "May-04", "day": 4, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "May-05", "day": 5, "dow": "TUESDAY", "ml": [], "andrew": ["Dragons Den — RX4"], "ian": ["Morning Live — Ep16"], "chris": [], "other": []}, {"date": "May-06", "day": 6, "dow": "WEDNESDAY", "ml": [], "andrew": ["Dragons Den — RX5"], "ian": ["Morning Live — Ep17"], "chris": [], "other": []}, {"date": "May-07", "day": 7, "dow": "THURSDAY", "ml": [], "andrew": ["Dragons Den — RX6"], "ian": ["Morning Live — Ep18"], "chris": [], "other": []}, {"date": "May-08", "day": 8, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": ["Morning Live — Ep19"], "chris": [], "other": []}, {"date": "May-09", "day": 9, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "May-10", "day": 10, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "May-11", "day": 11, "dow": "MONDAY", "ml": [], "andrew": [], "ian": ["Morning Live — Ep20"], "chris": [], "other": []}, {"date": "May-12", "day": 12, "dow": "TUESDAY", "ml": [], "andrew": ["Dragons Den — RX7"], "ian": ["Morning Live — Ep21"], "chris": [], "other": []}, {"date": "May-13", "day": 13, "dow": "WEDNESDAY", "ml": [], "andrew": ["Dragons Den — RX8"], "ian": ["Morning Live — Ep22"], "chris": [], "other": []}, {"date": "May-14", "day": 14, "dow": "THURSDAY", "ml": [], "andrew": ["Dragons Den — RX9"], "ian": ["Morning Live — Ep23"], "chris": [], "other": []}, {"date": "May-15", "day": 15, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": ["Morning Live — Ep24"], "chris": [], "other": []}, {"date": "May-16", "day": 16, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "May-17", "day": 17, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "May-18", "day": 18, "dow": "MONDAY", "ml": [], "andrew": [], "ian": ["Morning Live — Ep25"], "chris": [], "other": []}, {"date": "May-19", "day": 19, "dow": "TUESDAY", "ml": [], "andrew": ["Dragons Den — RX10"], "ian": ["Morning Live — Ep26"], "chris": [], "other": []}, {"date": "May-20", "day": 20, "dow": "WEDNESDAY", "ml": [], "andrew": ["Dragons Den — RX11"], "ian": ["Morning Live — Ep27"], "chris": [], "other": []}, {"date": "May-21", "day": 21, "dow": "THURSDAY", "ml": [], "andrew": ["Dragons Den — RX12"], "ian": ["Morning Live — Ep28"], "chris": [], "other": []}, {"date": "May-22", "day": 22, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": ["Morning Live — Ep29"], "chris": [], "other": []}, {"date": "May-23", "day": 23, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "May-24", "day": 24, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "May-25", "day": 25, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "May-26", "day": 26, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": ["Morning Live — Ep30"], "chris": [], "other": []}, {"date": "May-27", "day": 27, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": ["Morning Live — Ep31"], "chris": [], "other": []}, {"date": "May-28", "day": 28, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": ["Morning Live — Ep32"], "chris": [], "other": []}, {"date": "May-29", "day": 29, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": ["Morning Live — Ep33"], "chris": [], "other": []}, {"date": "May-30", "day": 30, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "May-31", "day": 31, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}]}, {"month": "June 2026", "days": [{"date": "Jun-01", "day": 1, "dow": "MONDAY", "ml": [], "andrew": ["Dragons Den — RX13"], "ian": [], "chris": [], "other": []}, {"date": "Jun-02", "day": 2, "dow": "TUESDAY", "ml": [], "andrew": ["Dragons Den — RX14"], "ian": [], "chris": [], "other": []}, {"date": "Jun-03", "day": 3, "dow": "WEDNESDAY", "ml": [], "andrew": ["Dragons Den — RX15"], "ian": [], "chris": [], "other": []}, {"date": "Jun-04", "day": 4, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-05", "day": 5, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-06", "day": 6, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-07", "day": 7, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-08", "day": 8, "dow": "MONDAY", "ml": [], "andrew": ["Dragons Den — RX13"], "ian": [], "chris": [], "other": []}, {"date": "Jun-09", "day": 9, "dow": "TUESDAY", "ml": [], "andrew": ["Dragons Den — RX14"], "ian": [], "chris": [], "other": []}, {"date": "Jun-10", "day": 10, "dow": "WEDNESDAY", "ml": [], "andrew": ["Dragons Den — Derig"], "ian": ["Dragons Den — Derig"], "chris": [], "other": []}, {"date": "Jun-11", "day": 11, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-12", "day": 12, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-13", "day": 13, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-14", "day": 14, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-15", "day": 15, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-16", "day": 16, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-17", "day": 17, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-18", "day": 18, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-19", "day": 19, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-20", "day": 20, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-21", "day": 21, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-22", "day": 22, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-23", "day": 23, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-24", "day": 24, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-25", "day": 25, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-26", "day": 26, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-27", "day": 27, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-28", "day": 28, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-29", "day": 29, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-30", "day": 30, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}]}, {"month": "July 2026", "days": [{"date": "Jul-01", "day": 1, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-02", "day": 2, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-03", "day": 3, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-04", "day": 4, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-05", "day": 5, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-06", "day": 6, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-07", "day": 7, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-08", "day": 8, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-09", "day": 9, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-10", "day": 10, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-11", "day": 11, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-12", "day": 12, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-13", "day": 13, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-14", "day": 14, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-15", "day": 15, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-16", "day": 16, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-17", "day": 17, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-18", "day": 18, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-19", "day": 19, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-20", "day": 20, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-21", "day": 21, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-22", "day": 22, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-23", "day": 23, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-24", "day": 24, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-25", "day": 25, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-26", "day": 26, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-27", "day": 27, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-28", "day": 28, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-29", "day": 29, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-30", "day": 30, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-31", "day": 31, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}]}, {"month": "August 2026", "days": [{"date": "Aug-01", "day": 1, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-02", "day": 2, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-03", "day": 3, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-04", "day": 4, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-05", "day": 5, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-06", "day": 6, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-07", "day": 7, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-08", "day": 8, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-09", "day": 9, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-10", "day": 10, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-11", "day": 11, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-12", "day": 12, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-13", "day": 13, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-14", "day": 14, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-15", "day": 15, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-16", "day": 16, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-17", "day": 17, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-18", "day": 18, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-19", "day": 19, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-20", "day": 20, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-21", "day": 21, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-22", "day": 22, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-23", "day": 23, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-24", "day": 24, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-25", "day": 25, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-26", "day": 26, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-27", "day": 27, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-28", "day": 28, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-29", "day": 29, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-30", "day": 30, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-31", "day": 31, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}]}, {"month": "September 2026", "days": [{"date": "Sep-01", "day": 1, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-02", "day": 2, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-03", "day": 3, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-04", "day": 4, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-05", "day": 5, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-06", "day": 6, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-07", "day": 7, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-08", "day": 8, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-09", "day": 9, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-10", "day": 10, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-11", "day": 11, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-12", "day": 12, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-13", "day": 13, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-14", "day": 14, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-15", "day": 15, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-16", "day": 16, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-17", "day": 17, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-18", "day": 18, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-19", "day": 19, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-20", "day": 20, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-21", "day": 21, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-22", "day": 22, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-23", "day": 23, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-24", "day": 24, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-25", "day": 25, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-26", "day": 26, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-27", "day": 27, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-28", "day": 28, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-29", "day": 29, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-30", "day": 30, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}]}, {"month": "October 2026", "days": [{"date": "Oct-01", "day": 1, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-02", "day": 2, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-03", "day": 3, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-04", "day": 4, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-05", "day": 5, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-06", "day": 6, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-07", "day": 7, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-08", "day": 8, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-09", "day": 9, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-10", "day": 10, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-11", "day": 11, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-12", "day": 12, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-13", "day": 13, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-14", "day": 14, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-15", "day": 15, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-16", "day": 16, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-17", "day": 17, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-18", "day": 18, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-19", "day": 19, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-20", "day": 20, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-21", "day": 21, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-22", "day": 22, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-23", "day": 23, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-24", "day": 24, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-25", "day": 25, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-26", "day": 26, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-27", "day": 27, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-28", "day": 28, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-29", "day": 29, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-30", "day": 30, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-31", "day": 31, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}]}, {"month": "November 2026", "days": [{"date": "Nov-01", "day": 1, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-02", "day": 2, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-03", "day": 3, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-04", "day": 4, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-05", "day": 5, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-06", "day": 6, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-07", "day": 7, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-08", "day": 8, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-09", "day": 9, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-10", "day": 10, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-11", "day": 11, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-12", "day": 12, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-13", "day": 13, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-14", "day": 14, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-15", "day": 15, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-16", "day": 16, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-17", "day": 17, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-18", "day": 18, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-19", "day": 19, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-20", "day": 20, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-21", "day": 21, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-22", "day": 22, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-23", "day": 23, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-24", "day": 24, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-25", "day": 25, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-26", "day": 26, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-27", "day": 27, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-28", "day": 28, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-29", "day": 29, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-30", "day": 30, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}]}, {"month": "December 2026", "days": [{"date": "Dec-01", "day": 1, "dow": "TUESDAY", "ml": [{"text": "MORNING LIVE IAN", "person": "IAN"}, {"text": "MORNING LIVE IAN", "person": "IAN"}], "andrew": [], "ian": [], "chris": ["CHRIS OFF"], "other": [{"text": "Apr-01", "cat": "note"}, {"text": "May-01", "cat": "note"}, {"text": "DD RX 3", "cat": "transmission"}, {"text": "Jun-01", "cat": "note"}, {"text": "DD RX - 13", "cat": "transmission"}, {"text": "Jul-01", "cat": "note"}, {"text": "Aug-01", "cat": "note"}, {"text": "Sep-01", "cat": "note"}, {"text": "Oct-01", "cat": "note"}, {"text": "Nov-01", "cat": "note"}, {"text": "Dec-01", "cat": "note"}]}, {"date": "Dec-02", "day": 2, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": [{"text": "Apr-02", "cat": "note"}, {"text": "May-02", "cat": "note"}, {"text": "BANK HOLIDAY", "cat": "absence"}, {"text": "Jun-02", "cat": "note"}, {"text": "DD RX - 14", "cat": "transmission"}, {"text": "Jul-02", "cat": "note"}, {"text": "Aug-02", "cat": "note"}, {"text": "Sep-02", "cat": "note"}, {"text": "Oct-02", "cat": "note"}, {"text": "Nov-02", "cat": "note"}, {"text": "Dec-02", "cat": "note"}]}, {"date": "Dec-03", "day": 3, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": [{"text": "Apr-03", "cat": "note"}, {"text": "Easter Weekend", "cat": "note"}, {"text": "May-03", "cat": "note"}, {"text": "Jun-03", "cat": "note"}, {"text": "DD RX - 15", "cat": "transmission"}, {"text": "Jul-03", "cat": "note"}, {"text": "Aug-03", "cat": "note"}, {"text": "Sep-03", "cat": "note"}, {"text": "Oct-03", "cat": "note"}, {"text": "Nov-03", "cat": "note"}, {"text": "Dec-03", "cat": "note"}]}, {"date": "Dec-04", "day": 4, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": [{"text": "Apr-04", "cat": "note"}, {"text": "May-04", "cat": "note"}, {"text": "Jun-04", "cat": "note"}, {"text": "Jul-04", "cat": "note"}, {"text": "Aug-04", "cat": "note"}, {"text": "Sep-04", "cat": "note"}, {"text": "Oct-04", "cat": "note"}, {"text": "Nov-04", "cat": "note"}, {"text": "Dec-04", "cat": "note"}]}, {"date": "Dec-05", "day": 5, "dow": "SATURDAY", "ml": [{"text": "MORNING LIVE IAN", "person": "IAN"}], "andrew": [], "ian": [], "chris": [], "other": [{"text": "Apr-05", "cat": "note"}, {"text": "May-05", "cat": "note"}, {"text": "DD RX - 4", "cat": "transmission"}, {"text": "Jun-05", "cat": "note"}, {"text": "Jul-05", "cat": "note"}, {"text": "Aug-05", "cat": "note"}, {"text": "Sep-05", "cat": "note"}, {"text": "Oct-05", "cat": "note"}, {"text": "Nov-05", "cat": "note"}, {"text": "Dec-05", "cat": "note"}]}, {"date": "Dec-06", "day": 6, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": [{"text": "Apr-06", "cat": "note"}, {"text": "May-06", "cat": "note"}, {"text": "DD RX - 5", "cat": "transmission"}, {"text": "Jun-06", "cat": "note"}, {"text": "Jul-06", "cat": "note"}, {"text": "Aug-06", "cat": "note"}, {"text": "Sep-06", "cat": "note"}, {"text": "Oct-06", "cat": "note"}, {"text": "Nov-06", "cat": "note"}, {"text": "Dec-06", "cat": "note"}]}, {"date": "Dec-07", "day": 7, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": ["CHRIS OFF"], "other": [{"text": "Apr-07", "cat": "note"}, {"text": "May-07", "cat": "note"}, {"text": "DD RX - 6", "cat": "transmission"}, {"text": "Jun-07", "cat": "note"}, {"text": "Jul-07", "cat": "note"}, {"text": "Aug-07", "cat": "note"}, {"text": "Sep-07", "cat": "note"}, {"text": "Oct-07", "cat": "note"}, {"text": "Nov-07", "cat": "note"}, {"text": "Dec-07", "cat": "note"}]}, {"date": "Dec-08", "day": 8, "dow": "TUESDAY", "ml": [{"text": "MORNING LIVE IAN", "person": "IAN"}], "andrew": [], "ian": [], "chris": [], "other": [{"text": "Apr-08", "cat": "note"}, {"text": "May-08", "cat": "note"}, {"text": "Jun-08", "cat": "note"}, {"text": "DD RX - 16", "cat": "transmission"}, {"text": "Jul-08", "cat": "note"}, {"text": "Aug-08", "cat": "note"}, {"text": "Sep-08", "cat": "note"}, {"text": "Oct-08", "cat": "note"}, {"text": "Nov-08", "cat": "note"}, {"text": "Dec-08", "cat": "note"}]}, {"date": "Dec-09", "day": 9, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": [{"text": "Apr-09", "cat": "note"}, {"text": "May-09", "cat": "note"}, {"text": "Jun-09", "cat": "note"}, {"text": "DD RX - 17", "cat": "transmission"}, {"text": "Jul-09", "cat": "note"}, {"text": "Aug-09", "cat": "note"}, {"text": "Sep-09", "cat": "note"}, {"text": "Oct-09", "cat": "note"}, {"text": "Nov-09", "cat": "note"}, {"text": "Dec-09", "cat": "note"}]}, {"date": "Dec-10", "day": 10, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": [{"text": "Apr-10", "cat": "note"}, {"text": "May-10", "cat": "note"}, {"text": "Jun-10", "cat": "note"}, {"text": "DD - Strike 1/2", "cat": "production"}, {"text": "Jul-10", "cat": "note"}, {"text": "Aug-10", "cat": "note"}, {"text": "Sep-10", "cat": "note"}, {"text": "Oct-10", "cat": "note"}, {"text": "Nov-10", "cat": "note"}, {"text": "Dec-10", "cat": "note"}]}, {"date": "Dec-11", "day": 11, "dow": "FRIDAY", "ml": [{"text": "MORNING LIVE IAN", "person": "IAN"}], "andrew": [], "ian": [], "chris": ["CHRIS OFF"], "other": [{"text": "Apr-11", "cat": "note"}, {"text": "May-11", "cat": "note"}, {"text": "Jun-11", "cat": "note"}, {"text": "Jul-11", "cat": "note"}, {"text": "Aug-11", "cat": "note"}, {"text": "Sep-11", "cat": "note"}, {"text": "Oct-11", "cat": "note"}, {"text": "Nov-11", "cat": "note"}, {"text": "Dec-11", "cat": "note"}]}, {"date": "Dec-12", "day": 12, "dow": "SATURDAY", "ml": [], "andrew": ["Andy London Concert"], "ian": [], "chris": ["CHRIS OFF"], "other": [{"text": "Apr-12", "cat": "note"}, {"text": "AR ML to check", "cat": "note"}, {"text": "May-12", "cat": "note"}, {"text": "DD RX - 7", "cat": "transmission"}, {"text": "Jun-12", "cat": "note"}, {"text": "Jul-12", "cat": "note"}, {"text": "Aug-12", "cat": "note"}, {"text": "Sep-12", "cat": "note"}, {"text": "Oct-12", "cat": "note"}, {"text": "Nov-12", "cat": "note"}, {"text": "Dec-12", "cat": "note"}]}, {"date": "Dec-13", "day": 13, "dow": "SUNDAY", "ml": [{"text": "MORNING LIVE Andrew", "person": "Andrew"}], "andrew": ["Andy Great North Run"], "ian": [], "chris": [], "other": [{"text": "Apr-13", "cat": "note"}, {"text": "May-13", "cat": "note"}, {"text": "DD RX - 8", "cat": "transmission"}, {"text": "Jun-13", "cat": "note"}, {"text": "Jul-13", "cat": "note"}, {"text": "Aug-13", "cat": "note"}, {"text": "Sep-13", "cat": "note"}, {"text": "Oct-13", "cat": "note"}, {"text": "Nov-13", "cat": "note"}, {"text": "Dec-13", "cat": "note"}]}, {"date": "Dec-14", "day": 14, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": [{"text": "Apr-14", "cat": "note"}, {"text": "May-14", "cat": "note"}, {"text": "DD RX - 9", "cat": "transmission"}, {"text": "Jun-14", "cat": "note"}, {"text": "Jul-14", "cat": "note"}, {"text": "Aug-14", "cat": "note"}, {"text": "Sep-14", "cat": "note"}, {"text": "Oct-14", "cat": "note"}, {"text": "Nov-14", "cat": "note"}, {"text": "Dec-14", "cat": "note"}]}, {"date": "Dec-15", "day": 15, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": [{"text": "Apr-15", "cat": "note"}, {"text": "DRAGONS - LX Truss 1/10", "cat": "dragons"}, {"text": "May-15", "cat": "note"}, {"text": "Jun-15", "cat": "note"}, {"text": "Jul-15", "cat": "note"}, {"text": "Aug-15", "cat": "note"}, {"text": "Sep-15", "cat": "note"}, {"text": "Oct-15", "cat": "note"}, {"text": "Nov-15", "cat": "note"}, {"text": "Dec-15", "cat": "note"}]}, {"date": "Dec-16", "day": 16, "dow": "WEDNESDAY", "ml": [], "andrew": ["ANDY OFF"], "ian": [], "chris": ["CHRIS OFF"], "other": [{"text": "Apr-16", "cat": "note"}, {"text": "DRAGONS - LX & Scenic 2/10", "cat": "dragons"}, {"text": "May-16", "cat": "note"}, {"text": "Jun-16", "cat": "note"}, {"text": "Jul-16", "cat": "note"}, {"text": "Aug-16", "cat": "note"}, {"text": "Sep-16", "cat": "note"}, {"text": "Oct-16", "cat": "note"}, {"text": "Nov-16", "cat": "note"}, {"text": "Dec-16", "cat": "note"}]}, {"date": "Dec-17", "day": 17, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": [{"text": "Apr-17", "cat": "note"}, {"text": "DD - LX & Scenic 3/10", "cat": "note"}, {"text": "May-17", "cat": "note"}, {"text": "Jun-17", "cat": "note"}, {"text": "Jul-17", "cat": "note"}, {"text": "Aug-17", "cat": "note"}, {"text": "Sep-17", "cat": "note"}, {"text": "Oct-17", "cat": "note"}, {"text": "Nov-17", "cat": "note"}, {"text": "Dec-17", "cat": "note"}]}, {"date": "Dec-18", "day": 18, "dow": "FRIDAY", "ml": [{"text": "MORNING LIVE IAN", "person": "IAN"}], "andrew": [], "ian": [], "chris": [], "other": [{"text": "Apr-18", "cat": "note"}, {"text": "May-18", "cat": "note"}, {"text": "Jun-18", "cat": "note"}, {"text": "Jul-18", "cat": "note"}, {"text": "Aug-18", "cat": "note"}, {"text": "Sep-18", "cat": "note"}, {"text": "Oct-18", "cat": "note"}, {"text": "Nov-18", "cat": "note"}, {"text": "Dec-18", "cat": "note"}]}, {"date": "Dec-19", "day": 19, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": [{"text": "Apr-19", "cat": "note"}, {"text": "May-19", "cat": "note"}, {"text": "DD RX - 10", "cat": "transmission"}, {"text": "Jun-19", "cat": "note"}, {"text": "Jul-19", "cat": "note"}, {"text": "Aug-19", "cat": "note"}, {"text": "Sep-19", "cat": "note"}, {"text": "Oct-19", "cat": "note"}, {"text": "Nov-19", "cat": "note"}, {"text": "Dec-19", "cat": "note"}]}, {"date": "Dec-20", "day": 20, "dow": "SUNDAY", "ml": [{"text": "MORNING LIVE", "person": ""}], "andrew": [], "ian": [], "chris": [], "other": [{"text": "Apr-20", "cat": "note"}, {"text": "DD - Cable Rig 4/10", "cat": "production"}, {"text": "May-20", "cat": "note"}, {"text": "DD RX - 11", "cat": "transmission"}, {"text": "Jun-20", "cat": "note"}, {"text": "Jul-20", "cat": "note"}, {"text": "Aug-20", "cat": "note"}, {"text": "Sep-20", "cat": "note"}, {"text": "Oct-20", "cat": "note"}, {"text": "Nov-20", "cat": "note"}, {"text": "Dec-20", "cat": "note"}]}, {"date": "Dec-21", "day": 21, "dow": "MONDAY", "ml": [{"text": "MORNING LIVE - JAMES LAISHLEY", "person": "- JAMES LAISHLEY"}], "andrew": [], "ian": [], "chris": [], "other": [{"text": "Apr-21", "cat": "note"}, {"text": "DD S & L 5/10", "cat": "note"}, {"text": "I'm a Celeb - London", "cat": "note"}, {"text": "May-21", "cat": "note"}, {"text": "DD RX - 12", "cat": "transmission"}, {"text": "Jun-21", "cat": "note"}, {"text": "Jul-21", "cat": "note"}, {"text": "Aug-21", "cat": "note"}, {"text": "Sep-21", "cat": "note"}, {"text": "Oct-21", "cat": "note"}, {"text": "Nov-21", "cat": "note"}, {"text": "Dec-21", "cat": "note"}]}, {"date": "Dec-22", "day": 22, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": ["CHRIS OFF"], "other": [{"text": "Apr-22", "cat": "note"}, {"text": "DD S & L 6/10", "cat": "note"}, {"text": "May-22", "cat": "note"}, {"text": "Jun-22", "cat": "note"}, {"text": "Jul-22", "cat": "note"}, {"text": "Aug-22", "cat": "note"}, {"text": "Sep-22", "cat": "note"}, {"text": "Oct-22", "cat": "note"}, {"text": "Nov-22", "cat": "note"}, {"text": "Dec-22", "cat": "note"}]}, {"date": "Dec-23", "day": 23, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": [{"text": "Apr-23", "cat": "note"}, {"text": "DD S & L 7/10", "cat": "note"}, {"text": "May-23", "cat": "note"}, {"text": "BANK HOLIDAY", "cat": "absence"}, {"text": "Jun-23", "cat": "note"}, {"text": "Jul-23", "cat": "note"}, {"text": "Aug-23", "cat": "note"}, {"text": "Sep-23", "cat": "note"}, {"text": "Oct-23", "cat": "note"}, {"text": "Nov-23", "cat": "note"}, {"text": "Dec-23", "cat": "note"}]}, {"date": "Dec-24", "day": 24, "dow": "````", "ml": [{"text": "MORNING LIVE - Ian", "person": "- Ian"}], "andrew": [], "ian": [], "chris": [], "other": [{"text": "Apr-24", "cat": "note"}, {"text": "DD S & L 8/10 + 1 Cam", "cat": "note"}, {"text": "DD Versa Rig1", "cat": "production"}, {"text": "May-24", "cat": "note"}, {"text": "Jun-24", "cat": "note"}, {"text": "Jul-24", "cat": "note"}, {"text": "Aug-24", "cat": "note"}, {"text": "Sep-24", "cat": "note"}, {"text": "Oct-24", "cat": "note"}, {"text": "Nov-24", "cat": "note"}, {"text": "Dec-24", "cat": "note"}]}, {"date": "Dec-25", "day": 25, "dow": "FRIDAY", "ml": [], "andrew": ["Andy Running London Marathon"], "ian": [], "chris": [], "other": [{"text": "Apr-25", "cat": "note"}, {"text": "DD - DARK", "cat": "transmission"}, {"text": "May-25", "cat": "note"}, {"text": "Jun-25", "cat": "note"}, {"text": "Jul-25", "cat": "note"}, {"text": "Aug-25", "cat": "note"}, {"text": "Sep-25", "cat": "note"}, {"text": "Oct-25", "cat": "note"}, {"text": "Nov-25", "cat": "note"}, {"text": "Dec-25", "cat": "note"}, {"text": "XMAS DAY", "cat": "holiday"}]}, {"date": "Dec-26", "day": 26, "dow": "SATURDAY", "ml": [{"text": "MORNING LIVE IAN", "person": "IAN"}], "andrew": [], "ian": [], "chris": [], "other": [{"text": "Apr-26", "cat": "note"}, {"text": "DD - 9/10 Sound & Cam Rig", "cat": "production"}, {"text": "May-26", "cat": "note"}, {"text": "Jun-26", "cat": "note"}, {"text": "Jul-26", "cat": "note"}, {"text": "Aug-26", "cat": "note"}, {"text": "Sep-26", "cat": "note"}, {"text": "Oct-26", "cat": "note"}, {"text": "Nov-26", "cat": "note"}, {"text": "Dec-26", "cat": "note"}]}, {"date": "Dec-27", "day": 27, "dow": "SUNDAY", "ml": [{"text": "MORNING LIVE IAN", "person": "IAN"}], "andrew": [], "ian": [], "chris": ["CHRIS OFF"], "other": [{"text": "Apr-27", "cat": "note"}, {"text": "DD - Tech Line Up - 10/10", "cat": "note"}, {"text": "May-27", "cat": "note"}, {"text": "Jun-27", "cat": "note"}, {"text": "Jul-27", "cat": "note"}, {"text": "Aug-27", "cat": "note"}, {"text": "Sep-27", "cat": "note"}, {"text": "Oct-27", "cat": "note"}, {"text": "Nov-27", "cat": "note"}, {"text": "Dec-27", "cat": "note"}]}, {"date": "Dec-28", "day": 28, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": [{"text": "Apr-28", "cat": "note"}, {"text": "DD - TECH REH", "cat": "production"}, {"text": "May-28", "cat": "note"}, {"text": "Jun-28", "cat": "note"}, {"text": "Jul-28", "cat": "note"}, {"text": "Aug-28", "cat": "note"}, {"text": "Sep-28", "cat": "note"}, {"text": "Oct-28", "cat": "note"}, {"text": "Nov-28", "cat": "note"}, {"text": "Dec-28", "cat": "note"}]}, {"date": "Dec-29", "day": 29, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": [{"text": "Apr-29", "cat": "note"}, {"text": "DD RX 1", "cat": "transmission"}, {"text": "May-29", "cat": "note"}, {"text": "Jun-29", "cat": "note"}, {"text": "Jul-29", "cat": "note"}, {"text": "Aug-29", "cat": "note"}, {"text": "Sep-29", "cat": "note"}, {"text": "Oct-29", "cat": "note"}, {"text": "Nov-29", "cat": "note"}, {"text": "Dec-29", "cat": "note"}]}, {"date": "Dec-30", "day": 30, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": [{"text": "Apr-30", "cat": "note"}, {"text": "DD RX 2", "cat": "transmission"}, {"text": "May-30", "cat": "note"}, {"text": "Jun-30", "cat": "note"}, {"text": "Jul-30", "cat": "note"}, {"text": "Aug-30", "cat": "note"}, {"text": "Sep-30", "cat": "note"}, {"text": "Oct-30", "cat": "note"}, {"text": "Nov-30", "cat": "note"}, {"text": "Dec-30", "cat": "note"}]}, {"date": "Dec-31", "day": 31, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": [{"text": "May-31", "cat": "note"}, {"text": "Jul-31", "cat": "note"}, {"text": "Aug-31", "cat": "note"}, {"text": "Oct-31", "cat": "note"}, {"text": "Dec-31", "cat": "note"}]}]}];
+function opsIsWk(dow){const d=(dow||'').toUpperCase();return d==='SATURDAY'||d==='SUNDAY';}
+function opsDStr(month,day){return(OPS_MPX[month]||'2026-03')+'-'+String(day).padStart(2,'0');}
+function opsMlColor(name){if(!name)return'#2d7dd2';const k=Object.keys(OPS_ML_COLORS).find(k=>name.toLowerCase().startsWith(k.split(' ')[0].toLowerCase()));return k?OPS_ML_COLORS[k]:'#2d7dd2';}
+function opsInBrk(ds){return _opsBrk.find(b=>ds>=b.start&&ds<=b.end)||null;}
+function opsChip(t){var u=t.toUpperCase();if(/^\[MCR\]/.test(u))return'ops-mcr';if(/^\[LDN\]/.test(u))return'ops-ldn';if(/SHOP.?ON|DRAG.RACE|RUPAUL|DRAGON/.test(u))return'ops-show';if(/RIG|DERIG|REHEAR|CAMERA RIG/.test(u))return'ops-prod';if(/\bRX\s*\d|\bDARK\b/.test(u))return'ops-prod';if(/MEET|RECCE|EVENT/.test(u))return'ops-event';return'ops-note';}
+function opsRChips(vals,fc){if(!vals.length)return'<div class="ops-mt"></div>';return vals.map(v=>{const cls=fc||opsChip(v);const s=v.length>17?v.slice(0,16)+'\u2026':v;return'<div class="ops-chip '+cls+'" title="'+v.replace(/"/g,'&quot;')+'">'+s+'</div>';}).join('');}
+function opsSeedFromJobs(){
+  jobs.forEach(function(j){
+    if(!j.txDates||!j.studio)return;
+    var stuKeys=j.studios?j.studios:[j.loc==='London'?'London':j.studio];
+    j.txDates.forEach(function(td,di){
+      var val=td.date;if(!val)return;
+      var ds=val.split('-');if(ds.length!==3)return;
+      var yr=parseInt(ds[0]),mo=parseInt(ds[1]),day=parseInt(ds[2]);
+      for(var mi=0;mi<OPS_CAL.length;mi++){
+        var px=OPS_MPX[OPS_CAL[mi].month];if(!px)continue;
+        var parts=px.split('-').map(Number);
+        if(parts[0]===yr&&parts[1]===mo){
+          var locPfx=j.loc==='Manchester'?'[MCR] ':'';
+          var label=locPfx+(td.label||(j.name+' RX '+(di+1)));
+          stuKeys.forEach(function(sk){
+            var row='st_'+sk;
+            var cur=og(OPS_CAL[mi].month,day,row).slice();
+            if(!cur.includes(label)){cur.push(label);os(OPS_CAL[mi].month,day,row,cur);}
+            if(!_opsStu.has(sk))_opsStu.add(sk);
+          });
+          // Morning Live: write tech manager name to ml row as plain string
+          if(j.name==='Morning Live'&&td.crew&&td.crew['Tech Manager']){
+            var tm=td.crew['Tech Manager'];
+            var mlCur=og(OPS_CAL[mi].month,day,'ml').slice();
+            if(!mlCur.includes(tm)){mlCur=[tm];os(OPS_CAL[mi].month,day,'ml',mlCur);}
+          }
+          break;
+        }
+      }
+    });
+  });
+}
+function opsMlSpans(month,days){
+  const spans=[],cov=new Set();let i=0;
+  while(i<days.length){
+    const d=days[i];const ds=opsDStr(month,d.day);
+    const brk=opsInBrk(ds);
+    if(brk){
+      let j=i+1;
+      while(j<days.length&&opsInBrk(opsDStr(month,days[j].day))===brk)j++;
+      const ei=j-1;
+      spans.push({si:i,ei,label:brk.name,isBreak:true});
+      for(let k=i+1;k<=ei;k++)cov.add(k);
+      i=j;continue;
+    }
+    // Skip weekends — they render as their own cells, never start/continue a span
+    if(opsIsWk(d.dow)){i++;continue;}
+    const v=og(month,d.day,'ml');
+    if(v.length&&v[0]!=='Break / Off Air'){
+      const person=v[0];let j=i+1;let crossedWknd=false;
+      while(j<days.length){
+        const nd=days[j];
+        if(opsInBrk(opsDStr(month,nd.day)))break;
+        // Weekend days: track that we've crossed into a new week
+        if(opsIsWk(nd.dow)){crossedWknd=true;j++;continue;}
+        // Always break at Monday — never span across week boundaries
+        if(nd.dow.toUpperCase()==='MONDAY')break;
+        const nv=og(month,nd.day,'ml');
+        if(nv.length&&nv[0]===person)j++;
+        else break;
+      }
+      let ei=j-1;
+      while(ei>i&&opsIsWk(days[ei].dow))ei--;
+      spans.push({si:i,ei,label:person,isBreak:false});
+      for(let k=i+1;k<=ei;k++)cov.add(k);
+      i=ei+1;
+    }else i++;
+  }
+  return{spans,cov};
+}
+
+function opsRenderMonth(m,mi){
+  const days=m.days;const n=days.length;if(!n)return'';
+  // Auto-seed Sat/Sun as Break/Off Air for Morning Live
+  days.forEach(function(d){
+    if(opsIsWk(d.dow)){
+      var cur=og(m.month,d.day,'ml');
+      if(!cur.length||cur[0]==='Break / Off Air')
+        os(m.month,d.day,'ml',['Break / Off Air']);
+    }
+  });
+  const{spans,cov}=opsMlSpans(m.month,days);
+  const spMap={};spans.forEach(sp=>spMap[sp.si]=sp);
+  let h='<table class="ops-tbl">';
+  h+='<tr class="ops-mhdr"><td colspan="'+(n+1)+'"><div style="display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap;"><span class="ops-mhdr-txt">'+m.month.split(' ')[0].toUpperCase()+'</span><span style="font-size:18px;font-weight:800;letter-spacing:.04em;color:rgba(216,90,97,.7);padding-bottom:8px;">'+m.month.split(' ')[1]+'</span></div></td></tr>';
+  h+='<tr class="ops-dhdr"><td class="ops-rlbl" style="border-bottom:1px solid var(--border)"></td>';
+  days.forEach(d=>{const wk=opsIsWk(d.dow);const td=opsDStr(m.month,d.day)===OPS_TODAY;h+='<td><div class="ops-dh'+(wk?' wk':'')+(td?' td':'')+'"><span style="font-size:9px;display:block;margin-bottom:3px;">'+d.dow.slice(0,1)+'</span><div class="dn-wrap" style="width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto;font-size:13px;font-weight:900;background:'+(td?'#d85a61':'rgba(216,90,97,.1)')+';color:'+(td?'#fff':'rgba(184,79,85,.8)')+';'+(td?'box-shadow:0 4px 10px rgba(216,90,97,.28);':'')+'">'+d.day+'</div></div></td>';});
+  h+='</tr>';
+  const cell=(idx,row,fc)=>{
+    const d=days[idx];const wk=opsIsWk(d.dow);const td=opsDStr(m.month,d.day)===OPS_TODAY;
+    const vals=og(m.month,d.day,row);
+    const rid=('oc_'+mi+'_'+d.day+'_'+row).replace(/[^a-zA-Z0-9_]/g,'_');
+    const cls='ops-cell'+(wk?' wk':'')+(td?' td':'');
+    if(row==='ml'){
+      if(cov.has(idx))return null;
+      const sp=spMap[idx];const cs=sp?(sp.ei-sp.si+1):1;
+      const person=vals.length?vals[0]:'';
+      let chip;
+      if(sp&&sp.isBreak)chip='<div class="ops-chip ops-brk">'+sp.label+'</div>';
+      else if(!person)chip='<div class="ops-mt"></div>';
+      else if(person==='Break / Off Air')chip='<div class="ops-chip ops-brk">Break</div>';
+      else chip='<div class="ops-chip ops-ml" style="background:'+opsMlColor(person)+'">'+person.split(' ')[0]+'</div>';
+      return'<td class="'+cls+'" colspan="'+cs+'" id="'+rid+'" data-mi="'+mi+'" data-day="'+d.day+'" data-row="ml" onclick="opsCk(this)">'+chip+'</td>';
+    }
+    return'<td class="'+cls+'" id="'+rid+'" data-mi="'+mi+'" data-day="'+d.day+'" data-row="'+row+'" onclick="opsCk(this)">'+opsRChips(vals,fc)+'</td>';
+  };
+  const srow=lbl=>'<tr class="ops-srow"><td colspan="'+(n+1)+'">'+lbl+'</td></tr>';
+  const gap='<tr class="ops-gap"><td colspan="'+(n+1)+'"></td></tr>';
+  const brow=(lbl,row,color,fc)=>{let r='<tr><td class="ops-rlbl" style="color:'+color+'">'+lbl+'</td>';days.forEach((_,i)=>{const c=cell(i,row,fc);if(c)r+=c;});return r+'</tr>';};
+  h+=srow('Morning Live');
+  h+=brow('Morning Live','ml','#2d7dd2',null);
+  h+=srow('Meetings / Events');
+  h+=brow('Events','events','#20a0a0','ops-event');
+  // Studio location map — hardcoded base + job overrides
+  var stuLocMap=Object.assign({},OPS_STU_LOC);
+  jobs.forEach(function(jj){
+    if(jj.studio&&jj.loc){
+      stuLocMap[jj.studio]=jj.loc;
+      if(jj.loc==='London')stuLocMap['London']='London';
+    }
+  });
+
+
+  const stus=OPS_STUDIOS;
+  stus.forEach(function(st){
+    if(_opsHidStu.has(st))return;
+    var loc=stuLocMap[st]||'';
+    var lCol=loc==='Manchester'?'#2a6e3a':loc==='London'?'#1a4e8a':'rgba(154,112,48,.9)';
+    var lBg=loc==='Manchester'?'rgba(42,110,58,.08)':loc==='London'?'rgba(26,78,138,.08)':'rgba(255,251,246,.9)';
+    var locBadge=loc==='Manchester'?'<span style="font-size:8px;font-weight:900;background:rgba(42,110,58,.15);color:#2a6e3a;border-radius:999px;padding:1px 5px;margin-left:4px;border:1px solid rgba(42,110,58,.25);">MCR</span>':loc==='London'?'<span style="font-size:8px;font-weight:900;background:rgba(26,78,138,.15);color:#1a4e8a;border-radius:999px;padding:1px 5px;margin-left:4px;border:1px solid rgba(26,78,138,.25);">LDN</span>':'';
+    let r='<tr><td class="ops-rlbl" style="color:'+lCol+';background:'+lBg+'">'+st+locBadge+'</td>';
+    days.forEach(function(d,idx){
+      const row='st_'+st;const wk=opsIsWk(d.dow);const td=opsDStr(m.month,d.day)===OPS_TODAY;
+      const vals=og(m.month,d.day,row);
+      const rid=('oc_'+mi+'_'+d.day+'_'+row).replace(/[^a-zA-Z0-9_]/g,'_');
+      r+='<td class="ops-cell'+(wk?' wk':'')+(td?' td':'')+'" id="'+rid+'" data-mi="'+mi+'" data-day="'+d.day+'" data-row="'+row+'" onclick="opsCk(this)">'+opsRChips(vals,null)+'</td>';
+    });
+    r+='</tr>';h+=r;
+  });
+  h+=gap;
+  h+=brow('Andrew','andrew','#3a8a55','ops-andrew');
+  h+=gap;
+  h+=brow('Chris','chris','#907010','ops-chris');
+  h+=gap;
+  h+=brow('Ian','ian','#3a5aaa','ops-ian');
+  h+='</table>';
+  return h;
+}
+
+function opsPickStu(){const avail=OPS_STUDIOS.filter(s=>!_opsStu.has(s));if(!avail.length){alert('All studios added');return;}let html='<div id="opsStuPk" onclick="if(event.target===this)this.remove()" style="position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:999;display:flex;align-items:center;justify-content:center"><div style="background:var(--dark);border:1px solid var(--border);border-radius:4px;min-width:190px;overflow:hidden"><div style="padding:10px 13px;border-bottom:1px solid var(--border);font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--subtle)">Add Studio</div>';avail.forEach(s=>{html+='<div onclick="opsAddStu(\''+s+'\')" class="ops-co" style="padding:9px 13px;font-size:14px">'+s+'</div>';});html+='</div></div>';document.body.insertAdjacentHTML('beforeend',html);}
+function opsAddStu(s){_opsStu.add(s);const pk=document.getElementById('opsStuPk');if(pk)pk.remove();opsReRender();}
+function opsDelStu(s){_opsStu.delete(s);opsReRender();}
+function opsToggleStu(s){
+  if(_opsHidStu.has(s))_opsHidStu.delete(s);else _opsHidStu.add(s);
+  opsReRenderAll();
+}
+function opsRenderStuToggle(){
+  var bar=document.getElementById('opsStuToggle2');
+  if(!bar)return;
+  bar.style.display='flex';
+  bar.style.flexWrap='wrap';
+  bar.style.gap='5px';
+  bar.style.alignItems='center';
+  bar.style.background='rgba(255,251,246,.98)';
+  while(bar.firstChild)bar.removeChild(bar.firstChild);
+  var lbl=document.createElement('span');
+  lbl.style.cssText='font-size:9px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:rgba(184,79,85,.5);margin-right:4px;flex-shrink:0;';
+  lbl.textContent='Studios:';
+  bar.appendChild(lbl);
+  var stuLocMap=Object.assign({},OPS_STU_LOC);
+  jobs.forEach(function(jj){if(jj.studio&&jj.loc)stuLocMap[jj.studio]=jj.loc;});
+  OPS_STUDIOS.forEach(function(st){
+    var isHid=_opsHidStu.has(st);
+    var loc=stuLocMap[st]||'';
+    var col=loc==='Manchester'?'#2a6e3a':loc==='London'?'#1a4e8a':'#9a7030';
+    var bg=isHid?'rgba(0,0,0,.06)':loc==='Manchester'?'rgba(42,110,58,.15)':loc==='London'?'rgba(26,78,138,.15)':'rgba(216,90,97,.1)';
+    var bdr=isHid?'rgba(180,180,180,.3)':loc==='Manchester'?'rgba(42,110,58,.3)':loc==='London'?'rgba(26,78,138,.3)':'rgba(216,90,97,.3)';
+    var btn=document.createElement('button');
+    btn.textContent=st;
+    btn.style.cssText='font-size:11px;font-weight:800;padding:4px 12px;border-radius:999px;border:1px solid '+bdr+';background:'+bg+';color:'+(isHid?'rgba(150,150,150,.5)':col)+';cursor:pointer;text-decoration:'+(isHid?'line-through':'none')+';-webkit-tap-highlight-color:transparent;';
+    (function(studio){btn.addEventListener('click',function(e){e.stopPropagation();opsToggleStu(studio);});})(st);
+    bar.appendChild(btn);
+  });
+}
+function renderGanttStuToggle(){
+  var bar=document.getElementById('ganttStuToggle');
+  if(!bar)return;
+  bar.style.display='flex';
+  bar.style.flexWrap='wrap';
+  bar.style.gap='5px';
+  bar.style.alignItems='center';
+  bar.style.padding='7px 12px';
+  bar.style.borderBottom='1px solid rgba(216,90,97,.12)';
+  bar.style.background='rgba(255,251,246,.98)';
+  while(bar.firstChild)bar.removeChild(bar.firstChild);
+  var lbl=document.createElement('span');
+  lbl.style.cssText='font-size:9px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:rgba(184,79,85,.5);margin-right:4px;flex-shrink:0;';
+  lbl.textContent='Toggle:';
+  bar.appendChild(lbl);
+  GANTT_STUDIOS.forEach(function(st){
+    var isHid=_ganttHidStu.has(st);
+    var isLon=st==='London';var isABC=st==='ABC';
+    var col=isLon?'#1a4e8a':isABC?'#9a7030':'#2a6e3a';
+    var bg=isHid?'rgba(0,0,0,.06)':isLon?'rgba(26,78,138,.15)':isABC?'rgba(216,90,97,.1)':'rgba(42,110,58,.15)';
+    var bdr=isHid?'rgba(180,180,180,.3)':isLon?'rgba(26,78,138,.3)':isABC?'rgba(216,90,97,.3)':'rgba(42,110,58,.3)';
+    var btn=document.createElement('button');
+    btn.textContent=st;
+    btn.style.cssText='font-size:11px;font-weight:800;padding:4px 12px;border-radius:999px;border:1px solid '+bdr+';background:'+bg+';color:'+(isHid?'rgba(150,150,150,.5)':col)+';cursor:pointer;text-decoration:'+(isHid?'line-through':'none')+';-webkit-tap-highlight-color:transparent;';
+    (function(s){btn.addEventListener('click',function(e){e.stopPropagation();ganttToggleStu(s);});})(st);
+    bar.appendChild(btn);
+  });
+}
+function opsReRender(){
+  opsSeedFromJobs();
+  var secs=document.querySelectorAll('#opsBody .ops-ms');
+  secs.forEach(function(sec,i){
+    if(sec.style.display!=='none') sec.innerHTML=opsRenderMonth(OPS_CAL[i],i);
+  });
+}
+function opsReRenderAll(){
+  opsSeedFromJobs();
+  var secs=document.querySelectorAll('#opsBody .ops-ms');
+  secs.forEach(function(sec,i){
+    if(sec.style.display!=='none') sec.innerHTML=opsRenderMonth(OPS_CAL[i],i);
+  });
+}
+
+let _opsEd=null;
+function opsCk(td){
+  const mi=+td.dataset.mi,day=+td.dataset.day,row=td.dataset.row;
+  // Block editing weekend ML cells
+  if(row==='ml'){const m=OPS_CAL[mi];if(m){const d=m.days.find(function(x){return x.day===day;});if(d&&opsIsWk(d.dow))return;}}
+  const month=OPS_CAL[mi].month;
+  _opsEd={mi,day,row,id:td.id,month};
+  const cur=og(month,day,row);
+  const mkO=(val,col,single)=>{const sel=cur.includes(val);return'<div class="ops-co'+(sel?' sel':'')+'" data-v="'+val.replace(/"/g,'&quot;')+'" data-s="'+(single?1:0)+'" onclick="opsOpt(this)"><div class="ops-cd" style="background:'+col+'"></div>'+val.replace(/&/g,'&amp;')+(sel?'<span class="ops-ck">✓</span>':'')+'</div>';};
+  let html='';
+  if(row==='ml'){html+='<div class="ops-cs">Tech Manager</div>';OPS_TM.forEach(tm=>html+=mkO(tm,opsMlColor(tm),true));html+='<div class="ops-div"></div><div class="ops-cs">Off Air</div>';html+=mkO('Break / Off Air','#333',true);}
+  else if(row==='events'){html+='<div class="ops-cs">Events</div>';}
+  else if(row.startsWith('st_')){const stName=row.slice(3);html+='<div class="ops-cs">'+stName+'</div>';}
+  else{const colMap={andrew:'#3a8a55',chris:'#907010',ian:'#3a5aaa'};const col=colMap[row]||'#555';html+='<div class="ops-cs">'+row.charAt(0).toUpperCase()+row.slice(1)+'</div>';html+=mkO('Day Off',col,false);html+='<div class="ops-div"></div><div class="ops-cs">Jobs</div>';jobs.filter(function(j){return j.status!=='Cancelled';}).forEach(function(j){html+=mkO(j.name,col,false);});}
+  html+='<div class="ops-div"></div><input class="ops-ci" id="opsCiTxt" placeholder="Custom..." onkeydown="if(event.keyCode===13)opsCiAdd()"/><button class="ops-ca" onclick="opsCiAdd()">+ Add Custom</button>';
+  if(cur.length)html+='<div class="ops-div"></div><div class="ops-co" onclick="opsClear()" style="color:#c06060"><div class="ops-cd" style="background:#c06060"></div>Clear cell</div>';
+  const ced=document.getElementById('opsCed');
+  document.getElementById('opsCedIn').innerHTML=html;
+  const rect=td.getBoundingClientRect();
+  var vh=window.visualViewport?window.visualViewport.height:window.innerHeight;
+  var vw=window.visualViewport?window.visualViewport.width:window.innerWidth;
+  var vtop=window.visualViewport?(window.visualViewport.offsetTop||0):0;
+  ced.style.top=Math.min(rect.bottom+3,vtop+vh-270)+'px';
+  ced.style.left=Math.max(4,Math.min(rect.left,vw-234))+'px';
+  ced.style.display='block';
+  setTimeout(()=>{const i=document.getElementById('opsCiTxt');if(i)i.focus();},25);
+}
+function opsOpt(el){if(!_opsEd)return;const val=el.dataset.v;const single=el.dataset.s==='1';const{month,day,row,id}=_opsEd;let cur=og(month,day,row).slice();if(single)cur=cur.includes(val)?[]:[val];else{if(cur.includes(val))cur=cur.filter(x=>x!==val);else cur.push(val);}os(month,day,row,cur);if(row==='ml'){const ML_SYNC={andrew:'Andrew',ian:'Ian'};Object.keys(ML_SYNC).forEach(function(rk){var nm=ML_SYNC[rk];var ex=og(month,day,rk).slice();if(cur.length&&cur[0]&&cur[0].toLowerCase().startsWith(nm.toLowerCase())){if(!ex.includes('Morning Live'))ex=['Morning Live'];os(month,day,rk,ex);}else{var cl=ex.filter(function(x){return x!=='Morning Live';});if(cl.length!==ex.length)os(month,day,rk,cl);}});opsReRender();}else{opsRefCell(id,month,day,row);opsCk(document.getElementById(id));}}
+function opsCiAdd(){const inp=document.getElementById('opsCiTxt');if(!inp||!inp.value.trim())return;const val=inp.value.trim();const{month,day,row,id}=_opsEd;const cur=og(month,day,row).slice();if(!cur.includes(val)){cur.push(val);os(month,day,row,cur);}inp.value='';opsRefCell(id,month,day,row);opsCk(document.getElementById(id));}
+function opsClear(){if(!_opsEd)return;const{month,day,row,id}=_opsEd;os(month,day,row,[]);opsRefCell(id,month,day,row);opsCloseCed();}
+function opsCloseCed(){document.getElementById('opsCed').style.display='none';_opsEd=null;}
+function opsRefCell(id,month,day,row){const el=document.getElementById(id);if(!el)return;const vals=og(month,day,row);const fc={andrew:'ops-andrew',chris:'ops-chris',ian:'ops-ian'}[row]||null;if(row==='ml'){if(!vals.length)el.innerHTML='<div class="ops-mt"></div>';else if(vals[0]==='Break / Off Air')el.innerHTML='<div class="ops-chip ops-brk">Break</div>';else el.innerHTML='<div class="ops-chip ops-ml" style="background:'+opsMlColor(vals[0])+'">'+vals[0].split(' ')[0]+'</div>';}else el.innerHTML=opsRChips(vals,fc);}
+function opsRxNum(mi,currentDay,row){const m=OPS_CAL[mi];if(!m)return 1;let n=0;m.days.forEach(d=>{if(d.day<currentDay)og(m.month,d.day,row).forEach(v=>{if(/^RX\s*\d+$/i.test(v.trim()))n++;});});return n+1;}
+document.addEventListener('click',e=>{const ced=document.getElementById('opsCed');if(ced&&ced.style.display==='block'&&!ced.contains(e.target)&&!e.target.closest('.ops-cell'))opsCloseCed();});
+
+// Break manager
+function setPlannerView(v){
+  plannerView=v;calView=v;
+  ['planVW','planVM','planVY'].forEach(function(id){
+    var el=document.getElementById(id);if(el)el.classList.remove('active');
+  });
+  var btn=document.getElementById(v==='week'?'planVW':v==='year'?'planVY':'planVM');
+  if(btn)btn.classList.add('active');
+  if(v==='week'&&!calWeekStart){
+    var now=new Date();var dow=now.getDay();var diff=dow===0?-6:1-dow;
+    calWeekStart=new Date(now);calWeekStart.setDate(now.getDate()+diff);
+  }
+  // Re-render whichever planner is currently visible
+  if(_planView==='cal') renderCal();
+  else if(_planView==='ops') opsReRenderAll();
+  else if(_planView==='fl') renderFreelancePlanner();
+}
+function opsSaveBrk(){const name=document.getElementById('opsBrkName').value.trim();const start=document.getElementById('opsBrkStart').value;const end=document.getElementById('opsBrkEnd').value;if(!name||!start||!end){alert('Name, start and end required');return;}if(end<start){alert('End must be after start');return;}_opsBrk.push({id:Date.now(),name,start,end});document.getElementById('opsBrkName').value='';document.getElementById('opsBrkStart').value='';document.getElementById('opsBrkEnd').value='';opsRenderBrkList();opsRenderAll();saveData();}
+function opsRmBrk(i){_opsBrk.splice(i,1);opsRenderBrkList();opsRenderAll();saveData();}
+function opsRenderBrkList(){const el=document.getElementById('opsBrkList');if(!el)return;el.innerHTML=!_opsBrk.length?'<div style="color:#888;font-size:14px;padding:4px 0">No breaks set.</div>':_opsBrk.map((b,i)=>'<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)"><div style="flex:1"><div style="font-family:var(--cond);font-size:14px;font-weight:700;color:var(--white)">'+b.name+'</div><div style="font-size:13px;color:#888;margin-top:2px">'+b.start+' – '+b.end+'</div></div><button onclick="opsRmBrk('+i+')" class="rm-btn">×</button></div>').join('');}
+document.addEventListener('click',e=>{const ced=document.getElementById('opsCed');if(ced&&ced.style.display==='block'&&!ced.contains(e.target)&&!e.target.closest('.ops-cell')){ced.style.display='none';_opsEd=null;}});
+function opsOpenEmail(){if(new Date().getDay()===5)document.getElementById('opsFriBanner').style.display='block';const d=new Date();const diff=d.getDay()===0?1:(8-d.getDay());d.setDate(d.getDate()+diff);document.getElementById('opsEmailWeek').value=d.toISOString().split('T')[0];opsBuildPreview();om('opsEmailModal');}
+function opsWeekData(){const ws=document.getElementById('opsEmailWeek').value;if(!ws)return[];const mon=new Date(ws);const names=['Monday','Tuesday','Wednesday','Thursday','Friday'];const res=[];for(let i=0;i<5;i++){const d=new Date(mon);d.setDate(mon.getDate()+i);const ds=d.toISOString().split('T')[0];const[yr,mo,day]=ds.split('-').map(Number);let tech='TBC';for(const m of OPS_CAL){const px=OPS_MPX[m.month];if(!px)continue;const[py,pm]=px.split('-').map(Number);if(py===yr&&pm===mo){const v=og(m.month,day,'ml');if(v.length&&v[0]!=='Break / Off Air')tech=v[0];break;}}res.push({name:names[i],date:d.toLocaleDateString('en-GB',{day:'numeric',month:'long'}),tech});}return res;}
+function opsBuildPreview(){const ws=document.getElementById('opsEmailWeek').value;if(!ws)return;const mon=new Date(ws);const wl=mon.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})+' – '+new Date(mon.getTime()+4*86400000).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});const rows=opsWeekData().map(d=>'<tr><td style="padding:10px 15px;border-bottom:1px solid #eee;font-weight:600;color:#222">'+d.name+' '+d.date+'</td><td style="padding:10px 15px;border-bottom:1px solid #eee;color:#2d7dd2;font-weight:700">'+d.tech+'</td></tr>').join('');document.getElementById('opsEmailPrev').innerHTML='<div style="font-family:Arial,sans-serif"><div style="background:#0a0a0a;padding:14px 18px"><div style="color:#fff;font-size:15px;font-weight:900;letter-spacing:.08em;text-transform:uppercase">VERSA STUDIOS</div></div><table style="width:100%;border-collapse:collapse"><tbody>'+rows+'</tbody></table></div>';}
+function opsCopyEmail(){const wd=opsWeekData();const ws=document.getElementById('opsEmailWeek').value;const mon=new Date(ws);const wl=mon.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})+' to '+new Date(mon.getTime()+4*86400000).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});let body='Morning Live Tech Schedule\nWeek of '+wl+'\n\n';wd.forEach(d=>{body+=d.name+' '+d.date+': '+d.tech+'\n';});navigator.clipboard.writeText(body+'\nVersa Studios Tech Ops').then(()=>alert('Copied'));}
+function opsMailto(){const wd=opsWeekData();const ws=document.getElementById('opsEmailWeek').value;const wl=new Date(ws).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});let body='Morning Live Tech Schedule\nWeek commencing '+wl+'\n\n';wd.forEach(d=>{body+=d.name+' '+d.date+': '+d.tech+'\n';});window.location.href='mailto:?subject='+encodeURIComponent('Morning Live Tech Schedule - w/c '+wl)+'&body='+encodeURIComponent(body+'\nVersa Studios Tech Ops');}
+function opsRenderNav(){var nav=document.getElementById('opsQnav');if(!nav)return;nav.innerHTML=OPS_CAL.map(function(m,i){return'<button class="ops-qbtn" onclick="opsJumpMonth('+i+')">'+m.month.split(' ')[0].slice(0,3).toUpperCase()+'</button>';}).join('');}
+function opsJumpMonth(i){var secs=document.querySelectorAll('#opsBody .ops-ms');if(secs[i])secs[i].scrollIntoView({behavior:'smooth',block:'start'});}
+function opsRenderAll(){opsSeedFromJobs();var body=document.getElementById('opsBody');body.innerHTML=OPS_CAL.map(function(m,i){return'<div class="ops-ms" style="margin-bottom:32px">'+opsRenderMonth(m,i)+'</div>';}).join('');}
+async function _silentLogin(email, pass){
+  try{
+    const ctrl=new AbortController();
+    const timer=setTimeout(()=>ctrl.abort(),12000);
+    const r=await fetch(_SB_URL+'/auth/v1/token?grant_type=password',{
+      method:'POST',headers:{'Content-Type':'application/json','apikey':_SB_KEY},
+      body:JSON.stringify({email,password:pass}),signal:ctrl.signal
+    });
+    clearTimeout(timer);
+    const d=await r.json();
+    if(d.access_token){
+      _authToken=d.access_token;
+      localStorage.setItem('_vsToken',_authToken);
+      return true;
+    }
+  }catch(e){}
+  return false;
+}
+
+function _showLoginPrompt(){
+  const ov=document.createElement('div');
+  ov.id='_opsLoginOv';
+  ov.style.cssText='position:fixed;inset:0;background:#0a0a0a;display:flex;align-items:center;justify-content:center;z-index:9999';
+  ov.innerHTML='<div style="background:#141414;border:1px solid #2a2a2a;border-radius:8px;padding:32px;width:320px;display:flex;flex-direction:column;gap:12px">'
+    +'<div style="font-family:var(--cond);font-size:15px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--white);text-align:center;margin-bottom:4px">Versa Studios</div>'
+    +'<input id="_opEmail" class="fi" type="email" placeholder="Email" autocomplete="email"/>'
+    +'<input id="_opPass" class="fi" type="password" placeholder="Password" onkeydown="if(event.key===String.fromCharCode(13))_doOpsLogin()"/>'
+    +'<button id="_opBtn" class="btn-p" style="width:100%" onclick="_doOpsLogin()">Sign In</button>'
+    +'<div id="_opErr" style="color:#e05555;font-size:13px;text-align:center;display:none"></div>'
+    +'</div>';
+  document.body.appendChild(ov);
+  setTimeout(()=>document.getElementById('_opEmail').focus(),50);
+}
+
+async function _doOpsLogin(){
+  const email=document.getElementById('_opEmail').value.trim();
+  const pass=document.getElementById('_opPass').value;
+  const err=document.getElementById('_opErr');
+  const btn=document.getElementById('_opBtn');
+  err.style.display='none';
+  if(btn){btn.textContent='Signing in…';btn.disabled=true;}
+  const ok=await _silentLogin(email,pass);
+  if(ok){
+    const ov=document.getElementById('_opsLoginOv');
+    if(ov)ov.remove();
+    _startApp();
+  } else {
+    err.textContent='Sign in failed — check email and password';
+    err.style.display='block';
+    if(btn){btn.textContent='Sign In';btn.disabled=false;}
+  }
+}
+
+async function _startApp(){
+  try{
+    await loadData();
+    opsRenderNav();
+    opsRenderAll();
+    opsRenderBrkList();
+    setTimeout(function(){OPS_CAL.forEach(function(m,i){var px=OPS_MPX[m.month];if(!px)return;if(OPS_TODAY.startsWith(px)){opsJumpMonth(i);}});},200);
+  }catch(e){
+    console.error('Ops startApp error:',e);
+    document.getElementById('opsBody').innerHTML='<div style="padding:20px;color:#e05555">Error loading planner. Please refresh.</div>';
+  }
+}
+
+window.addEventListener('DOMContentLoaded',async function(){
+  if(_authToken){
+    // Try loading with existing token (12s timeout)
+    try{
+      const ctrl=new AbortController();
+      const timer=setTimeout(()=>ctrl.abort(),12000);
+      const test=await fetch(_SB_URL+'/rest/v1/app_data?select=key&limit=1',{headers:_sbH(),signal:ctrl.signal});
+      clearTimeout(timer);
+      if(test.ok){_startApp();return;}
+    }catch(e){}
+  }
+  // Token missing or expired — show login
+  _showLoginPrompt();
+});
+</script>
+</body>
+</html>
