@@ -472,7 +472,6 @@ document.addEventListener('click',e=>{const ced=document.getElementById('opsCed'
 // Break manager
 function opsSaveBrk(){const name=document.getElementById('opsBrkName').value.trim();const start=document.getElementById('opsBrkStart').value;const end=document.getElementById('opsBrkEnd').value;if(!name||!start||!end){alert('Name, start and end required');return;}if(end<start){alert('End must be after start');return;}_opsBrk.push({id:Date.now(),name,start,end});document.getElementById('opsBrkName').value='';document.getElementById('opsBrkStart').value='';document.getElementById('opsBrkEnd').value='';opsRenderBrkList();opsReRenderAll();}
 function opsRmBrk(i){_opsBrk.splice(i,1);opsRenderBrkList();opsReRenderAll();}
-function opsRenderBrkList(){const el=document.getElementById('opsBrkList');if(!el)return;el.innerHTML=!_opsBrk.length?'<div style="color:var(--muted);font-size:14px;padding:4px 0">No breaks set.</div>':_opsBrk.map((b,i)=>'<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)"><div style="flex:1"><div style="font-family:var(--cond);font-size:14px;font-weight:700;color:var(--white)">'+b.name+'</div><div style="font-size:13px;color:var(--muted);margin-top:2px">'+b.start+' \u2013 '+b.end+'</div></div><button onclick="opsRmBrk('+i+')" class="rm-btn">×</button></div>').join('');}
 
 // ML Email
 function opsOpenEmail(){if(new Date().getDay()===5)document.getElementById('opsFriBanner').style.display='block';const d=new Date();const diff=d.getDay()===0?1:(8-d.getDay());d.setDate(d.getDate()+diff);document.getElementById('opsEmailWeek').value=d.toISOString().split('T')[0];opsBuildPreview();om('opsEmailModal');}
@@ -513,10 +512,13 @@ function opsJumpMonth(i){var secs=document.querySelectorAll('#opsBody .ops-ms');
 function opsRenderAll(){opsSeedFromJobs();var body=document.getElementById('opsBody');body.innerHTML=OPS_CAL.map(function(m,i){return'<div class="ops-ms" style="margin-bottom:32px">'+opsRenderMonth(m,i)+'</div>';}).join('');}
 async function _silentLogin(email, pass){
   try{
+    const ctrl=new AbortController();
+    const timer=setTimeout(()=>ctrl.abort(),12000);
     const r=await fetch(_SB_URL+'/auth/v1/token?grant_type=password',{
       method:'POST',headers:{'Content-Type':'application/json','apikey':_SB_KEY},
-      body:JSON.stringify({email,password:pass})
+      body:JSON.stringify({email,password:pass}),signal:ctrl.signal
     });
+    clearTimeout(timer);
     const d=await r.json();
     if(d.access_token){
       _authToken=d.access_token;
@@ -556,22 +558,30 @@ async function _doOpsLogin(){
 }
 
 async function _startApp(){
-  await loadData();
-  opsRenderNav();
-  opsRenderAll();
-  opsRenderBrkList();
-  setTimeout(function(){OPS_CAL.forEach(function(m,i){var px=OPS_MPX[m.month];if(!px)return;if(OPS_TODAY.startsWith(px)){opsJumpMonth(i);}});},200);
+  try{
+    await loadData();
+    opsRenderNav();
+    opsRenderAll();
+    opsRenderBrkList();
+    setTimeout(function(){OPS_CAL.forEach(function(m,i){var px=OPS_MPX[m.month];if(!px)return;if(OPS_TODAY.startsWith(px)){opsJumpMonth(i);}});},200);
+  }catch(e){
+    console.error('Ops startApp error:',e);
+    document.getElementById('opsBody').innerHTML='<div style="padding:20px;color:#e05555">Error loading planner. Please refresh.</div>';
+  }
 }
 
 window.addEventListener('DOMContentLoaded',async function(){
   if(_authToken){
-    // Try loading with existing token
+    // Try loading with existing token (12s timeout)
     try{
-      const test=await fetch(_SB_URL+'/rest/v1/app_data?select=key&limit=1',{headers:_sbH()});
+      const ctrl=new AbortController();
+      const timer=setTimeout(()=>ctrl.abort(),12000);
+      const test=await fetch(_SB_URL+'/rest/v1/app_data?select=key&limit=1',{headers:_sbH(),signal:ctrl.signal});
+      clearTimeout(timer);
       if(test.ok){_startApp();return;}
     }catch(e){}
   }
-  // Token missing or expired — show login once
+  // Token missing or expired — show login
   _showLoginPrompt();
 });
 </script>
