@@ -8844,23 +8844,26 @@ function renderAdmin() {
 function renderAccessList() {
   var el = document.getElementById('accessList');
   if (!el) return;
-  var active = _jobAccessGrants.filter(function(g){return g.active;});
-  if (!active.length) {
+  var hasActive = _jobAccessGrants.some(function(g){return g.active;});
+  if (!hasActive) {
     el.innerHTML = '<div style="padding:14px 18px;font-size:17px;color:var(--muted)">No active access grants.</div>';
     return;
   }
-  el.innerHTML = active.map(function(g) {
+  var rows = [];
+  _jobAccessGrants.forEach(function(g, i) {
+    if (!g.active) return;
     var job = jobs.find(function(j){return j.id===g.jobId;});
     var jobName = job ? job.name : ('Job #'+g.jobId);
-    return '<div class="adm-row"><div style="flex:1">'
+    rows.push('<div class="adm-row"><div style="flex:1">'
       +'<div class="adm-row-nm">'+escHtml(g.email)+'</div>'
       +'<div class="adm-row-sub">'+escHtml(jobName)+' &nbsp;&middot;&nbsp; PIN: <strong>'+g.pin+'</strong>'
       +(g.label?' &nbsp;&middot;&nbsp; '+escHtml(g.label):'')+'</div>'
       +'<div class="adm-row-sub" style="opacity:.5">Granted '+new Date(g.createdAt).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})+'</div>'
       +'</div>'
-      +'<button class="ibtn del" onclick="revokeAccess(''+g.id+'')">Revoke</button>'
-      +'</div>';
-  }).join('');
+      +'<button class="ibtn del" onclick="revokeAccess('+i+')">Revoke</button>'
+      +'</div>');
+  });
+  el.innerHTML = rows.join('');
 }
 
 function openAddAccess() {
@@ -8875,7 +8878,7 @@ function openAddAccess() {
     +'<div><label class="flbl">PIN (you share this with them)</label>'
     +'<div style="display:flex;gap:8px;align-items:center">'
     +'<input class="fi" id="accPin" type="text" value="'+pin+'" style="flex:1;font-family:var(--mono);font-size:15px;letter-spacing:.12em"/>'
-    +'<button onclick="document.getElementById('accPin').value=String(Math.floor(100000+Math.random()*900000))" style="padding:8px 12px;background:var(--dark);border:1px solid var(--border);border-radius:5px;color:var(--white);font-size:12px;cursor:pointer;white-space:nowrap">New PIN</button>'
+    +'<button onclick="document.getElementById(\'accPin\').value=String(Math.floor(100000+Math.random()*900000))" style="padding:8px 12px;background:var(--dark);border:1px solid var(--border);border-radius:5px;color:var(--white);font-size:12px;cursor:pointer;white-space:nowrap">New PIN</button>'
     +'</div></div>'
     +'<div><label class="flbl">Label (optional — e.g. "Camera Operator")</label><input class="fi" id="accLabel" type="text" placeholder="e.g. Camera Operator"/></div>'
     +'</div>';
@@ -8887,9 +8890,9 @@ function openAddAccess() {
     modal.id = 'mAccessModal';
     modal.style.zIndex = '600';
     modal.innerHTML = '<div class="modal" style="max-width:420px">'
-      +'<div class="modal-hdr"><div class="modal-title" id="mAccessTitle">Grant Job Access</div><button class="x-btn" onclick="document.getElementById('mAccessModal').classList.remove('open')">&#215;</button></div>'
+      +'<div class="modal-hdr"><div class="modal-title" id="mAccessTitle">Grant Job Access</div><button class="x-btn" onclick="document.getElementById(\'mAccessModal\').classList.remove(\'open\')">&#215;</button></div>'
       +'<div class="modal-body" id="mAccessBody"></div>'
-      +'<div class="modal-foot"><button class="btn-p" onclick="saveAccess()">Grant Access</button><button class="btn-s" onclick="document.getElementById('mAccessModal').classList.remove('open')">Cancel</button></div>'
+      +'<div class="modal-foot"><button class="btn-p" onclick="saveAccess()">Grant Access</button><button class="btn-s" onclick="document.getElementById(\'mAccessModal\').classList.remove(\'open\')">Cancel</button></div>'
       +'</div>';
     document.body.appendChild(modal);
   }
@@ -8924,10 +8927,9 @@ function saveAccess() {
   toast('Access granted — share the PIN with them');
 }
 
-function revokeAccess(id) {
+function revokeAccess(idx) {
   if (!confirm('Revoke this access? They will no longer be able to log in.')) return;
-  var g = _jobAccessGrants.find(function(x){return x.id===id;});
-  if (g) g.active = false;
+  if (_jobAccessGrants[idx]) _jobAccessGrants[idx].active = false;
   saveData();
   renderAccessList();
   toast('Access revoked');
