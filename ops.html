@@ -470,18 +470,6 @@ function opsRxNum(mi,currentDay,row){const m=OPS_CAL[mi];if(!m)return 1;let n=0;
 document.addEventListener('click',e=>{const ced=document.getElementById('opsCed');if(ced&&ced.style.display==='block'&&!ced.contains(e.target)&&!e.target.closest('.ops-cell'))opsCloseCed();});
 
 // Break manager
-function opsSaveBrk(){const name=document.getElementById('opsBrkName').value.trim();const start=document.getElementById('opsBrkStart').value;const end=document.getElementById('opsBrkEnd').value;if(!name||!start||!end){alert('Name, start and end required');return;}if(end<start){alert('End must be after start');return;}_opsBrk.push({id:Date.now(),name,start,end});document.getElementById('opsBrkName').value='';document.getElementById('opsBrkStart').value='';document.getElementById('opsBrkEnd').value='';opsRenderBrkList();opsReRenderAll();}
-function opsRmBrk(i){_opsBrk.splice(i,1);opsRenderBrkList();opsReRenderAll();}
-
-// ML Email
-function opsOpenEmail(){if(new Date().getDay()===5)document.getElementById('opsFriBanner').style.display='block';const d=new Date();const diff=d.getDay()===0?1:(8-d.getDay());d.setDate(d.getDate()+diff);document.getElementById('opsEmailWeek').value=d.toISOString().split('T')[0];opsBuildPreview();om('opsEmailModal');}
-function opsWeekData(){const ws=document.getElementById('opsEmailWeek').value;if(!ws)return[];const mon=new Date(ws);const names=['Monday','Tuesday','Wednesday','Thursday','Friday'];const res=[];for(let i=0;i<5;i++){const d=new Date(mon);d.setDate(mon.getDate()+i);const ds=d.toISOString().split('T')[0];const[yr,mo,day]=ds.split('-').map(Number);let tech='TBC';for(const m of OPS_CAL){const px=OPS_MPX[m.month];if(!px)continue;const[py,pm]=px.split('-').map(Number);if(py===yr&&pm===mo){const v=og(m.month,day,'ml');if(v.length&&v[0]!=='Break / Off Air')tech=v[0];break;}}res.push({name:names[i],date:d.toLocaleDateString('en-GB',{day:'numeric',month:'long'}),tech});}return res;}
-function opsBuildPreview(){const ws=document.getElementById('opsEmailWeek').value;if(!ws)return;const mon=new Date(ws);const wl=mon.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})+' \u2013 '+new Date(mon.getTime()+4*86400000).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});const rows=opsWeekData().map(d=>'<tr><td style="padding:10px 15px;border-bottom:1px solid #eee;font-weight:600;color:#222">'+d.name+' '+d.date+'</td><td style="padding:10px 15px;border-bottom:1px solid #eee;color:#2d7dd2;font-weight:700">'+d.tech+'</td></tr>').join('');document.getElementById('opsEmailPrev').innerHTML='<div style="font-family:Arial,sans-serif"><div style="background:#0a0a0a;padding:14px 18px"><div style="color:#fff;font-size:15px;font-weight:900;letter-spacing:.08em;text-transform:uppercase">VERSA STUDIOS</div><div style="color:#555;font-size:10px;letter-spacing:.1em;text-transform:uppercase;margin-top:2px">Morning Live \u2014 Tech Schedule</div></div><div style="background:#f4f4f4;padding:10px 18px;border-bottom:2px solid #ddd"><div style="font-size:10px;color:#999;text-transform:uppercase;letter-spacing:.07em">Week of</div><div style="font-size:14px;font-weight:700;color:#111;margin-top:2px">'+wl+'</div></div><table style="width:100%;border-collapse:collapse"><thead><tr><th style="padding:8px 15px;text-align:left;font-size:10px;color:#999;border-bottom:2px solid #eee">Day</th><th style="padding:8px 15px;text-align:left;font-size:10px;color:#999;border-bottom:2px solid #eee">Tech Manager</th></tr></thead><tbody>'+rows+'</tbody></table><div style="background:#f4f4f4;padding:9px 18px;font-size:10px;color:#bbb">Versa Studios Tech Ops</div></div>';}
-function opsCopyEmail(){const wd=opsWeekData();const ws=document.getElementById('opsEmailWeek').value;const mon=new Date(ws);const wl=mon.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})+' to '+new Date(mon.getTime()+4*86400000).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});let body='Morning Live Tech Schedule\nWeek of '+wl+'\n\n';wd.forEach(d=>{body+=d.name+' '+d.date+': '+d.tech+'\n';});navigator.clipboard.writeText(body+'\nVersa Studios Tech Ops').then(()=>alert('Copied'));}
-function opsMailto(){const wd=opsWeekData();const ws=document.getElementById('opsEmailWeek').value;const wl=new Date(ws).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});let body='Morning Live Tech Schedule\nWeek commencing '+wl+'\n\n';wd.forEach(d=>{body+=d.name+' '+d.date+': '+d.tech+'\n';});window.location.href='mailto:?subject='+encodeURIComponent('Morning Live Tech Schedule - w/c '+wl)+'&body='+encodeURIComponent(body+'\nVersa Studios Tech Ops');}
-
-// Planner view toggle
-let _planView='cal';
 function setPlannerView(v){
   plannerView=v;calView=v;
   ['planVW','planVM','planVY'].forEach(function(id){
@@ -531,12 +519,13 @@ async function _silentLogin(email, pass){
 
 function _showLoginPrompt(){
   const ov=document.createElement('div');
+  ov.id='_opsLoginOv';
   ov.style.cssText='position:fixed;inset:0;background:#0a0a0a;display:flex;align-items:center;justify-content:center;z-index:9999';
   ov.innerHTML='<div style="background:#141414;border:1px solid #2a2a2a;border-radius:8px;padding:32px;width:320px;display:flex;flex-direction:column;gap:12px">'
-    +'<div style="font-family:var(--cond);font-size:15px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--white);text-align:center;margin-bottom:4px">Sign In</div>'
+    +'<div style="font-family:var(--cond);font-size:15px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--white);text-align:center;margin-bottom:4px">Versa Studios</div>'
     +'<input id="_opEmail" class="fi" type="email" placeholder="Email" autocomplete="email"/>'
     +'<input id="_opPass" class="fi" type="password" placeholder="Password" onkeydown="if(event.key===String.fromCharCode(13))_doOpsLogin()"/>'
-    +'<button class="btn-p" style="width:100%" onclick="_doOpsLogin()">Sign In</button>'
+    +'<button id="_opBtn" class="btn-p" style="width:100%" onclick="_doOpsLogin()">Sign In</button>'
     +'<div id="_opErr" style="color:#e05555;font-size:13px;text-align:center;display:none"></div>'
     +'</div>';
   document.body.appendChild(ov);
@@ -547,13 +536,18 @@ async function _doOpsLogin(){
   const email=document.getElementById('_opEmail').value.trim();
   const pass=document.getElementById('_opPass').value;
   const err=document.getElementById('_opErr');
+  const btn=document.getElementById('_opBtn');
   err.style.display='none';
+  if(btn){btn.textContent='Signing in…';btn.disabled=true;}
   const ok=await _silentLogin(email,pass);
   if(ok){
-    document.querySelector('[style*="position:fixed;inset:0"]').remove();
+    const ov=document.getElementById('_opsLoginOv');
+    if(ov)ov.remove();
     _startApp();
   } else {
-    err.textContent='Sign in failed';err.style.display='block';
+    err.textContent='Sign in failed — check email and password';
+    err.style.display='block';
+    if(btn){btn.textContent='Sign In';btn.disabled=false;}
   }
 }
 
