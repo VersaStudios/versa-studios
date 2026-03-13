@@ -1629,7 +1629,12 @@ const _SB_URL = 'https://dttwgmoyxthczlzxjgag.supabase.co';
 const _SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ';
 const _SB_HEADERS = {'Content-Type':'application/json','apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY,'Prefer':'resolution=merge-duplicates'};
 
-function _sbGet(){ return fetch(_SB_URL+'/rest/v1/app_data?select=key,value',{headers:_SB_HEADERS}).then(r=>r.json()); }
+function _sbGet(){
+  const ctrl = new AbortController();
+  const timer = setTimeout(()=>ctrl.abort(), 12000); // 12s timeout
+  return fetch(_SB_URL+'/rest/v1/app_data?select=key,value',{headers:_SB_HEADERS,signal:ctrl.signal})
+    .then(r=>r.json()).finally(()=>clearTimeout(timer));
+}
 function _sbSet(rows){ return fetch(_SB_URL+'/rest/v1/app_data',{method:'POST',headers:_SB_HEADERS,body:JSON.stringify(rows)}); }
 
 // Data map — key → getter function for current value
@@ -1769,11 +1774,14 @@ async function doLogin() {
     _initApp();
   } catch(e) {
     // Supabase auth failed — try job access PIN login
+    // Load grants from DB if not yet loaded (first visit, no cached session)
+    try {
+      if (_jobAccessGrants.length === 0) await loadData();
+    } catch(_){}
     const pinMatch = _jobAccessGrants.find(function(g){
       return g.active && g.email && g.email.toLowerCase()===email && String(g.pin)===password;
     });
     if (pinMatch) {
-      const jobObj = jobs.find(function(j){return j.id===pinMatch.jobId;});
       CU = {id:-1, fn: pinMatch.label||pinMatch.email.split('@')[0], ln:'', email:pinMatch.email, role:'Client', mustChange:false, restrictedJobId:pinMatch.jobId};
       sessionStorage.setItem('_vsEmail', email);
       sessionStorage.setItem('_vsRestrictedJobId', String(pinMatch.jobId));
@@ -1781,7 +1789,7 @@ async function doLogin() {
       _initApp();
       return;
     }
-    err.textContent = e.message || 'Sign in failed. Please try again.';
+    err.textContent = e.message || 'Invalid email or password.';
     err.style.display='';
     btn.textContent='Sign In'; btn.disabled=false;
   }
@@ -9717,6 +9725,7 @@ function renderDashEng(){
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded',async ()=>{
+  try {
   // Check for existing session
   const savedToken = sessionStorage.getItem('_vsToken');
   const savedEmail = sessionStorage.getItem('_vsEmail');
@@ -9742,6 +9751,13 @@ window.addEventListener('DOMContentLoaded',async ()=>{
     }
   } else {
     // No session — show login
+    const lo = document.getElementById('appLoadingOverlay');
+    if (lo) lo.style.display='none';
+    _showLogin();
+  }
+  } catch(startupErr) {
+    console.error('Startup error:', startupErr);
+    // Safety net — always show login if startup crashes
     const lo = document.getElementById('appLoadingOverlay');
     if (lo) lo.style.display='none';
     _showLogin();
