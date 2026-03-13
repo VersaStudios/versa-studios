@@ -17,13 +17,13 @@ html,body{height:100%;background:#0a0a0a;color:#f2f2f2;font-family:var(--font);f
 .sb-logo{padding:20px 18px 16px;border-bottom:1px solid var(--border)}
 .sb-logo img{width:124px;opacity:.92}
 .sb-nav{flex:1;overflow-y:auto;padding:7px 0}
-.nav-lbl{font-family:var(--cond);font-size:10px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:#fff;padding:6px 10px 6px 12px;margin:6px 8px 3px;border-radius:4px;}
-.nav-lbl[data-lbl="overview"]{background:rgba(60,90,160,.3);border-left:2px solid rgba(60,90,160,.7)}
-.nav-lbl[data-lbl="kit"]{background:rgba(160,100,30,.3);border-left:2px solid rgba(160,100,30,.7)}
-.nav-lbl[data-lbl="studio-log"]{background:rgba(30,115,125,.3);border-left:2px solid rgba(30,115,125,.7)}
-.nav-lbl[data-lbl="jobs"]{background:rgba(50,120,70,.3);border-left:2px solid rgba(50,120,70,.7)}
-.nav-lbl[data-lbl="admin"]{background:rgba(135,75,35,.3);border-left:2px solid rgba(135,75,35,.7)}
-.nav-lbl[data-lbl="reference"]{background:rgba(75,125,45,.3);border-left:2px solid rgba(75,125,45,.7)}
+.nav-lbl{font-family:var(--cond);font-size:10px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:#fff;padding:6px 10px 6px 12px;margin:8px 8px 3px;border-radius:4px;}
+.nav-lbl[data-lbl="overview"]{background:rgba(60,90,160,.55);border-left:3px solid rgba(100,130,220,.8)}
+.nav-lbl[data-lbl="kit"]{background:rgba(160,100,30,.55);border-left:3px solid rgba(220,150,50,.8)}
+.nav-lbl[data-lbl="studio-log"]{background:rgba(30,115,125,.55);border-left:3px solid rgba(60,180,190,.8)}
+.nav-lbl[data-lbl="jobs"]{background:rgba(50,120,70,.55);border-left:3px solid rgba(80,190,110,.8)}
+.nav-lbl[data-lbl="admin"]{background:rgba(135,75,35,.55);border-left:3px solid rgba(220,130,60,.8)}
+.nav-lbl[data-lbl="reference"]{background:rgba(75,125,45,.55);border-left:3px solid rgba(130,200,70,.8)}
 
 .nav-item{display:flex;align-items:center;gap:9px;padding:10px 16px;cursor:pointer;transition:all .13s;border-left:2px solid transparent;color:var(--subtle);font-family:var(--cond);font-size:17px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;user-select:none}
 .nav-item:hover{color:#fff;background:rgba(255,255,255,.04)}
@@ -5861,13 +5861,18 @@ function renderJobDet(j) {
         } else {
           if(fd.type==='sel'){
             var _subcat2=(_CAM_OPTS_SUBCAT[fd.opts]||fd.opts);
-            var opts2=hiredCatalogue.filter(function(h){return h.subcat===_subcat2;}).map(function(h){return h.name;});
-            if(!opts2.length) opts2=CAM_PLAN_OPTS[fd.opts]||[];
-            input='<select class="fi" style="font-size:12px;padding:3px 5px;width:100%" onchange="jdHandleCamSel('+jid+','+i+',\''+fkey+'\',\''+fd.opts+'\',this.value)">'
-              +'<option value="">--</option>'
-              +opts2.map(function(o){return '<option'+(o===fm.val?' selected':'')+'>'+o+'</option>';}).join('')
-              +'<option value="__add__" style="color:#4a9eff;font-style:italic">+ Add new...</option>'
-              +'</select>';
+            var _curVal=fm.val||'';
+            if(_curVal){
+              input='<div style="display:flex;align-items:center;gap:4px">'
+                +'<span style="flex:1;font-size:12px;color:var(--white);background:rgba(255,255,255,.07);border-radius:4px;padding:3px 7px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+_curVal+'</span>'
+                +'<button class="ibtn" style="font-size:11px;padding:2px 6px;flex-shrink:0" onclick="jdSetCamDetail('+jid+','+i+',\''+fkey+'\',\'\');renderJobDet(jobs.find(function(x){return x.id==='+jid+';}))">×</button>'
+                +'<button class="ibtn" style="font-size:11px;padding:2px 6px;flex-shrink:0" onclick="jdOpenCamFieldPick('+jid+','+i+',\''+fkey+'\',\''+_subcat2+'\')">↓</button>'
+                +'</div>';
+            } else {
+              input='<button class="ibtn" style="font-size:12px;width:100%;text-align:left;color:var(--muted)" onclick="jdOpenCamFieldPick('+jid+','+i+',\''+fkey+'\',\''+_subcat2+'\')">'
+                +'<span style="opacity:.5">-- pick --</span>'
+                +'</button>';
+            }
           } else {
             input='<input class="fi" style="font-size:12px;padding:3px 5px;width:100%" value="'+(fm.val||'')+'" placeholder="'+(fd.ph||'')+'" onchange="jdSetCamDetail('+jid+','+i+',\''+fkey+'\',this.value)"/>';
           }
@@ -6579,6 +6584,42 @@ function jdPickCamFKit(jid,ci,fkey){
       var p=document.getElementById('_cfkPicker');if(p&&!p.contains(e.target)){p.remove();}document.removeEventListener('click',_cfx);
     });
   },50);
+}
+function jdOpenCamFieldPick(jid,camIdx,fieldKey,subcat){
+  var items=hiredCatalogue.filter(function(h){return h.subcat===subcat;});
+  document.getElementById('camFieldPickTitle').textContent=subcat;
+  document.getElementById('camFieldPickJid').value=jid;
+  document.getElementById('camFieldPickIdx').value=camIdx;
+  document.getElementById('camFieldPickKey').value=fieldKey;
+  var render=function(q){
+    var filtered=q?items.filter(function(h){return h.name.toLowerCase().indexOf(q.toLowerCase())>=0;}):items;
+    document.getElementById('camFieldPickRows').innerHTML=filtered.length
+      ?filtered.map(function(h){
+        return '<div style="padding:9px 14px;border-bottom:1px solid var(--border);cursor:pointer;font-size:13px;color:var(--white)" '
+          +'onclick="jdPickCamField('+jid+','+camIdx+',\''+fieldKey+'\',\''+h.name.replace(/'/g,"\\'")+'\')">'
+          +h.name+'</div>';
+      }).join('')
+      +'<div style="padding:9px 14px;border-bottom:1px solid var(--border);cursor:pointer;font-size:12px;color:#4a9eff" onclick="jdPickCamFieldCustom('+jid+','+camIdx+',\''+fieldKey+'\')">+ Custom text…</div>'
+      :'<div style="padding:12px 14px;color:var(--muted);font-size:13px">No matches</div>'
+        +'<div style="padding:9px 14px;border-top:1px solid var(--border);cursor:pointer;font-size:12px;color:#4a9eff" onclick="jdPickCamFieldCustom('+jid+','+camIdx+',\''+fieldKey+'\')">+ Custom text…</div>';
+  };
+  render('');
+  document.getElementById('camFieldPickQ').value='';
+  document.getElementById('camFieldPickQ').oninput=function(){render(this.value);};
+  om('mPickCamField');
+}
+function jdPickCamField(jid,camIdx,fieldKey,val){
+  cm('mPickCamField');
+  jdSetCamDetail(jid,camIdx,fieldKey,val);
+  var j=jobs.find(function(x){return x.id===jid;}); if(j) renderJobDet(j);
+}
+function jdPickCamFieldCustom(jid,camIdx,fieldKey){
+  cm('mPickCamField');
+  var v=prompt('Enter value:','');
+  if(v&&v.trim()){
+    jdSetCamDetail(jid,camIdx,fieldKey,v.trim());
+    var j=jobs.find(function(x){return x.id===jid;}); if(j) renderJobDet(j);
+  }
 }
 function jdHandleCamSel(jid,i,key,optsKey,val){
   if(val==='__add__'){
@@ -10434,6 +10475,23 @@ async function renderAbcLastReport(){
       <div class="modal-body" style="padding:0;max-height:380px;overflow-y:auto">
         <div id="pickCamKitRows"></div>
       </div>
+    </div>
+  </div>
+
+  <!-- PICK CAM FIELD (HIRED CATALOGUE) MODAL -->
+  <div class="modal-ov" id="mPickCamField">
+    <div class="modal" style="max-width:440px">
+      <div class="modal-hdr">
+        <div class="modal-title" id="camFieldPickTitle">Select Item</div>
+        <button class="x-btn" onclick="cm('mPickCamField')">&#215;</button>
+      </div>
+      <div class="modal-body" style="padding:10px 14px 6px">
+        <input id="camFieldPickQ" placeholder="Search…" style="width:100%;background:var(--dark);border:1px solid var(--border);color:var(--white);padding:7px 10px;border-radius:5px;font-size:13px;margin-bottom:2px" />
+        <input type="hidden" id="camFieldPickJid"/>
+        <input type="hidden" id="camFieldPickIdx"/>
+        <input type="hidden" id="camFieldPickKey"/>
+      </div>
+      <div id="camFieldPickRows" style="max-height:340px;overflow-y:auto;border-top:1px solid var(--border)"></div>
     </div>
   </div>
 
