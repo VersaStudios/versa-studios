@@ -1405,6 +1405,15 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
   </div>
 
 </div>
+</div><!-- /erSubPanelReport -->
+<div id="erSubPanelCal" style="display:none;margin-top:8px">
+  <div style="background:rgba(216,90,97,.06);border:1px solid rgba(216,90,97,.18);border-radius:8px;padding:20px 24px;text-align:center">
+    <div style="font-family:var(--cond);font-size:28px;margin-bottom:10px">&#128197;</div>
+    <div style="font-family:var(--cond);font-size:15px;font-weight:800;letter-spacing:.06em;color:var(--white);margin-bottom:6px">Jobs Calendar</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:16px">View and navigate the full jobs calendar</div>
+    <button class="ibtn" style="font-size:14px;padding:8px 20px" onclick="nav('calendar',document.querySelector('[data-pg=calendar]'));setPlanView('cal')">Open Calendar &#8594;</button>
+  </div>
+</div>
 </div>
 
 <div class="page" id="page-jobs">
@@ -1418,15 +1427,7 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
       <div class="page" id="page-jobdet">
         <button style="display:flex;align-items:center;gap:6px;background:none;border:none;color:var(--muted);font-family:var(--cond);font-size:17px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;margin-bottom:16px;transition:color .13s" onmouseenter="this.style.color='var(--white)'" onmouseleave="this.style.color='var(--muted)'" onclick="nav('jobs',document.querySelector('[data-pg=jobs]'))">&#8592; Back to Jobs</button>
         <div id="jobDet"></div>
-</div><!-- /erSubPanelReport -->
-<div id="erSubPanelCal" style="display:none;margin-top:8px">
-  <div style="background:rgba(216,90,97,.06);border:1px solid rgba(216,90,97,.18);border-radius:8px;padding:20px 24px;text-align:center">
-    <div style="font-family:var(--cond);font-size:28px;margin-bottom:10px">&#128197;</div>
-    <div style="font-family:var(--cond);font-size:15px;font-weight:800;letter-spacing:.06em;color:var(--white);margin-bottom:6px">Jobs Calendar</div>
-    <div style="font-size:13px;color:var(--muted);margin-bottom:16px">View and navigate the full jobs calendar</div>
-    <button class="ibtn" style="font-size:14px;padding:8px 20px" onclick="nav('calendar',document.querySelector('[data-pg=calendar]'));setPlanView('cal')">Open Calendar &#8594;</button>
-  </div>
-</div>
+
       </div>
 
       <div class="page" id="page-calendar">
@@ -6067,6 +6068,7 @@ function jdMnAdd(jid,tab){
   var txt=prompt('Add meeting note:');if(!txt||!txt.trim())return;
   var today=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
   j.meetingNotes.push({tab:tab,text:txt.trim(),date:today,author:CU?CU.fn+' '+CU.ln:''});
+  saveData();
   renderJobDet(j);
 }
 function jdMnRm(jid,ni,tab){
@@ -6075,6 +6077,7 @@ function jdMnRm(jid,ni,tab){
   if(!tabNotes[ni])return;
   var globalIdx=j.meetingNotes.indexOf(tabNotes[ni]);
   if(globalIdx>=0)j.meetingNotes.splice(globalIdx,1);
+  saveData();
   renderJobDet(j);
 }
 function jdSwitch(tab, jid) {
@@ -6086,6 +6089,7 @@ function jdSwitch(tab, jid) {
 function jdSetField(jid, field, val) {
   const j=jobs.find(x=>x.id===jid); if(!j) return;
   j[field]=val;
+  saveData();
 }
 function techHandleCodecSel(jid,val){
   var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
@@ -6097,9 +6101,9 @@ function techHandleCodecSel(jid,val){
   } else { j.techCodec=val; }
   renderJobDet(j);
 }
-function jdContAdd(jid){var j=jobs.find(function(x){return x.id===jid;});if(!j)return;if(!j.contacts)j.contacts=[];j.contacts.push({name:'',company:'',email:'',tel:''});renderJobDet(j);}
-function jdContRm(jid,ci){var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.contacts)return;j.contacts.splice(ci,1);renderJobDet(j);}
-function jdContSet(jid,ci,field,val){var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.contacts||!j.contacts[ci])return;j.contacts[ci][field]=val;}
+function jdContAdd(jid){var j=jobs.find(function(x){return x.id===jid;});if(!j)return;if(!j.contacts)j.contacts=[];j.contacts.push({name:'',company:'',email:'',tel:''});saveData();renderJobDet(j);}
+function jdContRm(jid,ci){var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.contacts)return;j.contacts.splice(ci,1);saveData();renderJobDet(j);}
+function jdContSet(jid,ci,field,val){var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.contacts||!j.contacts[ci])return;j.contacts[ci][field]=val;saveData();}
 function jdSetCs(jid, field, val) { const j=jobs.find(x=>x.id===jid);if(!j)return;if(!j.camSpec)j.camSpec={};j.camSpec[field]=val; }
 function noteAdd(jid){var j=jobs.find(function(x){return x.id===jid;});if(!j)return;if(!j.meetingNotes)j.meetingNotes=[];j.meetingNotes.push({date:new Date().toISOString().split('T')[0],subject:'',body:''});renderJobDet(j);}
 function noteRm(jid,ni){var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.meetingNotes)return;j.meetingNotes.splice(ni,1);renderJobDet(j);}
@@ -6239,7 +6243,9 @@ function jdGalAddSeat(jid) {
   j.galLayout.seats.push({pos,person:''});
   _jdTab='gallery'; renderJobDet(j);
 }
-function jdGalSetPerson(jid,idx,val){const j=jobs.find(x=>x.id===jid);if(!j||!j.galLayout)return;j.galLayout.seats[idx].person=val;}
+function jdGalSetPerson(jid,idx,val){const j=jobs.find(x=>x.id===jid);if(!j||!j.galLayout)return;j.galLayout.seats[idx].person=val;
+  saveData();
+}
 function jdGalRmSeat(jid,idx){const j=jobs.find(x=>x.id===jid);if(!j||!j.galLayout)return;j.galLayout.seats.splice(idx,1);_jdTab='gallery';renderJobDet(j);}
 
 
@@ -6250,12 +6256,16 @@ function jdCamFMode(jid,ci,fkey,mode){
   var cd=j.camDetails[ci];if(!cd.fieldData)cd.fieldData={};
   if(!cd.fieldData[fkey])cd.fieldData[fkey]={mode:'dv',val:cd[fkey]||'',kitId:null,hiredVal:''};
   cd.fieldData[fkey].mode=mode;
+
+  saveData();
 }
 function jdCamFHired(jid,ci,fkey,val){
   var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.camDetails||!j.camDetails[ci])return;
   var cd=j.camDetails[ci];if(!cd.fieldData)cd.fieldData={};
   if(!cd.fieldData[fkey])cd.fieldData[fkey]={mode:'hired',val:'',kitId:null,hiredVal:''};
   cd.fieldData[fkey].hiredVal=val;cd.fieldData[fkey].val=val;jdSetCamDetail(jid,ci,fkey,val);
+
+  saveData();
 }
 function jdCamFKitSet(jid,ci,fkey,kid){
   var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.camDetails||!j.camDetails[ci])return;
@@ -6264,6 +6274,7 @@ function jdCamFKitSet(jid,ci,fkey,kid){
   cd.fieldData[fkey].kitId=kid;
   var kn=kid?(kit.find(function(k){return k.id===kid;})||{name:''}).name:'';
   cd.fieldData[fkey].val=kn;jdSetCamDetail(jid,ci,fkey,kn);
+  saveData();
   renderJobDet(j);
 }
 function jdPickCamFKit(jid,ci,fkey){
@@ -6317,6 +6328,8 @@ function jdHandleCamSel(jid,i,key,optsKey,val){
   } else {
     jdSetCamDetail(jid,i,key,val);
   }
+
+  saveData();
 }
 function exportJobData(jid) {
   var j = jobs.find(function(x){return x.id===jid;}); if(!j)return;
@@ -6398,25 +6411,29 @@ function jdAddRigDate(jid){
   var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
   if(!j.rigDates)j.rigDates=[];
   j.rigDates.push({date:'',note:''});
+  saveData();
   renderJobDet(j);
 }
 function jdSetRigDate(jid,di,field,val){
   var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.rigDates||!j.rigDates[di])return;
   j.rigDates[di][field]=val;
+  saveData();
 }
 function jdRmRigDate(jid,di){
   var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.rigDates)return;
-  j.rigDates.splice(di,1);renderJobDet(j);
+  j.rigDates.splice(di,1);saveData();renderJobDet(j);
 }
 function jdAddTxDate(jid){
   var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
   if(!j.txDates)j.txDates=[];
   j.txDates.push({date:''});
+  saveData();
   renderJobDet(j);
 }
 function jdSetTxDate(jid,di,val){
   var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.txDates||!j.txDates[di])return;
   j.txDates[di].date=val;
+  saveData();
   // Also push to ops planner if date set
   if(val&&j.studio){
     var ds=val.split('-');
@@ -6442,6 +6459,7 @@ function jdSetTxDate(jid,di,val){
 function jdRmTxDate(jid,di){
   var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.txDates)return;
   j.txDates.splice(di,1);
+  saveData();
   renderJobDet(j);
 }
 function jdSetCamDetail(jid,i,field,val){
@@ -6449,6 +6467,7 @@ function jdSetCamDetail(jid,i,field,val){
   if(!j.camDetails)j.camDetails=[];
   if(!j.camDetails[i])j.camDetails[i]={op:'',kitId:null,hired:false,lens:'',filter:'',notes:''};
   j.camDetails[i][field]=val;
+  saveData();
   renderJobDet(j);
 }
 
@@ -6531,6 +6550,7 @@ function jdCamHired(jid,i){
   if(!j.camDetails)j.camDetails=[];
   if(!j.camDetails[i])j.camDetails[i]={op:'',kitId:null,hired:false,lens:'',filter:'',notes:''};
   j.camDetails[i].hired=true;j.camDetails[i].kitId=null;
+  saveData();
   renderJobDet(j);
 }
 function jdCamPickHired(jid,i){
@@ -6562,7 +6582,8 @@ function jdCamPickHired(jid,i){
     if(!cd.hiredTypeExtra.includes(v))cd.hiredTypeExtra.push(v);
     if(!CAM_PLAN_OPTS['Body'])CAM_PLAN_OPTS['Body']=[];
     if(!CAM_PLAN_OPTS['Body'].includes(v))CAM_PLAN_OPTS['Body'].push(v);
-    cd.hired=true;cd.hiredType=v;cd.kitId=null;pk.remove();renderJobDet(j);
+    cd.hired=true;cd.hiredType=v;cd.kitId=null;pk.remove();saveData();
+  renderJobDet(j);
   });
   setTimeout(function(){
     document.addEventListener('click',function _hx(e){
@@ -6577,12 +6598,14 @@ function jdAddCamField(jid,i,key){
   var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.camDetails||!j.camDetails[i])return;
   var af=j.camDetails[i].activeFields=j.camDetails[i].activeFields||[];
   if(af.indexOf(key)<0)af.push(key);
+  saveData();
   renderJobDet(j);
 }
 function jdRemoveCamField(jid,i,key){
   var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.camDetails||!j.camDetails[i])return;
   var af=j.camDetails[i].activeFields||[];
   var idx=af.indexOf(key);if(idx>=0)af.splice(idx,1);
+  saveData();
   renderJobDet(j);
 }
 function jdToggleAddField(jid,i){
@@ -6650,7 +6673,8 @@ function jdAssignCamKit(jid,camIdx,kid){
   if(!j.camDetails)j.camDetails=[];
   if(!j.camDetails[camIdx])j.camDetails[camIdx]={op:'',kitId:null,hired:false,lens:'',filter:'',notes:''};
   j.camDetails[camIdx].kitId=kid;j.camDetails[camIdx].hired=false;
-  cm('mPickCamKit');renderJobDet(j);
+  cm('mPickCamKit');saveData();
+  renderJobDet(j);
 }
 
 function jdPickVisionMixer(jid){
@@ -6688,13 +6712,15 @@ function jdHandlePhotoUpload(event,jid,field){
     reader.onload=function(e){
       j[field].push({name:file.name,data:e.target.result});
       loaded++;
-      if(loaded===files.length)renderJobDet(j);
+      if(loaded===files.length)saveData();
+  renderJobDet(j);
     };
     reader.readAsDataURL(file);
   });
 }
 
-function jdRmPhoto(jid,field,idx){
+function jdRmPhoto(jid,field,idx){ /* saveData called below */
+/* _saveData_marker_ */
   var j=jobs.find(function(x){return x.id===jid;});if(!j||!j[field])return;
   j[field].splice(idx,1);renderJobDet(j);
 }
@@ -7075,9 +7101,13 @@ function printJobPDF(jid){
   win.document.close();
 }
 
-function jdIpAdd(jid){var j=jobs.find(function(x){return x.id===jid;});if(!j)return;if(!j.manualIps)j.manualIps=[];j.manualIps.push({label:'',value:'',notes:''});renderJobDet(j);}
-function jdIpRm(jid,ii){var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.manualIps)return;j.manualIps.splice(ii,1);renderJobDet(j);}
-function jdIpSet(jid,ii,field,val){var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.manualIps||!j.manualIps[ii])return;j.manualIps[ii][field]=val;}
+function jdIpAdd(jid){var j=jobs.find(function(x){return x.id===jid;});if(!j)return;if(!j.manualIps)j.manualIps=[];j.manualIps.push({label:'',value:'',notes:''});saveData();
+  renderJobDet(j);}
+function jdIpRm(jid,ii){var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.manualIps)return;j.manualIps.splice(ii,1);saveData();
+  renderJobDet(j);}
+function jdIpSet(jid,ii,field,val){var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.manualIps||!j.manualIps[ii])return;j.manualIps[ii][field]=val;
+  saveData();
+}
 function jdIpExport(jid){
   var SHEETS_URL=''; // TODO: paste your Google Apps Script Web App URL here
   if(!SHEETS_URL){alert('Google Sheets not yet connected.\n\nTo connect:\n1. Create a Google Apps Script web app\n2. Paste the URL into SHEETS_URL in jdIpExport()');return;}
