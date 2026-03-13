@@ -206,7 +206,7 @@ function opsDStr(month,day){return(OPS_MPX[month]||'2026-03')+'-'+String(day).pa
 function opsMlColor(name){if(!name)return'#2d7dd2';const k=Object.keys(OPS_ML_COLORS).find(k=>name.toLowerCase().startsWith(k.split(' ')[0].toLowerCase()));return k?OPS_ML_COLORS[k]:'#2d7dd2';}
 function opsInBrk(ds){return _opsBrk.find(b=>ds>=b.start&&ds<=b.end)||null;}
 function opsChip(t){var u=t.toUpperCase();if(/^DAY OFF$/i.test(t.trim()))return'ops-dayoff';if(/OFF$|\bOFF\b/.test(u)&&u.includes('OFF'))return'ops-dayoff';if(/^\[MCR\]/.test(u))return'ops-mcr';if(/^\[LDN\]/.test(u))return'ops-ldn';if(/SHOP.?ON|DRAG.RACE|RUPAUL|DRAGON/.test(u))return'ops-show';if(/RIG|DERIG|REHEAR|CAMERA RIG/.test(u))return'ops-prod';if(/\bRX\s*\d|\bDARK\b/.test(u))return'ops-prod';if(/MEET|RECCE|EVENT/.test(u))return'ops-event';return'ops-note';}
-function opsRChips(vals,fc){if(!vals.length)return'<div class="ops-mt"></div>';return vals.map(v=>{const cls=fc||opsChip(v);const s=v.length>17?v.slice(0,16)+'\u2026':v;return'<div class="ops-chip '+cls+'" title="'+v.replace(/"/g,'&quot;')+'">'+s+'</div>';}).join('');}
+function opsRChips(vals,fc){if(!vals.length)return'<div class="ops-mt"></div>';return vals.map(v=>{const cls=/^day off$/i.test(v.trim())?'ops-dayoff':(fc||opsChip(v));const s=v.length>17?v.slice(0,16)+'\u2026':v;return'<div class="ops-chip '+cls+'" title="'+v.replace(/"/g,'&quot;')+'">'+s+'</div>';}).join('');}
 function opsSeedFromJobs(){
   jobs.forEach(function(j){
     if(!j.txDates||!j.studio)return;
