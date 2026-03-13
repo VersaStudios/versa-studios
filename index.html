@@ -1263,7 +1263,7 @@ function renderDash() {
   const now = new Date();
   const upcomingJobs = jobs.filter(j=>new Date(j.end)>=now).sort((a,b)=>new Date(a.start)-new Date(b.start)).slice(0,5);
   document.getElementById('dJobs').innerHTML = upcomingJobs.length ? upcomingJobs.map(j=>{
-    const total=j.prep.length, done=j.prep.filter(p=>p.done).length;
+    const total=(j.prep||[]).length, done=(j.prep||[]).filter(p=>p.done).length;
     return '<div style="display:flex;align-items:center;gap:10px;padding:12px 17px;border-bottom:1px solid var(--border);cursor:pointer" onclick="openJobDet('+j.id+')">'
       +'<div style="flex:1;min-width:0"><div style="font-family:var(--cond);font-weight:700;font-size:17px;color:var(--pure)">'+j.name+'</div>'
       +'<div style="display:flex;align-items:center;gap:6px;margin-top:4px">'+locBadge(j.loc)
@@ -1520,7 +1520,7 @@ function lbDel() {
 }
 function renderKitJobs(k) {
   const el=document.getElementById('drwBody');
-  const jbs=jobs.filter(j=>j.prep.some(p=>p.kid===k.id));
+  const jbs=jobs.filter(j=>(j.prep||[]).some(p=>p.kid===k.id));
   let html='<div class="det-sec-lbl" style="margin-bottom:11px">Jobs using this item</div>';
   if(!jbs.length) { html+='<div style="font-size:17px;color:var(--muted)">Not allocated to any job.</div>'; }
   else { html+=jbs.map(j=>{
@@ -1582,7 +1582,7 @@ function openAllocModal() {
   document.getElementById('allocKitName').textContent=k.name+' ('+k.tag+')';
   const el=document.getElementById('allocJobList');
   el.innerHTML=jobs.map(j=>{
-    const already=j.prep.some(p=>p.kid===k.id);
+    const already=(j.prep||[]).some(p=>p.kid===k.id);
     return '<div style="display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--border)">'
       +'<div style="flex:1"><div style="font-family:var(--cond);font-size:17px;font-weight:800;color:var(--pure)">'+j.name+'</div>'
       +'<div style="display:flex;align-items:center;gap:6px;margin-top:4px">'+locBadge(j.loc)
@@ -1597,7 +1597,7 @@ function openAllocModal() {
 }
 function allocKitToJob(jid,kid) {
   const j=jobs.find(x=>x.id===jid); if(!j) return;
-  if(j.prep.some(p=>p.kid===kid)) { toast('Already on this job'); return; }
+  if((j.prep||[]).some(p=>p.kid===kid)) { toast('Already on this job'); return; }
   j.prep.push({kid,done:false,ks:'',ke:'',area:''});
   const k=kit.find(x=>x.id===kid);
   if(k){ if(!k.history) k.history=[]; k.history.unshift({date:today(),event:'Allocated to job',job:j.name,studio:j.studio,area:'',by:uname()}); }
@@ -7630,7 +7630,7 @@ function renderKpicker(){
   const j=jobs.find(x=>x.id===currentJid);if(!j)return;
   const res=kit.filter(k=>(!q||k.name.toLowerCase().includes(q)||k.tag.toLowerCase().includes(q)));
   document.getElementById('kpList').innerHTML=res.map(k=>{
-    const on=j.prep.some(p=>p.kid===k.id);
+    const on=(j.prep||[]).some(p=>p.kid===k.id);
     return '<div class="kpick-item" onclick="toggleKitJob('+j.id+','+k.id+')" style="'+(on?'background:rgba(255,255,255,.06)':'')+'">'
       +'<div class="kpick-nm">'+k.name+'</div><div class="kpick-tag">'+k.tag+'</div>'
       +(on?'<span style="color:#80d0a0;font-family:var(--cond);font-size:10px;font-weight:700">✓</span>':'')
