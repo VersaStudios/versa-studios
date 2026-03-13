@@ -72,6 +72,7 @@ html,body{height:100%;background:var(--black);color:var(--white);font-family:var
 .ops-andrew{background:rgba(42,122,79,.2);color:#1a5c38;border:1px solid rgba(42,122,79,.35)}
 .ops-chris{background:rgba(176,138,16,.2);color:#7a5c08;border:1px solid rgba(176,138,16,.35)}
 .ops-ian{background:rgba(32,96,176,.2);color:#18407a;border:1px solid rgba(32,96,176,.35)}
+.ops-dayoff{background:rgba(230,190,30,.25);color:#7a6200;border:1px solid rgba(200,165,0,.45)}
 .modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;z-index:800}
 .modal-ov.open{display:flex}
 .modal{background:var(--dark);border:1px solid var(--border);border-radius:6px;width:100%;max-width:480px;max-height:90vh;overflow:hidden;display:flex;flex-direction:column}
@@ -204,7 +205,7 @@ function opsIsWk(dow){const d=(dow||'').toUpperCase();return d==='SATURDAY'||d==
 function opsDStr(month,day){return(OPS_MPX[month]||'2026-03')+'-'+String(day).padStart(2,'0');}
 function opsMlColor(name){if(!name)return'#2d7dd2';const k=Object.keys(OPS_ML_COLORS).find(k=>name.toLowerCase().startsWith(k.split(' ')[0].toLowerCase()));return k?OPS_ML_COLORS[k]:'#2d7dd2';}
 function opsInBrk(ds){return _opsBrk.find(b=>ds>=b.start&&ds<=b.end)||null;}
-function opsChip(t){var u=t.toUpperCase();if(/^\[MCR\]/.test(u))return'ops-mcr';if(/^\[LDN\]/.test(u))return'ops-ldn';if(/SHOP.?ON|DRAG.RACE|RUPAUL|DRAGON/.test(u))return'ops-show';if(/RIG|DERIG|REHEAR|CAMERA RIG/.test(u))return'ops-prod';if(/\bRX\s*\d|\bDARK\b/.test(u))return'ops-prod';if(/MEET|RECCE|EVENT/.test(u))return'ops-event';return'ops-note';}
+function opsChip(t){var u=t.toUpperCase();if(/^DAY OFF$/i.test(t.trim()))return'ops-dayoff';if(/OFF$|\bOFF\b/.test(u)&&u.includes('OFF'))return'ops-dayoff';if(/^\[MCR\]/.test(u))return'ops-mcr';if(/^\[LDN\]/.test(u))return'ops-ldn';if(/SHOP.?ON|DRAG.RACE|RUPAUL|DRAGON/.test(u))return'ops-show';if(/RIG|DERIG|REHEAR|CAMERA RIG/.test(u))return'ops-prod';if(/\bRX\s*\d|\bDARK\b/.test(u))return'ops-prod';if(/MEET|RECCE|EVENT/.test(u))return'ops-event';return'ops-note';}
 function opsRChips(vals,fc){if(!vals.length)return'<div class="ops-mt"></div>';return vals.map(v=>{const cls=fc||opsChip(v);const s=v.length>17?v.slice(0,16)+'\u2026':v;return'<div class="ops-chip '+cls+'" title="'+v.replace(/"/g,'&quot;')+'">'+s+'</div>';}).join('');}
 function opsSeedFromJobs(){
   jobs.forEach(function(j){
@@ -419,16 +420,15 @@ function renderGanttStuToggle(){
   });
 }
 function opsReRender(){
-  var secs=document.querySelectorAll('#opsBody2 .ops-ms2');
+  opsSeedFromJobs();
+  var secs=document.querySelectorAll('#opsBody .ops-ms');
   secs.forEach(function(sec,i){
     if(sec.style.display!=='none') sec.innerHTML=opsRenderMonth(OPS_CAL[i],i);
   });
 }
 function opsReRenderAll(){
-  if(plannerView==='week'){opsRenderWeek();return;}
-  if(plannerView==='year'){opsRenderYear();return;}
   opsSeedFromJobs();
-  var secs=document.querySelectorAll('#opsBody2 .ops-ms2');
+  var secs=document.querySelectorAll('#opsBody .ops-ms');
   secs.forEach(function(sec,i){
     if(sec.style.display!=='none') sec.innerHTML=opsRenderMonth(OPS_CAL[i],i);
   });
@@ -447,7 +447,7 @@ function opsCk(td){
   if(row==='ml'){html+='<div class="ops-cs">Tech Manager</div>';OPS_TM.forEach(tm=>html+=mkO(tm,opsMlColor(tm),true));html+='<div class="ops-div"></div><div class="ops-cs">Off Air</div>';html+=mkO('Break / Off Air','#333',true);}
   else if(row==='events'){html+='<div class="ops-cs">Events</div>';}
   else if(row.startsWith('st_')){const stName=row.slice(3);html+='<div class="ops-cs">'+stName+'</div>';}
-  else{const colMap={andrew:'#3a8a55',chris:'#907010',ian:'#3a5aaa'};const col=colMap[row]||'#555';html+='<div class="ops-cs">'+row.charAt(0).toUpperCase()+row.slice(1)+'</div>';html+=mkO('Day Off',col,false);html+='<div class="ops-div"></div><div class="ops-cs">Jobs</div>';jobs.filter(function(j){return j.status!=='Cancelled';}).forEach(function(j){html+=mkO(j.name,col,false);});}
+  else{const colMap={andrew:'#3a8a55',chris:'#907010',ian:'#3a5aaa'};const col=colMap[row]||'#555';html+='<div class="ops-cs">'+row.charAt(0).toUpperCase()+row.slice(1)+'</div>';html+=mkO('Day Off','#c8a800',false);html+='<div class="ops-div"></div><div class="ops-cs">Jobs</div>';jobs.filter(function(j){return j.status!=='Cancelled';}).forEach(function(j){html+=mkO(j.name,col,false);});}
   html+='<div class="ops-div"></div><input class="ops-ci" id="opsCiTxt" placeholder="Custom..." onkeydown="if(event.keyCode===13)opsCiAdd()"/><button class="ops-ca" onclick="opsCiAdd()">+ Add Custom</button>';
   if(cur.length)html+='<div class="ops-div"></div><div class="ops-co" onclick="opsClear()" style="color:#c06060"><div class="ops-cd" style="background:#c06060"></div>Clear cell</div>';
   const ced=document.getElementById('opsCed');
