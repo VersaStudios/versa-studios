@@ -6135,6 +6135,7 @@ function openJobDet(id) {
   if(!j.prodCompany) j.prodCompany = j.client||'';
   if(j.cameras===undefined||j.cameras===null) j.cameras = 0;
   currentJid = id;
+  closeDrawer();
   nav('jobdet', null);
   document.getElementById('topTitle').textContent = j.name;
   renderJobDet(j);
@@ -7470,10 +7471,8 @@ function jdToggleAddField(jid,i){
 }
 
 function jdPickCamKit(jid,camIdx){
-  try {
   jid=parseInt(jid)||0;camIdx=parseInt(camIdx)||0;
-  var j=jobs.find(function(x){return x.id===jid;});
-  if(!j){alert('jdPickCamKit: job '+jid+' not found. jobs has '+jobs.length+' entries, ids: '+jobs.slice(0,5).map(function(x){return x.id;}).join(','));return;}
+  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
   var allocMap=getAllocatedKitMap();
   var _bsc=['Studio Camera','Specialist Camera','PTZ Camera','Mini Camera','Camera Body','Head'];
   var camKit=kit.filter(function(k){return k.cat==='Camera'&&_bsc.indexOf(k.subcat)>=0&&k.status!=='Bin';});
@@ -7490,7 +7489,6 @@ function jdPickCamKit(jid,camIdx){
   document.getElementById('pickCamKitJid').value=jid;
   document.getElementById('pickCamKitIdx').value=camIdx;
   om('mPickCamKit');
-  } catch(e) { alert('jdPickCamKit error: '+e.message); }
 }
 
 
