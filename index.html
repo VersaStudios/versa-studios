@@ -187,7 +187,7 @@ html,body{height:100%;background:#0a0a0a;color:#f2f2f2;font-family:var(--font);f
 .supp-contact{display:flex;gap:14px;margin-top:7px;flex-wrap:wrap}
 .supp-contact span{font-size:17px;font-weight:500;color:var(--white)}
 .supp-jobs{padding:11px 18px;border-top:1px solid var(--border)}
-.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;display:none;align-items:center;justify-content:center}
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:400;display:none;align-items:center;justify-content:center}
 .modal-ov.open{display:flex}
 .modal{background:var(--near-black);border:1px solid var(--border);border-radius:5px;width:490px;max-width:92vw;max-height:88vh;display:flex;flex-direction:column;animation:mIn .18s ease}
 @keyframes mIn{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
@@ -502,10 +502,10 @@ body.ops-sa .main-content{margin-left:0!important;}
 
 
 /* KIT DRAWER OVERLAY */
-.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:299}
+#drwOv{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:340;pointer-events:none}
 .ov.open{display:block}
 /* KIT DRAWER PANEL */
-#kitDrawer{position:fixed;bottom:0;left:0;right:0;background:var(--near-black);border-top:1px solid var(--border);border-radius:14px 14px 0 0;z-index:300;transform:translateY(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);max-height:80vh;display:flex;flex-direction:column}
+#kitDrawer{position:fixed;bottom:0;left:0;right:0;background:var(--near-black);border-top:1px solid var(--border);border-radius:14px 14px 0 0;z-index:350;transform:translateY(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);max-height:80vh;display:flex;flex-direction:column}
 #kitDrawer.open{transform:translateY(0)}
 </style>
 </head>
@@ -554,7 +554,7 @@ body.ops-sa .main-content{margin-left:0!important;}
 <div class="toast" id="toast"></div>
 <div class="ov" id="drwOv" onclick="closeDrawer()"></div>
 
-<div class="drawer" id="kitDrawer">
+<div id="kitDrawer">
   <div class="drw-hdr">
     <div class="drw-title" id="drwName">Item</div>
     <div style="display:flex;gap:6px;align-items:center">
@@ -916,7 +916,7 @@ body.ops-sa .main-content{margin-left:0!important;}
       <div id="acctPop" class="acct-pop">
         <div class="acct-pop-hdr">
           <div class="acct-pop-nm" id="acctPopName">Andrew Rowell</div>
-          <div class="acct-pop-em" id="acctPopEmail"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="7617181204130158041901131a1a360013040517050203121f19055815191b">[email&#160;protected]</a></div>
+          <div class="acct-pop-em" id="acctPopEmail"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ff9e919b8d9a88d18d90889a9393bf899a8d8c9e8c8b8a9b96908cd19c9092">[email&#160;protected]</a></div>
         </div>
         <button class="acct-pop-btn" onclick="signOut()">
           <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 3h3a1 1 0 011 1v8a1 1 0 01-1 1h-3M7 11l3-3-3-3M10 8H2"/></svg>
@@ -983,7 +983,7 @@ body.ops-sa .main-content{margin-left:0!important;}
           <div id="kitMainTiles">
             <div style="font-family:var(--cond);font-size:13px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--white);margin-bottom:10px">Categories</div>
             <div id="kitCatTiles" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:10px;margin-bottom:24px"></div>
-            <div style="font-family:var(--cond);font-size:13px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--white);margin-bottom:10px">Locations</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><div style="font-family:var(--cond);font-size:13px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--white)">Locations</div><button class="ibtn" style="font-size:12px;padding:4px 12px" onclick="openBulkTransfer()">&#8646; Transfer</button></div>
             <div id="kitLocTiles" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:10px;margin-bottom:24px"></div>
             <div style="font-family:var(--cond);font-size:13px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--white);margin-bottom:10px">Jobs</div>
             <div id="kitJobTiles" style="display:grid;grid-template-columns:1fr;gap:10px"></div>
@@ -1000,6 +1000,7 @@ body.ops-sa .main-content{margin-left:0!important;}
         <div style="display:flex;align-items:center;justify-content:flex-end;gap:6px;margin-bottom:8px"><span style="font-size:11px;color:var(--muted);font-family:var(--cond);font-weight:700">VIEW:</span><button id="btnListView" class="ibtn" style="font-size:11px" onclick="setKitView('list')">&#9776; List</button><button id="btnIconView" class="ibtn" style="font-size:11px;border:1px solid var(--pure);color:var(--pure)" onclick="setKitView('icon')">&#9635; Icons</button></div>
           <div class="filters" style="margin-bottom:12px">
             <button class="btn-sec" style="padding:5px 12px;font-size:13px" onclick="kitBackToLanding()">&#8592; Back</button>
+            <button class="ibtn" style="padding:5px 12px;font-size:12px;background:rgba(45,125,210,.15);border-color:rgba(45,125,210,.4);color:#4a9eff" onclick="openBulkTransfer()">&#8646; Transfer Location</button>
             <span id="kitViewTitle" style="font-family:var(--cond);font-size:16px;font-weight:800;color:var(--white);margin:0 6px"></span>
             <select class="fsel" id="fCat" onchange="renderKit()"><option value="">All Categories</option></select>
             <select class="fsel" id="fLoc" onchange="renderKit()"><option value="">All Locations</option><option>Manchester</option><option>London</option></select>
@@ -1618,6 +1619,20 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
         </div>
       
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+window._lastErr = null;
+window.onerror = function(msg, src, line, col, err) {
+  window._lastErr = 'ERR:' + msg + ' L:' + line + ' C:' + col + ' S:' + src + ' ' + (err&&err.stack?err.stack:'');
+  function showErr() {
+    var b = document.body;
+    if(!b) { setTimeout(showErr, 50); return; }
+    var lo = document.getElementById('appLoadingOverlay');
+    if(lo) lo.style.display = 'none';
+    b.style.background = '#900';
+    b.innerHTML = '<div style="padding:20px;color:#fff;font-family:monospace;font-size:12px;white-space:pre-wrap;word-break:break-all">' + window._lastErr + '</div>';
+  }
+  showErr();
+  return false;
+};
 // ── SUPABASE CONFIG (direct REST — no SDK needed) ─────────────────────────────
 const _SB_URL = 'https://dttwgmoyxthczlzxjgag.supabase.co';
 const _SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ';
@@ -4184,6 +4199,7 @@ const titles = {dashboard:'Dashboard',kit:'Kit List',maintenance:'Maintenance',h
   faults:'Fault Log',bin:'Bin',studios:'Tech Log',jobs:'Jobs',
   jobdet:'Job Detail',calendar:'Planner',admin:'Admin',ops:'Ops Planner',tools:'Tools'};
 function nav(page, el) {
+  closeDrawer();
   if(page==='engreport') setTimeout(erInitPage, 50);
   if(page==='studios') setTimeout(renderAbcLastReport, 200);
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
@@ -4557,6 +4573,121 @@ function kitUpdateInUse() {
     if(activeJobKids.has(k.id) && k.status==='Available') k.status='In Use';
     else if(!activeJobKids.has(k.id) && k.status==='In Use') k.status='Available';
   });
+}
+
+function openBulkTransfer() {
+  var ex = document.getElementById('bulkTransferOv'); if(ex) ex.remove();
+  var locs = Object.keys(LOC_COLORS);
+  var locOpts = locs.map(function(l){ return '<option value="'+l+'">'+l+'</option>'; }).join('');
+  var cats = Object.keys(CAT_COLORS);
+  var catOpts = '<option value="">All categories</option>' + cats.map(function(c){ return '<option value="'+c+'">'+c+'</option>'; }).join('');
+  
+  var html = '<div id="bulkTransferOv" style="position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;display:flex;align-items:center;justify-content:center" onclick="if(event.target===this)this.remove()">'
+    + '<div style="background:#1a1a1a;border:1px solid rgba(255,255,255,.15);border-radius:10px;width:340px;padding:20px;box-shadow:0 16px 64px rgba(0,0,0,.9)">'
+    + '<div style="font-family:var(--cond);font-size:16px;font-weight:900;color:var(--white);margin-bottom:16px;letter-spacing:.04em">TRANSFER KIT LOCATION</div>'
+    + '<div style="display:grid;gap:12px">'
+    + '<div><div class="dfl">From Location</div><select class="fi" id="btFrom" style="width:100%"><option value="">-- select --</option>'+locOpts+'</select></div>'
+    + '<div><div class="dfl">To Location</div><select class="fi" id="btTo" style="width:100%"><option value="">-- select --</option>'+locOpts+'</select></div>'
+    + '<div><div class="dfl">Category (optional)</div><select class="fi" id="btCat" style="width:100%">'+catOpts+'</select></div>'
+    + '<div id="btPreview" style="font-size:13px;color:var(--muted);min-height:20px"></div>'
+    + '</div>'
+    + '<div style="display:flex;gap:8px;margin-top:16px;justify-content:flex-end">'
+    + '<button class="btn-s" onclick="document.getElementById(\'bulkTransferOv\').remove()">Cancel</button>'
+    + '<button class="btn-p" id="btConfirmBtn" onclick="doBulkTransfer()">Transfer</button>'
+    + '</div></div></div>';
+  document.body.insertAdjacentHTML('beforeend', html);
+  
+  function updatePreview() {
+    var from = document.getElementById('btFrom').value;
+    var cat = document.getElementById('btCat').value;
+    var to = document.getElementById('btTo').value;
+    var preview = document.getElementById('btPreview');
+    if(!from){ preview.textContent = ''; return; }
+    var count = kit.filter(function(k){
+      return k.loc === from && k.status !== 'Bin' && (!cat || k.cat === cat);
+    }).length;
+    preview.innerHTML = '<span style="color:var(--white);font-weight:600">' + count + ' item' + (count===1?'':'s') + '</span> will move'
+      + (to ? ' → <span style="color:#4a9eff">' + to + '</span>' : '');
+  }
+  document.getElementById('btFrom').addEventListener('change', updatePreview);
+  document.getElementById('btTo').addEventListener('change', updatePreview);
+  document.getElementById('btCat').addEventListener('change', updatePreview);
+}
+
+function doBulkTransfer() {
+  var from = document.getElementById('btFrom').value;
+  var to = document.getElementById('btTo').value;
+  var cat = document.getElementById('btCat').value;
+  if(!from || !to){ alert('Please select both From and To locations.'); return; }
+  if(from === to){ alert('From and To locations are the same.'); return; }
+  var moved = 0;
+  kit.forEach(function(k){
+    if(k.loc === from && k.status !== 'Bin' && (!cat || k.cat === cat)){
+      k.loc = to; moved++;
+    }
+  });
+  saveData();
+  document.getElementById('bulkTransferOv').remove();
+  toast(moved + ' item' + (moved===1?'':'s') + ' moved to ' + to);
+  kitRenderLanding();
+}
+
+function openKitAllocModal(kid) {
+  var k = kit.find(function(x){ return x.id === kid; }); if(!k) return;
+  var ex = document.getElementById('kitAllocOv'); if(ex) ex.remove();
+  
+  // Current allocations
+  var allocJobs = jobs.filter(function(j){
+    return (j.prep||[]).some(function(p){ return p.kid === kid; });
+  });
+  
+  // Available jobs (not already allocated, not cancelled)
+  var availJobs = jobs.filter(function(j){
+    return j.status !== 'Cancelled' && !(j.prep||[]).some(function(p){ return p.kid === kid; });
+  });
+  
+  var allocHtml = allocJobs.length
+    ? allocJobs.map(function(j){
+        return '<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)">'
+          + '<div style="flex:1;font-size:13px;color:var(--white)">' + j.name + '</div>'
+          + '<span style="font-size:11px;color:var(--muted)">' + (j.start||'') + '</span>'
+          + '<button onclick="kitDeallocate('+kid+','+j.id+');openKitAllocModal('+kid+')" style="background:none;border:1px solid rgba(255,80,80,.3);color:#f88;border-radius:3px;font-size:11px;padding:2px 8px;cursor:pointer">Remove</button>'
+          + '</div>';
+      }).join('')
+    : '<div style="font-size:13px;color:var(--muted);padding:6px 0">Not allocated to any job.</div>';
+
+  var availOpts = availJobs.map(function(j){
+    return '<option value="'+j.id+'">'+j.name+'</option>';
+  }).join('');
+  
+  var html = '<div id="kitAllocOv" style="position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;display:flex;align-items:center;justify-content:center" onclick="if(event.target===this)this.remove()">'
+    + '<div style="background:#1a1a1a;border:1px solid rgba(255,255,255,.15);border-radius:10px;width:380px;max-height:80vh;display:flex;flex-direction:column;box-shadow:0 16px 64px rgba(0,0,0,.9)">'
+    + '<div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">'
+    + '<div style="font-family:var(--cond);font-size:14px;font-weight:900;color:var(--white)">'+k.name+'</div>'
+    + '<button onclick="document.getElementById(\'kitAllocOv\').remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px">×</button></div>'
+    + '<div style="padding:14px 16px;overflow-y:auto;flex:1">'
+    + '<div style="font-family:var(--cond);font-size:11px;font-weight:800;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">Current Allocations</div>'
+    + allocHtml
+    + '<div style="margin-top:14px"><div style="font-family:var(--cond);font-size:11px;font-weight:800;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">Add to Job</div>'
+    + (availJobs.length
+        ? '<div style="display:flex;gap:6px"><select class="fi" id="kitAllocJobSel" style="flex:1;font-size:13px"><option value="">-- select job --</option>'+availOpts+'</select>'
+          + '<button class="btn-p" style="font-size:13px;padding:5px 14px" onclick="_doKitAlloc('+kid+')">Add</button></div>'
+        : '<div style="font-size:13px;color:var(--muted)">All active jobs already have this item.</div>')
+    + '</div></div></div></div>';
+  
+  document.body.insertAdjacentHTML('beforeend', html);
+}
+
+function _doKitAlloc(kid) {
+  var sel = document.getElementById('kitAllocJobSel'); if(!sel||!sel.value) return;
+  var jid = parseInt(sel.value);
+  var j = jobs.find(function(x){ return x.id === jid; }); if(!j) return;
+  if(!j.prep) j.prep = [];
+  if(!j.prep.find(function(p){ return p.kid === kid; })){
+    j.prep.push({kid:kid, done:false, ks:j.start||'', ke:j.end||'', area:'', supplier:'Versa Inventory'});
+  }
+  saveData();
+  openKitAllocModal(kid); // refresh modal
 }
 function kitRenderLanding() {
   window._kitSubcatFilter=''; window._kitSubsubcatFilter='';
@@ -5059,6 +5190,9 @@ function renderKit() {
       +(av.label?'<div style="font-size:11px;color:'+av.color+';margin-top:3px">'+av.label+'</div>':'')
       +'</div>'
       +'<div style="flex-shrink:0">'+(av.label?'<span class="badge b-iu">On Job</span>':statBadge(k.status))+'</div>'
+      +'<div style="display:flex;gap:4px;margin-top:6px" onclick="event.stopPropagation()">'
+      +'<button class="ibtn" style="font-size:11px;flex:1" onclick="openKitAllocModal('+k.id+')">&#128196; Allocate</button>'
+      +'</div>'
       +'</div>';
   }).join('');
 }
@@ -5162,8 +5296,8 @@ function openDrawer(id) {
   renderDet(k);
 }
 function closeDrawer() {
-  document.getElementById('drwOv').classList.remove('open');
-  document.getElementById('kitDrawer').classList.remove('open');
+  var ov=document.getElementById('drwOv'); if(ov) ov.classList.remove('open');
+  var kd=document.getElementById('kitDrawer'); if(kd) kd.classList.remove('open');
 }
 function switchTab(t) {
   currentDrwTab=t;
@@ -6860,6 +6994,7 @@ function jdMnRm(jid,ni,tab){
   renderJobDet(j);
 }
 function jdSwitch(tab, jid) {
+  closeDrawer();
   if(tab!=='englog') _engLogMonth=null;
   _jdTab = tab;
   const j = jobs.find(x=>x.id===jid); if(!j) return;
@@ -7471,25 +7606,58 @@ function jdToggleAddField(jid,i){
 }
 
 function jdPickCamKit(jid,camIdx){
-  jid=parseInt(jid)||0;camIdx=parseInt(camIdx)||0;
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  jid=parseInt(jid)||0; camIdx=parseInt(camIdx)||0;
+  var j=jobs.find(function(x){return x.id===jid;}); if(!j) return;
+  var ex=document.getElementById('camKitPicker'); if(ex) ex.remove();
   var allocMap=getAllocatedKitMap();
   var _bsc=['Studio Camera','Specialist Camera','PTZ Camera','Mini Camera','Camera Body','Head'];
   var camKit=kit.filter(function(k){return k.cat==='Camera'&&_bsc.indexOf(k.subcat)>=0&&k.status!=='Bin';});
   if(!camKit.length) camKit=kit.filter(function(k){return k.cat==='Camera'&&k.status!=='Bin';});
-  var rows=camKit.map(function(k){
-    var onJob=allocMap.has(k.id)&&allocMap.get(k.id)!==j.name;
-    return '<div style="display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid var(--border);cursor:pointer'+(onJob?';opacity:.5':'')+'" onclick="jdAssignCamKit('+jid+','+camIdx+','+k.id+')">'
-      +'<div style="flex:1"><div style="font-size:14px;font-weight:600;color:var(--white)">'+k.name+'</div>'
-      +'<div style="font-size:12px;color:var(--muted)">'+k.tag+' · '+k.loc+'</div></div>'
-      +(onJob?'<span style="font-size:11px;color:#fa0">On Job</span>':'<span style="font-size:12px;color:#3dbf7a">'+k.status+'</span>')
-      +'</div>';
-  }).join('');
-  var _acs=kit.filter(function(k){return k.cat==='Camera';}).map(function(k){return k.subcat;}).filter(function(v,i,a){return a.indexOf(v)===i;}).join(', ');document.getElementById('pickCamKitRows').innerHTML=rows||('<div style="padding:14px;color:var(--muted);font-size:13px">No cameras found. Subcats in kit: '+(_acs||'none')+'</div>');
-  document.getElementById('pickCamKitJid').value=jid;
-  document.getElementById('pickCamKitIdx').value=camIdx;
-  om('mPickCamKit');
+
+  var html='<div id="camKitPicker" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1a1a1a;border:1px solid rgba(255,255,255,.2);border-radius:10px;z-index:99999;width:320px;max-height:65vh;display:flex;flex-direction:column;box-shadow:0 16px 64px rgba(0,0,0,.95)">'
+    +'<div style="padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.08);font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#888;display:flex;justify-content:space-between;align-items:center">Select Camera Body'
+    +'<button onclick="document.getElementById(\'camKitPicker\').remove()" style="background:none;border:none;color:#888;cursor:pointer;font-size:18px;line-height:1">×</button></div>'
+    +'<input id="camKitQ" class="fi" style="margin:8px 12px 0;font-size:13px;padding:4px 8px" placeholder="Search..." oninput="_camKitSearch()"/>'
+    +'<div style="overflow-y:auto;flex:1;margin-top:6px" id="camKitList"></div>'
+    +'</div>';
+  document.body.insertAdjacentHTML('beforeend', html);
+
+  var list=document.getElementById('camKitList');
+  if(camKit.length){
+    camKit.forEach(function(k){
+      var onJob=allocMap.has(k.id)&&allocMap.get(k.id)!==j.name;
+      var el=document.createElement('div');
+      el.style.cssText='padding:10px 14px;cursor:pointer;font-size:13px;color:'+(onJob?'#fa0':'#fff')+';border-bottom:1px solid rgba(255,255,255,.04);display:flex;justify-content:space-between;align-items:center';
+      el.innerHTML='<div><div style="font-weight:600">'+k.name+'</div><div style="font-size:11px;color:#888;margin-top:1px">'+k.tag+' · '+k.loc+'</div></div>'+(onJob?'<span style="font-size:10px;background:rgba(250,160,0,.15);color:#fa0;padding:2px 6px;border-radius:3px">On Job</span>':'<span style="font-size:10px;color:#3dbf7a">'+k.status+'</span>');
+      el.setAttribute('data-n', k.name.toLowerCase());
+      el.addEventListener('mouseover',function(){if(!onJob)el.style.background='rgba(255,255,255,.06)';});
+      el.addEventListener('mouseout',function(){el.style.background='';});
+      el.addEventListener('click',function(){
+        document.getElementById('camKitPicker').remove();
+        jdAssignCamKit(jid,camIdx,k.id);
+      });
+      list.appendChild(el);
+    });
+  } else {
+    var _acs=kit.filter(function(k){return k.cat==='Camera';}).map(function(k){return k.subcat;}).filter(function(v,i,a){return a.indexOf(v)===i;}).join(', ');
+    list.innerHTML='<div style="padding:14px;color:#888;font-size:13px">No cameras found.<br><span style="font-size:11px;opacity:.6">Kit subcats: '+(_acs||'none')+'</span></div>';
+  }
+
+  setTimeout(function(){
+    document.addEventListener('click',function _ckx(e){
+      var p=document.getElementById('camKitPicker');
+      if(p&&!p.contains(e.target)){p.remove();}
+      document.removeEventListener('click',_ckx);
+    });
+  },50);
 }
+function _camKitSearch(){
+  var q=(document.getElementById('camKitQ')||{value:''}).value.toLowerCase();
+  document.querySelectorAll('#camKitList [data-n]').forEach(function(el){
+    el.style.display=el.getAttribute('data-n').indexOf(q)>=0?'':'none';
+  });
+}
+
 
 
 function jdCamLensMode(jid,i,mode){
@@ -7568,25 +7736,57 @@ function jdCamLensSetCustom(jid,i,val){
 
 
 function jdPickCamLens(jid,i){
-  jid=parseInt(jid)||0;i=parseInt(i)||0;
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  jid=parseInt(jid)||0; i=parseInt(i)||0;
+  var j=jobs.find(function(x){return x.id===jid;}); if(!j) return;
+  var ex=document.getElementById('camLensPicker'); if(ex) ex.remove();
   var allocMap=getAllocatedKitMap();
   var _lsc=['Lens','Lens Range','Cine Lens','Lens Adapter'];
   var lensKit=kit.filter(function(k){return _lsc.indexOf(k.subcat)>=0&&k.status!=='Bin';});
-  if(!lensKit.length) lensKit=kit.filter(function(k){return (k.cat==='Camera')&&k.status!=='Bin'&&k.name&&k.name.toLowerCase().indexOf('lens')>=0;});
-  var rows=lensKit.map(function(k){
-    var onJob=allocMap.has(k.id)&&allocMap.get(k.id)!==j.name;
-    return '<div style="display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid var(--border);cursor:pointer'+(onJob?';opacity:.5':'')+'" onclick="jdCamLensSetInv('+jid+','+i+','+k.id+');cm(\'mPickCamLens\')">'
-      +'<div style="flex:1"><div style="font-size:14px;font-weight:600;color:var(--white)">'+k.name+'</div>'
-      +'<div style="font-size:11px;color:var(--muted)">'+k.tag+' \u00b7 '+k.loc+'</div></div>'
-      +(onJob?'<span style="font-size:11px;color:#fa0">On Job</span>':'<span style="font-size:12px;color:#3dbf7a">'+k.status+'</span>')
-      +'</div>';
-  }).join('');
-  var _als=kit.filter(function(k){return k.cat==='Camera';}).map(function(k){return k.subcat;}).filter(function(v,i,a){return a.indexOf(v)===i;}).join(', ');document.getElementById('pickCamLensRows').innerHTML=rows||('<div style="padding:14px;color:var(--muted);font-size:13px">No lenses found. Camera subcats in kit: '+(_als||'none')+'</div>');
-  document.getElementById('pickCamLensJid').value=jid;
-  document.getElementById('pickCamLensIdx').value=i;
-  om('mPickCamLens');
+  if(!lensKit.length) lensKit=kit.filter(function(k){return k.cat==='Camera'&&k.status!=='Bin'&&k.name.toLowerCase().indexOf('lens')>=0;});
+
+  var html='<div id="camLensPicker" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1a1a1a;border:1px solid rgba(255,255,255,.2);border-radius:10px;z-index:99999;width:320px;max-height:65vh;display:flex;flex-direction:column;box-shadow:0 16px 64px rgba(0,0,0,.95)">'
+    +'<div style="padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.08);font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#888;display:flex;justify-content:space-between;align-items:center">Select Lens'
+    +'<button onclick="document.getElementById(\'camLensPicker\').remove()" style="background:none;border:none;color:#888;cursor:pointer;font-size:18px;line-height:1">×</button></div>'
+    +'<input id="camLensQ" class="fi" style="margin:8px 12px 0;font-size:13px;padding:4px 8px" placeholder="Search..." oninput="_camLensSearch()"/>'
+    +'<div style="overflow-y:auto;flex:1;margin-top:6px" id="camLensList"></div>'
+    +'</div>';
+  document.body.insertAdjacentHTML('beforeend', html);
+
+  var list=document.getElementById('camLensList');
+  if(lensKit.length){
+    lensKit.forEach(function(k){
+      var onJob=allocMap.has(k.id)&&allocMap.get(k.id)!==j.name;
+      var el=document.createElement('div');
+      el.style.cssText='padding:10px 14px;cursor:pointer;font-size:13px;color:'+(onJob?'#fa0':'#fff')+';border-bottom:1px solid rgba(255,255,255,.04);display:flex;justify-content:space-between;align-items:center';
+      el.innerHTML='<div><div style="font-weight:600">'+k.name+'</div><div style="font-size:11px;color:#888;margin-top:1px">'+k.tag+' · '+k.loc+'</div></div>'+(onJob?'<span style="font-size:10px;background:rgba(250,160,0,.15);color:#fa0;padding:2px 6px;border-radius:3px">On Job</span>':'<span style="font-size:10px;color:#3dbf7a">'+k.status+'</span>');
+      el.setAttribute('data-n', k.name.toLowerCase());
+      el.addEventListener('mouseover',function(){if(!onJob)el.style.background='rgba(255,255,255,.06)';});
+      el.addEventListener('mouseout',function(){el.style.background='';});
+      el.addEventListener('click',function(){
+        document.getElementById('camLensPicker').remove();
+        jdCamLensSetInv(jid,i,k.id);
+      });
+      list.appendChild(el);
+    });
+  } else {
+    list.innerHTML='<div style="padding:14px;color:#888;font-size:13px">No lenses found in kit.</div>';
+  }
+
+  setTimeout(function(){
+    document.addEventListener('click',function _clx(e){
+      var p=document.getElementById('camLensPicker');
+      if(p&&!p.contains(e.target)){p.remove();}
+      document.removeEventListener('click',_clx);
+    });
+  },50);
 }
+function _camLensSearch(){
+  var q=(document.getElementById('camLensQ')||{value:''}).value.toLowerCase();
+  document.querySelectorAll('#camLensList [data-n]').forEach(function(el){
+    el.style.display=el.getAttribute('data-n').indexOf(q)>=0?'':'none';
+  });
+}
+
 
 function jdAssignCamKit(jid,camIdx,kid){
   jid=parseInt(jid)||0;camIdx=parseInt(camIdx)||0;
@@ -11057,6 +11257,7 @@ async function renderAbcLastReport(){
     box.innerHTML=html;
   }catch(e){box.innerHTML='<div style="font-size:13px;color:var(--muted)">Could not load report.</div>';}
 }
+
 </script>
   <!-- PICK CAM KIT MODAL -->
   <div class="modal-ov" id="mPickCamKit">
@@ -11308,17 +11509,4 @@ async function renderAbcLastReport(){
         <div><div class="dfl">Notes</div>
           <textarea class="fi fta" id="hiredFormNotes" style="width:100%;min-height:60px"></textarea></div>
         <div><div class="dfl">Suppliers <span style="font-size:11px;color:var(--muted);font-weight:400">(comma separated)</span></div>
-          <input class="fi" id="hiredFormSuppliers" style="width:100%" placeholder="e.g. VMI, Procam"/></div>
-        <div><div class="dfl">Photos <span style="font-size:11px;color:var(--muted);font-weight:400">(URLs, one per line)</span></div>
-          <textarea class="fi fta" id="hiredFormPhotos" style="width:100%;min-height:60px" oninput="_hiredPhotoPreview()" placeholder="https://example.com/photo.jpg"></textarea>
-          <div id="hiredFormPhotoPreview" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px"></div>
-        </div>
-      </div>
-      <div class="modal-foot">
-        <button class="btn-s" onclick="cm('mHiredItem')">Cancel</button>
-        <button class="btn-p" onclick="saveHiredItem()">Save</button>
-      </div>
-    </div>
-  </div>
-</body>
-</html>
+          <input class="fi" id="hiredFormSuppliers" style=
