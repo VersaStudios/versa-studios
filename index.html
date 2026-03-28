@@ -552,9 +552,9 @@ body.ops-sa .main-content{margin-left:0!important;}
 </div>
 <div class="mob-ov"  id="mobOv" onclick="toggleMobMenu()"></div>
 <div class="toast" id="toast"></div>
-<div class="ov" id="drwOv" onclick="closeDrawer()"></div>
+<div class="ov" id="drwOv" onclick="closeDrawer()" style="display:none"></div>
 
-<div id="kitDrawer">
+<div id="kitDrawer" style="transform:translateY(100%)">
   <div class="drw-hdr">
     <div class="drw-title" id="drwName">Item</div>
     <div style="display:flex;gap:6px;align-items:center">
@@ -1584,7 +1584,7 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
         </div>
         <div id="admContent-pat" style="display:none">
           <div class="adm-grid">
-            <div class="adm-sec"><div class="adm-sec-hdr"><div class="adm-sec-title">Weekly PAT Emails</div></div><div style="padding:10px 17px"><div style="font-size:17px;color:var(--subtle);line-height:1.6">Weekly digest sent to all admins when PAT is due.</div>
+            <div class="adm-sec"><div class="adm-sec-hdr"><div class="adm-sec-title">Weekly PAT Emails</div><button class="btn-add" onclick="openAddPatEmail()" style="margin-left:0">+ Add</button></div><div style="padding:10px 17px"><div style="font-size:13px;color:var(--muted);margin-bottom:10px">Weekly digest sent to all admins when PAT is due.</div><div id="patEmailList"></div>
               </div>
             </div>
           </div>
@@ -4722,8 +4722,21 @@ function kitRenderLanding() {
     Object.entries(locCounts).forEach(function(e){
       var loc=e[0],n=e[1]; var col=LOC_COLORS[loc]||'#6b7280';
       var d=document.createElement('div');
-      d.style.cssText='background:'+col+';border-radius:12px;padding:20px 18px;cursor:pointer;min-height:90px;display:flex;align-items:flex-end';
-      d.innerHTML='<div style="font-size:26px;font-weight:900;color:#fff;font-family:var(--cond);line-height:1;letter-spacing:-.01em;pointer-events:none;text-transform:uppercase">'+loc+'</div>';
+      d.style.cssText='background:'+col+';border-radius:12px;padding:16px 18px;cursor:pointer;min-height:90px;display:flex;flex-direction:column;justify-content:space-between';
+      var inner=document.createElement('div');
+      inner.style.cssText='font-size:26px;font-weight:900;color:#fff;font-family:var(--cond);line-height:1;letter-spacing:-.01em;text-transform:uppercase';
+      inner.textContent=loc;
+      var bottom=document.createElement('div');
+      bottom.style.cssText='display:flex;align-items:center;justify-content:space-between;margin-top:8px';
+      var cnt=document.createElement('span');
+      cnt.style.cssText='font-size:12px;color:rgba(255,255,255,.65)';
+      cnt.textContent=n+' item'+(n===1?'':'s');
+      var tbtn=document.createElement('button');
+      tbtn.style.cssText='background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:4px;font-size:11px;padding:3px 9px;cursor:pointer;font-family:var(--cond);font-weight:700';
+      tbtn.textContent='TRANSFER';
+      tbtn.addEventListener('click',(function(l){return function(e2){e2.stopPropagation();openBulkTransfer(l);};})(loc));
+      bottom.appendChild(cnt);bottom.appendChild(tbtn);
+      d.appendChild(inner);d.appendChild(bottom);
       d.addEventListener('click', (function(l){ return function(){ kitOpenByLoc(l); }; })(loc));
       locEl.appendChild(d);
     });
@@ -10891,6 +10904,8 @@ function renderDashEng(){
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded',async ()=>{
+  // Always close drawer on load (Safari session restore)
+  closeDrawer();
   try {
   // Check for existing session
   const savedToken = sessionStorage.getItem('_vsToken');
