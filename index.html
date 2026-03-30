@@ -1247,6 +1247,9 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
 .er-newrpt:hover{background:#111;color:#fff}
 </style>
 
+<!-- Job selector tabs -->
+<div id="erJobTabs" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border)"></div>
+<!-- Sub-tabs -->
 <div style="display:flex;align-items:center;gap:0;margin-bottom:16px;border-bottom:2px solid rgba(216,90,97,.2)">
   <div id="erNavLabel" style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(216,90,97,.7);padding:0 16px 10px 0;flex-shrink:0">Morning Live</div>
   <button id="erSubTabReport" onclick="erSubTab('report')" style="padding:8px 18px;font-size:12px;font-family:var(--cond);font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:none;border:none;border-bottom:3px solid var(--accent);color:var(--accent);cursor:pointer;margin-bottom:-2px">&#128196; Report</button>
@@ -1404,6 +1407,99 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
 </div>
 </div><!-- /erSubPanelReport -->
 <div id="erSubPanelHist" style="display:none"></div>
+<!-- Dragon's Den report panel -->
+<div id="erDDPanel" style="display:none">
+<style>
+.dd-wrap{max-width:640px;margin:0 auto;background:#1a1f1a;border-radius:10px;overflow:hidden;box-shadow:0 2px 20px rgba(0,0,0,.4)}
+.dd-head{background:linear-gradient(135deg,#1a3a1a 0%,#2d5a2d 100%);padding:20px 24px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:2px solid rgba(180,140,60,.4)}
+.dd-head-brand{font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:4px}
+.dd-head-title{font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#c8a832}
+.dd-logo{width:50px;filter:brightness(0) invert(1);opacity:.5}
+.dd-body{padding:0 24px 24px}
+.dd-sec{padding:18px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.dd-sec:last-child{border-bottom:none}
+.dd-lbl{font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(180,140,60,.8);margin-bottom:10px}
+.dd-btn-row{display:flex;gap:8px;flex-wrap:wrap}
+.dd-btn{padding:9px 18px;border:1px solid rgba(255,255,255,.15);border-radius:4px;font-family:var(--font,sans-serif);font-size:13px;font-weight:600;color:rgba(255,255,255,.7);background:rgba(255,255,255,.05);cursor:pointer;transition:all .12s}
+.dd-btn:hover{border-color:rgba(200,168,50,.5);color:#c8a832}
+.dd-btn.active{background:rgba(200,168,50,.2);border-color:#c8a832;color:#c8a832}
+.dd-select{width:100%;background:#111;border:1px solid rgba(255,255,255,.15);color:#fff;padding:10px 12px;border-radius:4px;font-size:14px;font-family:inherit;outline:none}
+.dd-select:focus{border-color:#c8a832}
+.dd-textarea{width:100%;background:#111;border:1px solid rgba(255,255,255,.15);color:#fff;padding:12px;border-radius:4px;font-size:14px;font-family:inherit;resize:vertical;min-height:120px;outline:none;line-height:1.6;box-sizing:border-box}
+.dd-textarea:focus{border-color:#c8a832}
+.dd-textarea::placeholder{color:rgba(255,255,255,.25)}
+.dd-hours-grid{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center}
+.dd-hours-name{font-size:13px;font-weight:600;color:rgba(255,255,255,.8)}
+.dd-time-input{background:#111;border:1px solid rgba(255,255,255,.15);color:#fff;padding:7px 10px;border-radius:4px;font-size:13px;font-family:var(--mono,monospace);width:90px;outline:none;text-align:center}
+.dd-time-input:focus{border-color:#c8a832}
+.dd-submit-btn{width:100%;padding:14px;background:linear-gradient(135deg,#2d5a2d,#3a7a3a);border:none;color:#c8a832;font-family:var(--cond,sans-serif);font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;border-radius:4px;margin-top:16px;transition:all .15s}
+.dd-submit-btn:hover:not(:disabled){background:linear-gradient(135deg,#3a7a3a,#4a9a4a)}
+.dd-submit-btn:disabled{opacity:.35;cursor:not-allowed}
+.dd-success{display:none;padding:24px;text-align:center;background:rgba(45,90,45,.3);border-top:1px solid rgba(180,140,60,.3)}
+</style>
+<div class="dd-wrap">
+  <div class="dd-head">
+    <div>
+      <div class="dd-head-brand">Versa Studios · BBC Studios</div>
+      <div class="dd-head-title" id="ddFormTitle">Dragon's Den · Engineering Report</div>
+    </div>
+    <img class="dd-logo" src="data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMzY2IDk2Mi45MiI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiNmZmY7fTwvc3R5bGU+PC9kZWZzPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTE5NC4xNiw1MDcuMzN2LTE0LjdjOS4wOSw0LjQ1LDIzLjQsOS42NywzOC42Nyw5LjY3LDE4LjE3LDAsMzIuMDktOC4xMiwzMi4wOS0yMi4yM3MtNy41NC0yMS42NS0zMi4wOS0zMC4zNWMtMjcuNjQtOS44Ni0zOS4wNS0yMS42Ni0zOS4wNS00MS43NiwwLTIzLDE5LjcyLTM2LjE1LDQ0LjY2LTM2LjE1QTg2LjYsODYuNiwwLDAsMSwyNzIuMjcsMzc5djE0LjMxYy03LjU0LTMuODctMjAuODgtOC4xMy0zMy4yNS04LjEzLTE3Ljc5LDAtMzAuNzQsOC43MS0zMC43NCwyMi4yNCwwLDEyLjU3LDYuNzcsMjEuMjYsMzEuNywzMC4zNSwyNy44NCw5Ljg2LDM5LjQ0LDIxLjA3LDM5LjQ0LDQxLjM3LDAsMjMtMTguNTYsMzYuNTQtNDUuODIsMzYuNTRBOTkuMiw5OS4yLDAsMCwxLDE5NC4xNiw1MDcuMzNaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMzcxLjgzLDM4Ni41VjUxMy4zMkgzNTcuMTRWMzg2LjVIMzE0LjQyVjM3NC4xM0g0MTQuNzVWMzg2LjVaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNNTY1Ljc1LDQ2NS4zOGMwLDMxLjUxLTE5LjUzLDUwLjI2LTUyLjIsNTAuMjYtMzIuNDgsMC01Mi0xOC43NS01Mi01MC4yNlYzNzQuMTNoMTQuNjlWNDY0LjZjMCwyMy40LDEzLjkyLDM3LjMyLDM3LjMyLDM3LjMyczM3LjUtMTMuOTIsMzcuNS0zNy4zMlYzNzQuMTNoMTQuN1oiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik02MjguNTgsNTEzLjMyVjM3NC4xM2gzOC40N2M0MS41NiwwLDczLjQ2LDI2LjY4LDczLjQ2LDY5LjZTNzA5LDUxMy4zMiw2NjcuODIsNTEzLjMyWk02NDMuMjcsMzg2LjVWNTAxaDI0LjU1YzMyLjY4LDAsNTcuNjEtMjIuMjMsNTcuNjEtNTcuMjJTNzAwLjMsMzg2LjUsNjY2Ljg2LDM4Ni41WiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTc5NS4yMyw1MTMuMzJWMzc0LjEzaDE0LjY5VjUxMy4zMloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik05MzguMSwzNzEuODFjNDAsMCw3MC43NiwzMS43LDcwLjc2LDcxLjkyLDAsNDAuNC0zMC4zNiw3MS45MS03MC43Niw3MS45MS00MC4yMSwwLTcwLjc2LTMxLjUxLTcwLjc2LTcxLjkxQzg2Ny4zNCw0MDMuOSw4OTcuODksMzcxLjgxLDkzOC4xLDM3MS44MVptMCwxMzAuMTFjMzIuNDgsMCw1NS42OC0yNS4xNCw1NS42OC01OC4xOXMtMjMuMi01OC4yLTU1LjY4LTU4LjJjLTMyLjI5LDAtNTUuODcsMjUuMTQtNTUuODcsNTguMlM5MDUuODEsNTAxLjkyLDkzOC4xLDUwMS45MloiLz48L3N2Zz4=" alt="VS"/>
+  </div>
+  <div class="dd-body">
+    <!-- Versa Tech -->
+    <div class="dd-sec">
+      <div class="dd-lbl">Versa Tech Manager</div>
+      <input type="hidden" id="ddVTM"/>
+      <div class="dd-btn-row">
+        <button class="dd-btn active" id="ddBtnAR" onclick="ddPickTech('Andrew Rowell')">Andrew Rowell</button>
+        <button class="dd-btn" id="ddBtnJL" onclick="ddPickTech('James Laishley')">James Laishley</button>
+      </div>
+    </div>
+    <!-- RX Date -->
+    <div class="dd-sec">
+      <div class="dd-lbl">RX Date &amp; Episode</div>
+      <select class="dd-select" id="ddRxDate" onchange="ddUpdateStatus()">
+        <option value="">— Select RX Date —</option>
+      </select>
+    </div>
+    <!-- Report -->
+    <div class="dd-sec">
+      <div class="dd-lbl">Engineering Report</div>
+      <textarea class="dd-textarea" id="ddReport" placeholder="Describe the day's technical activity, issues encountered, and any follow-up actions..." oninput="ddUpdateStatus()"></textarea>
+    </div>
+    <!-- Work Hours -->
+    <div class="dd-sec">
+      <div class="dd-lbl">Freelance Crew Work Hours</div>
+      <div class="dd-hours-grid" style="margin-bottom:10px">
+        <div class="dd-hours-name">Andrew Rowell</div>
+        <input type="time" class="dd-time-input" id="ddHrsARstart" value="07:00"/>
+        <input type="time" class="dd-time-input" id="ddHrsARend" value="18:00"/>
+      </div>
+      <div class="dd-hours-grid" style="margin-bottom:10px">
+        <div class="dd-hours-name">James Laishley</div>
+        <input type="time" class="dd-time-input" id="ddHrsJLstart" value="07:00"/>
+        <input type="time" class="dd-time-input" id="ddHrsJLend" value="18:00"/>
+      </div>
+      <div class="dd-hours-grid">
+        <div class="dd-hours-name">Mark Openshaw</div>
+        <input type="time" class="dd-time-input" id="ddHrsMOstart" value="07:00"/>
+        <input type="time" class="dd-time-input" id="ddHrsMOend" value="18:00"/>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:8px">Start time → End time per crew member</div>
+    </div>
+    <!-- Status + Submit -->
+    <div id="ddStatus" style="font-family:var(--cond);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:4px;padding:8px 0"></div>
+    <button class="dd-submit-btn" id="ddSubmitBtn" disabled onclick="ddSubmit()">Complete All Sections to Submit</button>
+  </div>
+  <div class="dd-success" id="ddSuccess">
+    <div style="font-size:28px;margin-bottom:8px">✓</div>
+    <div style="font-family:var(--cond);font-size:16px;font-weight:900;color:#c8a832;margin-bottom:6px">Report Submitted</div>
+    <div id="ddSuccessDetail" style="font-size:13px;color:rgba(255,255,255,.6);margin-bottom:16px"></div>
+    <button onclick="ddReset()" style="background:none;border:1px solid rgba(180,140,60,.4);color:#c8a832;padding:8px 20px;border-radius:4px;cursor:pointer;font-family:var(--cond);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">Submit Another</button>
+  </div>
+</div>
+</div>
+
 <div id="erSubPanelImport" style="display:none;margin-top:8px;max-width:680px;margin-left:auto;margin-right:auto">
   <div style="background:var(--near-black);border:1px solid var(--border);border-radius:8px;padding:20px">
     <div style="font-family:var(--cond);font-size:16px;font-weight:900;color:var(--white);margin-bottom:8px">Import Historical Morning Live Reports</div>
@@ -3627,15 +3723,81 @@ var _SIGNAL_FLOW_HTML="<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charse
 var _REPORT_HTML="<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<script src=\"https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js\"><\/scr"+"ipt>\n<script>\nconst _SB_URL='https://dttwgmoyxthczlzxjgag.supabase.co';\nconst _SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ';\nconst _SB_HDR={'Content-Type':'application/json','apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY};\nasync function saveReport(data){try{const r=await fetch(_SB_URL+'/rest/v1/engineering_reports',{method:'POST',headers:{..._SB_HDR,'Prefer':'return=minimal'},body:JSON.stringify(data)});return r.ok;}catch(e){return false;}}\nasync function loadKitFromDB(){try{const r=await fetch(_SB_URL+'/rest/v1/app_data?key=eq.kit&select=value',{headers:_SB_HDR});const rows=await r.json();if(rows&&rows[0]&&Array.isArray(rows[0].value)){kitData.length=0;rows[0].value.forEach(k=>kitData.push({id:k.id,name:k.name,cat:k.cat||'',tag:k.tag||''}));window._kitCatFilter='';initCatBtns();renderKitPicker();}}catch(e){}}\nconst _EJS_SERVICE='service_883826m',_EJS_TEMPLATE='template_hhvnzss',_EJS_KEY='-WB5uUr8yu-oIKc5v';\nasync function sendSTREmail(p){try{if(window.emailjs){emailjs.init({publicKey:_EJS_KEY});await emailjs.send(_EJS_SERVICE,_EJS_TEMPLATE,p);}}catch(e){}}\n<\/scr"+"ipt>\n<meta charset=\"UTF-8\"/>\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0\"/>\n<title>Versa Studios — Morning Live Engineering Report</title>\n<link href=\"https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap\" rel=\"stylesheet\"/>\n<style>\n*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}\n:root{\n  --page:#E8E5DF;\n  --doc:#FAFAF8;\n  --doc-raised:#FFFFFF;\n  --navy:#162040;\n  --navy-mid:#1E2D57;\n  --navy-light:#2C3F6E;\n  --accent:#C8A84B;\n  --text:#1A1918;\n  --text-2:#3A3835;\n  --muted:#7A766F;\n  --rule:#D4CFC8;\n  --rule-dark:#B8B2A8;\n  --green:#1A6B3E;\n  --green-bg:#EDF7F1;\n  --red:#A82020;\n  --red-bg:#FDF2F2;\n  --amber:#8C6400;\n  --amber-bg:#FDF8EC;\n  --font-serif:'Libre Baskerville',Georgia,serif;\n  --font:'Source Sans 3',sans-serif;\n  --font-mono:'IBM Plex Mono',monospace;\n}\nhtml,body{min-height:100%;background:var(--page);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;font-size:15px}\n\n/* ── DOCUMENT SHELL ── */\n.document{max-width:700px;margin:32px auto 48px;background:var(--doc);box-shadow:0 1px 3px rgba(0,0,0,.08),0 8px 32px rgba(0,0,0,.12),0 24px 64px rgba(0,0,0,.06);border-top:4px solid var(--navy)}\n\n/* ── MASTHEAD ── */\n.masthead{background:var(--navy);padding:24px 32px 20px;display:flex;align-items:flex-start;justify-content:space-between;gap:20px}\n.mh-left{}\n.mh-org{font-family:var(--font-mono);font-size:9px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:6px}\n.mh-title{font-family:var(--font-serif);font-size:22px;font-weight:700;color:#FFFFFF;line-height:1.1;letter-spacing:-.01em}\n.mh-subtitle{font-family:var(--font);font-size:12px;font-weight:400;color:rgba(255,255,255,.45);margin-top:5px;letter-spacing:.01em}\n.mh-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0}\n.mh-logo{height:28px;filter:brightness(0) invert(1);opacity:.65}\n.mh-ref{font-family:var(--font-mono);font-size:9px;color:rgba(255,255,255,.3);letter-spacing:.12em}\n\n/* ── ACCENT BAR ── */\n.accent-bar{height:3px;background:linear-gradient(90deg,var(--accent) 0%,rgba(200,168,75,.3) 60%,transparent 100%)}\n\n/* ── DOCUMENT BODY ── */\n.doc-body{padding:0 32px 32px}\n\n/* ── SECTION ── */\n.section{border-bottom:1px solid var(--rule);padding:22px 0}\n.section:last-of-type{border-bottom:none}\n.sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:16px}\n.sec-num{font-family:var(--font-mono);font-size:10px;font-weight:600;color:var(--accent);letter-spacing:.06em;flex-shrink:0;width:28px}\n.sec-title{font-family:var(--font-serif);font-size:14px;font-weight:700;color:var(--navy);letter-spacing:.01em}\n.sec-desc{font-size:12px;color:var(--muted);margin-left:40px;margin-top:-8px;margin-bottom:14px;line-height:1.5}\n\n/* ── FIELD ── */\n.field-label{font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}\n.field-input{width:100%;border:1px solid var(--rule-dark);border-radius:2px;padding:10px 12px;font-family:var(--font);font-size:14px;color:var(--text);background:var(--doc-raised);outline:none;transition:border-color .15s}\n.field-input:focus{border-color:var(--navy);background:#fff}\n.field-input::placeholder{color:var(--rule-dark)}\n.field-textarea{width:100%;border:1px solid var(--rule-dark);border-radius:2px;padding:10px 12px;font-family:var(--font);font-size:14px;color:var(--text);background:var(--doc-raised);resize:vertical;min-height:90px;outline:none;line-height:1.65;transition:border-color .15s}\n.field-textarea:focus{border-color:var(--navy)}\n.field-textarea::placeholder{color:var(--rule-dark)}\n\n/* ── NAME PICKER ── */\n.name-picker-wrap{margin-left:40px}\n.picker-grid{display:flex;flex-wrap:wrap;gap:6px}\n.pick-btn{padding:9px 16px;border:1px solid var(--rule-dark);border-radius:2px;font-family:var(--font);font-size:13px;font-weight:500;color:var(--text-2);background:var(--doc-raised);cursor:pointer;transition:all .12s;user-select:none}\n.pick-btn:hover{border-color:var(--navy-light);color:var(--navy)}\n.pick-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}\n.pick-btn.sm{padding:6px 12px;font-size:12px}\n.sub-expand{display:none;flex-wrap:wrap;gap:5px;margin-top:8px;padding-top:10px;border-top:1px dashed var(--rule)}\n.sub-expand.open{display:flex}\n.other-input{width:100%;margin-top:8px;border:1px solid var(--rule-dark);border-radius:2px;padding:9px 12px;font-family:var(--font);font-size:13px;color:var(--text);background:var(--doc-raised);outline:none}\n.other-input:focus{border-color:var(--navy)}\n.other-input::placeholder{color:var(--rule-dark)}\ninput[type=\"hidden\"]{display:none}\n\n/* ── DATE ── */\n.date-wrap{margin-left:40px}\n.date-row{display:flex;gap:8px;margin-bottom:10px}\n.date-opt{flex:1;padding:9px 12px;border:1px solid var(--rule-dark);border-radius:2px;font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--doc-raised);cursor:pointer;text-align:center;transition:all .12s;user-select:none}\n.date-opt:hover{border-color:var(--navy-light);color:var(--navy)}\n.date-opt.active{background:var(--navy);color:#fff;border-color:var(--navy)}\n.date-display{font-family:var(--font-serif);font-size:14px;font-style:italic;color:var(--text-2);padding:8px 12px;background:rgba(22,32,64,.04);border-left:3px solid var(--accent);margin-bottom:8px}\n.date-input{width:100%;border:1px solid var(--rule-dark);border-radius:2px;padding:9px 12px;font-family:var(--font);font-size:14px;color:var(--text);background:var(--doc-raised);outline:none}\n.date-input:focus{border-color:var(--navy)}\ninput[type=\"date\"]::-webkit-calendar-picker-indicator{opacity:.4;cursor:pointer}\n\n/* ── MODE TOGGLE (NTR/STR) ── */\n.mode-wrap{margin-left:40px}\n.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:380px}\n.mode-btn{padding:16px 14px;border:1px solid var(--rule-dark);border-radius:2px;font-family:var(--font);font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;background:var(--doc-raised);color:var(--muted);transition:all .12s;user-select:none;text-align:center}\n.mode-label-main{font-family:var(--font-serif);font-size:15px;font-weight:700;display:block;margin-bottom:4px;letter-spacing:0}\n.mode-label-sub{font-size:10px;font-weight:400;letter-spacing:.06em;opacity:.7;display:block}\n.mode-btn:hover{border-color:var(--navy-light);color:var(--navy)}\n.mode-btn.active-ntr,.mode-btn.active-str{background:var(--navy);color:#fff;border-color:var(--navy)}\n.str-fields{display:none;flex-direction:column;gap:12px;margin-top:14px;padding-top:14px;border-top:1px dashed var(--rule)}\n.str-fields.open{display:flex}\n\n/* ── KIT TAGGER ── */\n.kit-wrap{margin-left:40px}\n.cat-bar{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}\n.cat-btn{padding:4px 9px;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--rule-dark);background:var(--doc-raised);color:var(--muted);cursor:pointer;border-radius:2px;font-family:var(--font-mono)}\n.cat-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}\n.kit-search{width:100%;border:1px solid var(--rule-dark);border-radius:2px;padding:8px 12px;font-family:var(--font);font-size:13px;background:var(--doc-raised);color:var(--text);outline:none;margin-bottom:6px}\n.kit-search:focus{border-color:var(--navy)}\n.kit-search::placeholder{color:var(--rule-dark)}\n.kit-list{max-height:180px;overflow-y:auto;border:1px solid var(--rule-dark);background:#fff}\n.kit-row{display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid var(--rule);cursor:pointer;transition:background .08s}\n.kit-row:last-child{border-bottom:none}\n.kit-row:hover{background:rgba(22,32,64,.04)}\n.kit-row.sel{background:rgba(22,32,64,.06)}\n.kit-check{width:14px;height:14px;border:1.5px solid var(--rule-dark);border-radius:2px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .1s}\n.kit-row.sel .kit-check{background:var(--navy);border-color:var(--navy)}\n.kit-row.sel .kit-check::after{content:'';width:3px;height:7px;border:1.5px solid #fff;border-top:none;border-left:none;transform:rotate(45deg);display:block;margin-top:-1px}\n.kit-name{font-size:13px;font-weight:400;color:var(--text);flex:1}\n.kit-cat-pill{font-size:9px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;padding:2px 6px;background:rgba(22,32,64,.08);color:var(--navy-light);border-radius:1px;font-family:var(--font-mono)}\n.kit-tag{font-size:10px;color:var(--muted);font-family:var(--font-mono)}\n.tagged-chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}\n.tagged-chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:var(--navy);color:#fff;font-family:var(--font);font-size:12px;border-radius:2px}\n.tagged-chip button{background:rgba(255,255,255,.2);border:none;cursor:pointer;color:#fff;width:14px;height:14px;border-radius:50%;font-size:9px;display:flex;align-items:center;justify-content:center;line-height:1}\n\n/* ── URGENT ── */\n.urgent-wrap{margin-left:40px}\n.urgent-grid{display:flex;gap:8px;max-width:420px}\n.urgent-btn{flex:1;padding:12px 10px;border:1px solid var(--rule-dark);border-radius:2px;font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;background:var(--doc-raised);color:var(--muted);transition:all .12s;text-align:center;user-select:none}\n.urgent-btn:hover{border-color:var(--navy-light);color:var(--navy)}\n.urgent-btn.active-no{background:var(--green-bg);color:var(--green);border-color:var(--green)}\n.urgent-btn.active-yes{background:var(--red-bg);color:var(--red);border-color:var(--red)}\n.urgent-btn.active-other{background:var(--amber-bg);color:var(--amber);border-color:var(--amber)}\n.urgent-details-wrap{margin-top:10px;display:none}\n.urgent-details-wrap.open{display:block}\n.urgent-textarea{width:100%;border:1px solid var(--rule-dark);border-radius:2px;padding:9px 12px;background:var(--doc-raised);color:var(--text);font-family:var(--font);font-size:13px;resize:vertical;min-height:72px;outline:none;line-height:1.6}\n.urgent-textarea:focus{border-color:var(--navy)}\n.urgent-textarea::placeholder{color:var(--rule-dark)}\n\n/* ── STATUS + SUBMIT ── */\n.submit-area{padding:20px 32px 28px;border-top:2px solid var(--rule)}\n.status-bar{display:flex;align-items:center;gap:10px;padding:10px 14px;border:1px solid var(--rule);background:var(--doc-raised);border-radius:2px;margin-bottom:12px;transition:all .2s}\n.status-bar.ready{border-color:var(--green);background:var(--green-bg)}\n.status-dot{width:7px;height:7px;border-radius:50%;background:var(--rule-dark);flex-shrink:0;transition:all .2s}\n.status-bar.ready .status-dot{background:var(--green)}\n.status-txt{font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);transition:color .2s}\n.status-bar.ready .status-txt{color:var(--green)}\n.submit-btn{width:100%;padding:15px;border:none;background:var(--navy);color:#fff;font-family:var(--font-serif);font-size:15px;font-weight:700;cursor:pointer;border-radius:2px;letter-spacing:.02em;transition:all .15s}\n.submit-btn:hover:not(:disabled){background:var(--navy-mid)}\n.submit-btn:disabled{opacity:.3;cursor:not-allowed}\n.submit-btn.ready{color:var(--accent)}\n\n/* ── SUCCESS ── */\n.success-screen{display:none}\n.success-header{background:var(--navy);padding:28px 32px}\n.success-status-row{display:flex;align-items:center;gap:10px;margin-bottom:16px}\n.suc-dot{width:9px;height:9px;border-radius:50%}\n.suc-dot.g{background:#2ECC71;box-shadow:0 0 8px rgba(46,204,113,.7)}\n.suc-dot.o{background:#F39C12;box-shadow:0 0 8px rgba(243,156,18,.7)}\n.suc-dot.off{background:#333}\n.success-label{font-family:var(--font-mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.35)}\n.success-title{font-family:var(--font-serif);font-size:30px;font-weight:700;color:#fff;line-height:1.1}\n.success-title span{color:var(--accent)}\n.success-body{padding:20px 32px 0}\n.success-kv-label{font-family:var(--font-mono);font-size:9px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);padding:14px 0 8px;border-bottom:1px solid var(--rule);margin-bottom:2px}\n.success-row{display:flex;gap:16px;padding:10px 0;border-bottom:1px solid var(--rule)}\n.success-row:last-child{border-bottom:none}\n.success-row-label{font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);width:140px;flex-shrink:0;padding-top:1px}\n.success-row-val{font-family:var(--font);font-size:14px;color:var(--text);flex:1;line-height:1.4}\n.success-urgent-flag{font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--red);text-transform:uppercase;padding:10px 14px;background:var(--red-bg);border:1px solid var(--red);border-radius:2px;margin:14px 32px 0;display:none}\n.new-report-btn{display:block;width:calc(100% - 64px);margin:16px 32px 28px;padding:13px;border:1px solid var(--rule-dark);background:transparent;color:var(--navy);font-family:var(--font-serif);font-size:14px;font-weight:700;cursor:pointer;border-radius:2px;letter-spacing:.02em;transition:all .15s}\n.new-report-btn:hover{background:var(--navy);color:#fff;border-color:var(--navy)}\n\n.hidden{display:none!important}\n::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--page)}::-webkit-scrollbar-thumb{background:var(--rule-dark);border-radius:2px}\n</style>\n</head>\n<body>\n<div class=\"document\">\n  <!-- FORM VIEW -->\n  <div id=\"formView\">\n    <!-- Masthead -->\n    <div class=\"masthead\">\n      <div class=\"mh-left\">\n        <div class=\"mh-org\">Technical Operations</div>\n        <div class=\"mh-title\">Engineering Report</div>\n        <div class=\"mh-subtitle\">Morning Live — ABC Production Centre</div>\n      </div>\n      <div class=\"mh-right\">\n        <img class=\"mh-logo\" src=\"https://versastudios.github.io/versa-studios/logo.svg\" alt=\"Versa\"/>\n        <div class=\"mh-ref\" id=\"refNum\">REF –</div>\n      </div>\n    </div>\n    <div class=\"accent-bar\"></div>\n\n    <!-- Body -->\n    <div class=\"doc-body\">\n\n      <!-- §1 Versa Engineer -->\n      <div class=\"section\">\n        <div class=\"sec-head\"><span class=\"sec-num\">§ 01</span><span class=\"sec-title\">Versa Studios Engineer</span></div>\n        <p class=\"sec-desc\">Select the Versa technical lead responsible for this report.</p>\n        <input type=\"hidden\" id=\"versaTechManager\"/>\n        <div class=\"name-picker-wrap\">\n          <div class=\"picker-grid\" id=\"versaPicker\">\n            <button class=\"pick-btn active\" id=\"versaMainBtn\" onclick=\"pickVersa('Andrew Rowell')\">Andrew Rowell</button>\n            <button class=\"pick-btn\" onclick=\"toggleVersaSub()\">Other&hellip;</button>\n          </div>\n          <div class=\"sub-expand\" id=\"versaSubPicker\">\n            <button class=\"pick-btn sm\" onclick=\"pickVersa('Ian Curry')\">Ian Curry</button>\n            <button class=\"pick-btn sm\" onclick=\"pickVersa('Marcus Lamb')\">Marcus Lamb</button>\n            <button class=\"pick-btn sm\" onclick=\"pickVersa('Lily Britten')\">Lily Britten</button>\n            <button class=\"pick-btn sm\" onclick=\"pickVersa('Esther Brazil')\">Esther Brazil</button>\n            <button class=\"pick-btn sm\" onclick=\"pickVersa('__other__')\">… Other</button>\n          </div>\n          <input type=\"text\" id=\"versaOtherInput\" class=\"other-input hidden\" placeholder=\"Enter name\" oninput=\"versaOtherTyped()\"/>\n        </div>\n      </div>\n\n      <!-- §2 Show Date -->\n      <div class=\"section\">\n        <div class=\"sec-head\"><span class=\"sec-num\">§ 02</span><span class=\"sec-title\">Show Date</span></div>\n        <p class=\"sec-desc\">Confirm the transmission date this report applies to.</p>\n        <div class=\"date-wrap\">\n          <div class=\"date-row\">\n            <button class=\"date-opt active\" id=\"btnToday\" onclick=\"setDateToday()\">Today</button>\n            <button class=\"date-opt\" id=\"btnOther\" onclick=\"setDateOther()\">Other Date</button>\n          </div>\n          <div class=\"date-display\" id=\"dateDisplay\"></div>\n          <div id=\"otherDateWrap\" class=\"hidden\">\n            <input type=\"date\" id=\"otherDate\" class=\"date-input\" onchange=\"setDateOther()\"/>\n          </div>\n        </div>\n      </div>\n\n      <!-- §3 BBC Technical Manager -->\n      <div class=\"section\">\n        <div class=\"sec-head\"><span class=\"sec-num\">§ 03</span><span class=\"sec-title\">BBC Technical Manager</span></div>\n        <p class=\"sec-desc\">Record the BBC technical representative on duty for this transmission.</p>\n        <input type=\"hidden\" id=\"bbcTechManager\"/>\n        <div class=\"name-picker-wrap\">\n          <div class=\"picker-grid\" id=\"bbcPicker\">\n            <button class=\"pick-btn active\" id=\"bbcMainBtn\" onclick=\"pickName('Andy McLannahan')\">Andy McLannahan</button>\n            <button class=\"pick-btn\" onclick=\"toggleBbcSub()\">Other&hellip;</button>\n          </div>\n          <div class=\"sub-expand\" id=\"bbcSubPicker\">\n            <button class=\"pick-btn sm\" onclick=\"pickName('James Laishley')\">James Laishley</button>\n            <button class=\"pick-btn sm\" onclick=\"pickName('__other__')\">… Other</button>\n          </div>\n          <input type=\"text\" id=\"bbcOtherInput\" class=\"other-input hidden\" placeholder=\"Enter name\" oninput=\"bbcOtherTyped()\"/>\n        </div>\n      </div>\n\n      <!-- §4 Summary -->\n      <div class=\"section\">\n        <div class=\"sec-head\"><span class=\"sec-num\">§ 04</span><span class=\"sec-title\">Transmission Summary</span></div>\n        <p class=\"sec-desc\">Indicate whether there is anything to report for this transmission.</p>\n        <div class=\"mode-wrap\">\n          <div class=\"mode-grid\">\n            <button class=\"mode-btn\" id=\"btnNTR\" onclick=\"setSummary('ntr')\">\n              <span class=\"mode-label-main\">NTR</span>\n              <span class=\"mode-label-sub\">Nothing to Report</span>\n            </button>\n            <button class=\"mode-btn\" id=\"btnSTR\" onclick=\"setSummary('str')\">\n              <span class=\"mode-label-main\">STR</span>\n              <span class=\"mode-label-sub\">Something to Report</span>\n            </button>\n          </div>\n          <div class=\"str-fields\" id=\"strFields\">\n            <div>\n              <div class=\"field-label\">Recipient Email</div>\n              <input class=\"field-input\" type=\"email\" id=\"strEmail\" placeholder=\"engineer@bbc.co.uk\"/>\n            </div>\n            <div>\n              <div class=\"field-label\">Report Details</div>\n              <textarea class=\"field-textarea\" id=\"summaryText\" placeholder=\"Describe the issue, steps taken, and resolution or required follow-up&hellip;\"></textarea>\n            </div>\n          </div>\n        </div>\n      </div>\n\n      <!-- §5 Equipment (STR only) -->\n      <div class=\"section\" id=\"sec5Wrap\" style=\"display:none\">\n        <div class=\"sec-head\"><span class=\"sec-num\">§ 05</span><span class=\"sec-title\">Equipment Reference</span></div>\n        <p class=\"sec-desc\">Tag any equipment items relevant to this report.</p>\n        <div class=\"kit-wrap\">\n          <div class=\"cat-bar\" id=\"kitCatBtns\"></div>\n          <input type=\"text\" class=\"kit-search\" id=\"kitSearch\" placeholder=\"Search equipment&hellip;\" oninput=\"renderKitPicker()\"/>\n          <div class=\"kit-list\" id=\"kitPicker\"></div>\n          <div class=\"tagged-chips hidden\" id=\"taggedWrap\">\n            <div id=\"taggedList\"></div>\n          </div>\n        </div>\n      </div>\n\n      <!-- §6 Urgent Action -->\n      <div class=\"section\">\n        <div class=\"sec-head\"><span class=\"sec-num\" id=\"urgentSecNum\">§ 06</span><span class=\"sec-title\">Urgent Action Required</span></div>\n        <p class=\"sec-desc\">Flag whether any matter requires immediate attention following this transmission.</p>\n        <input type=\"hidden\" id=\"urgentAction\"/>\n        <div class=\"urgent-wrap\">\n          <div class=\"urgent-grid\" id=\"urgentPicker\">\n            <button class=\"urgent-btn\" onclick=\"pickUrgent('No')\">No</button>\n            <button class=\"urgent-btn\" onclick=\"pickUrgent('Yes')\">Yes — Urgent</button>\n            <button class=\"urgent-btn\" onclick=\"pickUrgent('Other')\">Other / Note</button>\n          </div>\n          <div class=\"urgent-details-wrap\" id=\"urgentDetails\">\n            <div class=\"field-label\" style=\"margin-top:10px;margin-bottom:6px\">Additional Details</div>\n            <textarea class=\"urgent-textarea\" id=\"urgentText\" placeholder=\"Provide details of the urgent matter or note&hellip;\"></textarea>\n          </div>\n        </div>\n      </div>\n\n    </div><!-- /doc-body -->\n\n    <!-- Submit -->\n    <div class=\"submit-area\">\n      <div class=\"status-bar\" id=\"statusBar\">\n        <div class=\"status-dot\" id=\"statusDot\"></div>\n        <div class=\"status-txt\" id=\"statusText\">AWAITING COMPLETION</div>\n      </div>\n      <button class=\"submit-btn\" id=\"submitBtn\" disabled onclick=\"submitReport()\">Complete All Sections to Submit</button>\n    </div>\n  </div><!-- /formView -->\n\n  <!-- SUCCESS VIEW -->\n  <div class=\"success-screen\" id=\"successView\">\n    <div class=\"success-header\">\n      <div class=\"success-status-row\">\n        <div class=\"suc-dot g\" id=\"sucDot1\"></div>\n        <div class=\"suc-dot o\" id=\"sucDot2\"></div>\n        <div class=\"suc-dot off\"></div>\n        <div class=\"success-label\">Report Submitted</div>\n      </div>\n      <div class=\"success-title\" id=\"successTitle\">Report<br><span>Logged</span></div>\n    </div>\n    <div class=\"success-body\">\n      <div class=\"success-kv-label\">Submission Summary</div>\n      <div id=\"summaryRows\"></div>\n    </div>\n    <div class=\"success-urgent-flag\" id=\"successDetail\">⚠ URGENT ACTION REQUIRED — FOLLOW-UP NEEDED</div>\n    <button class=\"new-report-btn\" onclick=\"resetForm()\">Submit Another Report</button>\n  </div>\n</div>\n\n<script>\nconst kitData=[\n  {id:1,name:'Sony HDC-5500 Camera',cat:'Camera',tag:'VS-CAM-001'},\n  {id:2,name:'Sony HDC-5500 Camera',cat:'Camera',tag:'VS-CAM-002'},\n  {id:3,name:'Sony HDC-5500 Camera',cat:'Camera',tag:'VS-CAM-003'},\n  {id:4,name:'Sony HDC-5500 Camera',cat:'Camera',tag:'VS-CAM-004'},\n  {id:5,name:'Vinten Vector 750 Head',cat:'Camera',tag:'VS-TRP-001'},\n  {id:6,name:'Canon CJ18ex7.6B Lens',cat:'Camera',tag:'VS-LNS-001'},\n  {id:7,name:'Canon CJ18ex7.6B Lens',cat:'Camera',tag:'VS-LNS-002'},\n  {id:8,name:'Sennheiser MKH 416',cat:'Audio',tag:'VS-MIC-001'},\n  {id:9,name:'Sennheiser MKH 50',cat:'Audio',tag:'VS-MIC-002'},\n  {id:10,name:'Shure ULXD4 Receiver',cat:'Audio',tag:'VS-RFW-001'},\n  {id:11,name:'Teradek Bolt 6 TX',cat:'Video',tag:'VS-WLS-001'},\n  {id:12,name:'Teradek Bolt 6 RX',cat:'Video',tag:'VS-WLS-002'},\n  {id:13,name:'Small HD 702 Touch',cat:'Video',tag:'VS-MON-001'},\n  {id:14,name:'Hollyland Mars 300 IEM',cat:'Comms',tag:'VS-COM-001'},\n  {id:15,name:'Pelican 1650 Case',cat:'Other',tag:'VS-OTH-001'},\n];\nlet summaryMode=null,selectedDate=null,useTodayDate=true,tags=[];\n\n// Generate ref number\n(function(){\n  const d=new Date(),pad=n=>String(n).padStart(2,'0');\n  document.getElementById('refNum').textContent='REF VS-ER-'+d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate());\n})();\n\nfunction formatDate(d){return d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});}\n\nfunction setDateToday(){\n  useTodayDate=true;selectedDate=new Date().toISOString().split('T')[0];\n  document.getElementById('btnToday').classList.add('active');\n  document.getElementById('btnOther').classList.remove('active');\n  document.getElementById('otherDateWrap').classList.add('hidden');\n  document.getElementById('dateDisplay').textContent=formatDate(new Date());\n  updateStatus();\n}\nfunction setDateOther(){\n  useTodayDate=false;\n  document.getElementById('btnToday').classList.remove('active');\n  document.getElementById('btnOther').classList.add('active');\n  document.getElementById('otherDateWrap').classList.remove('hidden');\n  const val=document.getElementById('otherDate').value;\n  if(val){selectedDate=val;document.getElementById('dateDisplay').textContent=formatDate(new Date(val+'T12:00:00'));}\n  else{selectedDate=null;document.getElementById('dateDisplay').textContent='Select a date below';}\n  updateStatus();\n}\n\nfunction setSummary(mode){\n  summaryMode=mode;\n  const ntrBtn=document.getElementById('btnNTR'),strBtn=document.getElementById('btnSTR'),strF=document.getElementById('strFields');\n  ntrBtn.classList.remove('active-ntr','active-str');strBtn.classList.remove('active-ntr','active-str');\n  if(mode==='ntr'){ntrBtn.classList.add('active-ntr');strF.classList.remove('open');document.getElementById('sec5Wrap').style.display='none';pickUrgent('No');}\n  else{strBtn.classList.add('active-str');strF.classList.add('open');document.getElementById('sec5Wrap').style.display='';renderKitPicker();}\n  updateStatus();\n}\n\nfunction pickVersa(name){\n  if(name==='__other__'){document.getElementById('versaOtherInput').style.display='block';document.getElementById('versaOtherInput').focus();document.querySelectorAll('#versaSubPicker .pick-btn').forEach(el=>el.classList.toggle('active',el.textContent.trim()==='… Other'));document.getElementById('versaMainBtn').classList.remove('active');document.getElementById('versaTechManager').value='';updateStatus();return;}\n  document.getElementById('versaTechManager').value=name;document.getElementById('versaOtherInput').style.display='none';\n  const mb=document.getElementById('versaMainBtn');mb.textContent=name;\n  document.querySelectorAll('#versaPicker .pick-btn,#versaSubPicker .pick-btn').forEach(el=>el.classList.remove('active'));mb.classList.add('active');\n  document.getElementById('versaSubPicker').classList.remove('open');updateStatus();\n}\nfunction toggleVersaSub(){document.getElementById('versaSubPicker').classList.toggle('open');}\nfunction versaOtherTyped(){document.getElementById('versaTechManager').value=document.getElementById('versaOtherInput').value.trim();updateStatus();}\n\nfunction pickName(name){\n  if(name==='__other__'){document.getElementById('bbcOtherInput').style.display='block';document.getElementById('bbcOtherInput').focus();document.querySelectorAll('#bbcSubPicker .pick-btn').forEach(el=>el.classList.toggle('active',el.textContent.trim()==='… Other'));document.getElementById('bbcMainBtn').classList.remove('active');document.getElementById('bbcTechManager').value='';updateStatus();return;}\n  document.getElementById('bbcTechManager').value=name;document.getElementById('bbcOtherInput').style.display='none';\n  const mb=document.getElementById('bbcMainBtn');mb.textContent=name;\n  document.querySelectorAll('#bbcPicker .pick-btn,#bbcSubPicker .pick-btn').forEach(el=>el.classList.remove('active'));mb.classList.add('active');\n  document.getElementById('bbcSubPicker').classList.remove('open');updateStatus();\n}\nfunction toggleBbcSub(){document.getElementById('bbcSubPicker').classList.toggle('open');}\nfunction bbcOtherTyped(){document.getElementById('bbcTechManager').value=document.getElementById('bbcOtherInput').value.trim();updateStatus();}\n\nfunction pickUrgent(val){\n  document.getElementById('urgentAction').value=val;\n  document.querySelectorAll('#urgentPicker .urgent-btn').forEach(el=>el.classList.remove('active-no','active-yes','active-other'));\n  const map={No:'active-no',Yes:'active-yes',Other:'active-other'};\n  const el=[...document.querySelectorAll('#urgentPicker .urgent-btn')].find(e=>e.textContent.trim().startsWith(val==='Yes'?'Yes':val));\n  if(el&&map[val])el.classList.add(map[val]);\n  document.getElementById('urgentDetails').classList.toggle('open',val==='Yes'||val==='Other');\n  updateStatus();\n}\n\nfunction initCatBtns(){\n  const wrap=document.getElementById('kitCatBtns');if(!wrap)return;\n  const cats=[...new Set(kitData.map(k=>k.cat))].sort(),cur=window._kitCatFilter||'';\n  wrap.innerHTML='';\n  const mk=(label,val)=>{const b=document.createElement('button');b.textContent=label;b.className='cat-btn'+(cur===val?' active':'');b.onclick=()=>{window._kitCatFilter=val;initCatBtns();renderKitPicker();};return b;};\n  wrap.appendChild(mk('All',''));cats.forEach(c=>wrap.appendChild(mk(c,c)));\n}\nfunction renderKitPicker(){\n  var q=document.getElementById('kitSearch').value.toLowerCase(),cf=window._kitCatFilter||'';\n  var filtered=kitData.filter(function(k){return(!q||k.name.toLowerCase().includes(q)||k.tag.toLowerCase().includes(q))&&(!cf||k.cat===cf);});\n  document.getElementById('kitPicker').innerHTML=filtered.length?filtered.map(function(k){\n    var s=tags.includes(k.id),cls='kit-row'+(s?' sel':'');\n    return '<div class=\"'+cls+'\" onclick=\"toggleTag('+k.id+')\">'\n      +'<div class=\"kit-check\"></div><div class=\"kit-name\">'+k.name+'</div>'\n      +'<span class=\"kit-cat-pill\">'+k.cat+'</span><div class=\"kit-tag\">'+k.tag+'</div></div>';\n  }).join(''):'<div style=\"padding:10px 12px;color:var(--muted);font-size:12px;font-family:var(--font-mono)\">No items found</div>';\n}\nfunction toggleTag(id){\n  const i=tags.indexOf(id);if(i>=0)tags.splice(i,1);else tags.push(id);\n  renderKitPicker();\n  const wrap=document.getElementById('taggedWrap');\n  if(tags.length){wrap.classList.remove('hidden');document.getElementById('taggedList').innerHTML=tags.map(tid=>{const k=kitData.find(x=>x.id===tid);return k?`<span class=\"tagged-chip\">${k.name}<button onclick=\"toggleTag(${tid})\">×</button></span>`:''}).join('');}\n  else wrap.classList.add('hidden');\n}\n\nfunction isComplete(){\n  return !!(document.getElementById('versaTechManager').value.trim()&&(useTodayDate||document.getElementById('otherDate').value!=='')&&document.getElementById('bbcTechManager').value&&summaryMode!==null&&document.getElementById('urgentAction').value!=='');\n}\nfunction updateStatus(){\n  if(!useTodayDate&&document.getElementById('otherDate').value){selectedDate=document.getElementById('otherDate').value;document.getElementById('dateDisplay').textContent=formatDate(new Date(selectedDate+'T12:00:00'));}\n  const missing=[];\n  if(!document.getElementById('versaTechManager').value.trim())missing.push('§ 01');\n  if(!useTodayDate&&!document.getElementById('otherDate').value)missing.push('§ 02');\n  if(!document.getElementById('bbcTechManager').value)missing.push('§ 03');\n  if(summaryMode===null)missing.push('§ 04');\n  if(!document.getElementById('urgentAction').value)missing.push('§ 06');\n  const bar=document.getElementById('statusBar'),dot=document.getElementById('statusDot'),txt=document.getElementById('statusText'),btn=document.getElementById('submitBtn');\n  if(missing.length===0){\n    bar.classList.add('ready');dot.style.background='var(--green)';\n    txt.textContent='All sections complete — ready to submit';txt.style.color='var(--green)';\n    btn.disabled=false;btn.textContent='Submit Engineering Report';btn.classList.add('ready');\n  }else{\n    bar.classList.remove('ready');dot.style.background='var(--rule-dark)';\n    txt.textContent='Incomplete: '+missing.join(' · ');txt.style.color='var(--muted)';\n    btn.disabled=true;btn.textContent='Complete All Sections to Submit';btn.classList.remove('ready');\n  }\n}\n\nfunction submitReport(){\n  if(!isComplete())return;\n  const vtm=document.getElementById('versaTechManager').value.trim(),bbc=document.getElementById('bbcTechManager').value,urgent=document.getElementById('urgentAction').value,urgentText=document.getElementById('urgentText').value.trim(),isSTR=summaryMode==='str',summaryText=isSTR?document.getElementById('summaryText').value.trim():'',taggedKitNames=tags.map(id=>{const k=kitData.find(x=>x.id===id);return k?k.name+' ('+k.tag+')':'';}).filter(Boolean),showDate=useTodayDate?new Date().toISOString().split('T')[0]:selectedDate;\n  saveReport({versa_tech_manager:vtm,bbc_tech_manager:bbc,show_date:showDate,summary_mode:summaryMode,summary_text:summaryText,tagged_kit:tags,tagged_kit_names:taggedKitNames,urgent_action:urgent,urgent_details:urgentText,submitted_at:new Date().toISOString()});\n  if(isSTR)sendSTREmail({show_date:showDate,versa_tech:vtm,bbc_tech:bbc,summary:summaryText||'(no details)',urgent,urgent_details:urgentText||'--',tagged_kit:taggedKitNames.join(', ')||'None',submitted_at:new Date().toLocaleString('en-GB')});\n  document.getElementById('formView').style.display='none';\n  const sv=document.getElementById('successView');sv.style.display='block';\n  const isUrgent=urgent==='Yes';\n  document.getElementById('successTitle').innerHTML=isUrgent?'Urgent<br><span>Action Flagged</span>':(isSTR?'Report<br><span>Logged</span>':'Nothing<br><span>To Report</span>');\n  const det=document.getElementById('successDetail');\n  if(isUrgent){det.style.display='block';}else{det.style.display='none';}\n  const rows=[{label:'Show Date',val:formatDate(new Date(showDate+'T12:00:00'))},{label:'Versa Tech',val:vtm},{label:'BBC Tech',val:bbc},{label:'Summary',val:isSTR?'STR — Something to Report':'NTR — Nothing to Report'},summaryText?{label:'Details',val:summaryText}:null,taggedKitNames.length?{label:'Equipment',val:taggedKitNames.join(', ')}:null,{label:'Urgent',val:urgent+(urgentText?' — '+urgentText:'')}].filter(Boolean);\n  document.getElementById('summaryRows').innerHTML=rows.map(r=>'<div class=\"success-row\"><div class=\"success-row-label\">'+r.label+'</div><div class=\"success-row-val\">'+r.val+'</div></div>').join('');\n}\n\nfunction resetForm(){\n  document.getElementById('formView').style.display='block';document.getElementById('successView').style.display='none';\n  document.getElementById('versaTechManager').value='';document.getElementById('bbcTechManager').value='';document.getElementById('urgentAction').value='';\n  document.getElementById('urgentDetails').classList.remove('open');document.getElementById('urgentText').value='';document.getElementById('summaryText').value='';\n  document.getElementById('kitSearch').value='';document.getElementById('strFields').classList.remove('open');document.getElementById('taggedWrap').classList.add('hidden');\n  document.getElementById('btnNTR').classList.remove('active-ntr','active-str');document.getElementById('btnSTR').classList.remove('active-ntr','active-str');\n  summaryMode=null;tags=[];window._kitCatFilter='';\n  document.getElementById('versaMainBtn').textContent='Andrew Rowell';document.getElementById('versaMainBtn').classList.add('active');document.getElementById('versaSubPicker').classList.remove('open');document.getElementById('versaOtherInput').style.display='none';\n  document.getElementById('bbcMainBtn').textContent='Andy McLannahan';document.getElementById('bbcMainBtn').classList.add('active');document.getElementById('bbcSubPicker').classList.remove('open');document.getElementById('bbcOtherInput').style.display='none';\n  setDateToday();setSummary('ntr');initCatBtns();renderKitPicker();updateStatus();\n}\n\ndocument.addEventListener('DOMContentLoaded',function(){\n  setDateToday();setSummary('ntr');window._kitCatFilter='';initCatBtns();renderKitPicker();updateStatus();setTimeout(loadKitFromDB,100);\n  // default selections\n  pickVersa('Andrew Rowell');pickName('Andy McLannahan');\n});\n<\/scr"+"ipt>\n</body>\n</html>\n";
 
 var _toolsLoaded={signal:false,report:false};
+var _erActiveJob='ml'; // 'ml' or job id
+
+function erRenderJobTabs() {
+  var wrap = document.getElementById('erJobTabs'); if(!wrap) return;
+  var tabs = [{id:'ml',label:'Morning Live',col:'#8b3a8b'}];
+  // Add jobs that have eng report enabled (have txDates with RX entries, or are ongoing)
+  if(typeof jobs !== 'undefined') {
+    jobs.forEach(function(j) {
+      if(j.name && j.name !== 'Morning Live') {
+        tabs.push({id:'j'+j.id, label:j.name, col:(j.color&&j.color.bg)||'#2d5a2d', jid:j.id});
+      }
+    });
+  }
+  wrap.innerHTML = tabs.map(function(t) {
+    var isAct = _erActiveJob === t.id;
+    return '<button onclick="erSwitchJob(\''+t.id+'\')" style="'
+      +'padding:8px 16px;font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;'
+      +'border-radius:4px;cursor:pointer;border:2px solid '+(isAct?t.col:'rgba(255,255,255,.12)')+';'
+      +'background:'+(isAct?t.col+'22':'rgba(255,255,255,.04)')+';'
+      +'color:'+(isAct?t.col:'var(--muted)')+'">'+t.label+'</button>';
+  }).join('');
+}
+
+function erSwitchJob(jobId) {
+  _erActiveJob = jobId;
+  erRenderJobTabs();
+  // Show/hide appropriate panels
+  var isDragonsDen = false;
+  if(jobId !== 'ml' && typeof jobs !== 'undefined') {
+    var jid = parseInt(jobId.replace('j',''));
+    var j = jobs.find(function(x){ return x.id === jid; });
+    if(j) isDragonsDen = (j.name === 'Dragons Den');
+  }
+  var mlReport = document.getElementById('erSubPanelReport');
+  var ddPanel  = document.getElementById('erDDPanel');
+  var calPanel = document.getElementById('erSubPanelCal');
+  var impPanel = document.getElementById('erSubPanelImport');
+  // Reset to report sub-tab
+  if(mlReport) mlReport.style.display = isDragonsDen ? 'none' : '';
+  if(ddPanel)  ddPanel.style.display  = isDragonsDen ? '' : 'none';
+  if(calPanel) calPanel.style.display = 'none';
+  if(impPanel) impPanel.style.display = 'none';
+  // Reset sub-tab highlights
+  ['Report','Cal','Import'].forEach(function(t){
+    var b = document.getElementById('erSubTab'+t);
+    if(b){ b.style.borderBottomColor='transparent'; b.style.color='var(--muted)'; }
+  });
+  var rb = document.getElementById('erSubTabReport');
+  if(rb && !isDragonsDen){ rb.style.borderBottomColor='var(--accent)'; rb.style.color='var(--accent)'; }
+  // Update nav label
+  var lbl = document.getElementById('erNavLabel');
+  if(lbl) lbl.textContent = isDragonsDen ? "Dragon's Den" : 'Morning Live';
+  // Update form title
+  var title = document.getElementById('erFormTitle');
+  if(title) title.textContent = 'Morning Live · Engineering Report';
+  // Populate DD form if needed
+  if(isDragonsDen) ddPopulateRxDates(jobs.find(function(x){ return x.id===parseInt(jobId.replace('j','')); }));
+  // Update hidden show selector for calendar history queries
+  var sel = document.getElementById('erShowSel');
+  if(sel) sel.value = isDragonsDen ? 'Dragons Den' : 'Morning Live';
+}
+
 function erSubTab(tab){
   if(tab==='hist') tab='cal';
   var rp=document.getElementById('erSubPanelReport');
   var cp=document.getElementById('erSubPanelCal');
   var ip=document.getElementById('erSubPanelImport');
+  var dd=document.getElementById('erDDPanel');
   var rb=document.getElementById('erSubTabReport');
   var cb=document.getElementById('erSubTabCal');
   var ib=document.getElementById('erSubTabImport');
-  if(rp)rp.style.display=tab==='report'?'':'none';
+  // Check if current job is DD
+  var isDD = dd && dd.style.display !== 'none';
+  if(!isDD && rp) rp.style.display=tab==='report'?'':'none';
+  if(dd && isDD) dd.style.display=tab==='report'?'':'none';
   if(cp){cp.style.display=tab==='cal'?'':'none'; if(tab==='cal'){erCalSetupListener();erCalRender(_erCalYr,_erCalMo);erHistLoad();}}
   if(ip){ip.style.display=tab==='import'?'':'none';}
   var accent='var(--accent)',muted='var(--muted)';
@@ -3643,7 +3805,6 @@ function erSubTab(tab){
   if(cb){cb.style.borderBottomColor=tab==='cal'?accent:'transparent';cb.style.color=tab==='cal'?accent:muted;}
   if(ib){ib.style.borderBottomColor=tab==='import'?accent:'transparent';ib.style.color=tab==='import'?accent:muted;}
 }
-
 // ── SHOW SELECTOR ──────────────────────────────────────────────────────────────
 function erPopulateShowSel(){
   var sel=document.getElementById('erShowSel'); if(!sel)return;
@@ -3821,6 +3982,13 @@ function erCalRender(yr, mo) {
 
   // Fetch month data once (no re-render — just update dots)
   _fetchEngReportsForMonth(yr,mo).then(function(){ erCalUpdateDots(); });
+}
+
+function erCalNav(yrmo){
+  var p=yrmo.split('-');
+  erCalRender(parseInt(p[0]),parseInt(p[1])-1);
+  var box=document.getElementById('erCalReport');
+  if(box) box.innerHTML='';
 }
 
 function erCalUpdateDots() {
@@ -11272,22 +11440,24 @@ function renderDashEng(){
 
 // ── HISTORICAL REPORT IMPORT ──────────────────────────────────────────────────
 var _ML_IMPORT_RECORDS = [{"versa_tech_manager": "James Laishley", "bbc_tech_manager": "Andy McLannahan", "show_date": "2025-10-23", "show_name": "Morning Live", "summary_mode": "ntr", "summary_text": "", "tagged_kit": [], "tagged_kit_names": [], "urgent_action": "No", "urgent_details": "", "submitted_at": "2025-10-22T10:48:50Z"}, {"versa_tech_manager": "James Laishley", "bbc_tech_manager": "Andy McLannahan", "show_date": "2025-10-23", "show_name": "Morning Live", "summary_mode": "str", "summary_text": "Quicklink computer had frozen (four days ago according to the clock). A restart restored functionality.", "tagged_kit": [], "tagged_kit_names": [], "urgent_action": "No", "urgent_details": "", "submitted_at": "2025-10-23T11:12:45Z"}, {"versa_tech_manager": "Andrew Rowell", "bbc_tech_manager": "Andy McLannahan", "show_date": "2025-10-24", "show_name": "Morning Live", "summary_mode": "ntr", "summary_text": "", "tagged_kit": [], "tagged_kit_names": [], "urgent_action": "No", "urgent_details": "", "submitted_at": "2025-10-24T11:23:49Z"}, {"versa_tech_manager": "James Forshaw", "bbc_tech_manager": "Andy McLannahan", "show_date": "2025-10-27", "show_name": "Morning Live", "summary_mode": "str", "summary_text": "Camera 3 Autocue not displaying at the start of rehearsals. Cameras re-plugged the cables to rectify the issue.", "tagged_kit": [], "tagged_kit_names": [], "urgent_action": "No", "urgent_details": "", "submitted_at": "2025-10-27T11:24:08Z"}, {"versa_tech_manager": "James Forshaw", "bbc_tech_manager": "Andy McLannahan", "show_date": "2025-10-28", "show_name": "Morning Live", "summary_mode": "str", "summary_text": "PA headset sounded muffled during rehearsals. Howard swapped for a spare at 09:22 (pre TX). Labeled up and placed on tech desk.", "tagged_kit": [], "tagged_kit_names": [], "urgent_action": "No", "urgent_details": "", "submitted_at": "2025-10-28T10:54:50Z"}, {"versa_tech_manager": "James Forshaw", "bbc_tech_manager": "Andy McLannahan", "show_date": "2025-10-29", "show_name": "Morning Live", "summary_mode": "str", "summary_text": "FYI Andrew - Someone flagged to production that PTB was bleeding out during the Breakfast trail. Howard monitored via iplayer and confirmed the background sound was from the Breakfast studio and not our mics.", "tagged_kit": [], "tagged_kit_names": [], "urgent_action": "No", "urgent_details": "", "submitted_at": "2025-10-29T11:00:47Z"}, {"versa_tech_manager": "James Forshaw", "bbc_tech_manager": "Andy McLannahan", "show_date": "2025-10-30", "show_name": "Morning Live", "summary_mode": "str", "summary_text": "Camera 4s Ped ring is very stiff and making a sight noise when operated. Possibly a re-oil required/service from Gravity.", "tagged_kit": [], "tagged_kit_names": [], "urgent_action": "No", "urgent_details": "", "submitted_at": "2025-10-30T11:11:19Z"}, {"versa_tech_manager": "Maarcus Lamb", "bbc_tech_manager": "Andy McLannahan", "show_date": "2025-11-03", "show_name": "Morning Live", "summary_mode": "ntr", "summary_text": "", "tagged_kit": [], "tagged_kit_names": [], "urgent_action": "No", "urgent_details": "", "submitted_at": "2025-11-03T10:46:51Z"}, {"versa_tech_manager": "Marcus Lamb", "bbc_tech_manager": "Andy McLannahan", "show_date": "2025-11-04", "show_name": "Morning Live", "summary_mode": "ntr", "summary_text": "", "tagged_kit": [], "tagged_kit_names": [], "urgent_action": "No", "urgent_details": "", "submitted_at": "2025-11-04T11:35:09Z"}, {"versa_tech_manager": "Marcus Lamb", "bbc_tech_manager": "Andy McLannahan", "show_date": "2025-11-05", "show_name": "Morning Live", "summary_mode": "ntr", "summary_text": "", "tagged_kit": [], "tagged_kit_names": [], "urgent_action": "No", "urgent_details": "", "submitted_at": "2025-11-05T11:01:08Z"}, {"versa_tech_manager": "Marcus Lamb", "bbc_tech_manager": "Andy McLannahan", "show_date": "2025-11-06", "show_name": "Morning Live", "summary_mode": "ntr", "summary_text": "", "tagged_kit": [], "tagged_kit_names": [], "urgent_action": "No", "urgent_details": "", "submitted_at": "2025-11-06T10:48:19Z"}, {"versa_tech_manager": "Marcus Lamb", "bbc_tech_manager": "Andy McLannahan", "show_date": "2025-11-07", "show_name": "Morning Live", "summary_mode": "ntr", "summary_text": "", "tagged_kit": [], "tagged_kit_names": [], "urgent_action": "No", "urgent_details": "", "submitted_at": "2025-11-07T10:57:28Z"}, {"versa_tech_manager": "James Laishley", "bbc_tech_manager": "Andy McLannahan", "show_date": "2025-11-10", "show_name": "Morning Live", "summary_mode": "str", "summary_text": "No internet on video control PC this morning. Windows was getting the PC ready to update to Windows 11, I delayed this and shortly after the internet connection came back. Not sure if this was co-incidence or whether Windows had disabled things in anticipation for the update.", "tagged_kit": [], "tagged_kit_names": [], "urgent_action": "No", "urgent_details": "", "submitted_at": "2025-11-10T10:55:17Z"}, {"versa_tech_manager": "James Laishley", "bbc_tech_manager": "Andy McLannahan", "show_date": "2025-11-12", "show_name": "Morning Live", "summary_mode": "ntr", "summary_text": "", "tagged_kit": [], "tagged_kit_names": [], "urgent_action": "No", "urgent_details": "", "submitted_at": "2025-11-12T12:19:13Z"}, {"versa_tech_manager": "James Laishley", "bbc_tech_manager": "Andy McLannahan", "show_date": "2025-11-14", "show_name": "Morning Live", "summary_mode": "str", "summary_text": "Camera 4 ped steering ring is stiff. Reported by camera ops. Ped to be replaced.", "tagged_kit": [], "tagged_kit_names": [], "urgent_action": "Yes", "urgent_details": "", "submitted_at": "2025-11-14T11:05:07Z"}, {"versa_tech_manager": "Marcus Lamb", "bbc_tech_manager": "Andy McLannahan", "show_date": "2025-11-18", "show_name": "Morning Live", "summary_mode": "str", "summary_text": "Heather reported that possible Cedar audio issue on Gethin's mic, very background, barely noticeable,  possible gain levels. Will tweak on Wednesday", "tagged_kit": [], "tagged_kit_names": [], "urgent_action": "No", "urgent_details": "", "submitted_at": "2025-11-18T11:12:39Z"}, {"versa_tech_manager": "Marcus Lamb", "bbc_tech_manager": "Andy McLannahan", "show_date": "2025-11-19", "show_name": "Morning Live", "summary_mode": "str", "summary_text": "Heather noticing audio on gethins mic not right again barely noticeable checked mic and antennas but no change. She decided to leave as is", "tagged_kit": [], "tagged_kit_names": [], "urgent_action": "No", "urgent_details": "", "submitted_at": "2025-11-19T11:03:20Z"}, {"versa_tech_manager": "James Laishley", "bbc_tech_manager": "Andy McLannahan", "show_date": "2025-11-21", "show_name": "Morning Live", "summary_mode": "str", "summary_text": "Camera 4 ped replaced. Ped couldn't be gassed due to faulty pump. Ped will stay raised if two of the weights are removed.\n\nValid generator still dropping to black.", "tagged_kit": [], "tagged_kit_names": [], "urgent_action": "Other", "urgent_details": "Ped needs gassing.", "submitted_at": "2025-11-21T11:32:12Z"}, {"versa_tech_manager": "Marcus Lamb", "bbc_tech_manager": "Andy McLannahan", "show_date": "2025-11-24", "show_name": "Morning Live", "summary_mode": "str", "summary_text": "Nothing untoward noticed on mics", "tagged_kit": [], "tagged_kit_names": [], "urgent_action": "No", "urgent_details": "", "submitted_at": "2025-11-24T11:05:56Z"}, {"versa_tech_manager": "Marcus Lamb", "bbc_tech_manager": "Andy McLannahan", "show_date": "2025-11-25", "show_name": "Morning Live", "summary_mode": "str", "summary_text": "Cam 4 added some air via hand pump. 3 extra weights added to Ped", "tagged_kit": [], "tagged_kit_names": [], "urgent_action": "No", "urgent_details": "", "submitted_at": "2025-11-25T11:06:30Z"}, {"versa_tech_manager": "Marcus Lamb", "bbc_tech_manager": "Andy McLannahan", "show_date": "2025-11-26", "show_name": "Morning Live", "summary_mode": "ntr", "summary_text": "", "tagged_kit": [], "tagged_kit_names": [], "urgent_action": "No", "urgent_details": "", "submitted_at": "2025-11-26T11:07:48Z"}, {"versa_tech_manager": "Marcus Lamb", "bbc_tech_manager": "Andy McLannahan", "show_date": "2025-11-27", "show_name": "Morning Live", "summary_mode": "ntr", "summary_text": "", "tagged_kit": [], "tagged_kit_names": [], "urgent_action": "No", "urgent_details": "", "submitted_at": "2025-11-27T10:56:01Z"}, {"versa_tech_manager": "James Laishley", "bbc_tech_manager": "Andy McLannahan", "show_date": "2025-11-28", "show_name": "Morning Live", "summary_mode": "str", "summary_text": "Reports of camera 4's replacement ped's steering ring being stiffer than the previous ped...", "tagged_kit": [], "tagged_kit_names": [], "urgent_action": "No", "urgent_details": "", "submitted_at": "2025-11-28T11:15:46Z"}, {"versa_tech_manager": "Marcus Lamb", "bbc_tech_manager": "Andy McLannahan", "show_date": "2025-12-08", "show_name": "Morning Live", "summary_mode": "str", "summary_text": "Andy Mc requested new ped for camera 4\nCerebrum failed over to secondary. Manually failed back after show", "tagged_kit": [], "tagged_kit_names": [], "urgent_action": "Other", "urgent_details": "Keep an eye on cerebrum", "submitted_at": "2025-12-08T11:01:20Z"}, {"versa_tech_manager": "Marcus Lamb", "bbc_tech_manager": "Andy McLannahan", "show_date": "2025-12-09", "show_name": "Morning Live", "summary_mode": "str", "summary_text": "Primary cerebrum does not have connection to VM running on secondary", "tagged_kit": [], "tagged_kit_names": [], "urgent_action": "Yes", "urgent_details": "", "submitted_at": "2025-12-09T12:00:31Z"}, {"versa_tech_manager": "Marcus Lamb", "bbc_tech_manager": "Andy McLannahan", "show_date": "2025-12-10", "show_name": "Morning Live", "summary_mode": "str", "summary_text": "Still on cerebrum secondary. Canon ZD clamp needs metalwork realigned", "tagged_kit": [], "tagged_kit_names": [], "urgent_action": "No", "urgent_details": "", "submitted_at": "2025-12-10T11:14:21Z"}, {"versa_tech_manager": "Marcus Lamb", "bbc_tech_manager": "Andy McLannahan", "show_date": "2025-12-11", "show_name": "Morning Live", "summary_mode": "str", "summary_text": "EVS clip had mute audio on air. Needs checking prior to tx. Running of secondary on cerebrum", "tagged_kit": [], "tagged_kit_names": [], "urgent_action": "No", "urgent_details": "", "submitted_at": "2025-12-11T11:08:20Z"}, {"versa_tech_manager": "Marcus Lamb", "bbc_tech_manager": "Andy McLannahan", "show_date": "2025-12-12", "show_name": "Morning Live", "summary_mode": "str", "summary_text": "VM cut up VIZ graphic during opt", "tagged_kit": [], "tagged_kit_names": [], "urgent_action": "No", "urgent_details": "", "submitted_at": "2025-12-12T10:46:21Z"}, {"versa_tech_manager": "James Laishley", "bbc_tech_manager": "Andy McLannahan", "show_date": "2025-12-15", "show_name": "Morning Live", "summary_mode": "str", "summary_text": "2x 4080 mics missing.", "tagged_kit": [], "tagged_kit_names": [], "urgent_action": "No", "urgent_details": "", "submitted_at": "2025-12-15T11:03:42Z"}, {"versa_tech_manager": "James Laishley", "bbc_tech_manager": "Andy McLannahan", "show_date": "2025-12-16", "show_name": "Morning Live", "summary_mode": "ntr", "summary_text": "", "tagged_kit": [], "tagged_kit_names": [], "urgent_action": "No", "urgent_details": "", "submitted_at": "2025-12-16T10:54:31Z"}, {"versa_tech_manager": "James Laishley", "bbc_tech_manager": "Andy McLannahan", "show_date": "2025-12-17", "show_name": "Morning Live", "summary_mode": "ntr", "summary_text": "", "tagged_kit": [], "tagged_kit_names": [], "urgent_action": "No", "urgent_details": "", "submitted_at": "2025-12-17T12:23:53Z"}, {"versa_tech_manager": "Andrew (Ian Assist)", "bbc_tech_manager": "Andy McLannahan", "show_date": "2026-01-05", "show_name": "Morning Live", "summary_mode": "str", "summary_text": "Lenses Replaced after being borrowed for shop on.\nJib needed to be Re Balenced.", "tagged_kit": [], "tagged_kit_names": [], "urgent_action": "No", "urgent_details": "", "submitted_at": "2026-01-05T11:03:27Z"}, {"versa_tech_manager": "Marcus Lamb", "bbc_tech_manager": "Andy McLannahan", "show_date": "2026-02-03", "show_name": "Morning Live", "summary_mode": "str", "summary_text": "LW headset possible mic boom sag on day producer position.", "tagged_kit": [], "tagged_kit_names": [], "urgent_action": "No", "urgent_details": "", "submitted_at": "2026-02-03T12:02:24Z"}, {"versa_tech_manager": "James Forshaw", "bbc_tech_manager": "Andy McLannahan", "show_date": "2026-02-05", "show_name": "Morning Live", "summary_mode": "str", "summary_text": "Autocue output 1 unable to connect to the running order. I Connected to the 'Tinkerlist' under the newsroom tab in the script software.\n\nDirector struggled to hear Series Producer during TX. Phil and I checked talkback between both positions and turned up the Producer.", "tagged_kit": [], "tagged_kit_names": [], "urgent_action": "No", "urgent_details": "", "submitted_at": "2026-02-05T11:07:35Z"}, {"versa_tech_manager": "Marcus Lamb", "bbc_tech_manager": "Andy McLannahan", "show_date": "2026-02-10", "show_name": "Morning Live", "summary_mode": "ntr", "summary_text": "", "tagged_kit": [], "tagged_kit_names": [], "urgent_action": "No", "urgent_details": "", "submitted_at": "2026-02-10T10:47:31Z"}, {"versa_tech_manager": "Marcus Lamb", "bbc_tech_manager": "Andy McLannahan", "show_date": "2026-02-12", "show_name": "Morning Live", "summary_mode": "ntr", "summary_text": "", "tagged_kit": [], "tagged_kit_names": [], "urgent_action": "No", "urgent_details": "", "submitted_at": "2026-02-12T11:08:42Z"}, {"versa_tech_manager": "MarcusLamb", "bbc_tech_manager": "Andy McLannahan", "show_date": "2026-02-19", "show_name": "Morning Live", "summary_mode": "ntr", "summary_text": "", "tagged_kit": [], "tagged_kit_names": [], "urgent_action": "No", "urgent_details": "", "submitted_at": "2026-02-19T11:00:24Z"}, {"versa_tech_manager": "Marcus Lamb", "bbc_tech_manager": "Andy McLannahan", "show_date": "2026-02-20", "show_name": "Morning Live", "summary_mode": "str", "summary_text": "Tinkerlist not appearing on Sound PC. Script person normally updates so Andy Mc updated", "tagged_kit": [], "tagged_kit_names": [], "urgent_action": "No", "urgent_details": "", "submitted_at": "2026-02-20T10:49:42Z"}, {"versa_tech_manager": "Marcus Lamb", "bbc_tech_manager": "Andy McLannahan", "show_date": "2026-02-23", "show_name": "Morning Live", "summary_mode": "str", "summary_text": "Riedel app crashed unable to quit app. Restart on PC required (updates also required) all good after restart", "tagged_kit": [], "tagged_kit_names": [], "urgent_action": "No", "urgent_details": "", "submitted_at": "2026-02-23T10:56:33Z"}, {"versa_tech_manager": "Marcus Lamb", "bbc_tech_manager": "Andy McLannahan", "show_date": "2026-02-24", "show_name": "Morning Live", "summary_mode": "ntr", "summary_text": "", "tagged_kit": [], "tagged_kit_names": [], "urgent_action": "No", "urgent_details": "", "submitted_at": "2026-02-24T11:25:49Z"}, {"versa_tech_manager": "Marcus Lamb", "bbc_tech_manager": "Andy McLannahan", "show_date": "2026-02-25", "show_name": "Morning Live", "summary_mode": "str", "summary_text": "OCP4 momentarily lost power. swapped 4 to 5 and no further issues.\nRiedel wedge in exec position in PCR reseat on card 8 in crate rectified issue", "tagged_kit": [], "tagged_kit_names": [], "urgent_action": "No", "urgent_details": "", "submitted_at": "2026-02-25T11:13:41Z"}, {"versa_tech_manager": "Marcus Lamb", "bbc_tech_manager": "Andy McLannahan", "show_date": "2026-03-09", "show_name": "Morning Live", "summary_mode": "ntr", "summary_text": "", "tagged_kit": [], "tagged_kit_names": [], "urgent_action": "No", "urgent_details": "", "submitted_at": "2026-03-09T10:58:24Z"}];
-async function importMorningLiveReports() {
+async function importMorningLiveReports(silent) {
   var btn = document.getElementById('mlImportBtn');
   var log = document.getElementById('mlImportLog');
   if(btn) btn.disabled = true;
+  if(log && !silent) log.style.display='block';
   var ok=0, skip=0, fail=0;
-  log.innerHTML = '';
-  function addLog(msg, col) { log.innerHTML += '<div style="color:'+col+';font-size:12px;font-family:var(--cond);margin-bottom:2px">'+msg+'</div>'; log.scrollTop=log.scrollHeight; }
-  addLog('Starting import of '+_ML_IMPORT_RECORDS.length+' records...', '#4a9eff');
+  function addLog(msg, col) {
+    if(silent) return;
+    if(log){ log.style.display='block'; log.innerHTML += '<div style="color:'+col+';font-size:12px;font-family:var(--cond);margin-bottom:2px">'+msg+'</div>'; log.scrollTop=log.scrollHeight; }
+  }
+  if(!silent) addLog('Starting import of '+_ML_IMPORT_RECORDS.length+' records...', '#4a9eff');
   for(var i=0; i<_ML_IMPORT_RECORDS.length; i++) {
     var rec = _ML_IMPORT_RECORDS[i];
     var label = rec.show_date + ' — ' + rec.versa_tech_manager;
     try {
-      // Check existing
       var chk = await fetch(_SB_URL+'/rest/v1/engineering_reports?show_date=eq.'+rec.show_date+'&show_name=eq.Morning%20Live&limit=1', {headers:_sbHeaders()});
       var existing = await chk.json();
-      if(Array.isArray(existing) && existing.length > 0) { addLog('['+(i+1)+'/'+_ML_IMPORT_RECORDS.length+'] SKIP: '+label, '#666'); skip++; continue; }
+      if(Array.isArray(existing) && existing.length > 0) { skip++; continue; }
     } catch(e) {}
     try {
       var hdrs = Object.assign({}, _sbHeaders(), {'Prefer':'return=minimal'});
@@ -11297,8 +11467,11 @@ async function importMorningLiveReports() {
     } catch(e) { addLog('['+(i+1)+'/'+_ML_IMPORT_RECORDS.length+'] ✗ ERROR: '+e.message, '#e63946'); fail++; }
     await new Promise(function(r){setTimeout(r,80);});
   }
-  addLog('─────────────────────────────────', '#333');
-  addLog('Done! ✓ '+ok+' imported  ↷ '+skip+' skipped  ✗ '+fail+' failed', fail===0?'#3dbf7a':'#e63946');
+  if(!silent) {
+    addLog('─────────────────────────────────', '#333');
+    addLog('Done! ✓ '+ok+' imported  ↷ '+skip+' skipped  ✗ '+fail+' failed', fail===0?'#3dbf7a':'#e63946');
+  }
+  if(ok > 0 || skip === _ML_IMPORT_RECORDS.length) localStorage.setItem('_mlImportDone','1');
   if(btn) { btn.disabled=false; btn.textContent='Re-run Import'; }
 }
 
@@ -11645,15 +11818,114 @@ function erReset(){
   erSetDateToday();erInitCatBtns();erRenderKit();erUpdateStatus();
 }
 function erInitPage(){
-  // Update title and nav label to reflect the currently selected show
-  var sel=document.getElementById('erShowSel');
-  var showName=sel?sel.value:'Morning Live';
-  var title=document.getElementById('erFormTitle');
-  if(title) title.textContent=showName+' \u00b7 Engineering Report';
-  var navLabel=document.getElementById('erNavLabel');
-  if(navLabel) navLabel.textContent=showName;
+  erRenderJobTabs();
   erSetDateToday();erSetSummary('ntr');window._erCatFilter='';erInitCatBtns();erRenderKit();erUpdateStatus();
   setTimeout(erLoadKit,100);
+  // Auto-import ML historical records if not done yet
+  if(!localStorage.getItem('_mlImportDone') && typeof importMorningLiveReports==='function') {
+    setTimeout(function(){
+      importMorningLiveReports(true); // silent mode
+    }, 2000);
+  }
+}
+
+// ── DRAGON'S DEN FORM ─────────────────────────────────────────────────────────
+function ddPopulateRxDates(j) {
+  var sel = document.getElementById('ddRxDate'); if(!sel) return;
+  sel.innerHTML = '<option value="">— Select RX Date —</option>';
+  if(!j || !j.txDates) return;
+  j.txDates.forEach(function(td) {
+    if(!td.label) return;
+    var opt = document.createElement('option');
+    var d = td.date ? new Date(td.date+'T12:00:00') : null;
+    var nice = d ? d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'}) : td.date;
+    opt.value = td.date + '|' + td.label;
+    opt.textContent = td.label + ' — ' + nice;
+    sel.appendChild(opt);
+  });
+  ddUpdateStatus();
+}
+
+function ddPickTech(name) {
+  document.getElementById('ddVTM').value = name;
+  document.getElementById('ddBtnAR').classList.toggle('active', name==='Andrew Rowell');
+  document.getElementById('ddBtnJL').classList.toggle('active', name==='James Laishley');
+  ddUpdateStatus();
+}
+
+function ddUpdateStatus() {
+  var vtm = document.getElementById('ddVTM') ? document.getElementById('ddVTM').value : '';
+  var rx  = document.getElementById('ddRxDate') ? document.getElementById('ddRxDate').value : '';
+  var rep = document.getElementById('ddReport') ? document.getElementById('ddReport').value.trim() : '';
+  var st  = document.getElementById('ddStatus');
+  var btn = document.getElementById('ddSubmitBtn');
+  var missing = [];
+  if(!vtm) missing.push('Tech Manager');
+  if(!rx)  missing.push('RX Date');
+  if(!rep) missing.push('Report');
+  if(missing.length === 0) {
+    if(st){ st.textContent = '✓ Ready to submit'; st.style.color='#3dbf7a'; }
+    if(btn){ btn.disabled=false; btn.textContent='Submit Engineering Report'; }
+  } else {
+    if(st){ st.textContent = 'Missing: '+missing.join(' · '); st.style.color='var(--muted)'; }
+    if(btn){ btn.disabled=true; btn.textContent='Complete All Sections to Submit'; }
+  }
+}
+
+async function ddSubmit() {
+  var vtm  = document.getElementById('ddVTM').value;
+  var rxVal = document.getElementById('ddRxDate').value;
+  var rep  = document.getElementById('ddReport').value.trim();
+  if(!vtm||!rxVal||!rep) return;
+  var parts = rxVal.split('|');
+  var rxDate = parts[0], rxLabel = parts[1]||'';
+  // Build work hours text
+  function hrs(sid,eid){ var s=document.getElementById(sid),e=document.getElementById(eid);return (s&&e&&s.value&&e.value)?(s.value+' → '+e.value):'—'; }
+  var workHours = '\n\n[WORK HOURS]\nAndrew Rowell: '+hrs('ddHrsARstart','ddHrsARend')+'\nJames Laishley: '+hrs('ddHrsJLstart','ddHrsJLend')+'\nMark Openshaw: '+hrs('ddHrsMOstart','ddHrsMOend');
+  var record = {
+    versa_tech_manager: vtm,
+    bbc_tech_manager: '',
+    show_date: rxDate,
+    show_name: 'Dragons Den',
+    summary_mode: 'str',
+    summary_text: '['+rxLabel+']\n'+rep+workHours,
+    tagged_kit: [],
+    tagged_kit_names: [],
+    urgent_action: 'No',
+    urgent_details: '',
+    submitted_at: new Date().toISOString()
+  };
+  var btn = document.getElementById('ddSubmitBtn');
+  if(btn){ btn.disabled=true; btn.textContent='Submitting...'; }
+  try {
+    var hdrs = Object.assign({}, _sbHeaders(), {'Prefer':'return=minimal'});
+    var r = await fetch(_SB_URL+'/rest/v1/engineering_reports', {method:'POST',headers:hdrs,body:JSON.stringify(record)});
+    if(r.ok) {
+      var sd = document.getElementById('ddSuccess');
+      var swrap = document.querySelector('.dd-body');
+      if(swrap) swrap.style.display='none';
+      if(sd){ sd.style.display='block'; document.getElementById('ddSuccessDetail').textContent=rxLabel+' · '+rxDate+' · '+vtm; }
+    } else {
+      var t=await r.text(); toast('Submit failed: '+t);
+      if(btn){ btn.disabled=false; btn.textContent='Submit Engineering Report'; }
+    }
+  } catch(e) {
+    toast('Error: '+e.message);
+    if(btn){ btn.disabled=false; btn.textContent='Submit Engineering Report'; }
+  }
+}
+
+function ddReset() {
+  document.getElementById('ddVTM').value='Andrew Rowell';
+  document.getElementById('ddBtnAR').classList.add('active');
+  document.getElementById('ddBtnJL').classList.remove('active');
+  document.getElementById('ddRxDate').value='';
+  document.getElementById('ddReport').value='';
+  var sd=document.getElementById('ddSuccess');
+  var swrap=document.querySelector('.dd-body');
+  if(sd) sd.style.display='none';
+  if(swrap) swrap.style.display='';
+  ddUpdateStatus();
 }
 
 // ─── LAST REPORT BOX ──────────────────────────────────────────────────────────
