@@ -1273,12 +1273,7 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
       </div>
     </div>
 
-    <div style="background:#1a1a1a;border-bottom:1px solid #333;padding:8px 22px;display:flex;align-items:center;gap:10px">
-      <div style="font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#666;font-family:'IBM Plex Mono',monospace;flex-shrink:0">Show / Job</div>
-      <select id="erShowSel" onchange="erShowChanged()" style="background:#2a2a2a;border:1px solid #444;color:#fff;font-family:'IBM Plex Mono',monospace;font-size:11px;padding:4px 8px;border-radius:4px;flex:1;outline:none">
-        <option value="Morning Live">Morning Live (ABC)</option>
-      </select>
-    </div>
+    <input type="hidden" id="erShowSel" value="Morning Live (ABC)"/>
     <div class="er-pbody">
 
       <!-- CH 01 -->
@@ -4133,6 +4128,26 @@ async function _fetchEngReportsForMonth(yr, mo) {
     }
   } catch(e) { console.warn('_fetchEngReportsForMonth error:', e); }
 }
+function renderJobEngRptTab(j) {
+  return '<div class="det-sec">'
+    +'<div class="det-sec-lbl" style="margin-bottom:12px">Engineering Reports — '+j.name+'</div>'
+    +'<p style="font-size:13px;color:var(--muted);margin-bottom:16px">Submit and view engineering reports for this job. Each report is scoped to '+j.name+' only.</p>'
+    +'<button class="btn-add" style="margin-bottom:20px" onclick="openJobEngReport('+j.id+')">+ New Engineering Report</button>'
+    +'<div id="jobEngRptList-'+j.id+'" style="font-size:13px;color:var(--muted)">Loading reports…</div>'
+    +'</div>';
+}
+function openJobEngReport(jid) {
+  var j=jobs.find(function(x){return x.id==jid;}); if(!j) return;
+  // Set the hidden show selector to this job's name, then navigate to the eng report page
+  var sel=document.getElementById('erShowSel');
+  if(sel) sel.value=j.name;
+  // Update the title on the eng report form
+  var title=document.getElementById('erFormTitle');
+  if(title) title.textContent=j.name+' \u00b7 Engineering Report';
+  // Close the job drawer and navigate
+  closeDrawer();
+  nav('engreport', document.querySelector('[data-pg="engreport"]'));
+}
 function renderImproveTab(j){
   if(!j.improvements) j.improvements=[];
   var rows = j.improvements.length ? j.improvements.slice().reverse().map(function(imp,ri){
@@ -6480,13 +6495,13 @@ function renderJobDet(j) {
     {id:'crew',label:'Crew'},{id:'audio',label:'Audio'},{id:'post',label:'Post'},
     {id:'monitors',label:'Monitors'},{id:'ingest',label:'Ingest'},{id:'comms',label:'Comms'},
     {id:'ip',label:'IP Addresses'},{id:'kit',label:'Prep List'},
-    {id:'englog',label:'Eng Log'},{id:'improve',label:'Improvements'}
+    {id:'englog',label:'Eng Log'},{id:'engrpt',label:'Eng Report'},{id:'improve',label:'Improvements'}
   ];
   const isAdmin = CU && CU.role==='Admin';
   const exportBtn = isAdmin
     ? '<button class="ibtn" style="margin-left:auto;flex-shrink:0;font-size:12px;padding:4px 12px" onclick="exportJobData('+j.id+')">&#8659; Export</button>'
     : '';
-  const JD_TAB_COLS={info:'rgba(60,90,160,.85)',tech:'rgba(160,100,30,.85)',camspec:'rgba(50,120,70,.85)',set:'rgba(120,60,140,.85)',lv:'rgba(30,115,125,.85)',gallery:'rgba(150,65,65,.85)',crew:'rgba(50,105,80,.85)',audio:'rgba(100,65,130,.85)',post:'rgba(130,85,35,.85)',monitors:'rgba(35,95,145,.85)',ingest:'rgba(75,125,45,.85)',comms:'rgba(145,55,95,.85)',ip:'rgba(40,105,105,.85)',kit:'rgba(135,75,35,.85)',englog:'rgba(55,85,155,.85)',improve:'rgba(75,115,55,.85)'};
+  const JD_TAB_COLS={info:'rgba(60,90,160,.85)',tech:'rgba(160,100,30,.85)',camspec:'rgba(50,120,70,.85)',set:'rgba(120,60,140,.85)',lv:'rgba(30,115,125,.85)',gallery:'rgba(150,65,65,.85)',crew:'rgba(50,105,80,.85)',audio:'rgba(100,65,130,.85)',post:'rgba(130,85,35,.85)',monitors:'rgba(35,95,145,.85)',ingest:'rgba(75,125,45,.85)',comms:'rgba(145,55,95,.85)',ip:'rgba(40,105,105,.85)',kit:'rgba(135,75,35,.85)',englog:'rgba(55,85,155,.85)',engrpt:'rgba(155,45,45,.85)',improve:'rgba(75,115,55,.85)'};
   const tabBar = '<div style="display:flex;gap:5px;overflow-x:auto;padding:14px 0 10px;margin-bottom:6px;flex-shrink:0;align-items:center;flex-wrap:wrap">'
     +tabs.map(function(t){var isAct=t.id===_jdTab;var col=JD_TAB_COLS[t.id]||'rgba(60,90,160,.85)';return '<div class="jd-tab'+(isAct?' active':'')+'" data-tid="'+t.id+'" style="background:'+col+';" onclick="jdSwitch(\''+ t.id +'\','+j.id+')">'+t.label+'</div>';}).join('')+'</div>';
   let content = '';
@@ -7137,6 +7152,7 @@ function renderJobDet(j) {
   else if(_jdTab==='comms'){content=renderCommsTab(j);}
   else if(_jdTab==='ip'){content=renderIpTab(j);}
   else if(_jdTab==='englog'){content=renderEngLogTab(j);}
+  else if(_jdTab==='engrpt'){content=renderJobEngRptTab(j);}
   else if(_jdTab==='improve'){content=renderImproveTab(j);}
   else if(_jdTab==='kit'){content=renderKitPrepTab(j);}
 
@@ -11538,7 +11554,11 @@ function erReset(){
   erSetDateToday();erInitCatBtns();erRenderKit();erUpdateStatus();
 }
 function erInitPage(){
-  erPopulateShowSel();
+  // Update title to reflect the currently selected show
+  var sel=document.getElementById('erShowSel');
+  var showName=sel?sel.value:'Morning Live (ABC)';
+  var title=document.getElementById('erFormTitle');
+  if(title) title.textContent=showName+' \u00b7 Engineering Report';
   erSetDateToday();erSetSummary('ntr');window._erCatFilter='';erInitCatBtns();erRenderKit();erUpdateStatus();
   setTimeout(erLoadKit,100);
 }
