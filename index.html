@@ -1251,6 +1251,7 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
   <div style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(216,90,97,.7);padding:0 16px 10px 0;flex-shrink:0">Morning Live</div>
   <button id="erSubTabReport" onclick="erSubTab('report')" style="padding:8px 18px;font-size:12px;font-family:var(--cond);font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:none;border:none;border-bottom:3px solid var(--accent);color:var(--accent);cursor:pointer;margin-bottom:-2px">&#128196; Report</button>
   <button id="erSubTabCal" onclick="erSubTab('cal')" style="padding:8px 18px;font-size:12px;font-family:var(--cond);font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:none;border:none;border-bottom:3px solid transparent;color:var(--muted);cursor:pointer;margin-bottom:-2px">&#128197; Calendar</button>
+  <button id="erSubTabHist" onclick="erSubTab('hist')" style="padding:8px 18px;font-size:12px;font-family:var(--cond);font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:none;border:none;border-bottom:3px solid transparent;color:var(--muted);cursor:pointer;margin-bottom:-2px">&#128464; History</button>
 </div>
 <div id="erSubPanelReport">
 <div class="er-device">
@@ -1260,7 +1261,7 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
     <div class="er-face">
       <div class="er-face-left">
         <div class="er-brand">Versa Studios</div>
-        <div class="er-title">Morning Live &middot; Engineering Report</div>
+        <div class="er-title" id="erFormTitle">Morning Live &middot; Engineering Report</div>
       </div>
       <div style="display:flex;align-items:center;gap:12px">
         <div class="er-leds">
@@ -1272,6 +1273,12 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
       </div>
     </div>
 
+    <div style="background:#1a1a1a;border-bottom:1px solid #333;padding:8px 22px;display:flex;align-items:center;gap:10px">
+      <div style="font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#666;font-family:'IBM Plex Mono',monospace;flex-shrink:0">Show / Job</div>
+      <select id="erShowSel" onchange="erShowChanged()" style="background:#2a2a2a;border:1px solid #444;color:#fff;font-family:'IBM Plex Mono',monospace;font-size:11px;padding:4px 8px;border-radius:4px;flex:1;outline:none">
+        <option value="Morning Live">Morning Live (ABC)</option>
+      </select>
+    </div>
     <div class="er-pbody">
 
       <!-- CH 01 -->
@@ -1401,6 +1408,17 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
 
 </div>
 </div><!-- /erSubPanelReport -->
+<div id="erSubPanelHist" style="display:none;margin-top:8px;max-width:680px;margin-left:auto;margin-right:auto">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+    <div style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">Filter by Show</div>
+    <select id="erHistShowFilter" onchange="erHistLoad()" style="background:var(--dark);border:1px solid var(--border);color:var(--white);font-family:var(--cond);font-size:13px;padding:5px 10px;border-radius:4px;outline:none">
+      <option value="">All Shows</option>
+    </select>
+    <div id="erHistStatus" style="font-family:var(--cond);font-size:11px;color:var(--muted);margin-left:auto"></div>
+  </div>
+  <div id="erHistList"></div>
+  <div style="text-align:center;margin-top:12px"><button id="erHistMore" onclick="erHistLoadMore()" style="display:none;background:none;border:1px solid var(--border);color:var(--muted);font-family:var(--cond);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:8px 20px;border-radius:4px;cursor:pointer">Load More</button></div>
+</div>
 <div id="erSubPanelCal" style="display:none;margin-top:8px;max-width:680px;margin-left:auto;margin-right:auto">
   <div id="erCalWrap">
     <!-- rendered by erCalRender() -->
@@ -3607,12 +3625,110 @@ var _toolsLoaded={signal:false,report:false};
 function erSubTab(tab){
   var rp=document.getElementById('erSubPanelReport');
   var cp=document.getElementById('erSubPanelCal');
+  var hp=document.getElementById('erSubPanelHist');
   var rb=document.getElementById('erSubTabReport');
   var cb=document.getElementById('erSubTabCal');
+  var hb=document.getElementById('erSubTabHist');
   if(rp)rp.style.display=tab==='report'?'':'none';
   if(cp){cp.style.display=tab==='cal'?'':'none'; if(tab==='cal') erCalRender(_erCalYr,_erCalMo);}
-  if(rb){rb.style.borderBottomColor=tab==='report'?'var(--accent)':'transparent';rb.style.color=tab==='report'?'var(--accent)':'var(--muted)';}
-  if(cb){cb.style.borderBottomColor=tab==='cal'?'var(--accent)':'transparent';cb.style.color=tab==='cal'?'var(--accent)':'var(--muted)';}
+  if(hp){hp.style.display=tab==='hist'?'':'none'; if(tab==='hist'){erHistPopulateFilter();erHistLoad();}}
+  var accent='var(--accent)',muted='var(--muted)';
+  if(rb){rb.style.borderBottomColor=tab==='report'?accent:'transparent';rb.style.color=tab==='report'?accent:muted;}
+  if(cb){cb.style.borderBottomColor=tab==='cal'?accent:'transparent';cb.style.color=tab==='cal'?accent:muted;}
+  if(hb){hb.style.borderBottomColor=tab==='hist'?accent:'transparent';hb.style.color=tab==='hist'?accent:muted;}
+}
+
+// ── SHOW SELECTOR ──────────────────────────────────────────────────────────────
+function erPopulateShowSel(){
+  var sel=document.getElementById('erShowSel'); if(!sel)return;
+  var current=sel.value;
+  // Build options from jobs array + fixed defaults
+  var shows=['Morning Live (ABC)'];
+  if(typeof jobs!=='undefined') jobs.forEach(function(j){ if(j.name&&shows.indexOf(j.name)<0) shows.push(j.name); });
+  sel.innerHTML=shows.map(function(s){return '<option value="'+s+'"'+(s===current?' selected':'')+'>'+s+'</option>';}).join('');
+}
+function erShowChanged(){
+  var sel=document.getElementById('erShowSel'); if(!sel)return;
+  var title=document.getElementById('erFormTitle');
+  if(title) title.textContent=sel.value+' \u00b7 Engineering Report';
+}
+
+// ── HISTORY ───────────────────────────────────────────────────────────────────
+var _erHistOffset=0, _erHistPageSize=20, _erHistAll=[];
+function erHistPopulateFilter(){
+  var sel=document.getElementById('erHistShowFilter'); if(!sel)return;
+  var cur=sel.value;
+  var shows=[''];
+  if(typeof jobs!=='undefined') jobs.forEach(function(j){if(j.name&&shows.indexOf(j.name)<0)shows.push(j.name);});
+  shows.push('Morning Live (ABC)','Morning Live');
+  shows=shows.filter(function(v,i,a){return a.indexOf(v)===i;});
+  sel.innerHTML=shows.map(function(s){return '<option value="'+s+'"'+(s===cur?' selected':'')+'>'+(s||'All Shows')+'</option>';}).join('');
+}
+async function erHistLoad(){
+  _erHistOffset=0; _erHistAll=[];
+  var el=document.getElementById('erHistList'); if(!el)return;
+  var st=document.getElementById('erHistStatus');
+  el.innerHTML='<div style="padding:20px;font-size:13px;color:var(--muted);font-family:var(--cond)">Loading…</div>';
+  if(st)st.textContent='';
+  await erHistFetch();
+}
+async function erHistLoadMore(){
+  await erHistFetch();
+}
+async function erHistFetch(){
+  var filter=document.getElementById('erHistShowFilter');
+  var show=filter?filter.value:'';
+  var el=document.getElementById('erHistList');
+  var moreBtn=document.getElementById('erHistMore');
+  var st=document.getElementById('erHistStatus');
+  try{
+    var url=_ER_SB_URL+'/rest/v1/engineering_reports?select=*&order=show_date.desc,submitted_at.desc&limit='+(_erHistPageSize+1)+'&offset='+_erHistOffset;
+    if(show) url+='&show_name=eq.'+encodeURIComponent(show);
+    var r=await fetch(url,{headers:_ER_SB_HDR});
+    var rows=await r.json();
+    if(!Array.isArray(rows)) rows=[];
+    var hasMore=rows.length>_erHistPageSize;
+    if(hasMore) rows=rows.slice(0,_erHistPageSize);
+    _erHistAll=_erHistAll.concat(rows);
+    _erHistOffset+=rows.length;
+    if(moreBtn) moreBtn.style.display=hasMore?'':'none';
+    if(st) st.textContent=_erHistAll.length+' report'+(+_erHistAll.length===1?'':'s');
+    el.innerHTML=_erHistAll.length?_erHistAll.map(function(rep,idx){return erHistRenderRow(rep,idx);}).join('')
+      :'<div style="padding:20px;font-size:13px;color:var(--muted)">No reports found.</div>';
+  }catch(e){
+    if(el)el.innerHTML='<div style="padding:20px;font-size:13px;color:var(--muted)">Could not load reports.</div>';
+  }
+}
+function erHistRenderRow(rep,idx){
+  var date=rep.show_date?new Date(rep.show_date+'T12:00:00').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'}):'—';
+  var isStr=rep.summary_mode==='str', isUrgent=rep.urgent_action==='Yes';
+  var badge=isUrgent
+    ?'<span style="background:#E8002A;color:#fff;font-size:9px;font-weight:800;letter-spacing:.1em;padding:2px 7px;border-radius:3px;font-family:var(--cond);text-transform:uppercase">URGENT</span>'
+    :isStr
+    ?'<span style="background:rgba(232,160,0,.2);color:#E8A000;font-size:9px;font-weight:800;letter-spacing:.1em;padding:2px 7px;border-radius:3px;font-family:var(--cond);text-transform:uppercase">STR</span>'
+    :'<span style="background:rgba(0,196,114,.15);color:#00C472;font-size:9px;font-weight:800;letter-spacing:.1em;padding:2px 7px;border-radius:3px;font-family:var(--cond);text-transform:uppercase">NTR</span>';
+  var showLabel=rep.show_name?'<span style="font-size:11px;color:var(--muted);font-family:var(--cond)">'+rep.show_name+'</span>':'';
+  var detId='erHist_'+idx;
+  var details='<div id="'+detId+'" style="display:none;padding:10px 14px 4px;border-top:1px solid var(--border);font-size:13px">'
+    +(rep.versa_tech_manager?'<div style="margin-bottom:4px"><span style="color:var(--muted);font-family:var(--cond);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-right:8px">Versa Tech</span>'+rep.versa_tech_manager+'</div>':'')
+    +(rep.bbc_tech_manager?'<div style="margin-bottom:4px"><span style="color:var(--muted);font-family:var(--cond);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-right:8px">BBC Tech</span>'+rep.bbc_tech_manager+'</div>':'')
+    +(rep.summary_text?'<div style="margin-bottom:4px"><span style="color:var(--muted);font-family:var(--cond);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-right:8px">Summary</span>'+rep.summary_text+'</div>':'')
+    +(rep.urgent_details?'<div style="margin-bottom:4px"><span style="color:#E8002A;font-family:var(--cond);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-right:8px">Urgent</span>'+rep.urgent_details+'</div>':'')
+    +(rep.tagged_kit_names&&rep.tagged_kit_names.length?'<div style="margin-bottom:4px"><span style="color:var(--muted);font-family:var(--cond);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-right:8px">Kit</span>'+rep.tagged_kit_names.join(', ')+'</div>':'')
+    +'</div>';
+  return '<div style="border:1px solid var(--border);border-radius:6px;margin-bottom:8px;overflow:hidden;background:var(--near-black)">'
+    +'<div onclick="var d=document.getElementById(\''+detId+'\');d.style.display=d.style.display===\'none\'?\'block\':\'none\'" style="display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer">'
+    +'<div style="flex:1;min-width:0">'
+    +'<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'
+    +'<div style="font-family:var(--cond);font-size:14px;font-weight:800;color:var(--white)">'+date+'</div>'
+    +showLabel+badge
+    +'</div>'
+    +(rep.versa_tech_manager?'<div style="font-size:12px;color:var(--muted);margin-top:2px">'+rep.versa_tech_manager+(rep.bbc_tech_manager?' · '+rep.bbc_tech_manager:'')+'</div>':'')
+    +'</div>'
+    +'<div style="color:var(--muted);font-size:16px">&#8250;</div>'
+    +'</div>'
+    +details
+    +'</div>';
 }
 // ── ER CALENDAR — Morning Live report browser ─────────────────────────────────
 var _erCalYr = null, _erCalMo = null;
@@ -11396,7 +11512,7 @@ function erUpdateStatus(){
 }
 async function erSubmit(){
   const vtm=document.getElementById('erVTM').value.trim(),bbc=document.getElementById('erBBC').value,urgent=document.getElementById('erUrgent').value,urgTxt=document.getElementById('erUrgTxt').value.trim(),isSTR=_erSummaryMode==='str',sumTxt=isSTR?document.getElementById('erSummaryTxt').value.trim():'',tagNames=_erTags.map(id=>{const k=_erKitData.find(x=>x.id===id);return k?k.name+' ('+k.tag+')':'';}).filter(Boolean),showDate=_erUseTodayDate?new Date().toISOString().split('T')[0]:_erSelectedDate;
-  await erSaveReport({versa_tech_manager:vtm,bbc_tech_manager:bbc,show_date:showDate,summary_mode:_erSummaryMode,summary_text:sumTxt,tagged_kit:_erTags,tagged_kit_names:tagNames,urgent_action:urgent,urgent_details:urgTxt,submitted_at:new Date().toISOString()});
+  await erSaveReport({versa_tech_manager:vtm,bbc_tech_manager:bbc,show_date:showDate,show_name:(document.getElementById('erShowSel')?document.getElementById('erShowSel').value:'Morning Live (ABC)'),summary_mode:_erSummaryMode,summary_text:sumTxt,tagged_kit:_erTags,tagged_kit_names:tagNames,urgent_action:urgent,urgent_details:urgTxt,submitted_at:new Date().toISOString()});
   if(isSTR)erSendEmail({show_date:showDate,versa_tech:vtm,bbc_tech:bbc,summary:sumTxt||'(no details)',urgent,urgent_details:urgTxt||'--',tagged_kit:tagNames.join(', ')||'None',submitted_at:new Date().toLocaleString('en-GB')});
   // Refresh last report box
   renderAbcLastReport();
@@ -11422,6 +11538,7 @@ function erReset(){
   erSetDateToday();erInitCatBtns();erRenderKit();erUpdateStatus();
 }
 function erInitPage(){
+  erPopulateShowSel();
   erSetDateToday();erSetSummary('ntr');window._erCatFilter='';erInitCatBtns();erRenderKit();erUpdateStatus();
   setTimeout(erLoadKit,100);
 }
