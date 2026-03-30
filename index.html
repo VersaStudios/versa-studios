@@ -1653,15 +1653,17 @@ window.onerror = function(msg, src, line, col, err) {
 // ── SUPABASE CONFIG (direct REST — no SDK needed) ─────────────────────────────
 const _SB_URL = 'https://dttwgmoyxthczlzxjgag.supabase.co';
 const _SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ';
-const _SB_HEADERS = {'Content-Type':'application/json','apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY,'Prefer':'resolution=merge-duplicates'};
-
+function _sbHeaders(){
+  var tok=_authToken||_SB_KEY;
+  return {'Content-Type':'application/json','apikey':_SB_KEY,'Authorization':'Bearer '+tok,'Prefer':'resolution=merge-duplicates'};
+}
 function _sbGet(){
-  const ctrl = new AbortController();
-  const timer = setTimeout(()=>ctrl.abort(), 12000); // 12s timeout
-  return fetch(_SB_URL+'/rest/v1/app_data?select=key,value',{headers:_SB_HEADERS,signal:ctrl.signal})
+  const ctrl=new AbortController();
+  const timer=setTimeout(()=>ctrl.abort(),12000);
+  return fetch(_SB_URL+'/rest/v1/app_data?select=key,value',{headers:_sbHeaders(),signal:ctrl.signal})
     .then(r=>r.json()).finally(()=>clearTimeout(timer));
 }
-function _sbSet(rows){ return fetch(_SB_URL+'/rest/v1/app_data',{method:'POST',headers:_SB_HEADERS,body:JSON.stringify(rows)}); }
+function _sbSet(rows){return fetch(_SB_URL+'/rest/v1/app_data',{method:'POST',headers:_sbHeaders(),body:JSON.stringify(rows)});}
 
 // Data map — key → getter function for current value
 function _getDataMap() {
@@ -1846,12 +1848,14 @@ document.addEventListener('click', function(e){
 });
 
 function signOut() {
-  om('mSignOut');
+  if(confirm('Sign out of Versa Studios?')) _doSignOut();
 }
 function _doSignOut() {
   sessionStorage.removeItem('_vsToken');
   sessionStorage.removeItem('_vsEmail');
   sessionStorage.removeItem('_vsRestrictedJobId');
+  localStorage.removeItem('_vsToken');
+  localStorage.removeItem('_vsEmail');
   _authToken = null;
   location.reload();
 }
@@ -10087,7 +10091,7 @@ function saveCamRole() {
 }
 // ── ADMIN ─────────────────────────────────────────────────────────────────────
 function renderAdmin() {
-  renderUsers(); renderCats(); renderPatEmails(); renderDvAdmin(); renderDvHired();
+  renderUsers(); renderCats(); renderPatEmails(); renderDvAdmin(); renderDvHired(); renderSupp();
   populateCatSelect('nkCat');
 }
 
@@ -11079,9 +11083,13 @@ window.addEventListener('DOMContentLoaded',async ()=>{
   closeDrawer();
   try {
   // Check for existing session
-  const savedToken = sessionStorage.getItem('_vsToken');
-  const savedEmail = sessionStorage.getItem('_vsEmail');
+  // Check sessionStorage first, fall back to localStorage (survives tab close / Railway redeploys)
+  const savedToken = sessionStorage.getItem('_vsToken') || localStorage.getItem('_vsToken');
+  const savedEmail = sessionStorage.getItem('_vsEmail') || localStorage.getItem('_vsEmail');
   const savedRestrictedJobId = sessionStorage.getItem('_vsRestrictedJobId');
+  // Mirror to sessionStorage so the rest of the code works as before
+  if(savedToken) sessionStorage.setItem('_vsToken', savedToken);
+  if(savedEmail) sessionStorage.setItem('_vsEmail', savedEmail);
   if (savedToken && savedEmail && _ROLE_MAP[savedEmail.toLowerCase()]) {
     // Validate token against Supabase before trusting cached session
     let tokenValid = false;
