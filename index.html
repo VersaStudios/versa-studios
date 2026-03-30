@@ -1248,10 +1248,9 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
 </style>
 
 <div style="display:flex;align-items:center;gap:0;margin-bottom:16px;border-bottom:2px solid rgba(216,90,97,.2)">
-  <div style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(216,90,97,.7);padding:0 16px 10px 0;flex-shrink:0">Morning Live</div>
+  <div id="erNavLabel" style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(216,90,97,.7);padding:0 16px 10px 0;flex-shrink:0">Morning Live</div>
   <button id="erSubTabReport" onclick="erSubTab('report')" style="padding:8px 18px;font-size:12px;font-family:var(--cond);font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:none;border:none;border-bottom:3px solid var(--accent);color:var(--accent);cursor:pointer;margin-bottom:-2px">&#128196; Report</button>
-  <button id="erSubTabCal" onclick="erSubTab('cal')" style="padding:8px 18px;font-size:12px;font-family:var(--cond);font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:none;border:none;border-bottom:3px solid transparent;color:var(--muted);cursor:pointer;margin-bottom:-2px">&#128197; Calendar</button>
-  <button id="erSubTabHist" onclick="erSubTab('hist')" style="padding:8px 18px;font-size:12px;font-family:var(--cond);font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:none;border:none;border-bottom:3px solid transparent;color:var(--muted);cursor:pointer;margin-bottom:-2px">&#128464; History</button>
+  <button id="erSubTabCal" onclick="erSubTab('cal')" style="padding:8px 18px;font-size:12px;font-family:var(--cond);font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:none;border:none;border-bottom:3px solid transparent;color:var(--muted);cursor:pointer;margin-bottom:-2px">&#128197; Calendar &amp; History</button>
 </div>
 <div id="erSubPanelReport">
 <div class="er-device">
@@ -1273,7 +1272,7 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
       </div>
     </div>
 
-    <input type="hidden" id="erShowSel" value="Morning Live (ABC)"/>
+    <input type="hidden" id="erShowSel" value="Morning Live"/>
     <div class="er-pbody">
 
       <!-- CH 01 -->
@@ -1403,22 +1402,24 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
 
 </div>
 </div><!-- /erSubPanelReport -->
-<div id="erSubPanelHist" style="display:none;margin-top:8px;max-width:680px;margin-left:auto;margin-right:auto">
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap">
-    <div style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">Filter by Show</div>
-    <select id="erHistShowFilter" onchange="erHistLoad()" style="background:var(--dark);border:1px solid var(--border);color:var(--white);font-family:var(--cond);font-size:13px;padding:5px 10px;border-radius:4px;outline:none">
-      <option value="">All Shows</option>
-    </select>
-    <div id="erHistStatus" style="font-family:var(--cond);font-size:11px;color:var(--muted);margin-left:auto"></div>
-  </div>
-  <div id="erHistList"></div>
-  <div style="text-align:center;margin-top:12px"><button id="erHistMore" onclick="erHistLoadMore()" style="display:none;background:none;border:1px solid var(--border);color:var(--muted);font-family:var(--cond);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:8px 20px;border-radius:4px;cursor:pointer">Load More</button></div>
-</div>
+<div id="erSubPanelHist" style="display:none"></div>
 <div id="erSubPanelCal" style="display:none;margin-top:8px;max-width:680px;margin-left:auto;margin-right:auto">
   <div id="erCalWrap">
     <!-- rendered by erCalRender() -->
   </div>
   <div id="erCalReport" style="margin-top:16px"></div>
+  <div style="margin-top:24px;border-top:1px solid var(--border);padding-top:20px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+      <div style="font-family:var(--cond);font-size:13px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:var(--white)">Search Reports</div>
+      <div style="flex:1;min-width:180px;position:relative">
+        <input id="erSearchInput" class="fi" style="width:100%;padding:8px 12px 8px 34px;font-size:14px" placeholder="Search by tech, summary, date..." oninput="erSearchReports(this.value)"/>
+        <svg style="position:absolute;left:10px;top:50%;transform:translateY(-50%);opacity:.4;pointer-events:none" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="5"/><path d="M11 11l3.5 3.5"/></svg>
+      </div>
+      <div id="erHistStatus" style="font-family:var(--cond);font-size:11px;color:var(--muted)"></div>
+    </div>
+    <div id="erHistList"></div>
+    <div style="text-align:center;margin-top:12px"><button id="erHistMore" onclick="erHistLoadMore()" style="display:none;background:none;border:1px solid var(--border);color:var(--muted);font-family:var(--cond);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:8px 20px;border-radius:4px;cursor:pointer">Load More</button></div>
+  </div>
 </div>
 </div>
 
@@ -3618,19 +3619,16 @@ var _REPORT_HTML="<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<script src=\"htt
 
 var _toolsLoaded={signal:false,report:false};
 function erSubTab(tab){
+  if(tab==='hist') tab='cal'; // history is now part of cal panel
   var rp=document.getElementById('erSubPanelReport');
   var cp=document.getElementById('erSubPanelCal');
-  var hp=document.getElementById('erSubPanelHist');
   var rb=document.getElementById('erSubTabReport');
   var cb=document.getElementById('erSubTabCal');
-  var hb=document.getElementById('erSubTabHist');
   if(rp)rp.style.display=tab==='report'?'':'none';
-  if(cp){cp.style.display=tab==='cal'?'':'none'; if(tab==='cal') erCalRender(_erCalYr,_erCalMo);}
-  if(hp){hp.style.display=tab==='hist'?'':'none'; if(tab==='hist'){erHistPopulateFilter();erHistLoad();}}
+  if(cp){cp.style.display=tab==='cal'?'':'none'; if(tab==='cal'){erCalRender(_erCalYr,_erCalMo);erHistLoad();}}
   var accent='var(--accent)',muted='var(--muted)';
   if(rb){rb.style.borderBottomColor=tab==='report'?accent:'transparent';rb.style.color=tab==='report'?accent:muted;}
   if(cb){cb.style.borderBottomColor=tab==='cal'?accent:'transparent';cb.style.color=tab==='cal'?accent:muted;}
-  if(hb){hb.style.borderBottomColor=tab==='hist'?accent:'transparent';hb.style.color=tab==='hist'?accent:muted;}
 }
 
 // ── SHOW SELECTOR ──────────────────────────────────────────────────────────────
@@ -3638,7 +3636,7 @@ function erPopulateShowSel(){
   var sel=document.getElementById('erShowSel'); if(!sel)return;
   var current=sel.value;
   // Build options from jobs array + fixed defaults
-  var shows=['Morning Live (ABC)'];
+  var shows=[];
   if(typeof jobs!=='undefined') jobs.forEach(function(j){ if(j.name&&shows.indexOf(j.name)<0) shows.push(j.name); });
   sel.innerHTML=shows.map(function(s){return '<option value="'+s+'"'+(s===current?' selected':'')+'>'+s+'</option>';}).join('');
 }
@@ -3655,7 +3653,7 @@ function erHistPopulateFilter(){
   var cur=sel.value;
   var shows=[''];
   if(typeof jobs!=='undefined') jobs.forEach(function(j){if(j.name&&shows.indexOf(j.name)<0)shows.push(j.name);});
-  shows.push('Morning Live (ABC)','Morning Live');
+  // shows already built from jobs array above
   shows=shows.filter(function(v,i,a){return a.indexOf(v)===i;});
   sel.innerHTML=shows.map(function(s){return '<option value="'+s+'"'+(s===cur?' selected':'')+'>'+(s||'All Shows')+'</option>';}).join('');
 }
@@ -3671,14 +3669,11 @@ async function erHistLoadMore(){
   await erHistFetch();
 }
 async function erHistFetch(){
-  var filter=document.getElementById('erHistShowFilter');
-  var show=filter?filter.value:'';
   var el=document.getElementById('erHistList');
   var moreBtn=document.getElementById('erHistMore');
   var st=document.getElementById('erHistStatus');
   try{
     var url=_ER_SB_URL+'/rest/v1/engineering_reports?select=*&order=show_date.desc,submitted_at.desc&limit='+(_erHistPageSize+1)+'&offset='+_erHistOffset;
-    if(show) url+='&show_name=eq.'+encodeURIComponent(show);
     var r=await fetch(url,{headers:_ER_SB_HDR});
     var rows=await r.json();
     if(!Array.isArray(rows)) rows=[];
@@ -3689,7 +3684,7 @@ async function erHistFetch(){
     if(moreBtn) moreBtn.style.display=hasMore?'':'none';
     if(st) st.textContent=_erHistAll.length+' report'+(+_erHistAll.length===1?'':'s');
     el.innerHTML=_erHistAll.length?_erHistAll.map(function(rep,idx){return erHistRenderRow(rep,idx);}).join('')
-      :'<div style="padding:20px;font-size:13px;color:var(--muted)">No reports found.</div>';
+      :'<div style="padding:20px;font-size:13px;color:var(--muted)">No reports yet. Submit your first report above.</div>';
   }catch(e){
     if(el)el.innerHTML='<div style="padding:20px;font-size:13px;color:var(--muted)">Could not load reports.</div>';
   }
@@ -3726,6 +3721,32 @@ function erHistRenderRow(rep,idx){
     +'</div>';
 }
 // ── ER CALENDAR — Morning Live report browser ─────────────────────────────────
+var _erSearchTimer=null;
+function erSearchReports(q){
+  clearTimeout(_erSearchTimer);
+  _erSearchTimer=setTimeout(function(){
+    var el=document.getElementById('erHistList');
+    var st=document.getElementById('erHistStatus');
+    if(!q||!q.trim()){
+      // Reset to full list
+      if(el) el.innerHTML=_erHistAll.length?_erHistAll.map(function(rep,idx){return erHistRenderRow(rep,idx);}).join(''):'<div style="padding:20px;font-size:13px;color:var(--muted)">No reports yet.</div>';
+      if(st) st.textContent=_erHistAll.length+' report'+(_erHistAll.length===1?'':'s');
+      return;
+    }
+    var lq=q.toLowerCase();
+    var filtered=_erHistAll.filter(function(r){
+      return (r.show_date&&r.show_date.includes(lq))
+        ||(r.versa_tech_manager&&r.versa_tech_manager.toLowerCase().includes(lq))
+        ||(r.bbc_tech_manager&&r.bbc_tech_manager.toLowerCase().includes(lq))
+        ||(r.summary_text&&r.summary_text.toLowerCase().includes(lq))
+        ||(r.urgent_details&&r.urgent_details.toLowerCase().includes(lq))
+        ||(r.tagged_kit_names&&r.tagged_kit_names.join(' ').toLowerCase().includes(lq))
+        ||(r.show_name&&r.show_name.toLowerCase().includes(lq));
+    });
+    if(el) el.innerHTML=filtered.length?filtered.map(function(rep,idx){return erHistRenderRow(rep,idx);}).join(''):'<div style="padding:20px;font-size:13px;color:var(--muted)">No reports match your search.</div>';
+    if(st) st.textContent=filtered.length+' match'+(filtered.length===1?'':'es');
+  },250);
+}
 var _erCalYr = null, _erCalMo = null;
 
 function erCalRender(yr, mo) {
@@ -11554,11 +11575,13 @@ function erReset(){
   erSetDateToday();erInitCatBtns();erRenderKit();erUpdateStatus();
 }
 function erInitPage(){
-  // Update title to reflect the currently selected show
+  // Update title and nav label to reflect the currently selected show
   var sel=document.getElementById('erShowSel');
-  var showName=sel?sel.value:'Morning Live (ABC)';
+  var showName=sel?sel.value:'Morning Live';
   var title=document.getElementById('erFormTitle');
   if(title) title.textContent=showName+' \u00b7 Engineering Report';
+  var navLabel=document.getElementById('erNavLabel');
+  if(navLabel) navLabel.textContent=showName;
   erSetDateToday();erSetSummary('ntr');window._erCatFilter='';erInitCatBtns();erRenderKit();erUpdateStatus();
   setTimeout(erLoadKit,100);
 }
