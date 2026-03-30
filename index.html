@@ -3783,7 +3783,7 @@ function erCalRender(yr, mo) {
     var isToday=ds===todayStr;
     var rep=_engReportCache[ds];
     var hasRep=rep!=null;
-    var bg,border,col,cursor,click='';
+    var bg,border,col,cursor;
     if(isWknd){bg='transparent';border='1px solid #1a1a1a';col='#252525';cursor='default';}
     else if(isFuture){bg='#111';border='1px dashed #2a2a2a';col='#333';cursor='default';}
     else if(hasRep){
@@ -3791,41 +3791,37 @@ function erCalRender(yr, mo) {
       bg=isUrgent?'rgba(200,60,60,.18)':'rgba(232,184,75,.12)';
       border='1px solid '+(isUrgent?'#c04040':'#e8b84b');
       col='var(--white)';cursor='pointer';
-      click='onclick="erCalOpenDay(\''+ds+'\',this)"';
     } else {
       bg='#1a1a1a';border='1px solid var(--border)';col='var(--subtle)';cursor='pointer';
-      click='onclick="erCalOpenDay(\''+ds+'\',this)"';
     }
     var ring=isToday?'outline:2px solid var(--accent);outline-offset:1px;':'';
     var dot=hasRep?'<div style="width:5px;height:5px;border-radius:50%;background:'+(rep&&rep.urgent_action==='Yes'?'#e05555':'#e8b84b')+';margin:2px auto 0"></div>':'';
-    h+='<div '+click+' style="background:'+bg+';border:'+border+';border-radius:6px;padding:6px 4px 4px;text-align:center;cursor:'+cursor+';'+ring+'">'
-      +'<div style="font-size:13px;font-weight:700;color:'+col+'">'+d+'</div>'+dot+'</div>';
+    var clickable=(!isWknd&&!isFuture)?'data-date="'+ds+'"':'';
+    h+='<div '+clickable+' style="background:'+bg+';border:'+border+';border-radius:6px;padding:6px 4px 4px;text-align:center;cursor:'+cursor+';'+ring+'">'      +'<div style="font-size:13px;font-weight:700;color:'+col+'">'+d+'</div>'+dot+'</div>';
   }
   h+='</div>';
 
   // Legend
-  h+='<div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:12px">'
-    +'<div style="display:flex;align-items:center;gap:5px"><div style="width:10px;height:10px;border-radius:2px;background:var(--near-black);border:1px solid var(--border)"></div><span style="font-size:11px;color:var(--muted)">No report</span></div>'
-    +'<div style="display:flex;align-items:center;gap:5px"><div style="width:10px;height:10px;border-radius:2px;background:rgba(232,184,75,.12);border:1px solid #e8b84b"></div><span style="font-size:11px;color:var(--muted)">Report filed</span></div>'
-    +'<div style="display:flex;align-items:center;gap:5px"><div style="width:10px;height:10px;border-radius:2px;background:rgba(200,60,60,.18);border:1px solid #c04040"></div><span style="font-size:11px;color:var(--muted)">Urgent action</span></div>'
-    +'</div>';
+  h+='<div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:12px">'    +'<div style="display:flex;align-items:center;gap:5px"><div style="width:10px;height:10px;border-radius:2px;background:var(--near-black);border:1px solid var(--border)"></div><span style="font-size:11px;color:var(--muted)">No report</span></div>'    +'<div style="display:flex;align-items:center;gap:5px"><div style="width:10px;height:10px;border-radius:2px;background:rgba(232,184,75,.12);border:1px solid #e8b84b"></div><span style="font-size:11px;color:var(--muted)">Report filed</span></div>'    +'<div style="display:flex;align-items:center;gap:5px"><div style="width:10px;height:10px;border-radius:2px;background:rgba(200,60,60,.18);border:1px solid #c04040"></div><span style="font-size:11px;color:var(--muted)">Urgent action</span></div>'    +'</div>';
 
   wrap.innerHTML=h;
+
+  // Event delegation — one listener on wrap catches all day clicks reliably (no inline onclick)
+  wrap.addEventListener('click', function(e){
+    var cell=e.target.closest('[data-date]');
+    if(!cell) return;
+    wrap.querySelectorAll('[data-date]').forEach(function(c){ c.style.outline=''; c.style.outlineOffset=''; });
+    cell.style.outline='2px solid var(--accent)';
+    cell.style.outlineOffset='2px';
+    erCalOpenDay(cell.getAttribute('data-date'));
+  });
 
   // Fetch all reports for this month in background then re-render
   _fetchEngReportsForMonth(yr,mo).then(function(){ erCalRender(yr,mo); });
 }
 
-function erCalNav(yrmo) {
-  var p=yrmo.split('-'); erCalRender(parseInt(p[0]),parseInt(p[1])-1);
-  document.getElementById('erCalReport').innerHTML='';
-}
 
-function erCalOpenDay(dateStr, el) {
-  // Highlight selected cell
-  document.querySelectorAll('#erCalWrap [onclick]').forEach(function(c){ c.style.outline=''; c.style.outlineOffset=''; });
-  // Highlight clicked cell
-  if(el){ el.style.outline='2px solid var(--accent)'; el.style.outlineOffset='2px'; }
+function erCalOpenDay(dateStr) {
 
   var box=document.getElementById('erCalReport');
   if(!box) return;
@@ -3840,7 +3836,7 @@ function erCalOpenDay(dateStr, el) {
     // Try to fetch
     box.innerHTML='<div style="text-align:center;color:var(--muted);font-size:13px;padding:20px">Loading...</div>';
     _fetchEngReport(dateStr).then(function(r){
-      if(r) erCalOpenDay(dateStr, el);
+      if(r) erCalOpenDay(dateStr);
       else box.innerHTML='<div style="background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:18px 20px;text-align:center;color:var(--muted);font-size:13px">No report filed for '+niceDate+'</div>';
     });
     return;
