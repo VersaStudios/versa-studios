@@ -8,10 +8,10 @@
 <style>
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-.app{display:flex;height:100vh;background:#0a0a0a;color:#f2f2f2}
+.app{display:flex;height:100vh;background:var(--black);color:var(--white)}
 :root{--black:#0a0a0a;--near-black:#111;--dark:#1c1c1c;--border:#2e2e2e;--border-l:#3a3a3a;--muted:#aaa;--subtle:#ccc;--white:#f2f2f2;--pure:#fff;--accent:#4a9eff;--font:'Barlow',sans-serif;--cond:'Barlow Condensed',sans-serif}
-@media(prefers-color-scheme:light){:root{--black:#0a0a0a;--near-black:#111;--dark:#1c1c1c;--border:#2e2e2e;--white:#f2f2f2;--pure:#fff;--muted:#aaa}}
-html,body{height:100%;background:#0a0a0a;color:#f2f2f2;font-family:var(--font);font-size:17px;overflow:hidden;-webkit-font-smoothing:antialiased}
+html[data-theme="light"]{--black:#e9ebee;--near-black:#f4f5f7;--dark:#e2e4e8;--border:#cdd0d6;--border-l:#b0b5bf;--muted:#5a6170;--subtle:#2e3340;--white:#1a1d23;--pure:#0a0c0f;--accent:#1a6fd4}
+html,body{height:100%;background:var(--black);color:var(--white);font-family:var(--font);font-size:17px;overflow:hidden;-webkit-font-smoothing:antialiased}
 .app{display:flex;height:100vh;overflow:hidden}
 .sb{width:216px;background:var(--near-black);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
 .sb-logo{padding:20px 18px 16px;border-bottom:1px solid var(--border)}
@@ -34,7 +34,12 @@ html,body{height:100%;background:#0a0a0a;color:#f2f2f2;font-family:var(--font);f
 .u-av{width:28px;height:28px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--cond);font-size:10px;font-weight:800;color:var(--white);flex-shrink:0}
 .u-name{font-size:17px;font-family:var(--cond);font-weight:700;color:var(--white)}
 .u-role{font-size:9px;font-family:var(--cond);font-weight:600;color:var(--muted);letter-spacing:.12em;text-transform:uppercase}
-.signout{background:none;border:none;cursor:pointer;color:var(--muted);padding:3px;transition:color .13s;margin-left:auto;display:flex}
+html[data-theme="light"] .sb-logo img{filter:invert(1) brightness(0)}
+.theme-btn{background:none;border:none;cursor:pointer;color:var(--muted);padding:6px;border-radius:4px;display:flex;align-items:center;justify-content:center;transition:all .13s;flex-shrink:0}
+.theme-btn:hover{color:var(--white);background:rgba(128,128,128,.15)}
+.theme-btn::before{content:'';display:block;width:16px;height:16px;background:currentColor;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;-webkit-mask-size:contain;mask-size:contain}
+html:not([data-theme="light"]) .theme-btn::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Ccircle cx='12' cy='12' r='5'/%3E%3Cpath d='M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Ccircle cx='12' cy='12' r='5'/%3E%3Cpath d='M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42'/%3E%3C/svg%3E")}
+html[data-theme="light"] .theme-btn::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Cpath d='M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Cpath d='M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z'/%3E%3C/svg%3E")}
 .signout:hover{color:var(--white)}
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden}
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:0 22px;height:56px;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--near-black)}
@@ -42,7 +47,7 @@ html,body{height:100%;background:#0a0a0a;color:#f2f2f2;font-family:var(--font);f
 .search-wrap{display:flex;align-items:center;gap:7px;background:var(--dark);border:1px solid var(--border);border-radius:4px;padding:7px 10px;width:190px}
 .search-wrap input{background:none;border:none;outline:none;color:var(--white);font-family:var(--font);font-size:17px;width:100%}
 .search-wrap input::placeholder{color:var(--muted)}
-.content{flex:1;overflow-y:auto;padding:22px;background:#0a0a0a}
+.content{flex:1;overflow-y:auto;padding:22px;background:var(--black)}
 .stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:5px;overflow:hidden;margin-bottom:20px}
 .stat-card{background:var(--near-black);padding:18px 20px}
 .stat-lbl{font-family:var(--cond);font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
@@ -418,9 +423,9 @@ html,body{height:100%;background:#0a0a0a;color:#f2f2f2;font-family:var(--font);f
 
 
 /* ── JOB DETAIL TABS ─────────────────────────────────────────────────────── */
-.jd-tab{font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;padding:8px 14px;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap;transition:all .12s}
-.jd-tab:hover{color:var(--white)}
-.jd-tab.active{color:var(--pure);border-bottom-color:var(--pure)}
+.jd-tab{font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;padding:8px 14px;cursor:pointer;color:rgba(255,255,255,.75);white-space:nowrap;transition:all .12s;border-radius:5px;border:2px solid transparent;opacity:.7}
+.jd-tab:hover{opacity:1;color:#fff}
+.jd-tab.active{opacity:1;color:#fff;border-color:rgba(255,255,255,.9);box-shadow:0 0 0 1px rgba(255,255,255,.2)}
 
 
 
@@ -552,9 +557,9 @@ body.ops-sa .main-content{margin-left:0!important;}
 </div>
 <div class="mob-ov"  id="mobOv" onclick="toggleMobMenu()"></div>
 <div class="toast" id="toast"></div>
-<div class="ov" id="drwOv" onclick="closeDrawer()" style="display:none"></div>
+<div class="ov" id="drwOv" onclick="closeDrawer()"></div>
 
-<div id="kitDrawer" style="transform:translateY(100%)">
+<div id="kitDrawer">
   <div class="drw-hdr">
     <div class="drw-title" id="drwName">Item</div>
     <div style="display:flex;gap:6px;align-items:center">
@@ -913,20 +918,19 @@ body.ops-sa .main-content{margin-left:0!important;}
       <div class="nav-item" data-pg="info" onclick="nav('info',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 7v5M8 5v.5"/></svg>Studio Info</div>
     </nav>
     <div class="sb-foot" style="position:relative">
-      <div id="acctPop" class="acct-pop">
-        <div class="acct-pop-hdr">
-          <div class="acct-pop-nm" id="acctPopName">Andrew Rowell</div>
-          <div class="acct-pop-em" id="acctPopEmail"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ff9e919b8d9a88d18d90889a9393bf899a8d8c9e8c8b8a9b96908cd19c9092">[email&#160;protected]</a></div>
+      <div style="display:flex;align-items:center;gap:9px;padding-bottom:8px;border-bottom:1px solid var(--border);margin-bottom:8px">
+        <div class="u-av" id="sbAv">AR</div>
+        <div style="flex:1;min-width:0">
+          <div class="u-name" id="sbName">Andrew Rowell</div>
+          <div class="u-role" id="sbRole">Admin</div>
         </div>
-        <button class="acct-pop-btn" onclick="signOut()">
+      </div>
+      <div style="padding-bottom:2px">
+        <div class="acct-pop-em" id="acctPopEmail" style="font-size:11px;color:var(--muted);margin-bottom:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div>
+        <button class="acct-pop-btn" onclick="signOut()" style="display:flex;align-items:center;gap:7px;width:100%;background:none;border:1px solid var(--border);color:var(--muted);border-radius:4px;padding:7px 10px;cursor:pointer;font-family:var(--cond);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;transition:all .13s">
           <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 3h3a1 1 0 011 1v8a1 1 0 01-1 1h-3M7 11l3-3-3-3M10 8H2"/></svg>
           Sign Out
         </button>
-      </div>
-      <div class="u-chip" onclick="toggleAcctPop()">
-        <div class="u-av" id="sbAv">AR</div>
-        <div style="flex:1;min-width:0"><div class="u-name" id="sbName">Andrew Rowell</div><div class="u-role" id="sbRole">Admin</div></div>
-        <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" style="color:var(--muted);flex-shrink:0"><path d="M2 8l4-4 4 4"/></svg>
       </div>
     </div>
   </div>
@@ -939,6 +943,7 @@ body.ops-sa .main-content{margin-left:0!important;}
       </div>
       <div style="display:flex;align-items:center;gap:7px">
         <div class="search-wrap"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><path d="M11 11l3 3"/></svg><input type="text" placeholder="Search kit..." id="gSearch" oninput="doSearch(this.value)"/></div>
+        <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle light/dark mode" aria-label="Toggle theme"></button>
         <button class="notif-btn" id="notifBtn" onclick="toggleNotifs()" title="Notifications">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2a5 5 0 015 5v3l1 2H2l1-2V7a5 5 0 015-5z"/><path d="M6.5 13a1.5 1.5 0 003 0"/></svg>
           <div class="notif-badge" id="notifBadge"></div>
@@ -1576,8 +1581,17 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
           </div>
         </div>
         <div id="admContent-dv" style="display:none">
+          <div class="adm-sec full" style="background:var(--panel);border-radius:6px;border:1px solid var(--border);margin-bottom:14px">
+            <div class="adm-sec-hdr"><div class="adm-sec-title">Suppliers</div><button class="btn-add" onclick="openAddSupp()" style="margin-left:0">+ Add Supplier</button></div>
+            <div style="padding:4px 0"><div id="suppList"></div></div>
+          </div>
+          <div class="adm-sec full" style="background:var(--panel);border-radius:6px;border:1px solid var(--border);margin-bottom:14px">
+            <div class="adm-sec-hdr"><div class="adm-sec-title">Hired Kit Catalogue</div><div style="display:flex;gap:8px"><button class="btn-sec" onclick="openHiredImport()" style="font-size:13px;padding:5px 12px">↑ Import CSV</button><button class="btn-add" onclick="openAddHiredItem()" style="margin-left:0">+ Add Item</button></div></div>
+            <div style="padding:10px 17px;font-size:13px;color:var(--muted);margin-bottom:4px">Items listed here appear in the Camera Spec "pick from hired" picker and the Hired Catalogue tab on the Kit page.</div>
+            <div id="dvHiredList" style="padding:0 17px 12px"></div>
+          </div>
           <div class="adm-sec full" style="background:var(--panel);border-radius:6px;border:1px solid var(--border)">
-            <div class="adm-sec-hdr"><div class="adm-sec-title">Camera Plan — Data Validation Lists</div></div>
+            <div class="adm-sec-hdr"><div class="adm-sec-title">Camera Plan — Dropdown Options</div></div>
             <div style="padding:10px 17px;font-size:13px;color:var(--muted)">Manage the dropdown options used in Camera Spec. Changes apply immediately to all jobs.</div>
             <div id="dvAdminWrap" style="padding:0 17px 16px"></div>
           </div>
@@ -1804,6 +1818,15 @@ async function doLogin() {
   }
 }
 
+function toggleTheme(){
+  var html=document.documentElement,isLight=html.getAttribute('data-theme')==='light';
+  html.setAttribute('data-theme',isLight?'dark':'light');
+  localStorage.setItem('vsTheme',isLight?'dark':'light');
+}
+(function(){
+  var t=localStorage.getItem('vsTheme')||'dark';
+  document.documentElement.setAttribute('data-theme',t);
+})();
 function toggleAcctPop() {
   var pop = document.getElementById('acctPop');
   if(!pop) return;
@@ -3535,7 +3558,7 @@ function saveHiredItem(){
   };
   if(id){var idx=hiredCatalogue.findIndex(function(x){return x.id===id;});if(idx>=0)hiredCatalogue[idx]=entry;}
   else hiredCatalogue.push(entry);
-  saveData();cm('mHiredItem');renderHiredCatalogue();
+  saveData();cm('mHiredItem');renderHiredCatalogue();renderDvHired();
 }
 
 function showKitTab(tab){
@@ -3642,7 +3665,7 @@ function erCalRender(yr, mo) {
 
   // Legend
   h+='<div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:12px">'
-    +'<div style="display:flex;align-items:center;gap:5px"><div style="width:10px;height:10px;border-radius:2px;background:#1a1a1a;border:1px solid var(--border)"></div><span style="font-size:11px;color:var(--muted)">No report</span></div>'
+    +'<div style="display:flex;align-items:center;gap:5px"><div style="width:10px;height:10px;border-radius:2px;background:var(--near-black);border:1px solid var(--border)"></div><span style="font-size:11px;color:var(--muted)">No report</span></div>'
     +'<div style="display:flex;align-items:center;gap:5px"><div style="width:10px;height:10px;border-radius:2px;background:rgba(232,184,75,.12);border:1px solid #e8b84b"></div><span style="font-size:11px;color:var(--muted)">Report filed</span></div>'
     +'<div style="display:flex;align-items:center;gap:5px"><div style="width:10px;height:10px;border-radius:2px;background:rgba(200,60,60,.18);border:1px solid #c04040"></div><span style="font-size:11px;color:var(--muted)">Urgent action</span></div>'
     +'</div>';
@@ -3836,7 +3859,7 @@ function renderEngLogTab(j){
 
   // Legend
   var legend='<div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px">'
-    +'<div style="display:flex;align-items:center;gap:5px"><div style="width:12px;height:12px;border-radius:3px;background:#1a1a1a;border:1px solid var(--border)"></div><span style="font-size:12px;color:var(--muted)">No report</span></div>'
+    +'<div style="display:flex;align-items:center;gap:5px"><div style="width:12px;height:12px;border-radius:3px;background:var(--near-black);border:1px solid var(--border)"></div><span style="font-size:12px;color:var(--muted)">No report</span></div>'
     +'<div style="display:flex;align-items:center;gap:5px"><div style="width:12px;height:12px;border-radius:3px;background:rgba(74,158,255,.15);border:1px solid #4a9eff"></div><span style="font-size:12px;color:var(--muted)">Internal notes</span></div>'
     +'<div style="display:flex;align-items:center;gap:5px"><div style="width:12px;height:12px;border-radius:3px;background:rgba(232,184,75,.12);border:1px solid #e8b84b"></div><span style="font-size:12px;color:var(--muted)">Report submitted</span></div>'
     +'</div>';
@@ -3852,12 +3875,12 @@ function renderEngLogTab(j){
 
 function engLogNav(monthStr, jid){
   _engLogMonth = monthStr;
-  var j=jobs.find(function(x){return x.id===jid;});
+  var j=jobs.find(function(x){return x.id==jid;});
   if(j) renderJobDet(j);
 }
 
 function openEngLogDay(dateStr, jid){
-  var j=jobs.find(function(x){return x.id===jid;});
+  var j=jobs.find(function(x){return x.id==jid;});
   if(!j) return;
   if(!j.engLog) j.engLog={};
   if(!j.engLog[dateStr]) j.engLog[dateStr]={notes:'',faults:'',attendees:'',txNum:'',issues:''};
@@ -3932,7 +3955,7 @@ function openEngLogDay(dateStr, jid){
 }
 
 function saveEngLogDay(dateStr, jid){
-  var j=jobs.find(function(x){return x.id===jid;});
+  var j=jobs.find(function(x){return x.id==jid;});
   if(!j) return;
   if(!j.engLog) j.engLog={};
   j.engLog[dateStr]={
@@ -3990,7 +4013,7 @@ function renderImproveTab(j){
   if(!j.improvements) j.improvements=[];
   var rows = j.improvements.length ? j.improvements.slice().reverse().map(function(imp,ri){
     var i = j.improvements.length-1-ri;
-    return '<div style="background:#1a1a1a;border:1px solid var(--border);border-left:3px solid #f59e0b;border-radius:6px;padding:12px 14px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start">'
+    return '<div style="background:var(--near-black);border:1px solid var(--border);border-left:3px solid #f59e0b;border-radius:6px;padding:12px 14px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start">'
       +'<div style="flex:1;min-width:0">'
       +'<div style="font-size:14px;color:var(--white);line-height:1.5;margin-bottom:6px">'+escHtml(imp.note)+'</div>'
       +'<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">'
@@ -4026,7 +4049,7 @@ function renderImproveTab(j){
 }
 
 function addImprovement(jid){
-  var j=jobs.find(function(x){return x.id===jid;});
+  var j=jobs.find(function(x){return x.id==jid;});
   if(!j) return;
   var note=document.getElementById('impNote').value.trim();
   if(!note) return;
@@ -4041,7 +4064,7 @@ function addImprovement(jid){
 }
 
 function deleteImprovement(jid, idx){
-  var j=jobs.find(function(x){return x.id===jid;});
+  var j=jobs.find(function(x){return x.id==jid;});
   if(!j||!j.improvements) return;
   j.improvements.splice(idx,1);
   saveData();
@@ -4093,7 +4116,7 @@ function renderRepairs(){
     var supp=r.suppId?suppliers.find(function(s){return s.id===r.suppId;}):null;
     var col=r.status==='Repaired'?'#3dbf7a':'#f59e0b';
     var bg=r.status==='Repaired'?'rgba(61,191,122,.12)':'rgba(245,158,11,.12)';
-    return '<div style="background:#1a1a1a;border:1px solid var(--border);border-left:3px solid '+col+';border-radius:8px;padding:14px 16px;margin-bottom:10px">'
+    return '<div style="background:var(--near-black);border:1px solid var(--border);border-left:3px solid '+col+';border-radius:8px;padding:14px 16px;margin-bottom:10px">'
       +'<div style="display:flex;align-items:flex-start;gap:10px"><div style="flex:1;min-width:0">'
       +'<div style="font-size:15px;font-weight:700;color:var(--white);margin-bottom:3px">'+r.item+'</div>'
       +(r.fault?'<div style="font-size:12px;color:var(--muted);margin-bottom:5px">'+r.fault+'</div>':'')
@@ -4133,8 +4156,8 @@ function kitRenderIcons(items){
     var dot=(getAllocatedKitMap().has(k.id)?'#f59e0b':k.status==='Available'?'#3dbf7a':k.status==='In Repair'?'#e63946':'#6b7280');
     var thumb=(k.photos&&k.photos.length)
       ?'<img src="'+k.photos[0]+'" style="width:100%;height:70px;object-fit:cover;border-radius:6px 6px 0 0;display:block">'
-      :'<div style="width:100%;height:70px;background:#222;border-radius:6px 6px 0 0;display:flex;align-items:center;justify-content:center"><span style="font-size:22px;opacity:.3">&#128247;</span></div>';
-    return '<div onclick="openDrawer('+k.id+')" style="background:#1a1a1a;border:1px solid var(--border);border-top:2px solid '+col+';border-radius:8px;overflow:hidden;cursor:pointer;position:relative">'
+      :'<div style="width:100%;height:70px;background:var(--dark);border-radius:6px 6px 0 0;display:flex;align-items:center;justify-content:center"><span style="font-size:22px;opacity:.3">&#128247;</span></div>';
+    return '<div onclick="openDrawer('+k.id+')" style="background:var(--near-black);border:1px solid var(--border);border-top:2px solid '+col+';border-radius:8px;overflow:hidden;cursor:pointer;position:relative">'
       +'<div style="position:absolute;top:5px;right:5px;width:8px;height:8px;border-radius:50%;background:'+dot+'"></div>'
       +thumb+'<div style="padding:6px 8px"><div style="font-size:11px;font-weight:700;color:var(--white);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+k.name+'</div>'
       +'<div style="font-size:10px;color:var(--muted);margin-top:1px">'+k.tag+'</div></div></div>';
@@ -4146,7 +4169,7 @@ function toggleDrawerEdit(){
   if(btn){btn.textContent=window._drawerEdit?'Done':'Edit';
     btn.style.color=window._drawerEdit?'#3dbf7a':'#4a9eff';
     btn.style.borderColor=window._drawerEdit?'rgba(61,191,122,.3)':'rgba(74,158,255,.3)';}
-  var k=kit.find(function(x){return x.id===currentKid;});if(k)renderDet(k);
+  var k=kit.find(function(x){return x.id==currentKid;});if(k)renderDet(k);
 }
 function updateKitField(kid,field,val){
   var k=kit.find(function(x){return x.id===kid;});if(k){k[field]=val;saveData();}
@@ -4521,13 +4544,44 @@ function renderDash() {
   }
 
   const actEl = document.getElementById('dActivity');
-  if(actEl) actEl.innerHTML = activity.slice(0,6).map(a=>
-    '<div style="padding:11px 17px;border-bottom:1px solid var(--border)">'
-    +'<div style="font-size:15px;color:var(--white)">'+a.text+'</div>'
-    +'<div style="font-size:12px;color:var(--muted);font-family:var(--cond);margin-top:2px">'+a.time+'</div>'
-    +'</div>'
-  ).join('');
+  if(actEl){
+    var engEntries=[];
+    jobs.forEach(function(j){
+      if(!j.engLog)return;
+      Object.keys(j.engLog).forEach(function(dateStr){
+        var e=j.engLog[dateStr];
+        if(!e)return;
+        var hasContent=(e.notes&&e.notes.trim())||(e.faults&&e.faults.trim())||(e.issues&&e.issues.trim());
+        if(!hasContent)return;
+        engEntries.push({date:dateStr,job:j.name,notes:e.notes||'',faults:e.faults||'',issues:e.issues||''});
+      });
+    });
+    engEntries.sort(function(a,b){return b.date.localeCompare(a.date);});
+    var recent=engEntries.slice(0,8);
+    if(recent.length){
+      actEl.innerHTML=recent.map(function(e){
+        var today=new Date().toISOString().slice(0,10);
+        var yesterday=new Date(Date.now()-86400000).toISOString().slice(0,10);
+        var label=e.date===today?'Today':e.date===yesterday?'Yesterday':fmtD(e.date);
+        var preview=(e.faults.trim()||e.issues.trim()||e.notes.trim()).slice(0,80);
+        var hasIssue=e.faults.trim()||e.issues.trim();
+        var dot=hasIssue
+          ?'<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#e63946;margin-right:7px;flex-shrink:0;margin-top:4px"></span>'
+          :'<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#3dbf7a;margin-right:7px;flex-shrink:0;margin-top:4px"></span>';
+        return '<div style="padding:10px 17px;border-bottom:1px solid var(--border);cursor:pointer" onclick="nav(\'engreport\',document.querySelector(\'[data-pg=engreport]\'))">'
+          +'<div style="display:flex;align-items:flex-start">'
+          +dot
+          +'<div style="flex:1;min-width:0">'
+          +'<div style="font-size:12px;font-weight:800;font-family:var(--cond);letter-spacing:.06em;color:var(--muted);text-transform:uppercase;margin-bottom:2px">'+e.job+' &middot; '+label+'</div>'
+          +'<div style="font-size:13px;color:var(--white);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+preview+(preview.length>=80?'&#8230;':'')+'</div>'
+          +'</div></div></div>';
+      }).join('');
+    } else {
+      actEl.innerHTML='<div style="padding:20px 17px;font-size:13px;color:var(--muted)">No engineering log entries yet. Open a job and use the Eng Log tab to add entries.</div>';
+    }
+  }
 }
+
 
 
 // ── KIT LIST ──────────────────────────────────────────────────────────────────
@@ -4792,7 +4846,7 @@ function kitRenderLanding() {
 function kitOpenByJob(jid) {
   document.getElementById('kitLanding').style.display='none';
   document.getElementById('kitListView').style.display='';
-  var j=jobs.find(function(x){return x.id===jid;});
+  var j=jobs.find(function(x){return x.id==jid;});
   document.getElementById('kitViewTitle').textContent=j?j.name:'Job';
   // Show only kit allocated to this job
   var fCat=document.getElementById('fCat'),fLoc=document.getElementById('fLoc'),fStat=document.getElementById('fStat');
@@ -4803,7 +4857,7 @@ function kitOpenByJob(jid) {
 }
 var _kitJobFilter=null;
 function renderKitByJob(jid) {
-  var j=jobs.find(function(x){return x.id===jid;}); if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;}); if(!j)return;
   var el=document.getElementById('kitBody'); if(!el)return;
   // Build sections/full list toggle
   var viewMode=_kitJobView||'sections';
@@ -5017,7 +5071,7 @@ function kitLandingSearch(q) {
 
 // ── KIT ALLOCATION PICKER ─────────────────────────────────────────────────────
 function kitShowAllocPicker(id, ev) {
-  var k=kit.find(function(x){return x.id===id;}); if(!k)return;
+  var k=kit.find(function(x){return x.id==id;}); if(!k)return;
   ev.stopPropagation();
   var existing=document.getElementById('kitAllocPicker');
   if(existing){existing.remove(); if(+existing.dataset.kid===id)return;}
@@ -5084,7 +5138,7 @@ function kitShowAllocPicker(id, ev) {
   },50);
 }
 function kitInlineEdit(id, field, ev) {
-  const k = kit.find(x=>x.id===id); if(!k) return;
+  const k = kit.find(x=>x.id==id); if(!k) return;
   // Remove any existing picker
   const existing = document.getElementById('kitInlinePicker');
   if(existing) { existing.remove(); if(existing.dataset.kid==id && existing.dataset.field==field) return; }
@@ -5110,7 +5164,7 @@ function kitInlineEdit(id, field, ev) {
   picker.style.left = Math.min(rect.left, window.innerWidth-170)+'px';
 }
 function kitInlineSet(id, field, val) {
-  const k = kit.find(x=>x.id===id); if(!k) return;
+  const k = kit.find(x=>x.id==id); if(!k) return;
   const picker = document.getElementById('kitInlinePicker');
   if(picker) picker.remove();
   if(field==='loc') { k.loc=val; toast('Location updated'); }
@@ -5192,7 +5246,7 @@ function renderKit() {
     const col=CAT_COLORS[k.cat]||'#6b7280';
     const av=kitAvailInfo(k);
     const dot=k.status==='Available'?'#3dbf7a':k.status==='In Use'?'#f59e0b':k.status==='In Repair'?'#e63946':'#6b7280';
-    return '<div onclick="openDrawer('+k.id+')" style="background:#1a1a1a;border:1px solid var(--border);border-left:3px solid '+col+';border-radius:8px;padding:11px 14px;margin-bottom:7px;cursor:pointer;display:flex;align-items:center;gap:12px">'
+    return '<div onclick="openDrawer('+k.id+')" style="background:var(--near-black);border:1px solid var(--border);border-left:3px solid '+col+';border-radius:8px;padding:11px 14px;margin-bottom:7px;cursor:pointer;display:flex;align-items:center;gap:12px">'
       +'<div style="flex:1;min-width:0">'
       +'<div style="font-size:14px;font-weight:700;color:var(--white);margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+k.name+'</div>'
       +'<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">'
@@ -5235,7 +5289,7 @@ function renderGrouped(filtered, el) {
     ].filter(Boolean).join('<span style="color:var(--border);margin:0 4px">|</span>');
     const gid='grp-'+g.key.replace(/[^a-z0-9]/gi,'_');
     const subtitle=(g.make?g.make+' · ':'')+g.cat+(g.subcat?' / '+g.subcat:'');
-    return '<div style="background:#1a1a1a;border:1px solid var(--border);border-left:3px solid '+col+';border-radius:8px;margin-bottom:7px;overflow:hidden">'
+    return '<div style="background:var(--near-black);border:1px solid var(--border);border-left:3px solid '+col+';border-radius:8px;margin-bottom:7px;overflow:hidden">'
       +'<div onclick="toggleGrp(\''+gid+'\')" style="display:flex;align-items:center;gap:12px;padding:11px 14px;cursor:pointer">'
       +'<div style="flex:1;min-width:0">'
       +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:2px">'
@@ -5296,8 +5350,8 @@ function doSearch(q) {
 
 // ── KIT DRAWER ────────────────────────────────────────────────────────────────
 function openDrawer(id) {
-  currentKid=id; currentDrwTab='det';
-  const k=kit.find(x=>x.id===id); if(!k) return;
+  id=isNaN(+id)?id:+id; currentKid=id; currentDrwTab='det';
+  const k=kit.find(x=>x.id==id); if(!k) return;
   document.getElementById('drwName').textContent=k.name;
   document.getElementById('drwOv').classList.add('open');
   document.getElementById('kitDrawer').classList.add('open');
@@ -5318,7 +5372,7 @@ function switchTab(t) {
     const el=document.getElementById('tab-'+tab);
     if(el) el.classList.toggle('active',t===tab);
   });
-  const k=kit.find(x=>x.id===currentKid); if(!k) return;
+  const k=kit.find(x=>x.id==currentKid); if(!k) return;
   const foot=document.getElementById('drwFoot');
   if(t==='det') { renderDet(k); foot.style.display='flex'; }
   else if(t==='tl') { renderTl(k); foot.style.display='none'; }
@@ -5347,11 +5401,11 @@ function renderDet(k) {
   }
   var photos=k.photos||[];
   var heroHtml=photos.length
-    ?'<div style="position:relative;width:100%;height:180px;background:#111;overflow:hidden;cursor:pointer" onclick="switchTab(\'ph\')">'
+    ?'<div style="position:relative;width:100%;height:180px;background:var(--dark);overflow:hidden;cursor:pointer" onclick="switchTab(\'ph\')">'
       +'<img src="'+photos[0]+'" style="width:100%;height:100%;object-fit:cover">'
       +(photos.length>1?'<span style="position:absolute;bottom:6px;right:8px;background:rgba(0,0,0,.6);color:#fff;font-size:11px;padding:2px 7px;border-radius:10px">+'+(photos.length-1)+' more</span>':'')
       +'</div>'
-    :'<div style="width:100%;height:110px;background:#111;display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--border);cursor:pointer" onclick="switchTab(\'ph\')">'
+    :'<div style="width:100%;height:110px;background:var(--dark);display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--border);cursor:pointer" onclick="switchTab(\'ph\')">'
       +'<span style="font-size:24px;opacity:.3">&#128247;</span><span style="font-size:12px;color:var(--muted);margin-left:8px">Tap to add photo</span></div>';
   var descHtml='<div style="padding:10px 16px;border-bottom:1px solid var(--border)">'
     +'<textarea placeholder="Add a description..." '
@@ -5458,8 +5512,8 @@ function renderKitJobs(k) {
   html+='<div style="margin-top:12px"><div class="dfl" style="font-size:11px;margin-bottom:4px">Allocate to job</div>'+(allocOpts?'<div style="display:flex;gap:6px"><select class="fi" style="font-size:13px;flex:1" id="kitAllocSel_'+k.id+'"><option value="">-- select job --</option>'+allocOpts+'</select><button class="btn-p" style="font-size:13px;padding:4px 12px" onclick="kitAllocate('+k.id+')">Add</button></div>':'<div style="font-size:13px;color:var(--muted)">All active jobs already have this item.</div>')+'</div>';
   el.innerHTML=html;
 }
-function kitAllocate(kid){var sel=document.getElementById('kitAllocSel_'+kid);if(!sel)return;var jid=parseInt(sel.value);if(!jid)return;var j=jobs.find(function(x){return x.id===jid;});if(!j)return;if(!j.prep)j.prep=[];if(!j.prep.find(function(p){return p.kid===kid;}))j.prep.push({kid:kid,done:false,ks:j.start||'',ke:j.end||'',area:'',supplier:'Versa Inventory'});saveData();var k=kit.find(function(x){return x.id===kid;});if(k)renderKitJobs(k);}
-function kitDeallocate(kid,jid){var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.prep)return;j.prep=j.prep.filter(function(p){return p.kid!==kid;});saveData();var k=kit.find(function(x){return x.id===kid;});if(k)renderKitJobs(k);}
+function kitAllocate(kid){var sel=document.getElementById('kitAllocSel_'+kid);if(!sel)return;var jid=parseInt(sel.value);if(!jid)return;var j=jobs.find(function(x){return x.id==jid;});if(!j)return;if(!j.prep)j.prep=[];if(!j.prep.find(function(p){return p.kid===kid;}))j.prep.push({kid:kid,done:false,ks:j.start||'',ke:j.end||'',area:'',supplier:'Versa Inventory'});saveData();var k=kit.find(function(x){return x.id===kid;});if(k)renderKitJobs(k);}
+function kitDeallocate(kid,jid){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.prep)return;j.prep=j.prep.filter(function(p){return p.kid!==kid;});saveData();var k=kit.find(function(x){return x.id===kid;});if(k)renderKitJobs(k);}
 
 
 // ── KIT HISTORY ──────────────────────────────────────────────────────────────
@@ -5502,7 +5556,7 @@ function renderKitHist(k) {
 
 // ── ALLOCATE KIT TO JOB ───────────────────────────────────────────────────────
 function openAllocModal() {
-  const k=kit.find(x=>x.id===currentKid); if(!k) return;
+  const k=kit.find(x=>x.id==currentKid); if(!k) return;
   document.getElementById('allocKitName').textContent=k.name+' ('+k.tag+')';
   const el=document.getElementById('allocJobList');
   el.innerHTML=jobs.map(j=>{
@@ -5520,7 +5574,7 @@ function openAllocModal() {
   om('mAlloc');
 }
 function allocKitToJob(jid,kid) {
-  const j=jobs.find(x=>x.id===jid); if(!j) return;
+  const j=jobs.find(x=>x.id==jid); if(!j) return;
   if(j.prep.some(p=>p.kid===kid)) { toast('Already on this job'); return; }
   j.prep.push({kid,done:false,ks:'',ke:'',area:''});
   const k=kit.find(x=>x.id===kid);
@@ -5531,7 +5585,7 @@ function allocKitToJob(jid,kid) {
 
 // ── DELETE / BIN ──────────────────────────────────────────────────────────────
 function confirmDelKit(id) {
-  const k=kit.find(x=>x.id===id); if(!k) return;
+  const k=kit.find(x=>x.id==id); if(!k) return;
   if(!confirm('Move "'+k.name+'" ('+k.tag+') to the Bin?\n\nYou can restore it within 30 days.')) return;
   if(!k.history) k.history=[];
   k.history.unshift({date:today(),event:'Moved to bin',job:'',studio:'',area:'',by:uname()});
@@ -5597,29 +5651,29 @@ function openAddKit() {
   om('mAddKit');
 }
 function kitSetField(id,field,val){
-  var k=kit.find(function(x){return x.id===id;});if(!k)return;
+  var k=kit.find(function(x){return x.id==id;});if(!k)return;
   k[field]=val;
 }
 function kitAddCableLen(id){
-  var k=kit.find(function(x){return x.id===id;});if(!k)return;
+  var k=kit.find(function(x){return x.id==id;});if(!k)return;
   if(!k.cableLengths)k.cableLengths=[];
   k.cableLengths.push({len:'',note:''});
   renderDet(k);
 }
 function kitRmCableLen(id,li){
-  var k=kit.find(function(x){return x.id===id;});if(!k||!k.cableLengths)return;
+  var k=kit.find(function(x){return x.id==id;});if(!k||!k.cableLengths)return;
   k.cableLengths.splice(li,1);renderDet(k);
 }
 function kitSetCableLen(id,li,field,val){
-  var k=kit.find(function(x){return x.id===id;});if(!k||!k.cableLengths||!k.cableLengths[li])return;
+  var k=kit.find(function(x){return x.id==id;});if(!k||!k.cableLengths||!k.cableLengths[li])return;
   k.cableLengths[li][field]=val;
 }
 
 // ── CABLE FUNCTION ALIASES (renderDet uses these names)
 // updateCableType(id, val) - sets k.cableType
-function updateCableType(id,val){var k=kit.find(function(x){return x.id===id;});if(!k)return;k.cableType=val;}
+function updateCableType(id,val){var k=kit.find(function(x){return x.id==id;});if(!k)return;k.cableType=val;}
 // setHireField(jid, hi, field, val) - alias for renderHireKit inline handlers
-function setHireField(jid,hi,field,val){var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.hireKit||!j.hireKit[hi])return;j.hireKit[hi][field]=val;}
+function setHireField(jid,hi,field,val){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.hireKit||!j.hireKit[hi])return;j.hireKit[hi][field]=val;}
 function addCableLen(id){ kitAddCableLen(id); }
 function removeCableLen(id,li){ kitRmCableLen(id,li); }
 function updateCableLen(id,li,field,val){ kitSetCableLen(id,li,field,val); }
@@ -5657,7 +5711,7 @@ function addKit() {
   cm('mAddKit'); toast('Added: '+name); renderKit(); renderDash();
 }
 function drawerFault() {
-  const k=kit.find(x=>x.id===currentKid); if(!k) return;
+  const k=kit.find(x=>x.id==currentKid); if(!k) return;
   document.getElementById('fItem').value=k.name+' ('+k.tag+')';
   document.getElementById('fReporter').value=uname();
   document.getElementById('fDesc').value='';
@@ -5691,7 +5745,7 @@ function renderMaint() {
     const supp=m.suppId?suppliers.find(s=>s.id===m.suppId):null;
     const techLabel=m.techType==='External'&&supp?supp.name:m.tech||'—';
     const techCol=m.techType==='Internal'?'#4a9eff':'#f59e0b';
-    return '<div style="background:#1a1a1a;border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:8px">'
+    return '<div style="background:var(--near-black);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:8px">'
       +'<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">'
       +'<div style="flex:1;min-width:0">'
       +'<div style="font-size:14px;font-weight:700;color:var(--white);margin-bottom:3px">'+m.item+'</div>'
@@ -5769,7 +5823,7 @@ function saveSupplier() {
   const data={name,phone:document.getElementById('sPhone').value.trim(),email:document.getElementById('sEmail').value.trim(),spec:document.getElementById('sSpec').value.trim(),notes:document.getElementById('sNotes').value.trim()};
   if(editSuppId){Object.assign(suppliers.find(s=>s.id===editSuppId),data);}
   else{suppliers.push({id:nextSid++,...data});}
-  cm('mSupplier'); toast(editSuppId?'Supplier updated':'Supplier added'); renderSupp();
+  saveData(); cm('mSupplier'); toast(editSuppId?'Supplier updated':'Supplier added'); renderSupp();
 }
 function renderSupp() {
   const el=document.getElementById('suppList'); if(!el) return;
@@ -5899,7 +5953,7 @@ function rmSlogTag(kid) {
   slogTags=slogTags.filter(x=>x!==kid);
   const k=kit.find(x=>x.id===kid);
   const list=document.getElementById('slogTagList');
-  list.innerHTML=slogTags.map(id=>{const k2=kit.find(x=>x.id===id);return k2?'<span class="kit-ref-tag" onclick="rmSlogTag('+id+')">'+k2.tag+' ×</span>':'';}).join('');
+  list.innerHTML=slogTags.map(id=>{const k2=kit.find(x=>x.id==id);return k2?'<span class="kit-ref-tag" onclick="rmSlogTag('+id+')">'+k2.tag+' ×</span>':'';}).join('');
   if(!slogTags.length) document.getElementById('slogTagWrap').style.display='none';
 }
 function submitSlog() {
@@ -6164,7 +6218,7 @@ function renderFreelancePlanner(){
       var bookedDates={};
       Object.entries(p.bookings).forEach(function(entry){
         var jid=parseInt(entry[0]),bdates=entry[1]||[];
-        var j=jobs.find(function(x){return x.id===jid;});
+        var j=jobs.find(function(x){return x.id==jid;});
         var bc=(j&&j.color&&j.color.bg)?j.color.bg:j?({ABC:'#1a6b3a',Manchester:'#9a7010',London:'#1a5a9a'}[j.loc]||'#4a9eff'):'#4a9eff';
         bdates.forEach(function(ds){bookedDates[ds]={jid:jid,color:bc,jname:j?j.name:''};});
         if(!bdates.length&&j&&j.start&&j.end){
@@ -6268,7 +6322,7 @@ const STATUS_CFG = {
 let _jdTab = 'info'; // current tab
 
 function openJobDet(id) {
-  const j = jobs.find(x=>x.id===id); if(!j) return;
+  const j = jobs.find(x=>x.id==id); if(!j) return;
   // Ensure extended fields
   if(!j.crew) j.crew = [];
   if(!j.camSpec) j.camSpec = {format:'HD 1080i', makes:'', lenses:'', notes:''};
@@ -6306,7 +6360,7 @@ function renderJobDet(j) {
     : '';
   const JD_TAB_COLS={info:'rgba(60,90,160,.85)',tech:'rgba(160,100,30,.85)',camspec:'rgba(50,120,70,.85)',set:'rgba(120,60,140,.85)',lv:'rgba(30,115,125,.85)',gallery:'rgba(150,65,65,.85)',crew:'rgba(50,105,80,.85)',audio:'rgba(100,65,130,.85)',post:'rgba(130,85,35,.85)',monitors:'rgba(35,95,145,.85)',ingest:'rgba(75,125,45,.85)',comms:'rgba(145,55,95,.85)',ip:'rgba(40,105,105,.85)',kit:'rgba(135,75,35,.85)',englog:'rgba(55,85,155,.85)',improve:'rgba(75,115,55,.85)'};
   const tabBar = '<div style="display:flex;gap:5px;overflow-x:auto;padding:14px 0 10px;margin-bottom:6px;flex-shrink:0;align-items:center;flex-wrap:wrap">'
-    +tabs.map(function(t){var isAct=t.id===_jdTab;var col=JD_TAB_COLS[t.id]||'rgba(60,90,160,.85)';return '<div class="jd-tab'+(isAct?' active':'')+'" data-tid="'+t.id+'"'+(isAct?' style="background:'+col+';box-shadow:0 2px 8px '+col.replace('.85','.4')+';"':'  ')+' onclick="jdSwitch(\''+t.id+'\','+j.id+')">'+t.label+'</div>';}).join('')+'</div>';
+    +tabs.map(function(t){var isAct=t.id===_jdTab;var col=JD_TAB_COLS[t.id]||'rgba(60,90,160,.85)';return '<div class="jd-tab'+(isAct?' active':'')+'" data-tid="'+t.id+'" style="background:'+col+';" onclick="jdSwitch(\''+ t.id +'\','+j.id+')">'+t.label+'</div>';}).join('')+'</div>';
   let content = '';
 
   if(_jdTab==='info') {
@@ -6989,7 +7043,7 @@ function renderJobDet(j) {
 }
 
 function jdMnAdd(jid,tab){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   if(!j.meetingNotes)j.meetingNotes=[];
   var txt=prompt('Add meeting note:');if(!txt||!txt.trim())return;
   var today=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
@@ -6998,7 +7052,7 @@ function jdMnAdd(jid,tab){
   renderJobDet(j);
 }
 function jdMnRm(jid,ni,tab){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.meetingNotes)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.meetingNotes)return;
   var tabNotes=j.meetingNotes.filter(function(n){return n.tab===tab;});
   if(!tabNotes[ni])return;
   var globalIdx=j.meetingNotes.indexOf(tabNotes[ni]);
@@ -7010,16 +7064,16 @@ function jdSwitch(tab, jid) {
   closeDrawer();
   if(tab!=='englog') _engLogMonth=null;
   _jdTab = tab;
-  const j = jobs.find(x=>x.id===jid); if(!j) return;
+  const j = jobs.find(x=>x.id==jid); if(!j) return;
   renderJobDet(j);
 }
 function jdSetField(jid, field, val) {
-  const j=jobs.find(x=>x.id===jid); if(!j) return;
+  const j=jobs.find(x=>x.id==jid); if(!j) return;
   j[field]=val;
   saveData();
 }
 function techHandleCodecSel(jid,val){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   if(val==='__add__'){
     var v=prompt('Enter codec name:');if(!v||!v.trim())return;
     v=v.trim();if(!j.techCodecExtra)j.techCodecExtra=[];
@@ -7028,14 +7082,14 @@ function techHandleCodecSel(jid,val){
   } else { j.techCodec=val; }
   renderJobDet(j);
 }
-function jdContAdd(jid){var j=jobs.find(function(x){return x.id===jid;});if(!j)return;if(!j.contacts)j.contacts=[];j.contacts.push({name:'',company:'',email:'',tel:''});saveData();renderJobDet(j);}
-function jdContRm(jid,ci){var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.contacts)return;j.contacts.splice(ci,1);saveData();renderJobDet(j);}
-function jdContSet(jid,ci,field,val){var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.contacts||!j.contacts[ci])return;j.contacts[ci][field]=val;saveData();}
-function jdSetCs(jid, field, val) { const j=jobs.find(x=>x.id===jid);if(!j)return;if(!j.camSpec)j.camSpec={};j.camSpec[field]=val; }
-function noteAdd(jid){var j=jobs.find(function(x){return x.id===jid;});if(!j)return;if(!j.meetingNotes)j.meetingNotes=[];j.meetingNotes.push({date:new Date().toISOString().split('T')[0],subject:'',body:''});renderJobDet(j);}
-function noteRm(jid,ni){var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.meetingNotes)return;j.meetingNotes.splice(ni,1);renderJobDet(j);}
-function noteSet(jid,ni,field,val){var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.meetingNotes||!j.meetingNotes[ni])return;j.meetingNotes[ni][field]=val;}
-function jdSetLv(jid, field, val) { const j=jobs.find(x=>x.id===jid);if(!j)return;if(!j.lvSpec)j.lvSpec={};j.lvSpec[field]=val; }
+function jdContAdd(jid){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;if(!j.contacts)j.contacts=[];j.contacts.push({name:'',company:'',email:'',tel:''});saveData();renderJobDet(j);}
+function jdContRm(jid,ci){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.contacts)return;j.contacts.splice(ci,1);saveData();renderJobDet(j);}
+function jdContSet(jid,ci,field,val){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.contacts||!j.contacts[ci])return;j.contacts[ci][field]=val;saveData();}
+function jdSetCs(jid, field, val) { const j=jobs.find(x=>x.id==jid);if(!j)return;if(!j.camSpec)j.camSpec={};j.camSpec[field]=val; }
+function noteAdd(jid){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;if(!j.meetingNotes)j.meetingNotes=[];j.meetingNotes.push({date:new Date().toISOString().split('T')[0],subject:'',body:''});renderJobDet(j);}
+function noteRm(jid,ni){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.meetingNotes)return;j.meetingNotes.splice(ni,1);renderJobDet(j);}
+function noteSet(jid,ni,field,val){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.meetingNotes||!j.meetingNotes[ni])return;j.meetingNotes[ni][field]=val;}
+function jdSetLv(jid, field, val) { const j=jobs.find(x=>x.id==jid);if(!j)return;if(!j.lvSpec)j.lvSpec={};j.lvSpec[field]=val; }
 function _openGenKitPicker(title,filterFn,onSelect){
   var ex=document.getElementById('_gkPicker');if(ex)ex.remove();
   var avail=kit.filter(filterFn);
@@ -7068,56 +7122,56 @@ function _openGenKitPicker(title,filterFn,onSelect){
   },50);
 }
 function lvRcpMode(jid,ci,mode){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   if(!j.lvSpec)j.lvSpec={};if(!j.lvSpec.camRcp)j.lvSpec.camRcp=[];
   while(j.lvSpec.camRcp.length<=ci)j.lvSpec.camRcp.push({mode:'local',kitId:null,hiredVal:''});
   j.lvSpec.camRcp[ci].mode=mode;renderJobDet(j);
 }
 function lvRcpSrcMode(jid,ci,srcMode){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.lvSpec||!j.lvSpec.camRcp)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.lvSpec||!j.lvSpec.camRcp)return;
   if(!j.lvSpec.camRcp[ci])return;
   j.lvSpec.camRcp[ci].srcMode=srcMode;
   renderJobDet(j);
 }
 function lvRcpType(jid,ci,rcpType){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.lvSpec||!j.lvSpec.camRcp)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.lvSpec||!j.lvSpec.camRcp)return;
   if(!j.lvSpec.camRcp[ci])return;
   j.lvSpec.camRcp[ci].rcpType=rcpType;
   renderJobDet(j);
 }
 function lvRcpSet(jid,ci,field,val){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   if(!j.lvSpec)j.lvSpec={};if(!j.lvSpec.camRcp)j.lvSpec.camRcp=[];
   while(j.lvSpec.camRcp.length<=ci)j.lvSpec.camRcp.push({mode:'local',kitId:null,hiredVal:''});
   j.lvSpec.camRcp[ci][field]=val;
   if(field==='kitId')renderJobDet(j);
 }
 function lvPickRcp(jid,ci){
-  _openGenKitPicker('Pick RCP / Control Unit',function(k){return k.status!=='Bin';},function(kid){lvRcpSet(jid,ci,'kitId',kid);renderJobDet(jobs.find(function(x){return x.id===jid;}));});
+  _openGenKitPicker('Pick RCP / Control Unit',function(k){return k.status!=='Bin';},function(kid){lvRcpSet(jid,ci,'kitId',kid);renderJobDet(jobs.find(function(x){return x.id==jid;}));});
 }
 function lvMcsMode(jid,ci,mode){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   if(!j.lvSpec)j.lvSpec={};if(!j.lvSpec.camMcs)j.lvSpec.camMcs=[];
   while(j.lvSpec.camMcs.length<=ci)j.lvSpec.camMcs.push({enabled:false,mode:'inv',kitId:null,hiredVal:''});
   j.lvSpec.camMcs[ci].mode=mode;renderJobDet(j);
 }
 function lvMcsSet(jid,ci,field,val){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   if(!j.lvSpec)j.lvSpec={};if(!j.lvSpec.camMcs)j.lvSpec.camMcs=[];
   while(j.lvSpec.camMcs.length<=ci)j.lvSpec.camMcs.push({enabled:false,mode:'inv',kitId:null,hiredVal:''});
   j.lvSpec.camMcs[ci][field]=val;
   if(field==='kitId'||field==='enabled')renderJobDet(j);
 }
 function lvPickMcs(jid,ci){
-  _openGenKitPicker('Pick MCS Unit',function(k){return k.status!=='Bin';},function(kid){lvMcsSet(jid,ci,'kitId',kid);renderJobDet(jobs.find(function(x){return x.id===jid;}));});
+  _openGenKitPicker('Pick MCS Unit',function(k){return k.status!=='Bin';},function(kid){lvMcsSet(jid,ci,'kitId',kid);renderJobDet(jobs.find(function(x){return x.id==jid;}));});
 }
 function lvMcsGMode(jid,mode){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   if(!j.lvSpec)j.lvSpec={};if(!j.lvSpec.mcsGlobal)j.lvSpec.mcsGlobal={};
   j.lvSpec.mcsGlobal.mode=mode;renderJobDet(j);
 }
 function lvMcsGSet(jid,field,val){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   if(!j.lvSpec)j.lvSpec={};
   if(!j.lvSpec.mcsGlobal)j.lvSpec.mcsGlobal={enabled:false,mode:'inv',kitId:null,hiredVal:'',ip:''};
   j.lvSpec.mcsGlobal[field]=val;
@@ -7127,24 +7181,24 @@ function lvPickMcsG(jid){
   _openGenKitPicker('Pick MCS Unit',function(k){return k.status!=='Bin'&&k.cat==='Camera'&&k.subcat==='MCS';},function(kid){lvMcsGSet(jid,'kitId',kid);});
 }
 function lvVopAdd(jid){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   if(!j.lvSpec)j.lvSpec={};if(!j.lvSpec.visionOps)j.lvSpec.visionOps=[];
   j.lvSpec.visionOps.push({name:'',evs:false,monCount:0});renderJobDet(j);
 }
 function lvVopRm(jid,vi){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.lvSpec||!j.lvSpec.visionOps)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.lvSpec||!j.lvSpec.visionOps)return;
   j.lvSpec.visionOps.splice(vi,1);renderJobDet(j);
 }
 function lvVopSet(jid,vi,field,val){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.lvSpec||!j.lvSpec.visionOps||!j.lvSpec.visionOps[vi])return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.lvSpec||!j.lvSpec.visionOps||!j.lvSpec.visionOps[vi])return;
   j.lvSpec.visionOps[vi][field]=val;
 }
-function auHydraAdd(jid){var j=jobs.find(function(x){return x.id===jid;});if(!j)return;if(!j.audio)j.audio={};if(!j.audio.hydras)j.audio.hydras=[];j.audio.hydras.push({kitId:null,hired:false,location:'',notes:''});renderJobDet(j);}
-function auHydraRm(jid,hi){var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.audio||!j.audio.hydras)return;j.audio.hydras.splice(hi,1);renderJobDet(j);}
-function auHydraSet(jid,hi,field,val){var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.audio||!j.audio.hydras||!j.audio.hydras[hi])return;j.audio.hydras[hi][field]=val;if(field==='hired'||field==='kitId')renderJobDet(j);}
+function auHydraAdd(jid){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;if(!j.audio)j.audio={};if(!j.audio.hydras)j.audio.hydras=[];j.audio.hydras.push({kitId:null,hired:false,location:'',notes:''});renderJobDet(j);}
+function auHydraRm(jid,hi){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.audio||!j.audio.hydras)return;j.audio.hydras.splice(hi,1);renderJobDet(j);}
+function auHydraSet(jid,hi,field,val){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.audio||!j.audio.hydras||!j.audio.hydras[hi])return;j.audio.hydras[hi][field]=val;if(field==='hired'||field==='kitId')renderJobDet(j);}
 function auPickHydra(jid,hi){_openGenKitPicker('Pick Hydra',function(k){return k.status!=='Bin'&&(/hydra/i.test(k.name)||k.subcat==='Hydras');},function(kid){auHydraSet(jid,hi,'kitId',kid);});}
-function jdSetAu(jid, field, val) { const j=jobs.find(x=>x.id===jid);if(!j)return;if(!j.audio)j.audio={};j.audio[field]=val; }
-function jdSetPo(jid, field, val) { const j=jobs.find(x=>x.id===jid);if(!j)return;if(!j.post)j.post={};j.post[field]=val; }
+function jdSetAu(jid, field, val) { const j=jobs.find(x=>x.id==jid);if(!j)return;if(!j.audio)j.audio={};j.audio[field]=val; }
+function jdSetPo(jid, field, val) { const j=jobs.find(x=>x.id==jid);if(!j)return;if(!j.post)j.post={};j.post[field]=val; }
 function jdGoCalDate(dateStr, row) {
   const d=new Date(dateStr);
   calYear=d.getFullYear(); calMonth=d.getMonth();
@@ -7163,23 +7217,23 @@ function renderCamRolesBadges(j) {
 
 // Gallery layout helpers
 function jdGalAddSeat(jid) {
-  const j=jobs.find(x=>x.id===jid);if(!j)return;
+  const j=jobs.find(x=>x.id==jid);if(!j)return;
   if(!j.galLayout)j.galLayout={seats:[],notes:''};
   const pos=prompt('Position name (e.g. Camera 1, Vision Mixer, Director):');
   if(!pos)return;
   j.galLayout.seats.push({pos,person:''});
   _jdTab='gallery'; renderJobDet(j);
 }
-function jdGalSetPerson(jid,idx,val){const j=jobs.find(x=>x.id===jid);if(!j||!j.galLayout)return;j.galLayout.seats[idx].person=val;
+function jdGalSetPerson(jid,idx,val){const j=jobs.find(x=>x.id==jid);if(!j||!j.galLayout)return;j.galLayout.seats[idx].person=val;
   saveData();
 }
-function jdGalRmSeat(jid,idx){const j=jobs.find(x=>x.id===jid);if(!j||!j.galLayout)return;j.galLayout.seats.splice(idx,1);_jdTab='gallery';renderJobDet(j);}
+function jdGalRmSeat(jid,idx){const j=jobs.find(x=>x.id==jid);if(!j||!j.galLayout)return;j.galLayout.seats.splice(idx,1);_jdTab='gallery';renderJobDet(j);}
 
 
 // -- JOB DETAIL HELPERS (new) -------------------------------------------
 
 function jdCamFMode(jid,ci,fkey,mode){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.camDetails||!j.camDetails[ci])return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.camDetails||!j.camDetails[ci])return;
   var cd=j.camDetails[ci];if(!cd.fieldData)cd.fieldData={};
   if(!cd.fieldData[fkey])cd.fieldData[fkey]={mode:'dv',val:cd[fkey]||'',kitId:null,hiredVal:''};
   cd.fieldData[fkey].mode=mode;
@@ -7187,7 +7241,7 @@ function jdCamFMode(jid,ci,fkey,mode){
   saveData();
 }
 function jdCamFHired(jid,ci,fkey,val){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.camDetails||!j.camDetails[ci])return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.camDetails||!j.camDetails[ci])return;
   var cd=j.camDetails[ci];if(!cd.fieldData)cd.fieldData={};
   if(!cd.fieldData[fkey])cd.fieldData[fkey]={mode:'hired',val:'',kitId:null,hiredVal:''};
   cd.fieldData[fkey].hiredVal=val;cd.fieldData[fkey].val=val;jdSetCamDetail(jid,ci,fkey,val);
@@ -7195,7 +7249,7 @@ function jdCamFHired(jid,ci,fkey,val){
   saveData();
 }
 function jdCamFKitSet(jid,ci,fkey,kid){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.camDetails||!j.camDetails[ci])return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.camDetails||!j.camDetails[ci])return;
   var cd=j.camDetails[ci];if(!cd.fieldData)cd.fieldData={};
   if(!cd.fieldData[fkey])cd.fieldData[fkey]={mode:'inv',val:'',kitId:null,hiredVal:''};
   cd.fieldData[fkey].kitId=kid;
@@ -7287,14 +7341,14 @@ function jdOpenCamFieldPick(jid,camIdx,fieldKey,subcat){
 function jdPickCamField(jid,camIdx,fieldKey,val){
   cm('mPickCamField');
   jdSetCamDetail(jid,camIdx,fieldKey,val);
-  var j=jobs.find(function(x){return x.id===jid;}); if(j) renderJobDet(j);
+  var j=jobs.find(function(x){return x.id==jid;}); if(j) renderJobDet(j);
 }
 function jdPickCamFieldCustom(jid,camIdx,fieldKey){
   cm('mPickCamField');
   var v=prompt('Enter value:','');
   if(v&&v.trim()){
     jdSetCamDetail(jid,camIdx,fieldKey,v.trim());
-    var j=jobs.find(function(x){return x.id===jid;}); if(j) renderJobDet(j);
+    var j=jobs.find(function(x){return x.id==jid;}); if(j) renderJobDet(j);
   }
 }
 function jdHandleCamSel(jid,i,key,optsKey,val){
@@ -7312,7 +7366,7 @@ function jdHandleCamSel(jid,i,key,optsKey,val){
   saveData();
 }
 function exportJobData(jid) {
-  var j = jobs.find(function(x){return x.id===jid;}); if(!j)return;
+  var j = jobs.find(function(x){return x.id==jid;}); if(!j)return;
   var fmt=function(ds){if(!ds)return'—';try{return new Date(ds).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});}catch(e){return ds;}};
   var lines=[];
   lines.push('VERSA STUDIOS — JOB EXPORT');
@@ -7388,30 +7442,30 @@ function exportJobData(jid) {
   toast('Export downloaded');
 }
 function jdAddRigDate(jid){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   if(!j.rigDates)j.rigDates=[];
   j.rigDates.push({date:'',note:''});
   saveData();
   renderJobDet(j);
 }
 function jdSetRigDate(jid,di,field,val){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.rigDates||!j.rigDates[di])return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.rigDates||!j.rigDates[di])return;
   j.rigDates[di][field]=val;
   saveData();
 }
 function jdRmRigDate(jid,di){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.rigDates)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.rigDates)return;
   j.rigDates.splice(di,1);saveData();renderJobDet(j);
 }
 function jdAddTxDate(jid){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   if(!j.txDates)j.txDates=[];
   j.txDates.push({date:''});
   saveData();
   renderJobDet(j);
 }
 function jdSetTxDate(jid,di,val){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.txDates||!j.txDates[di])return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.txDates||!j.txDates[di])return;
   j.txDates[di].date=val;
   saveData();
   // Also push to ops planner if date set
@@ -7437,13 +7491,13 @@ function jdSetTxDate(jid,di,val){
   }
 }
 function jdRmTxDate(jid,di){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.txDates)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.txDates)return;
   j.txDates.splice(di,1);
   saveData();
   renderJobDet(j);
 }
 function jdSetCamDetail(jid,i,field,val){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   if(!j.camDetails)j.camDetails=[];
   if(!j.camDetails[i])j.camDetails[i]={op:'',kitId:null,hired:false,lens:'',filter:'',notes:''};
   j.camDetails[i][field]=val;
@@ -7453,19 +7507,19 @@ function jdSetCamDetail(jid,i,field,val){
 
 // ── Specialist camera helpers ──────────────────────────────────────────────
 function jdAddSpecCam(jid){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   if(!j.specCams)j.specCams=[];
   j.specCams.push({camNum:'',kitId:null,operator:'',notes:''});
   saveData();renderJobDet(j);
 }
 function jdRemoveSpecCam(jid,si){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   if(!j.specCams)return;
   j.specCams.splice(si,1);
   saveData();renderJobDet(j);
 }
 function jdSetSpecCam(jid,si,field,val){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   if(!j.specCams)j.specCams=[];
   if(!j.specCams[si])j.specCams[si]={};
   j.specCams[si][field]=val;
@@ -7474,7 +7528,7 @@ function jdSetSpecCam(jid,si,field,val){
   renderJobDet(j);
 }
 function jdPickSpecCamKit(jid,si){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   var allocMap=getAllocatedKitMap();
   var specCats=['Specialist Camera','Mini Camera','PTZ Camera'];
   var specKit=kit.filter(function(k){return k.cat==='Camera'&&specCats.indexOf(k.subcat)>=0&&k.status!=='Bin';});
@@ -7493,14 +7547,14 @@ function jdPickSpecCamKit(jid,si){
   om('mPickSpecCam');
 }
 function jdAssignSpecCamKit(jid,si,kid){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   if(!j.specCams)j.specCams=[];
   if(!j.specCams[si])j.specCams[si]={};
   j.specCams[si].kitId=kid;
   saveData();cm('mPickSpecCam');renderJobDet(j);
 }
 function jdPickSpecCamAcc(jid,si){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   var rows=kit.filter(function(k){return k.status!=='Bin';}).map(function(k){
     return '<div style="display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid var(--border);cursor:pointer" onclick="jdAddSpecCamAcc('+jid+','+si+','+k.id+')">'
       +'<div style="flex:1"><div style="font-size:14px;font-weight:600;color:var(--white)">'+k.name+'</div>'
@@ -7513,7 +7567,7 @@ function jdPickSpecCamAcc(jid,si){
   om('mPickSpecAcc');
 }
 function jdAddSpecCamAcc(jid,si,kid){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   if(!j.specCams)j.specCams=[];
   if(!j.specCams[si])j.specCams[si]={};
   if(!j.specCams[si].accessories)j.specCams[si].accessories=[];
@@ -7521,7 +7575,7 @@ function jdAddSpecCamAcc(jid,si,kid){
   saveData();cm('mPickSpecAcc');renderJobDet(j);
 }
 function jdRemoveSpecCamAcc(jid,si,kid){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   if(!j.specCams||!j.specCams[si]||!j.specCams[si].accessories)return;
   j.specCams[si].accessories=j.specCams[si].accessories.filter(function(id){return id!==kid;});
   saveData();renderJobDet(j);
@@ -7529,7 +7583,7 @@ function jdRemoveSpecCamAcc(jid,si,kid){
 
 
 function jdCamHired(jid,i){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   if(!j.camDetails)j.camDetails=[];
   if(!j.camDetails[i])j.camDetails[i]={op:'',kitId:null,hired:false,lens:'',filter:'',notes:''};
   j.camDetails[i].hired=true;j.camDetails[i].kitId=null;
@@ -7543,7 +7597,7 @@ function _camHiredSearch(){
 }
 function jdCamPickHired(jid,i){
   jid=parseInt(jid)||0;i=parseInt(i)||0;
-  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.camDetails||!j.camDetails[i])return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.camDetails||!j.camDetails[i])return;
   var cd=j.camDetails[i];
   var ex=document.getElementById('camHiredPicker');if(ex)ex.remove();
   var hiredBodies=hiredCatalogue.filter(function(h){
@@ -7571,8 +7625,8 @@ function jdCamPickHired(jid,i){
         var pk=document.getElementById('camHiredPicker');if(pk)pk.remove();
         cd.hired=true;cd.hiredType=hb.name;cd.kitId=null;
         if(!j.hireIns)j.hireIns=[];
-        if(!j.hireIns.find(function(h){return h.item===hb.name&&h._camspec;}))
-          j.hireIns.push({item:hb.name,supplier:'',arrives:'',notes:'',_camspec:true});
+        if(!j.hireIns.find(function(h){return h.item===hb.name&&h._camspec&&h._camIdx===i;}))
+          j.hireIns.push({item:hb.name,supplier:'',arrives:'',notes:'',_camspec:true,_camIdx:i});
         saveData();renderJobDet(j);
       });
       list.appendChild(el);
@@ -7585,7 +7639,7 @@ function jdCamPickHired(jid,i){
     var pk=document.getElementById('camHiredPicker');if(pk)pk.remove();
     cd.hired=true;cd.hiredType=v;cd.kitId=null;
     if(!j.hireIns)j.hireIns=[];
-    j.hireIns.push({item:v,supplier:'',arrives:'',notes:'',_camspec:true});
+    j.hireIns.push({item:v,supplier:'',arrives:'',notes:'',_camspec:true,_camIdx:i});
     saveData();renderJobDet(j);
   });
   setTimeout(function(){
@@ -7600,14 +7654,14 @@ function jdCamPickHired(jid,i){
 
 
 function jdAddCamField(jid,i,key){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.camDetails||!j.camDetails[i])return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.camDetails||!j.camDetails[i])return;
   var af=j.camDetails[i].activeFields=j.camDetails[i].activeFields||[];
   if(af.indexOf(key)<0)af.push(key);
   saveData();
   renderJobDet(j);
 }
 function jdRemoveCamField(jid,i,key){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.camDetails||!j.camDetails[i])return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.camDetails||!j.camDetails[i])return;
   var af=j.camDetails[i].activeFields||[];
   var idx=af.indexOf(key);if(idx>=0)af.splice(idx,1);
   saveData();
@@ -7620,7 +7674,7 @@ function jdToggleAddField(jid,i){
 
 function jdPickCamKit(jid,camIdx){
   jid=parseInt(jid)||0; camIdx=parseInt(camIdx)||0;
-  var j=jobs.find(function(x){return x.id===jid;}); if(!j) return;
+  var j=jobs.find(function(x){return x.id==jid;}); if(!j) return;
   var ex=document.getElementById('camKitPicker'); if(ex) ex.remove();
   var allocMap=getAllocatedKitMap();
   var _bsc=['Studio Camera','Specialist Camera','PTZ Camera','Mini Camera','Camera Body','Head'];
@@ -7675,7 +7729,7 @@ function _camKitSearch(){
 
 function jdCamLensMode(jid,i,mode){
   jid=parseInt(jid)||0;i=parseInt(i)||0;
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   if(!j.camDetails||!j.camDetails[i])return;
   if(!j.camDetails[i].lensData)j.camDetails[i].lensData={mode:'inv',kitId:null,hiredId:null};
   j.camDetails[i].lensData.mode=mode;
@@ -7683,7 +7737,7 @@ function jdCamLensMode(jid,i,mode){
 }
 function jdCamLensSetInv(jid,i,kid){
   jid=parseInt(jid)||0;i=parseInt(i)||0;
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   if(!j.camDetails||!j.camDetails[i])return;
   if(!j.camDetails[i].lensData)j.camDetails[i].lensData={mode:'inv',kitId:null,hiredId:null};
   // Remove old lens from prep if changing
@@ -7695,7 +7749,7 @@ function jdCamLensSetInv(jid,i,kid){
   saveData();renderJobDet(j);
 }
 function jdCamLensSetHired(jid,i,kid){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   if(!j.camDetails||!j.camDetails[i])return;
   if(!j.camDetails[i].lensData)j.camDetails[i].lensData={mode:'inv',kitId:null,hiredId:null};
   j.camDetails[i].lensData.hiredId=kid;
@@ -7710,7 +7764,7 @@ function jdCamLensSetHired(jid,i,kid){
 }
 function jdCamLensHiredPick(jid,i,val){
   jid=parseInt(jid)||0;i=parseInt(i)||0;
-  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.camDetails||!j.camDetails[i])return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.camDetails||!j.camDetails[i])return;
   if(!j.camDetails[i].lensData)j.camDetails[i].lensData={mode:'hired',kitId:null,hiredId:null};
   var ld=j.camDetails[i].lensData;
   ld.mode='hired';
@@ -7740,7 +7794,7 @@ function jdCamLensHiredPick(jid,i,val){
 }
 
 function jdCamLensSetCustom(jid,i,val){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.camDetails||!j.camDetails[i])return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.camDetails||!j.camDetails[i])return;
   if(!j.camDetails[i].lensData)j.camDetails[i].lensData={mode:'hired',kitId:null,hiredId:null};
   j.camDetails[i].lensData.hiredCustom=val;
   j.camDetails[i].lensData.hiredCatId=undefined;
@@ -7750,7 +7804,7 @@ function jdCamLensSetCustom(jid,i,val){
 
 function jdPickCamLens(jid,i){
   jid=parseInt(jid)||0; i=parseInt(i)||0;
-  var j=jobs.find(function(x){return x.id===jid;}); if(!j) return;
+  var j=jobs.find(function(x){return x.id==jid;}); if(!j) return;
   var ex=document.getElementById('camLensPicker'); if(ex) ex.remove();
   var allocMap=getAllocatedKitMap();
   var _lsc=['Lens','Lens Range','Cine Lens','Lens Adapter'];
@@ -7803,7 +7857,7 @@ function _camLensSearch(){
 
 function jdAssignCamKit(jid,camIdx,kid){
   jid=parseInt(jid)||0;camIdx=parseInt(camIdx)||0;
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   if(!j.camDetails)j.camDetails=[];
   if(!j.camDetails[camIdx])j.camDetails[camIdx]={op:'',kitId:null,hired:false,lens:'',filter:'',notes:''};
   // Remove old camera body from prep if changing
@@ -7842,7 +7896,7 @@ function jdPhotoUploader(j,field){
 }
 
 function jdHandlePhotoUpload(event,jid,field){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   if(!j[field])j[field]=[];
   var files=Array.from(event.target.files);
   var loaded=0;
@@ -7860,7 +7914,7 @@ function jdHandlePhotoUpload(event,jid,field){
 
 function jdRmPhoto(jid,field,idx){ /* saveData called below */
 /* _saveData_marker_ */
-  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j[field])return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j[field])return;
   j[field].splice(idx,1);renderJobDet(j);
 }
 
@@ -7927,13 +7981,13 @@ function renderGalleryTab(j) {
 }
 
 function galRoomSetName(jid,rkey,si,val){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   if(!j.galleryRooms)j.galleryRooms={};
   if(!j.galleryRooms[rkey])j.galleryRooms[rkey]={seats:[],photos:[]};
   if(j.galleryRooms[rkey].seats[si])j.galleryRooms[rkey].seats[si].name=val;
 }
 function galRoomAddSeat(jid,rkey){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   if(!j.galleryRooms)j.galleryRooms={};
   if(!j.galleryRooms[rkey])j.galleryRooms[rkey]={seats:[],photos:[]};
   var pos=prompt('Position / role (e.g. Director, Vision Mixer, Sound Supervisor):');
@@ -7942,11 +7996,11 @@ function galRoomAddSeat(jid,rkey){
   renderJobDet(j);
 }
 function galRoomRmSeat(jid,rkey,si){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.galleryRooms||!j.galleryRooms[rkey])return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.galleryRooms||!j.galleryRooms[rkey])return;
   j.galleryRooms[rkey].seats.splice(si,1);renderJobDet(j);
 }
 function galRoomUpload(event,jid,rkey){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   if(!j.galleryRooms)j.galleryRooms={};
   if(!j.galleryRooms[rkey])j.galleryRooms[rkey]={seats:[],photos:[]};
   var files=Array.from(event.target.files);var loaded=0;
@@ -7960,7 +8014,7 @@ function galRoomUpload(event,jid,rkey){
   });
 }
 function galRoomRmPhoto(jid,rkey,pi){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.galleryRooms||!j.galleryRooms[rkey])return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.galleryRooms||!j.galleryRooms[rkey])return;
   j.galleryRooms[rkey].photos.splice(pi,1);renderJobDet(j);
 }
 
@@ -8019,7 +8073,7 @@ function renderIpTab(j) {
 // ── PDF / PRINT EXPORT ────────────────────────────────────────────────────────
 
 function printJobPDF(jid){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   var win=window.open('','_blank','width=900,height=700');
   if(!win)return alert('Please allow popups for this page.');
   var lv=j.lvSpec||{};
@@ -8240,17 +8294,17 @@ function printJobPDF(jid){
   win.document.close();
 }
 
-function jdIpAdd(jid){var j=jobs.find(function(x){return x.id===jid;});if(!j)return;if(!j.manualIps)j.manualIps=[];j.manualIps.push({label:'',value:'',notes:''});saveData();
+function jdIpAdd(jid){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;if(!j.manualIps)j.manualIps=[];j.manualIps.push({label:'',value:'',notes:''});saveData();
   renderJobDet(j);}
-function jdIpRm(jid,ii){var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.manualIps)return;j.manualIps.splice(ii,1);saveData();
+function jdIpRm(jid,ii){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.manualIps)return;j.manualIps.splice(ii,1);saveData();
   renderJobDet(j);}
-function jdIpSet(jid,ii,field,val){var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.manualIps||!j.manualIps[ii])return;j.manualIps[ii][field]=val;
+function jdIpSet(jid,ii,field,val){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.manualIps||!j.manualIps[ii])return;j.manualIps[ii][field]=val;
   saveData();
 }
 function jdIpExport(jid){
   var SHEETS_URL=''; // TODO: paste your Google Apps Script Web App URL here
   if(!SHEETS_URL){alert('Google Sheets not yet connected.\n\nTo connect:\n1. Create a Google Apps Script web app\n2. Paste the URL into SHEETS_URL in jdIpExport()');return;}
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   var ips=[];var lv=j.lvSpec||{};
   (lv.camRcp||[]).forEach(function(rcp,ci){
     if(rcp.mode==='rcp-ip'){
@@ -8364,7 +8418,7 @@ function renderIngestTab(j) {
     +'</div>';
 }
 function ingestSetStreamCount(jid, n){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   if(!j.ingestAudio)j.ingestAudio={streams:[]};
   var cur=j.ingestAudio.streams.length;
   if(n>cur){
@@ -8380,7 +8434,7 @@ function ingestSetStreamCount(jid, n){
   renderJobDet(j);
 }
 function ingestAddStream(jid){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   if(!j.ingestAudio)j.ingestAudio={streams:[]};
   var n=j.ingestAudio.streams.length+1;
   j.ingestAudio.streams.push({name:'Stream '+n,rows:[
@@ -8391,19 +8445,19 @@ function ingestAddStream(jid){
 }
 function ingestAddStreamGroup(jid){
   ingestAddStream(jid);
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   ingestAddStream(jid);
 }
 function ingestRmStream(jid,si){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.ingestAudio)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.ingestAudio)return;
   j.ingestAudio.streams.splice(si,1);renderJobDet(j);
 }
 function ingestSetStream(jid,si,field,val){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.ingestAudio||!j.ingestAudio.streams[si])return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.ingestAudio||!j.ingestAudio.streams[si])return;
   j.ingestAudio.streams[si][field]=val;
 }
 function ingestSetStreamCodec(jid,si,val){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   if(!j.ingestAudio)j.ingestAudio={streams:[]};
   var s=j.ingestAudio.streams[si];if(!s)return;
   if(val==='__add__'){
@@ -8417,15 +8471,15 @@ function ingestSetStreamCodec(jid,si,val){
 }
 
 function ingestAddRow(jid,si){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.ingestAudio||!j.ingestAudio.streams[si])return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.ingestAudio||!j.ingestAudio.streams[si])return;
   j.ingestAudio.streams[si].rows.push({signal:'',madi:''});renderJobDet(j);
 }
 function ingestRmRow(jid,si,ri){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.ingestAudio||!j.ingestAudio.streams[si])return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.ingestAudio||!j.ingestAudio.streams[si])return;
   j.ingestAudio.streams[si].rows.splice(ri,1);renderJobDet(j);
 }
 function ingestSetRow(jid,si,ri,field,val){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.ingestAudio||!j.ingestAudio.streams[si]||!j.ingestAudio.streams[si].rows[ri])return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.ingestAudio||!j.ingestAudio.streams[si]||!j.ingestAudio.streams[si].rows[ri])return;
   j.ingestAudio.streams[si].rows[ri][field]=val;
 }
 
@@ -8603,7 +8657,7 @@ function renderCommsTab(j) {
     +'</div>';
 }
 function commsHandleSupplier(jid,sel){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.comms)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.comms)return;
   if(sel.value==='__add__'){
     var v=prompt('Supplier name:');if(!v||!v.trim()){sel.value=j.comms.supplier||'';return;}
     v=v.trim();if(!j.commsSupplierExtra)j.commsSupplierExtra=[];
@@ -8612,46 +8666,46 @@ function commsHandleSupplier(jid,sel){
   } else { j.comms.supplier=sel.value; }
 }
 function commsToggleChannels(jid){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.comms)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.comms)return;
   j.comms.showChannels=!j.comms.showChannels;renderJobDet(j);
 }
 function commsAddCh(jid){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   if(!j.comms)j.comms={people:[],channels:[],notes:'',showChannels:true};
   if(!j.comms.channels)j.comms.channels=[];
   j.comms.channels.push({name:'',notes:''});
   renderJobDet(j);
 }
 function commsRmCh(jid,ci){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.comms||!j.comms.channels)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.comms||!j.comms.channels)return;
   j.comms.channels.splice(ci,1);renderJobDet(j);
 }
 function commsSetField(jid,field,val){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   if(!j.comms)j.comms={people:[],channels:[],walkie:0,bolero:0,panels:0,notes:''};
   j.comms[field]=val;
 }
 function commsSetCh(jid,ci,field,val){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.comms||!j.comms.channels[ci])return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.comms||!j.comms.channels[ci])return;
   j.comms.channels[ci][field]=val;
 }
 function commsAddPerson(jid){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   if(!j.comms)j.comms={people:[],channels:[],notes:'',showChannels:true};
   if(!j.comms.people)j.comms.people=[];
   j.comms.people.push({name:'',role:'',commType:'',panelPos:'',notes:''});
   renderJobDet(j);
 }
 function commsRmPerson(jid,pi){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.comms||!j.comms.people)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.comms||!j.comms.people)return;
   j.comms.people.splice(pi,1);renderJobDet(j);
 }
 function commsSetPerson(jid,pi,field,val){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.comms||!j.comms.people||!j.comms.people[pi])return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.comms||!j.comms.people||!j.comms.people[pi])return;
   j.comms.people[pi][field]=val;
 }
 function commsToggleRig(jid,pi){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.comms||!j.comms.people||!j.comms.people[pi])return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.comms||!j.comms.people||!j.comms.people[pi])return;
   j.comms.people[pi].rigged=!j.comms.people[pi].rigged;renderJobDet(j);
 }
 
@@ -8719,7 +8773,7 @@ function renderMonitorTab(j) {
     +'</div>';
 }
 function monPickKit(jid,mi){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   var monKit=kit.filter(function(k){
     return k.status!=='Bin'&&(k.cat==='Vision / Screens'||/monitor|screen|smallhd|pvm|viewfinder|oled/i.test(k.name));
   });
@@ -8739,26 +8793,26 @@ function monPickKit(jid,mi){
   document.getElementById('mPickVisionMixer').dataset.monMi=mi;
 }
 function monAssignKit(jid,mi,kid){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.monitors||!j.monitors[mi])return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.monitors||!j.monitors[mi])return;
   j.monitors[mi].kitId=kid;j.monitors[mi].hired=false;
   cm('mPickVisionMixer');renderJobDet(j);
 }
 function monAdd(jid){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   if(!j.monitors)j.monitors=[];
   j.monitors.push({kitId:null,hired:false,name:'',use:'',type:'',feed:'',requestedBy:'',routerOut:null,wallBox:'',rigged:false});
   renderJobDet(j);
 }
 function monRm(jid,i){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.monitors)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.monitors)return;
   j.monitors.splice(i,1);renderJobDet(j);
 }
 function monSet(jid,i,field,val){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.monitors||!j.monitors[i])return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.monitors||!j.monitors[i])return;
   j.monitors[i][field]=val;
 }
 function monToggleRig(jid,i){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.monitors||!j.monitors[i])return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.monitors||!j.monitors[i])return;
   j.monitors[i].rigged=!j.monitors[i].rigged;
   renderJobDet(j);
 }
@@ -8799,16 +8853,16 @@ function renderCrewTab(j) {
   var prodSection='<div class="det-sec"><div class="det-sec-lbl" style="display:flex;align-items:center;justify-content:space-between">Production Crew <button class="panel-act" onclick="addCrew('+j.id+',\'production\')">+ Add</button></div>'+prodSuggHtml+(prodCrew.length?prodCrew.map(function(c,ci){return mkCrewRow(c,ci,'production');}).join(''):'<div style="color:var(--muted);font-size:14px;padding:6px 0">None assigned.</div>')+'</div>';
   return camOpsHtml+versaSection+flSection+prodSection;
 }
-function crewSetRole(jid,type,ci,role){var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.crew)return;var arr=j.crew.filter(function(c){return c.type===type;});if(!arr[ci])return;arr[ci].role=role;saveData();}
-function crewMove(jid,ci,fromType,toType){var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.crew)return;var arr=j.crew.filter(function(c){return c.type===fromType;});if(!arr[ci])return;arr[ci].type=toType;saveData();renderJobDet(j);}
-function crewRm(jid,type,ci){var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.crew)return;var arr=j.crew.filter(function(c){return c.type===type;});if(!arr[ci])return;var gIdx=j.crew.indexOf(arr[ci]);if(gIdx>=0)j.crew.splice(gIdx,1);saveData();renderJobDet(j);}
+function crewSetRole(jid,type,ci,role){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.crew)return;var arr=j.crew.filter(function(c){return c.type===type;});if(!arr[ci])return;arr[ci].role=role;saveData();}
+function crewMove(jid,ci,fromType,toType){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.crew)return;var arr=j.crew.filter(function(c){return c.type===fromType;});if(!arr[ci])return;arr[ci].type=toType;saveData();renderJobDet(j);}
+function crewRm(jid,type,ci){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.crew)return;var arr=j.crew.filter(function(c){return c.type===type;});if(!arr[ci])return;var gIdx=j.crew.indexOf(arr[ci]);if(gIdx>=0)j.crew.splice(gIdx,1);saveData();renderJobDet(j);}
 function rmCrew(jid,ci,type){crewRm(jid,type,ci);}
-function _crewSuggAdd(btn,jid,type){var j=jobs.find(function(x){return x.id===jid;});if(!j)return;var pi=parseInt(btn.getAttribute('data-pi'));var allTabNames=[];if(j.lvSpec&&j.lvSpec.ld&&j.lvSpec.ld.trim())allTabNames.push({name:j.lvSpec.ld.trim(),role:'Lighting Director'});if(j.lvSpec&&j.lvSpec.vm&&j.lvSpec.vm.trim())allTabNames.push({name:j.lvSpec.vm.trim(),role:'Vision Mixer'});if(j.camDetails)j.camDetails.forEach(function(cd,ci2){if(cd.operator&&cd.operator.trim())allTabNames.push({name:cd.operator.trim(),role:'Camera Operator (Cam '+(cd.camNum||ci2+1)+')'});});if(j.audio&&j.audio.supervisor&&j.audio.supervisor.trim())allTabNames.push({name:j.audio.supervisor.trim(),role:'Sound Supervisor'});if(j.comms&&j.comms.supervisor&&j.comms.supervisor.trim())allTabNames.push({name:j.comms.supervisor.trim(),role:'Comms Supervisor'});var alreadyAdded=(j.crew||[]).map(function(c){return c.name;});var filtered=allTabNames.filter(function(p){if(alreadyAdded.includes(p.name))return false;var isFL=VERSA_FREELANCE.some(function(f){return f.name===p.name;});return type==='freelance'?isFL:!isFL;});var p=filtered[pi];if(!p)return;if(!j.crew)j.crew=[];if(!j.crew.find(function(c){return c.name===p.name;}))j.crew.push({name:p.name,role:p.role||'',type:type});saveData();renderJobDet(j);}
-function crewAddProd(jid,name,role){var j=jobs.find(function(x){return x.id===jid;});if(!j)return;if(!j.crew)j.crew=[];if(!j.crew.find(function(c){return c.name===name;}))j.crew.push({name:name,role:role,type:'production'});saveData();renderJobDet(j);}
+function _crewSuggAdd(btn,jid,type){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;var pi=parseInt(btn.getAttribute('data-pi'));var allTabNames=[];if(j.lvSpec&&j.lvSpec.ld&&j.lvSpec.ld.trim())allTabNames.push({name:j.lvSpec.ld.trim(),role:'Lighting Director'});if(j.lvSpec&&j.lvSpec.vm&&j.lvSpec.vm.trim())allTabNames.push({name:j.lvSpec.vm.trim(),role:'Vision Mixer'});if(j.camDetails)j.camDetails.forEach(function(cd,ci2){if(cd.operator&&cd.operator.trim())allTabNames.push({name:cd.operator.trim(),role:'Camera Operator (Cam '+(cd.camNum||ci2+1)+')'});});if(j.audio&&j.audio.supervisor&&j.audio.supervisor.trim())allTabNames.push({name:j.audio.supervisor.trim(),role:'Sound Supervisor'});if(j.comms&&j.comms.supervisor&&j.comms.supervisor.trim())allTabNames.push({name:j.comms.supervisor.trim(),role:'Comms Supervisor'});var alreadyAdded=(j.crew||[]).map(function(c){return c.name;});var filtered=allTabNames.filter(function(p){if(alreadyAdded.includes(p.name))return false;var isFL=VERSA_FREELANCE.some(function(f){return f.name===p.name;});return type==='freelance'?isFL:!isFL;});var p=filtered[pi];if(!p)return;if(!j.crew)j.crew=[];if(!j.crew.find(function(c){return c.name===p.name;}))j.crew.push({name:p.name,role:p.role||'',type:type});saveData();renderJobDet(j);}
+function crewAddProd(jid,name,role){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;if(!j.crew)j.crew=[];if(!j.crew.find(function(c){return c.name===name;}))j.crew.push({name:name,role:role,type:'production'});saveData();renderJobDet(j);}
 
 
 function addCrew(jid, type) {
-  const j=jobs.find(x=>x.id===jid);if(!j)return;if(!j.crew)j.crew=[];
+  const j=jobs.find(x=>x.id==jid);if(!j)return;if(!j.crew)j.crew=[];
   // Build picker modal inline
   const existing=document.getElementById('crewPickerOv');if(existing)existing.remove();
   let opts='';
@@ -8827,7 +8881,7 @@ function addCrew(jid, type) {
   document.body.insertAdjacentHTML('beforeend',ov);
 }
 function crewPick(jid,type,name,role){
-  const j=jobs.find(x=>x.id===jid);if(!j)return;if(!j.crew)j.crew=[];
+  const j=jobs.find(x=>x.id==jid);if(!j)return;if(!j.crew)j.crew=[];
   j.crew.push({type,name,role});
   const ov=document.getElementById('crewPickerOv');if(ov)ov.remove();
   _jdTab='crew';renderJobDet(j);
@@ -8839,7 +8893,7 @@ function crewPickCustom(jid,type){
   crewPick(jid,type,n.trim(),r.trim());
 }
 function rmCrew(jid,idx,type){
-  const j=jobs.find(x=>x.id===jid);if(!j||!j.crew)return;
+  const j=jobs.find(x=>x.id==jid);if(!j||!j.crew)return;
   const ofType=j.crew.filter(c=>c.type===type);
   const target=ofType[idx];if(!target)return;
   j.crew=j.crew.filter(c=>c!==target);
@@ -8927,11 +8981,14 @@ function renderKitPrepTab(j) {
     var suppList2=[''].concat(COMMS_SUPPLIERS_DEFAULT,(j._prepSuppliers||[]));
     var sOpts=suppList2.map(function(s){return '<option'+(s===h.supplier?' selected':'')+'>'+s+'</option>';}).join('')
       +'<option value="__add__" style="color:#4a9eff;font-style:italic">+ Add supplier...</option>';
+    var camLabel=(h._camspec&&typeof h._camIdx==='number')
+      ?'<div style="font-size:9px;font-family:var(--cond);font-weight:800;letter-spacing:.08em;color:#f59e0b;text-transform:uppercase;margin-bottom:2px">Cam '+(h._camIdx+1)+' — Hired</div>'
+      :'';
     return '<div style="display:grid;grid-template-columns:1fr 140px 130px 130px auto;gap:6px;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05)">'
-      +'<input class="fi" style="font-size:13px;padding:3px 7px" value="'+(h.item||'')+'" placeholder="Item / description..." onchange="prepHireSet('+j.id+','+hi+',\'item\',this.value)"/>'
+      +'<div>'+camLabel+'<input class="fi" style="font-size:13px;padding:3px 7px;width:100%" value="'+(h.item||'')+'" placeholder="Item / description..." onchange="prepHireSet('+j.id+','+hi+',' + "'item'" + ',this.value)"/></div>'
       +'<select class="fi" style="font-size:12px;padding:2px 6px" onchange="prepHireSupplier('+j.id+','+hi+',this.value)"><option value="">Supplier...</option>'+sOpts+'</select>'
-      +'<input type="date" class="fi" style="font-size:12px;padding:2px 7px" value="'+(h.arrives||'')+'" title="Arrival date" onchange="prepHireSet('+j.id+','+hi+',\'arrives\',this.value)"/>'
-      +'<input class="fi" style="font-size:12px;padding:2px 7px" value="'+(h.notes||'')+'" placeholder="Notes..." onchange="prepHireSet('+j.id+','+hi+',\'notes\',this.value)"/>'
+      +'<input type="date" class="fi" style="font-size:12px;padding:2px 7px" value="'+(h.arrives||'')+'" title="Arrival date" onchange="prepHireSet('+j.id+','+hi+',' + "'arrives'" + ',this.value)"/>'
+      +'<input class="fi" style="font-size:12px;padding:2px 7px" value="'+(h.notes||'')+'" placeholder="Notes..." onchange="prepHireSet('+j.id+','+hi+',' + "'notes'" + ',this.value)"/>'
       +'<button class="rm-btn" style="font-size:11px" onclick="prepHireRm('+j.id+','+hi+')">×</button>'
       +'</div>';
   }).join('');
@@ -8980,10 +9037,10 @@ function renderStageItem(jid,s,label,isRx,rxIdx){
     +'<input type="date" class="stage-date fi" style="width:140px;font-size:15px;padding:4px 8px" value="'+(s.date||'')+'" onchange="setStageDate('+jid+',\''+s.id+'\','+(isRx?rxIdx:'null')+',this.value)"/>'
     +rmBtn+'</div>';
 }
-function toggleStage(jid,sid,rxIdx,done){const j=jobs.find(x=>x.id===jid);if(!j)return;if(!j.stages)j.stages=[];if(rxIdx!==null&&rxIdx!==undefined){const rx=j.stages.filter(s=>s.id==='rx');if(rx[rxIdx])rx[rxIdx].done=done;}else{let s=j.stages.find(x=>x.id===sid);if(!s){s={id:sid,done:false,date:''};j.stages.push(s);}s.done=done;}const el=document.getElementById('si-'+(rxIdx!==null&&rxIdx!==undefined?'rx'+rxIdx:sid));if(el){if(done)el.classList.add('done');else el.classList.remove('done');}}
-function setStageDate(jid,sid,rxIdx,date){const j=jobs.find(x=>x.id===jid);if(!j)return;if(!j.stages)j.stages=[];if(rxIdx!==null&&rxIdx!==undefined){const rx=j.stages.filter(s=>s.id==='rx');if(rx[rxIdx])rx[rxIdx].date=date;}else{let s=j.stages.find(x=>x.id===sid);if(!s){s={id:sid,done:false,date:''};j.stages.push(s);}s.date=date;}}
-function addRxEntry(jid){const j=jobs.find(x=>x.id===jid);if(!j)return;if(!j.stages)j.stages=[];j.stages.push({id:'rx',done:false,date:''});_jdTab='kit';renderJobDet(j);}
-function rmRxEntry(jid,rxIdx){const j=jobs.find(x=>x.id===jid);if(!j)return;const rx=j.stages.filter(s=>s.id==='rx');const other=j.stages.filter(s=>s.id!=='rx');rx.splice(rxIdx,1);j.stages=[...other,...rx];_jdTab='kit';renderJobDet(j);}
+function toggleStage(jid,sid,rxIdx,done){const j=jobs.find(x=>x.id==jid);if(!j)return;if(!j.stages)j.stages=[];if(rxIdx!==null&&rxIdx!==undefined){const rx=j.stages.filter(s=>s.id==='rx');if(rx[rxIdx])rx[rxIdx].done=done;}else{let s=j.stages.find(x=>x.id===sid);if(!s){s={id:sid,done:false,date:''};j.stages.push(s);}s.done=done;}const el=document.getElementById('si-'+(rxIdx!==null&&rxIdx!==undefined?'rx'+rxIdx:sid));if(el){if(done)el.classList.add('done');else el.classList.remove('done');}}
+function setStageDate(jid,sid,rxIdx,date){const j=jobs.find(x=>x.id==jid);if(!j)return;if(!j.stages)j.stages=[];if(rxIdx!==null&&rxIdx!==undefined){const rx=j.stages.filter(s=>s.id==='rx');if(rx[rxIdx])rx[rxIdx].date=date;}else{let s=j.stages.find(x=>x.id===sid);if(!s){s={id:sid,done:false,date:''};j.stages.push(s);}s.date=date;}}
+function addRxEntry(jid){const j=jobs.find(x=>x.id==jid);if(!j)return;if(!j.stages)j.stages=[];j.stages.push({id:'rx',done:false,date:''});_jdTab='kit';renderJobDet(j);}
+function rmRxEntry(jid,rxIdx){const j=jobs.find(x=>x.id==jid);if(!j)return;const rx=j.stages.filter(s=>s.id==='rx');const other=j.stages.filter(s=>s.id!=='rx');rx.splice(rxIdx,1);j.stages=[...other,...rx];_jdTab='kit';renderJobDet(j);}
 
 // ── CALENDAR ─────────────────────────────────────────────────────────────────
 
@@ -9866,26 +9923,26 @@ function opsShowQ2(qi,QS){
 
 
 // ── JOB HELPERS ─────────────────────────────────────────────────────────────
-function prepDateSet(jid,key,val){var j=jobs.find(function(x){return x.id===jid;});if(!j)return;if(!j.prepDates)j.prepDates={};j.prepDates[key]=val;}
-function prepDateArrAdd(jid,key){var j=jobs.find(function(x){return x.id===jid;});if(!j)return;if(!j.prepDates)j.prepDates={};if(!j.prepDates[key+'Dates'])j.prepDates[key+'Dates']=[];j.prepDates[key+'Dates'].push('');if(!j.prepDates[key+'Notes'])j.prepDates[key+'Notes']=[];j.prepDates[key+'Notes'].push('');renderJobDet(j);}
-function prepDateArrSet(jid,key,i,val){var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.prepDates||!j.prepDates[key+'Dates'])return;j.prepDates[key+'Dates'][i]=val;}
-function prepDateNoteSet(jid,key,i,val){var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.prepDates)return;if(!j.prepDates[key+'Notes'])j.prepDates[key+'Notes']=[];j.prepDates[key+'Notes'][i]=val;}
-function prepDateArrRm(jid,key,i){var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.prepDates||!j.prepDates[key+'Dates'])return;j.prepDates[key+'Dates'].splice(i,1);if(j.prepDates[key+'Notes'])j.prepDates[key+'Notes'].splice(i,1);renderJobDet(j);}
-function setPrepArrival(jid,kid,val){var j=jobs.find(function(x){return x.id===jid;});if(!j)return;var p=j.prep.find(function(x){return x.kid===kid;});if(p)p.arrivalDate=val;}
-function setPrepHireNotes(jid,kid,val){var j=jobs.find(function(x){return x.id===jid;});if(!j)return;var p=j.prep.find(function(x){return x.kid===kid;});if(p)p.hireNotes=val;}
-function prepHireAdd(jid){var j=jobs.find(function(x){return x.id===jid;});if(!j)return;if(!j.hireIns)j.hireIns=[];j.hireIns.push({item:'',supplier:'',arrives:'',notes:''});renderJobDet(j);}
-function prepHireRm(jid,hi){var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.hireIns)return;j.hireIns.splice(hi,1);renderJobDet(j);}
-function prepHireSet(jid,hi,field,val){var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.hireIns||!j.hireIns[hi])return;j.hireIns[hi][field]=val;}
+function prepDateSet(jid,key,val){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;if(!j.prepDates)j.prepDates={};j.prepDates[key]=val;}
+function prepDateArrAdd(jid,key){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;if(!j.prepDates)j.prepDates={};if(!j.prepDates[key+'Dates'])j.prepDates[key+'Dates']=[];j.prepDates[key+'Dates'].push('');if(!j.prepDates[key+'Notes'])j.prepDates[key+'Notes']=[];j.prepDates[key+'Notes'].push('');renderJobDet(j);}
+function prepDateArrSet(jid,key,i,val){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.prepDates||!j.prepDates[key+'Dates'])return;j.prepDates[key+'Dates'][i]=val;}
+function prepDateNoteSet(jid,key,i,val){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.prepDates)return;if(!j.prepDates[key+'Notes'])j.prepDates[key+'Notes']=[];j.prepDates[key+'Notes'][i]=val;}
+function prepDateArrRm(jid,key,i){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.prepDates||!j.prepDates[key+'Dates'])return;j.prepDates[key+'Dates'].splice(i,1);if(j.prepDates[key+'Notes'])j.prepDates[key+'Notes'].splice(i,1);renderJobDet(j);}
+function setPrepArrival(jid,kid,val){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;var p=j.prep.find(function(x){return x.kid===kid;});if(p)p.arrivalDate=val;}
+function setPrepHireNotes(jid,kid,val){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;var p=j.prep.find(function(x){return x.kid===kid;});if(p)p.hireNotes=val;}
+function prepHireAdd(jid){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;if(!j.hireIns)j.hireIns=[];j.hireIns.push({item:'',supplier:'',arrives:'',notes:''});renderJobDet(j);}
+function prepHireRm(jid,hi){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.hireIns)return;j.hireIns.splice(hi,1);renderJobDet(j);}
+function prepHireSet(jid,hi,field,val){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.hireIns||!j.hireIns[hi])return;j.hireIns[hi][field]=val;}
 function prepHireSupplier(jid,hi,val){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   if(val==='__add__'){var nv=prompt('Add supplier:');if(!nv||!nv.trim())return;nv=nv.trim();if(!j._prepSuppliers)j._prepSuppliers=[];if(!j._prepSuppliers.includes(nv))j._prepSuppliers.push(nv);val=nv;}
   if(!j.hireIns||!j.hireIns[hi])return;j.hireIns[hi].supplier=val;renderJobDet(j);
 }
-function togglePrep(jid,kid,checked){const j=jobs.find(x=>x.id===jid);if(!j)return;const p=j.prep.find(x=>x.kid===kid);if(!p)return;p.done=checked;renderJobDet(j);}
-function rmPrep(jid,kid){const j=jobs.find(x=>x.id===jid);if(!j)return;j.prep=j.prep.filter(p=>p.kid!==kid);renderJobDet(j);}
-function setPrepArea(jid,kid,area){const j=jobs.find(x=>x.id===jid);if(!j)return;const p=j.prep.find(x=>x.kid===kid);if(p)p.area=area;}
+function togglePrep(jid,kid,checked){const j=jobs.find(x=>x.id==jid);if(!j)return;const p=j.prep.find(x=>x.kid===kid);if(!p)return;p.done=checked;renderJobDet(j);}
+function rmPrep(jid,kid){const j=jobs.find(x=>x.id==jid);if(!j)return;j.prep=j.prep.filter(p=>p.kid!==kid);renderJobDet(j);}
+function setPrepArea(jid,kid,area){const j=jobs.find(x=>x.id==jid);if(!j)return;const p=j.prep.find(x=>x.kid===kid);if(p)p.area=area;}
 function setPrepSupplier(jid,kid,val){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   if(val==='__add__'){
     var s=prompt('New supplier:');if(!s)return;
     if(!j._prepSuppliers)j._prepSuppliers=[];
@@ -9897,7 +9954,7 @@ function setPrepSupplier(jid,kid,val){
   renderJobDet(j);
 }
 function setPrepPrepper(jid,kid,val){
-  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   var p=j.prep&&j.prep.find(function(p){return p.kid===kid;});
   if(p)p.preppedBy=val;
   renderJobDet(j);
@@ -9916,13 +9973,13 @@ function renderKpicker(){
       +'</div>';
   }).join('');
 }
-function toggleKitJob(jid,kid){const j=jobs.find(x=>x.id===jid);if(!j)return;const i=j.prep.findIndex(p=>p.kid===kid);if(i>=0)j.prep.splice(i,1);else j.prep.push({kid,done:false,ks:'',ke:'',area:''});renderKpicker();renderJobDet(j);}
-function editKitDates(jid,kid){const j=jobs.find(x=>x.id===jid);if(!j)return;const p=j.prep.find(x=>x.kid===kid);if(!p)return;document.getElementById('kdJid').value=jid;document.getElementById('kdKid').value=kid;document.getElementById('kdS').value=p.ks||j.start;document.getElementById('kdE').value=p.ke||j.end;om('mKitDates');}
+function toggleKitJob(jid,kid){const j=jobs.find(x=>x.id==jid);if(!j)return;const i=j.prep.findIndex(p=>p.kid===kid);if(i>=0)j.prep.splice(i,1);else j.prep.push({kid,done:false,ks:'',ke:'',area:''});renderKpicker();renderJobDet(j);}
+function editKitDates(jid,kid){const j=jobs.find(x=>x.id==jid);if(!j)return;const p=j.prep.find(x=>x.kid===kid);if(!p)return;document.getElementById('kdJid').value=jid;document.getElementById('kdKid').value=kid;document.getElementById('kdS').value=p.ks||j.start;document.getElementById('kdE').value=p.ke||j.end;om('mKitDates');}
 function saveKitDates(){const j=jobs.find(x=>x.id===parseInt(document.getElementById('kdJid').value));if(!j)return;const p=j.prep.find(x=>x.kid===parseInt(document.getElementById('kdKid').value));if(!p)return;p.ks=document.getElementById('kdS').value;p.ke=document.getElementById('kdE').value;cm('mKitDates');toast('Kit dates saved');renderJobDet(j);}
 function resetKitDates(){const j=jobs.find(x=>x.id===parseInt(document.getElementById('kdJid').value));if(!j)return;const p=j.prep.find(x=>x.kid===parseInt(document.getElementById('kdKid').value));if(!p)return;p.ks='';p.ke='';cm('mKitDates');toast('Reset to full job duration');renderJobDet(j);}
-function openHire(jid){const j=jobs.find(x=>x.id===jid);if(!j)return;document.getElementById('hkJid').value=jid;['hkName','hkSupp','hkNotes'].forEach(id=>document.getElementById(id).value='');document.getElementById('hkQty').value=1;document.getElementById('hkS').value=j.start;document.getElementById('hkE').value=j.end;om('mHire');}
-function saveHire(){const jid=parseInt(document.getElementById('hkJid').value);const j=jobs.find(x=>x.id===jid);if(!j)return;const name=document.getElementById('hkName').value.trim();if(!name){toast('Enter description');return;}if(!j.hireKit)j.hireKit=[];j.hireKit.push({name,supplier:document.getElementById('hkSupp').value.trim(),qty:parseInt(document.getElementById('hkQty').value)||1,hs:document.getElementById('hkS').value,he:document.getElementById('hkE').value,notes:document.getElementById('hkNotes').value.trim()});cm('mHire');toast('Hire kit added');renderJobDet(j);}
-function rmHire(jid,idx){const j=jobs.find(x=>x.id===jid);if(!j)return;j.hireKit.splice(idx,1);toast('Removed');renderJobDet(j);}
+function openHire(jid){const j=jobs.find(x=>x.id==jid);if(!j)return;document.getElementById('hkJid').value=jid;['hkName','hkSupp','hkNotes'].forEach(id=>document.getElementById(id).value='');document.getElementById('hkQty').value=1;document.getElementById('hkS').value=j.start;document.getElementById('hkE').value=j.end;om('mHire');}
+function saveHire(){const jid=parseInt(document.getElementById('hkJid').value);const j=jobs.find(x=>x.id==jid);if(!j)return;const name=document.getElementById('hkName').value.trim();if(!name){toast('Enter description');return;}if(!j.hireKit)j.hireKit=[];j.hireKit.push({name,supplier:document.getElementById('hkSupp').value.trim(),qty:parseInt(document.getElementById('hkQty').value)||1,hs:document.getElementById('hkS').value,he:document.getElementById('hkE').value,notes:document.getElementById('hkNotes').value.trim()});cm('mHire');toast('Hire kit added');renderJobDet(j);}
+function rmHire(jid,idx){const j=jobs.find(x=>x.id==jid);if(!j)return;j.hireKit.splice(idx,1);toast('Removed');renderJobDet(j);}
 function renderHireKit(j){
   if(!j.hireKit)j.hireKit=[];
   var HIRE_SUPS=['FAC365','Terry Tew','Procam','VMI','Onsight','Mediadog','Newsline'];
@@ -9962,7 +10019,7 @@ function renderCamRoles(j){
   html+='</div>';return html;
 }
 function openEditJob(id){
-  const j=jobs.find(x=>x.id===id);if(!j)return;
+  const j=jobs.find(x=>x.id==id);if(!j)return;
   document.getElementById('ejName').value=j.name;
   document.getElementById('ejLoc').value=j.loc==='ABC'?'Manchester':j.loc;
   updEditJobStudios();
@@ -9981,7 +10038,7 @@ function openEditJob(id){
 }
 function saveEditJob(){
   const id=parseInt(document.getElementById('ejId').value);
-  const j=jobs.find(x=>x.id===id);if(!j)return;
+  const j=jobs.find(x=>x.id==id);if(!j)return;
   j.name=document.getElementById('ejName').value.trim()||j.name;
   j.loc=document.getElementById('ejLoc').value;
   j.studio=document.getElementById('ejStudio').value;
@@ -10004,7 +10061,7 @@ function updEditJobStudios(){
 }
 function saveJobNotes(){
   const jid=parseInt(document.getElementById('jnJid').value);
-  const j=jobs.find(x=>x.id===jid);if(!j)return;
+  const j=jobs.find(x=>x.id==jid);if(!j)return;
   j.notes=document.getElementById('jnText').value;
   cm('mJobNotes');toast('Notes saved');renderJobDet(j);
 }
@@ -10012,7 +10069,7 @@ function saveJobNotes(){
 
 function saveCamRole() {
   const jid = parseInt(document.getElementById('crJid').value);
-  const j = jobs.find(x=>x.id===jid); if(!j) return;
+  const j = jobs.find(x=>x.id==jid); if(!j) return;
   const role = document.getElementById('crRole').value.trim(); if(!role){toast('Enter role name');return;}
   const kid = parseInt(document.getElementById('crKit').value);
   if(!j.camRoles) j.camRoles = [];
@@ -10023,7 +10080,7 @@ function saveCamRole() {
 }
 // ── ADMIN ─────────────────────────────────────────────────────────────────────
 function renderAdmin() {
-  renderUsers(); renderCats(); renderPatEmails(); renderDvAdmin();
+  renderUsers(); renderCats(); renderPatEmails(); renderDvAdmin(); renderDvHired();
   populateCatSelect('nkCat');
 }
 
@@ -10131,7 +10188,7 @@ function admSwitch(tab) {
     if(c) c.style.display = t===tab ? '' : 'none';
     if(b) { b.classList.toggle('active', t===tab); }
   });
-  if(tab==='dv') renderDvAdmin();
+  if(tab==='dv') { renderDvAdmin(); renderSupp(); renderDvHired(); }
   if(tab==='cats') renderCats();
   if(tab==='pat') renderPatEmails();
   if(tab==='access') renderAccessList();
@@ -10206,6 +10263,57 @@ function dvDelItem(i){
 }
 
 function togPatEmail(id){const u=users.find(x=>x.id===id);if(u)u.patEmail=!u.patEmail;renderPatEmails();}
+
+function renderDvHired() {
+  var el=document.getElementById('dvHiredList'); if(!el) return;
+  if(!hiredCatalogue.length){
+    el.innerHTML='<div style="font-size:13px;color:var(--muted);padding:4px 0">No hired items yet. Add items above.</div>';
+    return;
+  }
+  // Group by cat
+  var cats={};
+  hiredCatalogue.forEach(function(h){ if(!cats[h.cat])cats[h.cat]=[]; cats[h.cat].push(h); });
+  el.innerHTML=Object.keys(cats).sort().map(function(cat){
+    var col=CAT_COLORS[cat]||'#6b7280';
+    var rows=cats[cat].map(function(h){
+      return '<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border)">'
+        +'<div style="flex:1;min-width:0">'
+        +'<div style="font-size:13px;font-weight:700;color:var(--white)">'+h.name+'</div>'
+        +(h.subcat?'<div style="font-size:11px;color:var(--muted)">'+h.subcat+'</div>':'')
+        +'</div>'
+        +(h.supplier?'<div style="font-size:11px;color:var(--muted);flex-shrink:0">'+h.supplier+'</div>':'')
+        +'<div style="display:flex;gap:5px;flex-shrink:0">'
+        +'<button class="ibtn" onclick="editHiredItem('+h.id+')" style="font-size:11px">Edit</button>'
+        +'<button class="ibtn del" onclick="delHiredItem('+h.id+')" style="font-size:11px">Delete</button>'
+        +'</div>'
+        +'</div>';
+    }).join('');
+    return '<div style="margin-bottom:14px">'
+      +'<div style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:'+col+';margin-bottom:6px;padding-bottom:5px;border-bottom:2px solid '+col+'40">'+cat+' <span style="color:var(--muted);font-weight:600">('+cats[cat].length+')</span></div>'
+      +rows+'</div>';
+  }).join('');
+}
+
+function delHiredItem(id){
+  if(!confirm('Remove this item from the hired catalogue?'))return;
+  var idx=hiredCatalogue.findIndex(function(h){return h.id===id;});
+  if(idx>=0){hiredCatalogue.splice(idx,1);saveData();toast('Item removed');renderDvHired();renderHiredCatalogue();}
+}
+function editHiredItem(id){
+  var h=hiredCatalogue.find(function(x){return x.id===id;});
+  if(!h)return;
+  _editHiredId=id;
+  ['hiName','hiCat','hiSubcat','hiNotes','hiSupplier'].forEach(function(fid){
+    var el=document.getElementById(fid);if(el)el.value='';
+  });
+  var nm=document.getElementById('hiName');if(nm)nm.value=h.name||'';
+  var cat=document.getElementById('hiCat');if(cat)cat.value=h.cat||'';
+  var sub=document.getElementById('hiSubcat');if(sub)sub.value=h.subcat||'';
+  var nt=document.getElementById('hiNotes');if(nt)nt.value=h.notes||'';
+  var sp=document.getElementById('hiSupplier');if(sp)sp.value=h.supplier||'';
+  var mt=document.getElementById('hiMT');if(mt)mt.textContent='Edit Hired Item';
+  om('mHiredItem');
+}
 
 // ── IMPORT ────────────────────────────────────────────────────────────────────
 function prevImport() {
@@ -10345,7 +10453,7 @@ function toggleMobMenu() {
 
 // ── TECH SHEET ───────────────────────────────────────────────────────────────
 function openTechSheet(jid) {
-  const j = jobs.find(x=>x.id===jid); if(!j) return;
+  const j = jobs.find(x=>x.id==jid); if(!j) return;
   document.getElementById('tsTitle').textContent = j.name + ' — Tech Sheet';
   document.getElementById('tsBdy').innerHTML = buildTechSheetHTML(j);
   document.getElementById('mTechSheet').dataset.jid = jid;
@@ -10460,7 +10568,7 @@ function buildTechSheetHTML(j) {
 }
 function downloadTechSheet() {
   const jid = parseInt(document.getElementById('mTechSheet').dataset.jid);
-  const j = jobs.find(x=>x.id===jid); if(!j) return;
+  const j = jobs.find(x=>x.id==jid); if(!j) return;
   const inner = buildTechSheetHTML(j);
   const fullHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"/><title>${j.name} — Tech Sheet</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet"/>
@@ -10476,7 +10584,7 @@ function downloadTechSheet() {
 }
 function exportTechCSV() {
   var jid = parseInt(document.getElementById('mTechSheet').dataset.jid);
-  var j = jobs.find(function(x){return x.id===jid;}); if(!j) return;
+  var j = jobs.find(function(x){return x.id==jid;}); if(!j) return;
   var nl = '\n';
   function esc(v){ return '"'+(String(v||'').replace(/"/g,'""'))+'"'; }
   var rows = [];
@@ -10532,7 +10640,7 @@ function exportTechCSV() {
 
 // ── JOB NOTES ─────────────────────────────────────────────────────────────────
 function openJobNotes(jid) {
-  const j = jobs.find(x=>x.id===jid); if(!j) return;
+  const j = jobs.find(x=>x.id==jid); if(!j) return;
   document.getElementById('jnTitle').textContent = j.name + ' — Notes';
   document.getElementById('jnText').value = '';
   document.getElementById('mJobNotes').dataset.jid = jid;
@@ -10565,21 +10673,21 @@ function addJobNote() {
   toast('Note added');
   renderJobNotesList(jid);
   // Refresh job detail button badge
-  const j = jobs.find(x=>x.id===jid);
+  const j = jobs.find(x=>x.id==jid);
   if(j) renderJobDet(j);
 }
 function delJobNote(jid, nid) {
   if(!jobNotes[jid]) return;
   jobNotes[jid] = jobNotes[jid].filter(n=>n.id!==nid);
   renderJobNotesList(jid);
-  const j = jobs.find(x=>x.id===jid);
+  const j = jobs.find(x=>x.id==jid);
   if(j) renderJobDet(j);
 }
 
 // ── CAMERA PLAN ───────────────────────────────────────────────────────────────
 let currentCpJid = null;
 function openCamPlan(jid) {
-  const j = jobs.find(x=>x.id===jid); if(!j) return;
+  const j = jobs.find(x=>x.id==jid); if(!j) return;
   currentCpJid = jid;
   document.getElementById('cpTitle').textContent = j.name + ' — Camera Plan';
   if(!camPlans[jid]) camPlans[jid] = [];
@@ -11035,7 +11143,7 @@ async function siLoad() {
 }
 function siImport() {
   const jid = parseInt(document.getElementById('siJid').value);
-  const j = jobs.find(x=>x.id===jid); if(!j) return;
+  const j = jobs.find(x=>x.id==jid); if(!j) return;
   if(!j.hireKit) j.hireKit = [];
   const sel = Array.from(document.querySelectorAll('.si-cb:checked')).map(c=>parseInt(c.dataset.i));
   const items = _siData.filter(r=>sel.includes(r._i));
