@@ -3625,7 +3625,7 @@ function erSubTab(tab){
   var rb=document.getElementById('erSubTabReport');
   var cb=document.getElementById('erSubTabCal');
   if(rp)rp.style.display=tab==='report'?'':'none';
-  if(cp){cp.style.display=tab==='cal'?'':'none'; if(tab==='cal'){erCalRender(_erCalYr,_erCalMo);erHistLoad();}}
+  if(cp){cp.style.display=tab==='cal'?'':'none'; if(tab==='cal'){erCalSetupListener();erCalRender(_erCalYr,_erCalMo);erHistLoad();}}
   var accent='var(--accent)',muted='var(--muted)';
   if(rb){rb.style.borderBottomColor=tab==='report'?accent:'transparent';rb.style.color=tab==='report'?accent:muted;}
   if(cb){cb.style.borderBottomColor=tab==='cal'?accent:'transparent';cb.style.color=tab==='cal'?accent:muted;}
@@ -3806,19 +3806,49 @@ function erCalRender(yr, mo) {
 
   wrap.innerHTML=h;
 
-  // Event delegation — one listener on wrap catches all day clicks reliably (no inline onclick)
-  wrap.addEventListener('click', function(e){
-    var cell=e.target.closest('[data-date]');
-    if(!cell) return;
-    wrap.querySelectorAll('[data-date]').forEach(function(c){ c.style.outline=''; c.style.outlineOffset=''; });
-    cell.style.outline='2px solid var(--accent)';
-    cell.style.outlineOffset='2px';
-    erCalOpenDay(cell.getAttribute('data-date'));
-  });
-
-  // Fetch all reports for this month in background then re-render
-  _fetchEngReportsForMonth(yr,mo).then(function(){ erCalRender(yr,mo); });
+  // Fetch month data once (no re-render — just update dots)
+  _fetchEngReportsForMonth(yr,mo).then(function(){ erCalUpdateDots(); });
 }
+
+function erCalUpdateDots() {
+  // Update cell backgrounds based on cache without full re-render
+  var wrap=document.getElementById("erCalWrap"); if(!wrap) return;
+  wrap.querySelectorAll("[data-date]").forEach(function(cell){
+    var ds=cell.getAttribute("data-date");
+    if(!ds) return;
+    var rep=_engReportCache[ds];
+    if(rep){
+      var isUrgent=rep.urgent_action==="Yes";
+      cell.style.background=isUrgent?"rgba(200,60,60,.18)":"rgba(232,184,75,.12)";
+      cell.style.border="1px solid "+(isUrgent?"#c04040":"#e8b84b");
+      cell.style.color="var(--white)";
+      if(!cell.querySelector(".er-dot")){
+        var dot=document.createElement("div");
+        dot.className="er-dot";
+        dot.style.cssText="width:5px;height:5px;border-radius:50%;margin:2px auto 0;background:"+(isUrgent?"#e05555":"#e8b84b");
+        cell.appendChild(dot);
+      }
+    }
+  });
+}
+
+var _erCalListenerSet=false;
+function erCalSetupListener() {
+  if(_erCalListenerSet) return;
+  _erCalListenerSet=true;
+  var panel=document.getElementById("erSubPanelCal");
+  if(!panel) return;
+  panel.addEventListener("click", function(e){
+    var cell=e.target.closest("[data-date]");
+    if(!cell) return;
+    var wrap=document.getElementById("erCalWrap");
+    if(wrap) wrap.querySelectorAll("[data-date]").forEach(function(c){ c.style.outline=""; c.style.outlineOffset=""; });
+    cell.style.outline="2px solid var(--accent)";
+    cell.style.outlineOffset="2px";
+    erCalOpenDay(cell.getAttribute("data-date"));
+  });
+}
+
 
 
 function erCalOpenDay(dateStr) {
