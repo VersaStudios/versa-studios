@@ -1567,6 +1567,7 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
           <div class="jd-tab active" id="admTab-users" onclick="admSwitch('users')">Users</div>
           <div class="jd-tab" id="admTab-cats" onclick="admSwitch('cats')">Kit Categories</div>
           <div class="jd-tab" id="admTab-dv" onclick="admSwitch('dv')">Data Validation Lists</div>
+          <div class="jd-tab" id="admTab-suppliers" onclick="admSwitch('suppliers')">Suppliers</div>
           <div class="jd-tab" id="admTab-pat" onclick="admSwitch('pat')">PAT Emails</div>
           <div class="jd-tab" id="admTab-access" onclick="admSwitch('access')">Job Access</div>
         </div>
@@ -1582,18 +1583,20 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
         </div>
         <div id="admContent-dv" style="display:none">
           <div class="adm-sec full" style="background:var(--panel);border-radius:6px;border:1px solid var(--border);margin-bottom:14px">
-            <div class="adm-sec-hdr"><div class="adm-sec-title">Suppliers</div><button class="btn-add" onclick="openAddSupp()" style="margin-left:0">+ Add Supplier</button></div>
-            <div style="padding:4px 0"><div id="suppList"></div></div>
-          </div>
-          <div class="adm-sec full" style="background:var(--panel);border-radius:6px;border:1px solid var(--border);margin-bottom:14px">
-            <div class="adm-sec-hdr"><div class="adm-sec-title">Hired Kit Catalogue</div><div style="display:flex;gap:8px"><button class="btn-sec" onclick="openHiredImport()" style="font-size:13px;padding:5px 12px">↑ Import CSV</button><button class="btn-add" onclick="openAddHiredItem()" style="margin-left:0">+ Add Item</button></div></div>
-            <div style="padding:10px 17px;font-size:13px;color:var(--muted);margin-bottom:4px">Items listed here appear in the Camera Spec "pick from hired" picker and the Hired Catalogue tab on the Kit page.</div>
-            <div id="dvHiredList" style="padding:0 17px 12px"></div>
+            <div class="adm-sec-hdr"><div class="adm-sec-title">Hired Kit Catalogue</div></div>
+            <div style="padding:10px 17px;font-size:13px;color:var(--muted)">Items appear in the Camera Spec "pick from hired" picker and the Hired Catalogue on the Kit page.</div>
+            <div id="dvHiredList" style="padding:0 17px 16px"></div>
           </div>
           <div class="adm-sec full" style="background:var(--panel);border-radius:6px;border:1px solid var(--border)">
             <div class="adm-sec-hdr"><div class="adm-sec-title">Camera Plan — Dropdown Options</div></div>
             <div style="padding:10px 17px;font-size:13px;color:var(--muted)">Manage the dropdown options used in Camera Spec. Changes apply immediately to all jobs.</div>
             <div id="dvAdminWrap" style="padding:0 17px 16px"></div>
+          </div>
+        </div>
+        <div id="admContent-suppliers" style="display:none">
+          <div class="adm-sec full" style="background:var(--panel);border-radius:6px;border:1px solid var(--border)">
+            <div class="adm-sec-hdr"><div class="adm-sec-title">Suppliers</div><button class="btn-add" onclick="openAddSupp()" style="margin-left:0">+ Add Supplier</button></div>
+            <div style="padding:4px 0"><div id="suppList"></div></div>
           </div>
         </div>
         <div id="admContent-pat" style="display:none">
@@ -5827,8 +5830,12 @@ function saveSupplier() {
 }
 function renderSupp() {
   const el=document.getElementById('suppList'); if(!el) return;
-  if(!suppliers.length){el.innerHTML='<div class="empty"><div class="empty-icon">🏢</div><div class="empty-txt">No suppliers</div></div>';return;}
-  el.innerHTML=suppliers.map(s=>'<div class="supp-card"><div class="supp-hdr"><div><div class="supp-nm">'+s.name+'</div><div class="supp-spec">'+s.spec+'</div><div class="supp-contact"><span>📞 '+s.phone+'</span><span>✉ '+s.email+'</span></div></div><div style="display:flex;gap:6px"><button class="ibtn" onclick="editSupp('+s.id+')">Edit</button><button class="ibtn del" onclick="delSupp('+s.id+')">Delete</button></div></div></div>').join('');
+  var builtIn=COMMS_SUPPLIERS_DEFAULT.map(function(name){
+    return '<div class="supp-card"><div class="supp-hdr"><div><div class="supp-nm">'+name+'</div><div class="supp-spec" style="color:var(--muted);font-size:11px">Built-in supplier</div></div>'
+      +'<span class="badge b-gen" style="font-size:10px;align-self:center">Default</span></div></div>';
+  }).join('');
+  var custom=suppliers.map(s=>'<div class="supp-card"><div class="supp-hdr"><div><div class="supp-nm">'+s.name+'</div><div class="supp-spec">'+s.spec+'</div><div class="supp-contact"><span>📞 '+s.phone+'</span><span>✉ '+s.email+'</span></div></div><div style="display:flex;gap:6px"><button class="ibtn" onclick="editSupp('+s.id+')">Edit</button><button class="ibtn del" onclick="delSupp('+s.id+')">Delete</button></div></div></div>').join('');
+  el.innerHTML=builtIn+custom||(builtIn?'':'<div class="empty"><div class="empty-icon">🏢</div><div class="empty-txt">No suppliers added yet</div></div>');
 }
 function delSupp(id){if(!confirm('Delete this supplier?'))return;suppliers=suppliers.filter(s=>s.id!==id);toast('Supplier deleted');renderSupp();}
 
@@ -10182,13 +10189,14 @@ function revokeAccess(idx) {
 var _admTab = 'users';
 function admSwitch(tab) {
   _admTab = tab;
-  ['users','cats','dv','pat','access'].forEach(function(t) {
+  ['users','cats','dv','suppliers','pat','access'].forEach(function(t) {
     var c = document.getElementById('admContent-'+t);
     var b = document.getElementById('admTab-'+t);
     if(c) c.style.display = t===tab ? '' : 'none';
     if(b) { b.classList.toggle('active', t===tab); }
   });
-  if(tab==='dv') { renderDvAdmin(); renderSupp(); renderDvHired(); }
+  if(tab==='dv') { renderDvAdmin(); renderDvHired(); }
+  if(tab==='suppliers') renderSupp();
   if(tab==='cats') renderCats();
   if(tab==='pat') renderPatEmails();
   if(tab==='access') renderAccessList();
@@ -10266,32 +10274,87 @@ function togPatEmail(id){const u=users.find(x=>x.id===id);if(u)u.patEmail=!u.pat
 
 function renderDvHired() {
   var el=document.getElementById('dvHiredList'); if(!el) return;
-  if(!hiredCatalogue.length){
-    el.innerHTML='<div style="font-size:13px;color:var(--muted);padding:4px 0">No hired items yet. Add items above.</div>';
+  // Build grouped structure: cat -> subcat -> [items]
+  var cats={};
+  hiredCatalogue.forEach(function(h){
+    var c=h.cat||'Other', s=h.subcat||'General';
+    if(!cats[c])cats[c]={};
+    if(!cats[c][s])cats[c][s]=[];
+    cats[c][s].push(h);
+  });
+  var catKeys=Object.keys(cats).sort();
+  if(!catKeys.length){
+    el.innerHTML='<div style="font-size:13px;color:var(--muted)">No hired items yet. Use the button below to add.</div>'
+      +'<div style="margin-top:12px;display:flex;gap:8px">'
+      +'<input class="fi" id="dvHiredQuickCat" style="flex:1;font-size:13px;padding:4px 9px" placeholder="Category..."/>'
+      +'<input class="fi" id="dvHiredQuickSub" style="flex:1;font-size:13px;padding:4px 9px" placeholder="Subcategory..."/>'
+      +'<input class="fi" id="dvHiredQuickName" style="flex:2;font-size:13px;padding:4px 9px" placeholder="Item name..." onkeydown="if(event.key===\'Enter\')dvHiredAdd()"/>'
+      +'<button class="ibtn" onclick="dvHiredAdd()" style="font-size:13px;padding:4px 14px">Add</button>'
+      +'</div>';
     return;
   }
-  // Group by cat
-  var cats={};
-  hiredCatalogue.forEach(function(h){ if(!cats[h.cat])cats[h.cat]=[]; cats[h.cat].push(h); });
-  el.innerHTML=Object.keys(cats).sort().map(function(cat){
-    var col=CAT_COLORS[cat]||'#6b7280';
-    var rows=cats[cat].map(function(h){
-      return '<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border)">'
-        +'<div style="flex:1;min-width:0">'
-        +'<div style="font-size:13px;font-weight:700;color:var(--white)">'+h.name+'</div>'
-        +(h.subcat?'<div style="font-size:11px;color:var(--muted)">'+h.subcat+'</div>':'')
-        +'</div>'
-        +(h.supplier?'<div style="font-size:11px;color:var(--muted);flex-shrink:0">'+h.supplier+'</div>':'')
-        +'<div style="display:flex;gap:5px;flex-shrink:0">'
-        +'<button class="ibtn" onclick="editHiredItem('+h.id+')" style="font-size:11px">Edit</button>'
-        +'<button class="ibtn del" onclick="delHiredItem('+h.id+')" style="font-size:11px">Delete</button>'
-        +'</div>'
-        +'</div>';
-    }).join('');
-    return '<div style="margin-bottom:14px">'
-      +'<div style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:'+col+';margin-bottom:6px;padding-bottom:5px;border-bottom:2px solid '+col+'40">'+cat+' <span style="color:var(--muted);font-weight:600">('+cats[cat].length+')</span></div>'
-      +rows+'</div>';
-  }).join('');
+  // Cat selector buttons (like Camera Plan)
+  var catBar='<div style="margin-bottom:12px;display:flex;gap:6px;flex-wrap:wrap">'
+    +catKeys.map(function(cat){
+      return '<button class="ibtn'+(_dvHiredCat===cat?' active':'')+'" style="font-size:12px" onclick="dvHiredSetCat(\''+cat+'\')">'+cat+'</button>';
+    }).join('')
+    +'<button class="ibtn" style="font-size:12px;color:#4a9eff;border-color:rgba(74,158,255,.3)" onclick="dvHiredNewCat()">+ Category</button>'
+    +'</div>';
+  var body='';
+  if(_dvHiredCat && cats[_dvHiredCat]){
+    var subcats=Object.keys(cats[_dvHiredCat]).sort();
+    subcats.forEach(function(sub){
+      var items=cats[_dvHiredCat][sub];
+      var col=CAT_COLORS[_dvHiredCat]||'#6b7280';
+      body+='<div style="margin-bottom:16px">';
+      body+='<div style="font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:'+col+';margin-bottom:8px">'+sub+'</div>';
+      body+='<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px">';
+      items.forEach(function(h){
+        body+='<div style="display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:4px;padding:4px 10px;font-size:13px">'
+          +'<span style="color:var(--white)">'+h.name+'</span>'
+          +'<button onclick="dvHiredDel('+h.id+')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:0;line-height:1" title="Remove">×</button>'
+          +'</div>';
+      });
+      body+='</div>';
+      body+='</div>';
+    });
+    // Inline add row
+    body+='<div style="display:flex;gap:8px;margin-top:4px">'
+      +'<input class="fi" id="dvHiredNewSub" style="flex:1;font-size:13px;padding:4px 9px" placeholder="Subcategory..."/>'
+      +'<input class="fi" id="dvHiredNewName" style="flex:2;font-size:13px;padding:4px 9px" placeholder="Item name..." onkeydown="if(event.key===\'Enter\')dvHiredAdd()"/>'
+      +'<button class="ibtn" onclick="dvHiredAdd()" style="font-size:13px;padding:4px 14px">Add</button>'
+      +'</div>';
+  } else {
+    body='<div style="color:var(--muted);font-size:14px">Select a category above to manage its items.</div>';
+  }
+  el.innerHTML=catBar+body;
+}
+var _dvHiredCat='';
+function dvHiredSetCat(cat){ _dvHiredCat=cat; renderDvHired(); }
+function dvHiredNewCat(){
+  var name=prompt('New category name:',''); if(!name||!name.trim())return;
+  _dvHiredCat=name.trim(); renderDvHired();
+}
+function dvHiredAdd(){
+  var nameEl=document.getElementById('dvHiredNewName')||document.getElementById('dvHiredQuickName');
+  var subEl=document.getElementById('dvHiredNewSub')||document.getElementById('dvHiredQuickSub');
+  var catEl=document.getElementById('dvHiredQuickCat');
+  var name=(nameEl?nameEl.value.trim():''); if(!name){toast('Enter an item name');return;}
+  var sub=(subEl?subEl.value.trim():'')||'General';
+  var cat=_dvHiredCat||(catEl?catEl.value.trim():''); if(!cat){toast('Enter a category');return;}
+  _dvHiredCat=cat;
+  var newId=_hiredCatNextId++||Date.now();
+  hiredCatalogue.push({id:newId,name:name,cat:cat,subcat:sub,supplier:'',notes:'',photos:[]});
+  saveData(); toast('Added: '+name);
+  if(nameEl)nameEl.value='';
+  renderDvHired(); renderHiredCatalogue();
+}
+function dvHiredDel(id){
+  var h=hiredCatalogue.find(function(x){return x.id===id;});
+  if(!h)return;
+  if(!confirm('Remove \''+h.name+'\' from the hired catalogue?'))return;
+  hiredCatalogue=hiredCatalogue.filter(function(x){return x.id!==id;});
+  saveData(); toast('Removed'); renderDvHired(); renderHiredCatalogue();
 }
 
 function delHiredItem(id){
