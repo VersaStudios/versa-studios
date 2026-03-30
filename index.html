@@ -1799,6 +1799,7 @@ async function doLogin() {
       throw new Error('Your account is not set up. Please contact an admin.');
     }
     _hideLogin();
+    await loadData();
     _initApp();
   } catch(e) {
     // Supabase auth failed — try job access PIN login
