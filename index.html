@@ -1535,6 +1535,179 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
     <div id="mlImportLog" style="margin-top:16px;background:#0a0a0a;border:1px solid var(--border);border-radius:6px;padding:14px;max-height:360px;overflow-y:auto;display:none;font-size:12px"></div>
   </div>
 </div>
+
+
+<!-- ShopOn TV report panel -->
+<div id="erShopOnPanel" style="display:none;max-width:640px;margin:0 auto">
+<style>
+.so-wrap{background:#111;border-radius:10px;overflow:hidden;box-shadow:0 2px 20px rgba(0,0,0,.5)}
+.so-head{background:linear-gradient(135deg,#111 0%,#1a1a1a 100%);padding:20px 24px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid rgba(255,120,0,.3)}
+.so-title{font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#ff7800}
+.so-body{padding:0 24px 24px}
+.so-sec{padding:18px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.so-sec:last-child{border-bottom:none}
+.so-lbl{font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:10px}
+.so-btn{padding:14px 20px;border-radius:7px;font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border:2px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:rgba(255,255,255,.5);transition:all .15s;flex:1}
+.so-btn.active{background:rgba(255,120,0,.15);border-color:#ff7800;color:#ff7800}
+.so-inp{width:100%;background:#1a1a1a;border:1.5px solid rgba(255,255,255,.12);border-radius:7px;color:#fff;padding:12px 14px;font-size:15px;font-family:var(--font);outline:none}
+.so-inp:focus{border-color:#ff7800}
+.so-inp::placeholder{color:rgba(255,255,255,.25)}
+.so-submit{width:100%;padding:15px;background:#ff7800;border:none;border-radius:8px;font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#000;cursor:pointer;margin-top:4px}
+.so-submit:disabled{opacity:.4;cursor:not-allowed}
+.so-success{display:none;text-align:center;padding:30px 20px}
+</style>
+<div class="so-wrap">
+  <div class="so-head">
+    <div><div style="font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:4px">Versa Studios</div><div class="so-title">ShopOn TV &middot; Technical Report</div></div>
+    <img style="width:50px;filter:brightness(0) invert(1);opacity:.4" src="data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgMTM2NiA1MTUuNjQiPjxwYXRoIGQ9Ik0xOTQuMTYsNTA3LjMzdi0xNC43YzkuMDksNC40NSwyMy40LDkuNjcsMzguNjcsOS42NywxOC4xNywwLDMyLjA5LTguMTIsMzIuMDktMjIuMjNzLTcuNTQtMjEuNjUtMzIuMDktMzAuMzVjLTI3LjY0LTkuODYtMzkuMDUtMjEuNjYtMzkuMDUtNDEuNzYsMC0yMywxOS43Mi0zNi4xNSw0NC42Ni0zNi4xNUE4Ni42LDg2LjYsMCwwLDEsMjcyLjI3LDM3OXYxNC4zMWMtNy41NC0zLjg3LTIwLjg4LTguMTMtMzMuMjUtOC4xMy0xNy43OSwwLTMwLjc0LDguNzEtMzAuNzQsMjIuMjQsMCwxMi41Nyw2Ljc3LDIxLjI2LDMxLjcsMzAuMzUsMjcuODQsOS44NiwzOS40NCwyMS4wNywzOS40NCw0MS4zNywwLDIzLTE4LjU2LDM2LjU0LTQ1LjgyLDM2LjU0QTk5LjIsOTkuMiwwLDAsMSwxOTQuMTYsNTA3LjMzWiIvPjwvc3ZnPg=="/>
+  </div>
+  <div class="so-body">
+    <div id="soFormView">
+      <div class="so-sec">
+        <div class="so-lbl">Show Date</div>
+        <input type="date" class="so-inp" id="soDate"/>
+      </div>
+      <div class="so-sec">
+        <div class="so-lbl">Director</div>
+        <div style="display:flex;gap:10px">
+          <button class="so-btn active" id="soBtnPK" onclick="soPick('PK')">Paul Keetley</button>
+          <button class="so-btn" id="soBtnKB" onclick="soPick('KB')">Kieron Bateman</button>
+        </div>
+        <input type="hidden" id="soDirector" value="Paul Keetley"/>
+      </div>
+      <div class="so-sec">
+        <div class="so-lbl">Technical Information</div>
+        <textarea class="so-inp" id="soInfo" style="min-height:120px;resize:vertical" placeholder="Describe technical activity, issues or observations&#x2026;"></textarea>
+      </div>
+      <div class="so-sec" style="border:none;padding-bottom:0">
+        <div style="font-family:var(--cond);font-size:11px;color:rgba(255,255,255,.3);margin-bottom:10px" id="soStatus">Complete all fields to submit</div>
+        <button class="so-submit" id="soSubmitBtn" onclick="soSubmit()" disabled>Submit Report</button>
+      </div>
+    </div>
+    <div class="so-success" id="soSuccess">
+      <div style="font-size:40px;margin-bottom:12px">✓</div>
+      <div style="font-family:var(--cond);font-size:18px;font-weight:800;color:#ff7800;margin-bottom:8px">Report Submitted</div>
+      <div style="font-size:14px;color:rgba(255,255,255,.5);margin-bottom:20px" id="soSuccessDetail"></div>
+      <button class="so-submit" onclick="soReset()" style="background:rgba(255,255,255,.1);color:#fff">Submit Another</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Cooking with the Stars report panel -->
+<div id="erCwtsPanel" style="display:none;max-width:640px;margin:0 auto">
+<style>
+.cw-wrap{background:#0f1218;border-radius:10px;overflow:hidden;box-shadow:0 2px 20px rgba(0,0,0,.5)}
+.cw-head{background:linear-gradient(135deg,#0f1218 0%,#161c24 100%);padding:20px 24px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid rgba(100,160,220,.3)}
+.cw-title{font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#64a0dc}
+.cw-body{padding:0 24px 24px}
+.cw-sec{padding:18px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.cw-sec:last-child{border-bottom:none}
+.cw-lbl{font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:10px}
+.cw-btn{padding:14px 16px;border-radius:7px;font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border:2px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:rgba(255,255,255,.5);transition:all .15s;flex:1}
+.cw-btn.active{background:rgba(100,160,220,.12);border-color:#64a0dc;color:#64a0dc}
+.cw-inp{width:100%;background:#161c24;border:1.5px solid rgba(255,255,255,.12);border-radius:7px;color:#fff;padding:12px 14px;font-size:15px;font-family:var(--font);outline:none}
+.cw-inp:focus{border-color:#64a0dc}
+.cw-inp::placeholder{color:rgba(255,255,255,.25)}
+.cw-submit{width:100%;padding:15px;background:#64a0dc;border:none;border-radius:8px;font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#000;cursor:pointer;margin-top:4px}
+.cw-submit:disabled{opacity:.4;cursor:not-allowed}
+.cw-success{display:none;text-align:center;padding:30px 20px}
+</style>
+<div class="cw-wrap">
+  <div class="cw-head">
+    <div><div style="font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:4px">Versa Studios</div><div class="cw-title">Cooking with the Stars &middot; Technical Report</div></div>
+    <img style="width:50px;filter:brightness(0) invert(1);opacity:.4" src="data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgMTM2NiA1MTUuNjQiPjxwYXRoIGQ9Ik0xOTQuMTYsNTA3LjMzdi0xNC43YzkuMDksNC40NSwyMy40LDkuNjcsMzguNjcsOS42NywxOC4xNywwLDMyLjA5LTguMTIsMzIuMDktMjIuMjNzLTcuNTQtMjEuNjUtMzIuMDktMzAuMzVjLTI3LjY0LTkuODYtMzkuMDUtMjEuNjYtMzkuMDUtNDEuNzYsMC0yMywxOS43Mi0zNi4xNSw0NC42Ni0zNi4xNUE4Ni42LDg2LjYsMCwwLDEsMjcyLjI3LDM3OXYxNC4zMWMtNy41NC0zLjg3LTIwLjg4LTguMTMtMzMuMjUtOC4xMy0xNy43OSwwLTMwLjc0LDguNzEtMzAuNzQsMjIuMjQsMCwxMi41Nyw2Ljc3LDIxLjI2LDMxLjcsMzAuMzUsMjcuODQsOS44NiwzOS40NCwyMS4wNywzOS40NCw0MS4zNywwLDIzLTE4LjU2LDM2LjU0LTQ1LjgyLDM2LjU0QTk5LjIsOTkuMiwwLDAsMSwxOTQuMTYsNTA3LjMzWiIvPjwvc3ZnPg=="/>
+  </div>
+  <div class="cw-body">
+    <div id="cwFormView">
+      <div class="cw-sec">
+        <div class="cw-lbl">Show Date</div>
+        <input type="date" class="cw-inp" id="cwDate"/>
+      </div>
+      <div class="cw-sec">
+        <div class="cw-lbl">Tech Manager</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="cw-btn active" id="cwBtnAR" onclick="cwPick('AR')">Andrew Rowell</button>
+          <button class="cw-btn" id="cwBtnOR" onclick="cwPick('OR')">Oli Riches</button>
+          <button class="cw-btn" id="cwBtnSB" onclick="cwPick('SB')">Simon Blunt</button>
+        </div>
+        <input type="hidden" id="cwTech" value="Andrew Rowell"/>
+      </div>
+      <div class="cw-sec">
+        <div class="cw-lbl">Technical Information</div>
+        <textarea class="cw-inp" id="cwInfo" style="min-height:120px;resize:vertical" placeholder="Describe technical activity, issues or observations&#x2026;"></textarea>
+      </div>
+      <div class="cw-sec" style="border:none;padding-bottom:0">
+        <div style="font-family:var(--cond);font-size:11px;color:rgba(255,255,255,.3);margin-bottom:10px" id="cwStatus">Complete all fields to submit</div>
+        <button class="cw-submit" id="cwSubmitBtn" onclick="cwSubmit()" disabled>Submit Report</button>
+      </div>
+    </div>
+    <div class="cw-success" id="cwSuccess" style="display:none;text-align:center;padding:30px 20px">
+      <div style="font-size:40px;margin-bottom:12px">✓</div>
+      <div style="font-family:var(--cond);font-size:18px;font-weight:800;color:#64a0dc;margin-bottom:8px">Report Submitted</div>
+      <div style="font-size:14px;color:rgba(255,255,255,.5);margin-bottom:20px" id="cwSuccessDetail"></div>
+      <button class="cw-submit" onclick="cwReset()" style="background:rgba(255,255,255,.1);color:#fff">Submit Another</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- I'm a Celeb report panel -->
+<div id="erCelebPanel" style="display:none;max-width:640px;margin:0 auto">
+<style>
+.cl-wrap{background:#100d08;border-radius:10px;overflow:hidden;box-shadow:0 2px 20px rgba(0,0,0,.5)}
+.cl-head{background:linear-gradient(135deg,#100d08 0%,#1a1508 100%);padding:20px 24px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid rgba(200,160,40,.3)}
+.cl-title{font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#c8a028}
+.cl-body{padding:0 24px 24px}
+.cl-sec{padding:18px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.cl-sec:last-child{border-bottom:none}
+.cl-lbl{font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:10px}
+.cl-btn{padding:14px 16px;border-radius:7px;font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border:2px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:rgba(255,255,255,.5);transition:all .15s;flex:1}
+.cl-btn.active{background:rgba(200,160,40,.12);border-color:#c8a028;color:#c8a028}
+.cl-inp{width:100%;background:#1a1508;border:1.5px solid rgba(255,255,255,.12);border-radius:7px;color:#fff;padding:12px 14px;font-size:15px;font-family:var(--font);outline:none}
+.cl-inp:focus{border-color:#c8a028}
+.cl-inp::placeholder{color:rgba(255,255,255,.25)}
+.cl-submit{width:100%;padding:15px;background:#c8a028;border:none;border-radius:8px;font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#000;cursor:pointer;margin-top:4px}
+.cl-submit:disabled{opacity:.4;cursor:not-allowed}
+</style>
+<div class="cl-wrap">
+  <div class="cl-head">
+    <div><div style="font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:4px">Versa Studios</div><div class="cl-title">I'm a Celebrity &middot; Technical Report</div></div>
+    <img style="width:50px;filter:brightness(0) invert(1);opacity:.4" src="data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgMTM2NiA1MTUuNjQiPjxwYXRoIGQ9Ik0xOTQuMTYsNTA3LjMzdi0xNC43YzkuMDksNC40NSwyMy40LDkuNjcsMzguNjcsOS42NywxOC4xNywwLDMyLjA5LTguMTIsMzIuMDktMjIuMjNzLTcuNTQtMjEuNjUtMzIuMDktMzAuMzVjLTI3LjY0LTkuODYtMzkuMDUtMjEuNjYtMzkuMDUtNDEuNzYsMC0yMywxOS43Mi0zNi4xNSw0NC42Ni0zNi4xNUE4Ni42LDg2LjYsMCwwLDEsMjcyLjI3LDM3OXYxNC4zMWMtNy41NC0zLjg3LTIwLjg4LTguMTMtMzMuMjUtOC4xMy0xNy43OSwwLTMwLjc0LDguNzEtMzAuNzQsMjIuMjQsMCwxMi41Nyw2Ljc3LDIxLjI2LDMxLjcsMzAuMzUsMjcuODQsOS44NiwzOS40NCwyMS4wNywzOS40NCw0MS4zNywwLDIzLTE4LjU2LDM2LjU0LTQ1LjgyLDM2LjU0QTk5LjIsOTkuMiwwLDAsMSwxOTQuMTYsNTA3LjMzWiIvPjwvc3ZnPg=="/>
+  </div>
+  <div class="cl-body">
+    <div id="clFormView">
+      <div class="cl-sec">
+        <div class="cl-lbl">Show Date</div>
+        <input type="date" class="cl-inp" id="clDate"/>
+      </div>
+      <div class="cl-sec">
+        <div class="cl-lbl">Tech Manager</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="cl-btn active" id="clBtnAR" onclick="clPick('AR')">Andrew Rowell</button>
+          <button class="cl-btn" id="clBtnOR" onclick="clPick('OR')">Oli Riches</button>
+          <button class="cl-btn" id="clBtnSB" onclick="clPick('SB')">Simon Blunt</button>
+        </div>
+        <input type="hidden" id="clTech" value="Andrew Rowell"/>
+      </div>
+      <div class="cl-sec">
+        <div class="cl-lbl">Technical Information</div>
+        <textarea class="cl-inp" id="clInfo" style="min-height:120px;resize:vertical" placeholder="Describe technical activity, issues or observations&#x2026;"></textarea>
+      </div>
+      <div class="cl-sec" style="border:none;padding-bottom:0">
+        <div style="font-family:var(--cond);font-size:11px;color:rgba(255,255,255,.3);margin-bottom:10px" id="clStatus">Complete all fields to submit</div>
+        <button class="cl-submit" id="clSubmitBtn" onclick="clSubmit()" disabled>Submit Report</button>
+      </div>
+    </div>
+    <div id="clSuccess" style="display:none;text-align:center;padding:30px 20px">
+      <div style="font-size:40px;margin-bottom:12px">✓</div>
+      <div style="font-family:var(--cond);font-size:18px;font-weight:800;color:#c8a028;margin-bottom:8px">Report Submitted</div>
+      <div style="font-size:14px;color:rgba(255,255,255,.5);margin-bottom:20px" id="clSuccessDetail"></div>
+      <button class="cl-submit" onclick="clReset()" style="background:rgba(255,255,255,.1);color:#fff">Submit Another</button>
+    </div>
+  </div>
+</div>
+</div>
 <div id="erSubPanelCal" style="display:none;margin-top:8px;max-width:680px;margin-left:auto;margin-right:auto">
   <div id="erCalWrap">
     <!-- rendered by erCalRender() -->
@@ -12544,177 +12717,8 @@ window.clPick=clPick;window.clSubmit=clSubmit;window.clReset=clReset;
         <button class="btn-p" id="mTlSubmit" onclick="tlSubmit()" style="width:100%;margin-top:8px">Add Entry</button>
       </div></div></div>
 
-<!-- ShopOn TV report panel -->
-<div id="erShopOnPanel" style="display:none;max-width:640px;margin:0 auto">
-<style>
-.so-wrap{background:#111;border-radius:10px;overflow:hidden;box-shadow:0 2px 20px rgba(0,0,0,.5)}
-.so-head{background:linear-gradient(135deg,#111 0%,#1a1a1a 100%);padding:20px 24px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid rgba(255,120,0,.3)}
-.so-title{font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#ff7800}
-.so-body{padding:0 24px 24px}
-.so-sec{padding:18px 0;border-bottom:1px solid rgba(255,255,255,.06)}
-.so-sec:last-child{border-bottom:none}
-.so-lbl{font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:10px}
-.so-btn{padding:14px 20px;border-radius:7px;font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border:2px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:rgba(255,255,255,.5);transition:all .15s;flex:1}
-.so-btn.active{background:rgba(255,120,0,.15);border-color:#ff7800;color:#ff7800}
-.so-inp{width:100%;background:#1a1a1a;border:1.5px solid rgba(255,255,255,.12);border-radius:7px;color:#fff;padding:12px 14px;font-size:15px;font-family:var(--font);outline:none}
-.so-inp:focus{border-color:#ff7800}
-.so-inp::placeholder{color:rgba(255,255,255,.25)}
-.so-submit{width:100%;padding:15px;background:#ff7800;border:none;border-radius:8px;font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#000;cursor:pointer;margin-top:4px}
-.so-submit:disabled{opacity:.4;cursor:not-allowed}
-.so-success{display:none;text-align:center;padding:30px 20px}
-</style>
-<div class="so-wrap">
-  <div class="so-head">
-    <div><div style="font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:4px">Versa Studios</div><div class="so-title">ShopOn TV &middot; Technical Report</div></div>
-    <img style="width:50px;filter:brightness(0) invert(1);opacity:.4" src="data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgMTM2NiA1MTUuNjQiPjxwYXRoIGQ9Ik0xOTQuMTYsNTA3LjMzdi0xNC43YzkuMDksNC40NSwyMy40LDkuNjcsMzguNjcsOS42NywxOC4xNywwLDMyLjA5LTguMTIsMzIuMDktMjIuMjNzLTcuNTQtMjEuNjUtMzIuMDktMzAuMzVjLTI3LjY0LTkuODYtMzkuMDUtMjEuNjYtMzkuMDUtNDEuNzYsMC0yMywxOS43Mi0zNi4xNSw0NC42Ni0zNi4xNUE4Ni42LDg2LjYsMCwwLDEsMjcyLjI3LDM3OXYxNC4zMWMtNy41NC0zLjg3LTIwLjg4LTguMTMtMzMuMjUtOC4xMy0xNy43OSwwLTMwLjc0LDguNzEtMzAuNzQsMjIuMjQsMCwxMi41Nyw2Ljc3LDIxLjI2LDMxLjcsMzAuMzUsMjcuODQsOS44NiwzOS40NCwyMS4wNywzOS40NCw0MS4zNywwLDIzLTE4LjU2LDM2LjU0LTQ1LjgyLDM2LjU0QTk5LjIsOTkuMiwwLDAsMSwxOTQuMTYsNTA3LjMzWiIvPjwvc3ZnPg=="/>
-  </div>
-  <div class="so-body">
-    <div id="soFormView">
-      <div class="so-sec">
-        <div class="so-lbl">Show Date</div>
-        <input type="date" class="so-inp" id="soDate"/>
-      </div>
-      <div class="so-sec">
-        <div class="so-lbl">Director</div>
-        <div style="display:flex;gap:10px">
-          <button class="so-btn active" id="soBtnPK" onclick="soPick('PK')">Paul Keetley</button>
-          <button class="so-btn" id="soBtnKB" onclick="soPick('KB')">Kieron Bateman</button>
-        </div>
-        <input type="hidden" id="soDirector" value="Paul Keetley"/>
-      </div>
-      <div class="so-sec">
-        <div class="so-lbl">Technical Information</div>
-        <textarea class="so-inp" id="soInfo" style="min-height:120px;resize:vertical" placeholder="Describe technical activity, issues or observations&#x2026;"></textarea>
-      </div>
-      <div class="so-sec" style="border:none;padding-bottom:0">
-        <div style="font-family:var(--cond);font-size:11px;color:rgba(255,255,255,.3);margin-bottom:10px" id="soStatus">Complete all fields to submit</div>
-        <button class="so-submit" id="soSubmitBtn" onclick="soSubmit()" disabled>Submit Report</button>
-      </div>
-    </div>
-    <div class="so-success" id="soSuccess">
-      <div style="font-size:40px;margin-bottom:12px">✓</div>
-      <div style="font-family:var(--cond);font-size:18px;font-weight:800;color:#ff7800;margin-bottom:8px">Report Submitted</div>
-      <div style="font-size:14px;color:rgba(255,255,255,.5);margin-bottom:20px" id="soSuccessDetail"></div>
-      <button class="so-submit" onclick="soReset()" style="background:rgba(255,255,255,.1);color:#fff">Submit Another</button>
-    </div>
-  </div>
-</div>
-</div>
 
-<!-- Cooking with the Stars report panel -->
-<div id="erCwtsPanel" style="display:none;max-width:640px;margin:0 auto">
-<style>
-.cw-wrap{background:#0f1218;border-radius:10px;overflow:hidden;box-shadow:0 2px 20px rgba(0,0,0,.5)}
-.cw-head{background:linear-gradient(135deg,#0f1218 0%,#161c24 100%);padding:20px 24px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid rgba(100,160,220,.3)}
-.cw-title{font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#64a0dc}
-.cw-body{padding:0 24px 24px}
-.cw-sec{padding:18px 0;border-bottom:1px solid rgba(255,255,255,.06)}
-.cw-sec:last-child{border-bottom:none}
-.cw-lbl{font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:10px}
-.cw-btn{padding:14px 16px;border-radius:7px;font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border:2px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:rgba(255,255,255,.5);transition:all .15s;flex:1}
-.cw-btn.active{background:rgba(100,160,220,.12);border-color:#64a0dc;color:#64a0dc}
-.cw-inp{width:100%;background:#161c24;border:1.5px solid rgba(255,255,255,.12);border-radius:7px;color:#fff;padding:12px 14px;font-size:15px;font-family:var(--font);outline:none}
-.cw-inp:focus{border-color:#64a0dc}
-.cw-inp::placeholder{color:rgba(255,255,255,.25)}
-.cw-submit{width:100%;padding:15px;background:#64a0dc;border:none;border-radius:8px;font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#000;cursor:pointer;margin-top:4px}
-.cw-submit:disabled{opacity:.4;cursor:not-allowed}
-.cw-success{display:none;text-align:center;padding:30px 20px}
-</style>
-<div class="cw-wrap">
-  <div class="cw-head">
-    <div><div style="font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:4px">Versa Studios</div><div class="cw-title">Cooking with the Stars &middot; Technical Report</div></div>
-    <img style="width:50px;filter:brightness(0) invert(1);opacity:.4" src="data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgMTM2NiA1MTUuNjQiPjxwYXRoIGQ9Ik0xOTQuMTYsNTA3LjMzdi0xNC43YzkuMDksNC40NSwyMy40LDkuNjcsMzguNjcsOS42NywxOC4xNywwLDMyLjA5LTguMTIsMzIuMDktMjIuMjNzLTcuNTQtMjEuNjUtMzIuMDktMzAuMzVjLTI3LjY0LTkuODYtMzkuMDUtMjEuNjYtMzkuMDUtNDEuNzYsMC0yMywxOS43Mi0zNi4xNSw0NC42Ni0zNi4xNUE4Ni42LDg2LjYsMCwwLDEsMjcyLjI3LDM3OXYxNC4zMWMtNy41NC0zLjg3LTIwLjg4LTguMTMtMzMuMjUtOC4xMy0xNy43OSwwLTMwLjc0LDguNzEtMzAuNzQsMjIuMjQsMCwxMi41Nyw2Ljc3LDIxLjI2LDMxLjcsMzAuMzUsMjcuODQsOS44NiwzOS40NCwyMS4wNywzOS40NCw0MS4zNywwLDIzLTE4LjU2LDM2LjU0LTQ1LjgyLDM2LjU0QTk5LjIsOTkuMiwwLDAsMSwxOTQuMTYsNTA3LjMzWiIvPjwvc3ZnPg=="/>
-  </div>
-  <div class="cw-body">
-    <div id="cwFormView">
-      <div class="cw-sec">
-        <div class="cw-lbl">Show Date</div>
-        <input type="date" class="cw-inp" id="cwDate"/>
-      </div>
-      <div class="cw-sec">
-        <div class="cw-lbl">Tech Manager</div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button class="cw-btn active" id="cwBtnAR" onclick="cwPick('AR')">Andrew Rowell</button>
-          <button class="cw-btn" id="cwBtnOR" onclick="cwPick('OR')">Oli Riches</button>
-          <button class="cw-btn" id="cwBtnSB" onclick="cwPick('SB')">Simon Blunt</button>
-        </div>
-        <input type="hidden" id="cwTech" value="Andrew Rowell"/>
-      </div>
-      <div class="cw-sec">
-        <div class="cw-lbl">Technical Information</div>
-        <textarea class="cw-inp" id="cwInfo" style="min-height:120px;resize:vertical" placeholder="Describe technical activity, issues or observations&#x2026;"></textarea>
-      </div>
-      <div class="cw-sec" style="border:none;padding-bottom:0">
-        <div style="font-family:var(--cond);font-size:11px;color:rgba(255,255,255,.3);margin-bottom:10px" id="cwStatus">Complete all fields to submit</div>
-        <button class="cw-submit" id="cwSubmitBtn" onclick="cwSubmit()" disabled>Submit Report</button>
-      </div>
-    </div>
-    <div class="cw-success" id="cwSuccess" style="display:none;text-align:center;padding:30px 20px">
-      <div style="font-size:40px;margin-bottom:12px">✓</div>
-      <div style="font-family:var(--cond);font-size:18px;font-weight:800;color:#64a0dc;margin-bottom:8px">Report Submitted</div>
-      <div style="font-size:14px;color:rgba(255,255,255,.5);margin-bottom:20px" id="cwSuccessDetail"></div>
-      <button class="cw-submit" onclick="cwReset()" style="background:rgba(255,255,255,.1);color:#fff">Submit Another</button>
-    </div>
-  </div>
-</div>
-</div>
 
-<!-- I'm a Celeb report panel -->
-<div id="erCelebPanel" style="display:none;max-width:640px;margin:0 auto">
-<style>
-.cl-wrap{background:#100d08;border-radius:10px;overflow:hidden;box-shadow:0 2px 20px rgba(0,0,0,.5)}
-.cl-head{background:linear-gradient(135deg,#100d08 0%,#1a1508 100%);padding:20px 24px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid rgba(200,160,40,.3)}
-.cl-title{font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#c8a028}
-.cl-body{padding:0 24px 24px}
-.cl-sec{padding:18px 0;border-bottom:1px solid rgba(255,255,255,.06)}
-.cl-sec:last-child{border-bottom:none}
-.cl-lbl{font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:10px}
-.cl-btn{padding:14px 16px;border-radius:7px;font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border:2px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:rgba(255,255,255,.5);transition:all .15s;flex:1}
-.cl-btn.active{background:rgba(200,160,40,.12);border-color:#c8a028;color:#c8a028}
-.cl-inp{width:100%;background:#1a1508;border:1.5px solid rgba(255,255,255,.12);border-radius:7px;color:#fff;padding:12px 14px;font-size:15px;font-family:var(--font);outline:none}
-.cl-inp:focus{border-color:#c8a028}
-.cl-inp::placeholder{color:rgba(255,255,255,.25)}
-.cl-submit{width:100%;padding:15px;background:#c8a028;border:none;border-radius:8px;font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#000;cursor:pointer;margin-top:4px}
-.cl-submit:disabled{opacity:.4;cursor:not-allowed}
-</style>
-<div class="cl-wrap">
-  <div class="cl-head">
-    <div><div style="font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:4px">Versa Studios</div><div class="cl-title">I'm a Celebrity &middot; Technical Report</div></div>
-    <img style="width:50px;filter:brightness(0) invert(1);opacity:.4" src="data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgMTM2NiA1MTUuNjQiPjxwYXRoIGQ9Ik0xOTQuMTYsNTA3LjMzdi0xNC43YzkuMDksNC40NSwyMy40LDkuNjcsMzguNjcsOS42NywxOC4xNywwLDMyLjA5LTguMTIsMzIuMDktMjIuMjNzLTcuNTQtMjEuNjUtMzIuMDktMzAuMzVjLTI3LjY0LTkuODYtMzkuMDUtMjEuNjYtMzkuMDUtNDEuNzYsMC0yMywxOS43Mi0zNi4xNSw0NC42Ni0zNi4xNUE4Ni42LDg2LjYsMCwwLDEsMjcyLjI3LDM3OXYxNC4zMWMtNy41NC0zLjg3LTIwLjg4LTguMTMtMzMuMjUtOC4xMy0xNy43OSwwLTMwLjc0LDguNzEtMzAuNzQsMjIuMjQsMCwxMi41Nyw2Ljc3LDIxLjI2LDMxLjcsMzAuMzUsMjcuODQsOS44NiwzOS40NCwyMS4wNywzOS40NCw0MS4zNywwLDIzLTE4LjU2LDM2LjU0LTQ1LjgyLDM2LjU0QTk5LjIsOTkuMiwwLDAsMSwxOTQuMTYsNTA3LjMzWiIvPjwvc3ZnPg=="/>
-  </div>
-  <div class="cl-body">
-    <div id="clFormView">
-      <div class="cl-sec">
-        <div class="cl-lbl">Show Date</div>
-        <input type="date" class="cl-inp" id="clDate"/>
-      </div>
-      <div class="cl-sec">
-        <div class="cl-lbl">Tech Manager</div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button class="cl-btn active" id="clBtnAR" onclick="clPick('AR')">Andrew Rowell</button>
-          <button class="cl-btn" id="clBtnOR" onclick="clPick('OR')">Oli Riches</button>
-          <button class="cl-btn" id="clBtnSB" onclick="clPick('SB')">Simon Blunt</button>
-        </div>
-        <input type="hidden" id="clTech" value="Andrew Rowell"/>
-      </div>
-      <div class="cl-sec">
-        <div class="cl-lbl">Technical Information</div>
-        <textarea class="cl-inp" id="clInfo" style="min-height:120px;resize:vertical" placeholder="Describe technical activity, issues or observations&#x2026;"></textarea>
-      </div>
-      <div class="cl-sec" style="border:none;padding-bottom:0">
-        <div style="font-family:var(--cond);font-size:11px;color:rgba(255,255,255,.3);margin-bottom:10px" id="clStatus">Complete all fields to submit</div>
-        <button class="cl-submit" id="clSubmitBtn" onclick="clSubmit()" disabled>Submit Report</button>
-      </div>
-    </div>
-    <div id="clSuccess" style="display:none;text-align:center;padding:30px 20px">
-      <div style="font-size:40px;margin-bottom:12px">✓</div>
-      <div style="font-family:var(--cond);font-size:18px;font-weight:800;color:#c8a028;margin-bottom:8px">Report Submitted</div>
-      <div style="font-size:14px;color:rgba(255,255,255,.5);margin-bottom:20px" id="clSuccessDetail"></div>
-      <button class="cl-submit" onclick="clReset()" style="background:rgba(255,255,255,.1);color:#fff">Submit Another</button>
-    </div>
-  </div>
-</div>
-</div>
 
 <!-- SIGN OUT CONFIRMATION MODAL -->
   <div class="modal-ov" id="mSignOut">
