@@ -1282,7 +1282,6 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
   <div id="erNavLabel" style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(216,90,97,.7);padding:0 16px 10px 0;flex-shrink:0">Morning Live</div>
   <button id="erSubTabReport" onclick="erSubTab('report')" style="padding:8px 18px;font-size:12px;font-family:var(--cond);font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:none;border:none;border-bottom:3px solid var(--accent);color:var(--accent);cursor:pointer;margin-bottom:-2px">&#128196; Report</button>
   <button id="erSubTabCal" onclick="erSubTab('cal')" style="padding:8px 18px;font-size:12px;font-family:var(--cond);font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:none;border:none;border-bottom:3px solid transparent;color:var(--muted);cursor:pointer;margin-bottom:-2px">&#128197; Calendar &amp; History</button>
-  <button id="erSubTabImport" onclick="erSubTab('import')" style="padding:8px 18px;font-size:12px;font-family:var(--cond);font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:none;border:none;border-bottom:3px solid transparent;color:var(--muted);cursor:pointer;margin-bottom:-2px">&#8679; Import</button>
 </div>
 <div id="erSubPanelReport">
 <div class="er-device">
@@ -1438,32 +1437,32 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
 <!-- Dragon's Den report panel -->
 <div id="erDDPanel" style="display:none">
 <style>
-.dd-wrap{max-width:640px;margin:0 auto;background:#1a1f1a;border-radius:10px;overflow:hidden;box-shadow:0 2px 20px rgba(0,0,0,.4)}
-.dd-head{background:linear-gradient(135deg,#1a3a1a 0%,#2d5a2d 100%);padding:20px 24px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:2px solid rgba(180,140,60,.4)}
-.dd-head-brand{font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:4px}
-.dd-head-title{font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#c8a832}
+.dd-wrap{max-width:640px;margin:0 auto;background:#141414;border-radius:10px;overflow:hidden;box-shadow:0 2px 20px rgba(0,0,0,.6)}
+.dd-head{background:linear-gradient(135deg,#1a1a1a 0%,#222 100%);padding:20px 24px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:2px solid rgba(160,160,160,.2)}
+.dd-head-brand{font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:4px}
+.dd-head-title{font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#bbb}
 .dd-logo{width:50px;filter:brightness(0) invert(1);opacity:.5}
 .dd-body{padding:0 24px 24px}
 .dd-sec{padding:18px 0;border-bottom:1px solid rgba(255,255,255,.06)}
 .dd-sec:last-child{border-bottom:none}
-.dd-lbl{font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(180,140,60,.8);margin-bottom:10px}
+.dd-lbl{font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(140,140,140,.8);margin-bottom:10px}
 .dd-btn-row{display:flex;gap:8px;flex-wrap:wrap}
 .dd-btn{padding:9px 18px;border:1px solid rgba(255,255,255,.15);border-radius:4px;font-family:var(--font,sans-serif);font-size:13px;font-weight:600;color:rgba(255,255,255,.7);background:rgba(255,255,255,.05);cursor:pointer;transition:all .12s}
-.dd-btn:hover{border-color:rgba(200,168,50,.5);color:#c8a832}
-.dd-btn.active{background:rgba(200,168,50,.2);border-color:#c8a832;color:#c8a832}
+.dd-btn:hover{border-color:rgba(160,160,160,.5);color:#bbb}
+.dd-btn.active{background:rgba(160,160,160,.2);border-color:#bbb;color:#bbb}
 .dd-select{width:100%;background:#111;border:1px solid rgba(255,255,255,.15);color:#fff;padding:10px 12px;border-radius:4px;font-size:14px;font-family:inherit;outline:none}
-.dd-select:focus{border-color:#c8a832}
+.dd-select:focus{border-color:#bbb}
 .dd-textarea{width:100%;background:#111;border:1px solid rgba(255,255,255,.15);color:#fff;padding:12px;border-radius:4px;font-size:14px;font-family:inherit;resize:vertical;min-height:120px;outline:none;line-height:1.6;box-sizing:border-box}
-.dd-textarea:focus{border-color:#c8a832}
+.dd-textarea:focus{border-color:#bbb}
 .dd-textarea::placeholder{color:rgba(255,255,255,.25)}
 .dd-hours-grid{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center}
 .dd-hours-name{font-size:13px;font-weight:600;color:rgba(255,255,255,.8)}
 .dd-time-input{background:#111;border:1px solid rgba(255,255,255,.15);color:#fff;padding:7px 10px;border-radius:4px;font-size:13px;font-family:var(--mono,monospace);width:90px;outline:none;text-align:center}
-.dd-time-input:focus{border-color:#c8a832}
-.dd-submit-btn{width:100%;padding:14px;background:linear-gradient(135deg,#2d5a2d,#3a7a3a);border:none;color:#c8a832;font-family:var(--cond,sans-serif);font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;border-radius:4px;margin-top:16px;transition:all .15s}
+.dd-time-input:focus{border-color:#bbb}
+.dd-submit-btn{width:100%;padding:14px;background:linear-gradient(135deg,#1e1e1e,#3a7a3a);border:none;color:#bbb;font-family:var(--cond,sans-serif);font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;border-radius:4px;margin-top:16px;transition:all .15s}
 .dd-submit-btn:hover:not(:disabled){background:linear-gradient(135deg,#3a7a3a,#4a9a4a)}
 .dd-submit-btn:disabled{opacity:.35;cursor:not-allowed}
-.dd-success{display:none;padding:24px;text-align:center;background:rgba(45,90,45,.3);border-top:1px solid rgba(180,140,60,.3)}
+.dd-success{display:none;padding:24px;text-align:center;background:rgba(45,90,45,.3);border-top:1px solid rgba(140,140,140,.3)}
 </style>
 <div class="dd-wrap">
   <div class="dd-head">
@@ -1783,6 +1782,80 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
         </div>
       
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+async function renderDashActivity(el){
+  if(!el)return;
+  el.innerHTML='<div style="padding:14px 18px;font-size:13px;color:var(--muted);font-family:var(--cond)">Loading…</div>';
+  var items=[];
+  // Last 3 engineering reports
+  try{
+    var r=await fetch('https://dttwgmoyxthczlzxjgag.supabase.co/rest/v1/engineering_reports?select=*&order=submitted_at.desc&limit=3',{
+      headers:{'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ'}
+    });
+    var reps=await r.json();
+    if(Array.isArray(reps))reps.forEach(function(rep){
+      var isUrgent=rep.urgent_action==='Yes';
+      var mode=rep.summary_mode==='ntr'?'NTR':'STR';
+      var col=isUrgent?'#e05050':rep.summary_mode==='ntr'?'#22c55e':'#f59e0b';
+      var d=rep.show_date||'';var p=d.split('-');
+      var dateDisp=p.length===3?p[2]+'/'+p[1]+'/'+p[0].slice(2):d;
+      items.push({
+        icon:'&#128196;',
+        title:(rep.show_name||'Engineering Report')+' — '+dateDisp,
+        sub:rep.versa_tech_manager||(isUrgent?'⚠ Urgent':''),
+        col:col,
+        badge:isUrgent?'⚠ URGENT':mode,
+        badgeCol:col,
+        ts:rep.submitted_at
+      });
+    });
+  }catch(e){}
+  // Last 3 tech log entries (all locations)
+  try{
+    var allTl=[];
+    for(var loc of ['manchester','london','abc']){
+      var tr=await fetch('https://dttwgmoyxthczlzxjgag.supabase.co/rest/v1/app_data?key=eq.tech_log_'+loc+'&select=value',{
+        headers:{'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ'}
+      });
+      var td=await tr.json();
+      if(td&&td[0]&&Array.isArray(td[0].value)){
+        td[0].value.forEach(function(e){allTl.push(Object.assign({_loc:loc},e));});
+      }
+    }
+    allTl.sort(function(a,b){return(b.date||'').localeCompare(a.date||'')||(String(b.id).localeCompare(String(a.id)));  });
+    var tlCols={manchester:'#5b8af0',london:'#d4a843',abc:'#80d0a0'};
+    var tlSt={information:'INFO',ongoing:'ONGOING',resolved:'RESOLVED'};
+    var tlSc={information:'#f59e0b',ongoing:'#ef4444',resolved:'#22c55e'};
+    allTl.slice(0,3).forEach(function(e){
+      var s=e.status||'information';
+      var p=e.date?e.date.split('-'):[];
+      var dateDisp=p.length===3?p[2]+'/'+p[1]+'/'+p[0].slice(2):e.date||'';
+      items.push({
+        icon:'&#128203;',
+        title:e.info?(e.info.length>60?e.info.slice(0,57)+'…':e.info):'Tech Log Entry',
+        sub:(e.by||'')+' · '+(e._loc?e._loc.charAt(0).toUpperCase()+e._loc.slice(1):'')+(e.studio?' · '+e.studio:''),
+        col:tlCols[e._loc]||'var(--accent)',
+        badge:tlSt[s]||s,
+        badgeCol:tlSc[s]||'#888',
+        ts:e.date
+      });
+    });
+  }catch(e){}
+  if(!items.length){
+    el.innerHTML='<div style="padding:16px 18px;font-size:13px;color:var(--muted);font-family:var(--cond)">No recent activity.</div>';
+    return;
+  }
+  el.innerHTML=items.map(function(it){
+    return '<div style="display:flex;align-items:flex-start;gap:12px;padding:12px 18px;border-bottom:1px solid var(--border)">'
+      +'<div style="font-size:18px;line-height:1.2;flex-shrink:0">'+it.icon+'</div>'
+      +'<div style="flex:1;min-width:0">'
+      +'<div style="font-size:14px;font-weight:600;color:var(--white);margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+it.title+'</div>'
+      +'<div style="font-family:var(--cond);font-size:11px;color:var(--muted)">'+it.sub+'</div>'
+      +'</div>'
+      +'<span style="font-family:var(--cond);font-size:10px;font-weight:700;letter-spacing:.06em;padding:2px 7px;border-radius:3px;background:'+it.badgeCol+'22;color:'+it.badgeCol+';flex-shrink:0;align-self:center">'+it.badge+'</span>'
+      +'</div>';
+  }).join('');
+}
+
 window._lastErr = null; // debug handler removed for production
 // ── SUPABASE CONFIG (direct REST — no SDK needed) ─────────────────────────────
 const _SB_URL = 'https://dttwgmoyxthczlzxjgag.supabase.co';
@@ -3742,11 +3815,17 @@ var _erActiveJob='ml'; // 'ml' or job id
 
 function erRenderJobTabs() {
   var wrap = document.getElementById('erJobTabs'); if(!wrap) return;
-  var tabs = [{id:'ml',label:'Morning Live',col:'#8b3a8b'}];
-  // Add jobs that have eng report enabled (have txDates with RX entries, or are ongoing)
+  var tabs = [
+    {id:'ml',label:'Morning Live',col:'#8b3a8b'},
+    {id:'shopon',label:'ShopOn TV',col:'#ff7800'},
+    {id:'cwts',label:'Cooking with the Stars',col:'#64a0dc'},
+    {id:'celeb',label:"I'm a Celeb",col:'#c8a028'}
+  ];
+  // Add other jobs from job planner
   if(typeof jobs !== 'undefined') {
     jobs.forEach(function(j) {
-      if(j.name && j.name !== 'Morning Live') {
+      var reserved=['Morning Live','ShopOn TV','Cooking with the Stars',"I'm a Celebrity","Dragon's Den"];
+      if(j.name && !reserved.includes(j.name)) {
         tabs.push({id:'j'+j.id, label:j.name, col:(j.color&&j.color.bg)||'#2d5a2d', jid:j.id});
       }
     });
@@ -3764,40 +3843,43 @@ function erRenderJobTabs() {
 function erSwitchJob(jobId) {
   _erActiveJob = jobId;
   erRenderJobTabs();
-  // Show/hide appropriate panels
-  var isDragonsDen = false;
-  if(jobId !== 'ml' && typeof jobs !== 'undefined') {
-    var jid = parseInt(jobId.replace('j',''));
-    var j = jobs.find(function(x){ return x.id === jid; });
-    if(j) isDragonsDen = (j.name === 'Dragons Den');
-  }
-  var mlReport = document.getElementById('erSubPanelReport');
-  var ddPanel  = document.getElementById('erDDPanel');
-  var calPanel = document.getElementById('erSubPanelCal');
-  var impPanel = document.getElementById('erSubPanelImport');
-  // Reset to report sub-tab
-  if(mlReport) mlReport.style.display = isDragonsDen ? 'none' : '';
-  if(ddPanel)  ddPanel.style.display  = isDragonsDen ? '' : 'none';
-  if(calPanel) calPanel.style.display = 'none';
-  if(impPanel) impPanel.style.display = 'none';
-  // Reset sub-tab highlights
-  ['Report','Cal','Import'].forEach(function(t){
-    var b = document.getElementById('erSubTab'+t);
-    if(b){ b.style.borderBottomColor='transparent'; b.style.color='var(--muted)'; }
+  var isDD=false,isSO=false,isCW=false,isCL=false,jobName='';
+  if(jobId==='shopon'){isSO=true;jobName='ShopOn TV';}
+  else if(jobId==='cwts'){isCW=true;jobName='Cooking with the Stars';}
+  else if(jobId==='celeb'){isCL=true;jobName="I'm a Celebrity";}
+  else if(jobId!=='ml'&&typeof jobs!=='undefined'){
+    var jid=parseInt(jobId.replace('j',''));
+    var j=jobs.find(function(x){return x.id===jid;});
+    if(j){jobName=j.name;isDD=(j.name==="Dragon's Den"||j.name==='Dragons Den');}
+  } else {jobName='Morning Live';}
+  // Show the right panel, hide the rest
+  var panelMap={erSubPanelReport:(!isDD&&!isSO&&!isCW&&!isCL),erDDPanel:isDD,erShopOnPanel:isSO,erCwtsPanel:isCW,erCelebPanel:isCL};
+  Object.keys(panelMap).forEach(function(id){
+    var el=document.getElementById(id);
+    if(el)el.style.display=panelMap[id]?'':'none';
   });
-  var rb = document.getElementById('erSubTabReport');
-  if(rb && !isDragonsDen){ rb.style.borderBottomColor='var(--accent)'; rb.style.color='var(--accent)'; }
-  // Update nav label
-  var lbl = document.getElementById('erNavLabel');
-  if(lbl) lbl.textContent = isDragonsDen ? "Dragon's Den" : 'Morning Live';
-  // Update form title
-  var title = document.getElementById('erFormTitle');
-  if(title) title.textContent = 'Morning Live · Engineering Report';
-  // Populate DD form if needed
-  if(isDragonsDen) ddPopulateRxDates(jobs.find(function(x){ return x.id===parseInt(jobId.replace('j','')); }));
-  // Update hidden show selector for calendar history queries
-  var sel = document.getElementById('erShowSel');
-  if(sel) sel.value = isDragonsDen ? 'Dragons Den' : 'Morning Live';
+  var calPanel=document.getElementById('erSubPanelCal');
+  if(calPanel)calPanel.style.display='none';
+  // Reset sub-tab highlights
+  ['Report','Cal'].forEach(function(t){
+    var b=document.getElementById('erSubTab'+t);
+    if(b){b.style.borderBottomColor='transparent';b.style.color='var(--muted)';}
+  });
+  var rb=document.getElementById('erSubTabReport');
+  if(rb&&!isDD&&!isSO&&!isCW&&!isCL){rb.style.borderBottomColor='var(--accent)';rb.style.color='var(--accent)';}
+  // Nav label
+  var lbl=document.getElementById('erNavLabel');
+  if(lbl)lbl.textContent=jobName||'Morning Live';
+  // Populate job-specific forms
+  if(isDD){
+    var jdd=typeof jobs!=='undefined'&&jobs.find(function(x){return x.id===parseInt(jobId.replace('j',''));});
+    if(jdd&&typeof ddPopulateRxDates==='function')ddPopulateRxDates(jdd);
+  }
+  if(isSO&&typeof soUpdateStatus==='function')soUpdateStatus();
+  if(isCW&&typeof cwUpdateStatus==='function')cwUpdateStatus();
+  if(isCL&&typeof clUpdateStatus==='function')clUpdateStatus();
+  // Clear report cache so calendar reloads per job
+  if(window._engReportCache)window._engReportCache={};
 }
 
 function erSubTab(tab){
@@ -3862,7 +3944,8 @@ async function erHistFetch(){
   var moreBtn=document.getElementById('erHistMore');
   var st=document.getElementById('erHistStatus');
   try{
-    var url=_ER_SB_URL+'/rest/v1/engineering_reports?select=*&order=show_date.desc,submitted_at.desc&limit='+(_erHistPageSize+1)+'&offset='+_erHistOffset;
+    var _sn=erGetActiveShowName();
+    var url=_ER_SB_URL+'/rest/v1/engineering_reports?select=*&order=show_date.desc,submitted_at.desc&limit='+(_erHistPageSize+1)+'&offset='+_erHistOffset+(_sn?'&show_name=eq.'+encodeURIComponent(_sn):'');
     var r=await fetch(url,{headers:_ER_SB_HDR});
     var rows=await r.json();
     if(!Array.isArray(rows)) rows=[];
@@ -4337,7 +4420,7 @@ async function _fetchEngReport(dateStr) {
   if (_engReportCache.hasOwnProperty(dateStr)) return _engReportCache[dateStr];
   try {
     const resp = await fetch(
-      _SB_URL+'/rest/v1/engineering_reports?show_date=eq.'+dateStr+'&order=submitted_at.desc&limit=1',
+      _SB_URL+'/rest/v1/engineering_reports?show_date=eq.'+dateStr+'&order=submitted_at.desc&limit=1'+(erGetActiveShowName()?'&show_name=eq.'+encodeURIComponent(erGetActiveShowName()):''),
       {headers: {'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY}}
     );
     const rows = await resp.json();
@@ -4923,43 +5006,8 @@ function renderDash() {
     }
   }
 
-  const actEl = document.getElementById('dActivity');
-  if(actEl){
-    var engEntries=[];
-    jobs.forEach(function(j){
-      if(!j.engLog)return;
-      Object.keys(j.engLog).forEach(function(dateStr){
-        var e=j.engLog[dateStr];
-        if(!e)return;
-        var hasContent=(e.notes&&e.notes.trim())||(e.faults&&e.faults.trim())||(e.issues&&e.issues.trim());
-        if(!hasContent)return;
-        engEntries.push({date:dateStr,job:j.name,notes:e.notes||'',faults:e.faults||'',issues:e.issues||''});
-      });
-    });
-    engEntries.sort(function(a,b){return b.date.localeCompare(a.date);});
-    var recent=engEntries.slice(0,8);
-    if(recent.length){
-      actEl.innerHTML=recent.map(function(e){
-        var today=new Date().toISOString().slice(0,10);
-        var yesterday=new Date(Date.now()-86400000).toISOString().slice(0,10);
-        var label=e.date===today?'Today':e.date===yesterday?'Yesterday':fmtD(e.date);
-        var preview=(e.faults.trim()||e.issues.trim()||e.notes.trim()).slice(0,80);
-        var hasIssue=e.faults.trim()||e.issues.trim();
-        var dot=hasIssue
-          ?'<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#e63946;margin-right:7px;flex-shrink:0;margin-top:4px"></span>'
-          :'<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#3dbf7a;margin-right:7px;flex-shrink:0;margin-top:4px"></span>';
-        return '<div style="padding:10px 17px;border-bottom:1px solid var(--border);cursor:pointer" onclick="nav(\'engreport\',document.querySelector(\'[data-pg=engreport]\'))">'
-          +'<div style="display:flex;align-items:flex-start">'
-          +dot
-          +'<div style="flex:1;min-width:0">'
-          +'<div style="font-size:12px;font-weight:800;font-family:var(--cond);letter-spacing:.06em;color:var(--muted);text-transform:uppercase;margin-bottom:2px">'+e.job+' &middot; '+label+'</div>'
-          +'<div style="font-size:13px;color:var(--white);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+preview+(preview.length>=80?'&#8230;':'')+'</div>'
-          +'</div></div></div>';
-      }).join('');
-    } else {
-      actEl.innerHTML='<div style="padding:20px 17px;font-size:13px;color:var(--muted)">No engineering log entries yet. Open a job and use the Eng Log tab to add entries.</div>';
-    }
-  }
+var actEl = document.getElementById('dActivity');
+  if(actEl){ renderDashActivity(actEl); }
 }
 
 
@@ -12184,6 +12232,130 @@ document.addEventListener('DOMContentLoaded',function(){
   if(typeof _os==='function'){window.switchStudio=function(loc,el){_os&&_os.apply(this,arguments);tlLoad(loc);};}
 });
 
+
+// Expose TL functions globally for onclick attributes
+window.tlOpenAdd=tlOpenAdd;window.tlFilter=tlFilter;window.tlTog=tlTog;
+window.tlCyc=tlCyc;window.tlDel=tlDel;window.tlShowNb=tlShowNb;
+window.tlSubNote=tlSubNote;window.tlEditNx=tlEditNx;
+window.tlOpenEdit=tlOpenEdit;window.tlSubmit=tlSubmit;
+
+function erGetActiveShowName(){
+  if(_erActiveJob==='ml')return'Morning Live';
+  if(_erActiveJob==='shopon')return'ShopOn TV';
+  if(_erActiveJob==='cwts')return'Cooking with the Stars';
+  if(_erActiveJob==='celeb')return"I'm a Celebrity";
+  if(typeof jobs!=='undefined'&&_erActiveJob&&_erActiveJob!=='ml'){
+    var jid=parseInt(_erActiveJob.replace('j',''));
+    var j=jobs.find(function(x){return x.id===jid;});
+    if(j)return j.name;
+  }
+  return'';
+}
+
+// ── ShopOn TV Form ────────────────────────────────────────────────────────
+function soPick(code){
+  var names={PK:'Paul Keetley',KB:'Kieron Bateman'};
+  document.getElementById('soDirector').value=names[code]||code;
+  ['PK','KB'].forEach(function(c){
+    var b=document.getElementById('soBtn'+c);
+    if(b)b.classList.toggle('active',c===code);
+  });
+  soUpdateStatus();
+}
+function soUpdateStatus(){
+  var ok=!!(document.getElementById('soDate').value&&document.getElementById('soInfo').value.trim());
+  var st=document.getElementById('soStatus');var btn=document.getElementById('soSubmitBtn');
+  if(st)st.textContent=ok?'Ready to submit':'Complete all fields to submit';
+  if(btn)btn.disabled=!ok;
+}
+async function soSubmit(){
+  var date=document.getElementById('soDate').value,dir=document.getElementById('soDirector').value,info=document.getElementById('soInfo').value.trim();
+  if(!date||!info)return;
+  var btn=document.getElementById('soSubmitBtn');btn.disabled=true;btn.textContent='Submitting…';
+  try{
+    var r=await fetch('https://dttwgmoyxthczlzxjgag.supabase.co/rest/v1/engineering_reports',{method:'POST',
+      headers:{'Content-Type':'application/json','apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ','Prefer':'return=minimal'},
+      body:JSON.stringify({versa_tech_manager:dir,bbc_tech_manager:'',show_date:date,show_name:'ShopOn TV',summary_mode:'str',summary_text:info,tagged_kit:[],tagged_kit_names:[],urgent_action:'No',urgent_details:'',submitted_at:new Date().toISOString()})});
+    if(r.ok){document.getElementById('soFormView').style.display='none';var sd=document.getElementById('soSuccess');if(sd)sd.style.display='block';var det=document.getElementById('soSuccessDetail');if(det)det.textContent=dir+' · '+date;}
+    else toast('Submit failed');
+  }catch(e){toast('Error: '+e.message);}
+  btn.disabled=false;btn.textContent='Submit Report';
+}
+function soReset(){
+  document.getElementById('soFormView').style.display='';
+  var sd=document.getElementById('soSuccess');if(sd)sd.style.display='none';
+  document.getElementById('soDate').value='';document.getElementById('soInfo').value='';
+  soPick('PK');soUpdateStatus();
+}
+window.soPick=soPick;window.soSubmit=soSubmit;window.soReset=soReset;
+
+// ── Cooking with the Stars Form ───────────────────────────────────────────
+function cwPick(code){
+  var n={AR:'Andrew Rowell',OR:'Oli Riches',SB:'Simon Blunt'};
+  document.getElementById('cwTech').value=n[code]||code;
+  ['AR','OR','SB'].forEach(function(c){var b=document.getElementById('cwBtn'+c);if(b)b.classList.toggle('active',c===code);});
+  cwUpdateStatus();
+}
+function cwUpdateStatus(){
+  var ok=!!(document.getElementById('cwDate').value&&document.getElementById('cwInfo').value.trim());
+  var st=document.getElementById('cwStatus');var btn=document.getElementById('cwSubmitBtn');
+  if(st)st.textContent=ok?'Ready to submit':'Complete all fields to submit';
+  if(btn)btn.disabled=!ok;
+}
+async function cwSubmit(){
+  var date=document.getElementById('cwDate').value,tech=document.getElementById('cwTech').value,info=document.getElementById('cwInfo').value.trim();
+  if(!date||!info)return;
+  var btn=document.getElementById('cwSubmitBtn');btn.disabled=true;btn.textContent='Submitting…';
+  try{
+    var r=await fetch('https://dttwgmoyxthczlzxjgag.supabase.co/rest/v1/engineering_reports',{method:'POST',
+      headers:{'Content-Type':'application/json','apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ','Prefer':'return=minimal'},
+      body:JSON.stringify({versa_tech_manager:tech,bbc_tech_manager:'',show_date:date,show_name:'Cooking with the Stars',summary_mode:'str',summary_text:info,tagged_kit:[],tagged_kit_names:[],urgent_action:'No',urgent_details:'',submitted_at:new Date().toISOString()})});
+    if(r.ok){document.getElementById('cwFormView').style.display='none';var sd=document.getElementById('cwSuccess');if(sd)sd.style.display='block';var det=document.getElementById('cwSuccessDetail');if(det)det.textContent=tech+' · '+date;}
+    else toast('Submit failed');
+  }catch(e){toast('Error: '+e.message);}
+  btn.disabled=false;btn.textContent='Submit Report';
+}
+function cwReset(){
+  document.getElementById('cwFormView').style.display='';
+  var sd=document.getElementById('cwSuccess');if(sd)sd.style.display='none';
+  document.getElementById('cwDate').value='';document.getElementById('cwInfo').value='';
+  cwPick('AR');cwUpdateStatus();
+}
+window.cwPick=cwPick;window.cwSubmit=cwSubmit;window.cwReset=cwReset;
+
+// ── I'm a Celebrity Form ──────────────────────────────────────────────────
+function clPick(code){
+  var n={AR:'Andrew Rowell',OR:'Oli Riches',SB:'Simon Blunt'};
+  document.getElementById('clTech').value=n[code]||code;
+  ['AR','OR','SB'].forEach(function(c){var b=document.getElementById('clBtn'+c);if(b)b.classList.toggle('active',c===code);});
+  clUpdateStatus();
+}
+function clUpdateStatus(){
+  var ok=!!(document.getElementById('clDate').value&&document.getElementById('clInfo').value.trim());
+  var st=document.getElementById('clStatus');var btn=document.getElementById('clSubmitBtn');
+  if(st)st.textContent=ok?'Ready to submit':'Complete all fields to submit';
+  if(btn)btn.disabled=!ok;
+}
+async function clSubmit(){
+  var date=document.getElementById('clDate').value,tech=document.getElementById('clTech').value,info=document.getElementById('clInfo').value.trim();
+  if(!date||!info)return;
+  var btn=document.getElementById('clSubmitBtn');btn.disabled=true;btn.textContent='Submitting…';
+  try{
+    var r=await fetch('https://dttwgmoyxthczlzxjgag.supabase.co/rest/v1/engineering_reports',{method:'POST',
+      headers:{'Content-Type':'application/json','apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ','Prefer':'return=minimal'},
+      body:JSON.stringify({versa_tech_manager:tech,bbc_tech_manager:'',show_date:date,show_name:"I'm a Celebrity",summary_mode:'str',summary_text:info,tagged_kit:[],tagged_kit_names:[],urgent_action:'No',urgent_details:'',submitted_at:new Date().toISOString()})});
+    if(r.ok){document.getElementById('clFormView').style.display='none';var sd=document.getElementById('clSuccess');if(sd)sd.style.display='block';var det=document.getElementById('clSuccessDetail');if(det)det.textContent=tech+' · '+date;}
+    else toast('Submit failed');
+  }catch(e){toast('Error: '+e.message);}
+  btn.disabled=false;btn.textContent='Submit Report';
+}
+function clReset(){
+  document.getElementById('clFormView').style.display='';
+  var sd=document.getElementById('clSuccess');if(sd)sd.style.display='none';
+  document.getElementById('clDate').value='';document.getElementById('clInfo').value='';
+  clPick('AR');clUpdateStatus();
+}
+window.clPick=clPick;window.clSubmit=clSubmit;window.clReset=clReset;
 </script>
   <!-- PICK CAM KIT MODAL -->
   <div class="modal-ov" id="mPickCamKit">
@@ -12371,6 +12543,178 @@ document.addEventListener('DOMContentLoaded',function(){
         <div class="ff full"><label class="flbl">Next Stage</label><input class="fi" id="mTlNext" placeholder="e.g. Re-end cable"/></div>
         <button class="btn-p" id="mTlSubmit" onclick="tlSubmit()" style="width:100%;margin-top:8px">Add Entry</button>
       </div></div></div>
+
+<!-- ShopOn TV report panel -->
+<div id="erShopOnPanel" style="display:none;max-width:640px;margin:0 auto">
+<style>
+.so-wrap{background:#111;border-radius:10px;overflow:hidden;box-shadow:0 2px 20px rgba(0,0,0,.5)}
+.so-head{background:linear-gradient(135deg,#111 0%,#1a1a1a 100%);padding:20px 24px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid rgba(255,120,0,.3)}
+.so-title{font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#ff7800}
+.so-body{padding:0 24px 24px}
+.so-sec{padding:18px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.so-sec:last-child{border-bottom:none}
+.so-lbl{font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:10px}
+.so-btn{padding:14px 20px;border-radius:7px;font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border:2px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:rgba(255,255,255,.5);transition:all .15s;flex:1}
+.so-btn.active{background:rgba(255,120,0,.15);border-color:#ff7800;color:#ff7800}
+.so-inp{width:100%;background:#1a1a1a;border:1.5px solid rgba(255,255,255,.12);border-radius:7px;color:#fff;padding:12px 14px;font-size:15px;font-family:var(--font);outline:none}
+.so-inp:focus{border-color:#ff7800}
+.so-inp::placeholder{color:rgba(255,255,255,.25)}
+.so-submit{width:100%;padding:15px;background:#ff7800;border:none;border-radius:8px;font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#000;cursor:pointer;margin-top:4px}
+.so-submit:disabled{opacity:.4;cursor:not-allowed}
+.so-success{display:none;text-align:center;padding:30px 20px}
+</style>
+<div class="so-wrap">
+  <div class="so-head">
+    <div><div style="font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:4px">Versa Studios</div><div class="so-title">ShopOn TV &middot; Technical Report</div></div>
+    <img style="width:50px;filter:brightness(0) invert(1);opacity:.4" src="data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgMTM2NiA1MTUuNjQiPjxwYXRoIGQ9Ik0xOTQuMTYsNTA3LjMzdi0xNC43YzkuMDksNC40NSwyMy40LDkuNjcsMzguNjcsOS42NywxOC4xNywwLDMyLjA5LTguMTIsMzIuMDktMjIuMjNzLTcuNTQtMjEuNjUtMzIuMDktMzAuMzVjLTI3LjY0LTkuODYtMzkuMDUtMjEuNjYtMzkuMDUtNDEuNzYsMC0yMywxOS43Mi0zNi4xNSw0NC42Ni0zNi4xNUE4Ni42LDg2LjYsMCwwLDEsMjcyLjI3LDM3OXYxNC4zMWMtNy41NC0zLjg3LTIwLjg4LTguMTMtMzMuMjUtOC4xMy0xNy43OSwwLTMwLjc0LDguNzEtMzAuNzQsMjIuMjQsMCwxMi41Nyw2Ljc3LDIxLjI2LDMxLjcsMzAuMzUsMjcuODQsOS44NiwzOS40NCwyMS4wNywzOS40NCw0MS4zNywwLDIzLTE4LjU2LDM2LjU0LTQ1LjgyLDM2LjU0QTk5LjIsOTkuMiwwLDAsMSwxOTQuMTYsNTA3LjMzWiIvPjwvc3ZnPg=="/>
+  </div>
+  <div class="so-body">
+    <div id="soFormView">
+      <div class="so-sec">
+        <div class="so-lbl">Show Date</div>
+        <input type="date" class="so-inp" id="soDate"/>
+      </div>
+      <div class="so-sec">
+        <div class="so-lbl">Director</div>
+        <div style="display:flex;gap:10px">
+          <button class="so-btn active" id="soBtnPK" onclick="soPick('PK')">Paul Keetley</button>
+          <button class="so-btn" id="soBtnKB" onclick="soPick('KB')">Kieron Bateman</button>
+        </div>
+        <input type="hidden" id="soDirector" value="Paul Keetley"/>
+      </div>
+      <div class="so-sec">
+        <div class="so-lbl">Technical Information</div>
+        <textarea class="so-inp" id="soInfo" style="min-height:120px;resize:vertical" placeholder="Describe technical activity, issues or observations&#x2026;"></textarea>
+      </div>
+      <div class="so-sec" style="border:none;padding-bottom:0">
+        <div style="font-family:var(--cond);font-size:11px;color:rgba(255,255,255,.3);margin-bottom:10px" id="soStatus">Complete all fields to submit</div>
+        <button class="so-submit" id="soSubmitBtn" onclick="soSubmit()" disabled>Submit Report</button>
+      </div>
+    </div>
+    <div class="so-success" id="soSuccess">
+      <div style="font-size:40px;margin-bottom:12px">✓</div>
+      <div style="font-family:var(--cond);font-size:18px;font-weight:800;color:#ff7800;margin-bottom:8px">Report Submitted</div>
+      <div style="font-size:14px;color:rgba(255,255,255,.5);margin-bottom:20px" id="soSuccessDetail"></div>
+      <button class="so-submit" onclick="soReset()" style="background:rgba(255,255,255,.1);color:#fff">Submit Another</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Cooking with the Stars report panel -->
+<div id="erCwtsPanel" style="display:none;max-width:640px;margin:0 auto">
+<style>
+.cw-wrap{background:#0f1218;border-radius:10px;overflow:hidden;box-shadow:0 2px 20px rgba(0,0,0,.5)}
+.cw-head{background:linear-gradient(135deg,#0f1218 0%,#161c24 100%);padding:20px 24px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid rgba(100,160,220,.3)}
+.cw-title{font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#64a0dc}
+.cw-body{padding:0 24px 24px}
+.cw-sec{padding:18px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.cw-sec:last-child{border-bottom:none}
+.cw-lbl{font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:10px}
+.cw-btn{padding:14px 16px;border-radius:7px;font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border:2px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:rgba(255,255,255,.5);transition:all .15s;flex:1}
+.cw-btn.active{background:rgba(100,160,220,.12);border-color:#64a0dc;color:#64a0dc}
+.cw-inp{width:100%;background:#161c24;border:1.5px solid rgba(255,255,255,.12);border-radius:7px;color:#fff;padding:12px 14px;font-size:15px;font-family:var(--font);outline:none}
+.cw-inp:focus{border-color:#64a0dc}
+.cw-inp::placeholder{color:rgba(255,255,255,.25)}
+.cw-submit{width:100%;padding:15px;background:#64a0dc;border:none;border-radius:8px;font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#000;cursor:pointer;margin-top:4px}
+.cw-submit:disabled{opacity:.4;cursor:not-allowed}
+.cw-success{display:none;text-align:center;padding:30px 20px}
+</style>
+<div class="cw-wrap">
+  <div class="cw-head">
+    <div><div style="font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:4px">Versa Studios</div><div class="cw-title">Cooking with the Stars &middot; Technical Report</div></div>
+    <img style="width:50px;filter:brightness(0) invert(1);opacity:.4" src="data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgMTM2NiA1MTUuNjQiPjxwYXRoIGQ9Ik0xOTQuMTYsNTA3LjMzdi0xNC43YzkuMDksNC40NSwyMy40LDkuNjcsMzguNjcsOS42NywxOC4xNywwLDMyLjA5LTguMTIsMzIuMDktMjIuMjNzLTcuNTQtMjEuNjUtMzIuMDktMzAuMzVjLTI3LjY0LTkuODYtMzkuMDUtMjEuNjYtMzkuMDUtNDEuNzYsMC0yMywxOS43Mi0zNi4xNSw0NC42Ni0zNi4xNUE4Ni42LDg2LjYsMCwwLDEsMjcyLjI3LDM3OXYxNC4zMWMtNy41NC0zLjg3LTIwLjg4LTguMTMtMzMuMjUtOC4xMy0xNy43OSwwLTMwLjc0LDguNzEtMzAuNzQsMjIuMjQsMCwxMi41Nyw2Ljc3LDIxLjI2LDMxLjcsMzAuMzUsMjcuODQsOS44NiwzOS40NCwyMS4wNywzOS40NCw0MS4zNywwLDIzLTE4LjU2LDM2LjU0LTQ1LjgyLDM2LjU0QTk5LjIsOTkuMiwwLDAsMSwxOTQuMTYsNTA3LjMzWiIvPjwvc3ZnPg=="/>
+  </div>
+  <div class="cw-body">
+    <div id="cwFormView">
+      <div class="cw-sec">
+        <div class="cw-lbl">Show Date</div>
+        <input type="date" class="cw-inp" id="cwDate"/>
+      </div>
+      <div class="cw-sec">
+        <div class="cw-lbl">Tech Manager</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="cw-btn active" id="cwBtnAR" onclick="cwPick('AR')">Andrew Rowell</button>
+          <button class="cw-btn" id="cwBtnOR" onclick="cwPick('OR')">Oli Riches</button>
+          <button class="cw-btn" id="cwBtnSB" onclick="cwPick('SB')">Simon Blunt</button>
+        </div>
+        <input type="hidden" id="cwTech" value="Andrew Rowell"/>
+      </div>
+      <div class="cw-sec">
+        <div class="cw-lbl">Technical Information</div>
+        <textarea class="cw-inp" id="cwInfo" style="min-height:120px;resize:vertical" placeholder="Describe technical activity, issues or observations&#x2026;"></textarea>
+      </div>
+      <div class="cw-sec" style="border:none;padding-bottom:0">
+        <div style="font-family:var(--cond);font-size:11px;color:rgba(255,255,255,.3);margin-bottom:10px" id="cwStatus">Complete all fields to submit</div>
+        <button class="cw-submit" id="cwSubmitBtn" onclick="cwSubmit()" disabled>Submit Report</button>
+      </div>
+    </div>
+    <div class="cw-success" id="cwSuccess" style="display:none;text-align:center;padding:30px 20px">
+      <div style="font-size:40px;margin-bottom:12px">✓</div>
+      <div style="font-family:var(--cond);font-size:18px;font-weight:800;color:#64a0dc;margin-bottom:8px">Report Submitted</div>
+      <div style="font-size:14px;color:rgba(255,255,255,.5);margin-bottom:20px" id="cwSuccessDetail"></div>
+      <button class="cw-submit" onclick="cwReset()" style="background:rgba(255,255,255,.1);color:#fff">Submit Another</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- I'm a Celeb report panel -->
+<div id="erCelebPanel" style="display:none;max-width:640px;margin:0 auto">
+<style>
+.cl-wrap{background:#100d08;border-radius:10px;overflow:hidden;box-shadow:0 2px 20px rgba(0,0,0,.5)}
+.cl-head{background:linear-gradient(135deg,#100d08 0%,#1a1508 100%);padding:20px 24px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid rgba(200,160,40,.3)}
+.cl-title{font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#c8a028}
+.cl-body{padding:0 24px 24px}
+.cl-sec{padding:18px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.cl-sec:last-child{border-bottom:none}
+.cl-lbl{font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:10px}
+.cl-btn{padding:14px 16px;border-radius:7px;font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border:2px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:rgba(255,255,255,.5);transition:all .15s;flex:1}
+.cl-btn.active{background:rgba(200,160,40,.12);border-color:#c8a028;color:#c8a028}
+.cl-inp{width:100%;background:#1a1508;border:1.5px solid rgba(255,255,255,.12);border-radius:7px;color:#fff;padding:12px 14px;font-size:15px;font-family:var(--font);outline:none}
+.cl-inp:focus{border-color:#c8a028}
+.cl-inp::placeholder{color:rgba(255,255,255,.25)}
+.cl-submit{width:100%;padding:15px;background:#c8a028;border:none;border-radius:8px;font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#000;cursor:pointer;margin-top:4px}
+.cl-submit:disabled{opacity:.4;cursor:not-allowed}
+</style>
+<div class="cl-wrap">
+  <div class="cl-head">
+    <div><div style="font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:4px">Versa Studios</div><div class="cl-title">I'm a Celebrity &middot; Technical Report</div></div>
+    <img style="width:50px;filter:brightness(0) invert(1);opacity:.4" src="data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgMTM2NiA1MTUuNjQiPjxwYXRoIGQ9Ik0xOTQuMTYsNTA3LjMzdi0xNC43YzkuMDksNC40NSwyMy40LDkuNjcsMzguNjcsOS42NywxOC4xNywwLDMyLjA5LTguMTIsMzIuMDktMjIuMjNzLTcuNTQtMjEuNjUtMzIuMDktMzAuMzVjLTI3LjY0LTkuODYtMzkuMDUtMjEuNjYtMzkuMDUtNDEuNzYsMC0yMywxOS43Mi0zNi4xNSw0NC42Ni0zNi4xNUE4Ni42LDg2LjYsMCwwLDEsMjcyLjI3LDM3OXYxNC4zMWMtNy41NC0zLjg3LTIwLjg4LTguMTMtMzMuMjUtOC4xMy0xNy43OSwwLTMwLjc0LDguNzEtMzAuNzQsMjIuMjQsMCwxMi41Nyw2Ljc3LDIxLjI2LDMxLjcsMzAuMzUsMjcuODQsOS44NiwzOS40NCwyMS4wNywzOS40NCw0MS4zNywwLDIzLTE4LjU2LDM2LjU0LTQ1LjgyLDM2LjU0QTk5LjIsOTkuMiwwLDAsMSwxOTQuMTYsNTA3LjMzWiIvPjwvc3ZnPg=="/>
+  </div>
+  <div class="cl-body">
+    <div id="clFormView">
+      <div class="cl-sec">
+        <div class="cl-lbl">Show Date</div>
+        <input type="date" class="cl-inp" id="clDate"/>
+      </div>
+      <div class="cl-sec">
+        <div class="cl-lbl">Tech Manager</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="cl-btn active" id="clBtnAR" onclick="clPick('AR')">Andrew Rowell</button>
+          <button class="cl-btn" id="clBtnOR" onclick="clPick('OR')">Oli Riches</button>
+          <button class="cl-btn" id="clBtnSB" onclick="clPick('SB')">Simon Blunt</button>
+        </div>
+        <input type="hidden" id="clTech" value="Andrew Rowell"/>
+      </div>
+      <div class="cl-sec">
+        <div class="cl-lbl">Technical Information</div>
+        <textarea class="cl-inp" id="clInfo" style="min-height:120px;resize:vertical" placeholder="Describe technical activity, issues or observations&#x2026;"></textarea>
+      </div>
+      <div class="cl-sec" style="border:none;padding-bottom:0">
+        <div style="font-family:var(--cond);font-size:11px;color:rgba(255,255,255,.3);margin-bottom:10px" id="clStatus">Complete all fields to submit</div>
+        <button class="cl-submit" id="clSubmitBtn" onclick="clSubmit()" disabled>Submit Report</button>
+      </div>
+    </div>
+    <div id="clSuccess" style="display:none;text-align:center;padding:30px 20px">
+      <div style="font-size:40px;margin-bottom:12px">✓</div>
+      <div style="font-family:var(--cond);font-size:18px;font-weight:800;color:#c8a028;margin-bottom:8px">Report Submitted</div>
+      <div style="font-size:14px;color:rgba(255,255,255,.5);margin-bottom:20px" id="clSuccessDetail"></div>
+      <button class="cl-submit" onclick="clReset()" style="background:rgba(255,255,255,.1);color:#fff">Submit Another</button>
+    </div>
+  </div>
+</div>
+</div>
 
 <!-- SIGN OUT CONFIRMATION MODAL -->
   <div class="modal-ov" id="mSignOut">

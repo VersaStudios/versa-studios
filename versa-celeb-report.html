@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>I'm a Celebrity — Technical Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:#0a0a0a;color:#fff;font-family:'Barlow',sans-serif;min-height:100vh;padding:20px 16px 60px}
+.wrap{max-width:600px;margin:0 auto}
+.card{background:#111;border-radius:12px;overflow:hidden;box-shadow:0 4px 30px rgba(0,0,0,.5)}
+.hd{background:linear-gradient(135deg,#0f0f0f 0%,#1a1a1a 100%);padding:22px 24px 18px;border-bottom:2px solid #c8a02833;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.hd-brand{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:5px}
+.hd-title{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#c8a028}
+.sec{padding:18px 24px;border-bottom:1px solid rgba(255,255,255,.06)}
+.sec:last-child{border-bottom:none}
+.lbl{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:10px}
+.inp{width:100%;background:#1a1a1a;border:1.5px solid rgba(255,255,255,.1);border-radius:8px;color:#fff;padding:13px 16px;font-size:15px;font-family:'Barlow',sans-serif;outline:none;transition:border-color .15s}
+.inp:focus{border-color:#c8a028}
+.inp::placeholder{color:rgba(255,255,255,.2)}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap}
+.pick-btn{padding:14px 16px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border:2px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:rgba(255,255,255,.4);transition:all .15s;flex:1;min-width:120px}
+.pick-btn.active{background:#c8a02818;border-color:#c8a028;color:#c8a028}
+.status-txt{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:rgba(255,255,255,.3);margin-bottom:10px}
+.submit-btn{width:100%;padding:16px;background:#c8a028;border:none;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#000;cursor:pointer;transition:opacity .15s}
+.submit-btn:disabled{opacity:.3;cursor:not-allowed}
+.submit-btn:not(:disabled):hover{opacity:.9}
+.success{display:none;text-align:center;padding:40px 24px}
+.suc-icon{font-size:48px;margin-bottom:16px}
+.suc-title{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;color:#c8a028;margin-bottom:8px}
+.suc-detail{font-size:14px;color:rgba(255,255,255,.45);margin-bottom:24px}
+.suc-again{padding:12px 24px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#fff;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div style="text-align:center;padding:20px 0 24px">
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.25);margin-bottom:4px">Versa Studios</div>
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;color:#fff;letter-spacing:.04em;text-transform:uppercase">I'm a Celebrity</div>
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#c8a028;margin-top:3px">Technical Report</div>
+  </div>
+  <div class="card">
+    <div id="formView">
+      <div class="sec">
+        <div class="lbl">Show Date</div>
+        <input type="date" class="inp" id="clDate" onchange="checkReady()"/>
+      </div>
+      <div class="sec">
+        <div class="lbl">Tech Manager</div>
+        <div class="btn-row">
+          <button class="pick-btn active" id="btnAR" onclick="pick('AR')">Andrew Rowell</button>
+          <button class="pick-btn" id="btnOR" onclick="pick('OR')">Oli Riches</button>
+          <button class="pick-btn" id="btnSB" onclick="pick('SB')">Simon Blunt</button>
+        </div>
+        <input type="hidden" id="techMgr" value="Andrew Rowell"/>
+      </div>
+      <div class="sec">
+        <div class="lbl">Technical Information</div>
+        <textarea class="inp" id="techInfo" style="min-height:140px;resize:vertical" placeholder="Describe technical activity, issues or observations…" oninput="checkReady()"></textarea>
+      </div>
+      <div class="sec" style="border:none;padding-top:12px">
+        <div class="status-txt" id="statusTxt">Complete all fields to submit</div>
+        <button class="submit-btn" id="submitBtn" onclick="doSubmit()" disabled>Submit Report</button>
+      </div>
+    </div>
+    <div class="success" id="successView">
+      <div class="suc-icon">✅</div>
+      <div class="suc-title">Report Submitted</div>
+      <div class="suc-detail" id="successDetail"></div>
+      <button class="suc-again" onclick="doReset()">Submit Another</button>
+    </div>
+  </div>
+</div>
+<script>
+const SB_URL='https://dttwgmoyxthczlzxjgag.supabase.co',SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ';
+
+var _mgr='Andrew Rowell';
+var _names={AR:'Andrew Rowell',OR:'Oli Riches',SB:'Simon Blunt'};
+var _showName="I'm a Celebrity";
+function pick(code){
+  _mgr=_names[code]||code;
+  document.getElementById('techMgr').value=_mgr;
+  ['AR','OR','SB'].forEach(c=>{document.getElementById('btn'+c).classList.toggle('active',c===code);});
+}
+function checkReady(){
+  var ok=!!(document.getElementById('clDate').value&&document.getElementById('techInfo').value.trim());
+  document.getElementById('submitBtn').disabled=!ok;
+  document.getElementById('statusTxt').textContent=ok?'Ready to submit':'Complete all fields to submit';
+}
+async function doSubmit(){
+  var date=document.getElementById('clDate').value,info=document.getElementById('techInfo').value.trim();
+  if(!date||!info)return;
+  var btn=document.getElementById('submitBtn');btn.disabled=true;btn.textContent='Submitting…';
+  try{
+    var r=await fetch(SB_URL+'/rest/v1/engineering_reports',{method:'POST',
+      headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Prefer':'return=minimal'},
+      body:JSON.stringify({versa_tech_manager:_mgr,bbc_tech_manager:'',show_date:date,show_name:_showName,summary_mode:'str',summary_text:info,tagged_kit:[],tagged_kit_names:[],urgent_action:'No',urgent_details:'',submitted_at:new Date().toISOString()})});
+    if(r.ok){
+      document.getElementById('formView').style.display='none';
+      document.getElementById('successView').style.display='block';
+      document.getElementById('successDetail').textContent=_mgr+' · '+date;
+    }else alert('Submit failed — please try again');
+  }catch(e){alert('Error: '+e.message);}
+  btn.disabled=false;btn.textContent='Submit Report';
+}
+function doReset(){
+  document.getElementById('formView').style.display='';
+  document.getElementById('successView').style.display='none';
+  document.getElementById('clDate').value='';document.getElementById('techInfo').value='';
+  pick('AR');checkReady();
+}
+
+</script>
+</body>
+</html>
