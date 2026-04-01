@@ -4287,17 +4287,20 @@ function erRenderJobTabs() {
       }
     });
   }
-  wrap.innerHTML = tabs.map(function(t) {
-    var isAct = _erActiveJob === t.id;
-    return '<button onclick="erSwitchJob(\''+t.id+'\')" style="'
-      +'padding:8px 16px;font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;'
-      +'border-radius:4px;cursor:pointer;border:2px solid '+(isAct?t.col:'rgba(255,255,255,.12)')+';'
-      +'background:'+(isAct?t.col+'22':'rgba(255,255,255,.04)')+';'
-      +'color:'+(isAct?t.col:'var(--muted)')+'">'+t.label+'</button>';
-  }).join('');
+  wrap.innerHTML='';
+  tabs.forEach(function(t){
+    var isAct=_erActiveJob===t.id;
+    var btn=document.createElement('button');
+    btn.style.cssText='padding:8px 16px;font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border-radius:4px;cursor:pointer;border:2px solid '+(isAct?t.col:'rgba(255,255,255,.12)')+';background:'+(isAct?t.col+'22':'rgba(255,255,255,.04)')+';color:'+(isAct?t.col:'var(--muted)');;
+    btn.textContent=t.label;
+    btn.dataset.tabId=t.id;
+    btn.dataset.jobName=t.label;
+    btn.addEventListener('click',function(){erSwitchJob(t.id,t.label);});
+    wrap.appendChild(btn);
+  });
 }
 
-function erSwitchJob(jobId) {
+function erSwitchJob(jobId, _passedName) {
   _erActiveJob = jobId;
 
   erRenderJobTabs();
@@ -4306,22 +4309,14 @@ function erSwitchJob(jobId) {
   else if(jobId==='cwts'){isCW=true;jobName='Cooking with the Stars';}
   else if(jobId==='celeb'){isCL=true;jobName="I'm a Celebrity";}
   else if(jobId==='celebsa'){isCL=true;jobName="I'm a Celeb - South Africa";}
-  else if(jobId!=='ml'&&typeof jobs!=='undefined'){
-    var jid=parseInt(jobId.replace('j',''));
-    // Find job but skip any celeb jobs (they have hardcoded tabs)
-    var _isCeleb=function(n){var l=(n||'').toLowerCase();return l.indexOf('celeb')>=0||l.indexOf('celebrity')>=0;};
-    var j=jobs.find(function(x){return (Number(x.id)===jid||String(x.id)===String(jid))&&!_isCeleb(x.name);});
-    if(j){
-      jobName=j.name;
-      var jn=j.name.toLowerCase();
-      isDD=(jn.indexOf('dragon')>=0);
-      isSO=(jn.indexOf('shopon')>=0||jn.indexOf('shop on')>=0);
-      isCW=(jn.indexOf('cooking')>=0);
-      isCL=false; // never true here since we filtered celeb jobs above
-    } else {
-      jobName=jobId;
-      isDD=false;isSO=false;isCW=false;isCL=false;
-    }
+  else if(jobId!=='ml'){
+    // Use passed name if available (avoids ID collision issues)
+    jobName=_passedName||jobId;
+    var jn=jobName.toLowerCase();
+    isDD=(jn.indexOf('dragon')>=0);
+    isSO=(jn.indexOf('shopon')>=0||jn.indexOf('shop on')>=0);
+    isCW=(jn.indexOf('cooking')>=0);
+    isCL=(jn.indexOf('celeb')>=0||jn.indexOf('celebrity')>=0);
   } else {jobName='Morning Live';}
   ['erSubPanelReport','erDDPanel','erShopOnPanel','erCwtsPanel','erCelebPanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
   var panelMap={erSubPanelReport:(!isDD&&!isSO&&!isCW&&!isCL),erDDPanel:isDD,erShopOnPanel:isSO,erCwtsPanel:isCW,erCelebPanel:isCL};
