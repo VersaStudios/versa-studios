@@ -1441,6 +1441,10 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
   </div>
 
 </div>
+
+<!-- Past Reports -->
+<div id="abcLastReportContent" style="margin-top:14px;padding:0 4px"></div>
+
 </div><!-- /erSubPanelReport -->
 <div id="erSubPanelHist" style="display:none"></div>
 <!-- Dragon's Den report panel -->
@@ -4294,6 +4298,8 @@ function erRenderJobTabs() {
     btn.textContent=t.label;
     btn.dataset.tabId=t.id;
     btn.dataset.jobName=t.label;
+    if(!window._erTabLabels)window._erTabLabels={};
+    window._erTabLabels[t.id]=t.label;
     btn.addEventListener('click',function(){erSwitchJob(t.id,t.label);});
     wrap.appendChild(btn);
   });
@@ -4309,8 +4315,8 @@ function erSwitchJob(jobId, _passedName) {
   else if(jobId==='celeb'){isCL=true;jobName="I'm a Celebrity";}
   else if(jobId==='celebsa'){isCL=true;jobName="I'm a Celeb - South Africa";}
   else if(jobId!=='ml'){
-    // Use passed name if available (avoids ID collision issues)
-    jobName=_passedName||jobId;
+    // Use passed name, fallback to global label map
+    jobName=_passedName||(window._erTabLabels&&window._erTabLabels[jobId])||jobId;
     var jn=jobName.toLowerCase();
     isDD=(jn.indexOf('dragon')>=0);
     isSO=(jn.indexOf('shopon')>=0||jn.indexOf('shop on')>=0);
