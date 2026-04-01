@@ -4280,10 +4280,9 @@ function erRenderJobTabs() {
   // Add other jobs from job planner
   if(typeof jobs !== 'undefined') {
     jobs.forEach(function(j) {
-      var reserved=['Morning Live','ShopOn TV','ShopOn','Cooking with the Stars',
-        "I'm a Celebrity","I'm a Celeb","I'm a Celeb - South Africa",
-        "Dragon's Den",'Dragons Den'];
-      if(j.name && !reserved.includes(j.name)) {
+      var reserved=['Morning Live','ShopOn TV','ShopOn','Cooking with the Stars'];
+      var isCelebJob=function(n){var l=n.toLowerCase();return l.indexOf('celeb')>=0||l.indexOf('celebrity')>=0;};
+      if(j.name && !reserved.includes(j.name) && !isCelebJob(j.name)) {
         tabs.push({id:'j'+j.id, label:j.name, col:(j.color&&j.color.bg)||'#2d5a2d', jid:j.id});
       }
     });
@@ -12346,9 +12345,8 @@ async function erSubmit(){
   const vtm=document.getElementById('erVTM').value.trim(),bbc=document.getElementById('erBBC').value,urgent=document.getElementById('erUrgent').value,urgTxt=document.getElementById('erUrgTxt').value.trim(),isSTR=_erSummaryMode==='str',sumTxt=isSTR?document.getElementById('erSummaryTxt').value.trim():'',tagNames=_erTags.map(id=>{const k=_erKitData.find(x=>x.id===id);return k?k.name+' ('+k.tag+')':'';}).filter(Boolean),showDate=_erUseTodayDate?new Date().toISOString().split('T')[0]:_erSelectedDate;
   await erSaveReport({versa_tech_manager:vtm,bbc_tech_manager:bbc,show_date:showDate,show_name:(document.getElementById('erShowSel')?document.getElementById('erShowSel').value:'Morning Live (ABC)'),summary_mode:_erSummaryMode,summary_text:sumTxt,tagged_kit:_erTags,tagged_kit_names:tagNames,urgent_action:urgent,urgent_details:urgTxt,submitted_at:new Date().toISOString()});
   if(isSTR)erSendEmail({show_date:showDate,versa_tech:vtm,bbc_tech:bbc,summary:sumTxt||'(no details)',urgent,urgent_details:urgTxt||'--',tagged_kit:tagNames.join(', ')||'None',submitted_at:new Date().toLocaleString('en-GB')});
-  // Refresh last report box
+  if(isSTR&&sumTxt){try{if(!_tld)_tld={};if(!_tld.abc)_tld.abc=[];_tld.abc.push({id:Date.now(),date:showDate,studio:'ABC',dept:'Engineering',job:'Morning Live',by:vtm||'Andrew Rowell',info:'[From Engineering Report] '+sumTxt+(urgTxt?' | Urgent: '+urgTxt:''),next:'',status:urgent==='Yes'?'ongoing':'information',updates:'',update_log:[]});tlSave('abc');toast('STR logged');}catch(e){}}
   renderAbcLastReport();
-  // Also refresh _dEngReports for dashboard
   if(typeof loadDashEngReports==='function') setTimeout(loadDashEngReports,500);
   document.getElementById('erFormView').style.display='none';
   document.getElementById('erSuccessView').style.display='block';
@@ -13258,3 +13256,5 @@ document.addEventListener('DOMContentLoaded', function() {
           </div>
         </div>
 =
+</body>
+</html>
