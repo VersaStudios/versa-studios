@@ -965,6 +965,7 @@ body.ops-sa .main-content{margin-left:0!important;}
     <nav class="sb-nav">
       <div class="nav-lbl" data-lbl="overview">Overview</div>
       <div class="nav-item active" data-pg="dashboard" onclick="nav('dashboard',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>Dashboard</div>
+      <div class="nav-item" onclick="window.open('versa-notes.html','_blank')" style="cursor:pointer"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 2h10v12H3z"/><path d="M6 5h4M6 8h4M6 11h2"/></svg>Notes</div>
       <div class="nav-lbl" data-lbl="kit">Kit</div>
       <div class="nav-item" data-pg="kit" onclick="nav('kit',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12v9a1 1 0 01-1 1H3a1 1 0 01-1-1V4z"/><path d="M5 4V3a1 1 0 011-1h4a1 1 0 011 1v1"/></svg>Kit List<span class="nav-badge" id="nbKit">0</span></div>
       <div class="nav-item" data-pg="maintenance" onclick="nav('maintenance',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><path d="M11 11l3 3"/></svg>Maintenance</div>
@@ -1147,6 +1148,21 @@ body.ops-sa .main-content{margin-left:0!important;}
     <div id="tl-stats-london" class="tl-stats" style="display:none"><div class="tl-stat"><div class="tl-stat-n" style="color:#d4a843" id="tls-tot-london">—</div><div class="tl-stat-l">Total</div></div><div class="tl-stat"><div class="tl-stat-n" style="color:#ef4444" id="tls-on-london">—</div><div class="tl-stat-l">Ongoing</div></div><div class="tl-stat"><div class="tl-stat-n" style="color:#22c55e" id="tls-res-london">—</div><div class="tl-stat-l">Resolved</div></div></div><div id="slog-london" class="tl-list"></div>
   </div>
   <div class="loc-content" id="sc-abc">
+    <!-- ABC Morning Live styled header -->
+    <div style="background:#1a2a1a;border:1px solid #2a4a2a;border-radius:8px;padding:16px 20px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+      <div style="display:flex;align-items:center;gap:14px">
+        <div style="width:3px;height:40px;background:#80d0a0;border-radius:2px;flex-shrink:0"></div>
+        <div>
+          <div style="font-family:var(--cond);font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#80d0a0;margin-bottom:3px">ABC Studios</div>
+          <div style="font-family:var(--cond);font-size:20px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;color:#f2f2f2">Morning Live — Tech Log</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <div id="abcTlLastEntry" style="font-family:var(--cond);font-size:11px;color:#80d0a0;opacity:.7"></div>
+        <button onclick="tlOpenAdd('abc')" style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:#80d0a0;border:none;border-radius:5px;padding:8px 16px;color:#0a0a0a;cursor:pointer">+ New Entry</button>
+        <button onclick="nav('engreport',document.querySelector('[data-pg=engreport]'));setTimeout(function(){erSwitchJob('ml');},100)" style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:rgba(128,208,160,.15);border:1px solid #80d0a0;border-radius:5px;padding:8px 14px;color:#80d0a0;cursor:pointer">→ Eng Report</button>
+      </div>
+    </div>
     <div class="tl-toolbar">
       <div class="tl-filters">
         <button class="tl-ftab on" data-loc="abc" data-s="" onclick="tlFilter(this,'abc','')">All</button>
@@ -1285,6 +1301,8 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
 
 <!-- Job selector tabs -->
 <div id="erJobTabs" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border)"></div>
+<!-- Tech Log link -->
+<div style="display:flex;align-items:center;justify-content:flex-end;margin-bottom:12px"><button onclick="nav('studios',document.querySelector('[data-pg=studios]'));setTimeout(function(){switchStudioTab('abc','log');},150)" style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:rgba(128,208,160,.12);border:1px solid rgba(128,208,160,.4);border-radius:5px;padding:7px 14px;color:#80d0a0;cursor:pointer">→ ABC Tech Log</button></div>
 <!-- Sub-tabs -->
 <div style="display:flex;align-items:center;gap:0;margin-bottom:16px;border-bottom:2px solid rgba(216,90,97,.2)">
   <div id="erNavLabel" style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(216,90,97,.7);padding:0 16px 10px 0;flex-shrink:0">Morning Live</div>
@@ -1905,6 +1923,7 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
           <div class="jd-tab" id="admTab-suppliers" onclick="admSwitch('suppliers')">Suppliers</div>
           <div class="jd-tab" id="admTab-pat" onclick="admSwitch('pat')">PAT Emails</div>
           <div class="jd-tab" id="admTab-access" onclick="admSwitch('access')">Job Access</div>
+          <div class="jd-tab" id="admTab-notes" onclick="admSwitch('notes')">My Notes</div>
         </div>
         <div id="admContent-users">
           <div class="adm-grid">
@@ -1946,31 +1965,187 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
             <div class="adm-sec full">
               <div class="adm-sec-hdr">
                 <div class="adm-sec-title">Job Access</div>
-                <button class="btn-add" style="margin-left:0" onclick="openAddAccess()">+ Grant Access</button>
-              </div>
-              <div style="padding:8px 16px 4px;font-size:13px;color:var(--muted)">
-                Give external contacts login access to a single job. They sign in with their email and the PIN you set — they can only see and edit their assigned job.
-              </div>
-              <div id="accessList"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  
-      <div class="page" id="page-tools">
-        <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
-          <div style="font-family:var(--cond);font-size:22px;font-weight:900;letter-spacing:.04em;color:var(--white)">Tools</div>
-        </div>
-        <div id="toolsPanelSignal" style="height:calc(100vh - 140px);min-height:300px;">
-          <div style="display:flex;align-items:center;gap:8px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.3);border-radius:6px;padding:8px 12px;margin-bottom:8px">
-            <span style="font-size:16px">&#128421;</span>
-            <span style="font-size:12px;color:#f59e0b;font-family:var(--cond);font-weight:700">Best used on desktop &mdash; node placement and cable routing require a mouse</span>
-          </div>
-          <iframe id="iframeSignal" style="width:100%;height:100%;border:none;display:block;border-radius:0 0 8px 8px;" sandbox="allow-scripts allow-same-origin allow-downloads allow-modals"></iframe>
-        </div>
-      
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+                <button class="btn-ad
+
+// ── NOTES MODULE ─────────────────────────────────────────────────────────────
+var _notes = [];
+var _notesLoaded = false;
+var _notesDark = false;
+var _notesFilter = 'all';
+
+var NOTE_TYPES = {
+  idea:     {label:'Idea',     col:'#8b6a3e', light:'#c4934e'},
+  action:   {label:'Action',   col:'#4a6741', light:'#5a8050'},
+  reminder: {label:'Reminder', col:'#7a4a5e', light:'#9a5e78'}
+};
+
+function notesUserKey(){
+  // Use user email or fallback to 'default'
+  var email = (typeof CU !== 'undefined' && CU && CU.email) ? CU.email : 'default';
+  return 'notes_' + email.replace(/[^a-z0-9]/gi,'_');
+}
+
+async function notesLoad(){
+  if(_notesLoaded)return;
+  try{
+    var key = notesUserKey();
+    var r = await fetch('https://dttwgmoyxthczlzxjgag.supabase.co/rest/v1/app_data?key=eq.'+key+'&select=value',{
+      headers:{'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ'}
+    });
+    var d = await r.json();
+    _notes = (d&&d[0]&&Array.isArray(d[0].value)) ? d[0].value : [];
+    _notesLoaded = true;
+  }catch(e){_notes=[];_notesLoaded=true;}
+}
+
+async function notesSave(){
+  try{
+    var key = notesUserKey();
+    await fetch('https://dttwgmoyxthczlzxjgag.supabase.co/rest/v1/app_data',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ','Prefer':'resolution=merge-duplicates'},
+      body:JSON.stringify({key:key,value:_notes,updated_at:new Date().toISOString()})
+    });
+  }catch(e){}
+}
+
+function notesAdd(type, text, jobTag){
+  if(!text.trim())return;
+  var note = {
+    id: Date.now(),
+    type: type||'idea',
+    text: text.trim(),
+    jobTag: jobTag||'',
+    pinned: false,
+    done: false,
+    createdAt: new Date().toISOString()
+  };
+  _notes.unshift(note);
+  notesSave();
+  notesRender();
+}
+
+function notesTogglePin(id){
+  var n = _notes.find(function(x){return x.id===id;});
+  if(n){n.pinned=!n.pinned;notesSave();notesRender();}
+}
+
+function notesToggleDone(id){
+  var n = _notes.find(function(x){return x.id===id;});
+  if(n){n.done=!n.done;notesSave();notesRender();}
+}
+
+function notesDelete(id){
+  _notes = _notes.filter(function(x){return x.id!==id;});
+  notesSave();notesRender();
+}
+
+function notesTodo(id){
+  var n = _notes.find(function(x){return x.id===id;});
+  if(!n)return;
+  if(typeof toast==='function')toast('Added to To-Do list \u2014 coming soon!');
+}
+
+function notesRender(){
+  var el = document.getElementById('notesList');
+  if(!el)return;
+  var isDark = _notesDark;
+  var bg = isDark?'#302f2c':'#efede3';
+  var fg = isDark?'#efede3':'#302f2c';
+  var border = isDark?'rgba(239,237,227,.12)':'rgba(48,47,44,.12)';
+  var cardBg = isDark?'#3d3c38':'#fff';
+  var mutedCol = isDark?'rgba(239,237,227,.45)':'rgba(48,47,44,.45)';
+
+  var pinned = _notes.filter(function(n){return n.pinned&&!n.done;});
+  var active = _notes.filter(function(n){return !n.pinned&&!n.done;});
+  var done   = _notes.filter(function(n){return n.done;});
+
+  var filtered = function(arr){
+    if(_notesFilter==='all')return arr;
+    return arr.filter(function(n){return n.type===_notesFilter;});
+  };
+
+  var all = filtered(pinned).concat(filtered(active)).concat(filtered(done));
+
+  if(!all.length){
+    el.innerHTML = '<div style="text-align:center;padding:48px 20px;color:'+mutedCol+';font-family:Barlow,sans-serif;font-size:14px">No notes yet. Write your first one above.</div>';
+    return;
+  }
+
+  el.innerHTML = all.map(function(n){
+    var nt = NOTE_TYPES[n.type]||NOTE_TYPES.idea;
+    var tcol = isDark ? nt.light : nt.col;
+    var ds = n.createdAt ? new Date(n.createdAt).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'2-digit'}) : '';
+    return '<div style="background:'+cardBg+';border:1px solid '+border+';border-radius:10px;padding:14px 16px;margin-bottom:10px;'+(n.done?'opacity:.55':'')+(n.pinned?';border-left:3px solid '+tcol:'')+'">'
+      +'<div style="display:flex;align-items:flex-start;gap:10px">'
+      +'<div style="flex:1;min-width:0">'
+      +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap">'
+      +'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:'+tcol+';background:'+tcol+'18;padding:2px 8px;border-radius:3px">'+nt.label+'</span>'
+      +(n.pinned?'<span style="font-size:12px" title="Pinned">📌</span>':'')
+      +(n.jobTag?'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:10px;font-weight:600;letter-spacing:.06em;color:'+mutedCol+';background:'+border+';padding:2px 7px;border-radius:3px">'+n.jobTag+'</span>':'')
+      +'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:10px;color:'+mutedCol+';margin-left:auto">'+ds+'</span>'
+      +'</div>'
+      +'<div style="font-size:14px;color:'+(n.done?mutedCol:fg)+';line-height:1.5;'+(n.done?'text-decoration:line-through':'')+'">'+n.text.replace(/\n/g,'<br>')+'</div>'
+      +'</div>'
+      +'</div>'
+      +'<div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">'
+      +'<button onclick="_notePin('+n.id+')" style="font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:none;border:1px solid '+border+';border-radius:5px;padding:4px 10px;color:'+mutedCol+';cursor:pointer">'+(n.pinned?'Unpin':'Pin')+'</button>'
+      +'<button onclick="_noteDone('+n.id+')" style="font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:none;border:1px solid '+border+';border-radius:5px;padding:4px 10px;color:'+mutedCol+';cursor:pointer">'+(n.done?'Undone':'Done')+'</button>'
+      +'<button onclick="_noteTodo('+n.id+')" style="font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:none;border:1px solid '+tcol+';border-radius:5px;padding:4px 10px;color:'+tcol+';cursor:pointer">→ To-Do</button>'
+      +'<button onclick="_noteDel('+n.id+')" style="font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:none;border:1px solid '+border+';border-radius:5px;padding:4px 10px;color:'+mutedCol+';cursor:pointer;margin-left:auto">Delete</button>'
+      +'</div>'
+      +'</div>';
+  }).join('');
+}
+
+function notesSetFilter(f){
+  _notesFilter=f;
+  ['all','idea','action','reminder'].forEach(function(k){
+    var b=document.getElementById('nfBtn-'+k);
+    if(b){
+      var active=k===f;
+      var isDark=_notesDark;
+      b.style.background=active?(isDark?'#efede3':'#302f2c'):'transparent';
+      b.style.color=active?(isDark?'#302f2c':'#efede3'):(isDark?'rgba(239,237,227,.5)':'rgba(48,47,44,.5)');
+    }
+  });
+  notesRender();
+}
+
+function notesToggleDark(wrap){
+  _notesDark=!_notesDark;
+  if(wrap)applyNotesTheme(wrap);
+  notesRender();
+}
+
+function applyNotesTheme(wrap){
+  var isDark=_notesDark;
+  wrap.style.background=isDark?'#302f2c':'#efede3';
+  wrap.style.color=isDark?'#efede3':'#302f2c';
+  // Update composer bg
+  var comp=wrap.querySelector('.notes-composer');
+  if(comp)comp.style.background=isDark?'#3d3c38':'#fff';
+  // Update toggle button
+  var tog=document.getElementById('notesThemeToggle');
+  if(tog){tog.textContent=isDark?'☀ Light':'☾ Dark';}
+  // Update filter bar
+  notesSetFilter(_notesFilter);
+}
+
+async function notesInit(containerId){
+  await notesLoad();
+  var wrap=document.getElementById(containerId);
+  if(!wrap)return;
+  applyNotesTheme(wrap);
+  notesRender();
+}
+
+window._notePin=notesTogglePin;
+window._noteDone=notesToggleDone;
+window._noteTodo=notesTodo;
+window._noteDel=notesDelete;
+
+
 // ── OFFLINE + UNSAVED BANNERS ─────────────────────────────────────────────────
 (function(){
   function updateOnline(){
@@ -4081,10 +4256,9 @@ function erRenderJobTabs() {
   // Add other jobs from job planner
   if(typeof jobs !== 'undefined') {
     jobs.forEach(function(j) {
-      var reserved=['Morning Live','ShopOn TV','ShopOn','Cooking with the Stars',
-        "I'm a Celebrity","I'm a Celeb","I'm a Celeb - South Africa",
-        "Dragon's Den",'Dragons Den'];
-      if(j.name && !reserved.includes(j.name)) {
+      var reserved=['Morning Live','ShopOn TV','ShopOn','Cooking with the Stars'];
+      var isCelebJob=function(n){var l=n.toLowerCase();return l.indexOf('celeb')>=0||l.indexOf('celebrity')>=0;};
+      if(j.name && !reserved.includes(j.name) && !isCelebJob(j.name)) {
         tabs.push({id:'j'+j.id, label:j.name, col:(j.color&&j.color.bg)||'#2d5a2d', jid:j.id});
       }
     });
@@ -4109,19 +4283,17 @@ function erSwitchJob(jobId) {
   else if(jobId==='celebsa'){isCL=true;jobName="I'm a Celeb - South Africa";}
   else if(jobId!=='ml'&&typeof jobs!=='undefined'){
     var jid=parseInt(jobId.replace('j',''));
-    var j=jobs.find(function(x){return x.id===jid;});
+    var j=jobs.find(function(x){return Number(x.id)===jid;});
     if(j){
       jobName=j.name;
       var jn=j.name.toLowerCase();
       isDD=(jn.indexOf("dragon")>=0);
+      isCL=(jn.indexOf('celeb')>=0||jn.indexOf('celebrity')>=0);
     }
   } else {jobName='Morning Live';}
-  // Show the right panel, hide the rest
+  ['erSubPanelReport','erDDPanel','erShopOnPanel','erCwtsPanel','erCelebPanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
   var panelMap={erSubPanelReport:(!isDD&&!isSO&&!isCW&&!isCL),erDDPanel:isDD,erShopOnPanel:isSO,erCwtsPanel:isCW,erCelebPanel:isCL};
-  Object.keys(panelMap).forEach(function(id){
-    var el=document.getElementById(id);
-    if(el)el.style.display=panelMap[id]?'block':'none';
-  });
+  Object.keys(panelMap).forEach(function(id){var el=document.getElementById(id);if(el&&panelMap[id])el.style.display='block';});
   var calPanel=document.getElementById('erSubPanelCal');
   if(calPanel)calPanel.style.display='none';
   // Reset sub-tab highlights
@@ -4933,8 +5105,14 @@ function om(id) {
   var el=document.getElementById(id);
   if(!el){console.error('[om] Element not found:',id);return;}
   el.classList.add('open');
+  el.style.display='flex';
 }
-function cm(id) { document.getElementById(id).classList.remove('open'); }
+function cm(id) {
+  var el=document.getElementById(id);
+  if(!el)return;
+  el.classList.remove('open');
+  el.style.display='';
+}
 function fmtD(d) {
   if(!d) return '—';
   const p = d.split('-');
@@ -10898,7 +11076,7 @@ function revokeAccess(idx) {
 var _admTab = 'users';
 function admSwitch(tab) {
   _admTab = tab;
-  ['users','cats','dv','suppliers','pat','access'].forEach(function(t) {
+  ['users','cats','dv','suppliers','pat','access','notes'].forEach(function(t) {
     var c = document.getElementById('admContent-'+t);
     var b = document.getElementById('admTab-'+t);
     if(c) c.style.display = t===tab ? '' : 'none';
@@ -10909,6 +11087,7 @@ function admSwitch(tab) {
   if(tab==='cats') renderCats();
   if(tab==='pat') renderPatEmails();
   if(tab==='access') renderAccessList();
+  if(tab==='notes'){ notesLoad().then(function(){notesInit('notesWrap');}); }
 }
 function renderUsers() {
   const el=document.getElementById('userList');
@@ -12140,6 +12319,28 @@ async function erSubmit(){
   const vtm=document.getElementById('erVTM').value.trim(),bbc=document.getElementById('erBBC').value,urgent=document.getElementById('erUrgent').value,urgTxt=document.getElementById('erUrgTxt').value.trim(),isSTR=_erSummaryMode==='str',sumTxt=isSTR?document.getElementById('erSummaryTxt').value.trim():'',tagNames=_erTags.map(id=>{const k=_erKitData.find(x=>x.id===id);return k?k.name+' ('+k.tag+')':'';}).filter(Boolean),showDate=_erUseTodayDate?new Date().toISOString().split('T')[0]:_erSelectedDate;
   await erSaveReport({versa_tech_manager:vtm,bbc_tech_manager:bbc,show_date:showDate,show_name:(document.getElementById('erShowSel')?document.getElementById('erShowSel').value:'Morning Live (ABC)'),summary_mode:_erSummaryMode,summary_text:sumTxt,tagged_kit:_erTags,tagged_kit_names:tagNames,urgent_action:urgent,urgent_details:urgTxt,submitted_at:new Date().toISOString()});
   if(isSTR)erSendEmail({show_date:showDate,versa_tech:vtm,bbc_tech:bbc,summary:sumTxt||'(no details)',urgent,urgent_details:urgTxt||'--',tagged_kit:tagNames.join(', ')||'None',submitted_at:new Date().toLocaleString('en-GB')});
+  // Auto-create Tech Log entry for STR
+  if(isSTR && sumTxt){
+    try{
+      if(!_tld)_tld={};
+      if(!_tld.abc)_tld.abc=[];
+      var tlEntry={
+        id:Date.now(),
+        date:showDate,
+        studio:'ABC',
+        dept:'Engineering',
+        job:'Morning Live',
+        by:vtm||'Andrew Rowell',
+        info:'[From Engineering Report] '+sumTxt+(urgTxt?' | Urgent: '+urgTxt:''),
+        next:'',
+        status:urgent==='Yes'?'ongoing':'information',
+        updates:'',update_log:[]
+      };
+      _tld.abc.push(tlEntry);
+      tlSave('abc');
+      toast('STR logged — Tech Log entry created');
+    }catch(e){}
+  }
   // Refresh last report box
   renderAbcLastReport();
   // Also refresh _dEngReports for dashboard
@@ -12347,6 +12548,18 @@ function tlFind(loc,id){return(_tld[loc]||[]).find(function(x){return String(x.i
 
 function tlRender(loc){
   var el=document.getElementById('slog-'+loc);if(!el)return;
+  // Update ABC header last entry date
+  if(loc==='abc'){
+    var lastEl=document.getElementById('abcTlLastEntry');
+    if(lastEl){
+      var entries=(_tld&&_tld.abc)||[];
+      if(entries.length){
+        var sorted=entries.slice().sort(function(a,b){return (b.date||'').localeCompare(a.date||'');});
+        var ds=new Date(sorted[0].date+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+        lastEl.textContent='Last entry: '+ds;
+      } else {lastEl.textContent='';}
+    }
+  }
   var col=TLC[loc]||'var(--accent)';
   var allData=(_tld[loc]||[]).slice();
   // Stats bar
@@ -12470,17 +12683,20 @@ function tlOpenEdit(ev){
   var btn=ev.currentTarget,loc=btn.dataset.loc,sid=btn.dataset.sid;
   var e=tlFind(loc,sid);if(!e)return;
   _tleId=sid;_tleLoc=loc;
-  document.getElementById('mTlTitle').textContent='Edit Entry';
-  document.getElementById('mTlDate').value=e.date||'';
-  document.getElementById('mTlStatus').value=e.status||'information';
-  document.getElementById('mTlStudio').innerHTML=(TLST[loc]||[]).map(function(s){return'<option>'+s+'</option>';}).join('');
-  tlSel('mTlStudio',e.studio);tlSel('mTlDept',e.dept);tlSel('mTlBy',e.by);
-  document.getElementById('mTlJob').value=e.job||'';
-  document.getElementById('mTlInfo').value=e.info||'';
-  document.getElementById('mTlNext').value=e.next||'';
-  document.getElementById('mTlSubmit').textContent='Save Changes';
-  document.getElementById('mTlSubmit').style.background=TLC[loc];
-  om('mTl');
+  tlOpenAdd(loc);
+  // Pre-fill with existing values
+  setTimeout(function(){
+    var d=document.getElementById('_tlMDate');if(d)d.value=e.date||'';
+    var st=document.getElementById('_tlMStatus');if(st)st.value=e.status||'information';
+    var stu=document.getElementById('_tlMStudio');if(stu)stu.value=e.studio||'';
+    var dep=document.getElementById('_tlMDept');if(dep)dep.value=e.dept||'';
+    var by=document.getElementById('_tlMBy');if(by)by.value=e.by||'';
+    var job=document.getElementById('_tlMJob');if(job)job.value=e.job&&e.job!=='None'?e.job:'';
+    var inf=document.getElementById('_tlMInfo');if(inf)inf.value=e.info||'';
+    var nxt=document.getElementById('_tlMNext');if(nxt)nxt.value=e.next||'';
+    var tit=document.getElementById('_tlMTitle');if(tit)tit.textContent='Edit Entry';
+    var sub=document.getElementById('_tlMSubmit');if(sub)sub.textContent='Save Changes';
+  },50);
 }
 function tlFilter(btn,loc,s){
   _tlfs[loc]=s;
@@ -12488,27 +12704,82 @@ function tlFilter(btn,loc,s){
   tlRender(loc);
 }
 function tlOpenAdd(loc){
-  try{
-    _tleId=null;_tleLoc=loc;
-    var col=TLC[loc];
-    var getEl=function(id){var e=document.getElementById(id);if(!e)throw new Error('Missing element: '+id);return e;};
-    getEl('mTlTitle').textContent='New Entry \u2014 '+loc.charAt(0).toUpperCase()+loc.slice(1);
-    getEl('mTlDate').value=today();
-    getEl('mTlStatus').selectedIndex=0;
-    getEl('mTlDept').selectedIndex=0;
-    getEl('mTlBy').selectedIndex=0;
-    getEl('mTlJob').value='';
-    getEl('mTlInfo').value='';
-    getEl('mTlNext').value='';
-    getEl('mTlSubmit').textContent='Add Entry';
-    getEl('mTlSubmit').style.background=col;
-    getEl('mTlStudio').innerHTML=(TLST[loc]||[]).map(function(s){return'<option>'+s+'</option>';}).join('');
-    om('mTl');
-    setTimeout(function(){document.getElementById('mTlInfo').focus();},200);
-  }catch(err){
-    console.error('[tlOpenAdd] Error:',err);
-    alert('Could not open form: '+err.message);
+  _tleId=null;_tleLoc=loc;
+  var col=TLC[loc]||'#4a9eff';
+  // Remove any existing injected modal
+  var old=document.getElementById('_tlModal');if(old)old.remove();
+  // Build the form HTML
+  var studioOpts=(TLST[loc]||[]).map(function(s){return'<option>'+s+'</option>';}).join('');
+  var div=document.createElement('div');
+  div.id='_tlModal';
+  div.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:99999;display:flex;align-items:center;justify-content:center;padding:16px';
+  div.innerHTML='<div style="background:#1c1c1c;border-radius:12px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.6)">'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid #2e2e2e">'
+    +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:16px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#f2f2f2" id="_tlMTitle">New Entry</div>'
+    +'<button onclick="document.getElementById(\'_tlModal\').remove()" style="background:none;border:none;color:#aaa;font-size:22px;cursor:pointer;padding:0 4px">&#215;</button>'
+    +'</div>'
+    +'<div style="padding:16px 20px;display:flex;flex-direction:column;gap:12px">'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'
+    +'<div><label style="font-family:\'Barlow Condensed\',sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#aaa;display:block;margin-bottom:4px">Date</label>'
+    +'<input type="date" id="_tlMDate" value="'+today()+'" style="width:100%;background:#111;border:1px solid #3a3a3a;border-radius:6px;color:#f2f2f2;padding:8px 10px;font-size:14px;outline:none"/></div>'
+    +'<div><label style="font-family:\'Barlow Condensed\',sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#aaa;display:block;margin-bottom:4px">Status</label>'
+    +'<select id="_tlMStatus" style="width:100%;background:#111;border:1px solid #3a3a3a;border-radius:6px;color:#f2f2f2;padding:8px 10px;font-size:14px;outline:none"><option value="information">Info</option><option value="ongoing">Ongoing</option><option value="resolved">Resolved</option></select></div>'
+    +'</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'
+    +'<div><label style="font-family:\'Barlow Condensed\',sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#aaa;display:block;margin-bottom:4px">Studio</label>'
+    +'<select id="_tlMStudio" style="width:100%;background:#111;border:1px solid #3a3a3a;border-radius:6px;color:#f2f2f2;padding:8px 10px;font-size:14px;outline:none">'+studioOpts+'</select></div>'
+    +'<div><label style="font-family:\'Barlow Condensed\',sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#aaa;display:block;margin-bottom:4px">Department</label>'
+    +'<select id="_tlMDept" style="width:100%;background:#111;border:1px solid #3a3a3a;border-radius:6px;color:#f2f2f2;padding:8px 10px;font-size:14px;outline:none"><option>Engineering</option><option>Cameras</option><option>Connectivity</option><option>Audio</option><option>Lighting</option><option>Vision</option><option>Comms</option><option>General</option></select></div>'
+    +'</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'
+    +'<div><label style="font-family:\'Barlow Condensed\',sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#aaa;display:block;margin-bottom:4px">Reported By</label>'
+    +'<select id="_tlMBy" style="width:100%;background:#111;border:1px solid #3a3a3a;border-radius:6px;color:#f2f2f2;padding:8px 10px;font-size:14px;outline:none">'+TLCREW+'</select></div>'
+    +'<div><label style="font-family:\'Barlow Condensed\',sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#aaa;display:block;margin-bottom:4px">Job</label>'
+    +'<input id="_tlMJob" placeholder="e.g. Dragons Den" style="width:100%;background:#111;border:1px solid #3a3a3a;border-radius:6px;color:#f2f2f2;padding:8px 10px;font-size:14px;outline:none"/></div>'
+    +'</div>'
+    +'<div><label style="font-family:\'Barlow Condensed\',sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#aaa;display:block;margin-bottom:4px">Issue / Information</label>'
+    +'<textarea id="_tlMInfo" placeholder="Describe the issue\u2026" style="width:100%;background:#111;border:1px solid #3a3a3a;border-radius:6px;color:#f2f2f2;padding:8px 10px;font-size:14px;outline:none;min-height:90px;resize:vertical"></textarea></div>'
+    +'<div><label style="font-family:\'Barlow Condensed\',sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#aaa;display:block;margin-bottom:4px">Next Stage</label>'
+    +'<input id="_tlMNext" placeholder="e.g. Re-end cable" style="width:100%;background:#111;border:1px solid #3a3a3a;border-radius:6px;color:#f2f2f2;padding:8px 10px;font-size:14px;outline:none"/></div>'
+    +'<button id="_tlMSubmit" onclick="_tlSubmitNew()" style="width:100%;padding:13px;background:'+col+';border:none;border-radius:8px;font-family:\'Barlow Condensed\',sans-serif;font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#000;cursor:pointer;margin-top:4px">Add Entry</button>'
+    +'</div></div>';
+  document.body.appendChild(div);
+  document.getElementById('_tlMTitle').textContent='New Entry \u2014 '+loc.charAt(0).toUpperCase()+loc.slice(1);
+  setTimeout(function(){var f=document.getElementById('_tlMInfo');if(f)f.focus();},200);
+}
+function _tlSubmitNew(){
+  var info=(document.getElementById('_tlMInfo')||{}).value||'';
+  info=info.trim();
+  if(!info){if(typeof toast==='function')toast('Please describe the issue.');return;}
+  var loc=_tleLoc||'manchester';
+  var entry={
+    id:_tleId?Number(_tleId):Date.now(),
+    date:(document.getElementById('_tlMDate')||{}).value||today(),
+    studio:(document.getElementById('_tlMStudio')||{}).value||'',
+    dept:(document.getElementById('_tlMDept')||{}).value||'',
+    job:(document.getElementById('_tlMJob')||{}).value||'None',
+    by:(document.getElementById('_tlMBy')||{}).value||'',
+    info:info,
+    next:(document.getElementById('_tlMNext')||{}).value||'',
+    status:(document.getElementById('_tlMStatus')||{}).value||'information',
+    updates:'',update_log:[]
+  };
+  if(_tleId){
+    var idx=(_tld[loc]||[]).findIndex(function(x){return String(x.id)===String(_tleId);});
+    var old=tlFind(loc,_tleId);
+    if(old){entry.update_log=old.update_log||[];entry.updates=old.updates||'';}
+    if(idx>=0)_tld[loc][idx]=entry;else(_tld[loc]=_tld[loc]||[]).push(entry);
+  }else{
+    if(!_tld[loc])_tld[loc]=[];
+    _tld[loc].push(entry);
   }
+  var btn=document.getElementById('_tlMSubmit');
+  if(btn){btn.textContent='Saving\u2026';btn.disabled=true;}
+  tlSave(loc).then(function(){
+    var m=document.getElementById('_tlModal');if(m)m.remove();
+    tlRender(loc);
+    if(typeof toast==='function')toast('Entry saved');
+  });
 }
 function tlSel(id,val){var el=document.getElementById(id);if(!el)return;for(var i=0;i<el.options.length;i++)if(el.options[i].text===val||el.options[i].value===val){el.selectedIndex=i;return;}}
 function tlSubmit(){
@@ -12537,6 +12808,18 @@ document.addEventListener('DOMContentLoaded',function(){
   if(typeof _os==='function'){window.switchStudio=function(loc,el){_os&&_os.apply(this,arguments);tlLoad(loc);};}
 });
 
+
+
+window._noteType='idea';
+window._notesSubmit=function(){
+  var txt=document.getElementById('notesInput');
+  var job=document.getElementById('notesJobTag');
+  if(!txt)return;
+  notesAdd(window._noteType,txt.value,job?job.value:'');
+  txt.value='';if(job)job.value='';
+};
+window.notesToggleDark=notesToggleDark;
+window.notesSetFilter=notesSetFilter;
 
 // Expose TL functions globally for onclick attributes
 document.addEventListener('DOMContentLoaded', function() {
@@ -12651,6 +12934,35 @@ async function clSubmit(){
   var date=document.getElementById('clDate').value,tech=document.getElementById('clTech').value,info=document.getElementById('clInfo').value.trim();
   if(!date||!info)return;
   var btn=document.getElementById('clSubmitBtn');btn.disabled=true;btn.textContent='Submitting…';
+  try{
+    var r=await fetch('https://dttwgmoyxthczlzxjgag.supabase.co/rest/v1/engineering_reports',{method:'POST',
+      headers:{'Content-Type':'application/json','apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ','Prefer':'return=minimal'},
+      body:JSON.stringify({versa_tech_manager:tech,bbc_tech_manager:'',show_date:date,show_name:"I'm a Celebrity",summary_mode:'str',summary_text:info,tagged_kit:[],tagged_kit_names:[],urgent_action:'No',urgent_details:'',submitted_at:new Date().toISOString()})});
+    if(r.ok){document.getElementById('clFormView').style.display='none';var sd=document.getElementById('clSuccess');if(sd)sd.style.display='block';var det=document.getElementById('clSuccessDetail');if(det)det.textContent=tech+' · '+date;}
+    else toast('Submit failed');
+  }catch(e){toast('Error: '+e.message);}
+  btn.disabled=false;btn.textContent='Submit Report';
+}
+function clReset(){
+  document.getElementById('clFormView').style.display='';
+  var sd=document.getElementById('clSuccess');if(sd)sd.style.display='none';
+  document.getElementById('clDate').value='';document.getElementById('clInfo').value='';
+  clPick('AR');clUpdateStatus();
+}
+window.clPick=clPick;window.clSubmit=clSubmit;window.clReset=clReset;
+
+// ── TL BUTTON EVENT WIRING (belt + braces) ───────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  // Wire + New Entry buttons
+  document.querySelectorAll('[data-tl-add]').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      var loc = btn.getAttribute('data-tl-add');
+      try { tlOpenAdd(loc); }
+      catch(err) { console.error('tlOpenAdd error:', err); alert('Error opening form: ' + err.message); }
+    });
+  });
+});
+disabled=true;btn.textContent='Submitting…';
   try{
     var r=await fetch('https://dttwgmoyxthczlzxjgag.supabase.co/rest/v1/engineering_reports',{method:'POST',
       headers:{'Content-Type':'application/json','apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ','Prefer':'return=minimal'},
@@ -12949,4 +13261,36 @@ document.addEventListener('DOMContentLoaded', function() {
         <div><div class="dfl">Notes</div>
           <textarea class="fi fta" id="hiredFormNotes" style="width:100%;min-height:60px"></textarea></div>
         <div><div class="dfl">Suppliers <span style="font-size:11px;color:var(--muted);font-weight:400">(comma separated)</span></div>
-          <input class="fi" id="hiredFormSuppliers" style=
+          <input class="fi" id="hiredFormSuppliers" style
+        <div id="admContent-notes" style="display:none">
+          <div id="notesWrap" style="background:#efede3;color:#302f2c;border-radius:10px;transition:background .2s,color .2s;font-family:'Barlow',sans-serif">
+            <!-- Header -->
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 20px 14px;border-bottom:1px solid rgba(48,47,44,.12)">
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;letter-spacing:.04em;text-transform:uppercase">My Notes</div>
+              <button id="notesThemeToggle" onclick="notesToggleDark(document.getElementById('notesWrap'))" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:none;border:1px solid rgba(48,47,44,.2);border-radius:5px;padding:5px 12px;color:rgba(48,47,44,.6);cursor:pointer">&#9790; Dark</button>
+            </div>
+            <!-- Composer -->
+            <div class="notes-composer" style="background:#fff;margin:16px;border-radius:10px;padding:14px 16px;box-shadow:0 1px 4px rgba(48,47,44,.08)">
+              <div style="display:flex;gap:8px;margin-bottom:12px" id="noteTypeBar">
+                <button onclick="notesPickType(this,'idea')" class="nt-active" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:1.5px solid #8b6a3e;border-radius:5px;padding:5px 12px;background:#8b6a3e18;color:#8b6a3e;cursor:pointer">Idea</button>
+                <button onclick="notesPickType(this,'action')" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:1.5px solid rgba(48,47,44,.2);border-radius:5px;padding:5px 12px;background:transparent;color:rgba(48,47,44,.45);cursor:pointer">Action</button>
+                <button onclick="notesPickType(this,'reminder')" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:1.5px solid rgba(48,47,44,.2);border-radius:5px;padding:5px 12px;background:transparent;color:rgba(48,47,44,.45);cursor:pointer">Reminder</button>
+              </div>
+              <textarea id="notesInput" placeholder="Write anything&#8230;" style="width:100%;background:transparent;border:none;outline:none;font-family:'Barlow',sans-serif;font-size:16px;color:#302f2c;resize:none;min-height:160px;line-height:1.65"></textarea>
+              <div style="display:flex;align-items:center;gap:10px;margin-top:10px;padding-top:10px;border-top:1px solid rgba(48,47,44,.1)">
+                <input id="notesJobTag" placeholder="Tag to job (optional)" style="flex:1;background:transparent;border:1px solid rgba(48,47,44,.15);border-radius:5px;padding:6px 10px;font-family:'Barlow',sans-serif;font-size:13px;color:#302f2c;outline:none"/>
+                <button onclick="_notesSubmit()" style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:#302f2c;border:none;border-radius:6px;padding:8px 18px;color:#efede3;cursor:pointer">Add Note</button>
+              </div>
+            </div>
+            <!-- Filter bar -->
+            <div style="display:flex;gap:6px;padding:0 16px 12px;flex-wrap:wrap">
+              <button id="nfBtn-all" onclick="notesSetFilter('all')" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:1px solid rgba(48,47,44,.2);border-radius:5px;padding:5px 12px;cursor:pointer;background:#302f2c;color:#efede3">All</button>
+              <button id="nfBtn-idea" onclick="notesSetFilter('idea')" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:1px solid rgba(48,47,44,.2);border-radius:5px;padding:5px 12px;cursor:pointer;background:transparent;color:rgba(48,47,44,.5)">Idea</button>
+              <button id="nfBtn-action" onclick="notesSetFilter('action')" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:1px solid rgba(48,47,44,.2);border-radius:5px;padding:5px 12px;cursor:pointer;background:transparent;color:rgba(48,47,44,.5)">Action</button>
+              <button id="nfBtn-reminder" onclick="notesSetFilter('reminder')" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:1px solid rgba(48,47,44,.2);border-radius:5px;padding:5px 12px;cursor:pointer;background:transparent;color:rgba(48,47,44,.5)">Reminder</button>
+            </div>
+            <!-- Notes list -->
+            <div id="notesList" style="padding:0 16px 16px"></div>
+          </div>
+        </div>
+=
