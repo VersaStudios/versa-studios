@@ -1675,37 +1675,17 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
 </div>
 
 <div id="erGenPanel" style="display:none;max-width:640px;margin:0 auto">
-<style>.gj-wrap{background:#0f1218;border-radius:10px;overflow:hidden;box-shadow:0 2px 20px rgba(0,0,0,.5)}.gj-head{background:linear-gradient(135deg,#0f1218 0%,#161c24 100%);padding:20px 24px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid rgba(45,90,45,.5)}.gj-title{font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#80d0a0}.gj-body{padding:0 24px 24px}.gj-sec{padding:18px 0;border-bottom:1px solid rgba(255,255,255,.06)}.gj-sec:last-child{border-bottom:none}.gj-lbl{font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:10px}.gj-btn{padding:14px 16px;border-radius:7px;font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border:2px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:rgba(255,255,255,.5);transition:all .15s;flex:1}.gj-btn.active{background:rgba(128,208,160,.12);border-color:#80d0a0;color:#80d0a0}.gj-inp{width:100%;background:#161c24;border:1.5px solid rgba(255,255,255,.12);border-radius:7px;color:#fff;padding:12px 14px;font-size:15px;font-family:var(--font);outline:none}.gj-inp:focus{border-color:#80d0a0}.gj-inp::placeholder{color:rgba(255,255,255,.25)}.gj-submit{width:100%;padding:15px;background:#80d0a0;border:none;border-radius:8px;font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#000;cursor:pointer;margin-top:4px}.gj-submit:disabled{opacity:.4;cursor:not-allowed}</style>
-<div class="gj-wrap">
-  <div class="gj-head"><div><div style="font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:4px">Versa Studios</div><div class="gj-title" id="gjTitle">Job &middot; Technical Report</div></div></div>
-  <div class="gj-body">
-    <div id="gjFormView">
-      <div class="gj-sec"><div class="gj-lbl">Show Date</div><input type="date" class="gj-inp" id="gjDate"/></div>
-      <div class="gj-sec"><div class="gj-lbl">Versa Engineer</div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button class="gj-btn active" id="gjBtnAR" onclick="gjPick('Andrew Rowell')">Andrew Rowell</button>
-          <button class="gj-btn" id="gjBtnIC" onclick="gjPick('Ian Curry')">Ian Curry</button>
-        </div><input type="hidden" id="gjTech" value="Andrew Rowell"/></div>
-      <div class="gj-sec"><div class="gj-lbl">Report Type</div>
-        <div style="display:flex;gap:8px">
-          <button class="gj-btn active" id="gjBtnNTR" onclick="gjSetMode('ntr')" style="flex:1">NTR</button>
-          <button class="gj-btn" id="gjBtnSTR" onclick="gjSetMode('str')" style="flex:1">STR</button>
-        </div></div>
-      <div class="gj-sec" id="gjInfoSec" style="display:none"><div class="gj-lbl">Technical Information</div><textarea class="gj-inp" id="gjInfo" style="min-height:100px;resize:vertical" placeholder="Describe the issue or activity&#x2026;"></textarea></div>
-      <div class="gj-sec" style="border:none;padding-bottom:0">
-        <div style="font-family:var(--cond);font-size:11px;color:rgba(255,255,255,.3);margin-bottom:10px" id="gjStatus">Complete all fields to submit</div>
-        <button class="gj-submit" id="gjSubmitBtn" onclick="gjSubmit()" disabled>Submit Report</button>
-      </div>
-    </div>
-    <div id="gjSuccess" style="display:none;text-align:center;padding:30px 20px">
-      <div style="font-size:40px;margin-bottom:12px">&#10003;</div>
-      <div style="font-family:var(--cond);font-size:18px;font-weight:800;color:#80d0a0;margin-bottom:8px">Report Submitted</div>
-      <div style="font-size:14px;color:rgba(255,255,255,.5);margin-bottom:20px" id="gjSuccessDetail"></div>
-      <button class="gj-submit" onclick="gjReset()" style="background:rgba(255,255,255,.1);color:#fff">Submit Another</button>
-    </div>
-  </div>
+<style>.gj-wrap{background:#0f1218;border-radius:10px;overflow:hidden;box-shadow:0 2px 20px rgba(0,0,0,.5)}.gj-head{background:linear-gradient(135deg,#0f1218 0%,#161c24 100%);padding:20px 24px 16px;border-bottom:2px solid rgba(45,90,45,.5)}.gj-title{font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#80d0a0}.gj-body{padding:0 24px 24px}.gj-sec{padding:18px 0;border-bottom:1px solid rgba(255,255,255,.06)}.gj-sec:last-child{border-bottom:none}.gj-lbl{font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:10px}.gj-btn{padding:14px 16px;border-radius:7px;font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border:2px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:rgba(255,255,255,.5);transition:all .15s;flex:1}.gj-btn.active{background:rgba(128,208,160,.12);border-color:#80d0a0;color:#80d0a0}.gj-inp{width:100%;background:#161c24;border:1.5px solid rgba(255,255,255,.12);border-radius:7px;color:#fff;padding:12px 14px;font-size:15px;font-family:var(--font);outline:none}.gj-inp:focus{border-color:#80d0a0}.gj-inp::placeholder{color:rgba(255,255,255,.25)}.gj-submit{width:100%;padding:15px;background:#80d0a0;border:none;border-radius:8px;font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#000;cursor:pointer;margin-top:4px}.gj-submit:disabled{opacity:.4;cursor:not-allowed}</style>
+<div class="gj-wrap"><div class="gj-head"><div style="font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:4px">Versa Studios</div><div class="gj-title" id="gjTitle">Job &middot; Technical Report</div></div>
+<div class="gj-body"><div id="gjFormView">
+<div class="gj-sec"><div class="gj-lbl">Show Date</div><input type="date" class="gj-inp" id="gjDate"/></div>
+<div class="gj-sec"><div class="gj-lbl">Versa Engineer</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="gj-btn active" id="gjBtnAR" onclick="gjPick('Andrew Rowell')">Andrew Rowell</button><button class="gj-btn" id="gjBtnIC" onclick="gjPick('Ian Curry')">Ian Curry</button></div><input type="hidden" id="gjTech" value="Andrew Rowell"/></div>
+<div class="gj-sec"><div class="gj-lbl">Report Type</div><div style="display:flex;gap:8px"><button class="gj-btn active" id="gjBtnNTR" onclick="gjSetMode('ntr')" style="flex:1">NTR</button><button class="gj-btn" id="gjBtnSTR" onclick="gjSetMode('str')" style="flex:1">STR</button></div></div>
+<div class="gj-sec" id="gjInfoSec" style="display:none"><div class="gj-lbl">Technical Information</div><textarea class="gj-inp" id="gjInfo" style="min-height:100px;resize:vertical" placeholder="Describe the issue&#x2026;"></textarea></div>
+<div class="gj-sec" style="border:none;padding-bottom:0"><div style="font-family:var(--cond);font-size:11px;color:rgba(255,255,255,.3);margin-bottom:10px" id="gjStatus">Complete all fields to submit</div><button class="gj-submit" id="gjSubmitBtn" onclick="gjSubmit()" disabled>Submit Report</button></div>
 </div>
-</div>
+<div id="gjSuccess" style="display:none;text-align:center;padding:30px 20px"><div style="font-size:40px;margin-bottom:12px">&#10003;</div><div style="font-family:var(--cond);font-size:18px;font-weight:800;color:#80d0a0;margin-bottom:8px">Report Submitted</div><div style="font-size:14px;color:rgba(255,255,255,.5);margin-bottom:20px" id="gjSuccessDetail"></div><button class="gj-submit" onclick="gjReset()" style="background:rgba(255,255,255,.1);color:#fff">Submit Another</button></div>
+</div></div></div>
 <!-- I'm a Celeb report panel -->
 <div id="erCelebPanel" style="display:none;max-width:640px;margin:0 auto">
 <style>
@@ -1956,7 +1936,81 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
         </div>
         <div id="admContent-cats" style="display:none">
           <div class="adm-grid">
-            <div class="adm-sec full"><div class="adm-sec-hdr"><div class="adm-sec-title">Kit Categories</div><button clas
+            <div class="adm-sec full"><div class="adm-sec-hdr"><div class="adm-sec-title">Kit Categories</div><button class="btn-add" style="margin-left:0" onclick="openAddCat()">+ Add</button></div><div id="catList"></div></div>
+          </div>
+        </div>
+        <div id="admContent-dv" style="display:none">
+          <div class="adm-sec full" style="background:var(--panel);border-radius:6px;border:1px solid var(--border);margin-bottom:14px">
+            <div class="adm-sec-hdr"><div class="adm-sec-title">Hired Kit Catalogue</div></div>
+            <div style="padding:10px 17px;font-size:13px;color:var(--muted)">Items appear in the Camera Spec "pick from hired" picker and the Hired Catalogue on the Kit page.</div>
+            <div id="dvHiredList" style="padding:0 17px 16px"></div>
+          </div>
+          <div class="adm-sec full" style="background:var(--panel);border-radius:6px;border:1px solid var(--border)">
+            <div class="adm-sec-hdr"><div class="adm-sec-title">Camera Plan — Dropdown Options</div></div>
+            <div style="padding:10px 17px;font-size:13px;color:var(--muted)">Manage the dropdown options used in Camera Spec. Changes apply immediately to all jobs.</div>
+            <div id="dvAdminWrap" style="padding:0 17px 16px"></div>
+          </div>
+        </div>
+        <div id="admContent-suppliers" style="display:none">
+          <div class="adm-sec full" style="background:var(--panel);border-radius:6px;border:1px solid var(--border)">
+            <div class="adm-sec-hdr"><div class="adm-sec-title">Suppliers</div><button class="btn-add" onclick="openAddSupp()" style="margin-left:0">+ Add Supplier</button></div>
+            <div style="padding:4px 0"><div id="suppList"></div></div>
+          </div>
+        </div>
+        <div id="admContent-pat" style="display:none">
+          <div class="adm-grid">
+            <div class="adm-sec"><div class="adm-sec-hdr"><div class="adm-sec-title">Weekly PAT Emails</div><button class="btn-add" onclick="openAddPatEmail()" style="margin-left:0">+ Add</button></div><div style="padding:10px 17px"><div style="font-size:13px;color:var(--muted);margin-bottom:10px">Weekly digest sent to all admins when PAT is due.</div><div id="patEmailList"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="admContent-access" style="display:none">
+          <div class="adm-grid">
+            <div class="adm-sec full">
+              <div class="adm-sec-hdr">
+                <div class="adm-sec-title">Job Access</div>
+                <button class="btn-add" style="margin-left:0" onclick="openAddAccess()">+ Grant Access</button>
+              </div>
+              <div style="padding:8px 16px 4px;font-size:13px;color:var(--muted)">
+                Give external contacts login access to a single job. They sign in with their email and the PIN you set — they can only see and edit their assigned job.
+              </div>
+              <div id="accessList"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+      <div class="page" id="page-tools">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+          <div style="font-family:var(--cond);font-size:22px;font-weight:900;letter-spacing:.04em;color:var(--white)">Tools</div>
+        </div>
+        <div id="toolsPanelSignal" style="height:calc(100vh - 140px);min-height:300px;">
+          <div style="display:flex;align-items:center;gap:8px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.3);border-radius:6px;padding:8px 12px;margin-bottom:8px">
+            <span style="font-size:16px">&#128421;</span>
+            <span style="font-size:12px;color:#f59e0b;font-family:var(--cond);font-weight:700">Best used on desktop &mdash; node placement and cable routing require a mouse</span>
+          </div>
+          <iframe id="iframeSignal" style="width:100%;height:100%;border:none;display:block;border-radius:0 0 8px 8px;" sandbox="allow-scripts allow-same-origin allow-downloads allow-modals"></iframe>
+        </div>
+      
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js">
+function notesPickType(btn,type){
+  window._noteType=type;
+  var bar=document.getElementById('noteTypeBar');
+  if(!bar)return;
+  var cols={idea:'#8b6a3e',action:'#4a6741',reminder:'#7a4a5e'};
+  bar.querySelectorAll('button').forEach(function(b){
+    b.style.border='1.5px solid rgba(48,47,44,.2)';
+    b.style.background='transparent';
+    b.style.color='rgba(48,47,44,.45)';
+  });
+  var c=cols[type]||'#302f2c';
+  btn.style.border='1.5px solid '+c;
+  btn.style.background=c+'18';
+  btn.style.color=c;
+}
+window.notesPickType=notesPickType;
+</script><script>
 
 // ── NOTES MODULE ─────────────────────────────────────────────────────────────
 var _notes = [];
@@ -2200,69 +2254,20 @@ async function allCalRender(yr,mo){
   var mn=['January','February','March','April','May','June','July','August','September','October','November','December'];
   var now=new Date(),tod=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
   var pm=new Date(yr,mo-1,1),nm=new Date(yr,mo+1,1);
-  var ps=pm.getFullYear()+'-'+String(pm.getMonth()+1).padStart(2,'0');
-  var ns2=nm.getFullYear()+'-'+String(nm.getMonth()+1).padStart(2,'0');
+  var ps=pm.getFullYear()+'-'+String(pm.getMonth()+1).padStart(2,'0'),ns2=nm.getFullYear()+'-'+String(nm.getMonth()+1).padStart(2,'0');
   var canN=nm<=new Date(now.getFullYear(),now.getMonth(),1);
-  var from=yr+'-'+String(mo+1).padStart(2,'0')+'-01';
-  var tod2=new Date(yr,mo+1,0),to=yr+'-'+String(mo+1).padStart(2,'0')+'-'+String(tod2.getDate()).padStart(2,'0');
-  var ck=yr+'-'+mo;
-  if(!_allCalCache[ck]){
-    _allCalCache[ck]={};
-    try{
-      var u=_SB_URL+'/rest/v1/engineering_reports?show_date=gte.'+from+'&show_date=lte.'+to+'&order=show_date.asc';
-      var rr=await fetch(u,{headers:{'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY}});
-      var rows=await rr.json();
-      if(rows&&rows.length)rows.forEach(function(r){if(!_allCalCache[ck][r.show_date])_allCalCache[ck][r.show_date]=[];_allCalCache[ck][r.show_date].push(r);});
-    }catch(e){}
-  }
+  var from=yr+'-'+String(mo+1).padStart(2,'0')+'-01',tod2=new Date(yr,mo+1,0),to=yr+'-'+String(mo+1).padStart(2,'0')+'-'+String(tod2.getDate()).padStart(2,'0'),ck=yr+'-'+mo;
+  if(!_allCalCache[ck]){_allCalCache[ck]={};try{var u=_SB_URL+'/rest/v1/engineering_reports?show_date=gte.'+from+'&show_date=lte.'+to+'&order=show_date.asc';var rr=await fetch(u,{headers:{'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY}});var rows=await rr.json();if(rows&&rows.length)rows.forEach(function(r){if(!_allCalCache[ck][r.show_date])_allCalCache[ck][r.show_date]=[];_allCalCache[ck][r.show_date].push(r);});}catch(e){}}
   var dd=_allCalCache[ck]||{};
-  var h='<div style="background:var(--near-black);border:1px solid var(--border-l);border-radius:12px;overflow:hidden;margin-bottom:16px">'
-    +'<div style="display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--border)">'
-    +'<button data-nav="'+ps+'" onclick="allCalNav(this.dataset.nav)" style="background:var(--dark);border:1px solid var(--border-l);color:var(--white);width:38px;height:38px;border-radius:8px;font-size:20px;cursor:pointer">&#8592;</button>'
-    +'<div style="text-align:center"><div style="font-family:var(--cond);font-size:28px;font-weight:900;color:var(--white);line-height:1">'+mn[mo]+'</div><div style="font-family:var(--cond);font-size:14px;font-weight:700;color:var(--muted);letter-spacing:.1em;margin-top:3px">'+yr+'</div></div>'
-    +(canN?'<button data-nav="'+ns2+'" onclick="allCalNav(this.dataset.nav)" style="background:var(--dark);border:1px solid var(--border-l);color:var(--white);width:38px;height:38px;border-radius:8px;font-size:20px;cursor:pointer">&#8594;</button>':'<div style="width:38px"></div>')
-    +'</div><div style="display:grid;grid-template-columns:repeat(7,1fr);border-bottom:1px solid var(--border)">';
+  var h='<div style="background:var(--near-black);border:1px solid var(--border-l);border-radius:12px;overflow:hidden;margin-bottom:16px"><div style="display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--border)"><button data-nav="'+ps+'" onclick="allCalNav(this.dataset.nav)" style="background:var(--dark);border:1px solid var(--border-l);color:var(--white);width:38px;height:38px;border-radius:8px;font-size:20px;cursor:pointer">&#8592;</button><div style="text-align:center"><div style="font-family:var(--cond);font-size:28px;font-weight:900;color:var(--white);line-height:1">'+mn[mo]+'</div><div style="font-family:var(--cond);font-size:14px;font-weight:700;color:var(--muted);letter-spacing:.1em;margin-top:3px">'+yr+'</div></div>'+(canN?'<button data-nav="'+ns2+'" onclick="allCalNav(this.dataset.nav)" style="background:var(--dark);border:1px solid var(--border-l);color:var(--white);width:38px;height:38px;border-radius:8px;font-size:20px;cursor:pointer">&#8594;</button>':'<div style="width:38px"></div>')+'</div><div style="display:grid;grid-template-columns:repeat(7,1fr);border-bottom:1px solid var(--border)">';
   ['MON','TUE','WED','THU','FRI','SAT','SUN'].forEach(function(dy,ii){h+='<div style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.1em;color:'+(ii>=5?'#2a2a2a':'#666')+';text-align:center;padding:10px 0">'+dy+'</div>';});
   h+='</div><div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;padding:10px">';
   var fd=(new Date(yr,mo,1).getDay()+6)%7,dim=new Date(yr,mo+1,0).getDate();
   for(var e=0;e<fd;e++)h+='<div></div>';
-  for(var d=1;d<=dim;d++){
-    var ds=yr+'-'+String(mo+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
-    var dow=new Date(yr,mo,d).getDay(),isW=dow===0||dow===6,isF=ds>tod,isT=ds===tod;
-    var reps=dd[ds]||[],cnt=reps.length,hasU=reps.some(function(r){return r.urgent_action==='Yes';});
-    var bg,brd,nc,cur;
-    if(isW){bg='transparent';brd='none';nc='#252525';cur='default';}
-    else if(isF){bg='transparent';brd='1px dashed #1e1e1e';nc='#2a2a2a';cur='default';}
-    else if(hasU){bg='rgba(220,50,50,.18)';brd='1px solid rgba(220,50,50,.5)';nc='#ff7070';cur='pointer';}
-    else if(cnt>0){bg='rgba(74,158,255,.1)';brd='1px solid rgba(74,158,255,.35)';nc='var(--accent)';cur='pointer';}
-    else{bg='var(--dark)';brd='1px solid var(--border)';nc='var(--white)';cur='pointer';}
-    var ring=isT?'outline:2.5px solid var(--accent);outline-offset:-2px;':'';
-    var badge=cnt>0?'<div style="font-family:var(--cond);font-size:9px;font-weight:800;color:'+(hasU?'#ff7070':'var(--accent)')+';margin-top:2px">'+cnt+'</div>':'';
-    h+='<div '+((!isW&&!isF)?'data-date="'+ds+'"':'')+' style="background:'+bg+';border:'+brd+';border-radius:8px;padding:9px 4px 7px;text-align:center;cursor:'+cur+';'+ring+';margin:1px">'
-      +'<div style="font-family:var(--cond);font-size:16px;font-weight:900;color:'+nc+';line-height:1">'+d+'</div>'+badge+'</div>';
-  }
-  h+='</div></div>';
-  wrap.innerHTML=h;
-  wrap.onclick=function(ev){
-    var cell=ev.target.closest('[data-date]');if(!cell)return;
-    var ds=cell.getAttribute('data-date'),reps=dd[ds]||[];if(!reps.length)return;
-    var list=document.getElementById('allCalList');if(!list)return;
-    var dStr=new Date(ds+'T12:00:00').toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-    list.innerHTML='<div style="font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">'+dStr+' — '+reps.length+' report'+(reps.length>1?'s':'')+'</div>'
-      +reps.map(function(rep){
-        var isU=rep.urgent_action==='Yes',isN=rep.summary_mode==='ntr';
-        var col=isU?'#ff7070':(isN?'#4ade80':'#e8c84b');
-        return '<div style="background:var(--near-black);border:1px solid var(--border-l);border-radius:8px;padding:14px 16px;margin-bottom:8px">'
-          +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">'
-          +'<span style="font-family:var(--cond);font-size:10px;font-weight:800;padding:2px 8px;border-radius:3px;background:'+col+'22;color:'+col+';letter-spacing:.08em;text-transform:uppercase">'+(isU?'URGENT':isN?'NTR':'STR')+'</span>'
-          +'<span style="font-family:var(--cond);font-size:12px;font-weight:700;color:var(--white)">'+(rep.show_name||'Morning Live')+'</span>'
-          +'</div>'
-          +'<div style="font-size:12px;color:var(--muted)">Versa: '+(rep.versa_tech_manager||'—')+'  ·  BBC: '+(rep.bbc_tech_manager||'—')+'</div>'
-          +(rep.summary_text?'<div style="font-size:13px;color:rgba(255,255,255,.6);margin-top:6px">'+rep.summary_text+'</div>':'')
-          +'</div>';
-      }).join('');
-  };
-}
+  for(var d=1;d<=dim;d++){var ds=yr+'-'+String(mo+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');var dow=new Date(yr,mo,d).getDay(),isW=dow===0||dow===6,isF=ds>tod,isT=ds===tod;var reps=dd[ds]||[],cnt=reps.length,hasU=reps.some(function(r){return r.urgent_action==='Yes';});var bg,brd,nc,cur;if(isW){bg='transparent';brd='none';nc='#252525';cur='default';}else if(isF){bg='transparent';brd='1px dashed #1e1e1e';nc='#2a2a2a';cur='default';}else if(hasU){bg='rgba(220,50,50,.18)';brd='1px solid rgba(220,50,50,.5)';nc='#ff7070';cur='pointer';}else if(cnt>0){bg='rgba(74,158,255,.1)';brd='1px solid rgba(74,158,255,.35)';nc='var(--accent)';cur='pointer';}else{bg='var(--dark)';brd='1px solid var(--border)';nc='var(--white)';cur='pointer';}var ring=isT?'outline:2.5px solid var(--accent);outline-offset:-2px;':'',badge=cnt>0?'<div style="font-family:var(--cond);font-size:9px;font-weight:800;color:'+(hasU?'#ff7070':'var(--accent)')+';margin-top:2px">'+cnt+'</div>':'';
+  h+='<div '+((!isW&&!isF)?'data-date="'+ds+'"':'')+' style="background:'+bg+';border:'+brd+';border-radius:8px;padding:9px 4px 7px;text-align:center;cursor:'+cur+';'+ring+';margin:1px"><div style="font-family:var(--cond);font-size:16px;font-weight:900;color:'+nc+';line-height:1">'+d+'</div>'+badge+'</div>';}
+  h+='</div></div>';wrap.innerHTML=h;
+  wrap.onclick=function(ev){var cell=ev.target.closest('[data-date]');if(!cell)return;var ds=cell.getAttribute('data-date'),reps=dd[ds]||[];if(!reps.length)return;var list=document.getElementById('allCalList');if(!list)return;var dStr=new Date(ds+'T12:00:00').toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});list.innerHTML='<div style="font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">'+dStr+' &#8212; '+reps.length+' report'+(reps.length>1?'s':'')+'</div>'+reps.map(function(rep){var isU=rep.urgent_action==='Yes',isN=rep.summary_mode==='ntr';var col=isU?'#ff7070':(isN?'#4ade80':'#e8c84b');return '<div style="background:var(--near-black);border:1px solid var(--border-l);border-radius:8px;padding:14px 16px;margin-bottom:8px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="font-family:var(--cond);font-size:10px;font-weight:800;padding:2px 8px;border-radius:3px;background:'+col+'22;color:'+col+';letter-spacing:.08em;text-transform:uppercase">'+(isU?'URGENT':isN?'NTR':'STR')+'</span><span style="font-family:var(--cond);font-size:12px;font-weight:700;color:var(--white)">'+(rep.show_name||'Morning Live')+'</span></div><div style="font-size:12px;color:var(--muted)">Versa: '+(rep.versa_tech_manager||'&#8212;')+'  &#183;  BBC: '+(rep.bbc_tech_manager||'&#8212;')+'</div>'+(rep.summary_text?'<div style="font-size:13px;color:rgba(255,255,255,.6);margin-top:6px">'+rep.summary_text+'</div>':'')+'</div>';}).join('');};}
 function allCalNav(yrmo){var p=yrmo.split('-');allCalRender(parseInt(p[0]),parseInt(p[1])-1);var l=document.getElementById('allCalList');if(l)l.innerHTML='';}
 
 document.addEventListener('DOMContentLoaded',function(){
@@ -4551,7 +4556,7 @@ var _erCalYr = null, _erCalMo = null;
 function erCalRender(yr, mo, showName) {
   if(yr == null) { var n=new Date(); yr=n.getFullYear(); mo=n.getMonth(); }
   _erCalYr=yr; _erCalMo=mo;
-  if(showName===undefined) showName=erGetActiveShowName()||null;
+  if(showName===undefined)showName=erGetActiveShowName()||null;
   _erCalShowName=showName;
   var wrap = document.getElementById('erCalWrap'); if(!wrap) return;
   var now = new Date();
@@ -4972,17 +4977,12 @@ async function _fetchEngReportsForMonth(yr, mo, showName) {
   var ns = showName||'__all__';
   try {
     var url = _SB_URL+'/rest/v1/engineering_reports?show_date=gte.'+from+'&show_date=lte.'+to+'&order=show_date.asc';
-    if(showName==='Morning Live') {
-      url += '&or=(show_name.eq.Morning%20Live,show_name.is.null)';
-    } else if(showName) {
-      url += '&show_name=eq.'+encodeURIComponent(showName);
-    }
+    if(showName==='Morning Live'){url += '&or=(show_name.eq.Morning%20Live,show_name.is.null)';}
+    else if(showName){url += '&show_name=eq.'+encodeURIComponent(showName);}
     const resp = await fetch(url, {headers: {'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY}});
     const rows = await resp.json();
-    if(!_engReportCache[ns]) _engReportCache[ns]={};
-    if (rows && rows.length) {
-      rows.forEach(function(r) { _engReportCache[ns][r.show_date] = r; });
-    }
+    if(!_engReportCache[ns])_engReportCache[ns]={};
+    if(rows&&rows.length)rows.forEach(function(r){_engReportCache[ns][r.show_date]=r;});
   } catch(e) { console.warn('_fetchEngReportsForMonth error:', e); }
 }
 function renderJobEngRptTab(j) {
@@ -5226,7 +5226,8 @@ function today() { return new Date().toISOString().split('T')[0]; }
 // ── NAVIGATION ────────────────────────────────────────────────────────────────
 const titles = {dashboard:'Dashboard',kit:'Kit List',maintenance:'Maintenance',holidays:'Staff Holidays',
   faults:'Fault Log',bin:'Bin',studios:'Tech Log',jobs:'Jobs',
-  jobdet:'Job Detail',calendar:'Planner',admin:'Admin',ops:'Ops Planner',tools:'Tools'};
+  jobdet:'Job Detail',calendar:'Planner',admin:'Admin',ops:'Ops Planner',tools:'Tools',
+  engreport:'Eng Report',allcal:'All Reports'};
 function nav(page, el) {
   closeDrawer();
   if(page==='engreport') setTimeout(erInitPage, 50);
@@ -12956,66 +12957,6 @@ async function cwSubmit(){
   try{
     var r=await fetch('https://dttwgmoyxthczlzxjgag.supabase.co/rest/v1/engineering_reports',{method:'POST',
       headers:{'Content-Type':'application/json','apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ','Prefer':'return=minimal'},
-      body:JSON.stringify({versa_tech_manager:tech,bbc_tech_manager:'',show_date:date,show_name:'Cooking with the Stars',summary_mode:'str',summary_text:info,tagged_kit:[],tagged_kit_names:[],urgent_action:'No',urgent_details:'',submitted_at:new Date().toISOString()})});
-    if(r.ok){document.getElementById('cwFormView').style.display='none';var sd=document.getElementById('cwSuccess');if(sd)sd.style.display='block';var det=document.getElementById('cwSuccessDetail');if(det)det.textContent=tech+' · '+date;}
-    else toast('Submit failed');
-  }catch(e){toast('Error: '+e.message);}
-  btn.disabled=false;btn.textContent='Submit Report';
-}
-function cwReset(){
-  document.getElementById('cwFormView').style.display='';
-  var sd=document.getElementById('cwSuccess');if(sd)sd.style.display='none';
-  document.getElementById('cwDate').value='';document.getElementById('cwInfo').value='';
-  cwPick('AR');cwUpdateStatus();
-}
-window.cwPick=cwPick;window.cwSubmit=cwSubmit;window.cwReset=cwReset;
-
-// ── I'm a Celebrity Form ──────────────────────────────────────────────────
-function clPick(code){
-  var n={AR:'Andrew Rowell',OR:'Oli Riches',SB:'Simon Blunt'};
-  document.getElementById('clTech').value=n[code]||code;
-  ['AR','OR','SB'].forEach(function(c){var b=document.getElementById('clBtn'+c);if(b)b.classList.toggle('active',c===code);});
-  clUpdateStatus();
-}
-function clUpdateStatus(){
-  var ok=!!(document.getElementById('clDate').value&&document.getElementById('clInfo').value.trim());
-  var st=document.getElementById('clStatus');var btn=document.getElementById('clSubmitBtn');
-  if(st)st.textContent=ok?'Ready to submit':'Complete all fields to submit';
-  if(btn)btn.disabled=!ok;
-}
-async function clSubmit(){
-  var date=document.getElementById('clDate').value,tech=document.getElementById('clTech').value,info=document.getElementById('clInfo').value.trim();
-  if(!date||!info)return;
-  var btn=document.getElementById('clSubmitBtn');btn.disabled=true;btn.textContent='Submitting…';
-  try{
-    var r=await fetch('https://dttwgmoyxthczlzxjgag.supabase.co/rest/v1/engineering_reports',{method:'POST',
-      headers:{'Content-Type':'application/json','apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ','Prefer':'return=minimal'},
-      body:JSON.stringify({versa_tech_manager:tech,bbc_tech_manager:'',show_date:date,show_name:"I'm a Celebrity",summary_mode:'str',summary_text:info,tagged_kit:[],tagged_kit_names:[],urgent_action:'No',urgent_details:'',submitted_at:new Date().toISOString()})});
-    if(r.ok){document.getElementById('clFormView').style.display='none';var sd=document.getElementById('clSuccess');if(sd)sd.style.display='block';var det=document.getElementById('clSuccessDetail');if(det)det.textContent=tech+' · '+date;}
-    else toast('Submit failed');
-  }catch(e){toast('Error: '+e.message);}
-  btn.disabled=false;btn.textContent='Submit Report';
-}
-function clReset(){
-  document.getElementById('clFormView').style.display='';
-  var sd=document.getElementById('clSuccess');if(sd)sd.style.display='none';
-  document.getElementById('clDate').value='';document.getElementById('clInfo').value='';
-  clPick('AR');clUpdateStatus();
-}
-window.clPick=clPick;window.clSubmit=clSubmit;window.clReset=clReset;
-
-// ── TL BUTTON EVENT WIRING (belt + braces) ───────────────────────────────────
-document.addEventListener('DOMContentLoaded', function() {
-  // Wire + New Entry buttons
-  document.querySelectorAll('[data-tl-add]').forEach(function(btn) {
-    btn.addEventListener('click', function(e) {
-      var loc = btn.getAttribute('data-tl-add');
-      try { tlOpenAdd(loc); }
-      catch(err) { console.error('tlOpenAdd error:', err); alert('Error opening form: ' + err.message); }
-    });
-  });
-});
-s:{'Content-Type':'application/json','apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ','Prefer':'return=minimal'},
       body:JSON.stringify({versa_tech_manager:tech,bbc_tech_manager:'',show_date:date,show_name:'Cooking with the Stars',summary_mode:'str',summary_text:info,tagged_kit:[],tagged_kit_names:[],urgent_action:'No',urgent_details:'',submitted_at:new Date().toISOString()})});
     if(r.ok){document.getElementById('cwFormView').style.display='none';var sd=document.getElementById('cwSuccess');if(sd)sd.style.display='block';var det=document.getElementById('cwSuccessDetail');if(det)det.textContent=tech+' · '+date;}
     else toast('Submit failed');
