@@ -4307,11 +4307,18 @@ function erSwitchJob(jobId) {
   else if(jobId==='celebsa'){isCL=true;jobName="I'm a Celeb - South Africa";}
   else if(jobId!=='ml'&&typeof jobs!=='undefined'){
     var jid=parseInt(jobId.replace('j',''));
-    var j=jobs.find(function(x){return Number(x.id)===jid;});
+    var j=jobs.find(function(x){return Number(x.id)===jid||String(x.id)===String(jid);});
     if(j){
       jobName=j.name;
       var jn=j.name.toLowerCase();
-      isDD=(jn.indexOf("dragon")>=0);
+      isDD=(jn.indexOf('dragon')>=0);
+      isSO=(jn.indexOf('shopon')>=0||jn.indexOf('shop on')>=0);
+      isCW=(jn.indexOf('cooking')>=0);
+      isCL=(jn.indexOf('celeb')>=0||jn.indexOf('celebrity')>=0);
+    } else {
+      // Job not found in array - show generic panel
+      jobName=jobId;
+      isDD=false;isSO=false;isCW=false;isCL=false;
     }
   } else {jobName='Morning Live';}
   ['erSubPanelReport','erDDPanel','erShopOnPanel','erCwtsPanel','erCelebPanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
