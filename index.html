@@ -12372,6 +12372,7 @@ function erInitPage(){
   erRenderJobTabs();
   erSetDateToday();erSetSummary('ntr');window._erCatFilter='';erInitCatBtns();erRenderKit();erUpdateStatus();
   setTimeout(erLoadKit,100);
+  setTimeout(renderAbcLastReport,500);
   // Auto-import ML historical records if not done yet
   if(!localStorage.getItem('_mlImportDone') && typeof importMorningLiveReports==='function') {
     setTimeout(function(){
