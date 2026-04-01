@@ -4307,19 +4307,16 @@ function erSwitchJob(jobId) {
   else if(jobId==='celebsa'){isCL=true;jobName="I'm a Celeb - South Africa";}
   else if(jobId!=='ml'&&typeof jobs!=='undefined'){
     var jid=parseInt(jobId.replace('j',''));
-    var j=jobs.find(function(x){return x.id===jid;});
+    var j=jobs.find(function(x){return Number(x.id)===jid;});
     if(j){
       jobName=j.name;
       var jn=j.name.toLowerCase();
       isDD=(jn.indexOf("dragon")>=0);
     }
   } else {jobName='Morning Live';}
-  // Show the right panel, hide the rest
+  ['erSubPanelReport','erDDPanel','erShopOnPanel','erCwtsPanel','erCelebPanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
   var panelMap={erSubPanelReport:(!isDD&&!isSO&&!isCW&&!isCL),erDDPanel:isDD,erShopOnPanel:isSO,erCwtsPanel:isCW,erCelebPanel:isCL};
-  Object.keys(panelMap).forEach(function(id){
-    var el=document.getElementById(id);
-    if(el)el.style.display=panelMap[id]?'block':'none';
-  });
+  Object.keys(panelMap).forEach(function(id){var el=document.getElementById(id);if(el&&panelMap[id])el.style.display='block';});
   var calPanel=document.getElementById('erSubPanelCal');
   if(calPanel)calPanel.style.display='none';
   // Reset sub-tab highlights

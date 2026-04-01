@@ -171,6 +171,10 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:#efede3;color:#
     
 
     <nav class="sb-nav">
+      <button class="nv" onclick="window.location.href='index.html'" style="border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:6px;padding-bottom:12px">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 3L5 8l5 5"/></svg>
+        Back to App
+      </button>
       <button class="nv on" onclick="showPage('dashboard')">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
         Dashboard
@@ -403,20 +407,28 @@ var TEAM=['Andrew Rowell','Ian Curry'];
 var DEF_MTGS=[{id:1,name:'Versa Weekly',isSeries:true,prep:'',instances:[]},{id:2,name:'Morning Live Prep',isSeries:false,prep:'',instances:[]},{id:3,name:'Studio 12 Review',isSeries:false,prep:'',instances:[]}];
 
 async function init(){
+  // Show UI immediately, load data in background
+  if(!meetings.length)meetings=JSON.parse(JSON.stringify(DEF_MTGS));
+  render();
+  renderMtgList();
+  // Fetch with 8s timeout
   try{
-    var r=await fetch(SBU+'/rest/v1/app_data?key=eq.'+NK+'&select=value',{headers:{'apikey':SBK,'Authorization':'Bearer '+SBK}});
+    var ctrl=new AbortController();
+    var tid=setTimeout(function(){ctrl.abort();},8000);
+    var r=await fetch(SBU+'/rest/v1/app_data?key=eq.'+NK+'&select=value',
+      {headers:{'apikey':SBK,'Authorization':'Bearer '+SBK},signal:ctrl.signal});
+    clearTimeout(tid);
     var d=await r.json();
     if(d&&d[0]&&d[0].value){
       var v=d[0].value;
       if(Array.isArray(v.notes))notes=v.notes;
       if(Array.isArray(v.todos))todos=v.todos;
-      if(Array.isArray(v.meetings))meetings=v.meetings;
-      else if(Array.isArray(v))notes=v;
+      if(Array.isArray(v.meetings)&&v.meetings.length)meetings=v.meetings;
+      else if(Array.isArray(v)&&v.length)notes=v;
+      render();
+      renderMtgList();
     }
   }catch(e){}
-  if(!meetings.length)meetings=JSON.parse(JSON.stringify(DEF_MTGS));
-  render();
-  renderMtgList();
 }
 
 async function save(){
