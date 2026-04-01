@@ -4299,6 +4299,7 @@ function erRenderJobTabs() {
 
 function erSwitchJob(jobId) {
   _erActiveJob = jobId;
+
   erRenderJobTabs();
   var isDD=false,isSO=false,isCW=false,isCL=false,jobName='';
   if(jobId==='shopon'){isSO=true;jobName='ShopOn TV';}
@@ -4307,16 +4308,17 @@ function erSwitchJob(jobId) {
   else if(jobId==='celebsa'){isCL=true;jobName="I'm a Celeb - South Africa";}
   else if(jobId!=='ml'&&typeof jobs!=='undefined'){
     var jid=parseInt(jobId.replace('j',''));
-    var j=jobs.find(function(x){return Number(x.id)===jid||String(x.id)===String(jid);});
+    // Find job but skip any celeb jobs (they have hardcoded tabs)
+    var _isCeleb=function(n){var l=(n||'').toLowerCase();return l.indexOf('celeb')>=0||l.indexOf('celebrity')>=0;};
+    var j=jobs.find(function(x){return (Number(x.id)===jid||String(x.id)===String(jid))&&!_isCeleb(x.name);});
     if(j){
       jobName=j.name;
       var jn=j.name.toLowerCase();
       isDD=(jn.indexOf('dragon')>=0);
       isSO=(jn.indexOf('shopon')>=0||jn.indexOf('shop on')>=0);
       isCW=(jn.indexOf('cooking')>=0);
-      isCL=(jn.indexOf('celeb')>=0||jn.indexOf('celebrity')>=0);
+      isCL=false; // never true here since we filtered celeb jobs above
     } else {
-      // Job not found in array - show generic panel
       jobName=jobId;
       isDD=false;isSO=false;isCW=false;isCL=false;
     }
