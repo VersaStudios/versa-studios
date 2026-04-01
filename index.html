@@ -1148,21 +1148,6 @@ body.ops-sa .main-content{margin-left:0!important;}
     <div id="tl-stats-london" class="tl-stats" style="display:none"><div class="tl-stat"><div class="tl-stat-n" style="color:#d4a843" id="tls-tot-london">—</div><div class="tl-stat-l">Total</div></div><div class="tl-stat"><div class="tl-stat-n" style="color:#ef4444" id="tls-on-london">—</div><div class="tl-stat-l">Ongoing</div></div><div class="tl-stat"><div class="tl-stat-n" style="color:#22c55e" id="tls-res-london">—</div><div class="tl-stat-l">Resolved</div></div></div><div id="slog-london" class="tl-list"></div>
   </div>
   <div class="loc-content" id="sc-abc">
-    <!-- ABC Morning Live styled header -->
-    <div style="background:#1a2a1a;border:1px solid #2a4a2a;border-radius:8px;padding:16px 20px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
-      <div style="display:flex;align-items:center;gap:14px">
-        <div style="width:3px;height:40px;background:#80d0a0;border-radius:2px;flex-shrink:0"></div>
-        <div>
-          <div style="font-family:var(--cond);font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#80d0a0;margin-bottom:3px">ABC Studios</div>
-          <div style="font-family:var(--cond);font-size:20px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;color:#f2f2f2">Morning Live — Tech Log</div>
-        </div>
-      </div>
-      <div style="display:flex;gap:8px;align-items:center">
-        <div id="abcTlLastEntry" style="font-family:var(--cond);font-size:11px;color:#80d0a0;opacity:.7"></div>
-        <button onclick="tlOpenAdd('abc')" style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:#80d0a0;border:none;border-radius:5px;padding:8px 16px;color:#0a0a0a;cursor:pointer">+ New Entry</button>
-        <button onclick="nav('engreport',document.querySelector('[data-pg=engreport]'));setTimeout(function(){erSwitchJob('ml');},100)" style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:rgba(128,208,160,.15);border:1px solid #80d0a0;border-radius:5px;padding:8px 14px;color:#80d0a0;cursor:pointer">→ Eng Report</button>
-      </div>
-    </div>
     <div class="tl-toolbar">
       <div class="tl-filters">
         <button class="tl-ftab on" data-loc="abc" data-s="" onclick="tlFilter(this,'abc','')">All</button>
@@ -1301,8 +1286,6 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
 
 <!-- Job selector tabs -->
 <div id="erJobTabs" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border)"></div>
-<!-- Tech Log link -->
-<div style="display:flex;align-items:center;justify-content:flex-end;margin-bottom:12px"><button onclick="nav('studios',document.querySelector('[data-pg=studios]'));setTimeout(function(){switchStudioTab('abc','log');},150)" style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:rgba(128,208,160,.12);border:1px solid rgba(128,208,160,.4);border-radius:5px;padding:7px 14px;color:#80d0a0;cursor:pointer">→ ABC Tech Log</button></div>
 <!-- Sub-tabs -->
 <div style="display:flex;align-items:center;gap:0;margin-bottom:16px;border-bottom:2px solid rgba(216,90,97,.2)">
   <div id="erNavLabel" style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(216,90,97,.7);padding:0 16px 10px 0;flex-shrink:0">Morning Live</div>
@@ -1965,7 +1948,48 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
             <div class="adm-sec full">
               <div class="adm-sec-hdr">
                 <div class="adm-sec-title">Job Access</div>
-                <button class="btn-ad
+                <button class="btn-add" style="margin-left:0" onclick="openAddAccess()">+ Grant Access</button>
+              </div>
+              <div style="padding:8px 16px 4px;font-size:13px;color:var(--muted)">
+                Give external contacts login access to a single job. They sign in with their email and the PIN you set — they can only see and edit their assigned job.
+              </div>
+              <div id="accessList"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+      <div class="page" id="page-tools">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+          <div style="font-family:var(--cond);font-size:22px;font-weight:900;letter-spacing:.04em;color:var(--white)">Tools</div>
+        </div>
+        <div id="toolsPanelSignal" style="height:calc(100vh - 140px);min-height:300px;">
+          <div style="display:flex;align-items:center;gap:8px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.3);border-radius:6px;padding:8px 12px;margin-bottom:8px">
+            <span style="font-size:16px">&#128421;</span>
+            <span style="font-size:12px;color:#f59e0b;font-family:var(--cond);font-weight:700">Best used on desktop &mdash; node placement and cable routing require a mouse</span>
+          </div>
+          <iframe id="iframeSignal" style="width:100%;height:100%;border:none;display:block;border-radius:0 0 8px 8px;" sandbox="allow-scripts allow-same-origin allow-downloads allow-modals"></iframe>
+        </div>
+      
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js">
+function notesPickType(btn,type){
+  window._noteType=type;
+  var bar=document.getElementById('noteTypeBar');
+  if(!bar)return;
+  var cols={idea:'#8b6a3e',action:'#4a6741',reminder:'#7a4a5e'};
+  bar.querySelectorAll('button').forEach(function(b){
+    b.style.border='1.5px solid rgba(48,47,44,.2)';
+    b.style.background='transparent';
+    b.style.color='rgba(48,47,44,.45)';
+  });
+  var c=cols[type]||'#302f2c';
+  btn.style.border='1.5px solid '+c;
+  btn.style.background=c+'18';
+  btn.style.color=c;
+}
+window.notesPickType=notesPickType;
+</script><script>
 
 // ── NOTES MODULE ─────────────────────────────────────────────────────────────
 var _notes = [];
@@ -4256,9 +4280,10 @@ function erRenderJobTabs() {
   // Add other jobs from job planner
   if(typeof jobs !== 'undefined') {
     jobs.forEach(function(j) {
-      var reserved=['Morning Live','ShopOn TV','ShopOn','Cooking with the Stars'];
-      var isCelebJob=function(n){var l=n.toLowerCase();return l.indexOf('celeb')>=0||l.indexOf('celebrity')>=0;};
-      if(j.name && !reserved.includes(j.name) && !isCelebJob(j.name)) {
+      var reserved=['Morning Live','ShopOn TV','ShopOn','Cooking with the Stars',
+        "I'm a Celebrity","I'm a Celeb","I'm a Celeb - South Africa",
+        "Dragon's Den",'Dragons Den'];
+      if(j.name && !reserved.includes(j.name)) {
         tabs.push({id:'j'+j.id, label:j.name, col:(j.color&&j.color.bg)||'#2d5a2d', jid:j.id});
       }
     });
@@ -4283,17 +4308,19 @@ function erSwitchJob(jobId) {
   else if(jobId==='celebsa'){isCL=true;jobName="I'm a Celeb - South Africa";}
   else if(jobId!=='ml'&&typeof jobs!=='undefined'){
     var jid=parseInt(jobId.replace('j',''));
-    var j=jobs.find(function(x){return Number(x.id)===jid;});
+    var j=jobs.find(function(x){return x.id===jid;});
     if(j){
       jobName=j.name;
       var jn=j.name.toLowerCase();
       isDD=(jn.indexOf("dragon")>=0);
-      isCL=(jn.indexOf('celeb')>=0||jn.indexOf('celebrity')>=0);
     }
   } else {jobName='Morning Live';}
-  ['erSubPanelReport','erDDPanel','erShopOnPanel','erCwtsPanel','erCelebPanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
+  // Show the right panel, hide the rest
   var panelMap={erSubPanelReport:(!isDD&&!isSO&&!isCW&&!isCL),erDDPanel:isDD,erShopOnPanel:isSO,erCwtsPanel:isCW,erCelebPanel:isCL};
-  Object.keys(panelMap).forEach(function(id){var el=document.getElementById(id);if(el&&panelMap[id])el.style.display='block';});
+  Object.keys(panelMap).forEach(function(id){
+    var el=document.getElementById(id);
+    if(el)el.style.display=panelMap[id]?'block':'none';
+  });
   var calPanel=document.getElementById('erSubPanelCal');
   if(calPanel)calPanel.style.display='none';
   // Reset sub-tab highlights
@@ -12319,28 +12346,6 @@ async function erSubmit(){
   const vtm=document.getElementById('erVTM').value.trim(),bbc=document.getElementById('erBBC').value,urgent=document.getElementById('erUrgent').value,urgTxt=document.getElementById('erUrgTxt').value.trim(),isSTR=_erSummaryMode==='str',sumTxt=isSTR?document.getElementById('erSummaryTxt').value.trim():'',tagNames=_erTags.map(id=>{const k=_erKitData.find(x=>x.id===id);return k?k.name+' ('+k.tag+')':'';}).filter(Boolean),showDate=_erUseTodayDate?new Date().toISOString().split('T')[0]:_erSelectedDate;
   await erSaveReport({versa_tech_manager:vtm,bbc_tech_manager:bbc,show_date:showDate,show_name:(document.getElementById('erShowSel')?document.getElementById('erShowSel').value:'Morning Live (ABC)'),summary_mode:_erSummaryMode,summary_text:sumTxt,tagged_kit:_erTags,tagged_kit_names:tagNames,urgent_action:urgent,urgent_details:urgTxt,submitted_at:new Date().toISOString()});
   if(isSTR)erSendEmail({show_date:showDate,versa_tech:vtm,bbc_tech:bbc,summary:sumTxt||'(no details)',urgent,urgent_details:urgTxt||'--',tagged_kit:tagNames.join(', ')||'None',submitted_at:new Date().toLocaleString('en-GB')});
-  // Auto-create Tech Log entry for STR
-  if(isSTR && sumTxt){
-    try{
-      if(!_tld)_tld={};
-      if(!_tld.abc)_tld.abc=[];
-      var tlEntry={
-        id:Date.now(),
-        date:showDate,
-        studio:'ABC',
-        dept:'Engineering',
-        job:'Morning Live',
-        by:vtm||'Andrew Rowell',
-        info:'[From Engineering Report] '+sumTxt+(urgTxt?' | Urgent: '+urgTxt:''),
-        next:'',
-        status:urgent==='Yes'?'ongoing':'information',
-        updates:'',update_log:[]
-      };
-      _tld.abc.push(tlEntry);
-      tlSave('abc');
-      toast('STR logged — Tech Log entry created');
-    }catch(e){}
-  }
   // Refresh last report box
   renderAbcLastReport();
   // Also refresh _dEngReports for dashboard
@@ -12548,18 +12553,6 @@ function tlFind(loc,id){return(_tld[loc]||[]).find(function(x){return String(x.i
 
 function tlRender(loc){
   var el=document.getElementById('slog-'+loc);if(!el)return;
-  // Update ABC header last entry date
-  if(loc==='abc'){
-    var lastEl=document.getElementById('abcTlLastEntry');
-    if(lastEl){
-      var entries=(_tld&&_tld.abc)||[];
-      if(entries.length){
-        var sorted=entries.slice().sort(function(a,b){return (b.date||'').localeCompare(a.date||'');});
-        var ds=new Date(sorted[0].date+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'});
-        lastEl.textContent='Last entry: '+ds;
-      } else {lastEl.textContent='';}
-    }
-  }
   var col=TLC[loc]||'var(--accent)';
   var allData=(_tld[loc]||[]).slice();
   // Stats bar
@@ -12934,35 +12927,6 @@ async function clSubmit(){
   var date=document.getElementById('clDate').value,tech=document.getElementById('clTech').value,info=document.getElementById('clInfo').value.trim();
   if(!date||!info)return;
   var btn=document.getElementById('clSubmitBtn');btn.disabled=true;btn.textContent='Submitting…';
-  try{
-    var r=await fetch('https://dttwgmoyxthczlzxjgag.supabase.co/rest/v1/engineering_reports',{method:'POST',
-      headers:{'Content-Type':'application/json','apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ','Prefer':'return=minimal'},
-      body:JSON.stringify({versa_tech_manager:tech,bbc_tech_manager:'',show_date:date,show_name:"I'm a Celebrity",summary_mode:'str',summary_text:info,tagged_kit:[],tagged_kit_names:[],urgent_action:'No',urgent_details:'',submitted_at:new Date().toISOString()})});
-    if(r.ok){document.getElementById('clFormView').style.display='none';var sd=document.getElementById('clSuccess');if(sd)sd.style.display='block';var det=document.getElementById('clSuccessDetail');if(det)det.textContent=tech+' · '+date;}
-    else toast('Submit failed');
-  }catch(e){toast('Error: '+e.message);}
-  btn.disabled=false;btn.textContent='Submit Report';
-}
-function clReset(){
-  document.getElementById('clFormView').style.display='';
-  var sd=document.getElementById('clSuccess');if(sd)sd.style.display='none';
-  document.getElementById('clDate').value='';document.getElementById('clInfo').value='';
-  clPick('AR');clUpdateStatus();
-}
-window.clPick=clPick;window.clSubmit=clSubmit;window.clReset=clReset;
-
-// ── TL BUTTON EVENT WIRING (belt + braces) ───────────────────────────────────
-document.addEventListener('DOMContentLoaded', function() {
-  // Wire + New Entry buttons
-  document.querySelectorAll('[data-tl-add]').forEach(function(btn) {
-    btn.addEventListener('click', function(e) {
-      var loc = btn.getAttribute('data-tl-add');
-      try { tlOpenAdd(loc); }
-      catch(err) { console.error('tlOpenAdd error:', err); alert('Error opening form: ' + err.message); }
-    });
-  });
-});
-disabled=true;btn.textContent='Submitting…';
   try{
     var r=await fetch('https://dttwgmoyxthczlzxjgag.supabase.co/rest/v1/engineering_reports',{method:'POST',
       headers:{'Content-Type':'application/json','apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ','Prefer':'return=minimal'},
