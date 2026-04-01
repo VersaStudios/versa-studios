@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Versa Capture">
+<meta name="theme-color" content="#302f2c">
+<title>Versa Capture</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:#302f2c;color:#efede3;font-family:'Barlow',sans-serif;user-select:none;-webkit-user-select:none}
+
+/* Layout */
+.wrap{display:flex;flex-direction:column;height:100vh;max-width:540px;margin:0 auto;padding:0}
+
+/* Header */
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px;flex-shrink:0}
+.logo{height:28px;filter:brightness(0) invert(1);opacity:.75}
+.hdr-right{display:flex;align-items:center;gap:10px}
+.clear-btn{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:none;border:1.5px solid rgba(239,237,227,.18);border-radius:4px;padding:6px 12px;color:rgba(239,237,227,.5);cursor:pointer}
+.send-btn{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;background:#efede3;border:none;border-radius:4px;padding:6px 14px;color:#302f2c;cursor:pointer;transition:opacity .15s}
+.send-btn:active{opacity:.7}
+.send-btn:disabled{opacity:.35;cursor:not-allowed}
+
+/* Transcript area */
+.transcript{flex:1;overflow-y:auto;padding:12px 20px 8px;display:flex;flex-direction:column;gap:12px;-webkit-overflow-scrolling:touch}
+.empty-state{flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;opacity:.3;padding-bottom:80px}
+.empty-icon{font-size:48px}
+.empty-txt{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+
+/* Blocks */
+.block{background:rgba(239,237,227,.07);border-radius:6px;padding:14px 16px;position:relative;border-left:2px solid transparent}
+.block.voice{border-left-color:rgba(239,237,227,.3)}
+.block.typed{border-left-color:rgba(90,128,80,.6)}
+.block-time{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(239,237,227,.35);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.block-type-icon{font-size:11px;opacity:.6}
+.block-text{font-size:16px;line-height:1.6;color:#efede3;white-space:pre-wrap;word-wrap:break-word}
+.block-del{position:absolute;top:10px;right:12px;background:none;border:none;color:rgba(239,237,227,.25);cursor:pointer;font-size:16px;padding:2px 4px;line-height:1}
+.block-del:hover{color:rgba(239,237,227,.6)}
+
+/* Live transcript */
+.live-block{background:rgba(239,237,227,.04);border-radius:6px;padding:14px 16px;border:1.5px dashed rgba(239,237,227,.2);border-left:2px solid #efede3}
+.live-block .block-text{color:rgba(239,237,227,.6);font-style:italic}
+
+/* Type area */
+.type-area{padding:12px 20px 10px;flex-shrink:0;display:flex;gap:10px;border-top:1px solid rgba(239,237,227,.08)}
+.type-inp{flex:1;background:rgba(239,237,227,.08);border:none;border-radius:6px;padding:12px 14px;font-family:'Barlow',sans-serif;font-size:15px;color:#efede3;outline:none;resize:none;line-height:1.5;min-height:48px;max-height:120px;-webkit-appearance:none}
+.type-inp::placeholder{color:rgba(239,237,227,.3)}
+.type-submit{background:rgba(239,237,227,.12);border:none;border-radius:6px;padding:0 14px;cursor:pointer;color:rgba(239,237,227,.6);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;min-height:48px;transition:background .15s}
+.type-submit:active{background:rgba(239,237,227,.25)}
+
+/* Mic button */
+.mic-area{padding:16px 20px 24px;display:flex;justify-content:center;flex-shrink:0}
+.mic-btn{width:88px;height:88px;border-radius:50%;border:none;background:#efede3;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;-webkit-tap-highlight-color:transparent;position:relative;box-shadow:0 4px 20px rgba(0,0,0,.4)}
+.mic-btn:active,.mic-btn.recording{background:#fff;box-shadow:0 0 0 14px rgba(239,237,227,.12),0 4px 20px rgba(0,0,0,.4);transform:scale(1.06)}
+.mic-btn.recording{animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(239,237,227,.25),0 4px 20px rgba(0,0,0,.4)}50%{box-shadow:0 0 0 18px rgba(239,237,227,.08),0 4px 20px rgba(0,0,0,.4)}}
+.mic-icon{width:36px;height:36px}
+.mic-icon path,.mic-icon rect{fill:#302f2c}
+.mic-btn.recording .mic-icon path,.mic-btn.recording .mic-icon rect{fill:#302f2c}
+.mic-hint{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(239,237,227,.35);text-align:center;margin-top:10px}
+
+/* Status */
+.status-bar{text-align:center;padding:4px 0 2px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(239,237,227,.35);flex-shrink:0;min-height:20px}
+
+/* Toast */
+.toast{position:fixed;bottom:40px;left:50%;transform:translateX(-50%);background:#efede3;color:#302f2c;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:10px 20px;border-radius:4px;box-shadow:0 4px 20px rgba(0,0,0,.3);opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap;z-index:100}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hdr">
+    <img class="logo" src="data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMzY2IDk2Mi45MiI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiNmZmY7fTwvc3R5bGU+PC9kZWZzPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTE5NC4xNiw1MDcuMzN2LTE0LjdjOS4wOSw0LjQ1LDIzLjQsOS42NywzOC42Nyw5LjY3LDE4LjE3LDAsMzIuMDktOC4xMiwzMi4wOS0yMi4yM3MtNy41NC0yMS42NS0zMi4wOS0zMC4zNWMtMjcuNjQtOS44Ni0zOS4wNS0yMS42Ni0zOS4wNS00MS43NiwwLTIzLDE5LjcyLTM2LjE1LDQ0LjY2LTM2LjE1QTg2LjYsODYuNiwwLDAsMSwyNzIuMjcsMzc5djE0LjMxYy03LjU0LTMuODctMjAuODgtOC4xMy0zMy4yNS04LjEzLTE3Ljc5LDAtMzAuNzQsOC43MS0zMC43NCwyMi4yNCwwLDEyLjU3LDYuNzcsMjEuMjYsMzEuNywzMC4zNSwyNy44NCw5Ljg2LDM5LjQ0LDIxLjA3LDM5LjQ0LDQxLjM3LDAsMjMtMTguNTYsMzYuNTQtNDUuODIsMzYuNTRBOTkuMiw5OS4yLDAsMCwxLDE5NC4xNiw1MDcuMzNaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMzcxLjgzLDM4Ni41VjUxMy4zMkgzNTcuMTRWMzg2LjVIMzE0LjQyVjM3NC4xM0g0MTQuNzVWMzg2LjVaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNNTY1Ljc1LDQ2NS4zOGMwLDMxLjUxLTE5LjUzLDUwLjI2LTUyLjIsNTAuMjYtMzIuNDgsMC01Mi0xOC43NS01Mi01MC4yNlYzNzQuMTNoMTQuNjlWNDY0LjZjMCwyMy40LDEzLjkyLDM3LjMyLDM3LjMyLDM3LjMyczM3LjUtMTMuOTIsMzcuNS0zNy4zMlYzNzQuMTNoMTQuN1oiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik02MjguNTgsNTEzLjMyVjM3NC4xM2gzOC40N2M0MS41NiwwLDczLjQ2LDI2LjY4LDczLjQ2LDY5LjZTNzA5LDUxMy4zMiw2NjcuODIsNTEzLjMyWk02NDMuMjcsMzg2LjVWNTAxaDI0LjU1YzMyLjY4LDAsNTcuNjEtMjIuMjMsNTcuNjEtNTcuMjJTNzAwLjMsMzg2LjUsNjY2Ljg2LDM4Ni41WiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTc5NS4yMyw1MTMuMzJWMzc0LjEzaDE0LjY5VjUxMy4zMloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik05MzguMSwzNzEuODFjNDAsMCw3MC43NiwzMS43LDcwLjc2LDcxLjkyLDAsNDAuNC0zMC4zNiw3MS45MS03MC43Niw3MS45MS00MC4yMSwwLTcwLjc2LTMxLjUxLTcwLjc2LTcxLjkxQzg2Ny4zNCw0MDMuOSw4OTcuODksMzcxLjgxLDkzOC4xLDM3MS44MVptMCwxMzAuMTFjMzIuNDgsMCw1NS42OC0yNS4xNCw1NS42OC01OC4xOXMtMjMuMi01OC4yLTU1LjY4LTU4LjJjLTMyLjI5LDAtNTUuODcsMjUuMTQtNTUuODcsNTguMlM5MDUuODEsNTAxLjkyLDkzOC4xLDUwMS45MloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0xMDU1LjI1LDUwNy4zM3YtMTQuN2M5LjA5LDQuNDUsMjMuNCw5LjY3LDM4LjY3LDkuNjcsMTguMTcsMCwzMi4wOS04LjEyLDMyLjA5LTIyLjIzcy03LjU0LTIxLjY1LTMyLjA5LTMwLjM1Yy0yNy42NC05Ljg2LTM5LjA1LTIxLjY2LTM5LjA1LTQxLjc2LDAtMjMsMTkuNzItMzYuMTUsNDQuNjYtMzYuMTVhODYuNiw4Ni42LDAsMCwxLDMzLjgzLDcuMTV2MTQuMzFjLTcuNTQtMy44Ny0yMC44OC04LjEzLTMzLjI1LTguMTMtMTcuNzksMC0zMC43NCw4LjcxLTMwLjc0LDIyLjI0LDAsMTIuNTcsNi43NywyMS4yNiwzMS43LDMwLjM1LDI3Ljg0LDkuODYsMzkuNDQsMjEuMDcsMzkuNDQsNDEuMzcsMCwyMy0xOC41NiwzNi41NC00NS44MiwzNi41NEE5OS4yLDk5LjIsMCwwLDEsMTA1NS4yNSw1MDcuMzNaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMTMxLjIzLDI3MC44MmgtMi4xOEwwLDUuMDlINjEuMDdMOTUuMjQsODAuN2MxMy40NSwzMC4xNywyNS40NCw1NiwzNC41Myw4MS40M0MxMzcuNCwxNDMuNTgsMTUzLjQsMTA2LjUxLDE2NSw4MC43TDE5OS4yLDUuMDloNjAuNzFaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMzM0Ljc3LDI2Ni44MlY1LjA5SDUwMy4wOFY1MkgzOTAuNzVWMTExLjZINDg2djQ1LjA3SDM5MC43NXY2My4yNUg1MDguNTN2NDYuOVoiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik02OTEuMzYsNS4wOWM2MC43MSwwLDEwMSwzMC4xNywxMDEsODYuMTUsMCwzOC4xNy0yMS40NCw2My4yNS00OS44LDc0LjUyTDc5Ny41LDI2Ni44Mkg3MzguMjVsLTQ2LjE2LTkxLjYxSDY1NC4yOHY5MS42MUg1OTkuMzlWNS4wOVpNNjU0LjI4LDUydjc4LjE2aDQwYzI0LjcyLDAsNDEuOC0xMi4zNiw0MS44LTM4LjksMC0yNi4xNy0xNy44MS0zOS4yNi00My4yNi0zOS4yNloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik04NzUuNjQsMjU3VjIwMy4yYzE4LjE4LDkuNDUsNDIuMTcsMTcuNDUsNjUuOCwxOC45MWE5NS4wOCw5NS4wOCwwLDAsMCwyMy4yNi0xLjQ2YzIwLTIuOTEsMzEuNjMtMTAuNTQsMzEuNjMtMjMuMjYsMC0xNy40NS0xNS42My0yNi41NC01MS42Mi0zOS42My00NS44LTE2LjcyLTcyLjctMzYtNzIuNy04MS40MkM4NzIsMjkuODEsOTEwLjU0LDAsOTY2Ljg4LDBjMjYuMTgsMCw1Miw1LjgyLDY4LjM0LDEzLjA5VjY0LjcxYy0xNS4yNi05LjA5LTQwLTE2LTY0LTE2LTI2LjksMC00NC4zNSwxMC41NC00NC4zNSwyNy4yNywwLDE1LjI2LDE0LjE3LDI1LjgsNDkuOCwzOS4yNSw0NS44LDE3LjgxLDc0LjE1LDM3LjA4LDc0LjE1LDgxLjA3LDAsNDcuMjUtMzUuNjIsNzUuNjEtOTcuNDIsNzUuNjFDOTIzLjYzLDI3MS45MSw4OTQuNTQsMjY1LjM2LDg3NS42NCwyNTdaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMTIzOC43NywxLjA5aC0yLjE4TDExMDkuNzMsMjY2LjgyaDU4LjUybDEyLTI3LjIyYzExLTI0LjgxLDUwLjE3LTExNy44NCw1Ny43OS0xMzYsOCwyMi45LDQ4LjgxLDExNy4wNiw2MC44MSwxNDQuMzJoMGw4LjYyLDE4LjlIMTM2NloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik03NzQuNDYsNzA2Ljc4bC0zMS44OS02NS42NWgtMi42NGwtODYuMjIsMTc4LTUuNCwxMS4xNmMtMTEtMzAuNTEtMjUuMzUtNjEuNDktNDEuNDctOTcuNjVsLTQxLjM4LTkxLjU2aC03NEw2MTUuOSw4OTcuMjdsMzEuODgsNjUuNjVoMi42NGw4Ni4yMi0xNzgsNS40MS0xMS4xNmMxMSwzMC41LDI1LjM1LDYxLjQ5LDQxLjQ2LDk3LjY1bDQxLjM4LDkxLjU2aDc0WiIvPjwvc3ZnPg==" alt="Versa"/>
+    <div class="hdr-right">
+      <button class="clear-btn" onclick="clearAll()">Clear</button>
+      <button class="send-btn" id="sendBtn" onclick="sendToNotes()" disabled>Send to Notes</button>
+    </div>
+  </div>
+
+  <div class="status-bar" id="statusBar"></div>
+
+  <div class="transcript" id="transcript">
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon">🎙</div>
+      <div class="empty-txt">Hold mic to speak</div>
+    </div>
+  </div>
+
+  <div class="type-area">
+    <textarea class="type-inp" id="typeInp" placeholder="Or type here..." rows="1"
+      oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px'"
+      onkeydown="if((event.metaKey||event.ctrlKey)&&event.key==='Enter'){event.preventDefault();submitTyped();}"></textarea>
+    <button class="type-submit" onclick="submitTyped()" title="Add">
+      <svg viewBox="0 0 16 16" fill="none" width="20" height="20"><path d="M8 3v10M3 8l5-5 5 5" stroke="#efede3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+
+  <div class="mic-area">
+    <div style="text-align:center">
+      <button class="mic-btn" id="micBtn" onclick="toggleVoice()">
+        <svg class="mic-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <rect x="9" y="2" width="6" height="13" rx="3"/>
+          <path d="M5 11a7 7 0 0014 0" stroke="#302f2c" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <line x1="12" y1="18" x2="12" y2="22" stroke="#302f2c" stroke-width="2" stroke-linecap="round"/>
+          <line x1="8" y1="22" x2="16" y2="22" stroke="#302f2c" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <div class="mic-hint" id="micHint">Tap to speak</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SBU='https://dttwgmoyxthczlzxjgag.supabase.co',SBK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ',NK='notes_andrew_rowell_versastudios_com',SK='scratch_andrew_rowell_versastudios_com';
+var blocks=[],recognition=null,isRecording=false,liveBlock=null,saveTimer=null;
+
+// ── Speech Recognition ──────────────────────────────────────────────────────
+function initRecognition(){
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){setStatus('Voice not supported on this browser');return null;}
+  var r=new SR();
+  r.continuous=true;
+  r.interimResults=true;
+  r.lang='en-GB';
+  r.onresult=function(e){
+    var interim='',final='';
+    for(var i=e.resultIndex;i<e.results.length;i++){
+      if(e.results[i].isFinal)final+=e.results[i][0].transcript;
+      else interim+=e.results[i][0].transcript;
+    }
+    if(final){addBlock(final.trim(),'voice');clearLive();}
+    else if(interim){showLive(interim);}
+  };
+  r.onerror=function(e){
+    if(e.error==='not-allowed'){showToast('Microphone access denied');}
+    else if(e.error!=='aborted'){showToast('Voice error: '+e.error);}
+    stopVoice();
+  };
+  r.onend=function(){if(isRecording)try{r.start();}catch(ex){}};
+  return r;
+}
+
+function toggleVoice(){
+  if(isRecording){stopVoice();}else{startVoice();}
+}
+
+function startVoice(){
+  if(isRecording)return;
+  if(!recognition)recognition=initRecognition();
+  if(!recognition)return;
+  isRecording=true;
+  try{recognition.start();}catch(e){isRecording=false;return;}
+  document.getElementById('micBtn').classList.add('recording');
+  document.getElementById('micHint').textContent='Tap to stop';
+  setStatus('Listening...');
+}
+
+function stopVoice(){
+  if(!isRecording)return;
+  isRecording=false;
+  if(recognition)try{recognition.stop();}catch(e){}
+  clearLive();
+  document.getElementById('micBtn').classList.remove('recording');
+  document.getElementById('micHint').textContent='Tap to speak';
+  setStatus('');
+}
+
+// ── Blocks ─────────────────────────────────────────────────────────────────
+function addBlock(text,type){
+  if(!text||!text.trim())return;
+  var block={id:Date.now(),text:text.trim(),type:type,time:new Date()};
+  blocks.push(block);
+  renderBlocks();
+  autoSave();
+  updateSendBtn();
+}
+
+function deleteBlock(id){
+  blocks=blocks.filter(function(b){return b.id!==id;});
+  renderBlocks();
+  autoSave();
+  updateSendBtn();
+}
+
+function clearAll(){
+  if(blocks.length&&!confirm('Clear all blocks?'))return;
+  blocks=[];renderBlocks();autoSave();updateSendBtn();
+}
+
+function showLive(text){
+  var t=document.getElementById('transcript');
+  if(!liveBlock){liveBlock=document.createElement('div');liveBlock.className='live-block';t.appendChild(liveBlock);}
+  liveBlock.innerHTML='<div class="block-text">'+esc(text)+'</div>';
+  t.scrollTop=t.scrollHeight;
+}
+
+function clearLive(){
+  if(liveBlock){liveBlock.remove();liveBlock=null;}
+}
+
+function renderBlocks(){
+  var t=document.getElementById('transcript');
+  var empty=document.getElementById('emptyState');
+  if(!blocks.length){
+    t.innerHTML='';t.appendChild(empty);empty.style.display='flex';
+    return;
+  }
+  empty.style.display='none';
+  // Keep existing live block if present
+  var live=t.querySelector('.live-block');
+  t.innerHTML='';
+  blocks.forEach(function(b){
+    var ds=b.time.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+    var div=document.createElement('div');div.className='block'+(b.type==='voice'?' voice':' typed');
+    div.innerHTML='<div class="block-time"><span class="block-type-icon">'+(b.type==='voice'?'🎙':'✏️')+'</span>'+ds+'</div>'
+      +'<div class="block-text">'+esc(b.text)+'</div>'
+      +'<button class="block-del" onclick="deleteBlock('+b.id+')">&#215;</button>';
+    t.appendChild(div);
+  });
+  if(live)t.appendChild(live);
+  t.scrollTop=t.scrollHeight;
+}
+
+// ── Typed input ──────────────────────────────────────────────────────────────
+function submitTyped(){
+  var inp=document.getElementById('typeInp');
+  var txt=inp.value.trim();if(!txt)return;
+  addBlock(txt,'typed');
+  inp.value='';inp.style.height='auto';
+}
+
+// ── Send to Notes ─────────────────────────────────────────────────────────────
+async function sendToNotes(){
+  if(!blocks.length)return;
+  var btn=document.getElementById('sendBtn');
+  btn.disabled=true;btn.textContent='Sending...';
+  // Build a single note from all blocks
+  var text=blocks.map(function(b){
+    var t=b.time.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+    return '['+t+'] '+b.text;
+  }).join('\n\n');
+  var today=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  var noteTitle='Scratch — '+new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'2-digit'});
+  try{
+    // Load existing notes
+    var r=await fetch(SBU+'/rest/v1/app_data?key=eq.'+NK+'&select=value',{headers:{'apikey':SBK,'Authorization':'Bearer '+SBK}});
+    var d=await r.json();
+    var existing={notes:[],todos:[],meetings:[]};
+    if(d&&d[0]&&d[0].value)existing=d[0].value;
+    var notes=Array.isArray(existing.notes)?existing.notes:[];
+    notes.unshift({id:Date.now(),type:'note',title:noteTitle,content:text,jobTag:'Scratch',pinned:false,done:false,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()});
+    existing.notes=notes;
+    await fetch(SBU+'/rest/v1/app_data',{method:'POST',
+      headers:{'Content-Type':'application/json','apikey':SBK,'Authorization':'Bearer '+SBK,'Prefer':'resolution=merge-duplicates'},
+      body:JSON.stringify({key:NK,value:existing,updated_at:new Date().toISOString()})
+    });
+    showToast('Sent to Notes!');
+    blocks=[];renderBlocks();autoSave();updateSendBtn();
+    btn.textContent='Send to Notes';
+  }catch(e){
+    showToast('Error — check connection');
+    btn.disabled=false;btn.textContent='Send to Notes';
+  }
+}
+
+// ── Local save (scratch pad persists between sessions) ────────────────────────
+async function autoSave(){
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(async function(){
+    try{
+      var payload=blocks.map(function(b){return {id:b.id,text:b.text,type:b.type,time:b.time.toISOString()};});
+      await fetch(SBU+'/rest/v1/app_data',{method:'POST',
+        headers:{'Content-Type':'application/json','apikey':SBK,'Authorization':'Bearer '+SBK,'Prefer':'resolution=merge-duplicates'},
+        body:JSON.stringify({key:SK,value:payload,updated_at:new Date().toISOString()})
+      });
+    }catch(e){}
+  },1500);
+}
+
+async function loadScratch(){
+  try{
+    var r=await fetch(SBU+'/rest/v1/app_data?key=eq.'+SK+'&select=value',{headers:{'apikey':SBK,'Authorization':'Bearer '+SBK}});
+    var d=await r.json();
+    if(d&&d[0]&&Array.isArray(d[0].value)&&d[0].value.length){
+      blocks=d[0].value.map(function(b){return {id:b.id,text:b.text,type:b.type,time:new Date(b.time)};});
+      renderBlocks();updateSendBtn();
+      setStatus(blocks.length+' unsent block'+(blocks.length!==1?'s':'')+' from last session');
+      setTimeout(function(){setStatus('');},3000);
+    }
+  }catch(e){}
+}
+
+// ── Utils ──────────────────────────────────────────────────────────────────
+function updateSendBtn(){
+  var btn=document.getElementById('sendBtn');
+  if(btn){btn.disabled=!blocks.length;btn.textContent='Send to Notes'+(blocks.length?' ('+blocks.length+')':'');}
+}
+function setStatus(msg){var el=document.getElementById('statusBar');if(el)el.textContent=msg;}
+function showToast(msg){
+  var t=document.getElementById('toast');if(!t)return;
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},2200);
+}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+// ── Prevent scroll bounce on iOS ──────────────────────────────────────────
+document.addEventListener('touchmove',function(e){
+  if(e.target.closest('.mic-area'))e.preventDefault();
+},{passive:false});
+
+loadScratch();
+</script>
+</body>
+</html>
