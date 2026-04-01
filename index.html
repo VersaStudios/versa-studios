@@ -4274,8 +4274,7 @@ function erRenderJobTabs() {
     {id:'ml',label:'Morning Live',col:'#8b3a8b'},
     {id:'shopon',label:'ShopOn TV',col:'#ff7800'},
     {id:'cwts',label:'Cooking with the Stars',col:'#64a0dc'},
-    {id:'celeb',label:"I'm a Celeb",col:'#c8a028'},
-    {id:'celebsa',label:"I'm a Celeb SA",col:'#b8860b'}
+    {id:'celeb',label:"I'm a Celebrity",col:'#c8a028'}
   ];
   // Add other jobs from job planner
   if(typeof jobs !== 'undefined') {
@@ -4317,7 +4316,7 @@ function erSwitchJob(jobId, _passedName) {
     isSO=(jn.indexOf('shopon')>=0||jn.indexOf('shop on')>=0);
     isCW=(jn.indexOf('cooking')>=0);
     isCL=(jn.indexOf('celeb')>=0||jn.indexOf('celebrity')>=0);
-  } else {jobName='Morning Live';}
+  } else {jobName='Morning Live';setTimeout(renderAbcLastReport,300);}
   ['erSubPanelReport','erDDPanel','erShopOnPanel','erCwtsPanel','erCelebPanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
   var panelMap={erSubPanelReport:(!isDD&&!isSO&&!isCW&&!isCL),erDDPanel:isDD,erShopOnPanel:isSO,erCwtsPanel:isCW,erCelebPanel:isCL};
   Object.keys(panelMap).forEach(function(id){var el=document.getElementById(id);if(el&&panelMap[id])el.style.display='block';});
@@ -4330,9 +4329,11 @@ function erSwitchJob(jobId, _passedName) {
   });
   var rb=document.getElementById('erSubTabReport');
   if(rb&&!isDD&&!isSO&&!isCW&&!isCL){rb.style.borderBottomColor='var(--accent)';rb.style.color='var(--accent)';}
-  // Nav label
+  // Nav label + form face title
   var lbl=document.getElementById('erNavLabel');
   if(lbl)lbl.textContent=jobName||'Morning Live';
+  var ftitle=document.getElementById('erFormTitle');
+  if(ftitle)ftitle.textContent=(jobName||'Morning Live')+' · Engineering Report';
   // Populate job-specific forms
   if(isDD){
     var jdd=typeof jobs!=='undefined'&&jobs.find(function(x){return x.id===parseInt(jobId.replace('j',''));});
@@ -12372,7 +12373,7 @@ function erInitPage(){
   erRenderJobTabs();
   erSetDateToday();erSetSummary('ntr');window._erCatFilter='';erInitCatBtns();erRenderKit();erUpdateStatus();
   setTimeout(erLoadKit,100);
-  setTimeout(renderAbcLastReport,500);
+  setTimeout(renderAbcLastReport,1000);
   // Auto-import ML historical records if not done yet
   if(!localStorage.getItem('_mlImportDone') && typeof importMorningLiveReports==='function') {
     setTimeout(function(){
