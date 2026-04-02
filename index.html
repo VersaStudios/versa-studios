@@ -4393,8 +4393,7 @@ var panelMap={erSubPanelReport:(!isDD&&!isSO&&!isCW&&!isCL&&!isGJ),erDDPanel:isD
   if(isSO&&typeof soUpdateStatus==='function')soUpdateStatus();
   if(isCW&&typeof cwUpdateStatus==='function')cwUpdateStatus();
   if(isCL&&typeof clUpdateStatus==='function')clUpdateStatus();
-  // Clear report cache so calendar reloads per job
-  if(window._engReportCache)window._engReportCache={};
+
 }
 
 function erSubTab(tab){
@@ -4553,11 +4552,9 @@ function erSearchReports(q){
 }
 var _erCalYr = null, _erCalMo = null;
 
-function erCalRender(yr, mo, showName) {
+function erCalRender(yr, mo) {
   if(yr == null) { var n=new Date(); yr=n.getFullYear(); mo=n.getMonth(); }
   _erCalYr=yr; _erCalMo=mo;
-  if(showName===undefined)showName=erGetActiveShowName()||null;
-  _erCalShowName=showName;
   var wrap = document.getElementById('erCalWrap'); if(!wrap) return;
   var now = new Date();
   var monthNames=['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -4588,8 +4585,7 @@ function erCalRender(yr, mo, showName) {
     var ds=yr+'-'+String(mo+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
     var dow=new Date(yr,mo,d).getDay();
     var isWknd=dow===0||dow===6,isFuture=ds>todayStr,isToday=ds===todayStr;
-    var _cns=(_erCalShowName||'__all__'),_cm=_engReportCache[_cns]||{};
-    var rep=_cm[ds],hasRep=rep!=null;
+    var rep=_engReportCache[ds],hasRep=rep!=null;
     var isUrgent=hasRep&&rep.urgent_action==='Yes';
     var isNtr=hasRep&&rep.summary_mode==='ntr';
     var bg,border,numCol,cursor;
@@ -4617,7 +4613,7 @@ function erCalRender(yr, mo, showName) {
     +'<span style="font-family:var(--cond);font-size:11px;font-weight:700;color:#ff7070;display:flex;align-items:center;gap:5px"><span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:rgba(220,50,50,.18);border:1px solid rgba(220,50,50,.5)"></span>Urgent</span>'
     +'</div></div>';
   wrap.innerHTML=h;
-  _fetchEngReportsForMonth(yr,mo,_erCalShowName).then(function(){ erCalUpdateDots(); });
+  _fetchEngReportsForMonth(yr,mo).then(function(){ erCalUpdateDots(); });
 }
 
 function erCalNav(yrmo){
@@ -4629,11 +4625,10 @@ function erCalNav(yrmo){
 
 function erCalUpdateDots() {
   var wrap=document.getElementById("erCalWrap"); if(!wrap) return;
-  var _cns=(_erCalShowName||'__all__'),_cm=_engReportCache[_cns]||{};
   wrap.querySelectorAll("[data-date]").forEach(function(cell){
     var ds=cell.getAttribute("data-date");
     if(!ds) return;
-    var rep=_cm[ds];
+    var rep=_engReportCache[ds];
     if(rep){
       var isUrgent=rep.urgent_action==="Yes";
       cell.style.background=isUrgent?"rgba(200,60,60,.18)":"rgba(232,184,75,.12)";
@@ -4970,19 +4965,21 @@ async function _fetchEngReport(dateStr) {
   }
 }
 
-async function _fetchEngReportsForMonth(yr, mo, showName) {
+async function _fetchEngReportsForMonth(yr, mo) {
   var from = yr+'-'+String(mo+1).padStart(2,'0')+'-01';
   var toDate = new Date(yr, mo+1, 0);
   var to = yr+'-'+String(mo+1).padStart(2,'0')+'-'+String(toDate.getDate()).padStart(2,'0');
-  var ns = showName||'__all__';
   try {
-    var url = _SB_URL+'/rest/v1/engineering_reports?show_date=gte.'+from+'&show_date=lte.'+to+'&order=show_date.asc';
-    if(showName==='Morning Live'){url += '&or=(show_name.eq.Morning%20Live,show_name.is.null)';}
-    else if(showName){url += '&show_name=eq.'+encodeURIComponent(showName);}
-    const resp = await fetch(url, {headers: {'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY}});
+    const resp = await fetch(
+      _SB_URL+'/rest/v1/engineering_reports?show_date=gte.'+from+'&show_date=lte.'+to+'&order=show_date.asc',
+      {headers: {'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY}}
+    );
     const rows = await resp.json();
-    if(!_engReportCache[ns])_engReportCache[ns]={};
-    if(rows&&rows.length)rows.forEach(function(r){_engReportCache[ns][r.show_date]=r;});
+    if (rows && rows.length) {
+      rows.forEach(function(r) {
+        if(!_engReportCache[r.show_date]) _engReportCache[r.show_date] = r;
+      });
+    }
   } catch(e) { console.warn('_fetchEngReportsForMonth error:', e); }
 }
 function renderJobEngRptTab(j) {
