@@ -1644,7 +1644,7 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
     <div id="cwFormView">
       <div class="cw-sec">
         <div class="cw-lbl">Show Date</div>
-        <input type="date" class="cw-inp" id="cwDate"/>
+        <input type="date" class="cw-inp" id="cwDate" onchange="cwUpdateStatus()"/>
       </div>
       <div class="cw-sec">
         <div class="cw-lbl">Tech Manager</div>
@@ -1657,7 +1657,7 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
       </div>
       <div class="cw-sec">
         <div class="cw-lbl">Technical Information</div>
-        <textarea class="cw-inp" id="cwInfo" style="min-height:120px;resize:vertical" placeholder="Describe technical activity, issues or observations&#x2026;"></textarea>
+        <textarea class="cw-inp" id="cwInfo" style="min-height:120px;resize:vertical" oninput="cwUpdateStatus()" placeholder="Describe technical activity, issues or observations&#x2026;"></textarea>
       </div>
       <div class="cw-sec" style="border:none;padding-bottom:0">
         <div style="font-family:var(--cond);font-size:11px;color:rgba(255,255,255,.3);margin-bottom:10px" id="cwStatus">Complete all fields to submit</div>
@@ -1713,7 +1713,7 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
     <div id="clFormView">
       <div class="cl-sec">
         <div class="cl-lbl">Show Date</div>
-        <input type="date" class="cl-inp" id="clDate"/>
+        <input type="date" class="cl-inp" id="clDate" onchange="clUpdateStatus()"/>
       </div>
       <div class="cl-sec">
         <div class="cl-lbl">Tech Manager</div>
@@ -1726,7 +1726,7 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
       </div>
       <div class="cl-sec">
         <div class="cl-lbl">Technical Information</div>
-        <textarea class="cl-inp" id="clInfo" style="min-height:120px;resize:vertical" placeholder="Describe technical activity, issues or observations&#x2026;"></textarea>
+        <textarea class="cl-inp" id="clInfo" style="min-height:120px;resize:vertical" placeholder="Describe technical activity, issues or observations&#x2026;" oninput="clUpdateStatus()"></textarea>
       </div>
       <div class="cl-sec" style="border:none;padding-bottom:0">
         <div style="font-family:var(--cond);font-size:11px;color:rgba(255,255,255,.3);margin-bottom:10px" id="clStatus">Complete all fields to submit</div>
@@ -2286,7 +2286,7 @@ async function allCalRender(yr,mo){
   for(var d=1;d<=dim;d++){var ds=yr+'-'+String(mo+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');var dow=new Date(yr,mo,d).getDay(),isW=dow===0||dow===6,isF=ds>tod,isT=ds===tod;var reps=dd[ds]||[],cnt=reps.length,hasU=reps.some(function(r){return r.urgent_action==='Yes';});var bg,brd,nc,cur;if(isW){bg='transparent';brd='none';nc='#252525';cur='default';}else if(isF){bg='transparent';brd='1px dashed #1e1e1e';nc='#2a2a2a';cur='default';}else if(hasU){bg='rgba(220,50,50,.18)';brd='1px solid rgba(220,50,50,.5)';nc='#ff7070';cur='pointer';}else if(cnt>0){bg='rgba(74,158,255,.1)';brd='1px solid rgba(74,158,255,.35)';nc='var(--accent)';cur='pointer';}else{bg='var(--dark)';brd='1px solid var(--border)';nc='var(--white)';cur='pointer';}var ring=isT?'outline:2.5px solid var(--accent);outline-offset:-2px;':'',badge=cnt>0?'<div style="font-family:var(--cond);font-size:9px;font-weight:800;color:'+(hasU?'#ff7070':'var(--accent)')+';margin-top:2px">'+cnt+'</div>':'';
   h+='<div '+((!isW&&!isF)?'data-date="'+ds+'"':'')+' style="background:'+bg+';border:'+brd+';border-radius:8px;padding:9px 4px 7px;text-align:center;cursor:'+cur+';'+ring+';margin:1px"><div style="font-family:var(--cond);font-size:16px;font-weight:900;color:'+nc+';line-height:1">'+d+'</div>'+badge+'</div>';}
   h+='</div></div>';wrap.innerHTML=h;
-  wrap.onclick=function(ev){var cell=ev.target.closest('[data-date]');if(!cell)return;var ds=cell.getAttribute('data-date'),reps=dd[ds]||[];if(!reps.length)return;var list=document.getElementById('allCalList');if(!list)return;var dStr=new Date(ds+'T12:00:00').toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});list.innerHTML='<div style="font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">'+dStr+' &#8212; '+reps.length+' report'+(reps.length>1?'s':'')+'</div>'+reps.map(function(rep){var isU=rep.urgent_action==='Yes',isN=rep.summary_mode==='ntr';var col=isU?'#ff7070':(isN?'#4ade80':'#e8c84b');return '<div style="background:var(--near-black);border:1px solid var(--border-l);border-radius:8px;padding:14px 16px;margin-bottom:8px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="font-family:var(--cond);font-size:10px;font-weight:800;padding:2px 8px;border-radius:3px;background:'+col+'22;color:'+col+';letter-spacing:.08em;text-transform:uppercase">'+(isU?'URGENT':isN?'NTR':'STR')+'</span><span style="font-family:var(--cond);font-size:12px;font-weight:700;color:var(--white)">'+(rep.show_name||'Morning Live')+'</span></div><div style="font-size:12px;color:var(--muted)">Versa: '+(rep.versa_tech_manager||'&#8212;')+'  &#183;  BBC: '+(rep.bbc_tech_manager||'&#8212;')+'</div>'+(rep.summary_text?'<div style="font-size:13px;color:rgba(255,255,255,.6);margin-top:6px">'+rep.summary_text+'</div>':'')+'</div>';}).join('');};}
+  wrap.onclick=function(ev){var cell=ev.target.closest('[data-date]');if(!cell)return;var ds=cell.getAttribute('data-date'),reps=dd[ds]||[];if(!reps.length)return;var list=document.getElementById('allCalList');if(!list)return;var dStr=new Date(ds+'T12:00:00').toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});list.innerHTML='<div style="font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">'+dStr+' &#8212; '+reps.length+' report'+(reps.length>1?'s':'')+'</div>'+reps.map(function(rep){var isU=rep.urgent_action==='Yes',isN=rep.summary_mode==='ntr';var col=isU?'#ff7070':(isN?'#4ade80':'#e8c84b');return '<div style="background:var(--near-black);border:1px solid var(--border-l);border-radius:8px;padding:14px 16px;margin-bottom:8px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="font-family:var(--cond);font-size:10px;font-weight:800;padding:2px 8px;border-radius:3px;background:'+col+'22;color:'+col+';letter-spacing:.08em;text-transform:uppercase">'+(isU?'URGENT':isN?'NTR':'STR')+'</span><span style="font-family:var(--cond);font-size:12px;font-weight:700;color:var(--white)">'+(rep.show_name||'Morning Live')+'</span></div><div style="font-size:12px;color:var(--muted)">Versa: '+(rep.versa_tech_manager||'&#8212;')+(rep.bbc_tech_manager?'  &#183;  BBC: '+rep.bbc_tech_manager:'')+'</div>'+(rep.summary_text?'<div style="font-size:13px;color:rgba(255,255,255,.6);margin-top:6px">'+rep.summary_text+'</div>':'')+'</div>';}).join('');};}
 function allCalNav(yrmo){var p=yrmo.split('-');allCalRender(parseInt(p[0]),parseInt(p[1])-1);var l=document.getElementById('allCalList');if(l)l.innerHTML='';}
 
 document.addEventListener('DOMContentLoaded',function(){
@@ -4332,7 +4332,6 @@ var _REPORT_HTML="<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<script src=\"htt
 
 var _toolsLoaded={signal:false,report:false};
 var _erActiveJob='ml'; // 'ml' or job id
-var _erActivePanel='erSubPanelReport'; // which panel is currently showing
 
 function erRenderJobTabs() {
   var wrap = document.getElementById('erJobTabs'); if(!wrap) return;
@@ -4411,10 +4410,11 @@ var panelMap={erSubPanelReport:(!isDD&&!isSO&&!isCW&&!isCL&&!isGJ),erDDPanel:isD
   if(isDD){
     var jdd=typeof jobs!=='undefined'&&jobs.find(function(x){return x.id===parseInt(jobId.replace('j',''));});
     if(jdd&&typeof ddPopulateRxDates==='function')ddPopulateRxDates(jdd);
+    if(typeof ddPickTech==='function')ddPickTech('Andrew Rowell');
   }
   if(isSO&&typeof soUpdateStatus==='function')soUpdateStatus();
-  if(isCW&&typeof cwUpdateStatus==='function')cwUpdateStatus();
-  if(isCL&&typeof clUpdateStatus==='function')clUpdateStatus();
+  if(isCW&&typeof cwUpdateStatus==='function'){var _cwd=document.getElementById('cwDate');if(_cwd&&!_cwd.value)_cwd.value=new Date().toISOString().split('T')[0];cwUpdateStatus();}
+  if(isCL&&typeof clUpdateStatus==='function'){var _cld=document.getElementById('clDate');if(_cld&&!_cld.value)_cld.value=new Date().toISOString().split('T')[0];clUpdateStatus();}
 
 }
 
@@ -4990,8 +4990,8 @@ function saveEngLogDay(dateStr, jid){
 }
 
 // ── SUBMITTED REPORT FETCHING ─────────────────────────────────────────────────
-var _engReportCache = {}; // dateStr -> report object or null
-var _erRptCache = {};     // showName -> {dateStr -> report}
+var _engReportCache = {};
+var _erRptCache = {};
 
 async function _fetchEngReport(dateStr) {
   if (_engReportCache.hasOwnProperty(dateStr)) return _engReportCache[dateStr];
@@ -12336,7 +12336,7 @@ const _ER_SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsI
 const _ER_SB_HDR={'Content-Type':'application/json','apikey':_ER_SB_KEY,'Authorization':'Bearer '+_ER_SB_KEY};
 const _ER_EJS_SVC='service_883826m',_ER_EJS_TPL='template_hhvnzss',_ER_EJS_KEY='-WB5uUr8yu-oIKc5v';
 
-async function erSaveReport(d){try{const r=await fetch(_ER_SB_URL+'/rest/v1/engineering_reports',{method:'POST',headers:{..._ER_SB_HDR,'Prefer':'return=minimal'},body:JSON.stringify(d)});if(!r.ok){const txt=await r.text().catch(()=>'');console.error('erSaveReport failed',r.status,txt);alert('Save failed ('+r.status+'): '+txt.substring(0,200));return false;}return true;}catch(e){alert('Save error: '+e.message);return false;}}
+async function erSaveReport(d){try{const r=await fetch(_ER_SB_URL+'/rest/v1/engineering_reports',{method:'POST',headers:{..._ER_SB_HDR,'Prefer':'return=minimal'},body:JSON.stringify(d)});if(!r.ok){const t=await r.text().catch(()=>'');console.error('erSaveReport',r.status,t);toast('Save failed ('+r.status+')');return false;}return true;}catch(e){toast('Save error: '+e.message);return false;}}
 async function erSendEmail(p){try{if(window.emailjs){emailjs.init({publicKey:_ER_EJS_KEY});await emailjs.send(_ER_EJS_SVC,_ER_EJS_TPL,p);}}catch(e){}}
 async function erLoadKit(){
   try{
@@ -12449,8 +12449,7 @@ function erUpdateStatus(){
 }
 async function erSubmit(){
   const vtm=document.getElementById('erVTM').value.trim(),bbc=document.getElementById('erBBC').value,urgent=document.getElementById('erUrgent').value,urgTxt=document.getElementById('erUrgTxt').value.trim(),isSTR=_erSummaryMode==='str',sumTxt=isSTR?document.getElementById('erSummaryTxt').value.trim():'',tagNames=_erTags.map(id=>{const k=_erKitData.find(x=>x.id===id);return k?k.name+' ('+k.tag+')':'';}).filter(Boolean),showDate=_erUseTodayDate?new Date().toISOString().split('T')[0]:_erSelectedDate;
-  const _saved=await erSaveReport({versa_tech_manager:vtm,bbc_tech_manager:bbc,show_date:showDate,show_name:(document.getElementById('erShowSel')?document.getElementById('erShowSel').value:'Morning Live'),summary_mode:_erSummaryMode,summary_text:sumTxt,tagged_kit:_erTags,tagged_kit_names:tagNames,urgent_action:urgent,urgent_details:urgTxt,submitted_at:new Date().toISOString()});
-  if(!_saved){toast('Save failed — check Supabase RLS permissions');return;}
+  const _sv=await erSaveReport({versa_tech_manager:vtm,bbc_tech_manager:bbc,show_date:showDate,show_name:(document.getElementById('erShowSel')?document.getElementById('erShowSel').value:'Morning Live'),summary_mode:_erSummaryMode,summary_text:sumTxt,tagged_kit:_erTags,tagged_kit_names:tagNames,urgent_action:urgent,urgent_details:urgTxt,submitted_at:new Date().toISOString()});
   if(isSTR)erSendEmail({show_date:showDate,versa_tech:vtm,bbc_tech:bbc,summary:sumTxt||'(no details)',urgent,urgent_details:urgTxt||'--',tagged_kit:tagNames.join(', ')||'None',submitted_at:new Date().toLocaleString('en-GB')});
   if(isSTR&&sumTxt){try{if(!_tld)_tld={};if(!_tld.abc)_tld.abc=[];_tld.abc.push({id:Date.now(),date:showDate,studio:'ABC',dept:'Engineering',job:'Morning Live',by:vtm||'Andrew Rowell',info:'[From Engineering Report] '+sumTxt+(urgTxt?' | Urgent: '+urgTxt:''),next:'',status:urgent==='Yes'?'ongoing':'information',updates:'',update_log:[]});tlSave('abc');toast('STR logged');}catch(e){}}
   renderAbcLastReport();
@@ -12474,18 +12473,10 @@ function erReset(){
   document.getElementById('erBBCMain').textContent='Andy McLannahan';document.getElementById('erBBCMain').classList.add('er-active');document.getElementById('erBBCSub').classList.remove('open');document.getElementById('erBBCOther').style.display='none';
   erSetDateToday();erInitCatBtns();erRenderKit();erUpdateStatus();
 }
-function erCheckSupabaseAccess(){
-  fetch(_ER_SB_URL+'/rest/v1/engineering_reports?limit=1',{headers:_ER_SB_HDR})
-    .then(function(r){
-      if(!r.ok) toast('⚠ DB access error ('+r.status+') — reports may not save. Check Supabase RLS.');
-    }).catch(function(){toast('⚠ Cannot reach database — check connection.');});
-}
 function erInitPage(){
   erRenderJobTabs();
   erSetDateToday();erSetSummary('ntr');window._erCatFilter='';erInitCatBtns();erRenderKit();erUpdateStatus();
-  setTimeout(erCheckSupabaseAccess, 500);
-  // Restore the correct panel (in case we navigated away while on a non-ML job)
-  setTimeout(function(){ erSwitchJob(_erActiveJob||'ml',window._erTabLabels&&window._erTabLabels[_erActiveJob]||''); },50);
+  setTimeout(function(){erSwitchJob(_erActiveJob||'ml',window._erTabLabels&&window._erTabLabels[_erActiveJob]||'');},50);
   setTimeout(erLoadKit,100);
   setTimeout(renderAbcLastReport,1000);
   // Auto-import ML historical records if not done yet
@@ -12614,7 +12605,7 @@ async function renderAbcLastReport(){
     html+='<span style="font-family:var(--cond);font-size:13px;font-weight:700;color:var(--white)">'+dateStr+'</span></div>';
     html+='<div style="border-top:1px solid rgba(74,158,255,.15);margin-bottom:2px">';
     html+=row('Versa Tech',rep.versa_tech_manager||'—');
-    html+=row('BBC Tech',rep.bbc_tech_manager||'—');
+    if(rep.bbc_tech_manager)html+=row('BBC Tech',rep.bbc_tech_manager);
     if(isStr&&rep.summary_text)html+=row('Summary',rep.summary_text);
     if(isUrgent&&rep.urgent_details)html+=row('Urgent',rep.urgent_details);
     html+='</div>';
@@ -12988,7 +12979,7 @@ async function soSubmit(){
       headers:{'Content-Type':'application/json','apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ','Prefer':'return=minimal'},
       body:JSON.stringify({versa_tech_manager:dir,bbc_tech_manager:'',show_date:date,show_name:'ShopOn TV',summary_mode:'str',summary_text:info,tagged_kit:[],tagged_kit_names:[],urgent_action:'No',urgent_details:'',submitted_at:new Date().toISOString()})});
     if(r.ok){document.getElementById('soFormView').style.display='none';var sd=document.getElementById('soSuccess');if(sd)sd.style.display='block';var det=document.getElementById('soSuccessDetail');if(det)det.textContent=dir+' · '+date;}
-    else toast('Submit failed (' + r.status + ') — check Supabase RLS');
+    else{r.text().then(function(t){toast('Submit failed ('+r.status+'): '+t.substring(0,80));});}
   }catch(e){toast('Error: '+e.message);}
   btn.disabled=false;btn.textContent='Submit Report';
 }
@@ -13022,7 +13013,7 @@ async function cwSubmit(){
       headers:{'Content-Type':'application/json','apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ','Prefer':'return=minimal'},
       body:JSON.stringify({versa_tech_manager:tech,bbc_tech_manager:'',show_date:date,show_name:'Cooking with the Stars',summary_mode:'str',summary_text:info,tagged_kit:[],tagged_kit_names:[],urgent_action:'No',urgent_details:'',submitted_at:new Date().toISOString()})});
     if(r.ok){document.getElementById('cwFormView').style.display='none';var sd=document.getElementById('cwSuccess');if(sd)sd.style.display='block';var det=document.getElementById('cwSuccessDetail');if(det)det.textContent=tech+' · '+date;}
-    else toast('Submit failed (' + r.status + ') — check Supabase RLS');
+    else{r.text().then(function(t){toast('Submit failed ('+r.status+'): '+t.substring(0,80));});}
   }catch(e){toast('Error: '+e.message);}
   btn.disabled=false;btn.textContent='Submit Report';
 }
@@ -13056,7 +13047,7 @@ async function clSubmit(){
       headers:{'Content-Type':'application/json','apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ','Prefer':'return=minimal'},
       body:JSON.stringify({versa_tech_manager:tech,bbc_tech_manager:'',show_date:date,show_name:"I'm a Celebrity",summary_mode:'str',summary_text:info,tagged_kit:[],tagged_kit_names:[],urgent_action:'No',urgent_details:'',submitted_at:new Date().toISOString()})});
     if(r.ok){document.getElementById('clFormView').style.display='none';var sd=document.getElementById('clSuccess');if(sd)sd.style.display='block';var det=document.getElementById('clSuccessDetail');if(det)det.textContent=tech+' · '+date;}
-    else toast('Submit failed (' + r.status + ') — check Supabase RLS');
+    else{r.text().then(function(t){toast('Submit failed ('+r.status+'): '+t.substring(0,80));});}
   }catch(e){toast('Error: '+e.message);}
   btn.disabled=false;btn.textContent='Submit Report';
 }
