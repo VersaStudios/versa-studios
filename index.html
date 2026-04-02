@@ -2150,7 +2150,8 @@ function notesRender(){
       +'</div>'
       +'</div>'
       +'<div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">'
-      +'<button onclick="_noteEdit('+n.id+')" style="font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:none;border:1px solid '+border+';border-radius:5px;padding:4px 10px;color:'+mutedCol+';cursor:pointer">Edit</button>'      +'<button onclick="_notePin('+n.id+')" style="font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:none;border:1px solid '+border+';border-radius:5px;padding:4px 10px;color:'+mutedCol+';cursor:pointer">'+(n.pinned?'Unpin':'Pin')+'</button>'
+      +'<button onclick="_noteEdit('+n.id+')" style="font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:none;border:1px solid '+border+';border-radius:5px;padding:4px 10px;color:'+mutedCol+';cursor:pointer">Edit</button>'      +'<button onclick="_noteEdit('+n.id+')" style="font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:none;border:1px solid '+border+';border-radius:5px;padding:4px 10px;color:'+mutedCol+';cursor:pointer">Edit</button>'
+      +'<button onclick="_notePin('+n.id+')" style="font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:none;border:1px solid '+border+';border-radius:5px;padding:4px 10px;color:'+mutedCol+';cursor:pointer">'+(n.pinned?'Unpin':'Pin')+'</button>'
       +'<button onclick="_noteDone('+n.id+')" style="font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:none;border:1px solid '+border+';border-radius:5px;padding:4px 10px;color:'+mutedCol+';cursor:pointer">'+(n.done?'Undone':'Done')+'</button>'
       +'<button onclick="_noteTodo('+n.id+')" style="font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:none;border:1px solid '+tcol+';border-radius:5px;padding:4px 10px;color:'+tcol+';cursor:pointer">→ To-Do</button>'
       +'<button onclick="_noteDel('+n.id+')" style="font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:none;border:1px solid '+border+';border-radius:5px;padding:4px 10px;color:'+mutedCol+';cursor:pointer;margin-left:auto">Delete</button>'
@@ -2205,6 +2206,7 @@ window._notePin=notesTogglePin;
 window._noteDone=notesToggleDone;
 window._noteTodo=notesTodo;
 window._noteDel=notesDelete;
+window._noteEdit=notesEdit;
 window._noteEdit=notesEdit;
 
 
@@ -4330,7 +4332,7 @@ var _REPORT_HTML="<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<script src=\"htt
 
 var _toolsLoaded={signal:false,report:false};
 var _erActiveJob='ml'; // 'ml' or job id
-var _erActivePanel='erSubPanelReport'; // panel element ID currently showing
+var _erActivePanel='erSubPanelReport'; // which panel is currently showing
 
 function erRenderJobTabs() {
   var wrap = document.getElementById('erJobTabs'); if(!wrap) return;
@@ -4386,7 +4388,6 @@ function erSwitchJob(jobId, _passedName) {
   ['erSubPanelReport','erDDPanel','erShopOnPanel','erCwtsPanel','erCelebPanel','erGenPanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
   var isGJ=(!isDD&&!isSO&&!isCW&&!isCL&&jobId!=='ml'&&jobId!=='celeb'&&jobId!=='celebsa');
 var panelMap={erSubPanelReport:(!isDD&&!isSO&&!isCW&&!isCL&&!isGJ),erDDPanel:isDD,erShopOnPanel:isSO,erCwtsPanel:isCW,erCelebPanel:isCL,erGenPanel:isGJ};
-  Object.keys(panelMap).forEach(function(pid){if(panelMap[pid])_erActivePanel=pid;});
   Object.keys(panelMap).forEach(function(id){var el=document.getElementById(id);if(el&&panelMap[id])el.style.display='block';});
   var calPanel=document.getElementById('erSubPanelCal');
   if(calPanel)calPanel.style.display='none';
@@ -4400,6 +4401,8 @@ var panelMap={erSubPanelReport:(!isDD&&!isSO&&!isCW&&!isCL&&!isGJ),erDDPanel:isD
   // Nav label + form face title
   var lbl=document.getElementById('erNavLabel');
   if(lbl)lbl.textContent=jobName||'Morning Live';
+  var _ft=document.getElementById('erFormTitle');if(_ft)_ft.textContent=(jobName||'Morning Live')+' · Engineering Report';
+  var _gt=document.getElementById('gjTitle');if(_gt)_gt.textContent=(jobName||'Job')+' · Technical Report';
   var _ft=document.getElementById('erFormTitle');if(_ft)_ft.textContent=(jobName||'Morning Live')+' · Engineering Report';
   var _gt=document.getElementById('gjTitle');if(_gt)_gt.textContent=(jobName||'Job')+' · Technical Report';
   var ftitle=document.getElementById('erFormTitle');
@@ -4439,11 +4442,14 @@ function erSubTab(tab){
   ['erSubPanelReport','erDDPanel','erShopOnPanel','erCwtsPanel','erCelebPanel','erGenPanel'].forEach(function(id){
     var el=document.getElementById(id);if(el)el.style.display='none';
   });
-  // Show correct panel when switching to report tab
+  // Show correct one when switching to report tab
   if(tab==='report'){
-    var _panelEl=document.getElementById(_erActivePanel);
-    if(_panelEl) _panelEl.style.display='block';
-    else if(rp) rp.style.display='block'; // fallback
+    if(isML&&rp) rp.style.display='block';
+    if(isDD&&dd) dd.style.display='block';
+    if(isSO&&soEl) soEl.style.display='block';
+    if(isCW&&cwEl) cwEl.style.display='block';
+    if(isCL&&clEl) clEl.style.display='block';
+    if(isGJ&&gjEl) gjEl.style.display='block';
   }
   if(cp){cp.style.display=tab==='cal'?'':'none'; if(tab==='cal'){erCalSetupListener();erCalRender(_erCalYr,_erCalMo);erHistLoad();}}
   if(ip){ip.style.display=tab==='import'?'':'none';}
@@ -4608,14 +4614,15 @@ function erCalRender(yr, mo) {
   var daysInMonth=new Date(yr,mo+1,0).getDate();
   for(var e=0;e<firstDay;e++) h+='<div></div>';
   var _calSN=erGetActiveShowName()||'';
-  // For ML, also include reports with empty show_name (old records)
-  var _calBucket=_erRptCache[_calSN]||(_calSN===''?_engReportCache:{});
-  var _calBucketEmpty=(_calSN==='Morning Live')?(_erRptCache['']||{}):null;
   for(var d=1;d<=daysInMonth;d++){
     var ds=yr+'-'+String(mo+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
     var dow=new Date(yr,mo,d).getDay();
     var isWknd=dow===0||dow===6,isFuture=ds>todayStr,isToday=ds===todayStr;
-    var rep=_calBucket[ds]||(_calBucketEmpty?_calBucketEmpty[ds]:null)||null;
+    var _snk2=_calSN?(_calSN+':'+ds):'';
+    var _fromSNKey=_snk2?_engReportCache[_snk2]:null;
+    var _fromFlat=_engReportCache[ds];
+    var _rawRep=_fromSNKey||(_fromFlat&&_erCalFilter(_fromFlat,_calSN)?_fromFlat:null);
+    var rep=_rawRep||null;
     var hasRep=rep!=null;
     var isUrgent=hasRep&&rep.urgent_action==='Yes';
     var isNtr=hasRep&&rep.summary_mode==='ntr';
@@ -4657,12 +4664,14 @@ function erCalNav(yrmo){
 function erCalUpdateDots() {
   var wrap=document.getElementById("erCalWrap"); if(!wrap) return;
   var _calSND=erGetActiveShowName()||'';
-  var _dotBucket=_erRptCache[_calSND]||{};
-  var _dotBucketEmpty=(_calSND==='Morning Live')?(_erRptCache['']||{}):null;
   wrap.querySelectorAll("[data-date]").forEach(function(cell){
     var ds=cell.getAttribute("data-date");
     if(!ds) return;
-    var rep=_dotBucket[ds]||(_dotBucketEmpty?_dotBucketEmpty[ds]:null)||null;
+    var _sn2=erGetActiveShowName()||'Morning Live';
+    var _snk2=_sn2+':'+ds;
+    var _snkD=_calSND?(_calSND+':'+ds):'';
+    var _rawRep2=(_snkD?_engReportCache[_snkD]:null)||(_engReportCache[ds]&&_erCalFilter(_engReportCache[ds],_calSND)?_engReportCache[ds]:null);
+    var rep=_rawRep2||null;
     if(rep){
       var isUrgent=rep.urgent_action==="Yes";
       cell.style.background=isUrgent?"rgba(200,60,60,.18)":"rgba(232,184,75,.12)";
@@ -4981,7 +4990,7 @@ function saveEngLogDay(dateStr, jid){
 }
 
 // ── SUBMITTED REPORT FETCHING ─────────────────────────────────────────────────
-var _engReportCache = {}; // dateStr -> report (flat, for modals)
+var _engReportCache = {}; // dateStr -> report object or null
 var _erRptCache = {};     // showName -> {dateStr -> report}
 
 async function _fetchEngReport(dateStr) {
@@ -5012,11 +5021,10 @@ async function _fetchEngReportsForMonth(yr, mo) {
     const rows = await resp.json();
     if (rows && rows.length) {
       rows.forEach(function(r) {
-        // 2-level cache: by show_name then date
-        var _rSN = r.show_name||'';
-        if(!_erRptCache[_rSN]) _erRptCache[_rSN]={};
-        _erRptCache[_rSN][r.show_date] = r;
-        // flat cache for day-click modal
+        // Store by "showname:date" for per-job calendar filtering
+        var _snKey = (r.show_name||'Morning Live')+':'+r.show_date;
+        _engReportCache[_snKey] = r;
+        // Also keep flat date key (first-seen) for day-click modal
         if(!_engReportCache[r.show_date]) _engReportCache[r.show_date] = r;
       });
     }
@@ -12468,6 +12476,8 @@ function erReset(){
 function erInitPage(){
   erRenderJobTabs();
   erSetDateToday();erSetSummary('ntr');window._erCatFilter='';erInitCatBtns();erRenderKit();erUpdateStatus();
+  // Restore the correct panel (in case we navigated away while on a non-ML job)
+  setTimeout(function(){ erSwitchJob(_erActiveJob||'ml',window._erTabLabels&&window._erTabLabels[_erActiveJob]||''); },50);
   setTimeout(erLoadKit,100);
   setTimeout(renderAbcLastReport,1000);
   // Auto-import ML historical records if not done yet
