@@ -4585,7 +4585,9 @@ function erCalRender(yr, mo) {
     var ds=yr+'-'+String(mo+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
     var dow=new Date(yr,mo,d).getDay();
     var isWknd=dow===0||dow===6,isFuture=ds>todayStr,isToday=ds===todayStr;
-    var rep=_engReportCache[ds],hasRep=rep!=null;
+    var _rawRep=_engReportCache[ds];
+    var rep=_rawRep&&_erCalFilter(_rawRep)?_rawRep:null;
+    var hasRep=rep!=null;
     var isUrgent=hasRep&&rep.urgent_action==='Yes';
     var isNtr=hasRep&&rep.summary_mode==='ntr';
     var bg,border,numCol,cursor;
@@ -4628,7 +4630,8 @@ function erCalUpdateDots() {
   wrap.querySelectorAll("[data-date]").forEach(function(cell){
     var ds=cell.getAttribute("data-date");
     if(!ds) return;
-    var rep=_engReportCache[ds];
+    var _rawRep2=_engReportCache[ds];
+    var rep=_rawRep2&&_erCalFilter(_rawRep2)?_rawRep2:null;
     if(rep){
       var isUrgent=rep.urgent_action==="Yes";
       cell.style.background=isUrgent?"rgba(200,60,60,.18)":"rgba(232,184,75,.12)";
@@ -12882,6 +12885,15 @@ document.addEventListener('DOMContentLoaded', function() {
   window.clPick=clPick;window.clSubmit=clSubmit;window.clReset=clReset;
 });
 
+
+function _erCalFilter(rep) {
+  // Returns true if report should show for the currently active job
+  var sn = erGetActiveShowName();
+  if(!sn) return true; // no active job filter
+  var rn = rep.show_name||'';
+  if(sn==='Morning Live') return rn==='Morning Live'||rn==='';
+  return rn===sn;
+}
 function erGetActiveShowName(){
   if(_erActiveJob==='ml')return'Morning Live';
   if(_erActiveJob==='shopon')return'ShopOn TV';
