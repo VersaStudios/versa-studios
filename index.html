@@ -12336,7 +12336,7 @@ const _ER_SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsI
 const _ER_SB_HDR={'Content-Type':'application/json','apikey':_ER_SB_KEY,'Authorization':'Bearer '+_ER_SB_KEY};
 const _ER_EJS_SVC='service_883826m',_ER_EJS_TPL='template_hhvnzss',_ER_EJS_KEY='-WB5uUr8yu-oIKc5v';
 
-async function erSaveReport(d){try{const r=await fetch(_ER_SB_URL+'/rest/v1/engineering_reports',{method:'POST',headers:{..._ER_SB_HDR,'Prefer':'return=minimal'},body:JSON.stringify(d)});return r.ok;}catch(e){return false;}}
+async function erSaveReport(d){try{const r=await fetch(_ER_SB_URL+'/rest/v1/engineering_reports',{method:'POST',headers:{..._ER_SB_HDR,'Prefer':'return=minimal'},body:JSON.stringify(d)});if(!r.ok){const txt=await r.text().catch(()=>'');console.error('erSaveReport failed',r.status,txt);alert('Save failed ('+r.status+'): '+txt.substring(0,200));return false;}return true;}catch(e){alert('Save error: '+e.message);return false;}}
 async function erSendEmail(p){try{if(window.emailjs){emailjs.init({publicKey:_ER_EJS_KEY});await emailjs.send(_ER_EJS_SVC,_ER_EJS_TPL,p);}}catch(e){}}
 async function erLoadKit(){
   try{
@@ -12449,7 +12449,8 @@ function erUpdateStatus(){
 }
 async function erSubmit(){
   const vtm=document.getElementById('erVTM').value.trim(),bbc=document.getElementById('erBBC').value,urgent=document.getElementById('erUrgent').value,urgTxt=document.getElementById('erUrgTxt').value.trim(),isSTR=_erSummaryMode==='str',sumTxt=isSTR?document.getElementById('erSummaryTxt').value.trim():'',tagNames=_erTags.map(id=>{const k=_erKitData.find(x=>x.id===id);return k?k.name+' ('+k.tag+')':'';}).filter(Boolean),showDate=_erUseTodayDate?new Date().toISOString().split('T')[0]:_erSelectedDate;
-  await erSaveReport({versa_tech_manager:vtm,bbc_tech_manager:bbc,show_date:showDate,show_name:(document.getElementById('erShowSel')?document.getElementById('erShowSel').value:'Morning Live (ABC)'),summary_mode:_erSummaryMode,summary_text:sumTxt,tagged_kit:_erTags,tagged_kit_names:tagNames,urgent_action:urgent,urgent_details:urgTxt,submitted_at:new Date().toISOString()});
+  const _saved=await erSaveReport({versa_tech_manager:vtm,bbc_tech_manager:bbc,show_date:showDate,show_name:(document.getElementById('erShowSel')?document.getElementById('erShowSel').value:'Morning Live'),summary_mode:_erSummaryMode,summary_text:sumTxt,tagged_kit:_erTags,tagged_kit_names:tagNames,urgent_action:urgent,urgent_details:urgTxt,submitted_at:new Date().toISOString()});
+  if(!_saved){toast('Save failed — check Supabase RLS permissions');return;}
   if(isSTR)erSendEmail({show_date:showDate,versa_tech:vtm,bbc_tech:bbc,summary:sumTxt||'(no details)',urgent,urgent_details:urgTxt||'--',tagged_kit:tagNames.join(', ')||'None',submitted_at:new Date().toLocaleString('en-GB')});
   if(isSTR&&sumTxt){try{if(!_tld)_tld={};if(!_tld.abc)_tld.abc=[];_tld.abc.push({id:Date.now(),date:showDate,studio:'ABC',dept:'Engineering',job:'Morning Live',by:vtm||'Andrew Rowell',info:'[From Engineering Report] '+sumTxt+(urgTxt?' | Urgent: '+urgTxt:''),next:'',status:urgent==='Yes'?'ongoing':'information',updates:'',update_log:[]});tlSave('abc');toast('STR logged');}catch(e){}}
   renderAbcLastReport();
@@ -12473,9 +12474,16 @@ function erReset(){
   document.getElementById('erBBCMain').textContent='Andy McLannahan';document.getElementById('erBBCMain').classList.add('er-active');document.getElementById('erBBCSub').classList.remove('open');document.getElementById('erBBCOther').style.display='none';
   erSetDateToday();erInitCatBtns();erRenderKit();erUpdateStatus();
 }
+function erCheckSupabaseAccess(){
+  fetch(_ER_SB_URL+'/rest/v1/engineering_reports?limit=1',{headers:_ER_SB_HDR})
+    .then(function(r){
+      if(!r.ok) toast('⚠ DB access error ('+r.status+') — reports may not save. Check Supabase RLS.');
+    }).catch(function(){toast('⚠ Cannot reach database — check connection.');});
+}
 function erInitPage(){
   erRenderJobTabs();
   erSetDateToday();erSetSummary('ntr');window._erCatFilter='';erInitCatBtns();erRenderKit();erUpdateStatus();
+  setTimeout(erCheckSupabaseAccess, 500);
   // Restore the correct panel (in case we navigated away while on a non-ML job)
   setTimeout(function(){ erSwitchJob(_erActiveJob||'ml',window._erTabLabels&&window._erTabLabels[_erActiveJob]||''); },50);
   setTimeout(erLoadKit,100);
@@ -12980,7 +12988,7 @@ async function soSubmit(){
       headers:{'Content-Type':'application/json','apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ','Prefer':'return=minimal'},
       body:JSON.stringify({versa_tech_manager:dir,bbc_tech_manager:'',show_date:date,show_name:'ShopOn TV',summary_mode:'str',summary_text:info,tagged_kit:[],tagged_kit_names:[],urgent_action:'No',urgent_details:'',submitted_at:new Date().toISOString()})});
     if(r.ok){document.getElementById('soFormView').style.display='none';var sd=document.getElementById('soSuccess');if(sd)sd.style.display='block';var det=document.getElementById('soSuccessDetail');if(det)det.textContent=dir+' · '+date;}
-    else toast('Submit failed');
+    else toast('Submit failed (' + r.status + ') — check Supabase RLS');
   }catch(e){toast('Error: '+e.message);}
   btn.disabled=false;btn.textContent='Submit Report';
 }
@@ -13014,7 +13022,7 @@ async function cwSubmit(){
       headers:{'Content-Type':'application/json','apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ','Prefer':'return=minimal'},
       body:JSON.stringify({versa_tech_manager:tech,bbc_tech_manager:'',show_date:date,show_name:'Cooking with the Stars',summary_mode:'str',summary_text:info,tagged_kit:[],tagged_kit_names:[],urgent_action:'No',urgent_details:'',submitted_at:new Date().toISOString()})});
     if(r.ok){document.getElementById('cwFormView').style.display='none';var sd=document.getElementById('cwSuccess');if(sd)sd.style.display='block';var det=document.getElementById('cwSuccessDetail');if(det)det.textContent=tech+' · '+date;}
-    else toast('Submit failed');
+    else toast('Submit failed (' + r.status + ') — check Supabase RLS');
   }catch(e){toast('Error: '+e.message);}
   btn.disabled=false;btn.textContent='Submit Report';
 }
@@ -13048,7 +13056,7 @@ async function clSubmit(){
       headers:{'Content-Type':'application/json','apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ','Prefer':'return=minimal'},
       body:JSON.stringify({versa_tech_manager:tech,bbc_tech_manager:'',show_date:date,show_name:"I'm a Celebrity",summary_mode:'str',summary_text:info,tagged_kit:[],tagged_kit_names:[],urgent_action:'No',urgent_details:'',submitted_at:new Date().toISOString()})});
     if(r.ok){document.getElementById('clFormView').style.display='none';var sd=document.getElementById('clSuccess');if(sd)sd.style.display='block';var det=document.getElementById('clSuccessDetail');if(det)det.textContent=tech+' · '+date;}
-    else toast('Submit failed');
+    else toast('Submit failed (' + r.status + ') — check Supabase RLS');
   }catch(e){toast('Error: '+e.message);}
   btn.disabled=false;btn.textContent='Submit Report';
 }
