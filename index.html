@@ -2021,7 +2021,8 @@ var _notesFilter = 'all';
 var NOTE_TYPES = {
   idea:     {label:'Idea',     col:'#8b6a3e', light:'#c4934e'},
   action:   {label:'Action',   col:'#4a6741', light:'#5a8050'},
-  reminder: {label:'Reminder', col:'#7a4a5e', light:'#9a5e78'}
+  reminder: {label:'Reminder', col:'#7a4a5e', light:'#9a5e78'},
+  todo:     {label:'To-Do',    col:'#3a6ea5', light:'#5a8ec5'}
 };
 
 function notesUserKey(){
@@ -2085,10 +2086,25 @@ function notesDelete(id){
   notesSave();notesRender();
 }
 
+function notesEdit(id){
+  var n = _notes.find(function(x){return x.id===id;});
+  if(!n)return;
+  var newText = prompt('Edit note:', n.text);
+  if(newText===null)return; // cancelled
+  if(!newText.trim()){if(typeof toast==='function')toast('Note cannot be empty');return;}
+  n.text = newText.trim();
+  notesSave();
+  notesRender();
+}
+
 function notesTodo(id){
   var n = _notes.find(function(x){return x.id===id;});
   if(!n)return;
-  if(typeof toast==='function')toast('Added to To-Do list \u2014 coming soon!');
+  n.type='todo';
+  n.pinned=true;
+  notesSave();
+  notesRender();
+  if(typeof toast==='function')toast('Moved to Action \u2014 pinned');
 }
 
 function notesRender(){
@@ -2134,7 +2150,7 @@ function notesRender(){
       +'</div>'
       +'</div>'
       +'<div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">'
-      +'<button onclick="_notePin('+n.id+')" style="font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:none;border:1px solid '+border+';border-radius:5px;padding:4px 10px;color:'+mutedCol+';cursor:pointer">'+(n.pinned?'Unpin':'Pin')+'</button>'
+      +'<button onclick="_noteEdit('+n.id+')" style="font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:none;border:1px solid '+border+';border-radius:5px;padding:4px 10px;color:'+mutedCol+';cursor:pointer">Edit</button>'      +'<button onclick="_notePin('+n.id+')" style="font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:none;border:1px solid '+border+';border-radius:5px;padding:4px 10px;color:'+mutedCol+';cursor:pointer">'+(n.pinned?'Unpin':'Pin')+'</button>'
       +'<button onclick="_noteDone('+n.id+')" style="font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:none;border:1px solid '+border+';border-radius:5px;padding:4px 10px;color:'+mutedCol+';cursor:pointer">'+(n.done?'Undone':'Done')+'</button>'
       +'<button onclick="_noteTodo('+n.id+')" style="font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:none;border:1px solid '+tcol+';border-radius:5px;padding:4px 10px;color:'+tcol+';cursor:pointer">→ To-Do</button>'
       +'<button onclick="_noteDel('+n.id+')" style="font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:none;border:1px solid '+border+';border-radius:5px;padding:4px 10px;color:'+mutedCol+';cursor:pointer;margin-left:auto">Delete</button>'
@@ -2145,7 +2161,7 @@ function notesRender(){
 
 function notesSetFilter(f){
   _notesFilter=f;
-  ['all','idea','action','reminder'].forEach(function(k){
+  ['all','idea','action','reminder','todo'].forEach(function(k){
     var b=document.getElementById('nfBtn-'+k);
     if(b){
       var active=k===f;
@@ -2189,6 +2205,7 @@ window._notePin=notesTogglePin;
 window._noteDone=notesToggleDone;
 window._noteTodo=notesTodo;
 window._noteDel=notesDelete;
+window._noteEdit=notesEdit;
 
 
 // ── OFFLINE + UNSAVED BANNERS ─────────────────────────────────────────────────
@@ -4585,8 +4602,11 @@ function erCalRender(yr, mo) {
     var ds=yr+'-'+String(mo+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
     var dow=new Date(yr,mo,d).getDay();
     var isWknd=dow===0||dow===6,isFuture=ds>todayStr,isToday=ds===todayStr;
-    var _rawRep=_engReportCache[ds];
-    var rep=_rawRep&&_erCalFilter(_rawRep)?_rawRep:null;
+    var _sn=erGetActiveShowName()||'Morning Live';
+    var _snk=_sn+':'+ds;
+    // Try show-specific key first, fall back to flat key with filter
+    var _rawRep=_engReportCache[_snk]||(_engReportCache[ds]&&_erCalFilter(_engReportCache[ds])?_engReportCache[ds]:null);
+    var rep=_rawRep||null;
     var hasRep=rep!=null;
     var isUrgent=hasRep&&rep.urgent_action==='Yes';
     var isNtr=hasRep&&rep.summary_mode==='ntr';
@@ -4630,8 +4650,10 @@ function erCalUpdateDots() {
   wrap.querySelectorAll("[data-date]").forEach(function(cell){
     var ds=cell.getAttribute("data-date");
     if(!ds) return;
-    var _rawRep2=_engReportCache[ds];
-    var rep=_rawRep2&&_erCalFilter(_rawRep2)?_rawRep2:null;
+    var _sn2=erGetActiveShowName()||'Morning Live';
+    var _snk2=_sn2+':'+ds;
+    var _rawRep2=_engReportCache[_snk2]||(_engReportCache[ds]&&_erCalFilter(_engReportCache[ds])?_engReportCache[ds]:null);
+    var rep=_rawRep2||null;
     if(rep){
       var isUrgent=rep.urgent_action==="Yes";
       cell.style.background=isUrgent?"rgba(200,60,60,.18)":"rgba(232,184,75,.12)";
@@ -4980,6 +5002,10 @@ async function _fetchEngReportsForMonth(yr, mo) {
     const rows = await resp.json();
     if (rows && rows.length) {
       rows.forEach(function(r) {
+        // Store by "showname:date" for per-job calendar filtering
+        var _snKey = (r.show_name||'Morning Live')+':'+r.show_date;
+        _engReportCache[_snKey] = r;
+        // Also keep flat date key (first-seen) for day-click modal
         if(!_engReportCache[r.show_date]) _engReportCache[r.show_date] = r;
       });
     }
@@ -12887,9 +12913,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 function _erCalFilter(rep) {
-  // Returns true if report should show for the currently active job
   var sn = erGetActiveShowName();
-  if(!sn) return true; // no active job filter
+  if(!sn || sn==='') return true;
   var rn = rep.show_name||'';
   if(sn==='Morning Live') return rn==='Morning Live'||rn==='';
   return rn===sn;
