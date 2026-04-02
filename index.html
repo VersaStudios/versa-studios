@@ -4422,20 +4422,30 @@ function erSubTab(tab){
   var rb=document.getElementById('erSubTabReport');
   var cb=document.getElementById('erSubTabCal');
   var ib=document.getElementById('erSubTabImport');
-  // Check which custom panel is active
   var soEl=document.getElementById('erShopOnPanel');
   var cwEl=document.getElementById('erCwtsPanel');
   var clEl=document.getElementById('erCelebPanel');
-  var isDD = dd && dd.style.display==='block';
-  var isSO = soEl && soEl.style.display==='block';
-  var isCW = cwEl && cwEl.style.display==='block';
-  var isCL = clEl && clEl.style.display==='block';
-  var isCustom = isDD||isSO||isCW||isCL;
-  if(!isCustom && rp) rp.style.display=tab==='report'?'block':'none';
-  if(dd && isDD) dd.style.display=tab==='report'?'block':'none';
-  if(soEl && isSO) soEl.style.display=tab==='report'?'block':'none';
-  if(cwEl && isCW) cwEl.style.display=tab==='report'?'block':'none';
-  if(clEl && isCL) clEl.style.display=tab==='report'?'block':'none';
+  var gjEl=document.getElementById('erGenPanel');
+  // Determine active panel from _erActiveJob (not display state — panels are hidden when calendar is open)
+  var isDD = _erActiveJob==='dd';
+  var isSO = _erActiveJob==='shopon';
+  var isCW = _erActiveJob==='cwts';
+  var isCL = _erActiveJob==='celeb';
+  var isGJ = !isDD&&!isSO&&!isCW&&!isCL&&_erActiveJob&&_erActiveJob!=='ml';
+  var isML = !isDD&&!isSO&&!isCW&&!isCL&&!isGJ;
+  // Hide all report panels first
+  ['erSubPanelReport','erDDPanel','erShopOnPanel','erCwtsPanel','erCelebPanel','erGenPanel'].forEach(function(id){
+    var el=document.getElementById(id);if(el)el.style.display='none';
+  });
+  // Show correct one when switching to report tab
+  if(tab==='report'){
+    if(isML&&rp) rp.style.display='block';
+    if(isDD&&dd) dd.style.display='block';
+    if(isSO&&soEl) soEl.style.display='block';
+    if(isCW&&cwEl) cwEl.style.display='block';
+    if(isCL&&clEl) clEl.style.display='block';
+    if(isGJ&&gjEl) gjEl.style.display='block';
+  }
   if(cp){cp.style.display=tab==='cal'?'':'none'; if(tab==='cal'){erCalSetupListener();erCalRender(_erCalYr,_erCalMo);erHistLoad();}}
   if(ip){ip.style.display=tab==='import'?'':'none';}
   var accent='var(--accent)',muted='var(--muted)';
@@ -4598,14 +4608,15 @@ function erCalRender(yr, mo) {
   var firstDay=(new Date(yr,mo,1).getDay()+6)%7;
   var daysInMonth=new Date(yr,mo+1,0).getDate();
   for(var e=0;e<firstDay;e++) h+='<div></div>';
+  var _calSN=erGetActiveShowName()||'';
   for(var d=1;d<=daysInMonth;d++){
     var ds=yr+'-'+String(mo+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
     var dow=new Date(yr,mo,d).getDay();
     var isWknd=dow===0||dow===6,isFuture=ds>todayStr,isToday=ds===todayStr;
-    var _sn=erGetActiveShowName()||'Morning Live';
-    var _snk=_sn+':'+ds;
-    // Try show-specific key first, fall back to flat key with filter
-    var _rawRep=_engReportCache[_snk]||(_engReportCache[ds]&&_erCalFilter(_engReportCache[ds])?_engReportCache[ds]:null);
+    var _snk2=_calSN?(_calSN+':'+ds):'';
+    var _fromSNKey=_snk2?_engReportCache[_snk2]:null;
+    var _fromFlat=_engReportCache[ds];
+    var _rawRep=_fromSNKey||(_fromFlat&&_erCalFilter(_fromFlat,_calSN)?_fromFlat:null);
     var rep=_rawRep||null;
     var hasRep=rep!=null;
     var isUrgent=hasRep&&rep.urgent_action==='Yes';
@@ -4647,12 +4658,14 @@ function erCalNav(yrmo){
 
 function erCalUpdateDots() {
   var wrap=document.getElementById("erCalWrap"); if(!wrap) return;
+  var _calSND=erGetActiveShowName()||'';
   wrap.querySelectorAll("[data-date]").forEach(function(cell){
     var ds=cell.getAttribute("data-date");
     if(!ds) return;
     var _sn2=erGetActiveShowName()||'Morning Live';
     var _snk2=_sn2+':'+ds;
-    var _rawRep2=_engReportCache[_snk2]||(_engReportCache[ds]&&_erCalFilter(_engReportCache[ds])?_engReportCache[ds]:null);
+    var _snkD=_calSND?(_calSND+':'+ds):'';
+    var _rawRep2=(_snkD?_engReportCache[_snkD]:null)||(_engReportCache[ds]&&_erCalFilter(_engReportCache[ds],_calSND)?_engReportCache[ds]:null);
     var rep=_rawRep2||null;
     if(rep){
       var isUrgent=rep.urgent_action==="Yes";
@@ -12912,8 +12925,8 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-function _erCalFilter(rep) {
-  var sn = erGetActiveShowName();
+function _erCalFilter(rep, sn) {
+  if(sn===undefined) sn=erGetActiveShowName();
   if(!sn || sn==='') return true;
   var rn = rep.show_name||'';
   if(sn==='Morning Live') return rn==='Morning Live'||rn==='';
