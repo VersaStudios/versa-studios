@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Versa Notes</title>
+<link rel="manifest" href="data:application/manifest+json,{&quot;name&quot;:&quot;Versa Notes&quot;,&quot;short_name&quot;:&quot;Notes&quot;,&quot;display&quot;:&quot;standalone&quot;,&quot;background_color&quot;:&quot;#efede3&quot;,&quot;theme_color&quot;:&quot;#302f2c&quot;}">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Versa Notes">
+<meta name="theme-color" content="#302f2c">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'Barlow',sans-serif;background:#efede3;color:#302f2c;overflow:hidden}
+.layout{display:grid;grid-template-columns:260px 1fr;height:100vh}
+@media(max-width:860px){.layout{grid-template-columns:1fr;overflow-y:auto}}
+
+/* Sidebar */
+.sb{background:#302f2c;color:#efede3;padding:28px 22px;display:flex;flex-direction:column;overflow-y:auto;height:100vh}
+.sb-logo{height:38px;filter:brightness(0) invert(1);opacity:.85;margin-bottom:26px;display:block}
+.sb-super{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.38em;text-transform:uppercase;color:rgba(239,237,227,.48)}
+.sb-title{font-family:'Barlow Condensed',sans-serif;font-size:42px;font-weight:900;line-height:.95;margin:10px 0 12px;color:#efede3}
+.sb-desc{font-size:13px;line-height:1.6;color:rgba(239,237,227,.56);max-width:180px;margin-bottom:24px}
+.sb-nav{display:flex;flex-direction:column;gap:2px;margin-bottom:24px}
+.nv{width:100%;display:flex;align-items:center;gap:10px;border-radius:4px;padding:10px 12px;cursor:pointer;color:rgba(239,237,227,.7);font-size:14px;font-weight:500;background:none;border:none;text-align:left;transition:background .12s}
+.nv:hover{background:rgba(255,255,255,.08);color:#efede3}
+.nv.on{background:#efede3;color:#302f2c}
+.nv svg{width:16px;height:16px;flex-shrink:0}
+
+/* Meeting history in sidebar */
+.sb-sec{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:rgba(239,237,227,.42);margin-bottom:8px;padding-top:4px}
+.mtg-item{padding:9px 12px;border-radius:4px;cursor:pointer;border-left:2px solid transparent;margin-bottom:2px;transition:background .12s}
+.mtg-item:hover{background:rgba(255,255,255,.07)}
+.mtg-item.on{background:rgba(255,255,255,.1);border-left-color:#efede3}
+.mtg-name{font-size:13px;font-weight:600;color:rgba(239,237,227,.85);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mtg-date{font-family:'Barlow Condensed',sans-serif;font-size:10px;color:rgba(239,237,227,.4);margin-top:1px}
+.add-mtg-btn{width:100%;text-align:left;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:none;border:1.5px dashed rgba(239,237,227,.15);border-radius:4px;color:rgba(239,237,227,.4);padding:8px 12px;cursor:pointer;margin-top:6px}
+.add-mtg-btn:hover{border-color:rgba(239,237,227,.35);color:rgba(239,237,227,.7)}
+
+/* Stats */
+.sb-stats{border-radius:4px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);padding:18px;margin-top:auto}
+.sb-stats-lbl{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:rgba(239,237,227,.42);margin-bottom:14px}
+.stat{margin-bottom:12px}.stat:last-child{margin-bottom:0}
+.stat-n{font-family:'Barlow Condensed',sans-serif;font-size:34px;font-weight:900;line-height:1;color:#efede3}
+.stat-l{font-size:12px;color:rgba(239,237,227,.58);margin-top:2px}
+
+/* Main */
+.main{background:#efede3;overflow-y:auto;height:100vh;display:flex;flex-direction:column}
+.mhdr{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:14px 28px 12px;flex-wrap:wrap;flex-shrink:0}
+.mhdr-l .sub{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.32em;text-transform:uppercase;color:rgba(48,47,44,.42);margin-bottom:6px}
+.mhdr-l .htitle{font-size:24px;font-weight:600;letter-spacing:-.01em;line-height:1.1}
+.mhdr-r{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.srch-wrap{position:relative}
+.srch-wrap svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:14px;height:14px;opacity:.38;pointer-events:none}
+.srch{height:42px;border-radius:4px;border:1.5px solid rgba(48,47,44,.12);background:rgba(255,255,255,.75);padding:0 12px 0 34px;font-family:'Barlow',sans-serif;font-size:14px;color:#302f2c;outline:none;width:220px}
+.srch::placeholder{color:rgba(48,47,44,.38)}
+.add-btn{height:42px;border-radius:4px;background:#302f2c;border:none;color:#efede3;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:0 16px;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap}
+
+/* Content area */
+.content{flex:1;padding:0 28px 32px;overflow-y:auto}
+
+/* Grid */
+.grid{display:grid;grid-template-columns:1.15fr 0.85fr;gap:16px}
+@media(max-width:1050px){.grid{grid-template-columns:1fr}}
+.full{grid-column:1/-1}
+
+/* Cards */
+.card{border-radius:5px;border:1.5px solid rgba(48,47,44,.1);background:#fff;padding:22px}
+.card.warm{background:#f6f2e8}
+.ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.ct{font-size:18px;font-weight:600;letter-spacing:-.01em}
+
+/* Quick capture */
+.cap-inp{width:100%;background:transparent;border:none;outline:none;font-family:'Barlow',sans-serif;font-size:15px;font-weight:600;color:#302f2c;margin-bottom:10px;border-bottom:1.5px solid rgba(48,47,44,.1);padding-bottom:8px}
+.cap-inp::placeholder{color:rgba(48,47,44,.3);font-weight:400}
+.cap-ta{width:100%;background:rgba(255,255,255,.8);border:1.5px solid rgba(48,47,44,.1);border-radius:4px;padding:12px 14px;font-family:'Barlow',sans-serif;font-size:15px;color:#302f2c;resize:none;min-height:150px;line-height:1.6;outline:none}
+.cap-ta::placeholder{color:rgba(48,47,44,.3)}
+.cap-row{display:flex;align-items:center;gap:8px;margin-top:12px;flex-wrap:wrap}
+.cap-sel{height:34px;border-radius:4px;border:1.5px solid rgba(48,47,44,.12);background:rgba(255,255,255,.8);padding:0 10px;font-family:'Barlow',sans-serif;font-size:13px;color:#302f2c;outline:none}
+.type-pill{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:1.5px solid rgba(48,47,44,.12);border-radius:4px;padding:6px 14px;background:rgba(255,255,255,.8);color:rgba(48,47,44,.45);cursor:pointer;transition:all .12s}
+.type-pill.on{border-color:#302f2c;background:#302f2c;color:#efede3}
+.type-pill.on.reminder{border-color:#7a4a5e;background:#7a4a5e;color:#fff}
+.save-btn{margin-left:auto;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:#302f2c;border:none;border-radius:4px;padding:8px 18px;color:#efede3;cursor:pointer}
+
+/* Note cards */
+.nc{border:1.5px solid rgba(48,47,44,.08);border-radius:4px;background:#f8f6f1;padding:15px 16px;margin-bottom:9px;cursor:pointer;transition:background .12s}
+.nc:hover{background:#ede9e0}
+.nc:last-child{margin-bottom:0}
+.nc-hdr{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:4px}
+.nc-title{font-size:15px;font-weight:600;color:#302f2c;line-height:1.3}
+.nc-meta{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(48,47,44,.42);margin-bottom:8px}
+.nc-body{font-size:14px;line-height:1.6;color:rgba(48,47,44,.7)}
+.nc-actions{display:flex;gap:6px;margin-top:9px}
+.nc-btn{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:none;border:1.5px solid rgba(48,47,44,.1);border-radius:4px;padding:3px 9px;cursor:pointer;color:rgba(48,47,44,.38)}
+.nc-btn:hover{border-color:rgba(48,47,44,.3);color:#302f2c}
+
+/* Sub-category headers */
+.sub-hdr{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(48,47,44,.4);padding:16px 0 8px;border-top:1.5px solid rgba(48,47,44,.08);margin-top:14px}
+
+/* To-do */
+.trow{display:flex;align-items:flex-start;gap:10px;border:1.5px solid rgba(48,47,44,.08);border-radius:4px;padding:10px 14px;margin-bottom:6px}
+.trow:last-child{margin-bottom:0}
+.trow input[type=checkbox]{margin-top:2px;width:15px;height:15px;cursor:pointer;flex-shrink:0;accent-color:#302f2c}
+.trow-content{flex:1;min-width:0}
+.trow-text{font-size:14px;line-height:1.5;color:#302f2c}
+.trow.done .trow-text{text-decoration:line-through;opacity:.38}
+.trow-assign{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(48,47,44,.38);margin-top:3px}
+.todo-add-wrap{margin-top:12px;border:1.5px solid rgba(48,47,44,.1);border-radius:4px;padding:12px;background:rgba(255,255,255,.7)}
+.todo-add-wrap input{width:100%;background:transparent;border:none;outline:none;font-family:'Barlow',sans-serif;font-size:14px;color:#302f2c;margin-bottom:8px;border-bottom:1px solid rgba(48,47,44,.1);padding-bottom:6px}
+.todo-add-wrap input::placeholder{color:rgba(48,47,44,.3)}
+.todo-add-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.todo-assign-sel{height:30px;border-radius:4px;border:1.5px solid rgba(48,47,44,.12);background:rgba(255,255,255,.8);padding:0 8px;font-family:'Barlow',sans-serif;font-size:12px;color:#302f2c;outline:none}
+.todo-add-btn{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:#302f2c;border:none;border-radius:4px;padding:6px 14px;color:#efede3;cursor:pointer}
+.todo-cancel{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:none;border:none;color:rgba(48,47,44,.4);cursor:pointer}
+.show-add-btn{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:1.5px solid rgba(48,47,44,.1);border-radius:4px;padding:5px 11px;background:transparent;color:rgba(48,47,44,.45);cursor:pointer}
+
+/* Meeting full-page view */
+.mtg-page{display:none;flex-direction:column;flex:1;overflow:hidden}
+.mtg-page.open{display:flex}
+.mtg-page-hdr{display:flex;align-items:center;gap:14px;padding:12px 28px 10px;border-bottom:1.5px solid rgba(48,47,44,.1);flex-shrink:0}
+.back-btn{display:flex;align-items:center;gap:6px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:none;border:none;color:rgba(48,47,44,.45);cursor:pointer;padding:0}
+.back-btn:hover{color:#302f2c}
+.mtg-page-title{font-size:22px;font-weight:600;flex:1}
+.mtg-page-date{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(48,47,44,.4)}
+.mtg-page-body{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:14px 28px 24px;overflow-y:auto}
+@media(max-width:700px){.mtg-page-body{grid-template-columns:1fr}}
+.mtg-panel{border-radius:4px;background:#fff;border:1.5px solid rgba(48,47,44,.1);padding:20px;display:flex;flex-direction:column}
+.mtg-panel-lbl{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:rgba(48,47,44,.4);margin-bottom:12px}
+.mtg-panel-ta{flex:1;width:100%;background:transparent;border:none;outline:none;font-family:'Barlow',sans-serif;font-size:15px;color:#302f2c;resize:none;line-height:1.7;min-height:180px}
+.mtg-panel-ta::placeholder{color:rgba(48,47,44,.25)}
+.mtg-save-bar{padding:14px 32px;border-top:1.5px solid rgba(48,47,44,.1);display:flex;align-items:center;gap:10px;flex-shrink:0}
+.mtg-save-btn{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:#302f2c;border:none;border-radius:4px;padding:8px 20px;color:#efede3;cursor:pointer}
+.mtg-saved{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:rgba(48,47,44,.38)}
+.mtg-del-btn{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:none;border:1.5px solid rgba(48,47,44,.1);border-radius:4px;padding:7px 14px;color:rgba(48,47,44,.4);cursor:pointer;margin-left:auto}
+.mtg-del-btn:hover{border-color:#c0392b;color:#c0392b}
+
+/* Full-page note editor */
+.ed-page{display:none;flex-direction:column;flex:1;overflow:hidden}
+.ed-page.open{display:flex}
+.ed-page-hdr{display:flex;align-items:center;gap:12px;padding:12px 28px 10px;border-bottom:1.5px solid rgba(48,47,44,.1);flex-shrink:0;flex-wrap:wrap}
+.ed-title{flex:1;background:transparent;border:none;outline:none;font-family:'Barlow',sans-serif;font-size:22px;font-weight:700;color:#302f2c;min-width:200px}
+.ed-title::placeholder{color:rgba(48,47,44,.2);font-weight:400}
+.ed-sel{height:32px;border-radius:4px;border:1.5px solid rgba(48,47,44,.12);background:rgba(248,246,241,.9);padding:0 9px;font-family:'Barlow',sans-serif;font-size:13px;color:#302f2c;outline:none}
+.ed-body-wrap{flex:1;overflow-y:auto;padding:14px 28px}
+.ed-body{width:100%;background:transparent;border:none;outline:none;font-family:'Barlow',sans-serif;font-size:16px;color:#302f2c;resize:none;line-height:1.75;min-height:300px}
+.ed-body::placeholder{color:rgba(48,47,44,.2)}
+.ed-foot{padding:12px 32px;border-top:1.5px solid rgba(48,47,44,.1);display:flex;align-items:center;gap:8px;flex-shrink:0;flex-wrap:wrap}
+.ed-foot-btn{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:none;border:1.5px solid rgba(48,47,44,.1);border-radius:4px;padding:6px 13px;cursor:pointer;color:rgba(48,47,44,.45)}
+.ed-foot-btn.del:hover{border-color:#c0392b;color:#c0392b}
+.ed-save-btn{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:#302f2c;border:none;border-radius:4px;padding:8px 18px;color:#efede3;cursor:pointer}
+.ed-saved{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:rgba(48,47,44,.38)}
+
+/* Empty states */
+.empty-msg{padding:26px 0;text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(48,47,44,.28)}
+
+.inst-row{padding:9px 12px;border-radius:4px;cursor:pointer;border-left:2px solid transparent;border-bottom:1px solid rgba(48,47,44,.07);transition:background .1s}
+.inst-row:hover{background:rgba(48,47,44,.04);border-left-color:rgba(48,47,44,.2)}
+.inst-date{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#302f2c}
+.inst-dow{color:rgba(48,47,44,.4)}
+.inst-preview{font-size:12px;color:rgba(48,47,44,.5);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ═══════════════════════════════════════════════════
+   TO-DO REDESIGN
+═══════════════════════════════════════════════════ */
+
+/* Progress bar */
+.td-progress{background:#fff;border-radius:10px;padding:14px 16px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.td-progress-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.td-progress-lbl{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(48,47,44,.35)}
+.td-progress-pct{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;color:#302f2c}
+.td-bar-bg{height:5px;background:rgba(48,47,44,.1);border-radius:3px;overflow:hidden;margin-bottom:8px}
+.td-bar-fill{height:100%;background:#302f2c;border-radius:3px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+.td-progress-stats{display:flex;gap:14px}
+.td-progress-stat{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.04em;color:rgba(48,47,44,.4)}
+.td-progress-stat b{color:#302f2c;font-weight:900}
+
+/* Badge on nav */
+.td-badge-nav{background:#e53e3e;color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:800;letter-spacing:.06em;padding:1px 6px;border-radius:8px;margin-left:4px}
+
+/* Controls row */
+.td-controls{display:flex;align-items:center;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.td-vbtn{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;border:1.5px solid rgba(48,47,44,.15);border-radius:6px;padding:7px 12px;background:transparent;color:rgba(48,47,44,.4);cursor:pointer;transition:all .15s;white-space:nowrap}
+.td-vbtn.on{background:#302f2c;border-color:#302f2c;color:#efede3}
+.td-add-main-btn{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;background:#302f2c;color:#efede3;border:none;border-radius:6px;padding:8px 14px;cursor:pointer;margin-left:auto;white-space:nowrap}
+
+/* Quick add */
+.td-quick{display:flex;gap:8px;background:#fff;border-radius:8px;padding:10px 12px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.td-quick-inp{flex:1;border:none;outline:none;font-family:'Barlow',sans-serif;font-size:14px;color:#302f2c;background:transparent}
+.td-quick-inp::placeholder{color:rgba(48,47,44,.3)}
+.td-quick-go{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:#302f2c;color:#efede3;border:none;border-radius:5px;padding:6px 12px;cursor:pointer;flex-shrink:0}
+
+/* New task form */
+.td-form{background:#fff;border-radius:10px;padding:16px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.td-form-title{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#302f2c;margin-bottom:12px}
+.td-form-lbl{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(48,47,44,.4);margin-bottom:3px}
+.td-form-inp{width:100%;background:#f5f3ef;border:1.5px solid rgba(48,47,44,.12);border-radius:6px;padding:9px 12px;font-family:'Barlow',sans-serif;font-size:14px;color:#302f2c;outline:none;margin-bottom:10px}
+.td-form-inp:focus{border-color:rgba(48,47,44,.35)}
+.td-form-sel{width:100%;background:#f5f3ef;border:1.5px solid rgba(48,47,44,.12);border-radius:6px;padding:9px 12px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:#302f2c;outline:none;cursor:pointer;margin-bottom:10px}
+.td-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.td-form-btns{display:flex;gap:8px;margin-top:4px}
+.td-form-save{flex:1;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:#302f2c;color:#efede3;border:none;border-radius:6px;padding:11px;cursor:pointer}
+.td-form-cancel{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;background:none;border:1.5px solid rgba(48,47,44,.15);border-radius:6px;padding:11px 16px;color:rgba(48,47,44,.5);cursor:pointer}
+
+/* Group */
+.td-group{margin-bottom:14px}
+.td-group-hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:8px 8px 0 0;background:#302f2c}
+.td-group-left{display:flex;align-items:center;gap:8px}
+.td-group-name{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#efede3}
+.td-group-count{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;color:rgba(239,237,227,.45)}
+.td-group-subprog{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;color:rgba(239,237,227,.4)}
+.td-group-body{background:#fff;border-radius:0 0 8px 8px;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.07)}
+
+/* Task card */
+.td-card{padding:14px 16px;border-bottom:1px solid rgba(48,47,44,.07);border-left:3px solid transparent;position:relative;-webkit-user-select:none;user-select:none}
+.td-card:last-child{border-bottom:none}
+.td-card.p-urgent{border-left-color:#e53e3e}
+.td-card.p-high{border-left-color:#dd6b20}
+.td-card.p-medium{border-left-color:#d69e2e}
+.td-card.p-low{border-left-color:rgba(48,47,44,.15)}
+.td-card.is-done{opacity:.4}
+.td-card-top{display:flex;align-items:flex-start;gap:10px}
+
+/* Swipe to complete */
+.td-card-inner{transition:transform .25s ease,opacity .25s ease}
+.td-card.swiping .td-card-inner{transition:none}
+.td-swipe-bg{position:absolute;inset:0;background:#22c55e;display:flex;align-items:center;padding-left:16px;opacity:0;pointer-events:none;transition:opacity .1s}
+.td-swipe-bg-txt{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#fff}
+
+/* Checkbox */
+.td-chk{width:22px;height:22px;border-radius:50%;border:2px solid rgba(48,47,44,.2);background:transparent;cursor:pointer;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .2s;position:relative;overflow:hidden}
+.td-chk.on{background:#302f2c;border-color:#302f2c}
+.td-chk-tick{font-size:12px;font-weight:900;color:transparent;transition:all .2s;transform:scale(0)}
+.td-chk.on .td-chk-tick{color:#efede3;transform:scale(1)}
+
+/* Task content */
+.td-body{flex:1;min-width:0}
+.td-text{font-size:17px;font-weight:600;color:#302f2c;line-height:1.4;margin-bottom:5px}
+.td-text.struck{text-decoration:line-through;color:rgba(48,47,44,.35)}
+.td-meta{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+
+/* Badges */
+.td-pill{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;border-radius:10px}
+.tp-urgent{background:#fed7d7;color:#c53030}
+.tp-high{background:#feebc8;color:#c05621}
+.tp-medium{background:#fefcbf;color:#975a16}
+.tp-low{background:rgba(48,47,44,.07);color:rgba(48,47,44,.45)}
+.ts-inprogress{background:#bee3f8;color:#2b6cb0}
+.ts-blocked{background:#fed7d7;color:#c53030}
+.ts-waiting{background:#e9d8fd;color:#6b46c1}
+.td-assignee{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;font-weight:700;letter-spacing:.04em;color:rgba(48,47,44,.4)}
+
+/* Due / countdown */
+.td-due-wrap{display:flex;align-items:center;gap:5px;margin-top:3px}
+.td-due-txt{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;font-weight:700;color:rgba(48,47,44,.4)}
+.td-cd{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;padding:2px 8px;border-radius:10px}
+.td-cd.overdue{background:#fed7d7;color:#c53030}
+.td-cd.today{background:#feebc8;color:#c05621}
+.td-cd.soon{background:#fefcbf;color:#975a16}
+.td-cd.future{background:rgba(48,47,44,.07);color:rgba(48,47,44,.5)}
+
+/* Expand toggle */
+.td-exp{background:none;border:none;cursor:pointer;color:rgba(48,47,44,.2);font-size:18px;padding:0 2px;line-height:1;flex-shrink:0;margin-top:-2px}
+
+/* Expanded detail */
+.td-detail{padding-top:8px}
+.td-actions{display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap}
+.td-act{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:none;border:1px solid rgba(48,47,44,.15);border-radius:4px;padding:4px 10px;color:rgba(48,47,44,.45);cursor:pointer}
+.td-act:hover{background:rgba(48,47,44,.06);color:#302f2c}
+.td-act.danger{border-color:rgba(229,62,62,.3);color:#c53030}
+
+/* Subtasks */
+.td-subs{border-left:2px solid rgba(48,47,44,.08);padding-left:12px;margin-left:4px}
+.td-sub{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid rgba(48,47,44,.05)}
+.td-sub:last-child{border-bottom:none}
+.td-sub-chk{width:15px;height:15px;border-radius:3px;border:1.5px solid rgba(48,47,44,.2);background:transparent;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:900;color:transparent;transition:all .15s}
+.td-sub-chk.on{background:#302f2c;border-color:#302f2c;color:#efede3}
+.td-sub-txt{font-size:14px;font-weight:500;color:#302f2c;flex:1;line-height:1.4}
+.td-sub-txt.struck{text-decoration:line-through;color:rgba(48,47,44,.35)}
+.td-sub-del{background:none;border:none;cursor:pointer;color:rgba(48,47,44,.18);font-size:16px;padding:0 2px;line-height:1}
+.td-sub-del:hover{color:rgba(229,62,62,.7)}
+.td-sub-add{display:flex;align-items:center;gap:6px;padding:7px 0 3px}
+.td-sub-inp{flex:1;border:none;border-bottom:1px solid rgba(48,47,44,.15);outline:none;font-family:'Barlow',sans-serif;font-size:13px;color:#302f2c;background:transparent;padding:2px 0}
+.td-sub-inp::placeholder{color:rgba(48,47,44,.3)}
+
+/* Done toggle */
+.td-done-toggle{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;background:none;border:none;color:rgba(48,47,44,.3);cursor:pointer;padding:10px 0;display:block;width:100%;text-align:center}
+
+/* Kanban */
+.td-kanban{display:flex;gap:10px;overflow-x:auto;padding-bottom:12px;-webkit-overflow-scrolling:touch}
+.td-kanban::-webkit-scrollbar{display:none}
+.td-kcol{flex:0 0 180px;min-width:0}
+.td-kcol-hdr{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;padding:9px 12px;border-radius:8px 8px 0 0;color:#efede3}
+.td-kcol-body{background:#fff;border-radius:0 0 8px 8px;padding:8px;min-height:80px;box-shadow:0 2px 6px rgba(0,0,0,.07)}
+.td-kcard{background:#f5f3ef;border-radius:6px;padding:10px 11px;margin-bottom:6px;border-left:3px solid transparent}
+.td-kcard-txt{font-size:14px;font-weight:500;color:#302f2c;line-height:1.4;margin-bottom:3px}
+.td-kcard-meta{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:.06em;color:rgba(48,47,44,.4)}
+
+/* Assignee view */
+.td-asgn-section{margin-bottom:14px}
+.td-asgn-hdr{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(48,47,44,.5);padding:8px 0 6px;border-bottom:2px solid rgba(48,47,44,.08);margin-bottom:8px}
+
+/* Floating add button */
+.td-fab{position:fixed;bottom:24px;right:max(16px,calc(50vw - 254px));width:52px;height:52px;border-radius:50%;background:#302f2c;border:none;cursor:pointer;box-shadow:0 4px 16px rgba(48,47,44,.35);display:flex;align-items:center;justify-content:center;font-size:26px;color:#efede3;z-index:50;transition:transform .15s,box-shadow .15s}
+.td-fab:active{transform:scale(.92);box-shadow:0 2px 8px rgba(48,47,44,.3)}
+
+/* Today notification banner */
+.td-today-banner{background:#e53e3e;border-radius:8px;padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+.td-today-banner-txt{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;letter-spacing:.06em;color:#fff}
+.td-today-banner-close{background:none;border:none;cursor:pointer;color:rgba(255,255,255,.7);font-size:18px;padding:0;line-height:1}
+
+/* Empty */
+.td-empty{text-align:center;padding:32px 20px;color:rgba(48,47,44,.3)}
+.td-empty-ico{font-size:36px;margin-bottom:8px}
+.td-empty-lbl{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+
+/* Status row on card */
+.td-status-row{display:flex;gap:4px;margin:6px 0 4px;flex-wrap:wrap}
+.td-st-btn{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;border:1.5px solid rgba(48,47,44,.15);border-radius:12px;padding:3px 9px;background:transparent;color:rgba(48,47,44,.4);cursor:pointer;transition:all .15s}
+.td-st-btn.on-todo{background:#302f2c;border-color:#302f2c;color:#efede3}
+.td-st-btn.on-inprogress{background:#bee3f8;border-color:#2b6cb0;color:#2b6cb0}
+.td-st-btn.on-blocked{background:#fed7d7;border-color:#c53030;color:#c53030}
+.td-st-btn.on-waiting{background:#e9d8fd;border-color:#6b46c1;color:#6b46c1}
+
+/* Due date pill picker */
+.td-due-picker{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+.td-due-pill{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;border:1.5px solid rgba(48,47,44,.15);border-radius:12px;padding:5px 11px;background:transparent;color:rgba(48,47,44,.45);cursor:pointer;transition:all .15s}
+.td-due-pill.on{background:#302f2c;border-color:#302f2c;color:#efede3}
+.td-due-pill:active{transform:scale(.94)}
+
+/* Status row on card */
+.td-status-row{display:flex;gap:4px;margin:5px 0 3px;flex-wrap:wrap}
+.td-st-btn{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;border:1.5px solid rgba(48,47,44,.15);border-radius:12px;padding:3px 9px;background:transparent;color:rgba(48,47,44,.4);cursor:pointer;transition:all .15s}
+.td-st-btn.on-todo{background:#302f2c;border-color:#302f2c;color:#efede3}
+.td-st-btn.on-inprogress{background:#bee3f8;border-color:#2b6cb0;color:#2b6cb0}
+.td-st-btn.on-blocked{background:#fed7d7;border-color:#c53030;color:#c53030}
+.td-st-btn.on-waiting{background:#e9d8fd;border-color:#6b46c1;color:#6b46c1}
+/* Due date pill picker */
+.td-due-picker{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+.td-due-pill{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;border:1.5px solid rgba(48,47,44,.15);border-radius:12px;padding:5px 11px;background:transparent;color:rgba(48,47,44,.45);cursor:pointer;transition:all .15s}
+.td-due-pill.on{background:#302f2c;border-color:#302f2c;color:#efede3}
+.td-due-pill:active{transform:scale(.94)}
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sb">
+    <img class="sb-logo" src="data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMzY2IDk2Mi45MiI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiNmZmY7fTwvc3R5bGU+PC9kZWZzPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTE5NC4xNiw1MDcuMzN2LTE0LjdjOS4wOSw0LjQ1LDIzLjQsOS42NywzOC42Nyw5LjY3LDE4LjE3LDAsMzIuMDktOC4xMiwzMi4wOS0yMi4yM3MtNy41NC0yMS42NS0zMi4wOS0zMC4zNWMtMjcuNjQtOS44Ni0zOS4wNS0yMS42Ni0zOS4wNS00MS43NiwwLTIzLDE5LjcyLTM2LjE1LDQ0LjY2LTM2LjE1QTg2LjYsODYuNiwwLDAsMSwyNzIuMjcsMzc5djE0LjMxYy03LjU0LTMuODctMjAuODgtOC4xMy0zMy4yNS04LjEzLTE3Ljc5LDAtMzAuNzQsOC43MS0zMC43NCwyMi4yNCwwLDEyLjU3LDYuNzcsMjEuMjYsMzEuNywzMC4zNSwyNy44NCw5Ljg2LDM5LjQ0LDIxLjA3LDM5LjQ0LDQxLjM3LDAsMjMtMTguNTYsMzYuNTQtNDUuODIsMzYuNTRBOTkuMiw5OS4yLDAsMCwxLDE5NC4xNiw1MDcuMzNaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMzcxLjgzLDM4Ni41VjUxMy4zMkgzNTcuMTRWMzg2LjVIMzE0LjQyVjM3NC4xM0g0MTQuNzVWMzg2LjVaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNNTY1Ljc1LDQ2NS4zOGMwLDMxLjUxLTE5LjUzLDUwLjI2LTUyLjIsNTAuMjYtMzIuNDgsMC01Mi0xOC43NS01Mi01MC4yNlYzNzQuMTNoMTQuNjlWNDY0LjZjMCwyMy40LDEzLjkyLDM3LjMyLDM3LjMyLDM3LjMyczM3LjUtMTMuOTIsMzcuNS0zNy4zMlYzNzQuMTNoMTQuN1oiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik02MjguNTgsNTEzLjMyVjM3NC4xM2gzOC40N2M0MS41NiwwLDczLjQ2LDI2LjY4LDczLjQ2LDY5LjZTNzA5LDUxMy4zMiw2NjcuODIsNTEzLjMyWk02NDMuMjcsMzg2LjVWNTAxaDI0LjU1YzMyLjY4LDAsNTcuNjEtMjIuMjMsNTcuNjEtNTcuMjJTNzAwLjMsMzg2LjUsNjY2Ljg2LDM4Ni41WiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTc5NS4yMyw1MTMuMzJWMzc0LjEzaDE0LjY5VjUxMy4zMloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik05MzguMSwzNzEuODFjNDAsMCw3MC43NiwzMS43LDcwLjc2LDcxLjkyLDAsNDAuNC0zMC4zNiw3MS45MS03MC43Niw3MS45MS00MC4yMSwwLTcwLjc2LTMxLjUxLTcwLjc2LTcxLjkxQzg2Ny4zNCw0MDMuOSw4OTcuODksMzcxLjgxLDkzOC4xLDM3MS44MVptMCwxMzAuMTFjMzIuNDgsMCw1NS42OC0yNS4xNCw1NS42OC01OC4xOXMtMjMuMi01OC4yLTU1LjY4LTU4LjJjLTMyLjI5LDAtNTUuODcsMjUuMTQtNTUuODcsNTguMlM5MDUuODEsNTAxLjkyLDkzOC4xLDUwMS45MloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0xMDU1LjI1LDUwNy4zM3YtMTQuN2M5LjA5LDQuNDUsMjMuNCw5LjY3LDM4LjY3LDkuNjcsMTguMTcsMCwzMi4wOS04LjEyLDMyLjA5LTIyLjIzcy03LjU0LTIxLjY1LTMyLjA5LTMwLjM1Yy0yNy42NC05Ljg2LTM5LjA1LTIxLjY2LTM5LjA1LTQxLjc2LDAtMjMsMTkuNzItMzYuMTUsNDQuNjYtMzYuMTVhODYuNiw4Ni42LDAsMCwxLDMzLjgzLDcuMTV2MTQuMzFjLTcuNTQtMy44Ny0yMC44OC04LjEzLTMzLjI1LTguMTMtMTcuNzksMC0zMC43NCw4LjcxLTMwLjc0LDIyLjI0LDAsMTIuNTcsNi43NywyMS4yNiwzMS43LDMwLjM1LDI3Ljg0LDkuODYsMzkuNDQsMjEuMDcsMzkuNDQsNDEuMzcsMCwyMy0xOC41NiwzNi41NC00NS44MiwzNi41NEE5OS4yLDk5LjIsMCwwLDEsMTA1NS4yNSw1MDcuMzNaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMTMxLjIzLDI3MC44MmgtMi4xOEwwLDUuMDlINjEuMDdMOTUuMjQsODAuN2MxMy40NSwzMC4xNywyNS40NCw1NiwzNC41Myw4MS40M0MxMzcuNCwxNDMuNTgsMTUzLjQsMTA2LjUxLDE2NSw4MC43TDE5OS4yLDUuMDloNjAuNzFaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMzM0Ljc3LDI2Ni44MlY1LjA5SDUwMy4wOFY1MkgzOTAuNzVWMTExLjZINDg2djQ1LjA3SDM5MC43NXY2My4yNUg1MDguNTN2NDYuOVoiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik02OTEuMzYsNS4wOWM2MC43MSwwLDEwMSwzMC4xNywxMDEsODYuMTUsMCwzOC4xNy0yMS40NCw2My4yNS00OS44LDc0LjUyTDc5Ny41LDI2Ni44Mkg3MzguMjVsLTQ2LjE2LTkxLjYxSDY1NC4yOHY5MS42MUg1OTkuMzlWNS4wOVpNNjU0LjI4LDUydjc4LjE2aDQwYzI0LjcyLDAsNDEuOC0xMi4zNiw0MS44LTM4LjksMC0yNi4xNy0xNy44MS0zOS4yNi00My4yNi0zOS4yNloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik04NzUuNjQsMjU3VjIwMy4yYzE4LjE4LDkuNDUsNDIuMTcsMTcuNDUsNjUuOCwxOC45MWE5NS4wOCw5NS4wOCwwLDAsMCwyMy4yNi0xLjQ2YzIwLTIuOTEsMzEuNjMtMTAuNTQsMzEuNjMtMjMuMjYsMC0xNy40NS0xNS42My0yNi41NC01MS42Mi0zOS42My00NS44LTE2LjcyLTcyLjctMzYtNzIuNy04MS40MkM4NzIsMjkuODEsOTEwLjU0LDAsOTY2Ljg4LDBjMjYuMTgsMCw1Miw1LjgyLDY4LjM0LDEzLjA5VjY0LjcxYy0xNS4yNi05LjA5LTQwLTE2LTY0LTE2LTI2LjksMC00NC4zNSwxMC41NC00NC4zNSwyNy4yNywwLDE1LjI2LDE0LjE3LDI1LjgsNDkuOCwzOS4yNSw0NS44LDE3LjgxLDc0LjE1LDM3LjA4LDc0LjE1LDgxLjA3LDAsNDcuMjUtMzUuNjIsNzUuNjEtOTcuNDIsNzUuNjFDOTIzLjYzLDI3MS45MSw4OTQuNTQsMjY1LjM2LDg3NS42NCwyNTdaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMTIzOC43NywxLjA5aC0yLjE4TDExMDkuNzMsMjY2LjgyaDU4LjUybDEyLTI3LjIyYzExLTI0LjgxLDUwLjE3LTExNy44NCw1Ny43OS0xMzYsOCwyMi45LDQ4LjgxLDExNy4wNiw2MC44MSwxNDQuMzJoMGw4LjYyLDE4LjlIMTM2NloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik03NzQuNDYsNzA2Ljc4bC0zMS44OS02NS42NWgtMi42NGwtODYuMjIsMTc4LTUuNCwxMS4xNmMtMTEtMzAuNTEtMjUuMzUtNjEuNDktNDEuNDctOTcuNjVsLTQxLjM4LTkxLjU2aC03NEw2MTUuOSw4OTcuMjdsMzEuODgsNjUuNjVoMi42NGw4Ni4yMi0xNzgsNS40MS0xMS4xNmMxMSwzMC41LDI1LjM1LDYxLjQ5LDQxLjQ2LDk3LjY1bDQxLjM4LDkxLjU2aDc0WiIvPjwvc3ZnPg==" alt="Versa Studios"/>
+    <div class="sb-super">Workspace</div>
+    <div class="sb-title">NOTES</div>
+    
+
+    <nav class="sb-nav">
+      <button class="nv" onclick="window.location.href='index.html'" style="border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:6px;padding-bottom:12px">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 3L5 8l5 5"/></svg>
+        Back to App
+      </button>
+      <button class="nv on" onclick="showPage('dashboard')" data-page="dashboard">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+        Dashboard
+      </button>
+      <button class="nv" onclick="showPage('notes')" data-page="notes">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 2h10v12H3z"/><path d="M6 5h4M6 8h4M6 11h2"/></svg>
+        Notes
+      </button>
+      <button class="nv" onclick="showPage('todos')" data-page="todos"><span class="td-badge-nav" id="tdNavBadge" style="display:none">0</span>
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h2v2H2zm4 1h8M2 9h2v2H2zm4 1h8"/></svg>
+        To-Dos
+      </button>
+    </nav>
+
+    <!-- Meeting history -->
+    <div class="sb-sec">Meetings</div>
+    <div id="mtgList"></div>
+    <button class="add-mtg-btn" onclick="addMeeting()">+ New meeting</button>
+
+    <div class="sb-stats">
+      <div class="sb-stats-lbl">This week</div>
+      <div class="stat"><div class="stat-n" id="sNotes">0</div><div class="stat-l">Notes saved</div></div>
+      <div class="stat"><div class="stat-n" id="sTodos">0</div><div class="stat-l">Open to-dos</div></div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="mhdr" id="mainHdr">
+      <div class="mhdr-l">
+        <div class="sub">Paper workspace</div>
+        <div class="htitle" id="viewTitle">Dashboard</div>
+      </div>
+      <div class="mhdr-r">
+        <div class="srch-wrap">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="5"/><path d="M11 11l3.5 3.5"/></svg>
+          <input class="srch" id="srchInp" placeholder="Search notes..." oninput="filterNotes(this.value)"/>
+        </div>
+        <button class="add-btn" onclick="openNewNote()">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M8 3v10M3 8h10"/></svg>
+          Add note
+        </button>
+      </div>
+    </div>
+
+    <div class="content" id="mainContent">
+
+      <!-- Dashboard -->
+      <div id="vDash">
+        <div class="grid">
+
+          <!-- Quick capture -->
+          <div class="card warm">
+            <div class="ch"><div class="ct">Quick capture</div></div>
+            <input class="cap-inp" id="cTitle" placeholder="Title"/>
+            <textarea class="cap-ta" id="cBody" placeholder="Add a note from a meeting, job or quick thought..."></textarea>
+            <div class="cap-row">
+              <button class="type-pill on" data-t="note" onclick="setType('note')">Note</button>
+              <button class="type-pill" data-t="reminder" onclick="setType('reminder')">Reminder</button>
+              <select class="cap-sel" id="cJobSel"></select>
+            </div>
+            <div class="cap-row" style="margin-top:8px">
+              <button class="save-btn" onclick="addNoteCapture()">Add note</button>
+            </div>
+          </div>
+
+          <!-- To-do focus -->
+          <div class="card">
+            <div class="ch">
+              <div class="ct">To-do focus</div>
+              <button class="show-add-btn" onclick="showAddTodo('tdCard')">+ Add</button>
+            </div>
+            <div id="tdCard">
+              <div id="tdList"></div>
+            </div>
+          </div>
+
+          <!-- Recent notes -->
+          <div class="card full">
+            <div class="ch">
+              <div class="ct">Recent notes</div>
+              <span id="nCount" style="font-family:'Barlow Condensed',sans-serif;font-size:12px;color:rgba(48,47,44,.38);font-weight:700;letter-spacing:.06em"></span>
+            </div>
+            <div id="recNotes"></div>
+            <div id="recEmpty" class="empty-msg" style="display:none">No notes yet — use Quick capture above</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- All Notes view -->
+      <div id="vNotes" style="display:none">
+        <div class="card">
+          <div class="ch"><div class="ct">All notes</div></div>
+          <div id="allNotesSec"></div>
+        </div>
+      </div>
+
+      <!-- To-dos full view -->
+      <div id="vTodos" style="display:none">
+  <!-- Progress bar -->
+  <div class="td-progress">
+    <div class="td-progress-top"><span class="td-progress-lbl">Weekly Progress</span><span class="td-progress-pct" id="tdPct">0%</span></div>
+    <div class="td-bar-bg"><div class="td-bar-fill" id="tdBarFill" style="width:0%"></div></div>
+    <div class="td-progress-stats" id="tdStats"></div>
+  </div>
+  <!-- Controls -->
+  <div class="td-controls">
+    <button class="td-vbtn on" id="tdVList" onclick="tdSetView('list')">List</button>
+    <button class="td-vbtn" id="tdVToday" onclick="tdSetView('today')">Today</button>
+    <button class="td-vbtn" id="tdVAssign" onclick="tdSetView('assignee')">By Person</button>
+    <button class="td-vbtn" id="tdVKanban" onclick="tdSetView('kanban')">Board</button>
+    <button class="td-vbtn" id="tdVDone" onclick="tdSetView('done')">Completed</button>
+    <button class="td-add-main-btn" onclick="tdFormNew()">+ New Task</button>
+  </div>
+  <!-- Quick add -->
+  <div class="td-quick">
+    <input class="td-quick-inp" id="tdQInp" placeholder="Quick add a task…" onkeydown="if(event.key==='Enter')tdQuick()">
+    <button class="td-quick-go" onclick="tdQuick()">Add</button>
+  </div>
+  <!-- Main list -->
+  <div id="tdListFull"></div>
+</div>
+
+    </div><!-- /content -->
+
+    <!-- Meeting full page -->
+    <div id="mtgPage" class="mtg-page">
+      <!-- Header -->
+      <div class="mtg-page-hdr">
+        <button class="back-btn" onclick="backFromMtg()">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 3L5 8l5 5"/></svg>Back
+        </button>
+        <div class="mtg-page-title" id="mtgPageTitle">Meeting</div>
+        <div class="mtg-page-date" id="mtgPageDate"></div>
+        <button onclick="saveMeeting()" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:#302f2c;border:none;border-radius:4px;padding:7px 14px;color:#efede3;cursor:pointer;margin-left:auto">Save</button>
+      </div>
+
+      <!-- Body: two-column layout -->
+      <div style="display:grid;grid-template-columns:280px 1fr;flex:1;overflow:hidden;min-height:0">
+
+        <!-- Left col: prep + past sessions list -->
+        <div style="border-right:1.5px solid rgba(48,47,44,.1);display:flex;flex-direction:column;overflow:hidden">
+          <!-- Prep for next meeting -->
+          <div style="padding:16px 18px;border-bottom:1.5px solid rgba(48,47,44,.1);flex-shrink:0">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:rgba(48,47,44,.4)">Next meeting prep</div>
+              <button onclick="startMeeting()" style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:#302f2c;border:none;border-radius:4px;padding:5px 10px;color:#efede3;cursor:pointer">Start meeting</button>
+            </div>
+            <textarea id="mtgPrep" placeholder="Add agenda points, reminders..." oninput="saveMeeting()" style="width:100%;background:rgba(255,255,255,.7);border:1.5px solid rgba(48,47,44,.1);border-radius:4px;padding:10px 12px;font-family:'Barlow',sans-serif;font-size:13px;color:#302f2c;resize:none;min-height:100px;line-height:1.6;outline:none"></textarea>
+          </div>
+
+          <!-- Past sessions list -->
+          <div style="padding:14px 18px 8px;flex-shrink:0">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:rgba(48,47,44,.4)">Past sessions</div>
+          </div>
+          <div id="mtgInstanceList" style="overflow-y:auto;flex:1;padding:0 10px 20px"></div>
+        </div>
+
+        <!-- Right col: selected session editor or to-do panel -->
+        <div style="display:flex;flex-direction:column;overflow:hidden">
+          <!-- Instance editor (hidden until session selected) -->
+          <div id="mtgInstEditor" style="display:none;flex-direction:column;flex:1;overflow:hidden">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 22px 12px;border-bottom:1.5px solid rgba(48,47,44,.1);flex-shrink:0;flex-wrap:wrap;gap:8px">
+              <div id="mtgInstTitle" style="font-size:15px;font-weight:600;color:#302f2c"></div>
+              <div style="display:flex;gap:8px">
+                <button onclick="saveInstNotes()" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:#302f2c;border:none;border-radius:4px;padding:6px 14px;color:#efede3;cursor:pointer">Save</button>
+                <button onclick="deleteInstance()" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:none;border:1.5px solid rgba(48,47,44,.1);border-radius:4px;padding:6px 12px;color:rgba(48,47,44,.4);cursor:pointer">Delete</button>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:16px 22px;flex:1;overflow-y:auto">
+              <div style="display:flex;flex-direction:column">
+                <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:rgba(48,47,44,.4);margin-bottom:10px">Notes</div>
+                <textarea id="mtgInstNotes" placeholder="Meeting notes..." oninput="saveInstNotes()" style="flex:1;width:100%;background:#fff;border:1.5px solid rgba(48,47,44,.1);border-radius:4px;padding:12px 14px;font-family:'Barlow',sans-serif;font-size:14px;color:#302f2c;resize:none;line-height:1.65;outline:none;min-height:200px"></textarea>
+              </div>
+              <div style="display:flex;flex-direction:column">
+                <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:rgba(48,47,44,.4);margin-bottom:10px">Actions</div>
+                <textarea id="mtgInstActions" placeholder="Action points..." oninput="saveInstNotes()" style="flex:1;width:100%;background:#fff;border:1.5px solid rgba(48,47,44,.1);border-radius:4px;padding:12px 14px;font-family:'Barlow',sans-serif;font-size:14px;color:#302f2c;resize:none;line-height:1.65;outline:none;min-height:200px"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- To-Do panel (always visible at bottom, or full when no session) -->
+          <div style="border-top:1.5px solid rgba(48,47,44,.1);padding:16px 22px;flex-shrink:0;background:#f6f2e8">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:rgba(48,47,44,.4);margin-bottom:12px">Add to To-Do List</div>
+            <input id="mtgTdTxt" placeholder="To-do item..." style="width:100%;border:none;outline:none;font-family:'Barlow',sans-serif;font-size:14px;color:#302f2c;background:transparent;border-bottom:1.5px solid rgba(48,47,44,.12);padding-bottom:7px;margin-bottom:10px"/>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(48,47,44,.4)">Assign to</span>
+              <select id="mtgTdAssign" style="height:30px;border-radius:4px;border:1.5px solid rgba(48,47,44,.12);background:rgba(255,255,255,.9);padding:0 10px;font-family:'Barlow',sans-serif;font-size:13px;color:#302f2c;outline:none"></select>
+              <button onclick="addMtgTodo()" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:#302f2c;border:none;border-radius:4px;padding:7px 14px;color:#efede3;cursor:pointer">Add</button>
+            </div>
+            <div id="mtgTdList" style="margin-top:10px;display:flex;flex-direction:column;gap:6px;max-height:140px;overflow-y:auto"></div>
+          </div>
+
+          <!-- Empty state when no session selected -->
+          <div id="mtgNoSession" style="flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;opacity:.3">
+            <svg width="32" height="32" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1"><path d="M3 2h10v12H3z"/><path d="M6 5h4M6 8h4M6 11h2"/></svg>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">Select a session or start new meeting</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Note editor full page -->
+    <div id="edPage" class="ed-page">
+      <div class="ed-page-hdr">
+        <button class="back-btn" onclick="backToMain()">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 3L5 8l5 5"/></svg>
+          Back
+        </button>
+        <input class="ed-title" id="edTitle" placeholder="Note title..." oninput="edSync()"/>
+        <select class="ed-sel" id="edType" onchange="edSync()">
+          <option value="note">Note</option>
+          <option value="reminder">Reminder</option>
+        </select>
+        <select class="ed-sel" id="edJobSel" onchange="edSync()"></select>
+        <span class="ed-saved" id="edMeta"></span>
+      </div>
+      <div class="ed-body-wrap">
+        <textarea class="ed-body" id="edBody" placeholder="Write..." oninput="edSync()"></textarea>
+      </div>
+      <div class="ed-foot">
+        <button class="ed-foot-btn" id="edPin" onclick="edPin()">Pin</button>
+        <button class="ed-foot-btn" id="edDone2" onclick="edDone()">Done</button>
+        <button class="ed-foot-btn" onclick="emailNote(active)">Email</button>
+        <span class="ed-saved" id="edSaved"></span>
+        <button class="ed-foot-btn del" onclick="edDelete()">Delete</button>
+        <button class="ed-save-btn" onclick="save()">Save</button>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div>
+
+<script>
+const SBU='https://dttwgmoyxthczlzxjgag.supabase.co',SBK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ',NK='notes_andrew_rowell_versastudios_com';
+var notes=[],todos=[],meetings=[],active=null,dirty=false,tmr=null,cType='note',sq='',curView='dashboard',curMtg=null,_newNote=null;
+var NL={note:'Note',reminder:'Reminder'};
+var NC={note:'#302f2c',reminder:'#7a4a5e'};
+var JOBS=['Morning Live', 'Dragons Den', "I'm a Celeb", "I'm a Celeb SA", 'Cooking with the Stars', 'ShopOn TV', 'Jimmy Jib'];
+var TEAM=['Andrew Rowell','Ian Curry'];
+var DEF_MTGS=[{id:1,name:'Versa Weekly',isSeries:true,prep:'',instances:[]},{id:2,name:'Morning Live Prep',isSeries:false,prep:'',instances:[]},{id:3,name:'Studio 12 Review',isSeries:false,prep:'',instances:[]}];
+
+async function init(){
+  // Show UI immediately, load data in background
+  if(!meetings.length)meetings=JSON.parse(JSON.stringify(DEF_MTGS));
+  render();
+  renderMtgList();
+  // Fetch with 8s timeout
+  try{
+    var ctrl=new AbortController();
+    var tid=setTimeout(function(){ctrl.abort();},8000);
+    var r=await fetch(SBU+'/rest/v1/app_data?key=eq.'+NK+'&select=value',
+      {headers:{'apikey':SBK,'Authorization':'Bearer '+SBK},signal:ctrl.signal});
+    clearTimeout(tid);
+    var d=await r.json();
+    if(d&&d[0]&&d[0].value){
+      var v=d[0].value;
+      if(Array.isArray(v.notes))notes=v.notes;
+      if(Array.isArray(v.todos))todos=v.todos;
+      if(Array.isArray(v.meetings)&&v.meetings.length)meetings=v.meetings;
+      else if(Array.isArray(v)&&v.length)notes=v;
+      render();
+      renderMtgList();
+    }
+  }catch(e){}
+}
+
+
+// ═══════════════════════════════════════════════════
+// TO-DO SYSTEM
+// ═══════════════════════════════════════════════════
+
+var _tdView='list';       // list | today | assignee | kanban
+var _tdShowDone=false;
+var _tdFormOpen=false;
+var _tdBannerDismissed=false;
+var _tdEditId=null;
+var _swipeStartX=null,_swipeEl=null;
+
+var JOBS=['General','Morning Live','Dragons Den','ShopOn TV','Cooking with the Stars',"I'm a Celebrity"];
+var PRI=['urgent','high','medium','low'];
+var PRI_ORDER={urgent:0,high:1,medium:2,low:3};
+var STATUS_CYCLE=['todo','inprogress','blocked','waiting'];
+var STATUS_LABEL={todo:'To Do',inprogress:'In Progress',blocked:'Blocked',waiting:'Waiting'};
+var STATUS_CLASS={inprogress:'ts-inprogress',blocked:'ts-blocked',waiting:'ts-waiting'};
+
+function tdDueVal(days){
+  var d=new Date();d.setDate(d.getDate()+days);
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function tdPickDue(val){
+  var h=document.getElementById('tdFDue');if(h)h.value=val;
+  document.querySelectorAll('#tdDuePicker .td-due-pill').forEach(function(b){
+    var m=b.getAttribute('onclick').match(/"([^"]*)"/);
+    b.classList.toggle('on',m&&m[1]===val);
+  });
+}
+function tdMigrate(t){
+  if(!t.priority)t.priority='medium';
+  if(!t.status)t.status='todo';
+  if(!t.jobTag)t.jobTag='General';
+  if(!t.subtasks)t.subtasks=[];
+  if(t.expanded===undefined)t.expanded=false;
+  if(!t.dueDate)t.dueDate='';
+  return t;
+}
+
+function tdDue(d){
+  if(!d)return null;
+  var now=new Date(),due=new Date(d+'T12:00:00'),diff=Math.round((due-now)/864e5);
+  var fmtShort=function(dt){return dt.toLocaleDateString('en-GB',{day:'numeric',month:'short'});};
+  if(diff<0)return{cls:'overdue',txt:fmtShort(due),cd:Math.abs(diff)+'d overdue'};
+  if(diff===0)return{cls:'today',txt:'Today',cd:'Due today'};
+  if(diff===1)return{cls:'soon',txt:'Tomorrow',cd:'1d left'};
+  if(diff<=7)return{cls:'soon',txt:fmtShort(due),cd:diff+'d left'};
+  return{cls:'future',txt:fmtShort(due),cd:diff+'d left'};
+}
+
+function priCol(p){return{urgent:'#e53e3e',high:'#dd6b20',medium:'#d69e2e',low:'rgba(48,47,44,.15)'}[p]||'rgba(48,47,44,.15)';}
+
+// ── RENDER TODOS ──────────────────────────────────────────────────────────
+function renderTodos(){
+  todos=todos.map(tdMigrate);
+  var el=document.getElementById('tdListFull');if(!el)return;
+
+  var open=todos.filter(function(t){return !t.done;});
+  var done=todos.filter(function(t){return t.done;});
+  var total=todos.length,doneN=done.length,pct=total?Math.round(doneN/total*100):0;
+
+  // Progress bar
+  var pb=document.getElementById('tdBarFill'),pp=document.getElementById('tdPct'),ps=document.getElementById('tdStats');
+  if(pb)pb.style.width=pct+'%';
+  if(pp)pp.textContent=pct+'%';
+  if(ps)ps.innerHTML='<span><b>'+doneN+'</b> done</span><span><b>'+(total-doneN)+'</b> open</span><span><b>'+total+'</b> total</span>';
+
+  // Badge on nav
+  var badge=document.getElementById('tdNavBadge');
+  if(badge){badge.textContent=open.length||'';badge.style.display=open.length?'':'none';}
+
+  // Due-today banner
+  var overdueToday=open.filter(function(t){var d=tdDue(t.dueDate);return d&&(d.cls==='overdue'||d.cls==='today');});
+
+  if(_tdView==='kanban'){el.innerHTML=renderKanban(open);bindSwipe();return;}
+  if(_tdView==='today'){el.innerHTML=renderTodayView(open,overdueToday);bindSwipe();return;}
+  if(_tdView==='assignee'){el.innerHTML=renderAssigneeView(open);bindSwipe();return;}
+
+  // List view
+  var h='';
+
+  // Today banner
+  if(overdueToday.length&&!_tdBannerDismissed){
+    h+='<div class="td-today-banner">'
+      +'<span class="td-today-banner-txt">⚠ '+overdueToday.length+' task'+(overdueToday.length>1?'s':'')+' due today or overdue</span>'
+      +'<button class="td-today-banner-close" onclick="_tdBannerDismissed=true;renderTodos()">×</button>'
+      +'</div>';
+  }
+
+  if(_tdFormOpen){h+=renderForm();}
+
+  // Group open tasks by job
+  var groups={};
+  open.forEach(function(t){
+    var j=t.jobTag||'General';
+    if(!groups[j])groups[j]=[];
+    groups[j].push(t);
+  });
+  // Sort each group: priority then due date
+  Object.keys(groups).forEach(function(j){
+    groups[j].sort(function(a,b){
+      var pd=(PRI_ORDER[a.priority]||2)-(PRI_ORDER[b.priority]||2);
+      if(pd!==0)return pd;
+      if(a.dueDate&&b.dueDate)return a.dueDate<b.dueDate?-1:1;
+      if(a.dueDate)return -1;if(b.dueDate)return 1;
+      return 0;
+    });
+  });
+
+  var jobOrder=JOBS.filter(function(j){return groups[j]&&groups[j].length;});
+  Object.keys(groups).forEach(function(j){if(jobOrder.indexOf(j)<0)jobOrder.push(j);});
+
+  if(!jobOrder.length&&!done.length){
+    h+='<div class="td-empty"><div class="td-empty-ico">✅</div><div class="td-empty-lbl">All done — nothing here</div></div>';
+  }
+
+  jobOrder.forEach(function(job){
+    var tasks=groups[job];if(!tasks||!tasks.length)return;
+    var subDone=0,subTotal=0;
+    tasks.forEach(function(t){subDone+=(t.subtasks||[]).filter(function(s){return s.done;}).length;subTotal+=(t.subtasks||[]).length;});
+    h+='<div class="td-group">';
+    h+='<div class="td-group-hdr">';
+    h+='<div class="td-group-left"><span class="td-group-name">'+esc(job)+'</span><span class="td-group-count">'+tasks.length+'</span></div>';
+    if(subTotal)h+='<span class="td-group-subprog">'+subDone+'/'+subTotal+' sub</span>';
+    h+='</div>';
+    h+='<div class="td-group-body">';
+    tasks.forEach(function(t){h+=renderCard(t);});
+    h+='</div></div>';
+  });
+
+  // Done section
+  if(done.length){
+    h+='<button class="td-done-toggle" onclick="_tdShowDone=!_tdShowDone;renderTodos()">'+(_tdShowDone?'▲ Hide':'▼ Show')+' '+done.length+' completed task'+(done.length>1?'s':'')+'</button>';
+    if(_tdShowDone){
+      h+='<div class="td-group"><div class="td-group-body">';
+      done.forEach(function(t){h+=renderCard(t);});
+      h+='</div></div>';
+    }
+  }
+
+  el.innerHTML=h;
+  bindSwipe();
+}
+
+function renderCard(t){
+  var due=tdDue(t.dueDate);
+  var sp=t.subtasks&&t.subtasks.length?{done:t.subtasks.filter(function(s){return s.done;}).length,total:t.subtasks.length}:null;
+  var h='<div class="td-card p-'+(t.priority||'low')+(t.done?' is-done':'')+'" id="tdc-'+t.id+'" data-id="'+t.id+'">';
+  h+='<div class="td-swipe-bg"><span class="td-swipe-bg-txt">✓ Done</span></div>';
+  h+='<div class="td-card-inner">';
+  h+='<div class="td-card-top">';
+  h+='<div class="td-chk'+(t.done?' on':'')+'" onclick="tTog('+t.id+')" id="chk-'+t.id+'"><span class="td-chk-tick">✓</span></div>';
+  h+='<div class="td-body">';
+  h+='<div class="td-text'+(t.done?' struck':'')+'">'+esc(t.text)+'</div>';
+  h+='<div class="td-meta">';
+  h+='<span class="td-pill tp-'+(t.priority||'low')+'">'+( t.priority||'low')+'</span>';
+  if(t.status&&t.status!=='todo')h+='<span class="td-pill '+STATUS_CLASS[t.status]+'">'+STATUS_LABEL[t.status]+'</span>';
+  if(t.assignee&&t.assignee!=='Andrew Rowell')h+='<span class="td-assignee">'+esc(t.assignee)+'</span>';
+  if(sp)h+='<span class="td-assignee">'+sp.done+'/'+sp.total+' ✓</span>';
+  h+='</div>';
+  if(due){h+='<div class="td-due-wrap"><span class="td-due-txt">'+due.txt+'</span><span class="td-cd '+due.cls+'">'+due.cd+'</span></div>';}
+  h+='</div>';
+  h+='<button class="td-exp" onclick="tdExp('+t.id+')">'+(t.expanded?'▲':'▼')+'</button>';
+  h+='</div>';
+  if(t.expanded){
+    h+='<div class="td-detail">';
+    h+='<div class="td-actions">';
+    h+='<button class="td-act" onclick="tdEditOpen('+t.id+')">Edit</button>';
+    h+='<button class="td-act" onclick="tdCycleStatus('+t.id+')">'+STATUS_LABEL[t.status||'todo']+'</button>';
+    h+='<button class="td-act danger" onclick="tdDelete('+t.id+')">Delete</button>';
+    h+='</div>';
+    h+='<div class="td-subs">';
+    (t.subtasks||[]).forEach(function(s){
+      h+='<div class="td-sub">';
+      h+='<div class="td-sub-chk'+(s.done?' on':'')+'" onclick="tdTogSub('+t.id+','+s.id+')" style="font-size:9px">✓</div>';
+      h+='<span class="td-sub-txt'+(s.done?' struck':'')+'">'+esc(s.text)+'</span>';
+      h+='<button class="td-sub-del" onclick="tdDelSub('+t.id+','+s.id+')">×</button>';
+      h+='</div>';
+    });
+    h+='<div class="td-sub-add"><input class="td-sub-inp" id="si-'+t.id+'" placeholder="Add subtask…" onkeydown="if(event.key===\'Enter\')tdAddSub('+t.id+')"><button class="td-act" onclick="tdAddSub('+t.id+')">Add</button></div>';
+    h+='</div></div>';
+  }
+  h+='</div></div>';
+  return h;
+}
+
+function renderForm(){
+  var isEdit=_tdEditId!==null;
+  var t=isEdit?todos.find(function(x){return x.id===_tdEditId;}):null;
+  var v=function(id,def){return t?t[id]||def:def;};
+  var jobSelOpts=JOBS.map(function(j){return '<option value="'+esc(j)+'"'+(v('jobTag','General')===j?' selected':'')+'>'+esc(j)+'</option>';}).join('');
+  var assignOpts=TEAM.map(function(m){return '<option value="'+esc(m)+'"'+(v('assignee','Andrew Rowell')===m?' selected':'')+'>'+esc(m)+'</option>';}).join('');
+  var priOpts=PRI.map(function(p){return '<option value="'+p+'"'+(v('priority','medium')===p?' selected':'')+'>'+p.charAt(0).toUpperCase()+p.slice(1)+'</option>';}).join('');
+  var stOpts=STATUS_CYCLE.map(function(s){return '<option value="'+s+'"'+(v('status','todo')===s?' selected':'')+'>'+STATUS_LABEL[s]+'</option>';}).join('');
+  var h='<div class="td-form">';
+  h+='<div class="td-form-title">'+(isEdit?'Edit Task':'New Task')+'</div>';
+  h+='<div class="td-form-lbl">Task</div>';
+  h+='<input class="td-form-inp" id="tdFTxt" placeholder="What needs doing?" value="'+esc(v('text',''))+'" onkeydown="if(event.key===\'Enter\')tdFormSave()">';
+  h+='<div class="td-form-grid">';
+  h+='<div><div class="td-form-lbl">Job</div><select class="td-form-sel" id="tdFJob">'+jobSelOpts+'</select></div>';
+  h+='<div><div class="td-form-lbl">Assign to</div><select class="td-form-sel" id="tdFAssign">'+assignOpts+'</select></div>';
+  h+='</div><div class="td-form-grid">';
+  h+='<div><div class="td-form-lbl">Priority</div><select class="td-form-sel" id="tdFPri">'+priOpts+'</select></div>';
+  h+='<div>';
+  h+='<div class="td-form-lbl">Due date</div>';
+  var _sd=v('dueDate','');
+  h+='<div class="td-due-picker" id="tdDuePicker">';
+  var _duePills=[['None',''],['Today',tdDueVal(0)],['Tomorrow',tdDueVal(1)],['+3 days',tdDueVal(3)],['Next week',tdDueVal(7)],['2 weeks',tdDueVal(14)]];
+  _duePills.forEach(function(p){h+='<button type="button" class="td-due-pill'+(_sd===p[1]?' on':'')+'" onclick="tdPickDue(\"'+p[1]+'\")">'+p[0]+'</button>';});
+  h+='</div>';
+  h+='<input type="hidden" id="tdFDue" value="'+esc(_sd)+'">';
+  h+='</div>';
+  if(isEdit){h+='<div style="margin-top:8px"><div class="td-form-lbl">Status</div><select class="td-form-sel" id="tdFStatus" style="margin-bottom:0">'+stOpts+'</select></div>';}
+  h+='<div class="td-form-btns"><button class="td-form-save" onclick="tdFormSave()">'+(isEdit?'Save Changes':'Add Task')+'</button><button class="td-form-cancel" onclick="tdFormClose()">Cancel</button></div>';
+  h+='</div>';
+  return h;
+}
+
+function renderTodayView(open,urgent){
+  var h='';
+  if(!urgent.length){
+    h+='<div class="td-empty"><div class="td-empty-ico">🌟</div><div class="td-empty-lbl">Nothing due today</div></div>';
+  }else{
+    h+='<div class="td-group"><div class="td-group-hdr"><div class="td-group-left"><span class="td-group-name" style="color:#ffa07a">Due Today / Overdue</span><span class="td-group-count">'+urgent.length+'</span></div></div>';
+    h+='<div class="td-group-body">';
+    urgent.forEach(function(t){h+=renderCard(t);});
+    h+='</div></div>';
+  }
+  var upcoming=open.filter(function(t){var d=tdDue(t.dueDate);return d&&d.cls==='soon';});
+  if(upcoming.length){
+    h+='<div class="td-group"><div class="td-group-hdr"><div class="td-group-left"><span class="td-group-name">This Week</span><span class="td-group-count">'+upcoming.length+'</span></div></div>';
+    h+='<div class="td-group-body">';
+    upcoming.forEach(function(t){h+=renderCard(t);});
+    h+='</div></div>';
+  }
+  return h;
+}
+
+function renderAssigneeView(open){
+  var groups={};
+  TEAM.forEach(function(m){groups[m]=[];});
+  open.forEach(function(t){
+    var a=t.assignee||'Andrew Rowell';
+    if(!groups[a])groups[a]=[];
+    groups[a].push(t);
+  });
+  var h='';
+  Object.keys(groups).forEach(function(person){
+    var tasks=groups[person];
+    h+='<div class="td-group">';
+    h+='<div class="td-group-hdr"><div class="td-group-left"><span class="td-group-name">'+esc(person)+'</span><span class="td-group-count">'+tasks.length+' task'+(tasks.length!==1?'s':'')+'</span></div></div>';
+    if(tasks.length){
+      h+='<div class="td-group-body">';
+      tasks.forEach(function(t){h+=renderCard(t);});
+      h+='</div>';
+    }else{
+      h+='<div class="td-group-body"><div style="padding:12px 14px;font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(48,47,44,.3)">No open tasks</div></div>';
+    }
+    h+='</div>';
+  });
+  return h;
+}
+
+function renderKanban(open){
+  var cols={todo:[],inprogress:[],blocked:[]};
+  open.forEach(function(t){var s=t.status||'todo';(cols[s]||cols.todo).push(t);});
+  var KCOLS=[{id:'todo',lbl:'To Do',bg:'#302f2c'},{id:'inprogress',lbl:'In Progress',bg:'#2b6cb0'},{id:'blocked',lbl:'Blocked',bg:'#c53030'}];
+  var h='<div class="td-kanban">';
+  KCOLS.forEach(function(col){
+    h+='<div class="td-kcol">';
+    h+='<div class="td-kcol-hdr" style="background:'+col.bg+'">'+col.lbl+' ('+cols[col.id].length+')</div>';
+    h+='<div class="td-kcol-body">';
+    cols[col.id].forEach(function(t){
+      var due=tdDue(t.dueDate);
+      h+='<div class="td-kcard" style="border-left-color:'+priCol(t.priority)+'">';
+      h+='<div class="td-kcard-txt">'+esc(t.text)+'</div>';
+      h+='<div class="td-kcard-meta">'+esc(t.jobTag||'General')+(due?'  ·  <span style="color:'+(due.cls==='overdue'?'#c53030':due.cls==='today'?'#c05621':'inherit')+'">'+due.cd+'</span>':'')+'</div>';
+      h+='</div>';
+    });
+    h+='</div></div>';
+  });
+  h+='</div>';
+  return h;
+}
+
+// ── SWIPE TO COMPLETE ─────────────────────────────────────────────────────
+function bindSwipe(){
+  document.querySelectorAll('.td-card:not(.is-done)').forEach(function(card){
+    card.addEventListener('touchstart',function(e){
+      _swipeStartX=e.touches[0].clientX;_swipeEl=card;
+      card.classList.add('swiping');
+    },{passive:true});
+    card.addEventListener('touchmove',function(e){
+      if(!_swipeStartX||_swipeEl!==card)return;
+      var dx=e.touches[0].clientX-_swipeStartX;
+      if(dx>0){
+        var inner=card.querySelector('.td-card-inner');
+        var bg=card.querySelector('.td-swipe-bg');
+        if(inner)inner.style.transform='translateX('+Math.min(dx,120)+'px)';
+        if(bg)bg.style.opacity=Math.min(dx/80,1);
+      }
+    },{passive:true});
+    card.addEventListener('touchend',function(e){
+      if(_swipeEl!==card)return;
+      var dx=e.changedTouches[0].clientX-_swipeStartX;
+      var inner=card.querySelector('.td-card-inner');
+      var bg=card.querySelector('.td-swipe-bg');
+      if(dx>80){
+        if(inner)inner.style.transform='translateX(100vw)';
+        if(bg)bg.style.opacity=1;
+        var id=parseInt(card.dataset.id);
+        setTimeout(function(){tTog(id);},250);
+      }else{
+        if(inner)inner.style.transform='';
+        if(bg)bg.style.opacity=0;
+      }
+      card.classList.remove('swiping');
+      _swipeStartX=null;_swipeEl=null;
+    },{passive:true});
+  });
+}
+
+// ── ACTIONS ───────────────────────────────────────────────────────────────
+function tTog(id){
+  var t=todos.find(function(x){return x.id===id;});if(!t)return;
+  t.done=!t.done;t.expanded=false;
+  // Animate checkbox
+  var chk=document.getElementById('chk-'+id);
+  if(chk){chk.classList.toggle('on',t.done);}
+  save();render();
+}
+
+function tdExp(id){
+  var t=todos.find(function(x){return x.id===id;});if(!t)return;
+  t.expanded=!t.expanded;renderTodos();
+}
+
+function tdCycleStatus(id){
+  var t=todos.find(function(x){return x.id===id;});if(!t)return;
+  var i=STATUS_CYCLE.indexOf(t.status||'todo');
+  t.status=STATUS_CYCLE[(i+1)%STATUS_CYCLE.length];
+  save();renderTodos();
+}
+
+function tdDelete(id){
+  if(!confirm('Delete this task?'))return;
+  todos=todos.filter(function(x){return x.id!==id;});
+  save();render();
+}
+
+function tdEditOpen(id){
+  _tdEditId=id;_tdFormOpen=true;renderTodos();
+  setTimeout(function(){var e=document.getElementById('tdFTxt');if(e)e.focus();},50);
+}
+
+function tdFormSave(){
+  var txt=document.getElementById('tdFTxt');if(!txt||!txt.value.trim())return;
+  var job=document.getElementById('tdFJob'),assign=document.getElementById('tdFAssign'),pri=document.getElementById('tdFPri'),due=document.getElementById('tdFDue'),st=document.getElementById('tdFStatus');
+  if(_tdEditId!==null){
+    var t=todos.find(function(x){return x.id===_tdEditId;});
+    if(t){t.text=txt.value.trim();t.jobTag=job?job.value:'General';t.assignee=assign?assign.value:'Andrew Rowell';t.priority=pri?pri.value:'medium';t.dueDate=due?due.value:'';if(st)t.status=st.value;}
+  }else{
+    todos.unshift(tdMigrate({id:Date.now(),text:txt.value.trim(),assignee:assign?assign.value:'Andrew Rowell',priority:pri?pri.value:'medium',status:'todo',jobTag:job?job.value:'General',dueDate:due?due.value:'',done:false,subtasks:[],expanded:false}));
+  }
+  _tdFormOpen=false;_tdEditId=null;save();render();
+}
+
+function tdFormClose(){_tdFormOpen=false;_tdEditId=null;renderTodos();}
+
+function tdFormNew(jobPrefill){
+  _tdFormOpen=true;_tdEditId=null;renderTodos();
+  if(jobPrefill){setTimeout(function(){var el=document.getElementById('tdFJob');if(el)el.value=jobPrefill;},20);}
+  setTimeout(function(){var e=document.getElementById('tdFTxt');if(e)e.focus();},50);
+}
+
+function tdQuick(){
+  var inp=document.getElementById('tdQInp');if(!inp||!inp.value.trim())return;
+  todos.unshift(tdMigrate({id:Date.now(),text:inp.value.trim(),assignee:'Andrew Rowell',priority:'medium',status:'todo',jobTag:'General',dueDate:'',done:false,subtasks:[],expanded:false}));
+  inp.value='';save();render();
+}
+
+function tdAddSub(tid){
+  var t=todos.find(function(x){return x.id===tid;});if(!t)return;
+  var inp=document.getElementById('si-'+tid);if(!inp||!inp.value.trim())return;
+  t.subtasks.push({id:Date.now(),text:inp.value.trim(),done:false});
+  save();renderTodos();
+}
+
+function tdTogSub(tid,sid){
+  var t=todos.find(function(x){return x.id===tid;});if(!t||!t.subtasks)return;
+  var s=t.subtasks.find(function(x){return x.id===sid;});if(!s)return;
+  s.done=!s.done;save();renderTodos();
+}
+
+function tdDelSub(tid,sid){
+  var t=todos.find(function(x){return x.id===tid;});if(!t||!t.subtasks)return;
+  t.subtasks=t.subtasks.filter(function(x){return x.id!==sid;});save();renderTodos();
+}
+
+function tdSetView(v){
+  _tdView=v;
+  ['tdVList','tdVToday','tdVAssign','tdVKanban'].forEach(function(id){var el=document.getElementById(id);if(el)el.classList.remove('on');});
+  var map={list:'tdVList',today:'tdVToday',assignee:'tdVAssign',kanban:'tdVKanban'};
+  var btn=document.getElementById(map[v]);if(btn)btn.classList.add('on');
+  renderTodos();
+}
+
+// Convert tech log entry to todo - exposed globally
+window.tlToTodo=function(text,job){
+  todos.unshift(tdMigrate({id:Date.now(),text:text,assignee:'Andrew Rowell',priority:'high',status:'todo',jobTag:job||'General',dueDate:'',done:false,subtasks:[],expanded:false}));
+  save();
+  alert('Added to To-Dos');
+};
+
+async function save(){
+  clearTimeout(tmr);
+  try{
+    await fetch(SBU+'/rest/v1/app_data',{method:'POST',
+      headers:{'Content-Type':'application/json','apikey':SBK,'Authorization':'Bearer '+SBK,'Prefer':'resolution=merge-duplicates'},
+      body:JSON.stringify({key:NK,value:{notes:notes,todos:todos,meetings:meetings},updated_at:new Date().toISOString()})
+    });
+    ['edSaved','mtgSaved'].forEach(function(id){var el=document.getElementById(id);if(el){el.textContent='Saved';setTimeout(function(){if(el)el.textContent='';},2000);}});
+    dirty=false;
+  }catch(e){}
+}
+function as_(){dirty=true;clearTimeout(tmr);tmr=setTimeout(save,1500);}
+
+// ── Jobs ──────────────────────────────────────────────────────────────────────
+function jobOpts(sel){
+  return '<option value="">No job</option>'+JOBS.map(function(j){return '<option value="'+esc(j)+'"'+(sel===j?' selected':'')+'>'+esc(j)+'</option>';}).join('');
+}
+function refreshJobSelects(){
+  ['cJobSel','edJobSel'].forEach(function(id){var el=document.getElementById(id);if(el&&el.dataset.val!==undefined)el.value=el.dataset.val;});
+}
+
+// ── Render ────────────────────────────────────────────────────────────────────
+function render(q){
+  q=(q!==undefined?q:sq).toLowerCase().trim();
+  var fn=notes.filter(function(n){return !q||(n.title||'').toLowerCase().includes(q)||(n.content||'').toLowerCase().includes(q)||(n.jobTag||'').toLowerCase().includes(q);});
+
+  var now=new Date(),wa=new Date(now-7*864e5);
+  var sn=document.getElementById('sNotes'),st=document.getElementById('sTodos');
+  if(sn)sn.textContent=notes.filter(function(n){return new Date(n.createdAt)>wa;}).length;
+  if(st)st.textContent=todos.filter(function(t){return !t.done;}).length;
+
+  // Recent notes (dashboard)
+  var rn=document.getElementById('recNotes'),re=document.getElementById('recEmpty'),nc=document.getElementById('nCount');
+  if(rn){
+    if(!fn.length){rn.innerHTML='';if(re)re.style.display='block';}
+    else{
+      if(re)re.style.display='none';
+      if(nc)nc.textContent=fn.length+' note'+(fn.length!==1?'s':'');
+      rn.innerHTML=fn.map(nCard).join('');
+    }
+  }
+
+  // All notes + subcategories
+  var an=document.getElementById('allNotesSec');
+  if(an){
+    if(!fn.length){an.innerHTML='<div class="empty-msg">No notes yet</div>';}
+    else{
+      var h=fn.map(nCard).join('');
+      // By type
+      Object.keys(NL).forEach(function(t){
+        var sub=fn.filter(function(n){return n.type===t;});
+        if(!sub.length)return;
+        h+='<div class="sub-hdr">'+NL[t]+'s ('+sub.length+')</div>'+sub.map(nCard).join('');
+      });
+      // By job
+      var jg={};
+      fn.filter(function(n){return n.jobTag;}).forEach(function(n){
+        if(!jg[n.jobTag])jg[n.jobTag]=[];
+        jg[n.jobTag].push(n);
+      });
+      Object.keys(jg).forEach(function(job){
+        h+='<div class="sub-hdr">'+esc(job)+' ('+jg[job].length+')</div>'+jg[job].map(nCard).join('');
+      });
+      an.innerHTML=h;
+    }
+  }
+
+  renderTodos();
+}
+
+function nCard(n){
+  var col=NC[n.type]||NC.note;
+  var ds=n.updatedAt?new Date(n.updatedAt).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'2-digit'}):'';
+  var pre=(n.content||'').slice(0,180);
+  return '<div class="nc" onclick="openNote('+n.id+')">'
+    +'<div class="nc-hdr">'
+    +'<div class="nc-title">'+esc(n.title||'Untitled')+'</div>'
+    +'</div>'
+    +'<div class="nc-meta"><span style="color:'+col+'">'+NL[n.type]+'</span>'
+    +(n.jobTag?' &middot; '+esc(n.jobTag):'')+(ds?' &middot; '+ds:'')+(n.pinned?' &middot; Pinned':'')+(n.done?' &middot; <s>Done</s>':'')+'</div>'
+    +(pre?'<div class="nc-body">'+esc(pre)+(n.content.length>180?'...':'')+'</div>':'')
+    +'<div class="nc-actions">'
+    +'<button class="nc-btn" onclick="event.stopPropagation();emailNote('+n.id+')" title="Email this note">Email</button>'
+    +'<button class="nc-btn" onclick="event.stopPropagation();toggleDone('+n.id+')">'+(n.done?'Undone':'Done')+'</button>'
+    +'</div>'
+    +'</div>';
+}
+
+function filterNotes(q){sq=q;render(q);}
+function toggleDone(id){var n=notes.find(function(x){return x.id===id;});if(!n)return;n.done=!n.done;n.updatedAt=new Date().toISOString();as_();render();}
+
+// ── Quick capture ─────────────────────────────────────────────────────────────
+function setType(t){
+  cType=t;
+  document.querySelectorAll('.type-pill').forEach(function(b){
+    b.classList.toggle('on',b.dataset.t===t);
+    b.classList.toggle('reminder',b.dataset.t==='reminder'&&b.dataset.t===t);
+  });
+}
+
+function addNoteCapture(){
+  var tt=(document.getElementById('cTitle')||{}).value||'';
+  var bd=(document.getElementById('cBody')||{}).value||'';
+  var job=(document.getElementById('cJobSel')||{}).value||'';
+  if(!tt.trim()&&!bd.trim())return;
+  notes.unshift({id:Date.now(),type:cType,title:tt.trim(),content:bd.trim(),jobTag:job,pinned:false,done:false,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()});
+  var t=document.getElementById('cTitle'),b=document.getElementById('cBody');
+  if(t)t.value='';if(b)b.value='';
+  render();save();
+}
+
+// ── To-dos ────────────────────────────────────────────────────────────────────
+
+
+
+
+
+
+
+
+// ── Meetings ──────────────────────────────────────────────────────────────────
+function renderMtgList(){
+  var el=document.getElementById('mtgList');if(!el)return;
+  if(!meetings.length){el.innerHTML='';return;}
+  el.innerHTML=meetings.map(function(m){
+    var isOn=curMtg&&curMtg.id===m.id;
+    var count=m.instances?m.instances.length:0;
+    var lastDate=count?m.instances[0].date:'';
+    var ds=lastDate?new Date(lastDate).toLocaleDateString('en-GB',{day:'numeric',month:'short'}):'';
+    return '<div class="mtg-item'+(isOn?' on':'')+'" onclick="openMeeting('+m.id+')">'
+      +'<div class="mtg-name">'+esc(m.name)+(m.isSeries?' <span style="font-size:9px;opacity:.45;font-family:Barlow Condensed,sans-serif;letter-spacing:.1em">WEEKLY</span>':'')+'</div>'
+      +(count?'<div class="mtg-date">'+count+' saved &middot; last '+ds+'</div>':'<div class="mtg-date">No sessions yet</div>')
+      +'</div>';
+  }).join('');
+}
+
+function addMeeting(){
+  var n=prompt('Meeting name:');if(!n||!n.trim())return;
+  var m={id:Date.now(),name:n.trim(),notes:'',actions:'',date:new Date().toISOString().split('T')[0]};
+  meetings.unshift(m);save();renderMtgList();openMeeting(m.id);
+}
+
+function openMeeting(id){
+  var m=meetings.find(function(x){return x.id===id;});if(!m)return;
+  curMtg=m;renderMtgList();showPage('meeting');
+  var t=document.getElementById('mtgPageTitle');if(t)t.textContent=m.name;
+  var d2=document.getElementById('mtgPageDate');if(d2)d2.textContent=m.isSeries?'Weekly recurring':'';
+  var prep=document.getElementById('mtgPrep');if(prep)prep.value=m.prep||'';
+  renderInstanceList(m);
+  var sel=document.getElementById('mtgTdAssign');
+  if(sel)sel.innerHTML=TEAM.map(function(t){return '<option value="'+t+'"'+(t==='Andrew Rowell'?' selected':'')+'>'+t+'</option>';}).join('');
+  var tdl=document.getElementById('mtgTdList');if(tdl)tdl.innerHTML='';
+  showInstanceEditor(null);
+}
+function renderInstanceList(m){
+  var el=document.getElementById('mtgInstanceList');if(!el)return;
+  var instances=(m.instances||[]).slice().sort(function(a,b){return b.date.localeCompare(a.date);});
+  if(!instances.length){
+    el.innerHTML='<div style="font-family:Barlow Condensed,sans-serif;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(48,47,44,.28);padding:10px 2px">No past sessions yet</div>';
+    return;
+  }
+  var items=instances.map(function(inst){
+    var ds=new Date(inst.date).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'2-digit'});
+    var dow=new Date(inst.date).toLocaleDateString('en-GB',{weekday:'short'});
+    var preview=(inst.notes||'').slice(0,55);
+    var div=document.createElement('div');
+    div.className='inst-row';
+    div.dataset.iid=inst.id;
+    div.innerHTML='<div class="inst-date"><span class="inst-dow">'+dow+'</span> '+ds+'</div>'
+      +(preview?'<div class="inst-preview">'+esc(preview)+'...</div>':'<div class="inst-preview" style="opacity:.28">No notes</div>');
+    div.addEventListener('click',function(){showInstanceEditor(this.dataset.iid);});
+    return div.outerHTML;
+  });
+  el.innerHTML=items.join('');
+  // Re-wire events after innerHTML (since outerHTML loses them)
+  el.querySelectorAll('.inst-row').forEach(function(row){
+    row.addEventListener('click',function(){showInstanceEditor(row.dataset.iid);});
+  });
+}
+function showInstanceEditor(instId){
+  var ed=document.getElementById('mtgInstEditor'),ns=document.getElementById('mtgNoSession');
+  if(!instId||!curMtg){if(ed)ed.style.display='none';if(ns)ns.style.display='flex';return;}
+  var inst=(curMtg.instances||[]).find(function(x){return x.id===instId;});
+  if(!inst){if(ed)ed.style.display='none';if(ns)ns.style.display='flex';return;}
+  if(ns)ns.style.display='none';
+  if(ed){ed.style.display='flex';ed.dataset.instId=instId;}
+  var ti=document.getElementById('mtgInstTitle');
+  if(ti)ti.textContent=new Date(inst.date).toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  var mn=document.getElementById('mtgInstNotes');if(mn)mn.value=inst.notes||'';
+  var ma=document.getElementById('mtgInstActions');if(ma)ma.value=inst.actions||'';
+}
+function saveInstNotes(){
+  var ed=document.getElementById('mtgInstEditor');if(!ed||!curMtg)return;
+  var inst=(curMtg.instances||[]).find(function(x){return x.id===ed.dataset.instId;});
+  if(!inst)return;
+  var mn=document.getElementById('mtgInstNotes'),ma=document.getElementById('mtgInstActions');
+  if(mn)inst.notes=mn.value;if(ma)inst.actions=ma.value;
+  renderInstanceList(curMtg);as_();
+}
+function deleteInstance(){
+  var ed=document.getElementById('mtgInstEditor');if(!ed||!curMtg)return;
+  if(!confirm('Delete this session?'))return;
+  curMtg.instances=(curMtg.instances||[]).filter(function(x){return x.id!==ed.dataset.instId;});
+  showInstanceEditor(null);renderInstanceList(curMtg);save();renderMtgList();
+}
+
+function saveMeeting(){
+  if(!curMtg)return;
+  var prep=document.getElementById('mtgPrep');if(prep)curMtg.prep=prep.value;
+  as_();renderMtgList();
+}
+function startMeeting(){
+  if(!curMtg)return;
+  var today=new Date().toISOString().split('T')[0];
+  var inst={id:String(Date.now()),date:today,notes:curMtg.prep||'',actions:''};
+  if(!curMtg.instances)curMtg.instances=[];
+  curMtg.instances.unshift(inst);
+  curMtg.prep='';
+  var prep=document.getElementById('mtgPrep');if(prep)prep.value='';
+  save();renderMtgList();renderInstanceList(curMtg);showInstanceEditor(inst.id);
+}
+function saveMeetingFromWindow(id,notesVal,actionsVal,newTodos){
+  var m=meetings.find(function(x){return x.id===id;});
+  if(m){m.notes=notesVal;m.actions=actionsVal;m.date=new Date().toISOString().split('T')[0];}
+  if(newTodos&&newTodos.length){
+    newTodos.forEach(function(t){todos.unshift({id:Date.now()+Math.random()*1000,text:t.text,assignee:t.assignee||'Andrew Rowell',done:false});});
+    render();
+  }
+  save();renderMtgList();
+}
+window.saveMeetingFromWindow=saveMeetingFromWindow;
+
+function deleteMeeting(){
+  if(!curMtg)return;if(!confirm('Delete this meeting?'))return;
+  meetings=meetings.filter(function(x){return x.id!==curMtg.id;});
+  curMtg=null;save();renderMtgList();showPage('dashboard');
+}
+
+// ── Note editor ───────────────────────────────────────────────────────────────
+function openNewNote(){active=null;_newNote=null;showPage('editor');resetEditor({type:'note',title:'',content:'',jobTag:'',pinned:false,done:false});}
+function openNote(id){var n=notes.find(function(x){return x.id===id;});if(!n)return;active=id;_newNote=null;showPage('editor');resetEditor(n);}
+
+function resetEditor(n){
+  var et=document.getElementById('edTitle'),eb=document.getElementById('edBody'),ej=document.getElementById('edJobSel'),ety=document.getElementById('edType');
+  if(et)et.value=n.title||'';
+  if(eb)eb.value=n.content||'';
+  if(ej){ej.innerHTML=jobOpts(n.jobTag||'');}
+  if(ety)ety.value=n.type||'note';
+  var ep=document.getElementById('edPin'),ed2=document.getElementById('edDone2');
+  if(ep)ep.textContent=n.pinned?'Unpin':'Pin';if(ed2)ed2.textContent=n.done?'Undone':'Done';
+  var ds=n.createdAt?new Date(n.createdAt).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'2-digit'}):'';
+  var em=document.getElementById('edMeta');if(em)em.textContent=ds?'Updated '+ds:'New note';
+}
+
+function edSync(){
+  var title=(document.getElementById('edTitle')||{}).value||'';
+  var body=(document.getElementById('edBody')||{}).value||'';
+  var type=(document.getElementById('edType')||{}).value||'note';
+  var job=(document.getElementById('edJobSel')||{}).value||'';
+  if(active){
+    var n=notes.find(function(x){return x.id===active;});
+    if(n){n.title=title;n.content=body;n.type=type;n.jobTag=job;n.updatedAt=new Date().toISOString();}
+  } else if(title||body){
+    if(!_newNote){
+      _newNote={id:Date.now(),type:type,title:title,content:body,jobTag:job,pinned:false,done:false,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};
+      notes.unshift(_newNote);active=_newNote.id;
+    } else {_newNote.title=title;_newNote.content=body;_newNote.type=type;_newNote.jobTag=job;_newNote.updatedAt=new Date().toISOString();}
+  }
+  as_();
+}
+
+function edPin(){var n=notes.find(function(x){return x.id===active;});if(!n)return;n.pinned=!n.pinned;n.updatedAt=new Date().toISOString();var ep=document.getElementById('edPin');if(ep)ep.textContent=n.pinned?'Unpin':'Pin';as_();}
+function edDone(){var n=notes.find(function(x){return x.id===active;});if(!n)return;n.done=!n.done;n.updatedAt=new Date().toISOString();var ed=document.getElementById('edDone2');if(ed)ed.textContent=n.done?'Undone':'Done';as_();}
+function edDelete(){if(!active)return;if(!confirm('Delete this note?'))return;notes=notes.filter(function(x){return x.id!==active;});active=null;_newNote=null;save();render();showPage(curView);}
+
+// ── Email note (placeholder) ───────────────────────────────────────────────────
+function emailNote(id){
+  var n=notes.find(function(x){return x.id===id;});if(!n)return;
+  var body='Note: '+n.title+'\n\n'+n.content+(n.jobTag?'\n\nJob: '+n.jobTag:'');
+  var mailto='mailto:?subject='+encodeURIComponent(n.title||'Note')+'&body='+encodeURIComponent(body);
+  window.location.href=mailto;
+}
+
+// ── View switching ─────────────────────────────────────────────────────────────
+function showPage(v){
+  var isFullPage=v==='editor'||v==='meeting';
+  if(!isFullPage)curView=v;
+  // Toggle header + content area
+  var mhdr=document.getElementById('mainHdr'),content=document.getElementById('mainContent');
+  if(mhdr)mhdr.style.display=isFullPage?'none':'flex';
+  if(content)content.style.display=isFullPage?'none':'block';
+  // Hide all section views
+  ['vDash','vNotes','vTodos'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
+  // Toggle full-page views
+  var edPage=document.getElementById('edPage'),mtgPage=document.getElementById('mtgPage');
+  if(edPage)edPage.classList.toggle('open',v==='editor');
+  if(mtgPage)mtgPage.classList.toggle('open',v==='meeting');
+  if(!isFullPage){
+    var map={dashboard:'vDash',notes:'vNotes',todos:'vTodos'};
+    var target=document.getElementById(map[v]||'vDash');
+    if(target)target.style.display='';
+    document.querySelectorAll('.nv[data-page]').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-page')===v);});
+    var vt=document.getElementById('viewTitle');if(vt)vt.textContent={dashboard:'Dashboard',notes:'Notes',todos:'To-Dos'}[v]||v;
+    var fab=document.getElementById('tdFab');if(fab)fab.style.display=v==='todos'?'flex':'none';
+    render();
+  }
+}
+
+function backToMain(){edSync();if(dirty)save();render();showPage(curView==='dashboard'?'dashboard':curView);}
+function backFromMtg(){if(dirty)save();renderMtgList();showPage(curView);}
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){var ep=document.getElementById('edPage'),mp=document.getElementById('mtgPage');if(ep&&ep.classList.contains('open'))backToMain();else if(mp&&mp.classList.contains('open'))backFromMtg();}});
+function addMtgTodo(){
+  var txt=(document.getElementById('mtgTdTxt')||{}).value||'';
+  txt=txt.trim();if(!txt)return;
+  var assign=(document.getElementById('mtgTdAssign')||{}).value||'Andrew Rowell';
+  todos.unshift({id:Date.now(),text:txt,assignee:assign,done:false});
+  var inp=document.getElementById('mtgTdTxt');if(inp)inp.value='';
+  // Show in meeting todo list
+  var list=document.getElementById('mtgTdList');
+  if(list){
+    var div=document.createElement('div');
+    div.style.cssText='display:flex;align-items:flex-start;gap:9px;border:1.5px solid rgba(48,47,44,.08);border-radius:4px;padding:8px 12px';
+    div.innerHTML='<input type="checkbox" style="margin-top:2px;width:14px;height:14px;accent-color:#302f2c;flex-shrink:0">'
+      +'<div><div style="font-size:13px;color:#302f2c">'+txt+'</div>'
+      +(assign!=='Andrew Rowell'?'<div style="font-family:Barlow Condensed,sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(48,47,44,.38)">'+assign+'</div>':'')
+      +'</div>';
+    list.appendChild(div);
+  }
+  as_();
+}
+window.addMtgTodo=addMtgTodo;window.startMeeting=startMeeting;window.saveInstNotes=saveInstNotes;window.deleteInstance=deleteInstance;window.showInstanceEditor=showInstanceEditor;
+
+init();
+document.addEventListener('DOMContentLoaded',function(){
+  var jsel=document.getElementById('cJobSel');
+  if(jsel)jsel.innerHTML='<option value="">No job</option>'+JOBS.map(function(j){return '<option value="'+j+'">'+j+'</option>';}).join('');
+  var esel=document.getElementById('edJobSel');
+  if(esel)esel.innerHTML='<option value="">No job</option>'+JOBS.map(function(j){return '<option value="'+j+'">'+j+'</option>';}).join('');
+});
+</script>
+<button class="td-fab" onclick="tdFormNew()" id="tdFab" style="display:none">+</button>
+</body>
+</html>
