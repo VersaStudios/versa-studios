@@ -158,6 +158,14 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:#efede3;color:#
 .inst-date{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#302f2c}
 .inst-dow{color:rgba(48,47,44,.4)}
 .inst-preview{font-size:12px;color:rgba(48,47,44,.5);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.td-due-row{display:flex;align-items:center;gap:6px;margin-top:3px}
+.td-due-date{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.06em;color:rgba(48,47,44,.45)}
+.td-countdown{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:.06em;padding:2px 8px;border-radius:10px}
+.td-overdue .td-countdown,.td-countdown.td-overdue{background:#fed7d7;color:#c53030}
+.td-today .td-countdown,.td-countdown.td-today{background:#feebc8;color:#c05621}
+.td-soon .td-countdown,.td-countdown.td-soon{background:#fefcbf;color:#975a16}
+.td-future .td-countdown,.td-countdown.td-future{background:rgba(48,47,44,.07);color:rgba(48,47,44,.45)}
 </style>
 </head>
 <body>
@@ -175,15 +183,15 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:#efede3;color:#
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 3L5 8l5 5"/></svg>
         Back to App
       </button>
-      <button class="nv on" onclick="showPage('dashboard')">
+      <button class="nv on" onclick="showPage('dashboard')" data-page="dashboard">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
         Dashboard
       </button>
-      <button class="nv" onclick="showPage('notes')">
+      <button class="nv" onclick="showPage('notes')" data-page="notes">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 2h10v12H3z"/><path d="M6 5h4M6 8h4M6 11h2"/></svg>
         Notes
       </button>
-      <button class="nv" onclick="showPage('todos')">
+      <button class="nv" onclick="showPage('todos')" data-page="todos">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h2v2H2zm4 1h8M2 9h2v2H2zm4 1h8"/></svg>
         To-Dos
       </button>
@@ -551,13 +559,9 @@ function renderTodos(){
     var allTodos=id==='tdListFull'?todos:myTodos.concat(otherTodos);
     if(!allTodos.length){el.innerHTML='<div class="empty-msg">No to-dos yet</div>';return;}
     el.innerHTML=allTodos.map(function(t){
-      return '<div class="trow'+(t.done?' done':'')+'">'
-        +'<input type="checkbox" '+(t.done?'checked':'')+' onclick="tTog('+t.id+')">'
-        +'<div class="trow-content">'
-        +'<div class="trow-text">'+esc(t.text)+'</div>'
-        +(t.assignee&&t.assignee!=='Andrew Rowell'?'<div class="trow-assign">Assigned to '+esc(t.assignee)+'</div>':'')
-        +'</div>'
-        +'</div>';
+      var _due=tdDueInfo(t.dueDate);
+      return '<div class="trow'+(t.done?' done':'')+'">'        +'<input type="checkbox" '+(t.done?'checked':'')+' onclick="tTog('+t.id+')">'
+        +'<div class="trow-content">'        +'<div class="trow-text">'+esc(t.text)+'</div>'        +(_due?'<div class="td-due-row"><span class="td-due-date">'+_due.txt+'</span><span class="td-countdown '+_due.cls+'">'+ _due.cd+'</span></div>':'')        +(t.assignee&&t.assignee!=='Andrew Rowell'?'<div class="trow-assign">Assigned to '+esc(t.assignee)+'</div>':'')        +'</div>'        +'</div>';
     }).join('');
   });
 }
@@ -580,14 +584,29 @@ function showAddTodo(containerId){
   inp.addEventListener('keydown',function(e){if(e.key==='Enter')submitTodo(inp.value,sel.value,containerId);});
   addBtn.addEventListener('click',function(){submitTodo(inp.value,sel.value,containerId);});
   cancelBtn.addEventListener('click',function(){div.style.display='none';});
-  row.appendChild(lbl);row.appendChild(sel);row.appendChild(addBtn);row.appendChild(cancelBtn);
+  // Due date
+  var dueLbl=document.createElement('span');dueLbl.textContent='Due';dueLbl.style.cssText='font-family:Barlow Condensed,sans-serif;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(48,47,44,.4)';
+  var dueInp=document.createElement('input');dueInp.type='date';dueInp.style.cssText='border:1px solid rgba(48,47,44,.15);border-radius:4px;padding:4px 6px;font-family:Barlow,sans-serif;font-size:12px;color:#302f2c;background:#fff;outline:none';dueInp.id='tdDueInp-'+containerId;
+  row.appendChild(lbl);row.appendChild(sel);row.appendChild(dueLbl);row.appendChild(dueInp);row.appendChild(addBtn);row.appendChild(cancelBtn);
   div.appendChild(inp);div.appendChild(row);
   c.appendChild(div);inp.focus();
 }
 
+
+function tdDueInfo(d){
+  if(!d)return null;
+  var now=new Date(),due=new Date(d+'T12:00:00'),diff=Math.round((due-now)/864e5);
+  if(diff<0)return {cls:'td-overdue',txt:'Overdue',cd:Math.abs(diff)+'d overdue'};
+  if(diff===0)return {cls:'td-today',txt:'Today',cd:'Today'};
+  if(diff===1)return {cls:'td-soon',txt:'Tomorrow',cd:'1d left'};
+  if(diff<=7)return {cls:'td-soon',txt:due.toLocaleDateString('en-GB',{day:'numeric',month:'short'}),cd:diff+'d left'};
+  return {cls:'td-future',txt:due.toLocaleDateString('en-GB',{day:'numeric',month:'short'}),cd:diff+'d left'};
+}
 function submitTodo(txt,assignee,containerId){
   if(!txt||!txt.trim())return;
-  todos.unshift({id:Date.now(),text:txt.trim(),assignee:assignee||'Andrew Rowell',done:false});
+  var dueEl=document.getElementById('tdDueInp-'+containerId);
+  var dueVal=dueEl?dueEl.value:'';
+  todos.unshift({id:Date.now(),text:txt.trim(),assignee:assignee||'Andrew Rowell',dueDate:dueVal,done:false});
   var w=document.getElementById(containerId);
   if(w){var wrap=w.querySelector('.todo-add-wrap');if(wrap)wrap.style.display='none';}
   save();render();
@@ -776,7 +795,7 @@ function showPage(v){
     var map={dashboard:'vDash',notes:'vNotes',todos:'vTodos'};
     var target=document.getElementById(map[v]||'vDash');
     if(target)target.style.display='';
-    document.querySelectorAll('.nv').forEach(function(b,i){b.classList.toggle('on',['dashboard','notes','todos'][i]===v);});
+    document.querySelectorAll('.nv[data-page]').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-page')===v);});
     var vt=document.getElementById('viewTitle');if(vt)vt.textContent={dashboard:'Dashboard',notes:'Notes',todos:'To-Dos'}[v]||v;
     render();
   }
