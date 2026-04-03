@@ -1763,7 +1763,7 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
 </div>
 
 <div class="page" id="page-allcal">
-  <div class="page-hdr"><div class="page-title">All Engineering Reports</div><div class="page-sub">All jobs</div></div>
+  <div class="page-hdr"><div class="page-title">All Engineering Reports</div><div class="page-sub">Complete calendar — all jobs</div></div>
   <div style="padding:0 16px 60px"><div id="allCalWrap"></div><div id="allCalList" style="margin-top:16px"></div></div>
 </div>
 <div class="page" id="page-jobs">
@@ -2012,7 +2012,6 @@ function notesPickType(btn,type){
 window.notesPickType=notesPickType;
 </script><script>
 
-// ── NOTES MODULE 
 // ── NOTES MODULE ─────────────────────────────────────────────────────────────
 var _notes = [];
 var _notesLoaded = false;
@@ -2195,7 +2194,6 @@ function applyNotesTheme(wrap){
   notesSetFilter(_notesFilter);
 }
 
-
 function populateNotesJobTag(){
   var sel=document.getElementById('notesJobTag');if(!sel)return;
   var current=sel.value;
@@ -2215,7 +2213,6 @@ async function notesInit(containerId){
   if(!wrap)return;
   applyNotesTheme(wrap);
   notesSetFilter(_notesFilter||'all');
-  populateNotesJobTag();
 }
 
 window._notePin=notesTogglePin;
@@ -2284,125 +2281,25 @@ function renderDashServiceAlerts(){
 var _allCalYr=null,_allCalMo=null,_allCalCache={};
 function allCalInit(){var n=new Date();_allCalYr=n.getFullYear();_allCalMo=n.getMonth();allCalRender(_allCalYr,_allCalMo);}
 async function allCalRender(yr,mo){
-  if(yr==null){var n=new Date();yr=n.getFullYear();mo=n.getMonth();}
-  _allCalYr=yr;_allCalMo=mo;
+  if(yr==null){var n=new Date();yr=n.getFullYear();mo=n.getMonth();}_allCalYr=yr;_allCalMo=mo;
   var wrap=document.getElementById('allCalWrap');if(!wrap)return;
-  var mn=['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE','JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];
-  var mn3=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  var mn=['January','February','March','April','May','June','July','August','September','October','November','December'];
   var now=new Date(),tod=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
   var pm=new Date(yr,mo-1,1),nm=new Date(yr,mo+1,1);
-  var ps=pm.getFullYear()+'-'+String(pm.getMonth()+1).padStart(2,'0');
-  var ns2=nm.getFullYear()+'-'+String(nm.getMonth()+1).padStart(2,'0');
+  var ps=pm.getFullYear()+'-'+String(pm.getMonth()+1).padStart(2,'0'),ns2=nm.getFullYear()+'-'+String(nm.getMonth()+1).padStart(2,'0');
   var canN=nm<=new Date(now.getFullYear(),now.getMonth(),1);
-  var from=yr+'-'+String(mo+1).padStart(2,'0')+'-01';
-  var tod2=new Date(yr,mo+1,0);
-  var to=yr+'-'+String(mo+1).padStart(2,'0')+'-'+String(tod2.getDate()).padStart(2,'0');
-  var ck=yr+'-'+mo;
-  if(!_allCalCache[ck]||!Object.keys(_allCalCache[ck]).length){
-    _allCalCache[ck]={};
-    try{
-      var u=_ER_SB_URL+'/rest/v1/engineering_reports?show_date=gte.'+from+'&show_date=lte.'+to+'&order=show_date.asc';
-      var rr=await fetch(u,{headers:_ER_SB_HDR});
-      if(rr.ok){var rows=await rr.json();
-        if(Array.isArray(rows))rows.forEach(function(r){
-          if(!_allCalCache[ck][r.show_date])_allCalCache[ck][r.show_date]=[];
-          _allCalCache[ck][r.show_date].push(r);
-        });
-      }else{wrap.innerHTML='<div style="padding:20px;color:#e8150f;font-family:var(--cond)">Error '+rr.status+'</div>';delete _allCalCache[ck];return;}
-    }catch(e){wrap.innerHTML='<div style="padding:20px;color:#e8150f;font-family:var(--cond)">'+e.message+'</div>';delete _allCalCache[ck];return;}
-  }
+  var from=yr+'-'+String(mo+1).padStart(2,'0')+'-01',tod2=new Date(yr,mo+1,0),to=yr+'-'+String(mo+1).padStart(2,'0')+'-'+String(tod2.getDate()).padStart(2,'0'),ck=yr+'-'+mo;
+  if(!_allCalCache[ck]){_allCalCache[ck]={};try{var u=_SB_URL+'/rest/v1/engineering_reports?show_date=gte.'+from+'&show_date=lte.'+to+'&order=show_date.asc';var rr=await fetch(u,{headers:{'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY}});var rows=await rr.json();if(rows&&rows.length)rows.forEach(function(r){if(!_allCalCache[ck][r.show_date])_allCalCache[ck][r.show_date]=[];_allCalCache[ck][r.show_date].push(r);});}catch(e){}}
   var dd=_allCalCache[ck]||{};
-
-  // Accent colour — use var(--accent) which is blue in the app
-  var ACC='var(--accent)';
-  var ACC_HEX='#4a9eff';
-
-  var h='<div style="background:#fff;border-radius:12px;overflow:hidden;margin-bottom:16px;font-family:var(--cond)">';
-
-  // ── BIG MONTH NAME ────────────────────────────────────────────────────
-  h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:20px 20px 0">'
-    +'<button data-nav="'+ps+'" onclick="allCalNav(this.dataset.nav)" style="background:none;border:none;cursor:pointer;font-size:24px;font-weight:900;color:'+ACC_HEX+';font-family:var(--cond);padding:0 8px 0 0;line-height:1">&#8592;</button>'
-    +'<div style="font-size:clamp(52px,14vw,90px);font-weight:900;color:'+ACC_HEX+';line-height:.9;letter-spacing:-.02em;text-align:center;flex:1">'+mn3[mo]+'</div>'
-    +(canN?'<button data-nav="'+ns2+'" onclick="allCalNav(this.dataset.nav)" style="background:none;border:none;cursor:pointer;font-size:24px;font-weight:900;color:'+ACC_HEX+';font-family:var(--cond);padding:0 0 0 8px;line-height:1">&#8594;</button>':'<div style="width:40px"></div>')
-    +'</div>';
-  h+='<div style="text-align:center;font-size:12px;font-weight:700;letter-spacing:.14em;color:rgba(0,0,0,.35);padding:2px 0 14px">'+yr+'</div>';
-
-  // ── DAY HEADERS ───────────────────────────────────────────────────────
-  h+='<div style="display:grid;grid-template-columns:repeat(7,1fr);border-top:2px solid '+ACC_HEX+';border-bottom:2px solid '+ACC_HEX+'">';
-  ['MON','TUE','WED','THU','FRI','SAT','SUN'].forEach(function(dy){
-    h+='<div style="font-size:9px;font-weight:800;letter-spacing:.14em;color:'+ACC_HEX+';text-align:center;padding:8px 0">'+dy+'</div>';
-  });
-  h+='</div>';
-
-  // ── DAY GRID ──────────────────────────────────────────────────────────
-  h+='<div style="display:grid;grid-template-columns:repeat(7,1fr)">';
+  var h='<div style="background:var(--near-black);border:1px solid var(--border-l);border-radius:12px;overflow:hidden;margin-bottom:16px"><div style="display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--border)"><button data-nav="'+ps+'" onclick="allCalNav(this.dataset.nav)" style="background:var(--dark);border:1px solid var(--border-l);color:var(--white);width:38px;height:38px;border-radius:8px;font-size:20px;cursor:pointer">&#8592;</button><div style="text-align:center"><div style="font-family:var(--cond);font-size:28px;font-weight:900;color:var(--white);line-height:1">'+mn[mo]+'</div><div style="font-family:var(--cond);font-size:14px;font-weight:700;color:var(--muted);letter-spacing:.1em;margin-top:3px">'+yr+'</div></div>'+(canN?'<button data-nav="'+ns2+'" onclick="allCalNav(this.dataset.nav)" style="background:var(--dark);border:1px solid var(--border-l);color:var(--white);width:38px;height:38px;border-radius:8px;font-size:20px;cursor:pointer">&#8594;</button>':'<div style="width:38px"></div>')+'</div><div style="display:grid;grid-template-columns:repeat(7,1fr);border-bottom:1px solid var(--border)">';
+  ['MON','TUE','WED','THU','FRI','SAT','SUN'].forEach(function(dy,ii){h+='<div style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.1em;color:'+(ii>=5?'#2a2a2a':'#666')+';text-align:center;padding:10px 0">'+dy+'</div>';});
+  h+='</div><div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;padding:10px">';
   var fd=(new Date(yr,mo,1).getDay()+6)%7,dim=new Date(yr,mo+1,0).getDate();
-  for(var e=0;e<fd;e++)h+='<div style="border-right:1px solid '+ACC_HEX+'22;border-bottom:1px solid '+ACC_HEX+'22;min-height:64px"></div>';
-  for(var d=1;d<=dim;d++){
-    var ds=yr+'-'+String(mo+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
-    var dow=new Date(yr,mo,d).getDay(),isW=dow===0||dow===6,isF=ds>tod,isT=ds===tod;
-    var col=(d+fd)%7;// 0-6, last col = index 6
-    var isLastCol=col===6;
-    var reps=dd[ds]||[],cnt=reps.length,hasU=reps.some(function(r){return r.urgent_action==='Yes';});
-    var bg=isT?ACC_HEX+'18':'#fff';
-    var numCol=isW?ACC_HEX+'55':(isT?ACC_HEX:ACC_HEX);
-    var numStyle='font-size:13px;font-weight:800;color:'+numCol+';'+( isT?'background:'+ACC_HEX+';color:#fff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:6px 0 0 6px;':'margin:6px 0 0 8px;');
-    var borderR=isLastCol?'none':'1px solid '+ACC_HEX+'33';
-    var clickable=!isW&&!isF&&cnt>0;
-    var badge='';
-    if(cnt>0){
-      var badgeCol=hasU?'#e8150f':ACC_HEX;
-      badge='<div style="display:flex;flex-wrap:wrap;gap:2px;padding:4px 6px 6px">'
-        +reps.map(function(r){
-          var c=r.urgent_action==='Yes'?'#e8150f':(r.summary_mode==='ntr'?'#22c55e':ACC_HEX);
-          return '<div style="width:6px;height:6px;border-radius:50%;background:'+c+'"></div>';
-        }).join('')
-        +'</div>';
-    }
-    h+='<div '+(clickable?'data-date="'+ds+'"':'')+' style="background:'+bg+';border-right:'+borderR+';border-bottom:1px solid '+ACC_HEX+'33;min-height:64px;cursor:'+(clickable?'pointer':'default')+';position:relative'+(isT?';outline:2px solid '+ACC_HEX+';outline-offset:-2px':'')+'">'
-      +'<div style="'+numStyle+'">'+d+'</div>'
-      +badge
-      +'</div>';
-  }
-  // Fill remaining cells
-  var total=fd+dim,rem=total%7===0?0:7-(total%7);
-  for(var f2=0;f2<rem;f2++){
-    var isLastCol2=(f2===rem-1);
-    h+='<div style="border-right:'+(isLastCol2?'none':'1px solid '+ACC_HEX+'33')+';border-bottom:none;min-height:64px"></div>';
-  }
-  h+='</div>';
-
-  // ── LEGEND ────────────────────────────────────────────────────────────
-  h+='<div style="display:flex;gap:16px;padding:12px 16px;border-top:2px solid '+ACC_HEX+'22">'
-    +'<span style="font-size:10px;font-weight:700;letter-spacing:.1em;color:'+ACC_HEX+';display:flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block"></span>NTR</span>'
-    +'<span style="font-size:10px;font-weight:700;letter-spacing:.1em;color:'+ACC_HEX+';display:flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:50%;background:'+ACC_HEX+';display:inline-block"></span>STR</span>'
-    +'<span style="font-size:10px;font-weight:700;letter-spacing:.1em;color:'+ACC_HEX+';display:flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:50%;background:#e8150f;display:inline-block"></span>URGENT</span>'
-    +'</div>';
-
-  h+='</div>';
-  wrap.innerHTML=h;
-
-  // Click handler
-  wrap.onclick=function(ev){
-    var cell=ev.target.closest('[data-date]');if(!cell)return;
-    var ds=cell.getAttribute('data-date'),reps=dd[ds]||[];if(!reps.length)return;
-    var list=document.getElementById('allCalList');if(!list)return;
-    var dStr=new Date(ds+'T12:00:00').toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-    list.innerHTML='<div style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:'+ACC_HEX+';margin-bottom:10px;padding-left:2px">'+dStr.toUpperCase()+' \u2014 '+reps.length+' REPORT'+(reps.length>1?'S':'')+'</div>'
-      +reps.map(function(rep){
-        var isU=rep.urgent_action==='Yes',isN=rep.summary_mode==='ntr';
-        var col=isU?'#e8150f':(isN?'#22c55e':ACC_HEX);
-        return '<div style="background:#fff;border:2px solid '+col+'22;border-left:4px solid '+col+';border-radius:6px;padding:12px 14px;margin-bottom:8px">'
-          +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">'
-          +'<span style="font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.1em;color:'+col+'">'+(isU?'URGENT':isN?'NTR':'STR')+'</span>'
-          +'<span style="font-family:var(--cond);font-size:12px;font-weight:700;color:#111">'+(rep.show_name||'Morning Live').toUpperCase()+'</span>'
-          +'</div>'
-          +'<div style="font-size:12px;color:#666;font-family:var(--cond);font-weight:600;letter-spacing:.04em">VERSA: '+(rep.versa_tech_manager||'\u2014').toUpperCase()+(rep.bbc_tech_manager?'  \u00b7  BBC: '+rep.bbc_tech_manager.toUpperCase():'')+' </div>'
-          +(rep.summary_text?'<div style="font-size:13px;color:#333;margin-top:6px;font-family:var(--font)">'+rep.summary_text+'</div>':'')
-          +'</div>';
-      }).join('');
-  };
-}
+  for(var e=0;e<fd;e++)h+='<div></div>';
+  for(var d=1;d<=dim;d++){var ds=yr+'-'+String(mo+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');var dow=new Date(yr,mo,d).getDay(),isW=dow===0||dow===6,isF=ds>tod,isT=ds===tod;var reps=dd[ds]||[],cnt=reps.length,hasU=reps.some(function(r){return r.urgent_action==='Yes';});var bg,brd,nc,cur;if(isW){bg='transparent';brd='none';nc='#252525';cur='default';}else if(isF){bg='transparent';brd='1px dashed #1e1e1e';nc='#2a2a2a';cur='default';}else if(hasU){bg='rgba(220,50,50,.18)';brd='1px solid rgba(220,50,50,.5)';nc='#ff7070';cur='pointer';}else if(cnt>0){bg='rgba(74,158,255,.1)';brd='1px solid rgba(74,158,255,.35)';nc='var(--accent)';cur='pointer';}else{bg='var(--dark)';brd='1px solid var(--border)';nc='var(--white)';cur='pointer';}var ring=isT?'outline:2.5px solid var(--accent);outline-offset:-2px;':'',badge=cnt>0?'<div style="font-family:var(--cond);font-size:9px;font-weight:800;color:'+(hasU?'#ff7070':'var(--accent)')+';margin-top:2px">'+cnt+'</div>':'';
+  h+='<div '+((!isW&&!isF)?'data-date="'+ds+'"':'')+' style="background:'+bg+';border:'+brd+';border-radius:8px;padding:9px 4px 7px;text-align:center;cursor:'+cur+';'+ring+';margin:1px"><div style="font-family:var(--cond);font-size:16px;font-weight:900;color:'+nc+';line-height:1">'+d+'</div>'+badge+'</div>';}
+  h+='</div></div>';wrap.innerHTML=h;
+  wrap.onclick=function(ev){var cell=ev.target.closest('[data-date]');if(!cell)return;var ds=cell.getAttribute('data-date'),reps=dd[ds]||[];if(!reps.length)return;var list=document.getElementById('allCalList');if(!list)return;var dStr=new Date(ds+'T12:00:00').toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});list.innerHTML='<div style="font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">'+dStr+' &#8212; '+reps.length+' report'+(reps.length>1?'s':'')+'</div>'+reps.map(function(rep){var isU=rep.urgent_action==='Yes',isN=rep.summary_mode==='ntr';var col=isU?'#ff7070':(isN?'#4ade80':'#e8c84b');return '<div style="background:var(--near-black);border:1px solid var(--border-l);border-radius:8px;padding:14px 16px;margin-bottom:8px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="font-family:var(--cond);font-size:10px;font-weight:800;padding:2px 8px;border-radius:3px;background:'+col+'22;color:'+col+';letter-spacing:.08em;text-transform:uppercase">'+(isU?'URGENT':isN?'NTR':'STR')+'</span><span style="font-family:var(--cond);font-size:12px;font-weight:700;color:var(--white)">'+(rep.show_name||'Morning Live')+'</span></div><div style="font-size:12px;color:var(--muted)">Versa: '+(rep.versa_tech_manager||'&#8212;')+'  &#183;  BBC: '+(rep.bbc_tech_manager||'&#8212;')+'</div>'+(rep.summary_text?'<div style="font-size:13px;color:rgba(255,255,255,.6);margin-top:6px">'+rep.summary_text+'</div>':'')+'</div>';}).join('');};}
 function allCalNav(yrmo){var p=yrmo.split('-');allCalRender(parseInt(p[0]),parseInt(p[1])-1);var l=document.getElementById('allCalList');if(l)l.innerHTML='';}
 
 document.addEventListener('DOMContentLoaded',function(){
@@ -13020,6 +12917,26 @@ document.addEventListener('DOMContentLoaded',function(){
 
 
 
+function notesPickType(btn, type){
+  window._noteType = type;
+  // Reset all type buttons
+  var bar = document.getElementById('noteTypeBar');
+  if(!bar) return;
+  bar.querySelectorAll('button').forEach(function(b){
+    b.classList.remove('nt-active');
+    b.style.border = '1.5px solid rgba(48,47,44,.2)';
+    b.style.background = 'transparent';
+    b.style.color = 'rgba(48,47,44,.45)';
+  });
+  // Highlight active button using NOTE_TYPES colour
+  var nt = NOTE_TYPES[type] || {};
+  var col = nt.col || '#302f2c';
+  btn.classList.add('nt-active');
+  btn.style.border = '1.5px solid ' + col;
+  btn.style.background = col + '18';
+  btn.style.color = col;
+}
+window.notesPickType = notesPickType;
 window._noteType='idea';
 window._notesSubmit=function(){
   var txt=document.getElementById('notesInput');
@@ -13181,7 +13098,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 });
-K CAM KIT MODAL -->
+</script>
+  <!-- PICK CAM KIT MODAL -->
   <div class="modal-ov" id="mPickCamKit">
     <div class="modal" style="max-width:520px">
       <div class="modal-hdr"><div class="modal-title">Select Camera Body</div><button class="x-btn" onclick="cm('mPickCamKit')">&#215;</button></div>
