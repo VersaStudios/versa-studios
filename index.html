@@ -1686,18 +1686,6 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
 </div>
 <div id="gjSuccess" style="display:none;text-align:center;padding:30px 20px"><div style="font-size:40px;margin-bottom:12px">&#10003;</div><div style="font-family:var(--cond);font-size:18px;font-weight:800;color:#80d0a0;margin-bottom:8px">Report Submitted</div><div style="font-size:14px;color:rgba(255,255,255,.5);margin-bottom:20px" id="gjSuccessDetail"></div><button class="gj-submit" onclick="gjReset()" style="background:rgba(255,255,255,.1);color:#fff">Submit Another</button></div>
 </div></div></div>
-<div id="erGenPanel" style="display:none;max-width:640px;margin:0 auto">
-<style>.gj-wrap{background:#0f1218;border-radius:10px;overflow:hidden;box-shadow:0 2px 20px rgba(0,0,0,.5)}.gj-head{background:linear-gradient(135deg,#0f1218 0%,#161c24 100%);padding:20px 24px 16px;border-bottom:2px solid rgba(45,90,45,.5)}.gj-title{font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#80d0a0}.gj-body{padding:0 24px 24px}.gj-sec{padding:18px 0;border-bottom:1px solid rgba(255,255,255,.06)}.gj-sec:last-child{border-bottom:none}.gj-lbl{font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:10px}.gj-btn{padding:14px 16px;border-radius:7px;font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border:2px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:rgba(255,255,255,.5);transition:all .15s;flex:1}.gj-btn.active{background:rgba(128,208,160,.12);border-color:#80d0a0;color:#80d0a0}.gj-inp{width:100%;background:#161c24;border:1.5px solid rgba(255,255,255,.12);border-radius:7px;color:#fff;padding:12px 14px;font-size:15px;font-family:var(--font);outline:none}.gj-inp:focus{border-color:#80d0a0}.gj-inp::placeholder{color:rgba(255,255,255,.25)}.gj-submit{width:100%;padding:15px;background:#80d0a0;border:none;border-radius:8px;font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#000;cursor:pointer;margin-top:4px}.gj-submit:disabled{opacity:.4;cursor:not-allowed}</style>
-<div class="gj-wrap"><div class="gj-head"><div style="font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:4px">Versa Studios</div><div class="gj-title" id="gjTitle">Job · Technical Report</div></div>
-<div class="gj-body"><div id="gjFormView">
-<div class="gj-sec"><div class="gj-lbl">Show Date</div><input type="date" class="gj-inp" id="gjDate" onchange="gjUpdateStatus()"/></div>
-<div class="gj-sec"><div class="gj-lbl">Versa Engineer</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="gj-btn active" id="gjBtnAR" onclick="gjPick('Andrew Rowell')">Andrew Rowell</button><button class="gj-btn" id="gjBtnIC" onclick="gjPick('Ian Curry')">Ian Curry</button></div><input type="hidden" id="gjTech" value="Andrew Rowell"/></div>
-<div class="gj-sec"><div class="gj-lbl">Report Type</div><div style="display:flex;gap:8px"><button class="gj-btn active" id="gjBtnNTR" onclick="gjSetMode('ntr')" style="flex:1">NTR</button><button class="gj-btn" id="gjBtnSTR" onclick="gjSetMode('str')" style="flex:1">STR</button></div></div>
-<div class="gj-sec" id="gjInfoSec" style="display:none"><div class="gj-lbl">Technical Information</div><textarea class="gj-inp" id="gjInfo" style="min-height:100px;resize:vertical" oninput="gjUpdateStatus()" placeholder="Describe the issue…"></textarea></div>
-<div class="gj-sec" style="border:none;padding-bottom:0"><div style="font-family:var(--cond);font-size:11px;color:rgba(255,255,255,.3);margin-bottom:10px" id="gjStatus">Complete all fields to submit</div><button class="gj-submit" id="gjSubmitBtn" onclick="gjSubmit()" disabled>Submit Report</button></div>
-</div>
-<div id="gjSuccess" style="display:none;text-align:center;padding:30px 20px"><div style="font-size:40px;margin-bottom:12px">&#10003;</div><div style="font-family:var(--cond);font-size:18px;font-weight:800;color:#80d0a0;margin-bottom:8px">Report Submitted</div><div style="font-size:14px;color:rgba(255,255,255,.5);margin-bottom:20px" id="gjSuccessDetail"></div><button class="gj-submit" onclick="gjReset()" style="background:rgba(255,255,255,.1);color:#fff">Submit Another</button></div>
-</div></div></div>
 <!-- I'm a Celeb report panel -->
 <div id="erCelebPanel" style="display:none;max-width:640px;margin:0 auto">
 <style>
@@ -2176,12 +2164,13 @@ function notesSetFilter(f){
   _notesFilter=f;
   ['all','idea','action','reminder','todo'].forEach(function(k){
     var b=document.getElementById('nfBtn-'+k);
-    if(b){
-      var active=k===f;
-      var isDark=_notesDark;
-      b.style.background=active?(isDark?'#efede3':'#302f2c'):'transparent';
-      b.style.color=active?(isDark?'#302f2c':'#efede3'):(isDark?'rgba(239,237,227,.5)':'rgba(48,47,44,.5)');
-    }
+    if(!b)return;
+    var active=k===f;
+    var isDark=_notesDark;
+    // active: dark bg on light, light bg on dark
+    b.style.background=active?(isDark?'#efede3':'#302f2c'):'transparent';
+    b.style.color=active?(isDark?'#302f2c':'#efede3'):(isDark?'rgba(239,237,227,.5)':'rgba(48,47,44,.5)');
+    b.style.border='1px solid '+(active?(isDark?'rgba(239,237,227,.4)':'rgba(48,47,44,.25)'):'rgba(48,47,44,.12)');
   });
   notesRender();
 }
@@ -2211,6 +2200,7 @@ async function notesInit(containerId){
   var wrap=document.getElementById(containerId);
   if(!wrap)return;
   applyNotesTheme(wrap);
+  notesSetFilter(_notesFilter||'all'); // sync button states
   notesRender();
 }
 
@@ -13054,25 +13044,13 @@ function clReset(){
 window.clPick=clPick;window.clSubmit=clSubmit;window.clReset=clReset;
 
 // ── TL BUTTON EVENT WIRING (belt + braces) ───────────────────────────────────
-document.addEventListener('DOMContentLoaded', function() {
-  // Wire + New Entry buttons
-  document.querySelectorAll('[data-tl-add]').forEach(function(btn) {
-    btn.addEventListener('click', function(e) {
-      var loc = btn.getAttribute('data-tl-add');
-      try { tlOpenAdd(loc); }
-      catch(err) { console.error('tlOpenAdd error:', err); alert('Error opening form: ' + err.message); }
-    });
-  });
+
 // ── ALL REPORTS CALENDAR ──────────────────────────────────────────────────
 var _allCalCache={};
 function allCalInit(){
-  var wrap=document.getElementById('allCalWrap');
-  if(!wrap){alert('allCalWrap element not found!');return;}
-  wrap.innerHTML='<div style="padding:20px;color:var(--muted);font-family:var(--cond)">Loading reports...</div>';
-  var n=new Date();
-  allCalRender(n.getFullYear(),n.getMonth()).catch(function(e){
-    wrap.innerHTML='<div style="padding:20px;color:#ff7070">Error: '+e.message+'</div>';
-  });
+  var w=document.getElementById('allCalWrap');
+  if(w)w.innerHTML='<div style="padding:20px;color:var(--muted);font-family:var(--cond);font-size:13px">Loading…</div>';
+  var n=new Date();allCalRender(n.getFullYear(),n.getMonth());
 }
 async function allCalRender(yr,mo){
   if(yr==null){var n=new Date();yr=n.getFullYear();mo=n.getMonth();}
@@ -13097,13 +13075,8 @@ async function allCalRender(yr,mo){
           if(!_allCalCache[ck][r.show_date])_allCalCache[ck][r.show_date]=[];
           _allCalCache[ck][r.show_date].push(r);
         });
-      } else {
-        var errTxt=await rr.text().catch(function(){return '';});
-        wrap.innerHTML='<div style="padding:20px;color:#ff7070;font-family:var(--cond)">Fetch failed ('+rr.status+'): '+errTxt.substring(0,100)+'</div>';
-        delete _allCalCache[ck];
-        return;
-      }
-    }catch(e){delete _allCalCache[ck];}
+      }else{wrap.innerHTML='<div style="padding:20px;color:#ff7070;font-family:var(--cond)">Error '+rr.status+'</div>';delete _allCalCache[ck];return;}
+    }catch(e){wrap.innerHTML='<div style="padding:20px;color:#ff7070;font-family:var(--cond)">'+e.message+'</div>';delete _allCalCache[ck];return;}
   }
   var dd=_allCalCache[ck]||{};
   var h='<div style="background:var(--near-black);border:1px solid var(--border-l);border-radius:12px;overflow:hidden;margin-bottom:16px">'
@@ -13112,8 +13085,7 @@ async function allCalRender(yr,mo){
     +'<div style="text-align:center"><div style="font-family:var(--cond);font-size:28px;font-weight:900;color:var(--white);line-height:1">'+mn[mo]+'</div>'
     +'<div style="font-family:var(--cond);font-size:14px;font-weight:700;color:var(--muted);letter-spacing:.1em;margin-top:3px">'+yr+'</div></div>'
     +(canN?'<button data-nav="'+ns2+'" onclick="allCalNav(this.dataset.nav)" style="background:var(--dark);border:1px solid var(--border-l);color:var(--white);width:38px;height:38px;border-radius:8px;font-size:20px;cursor:pointer">&#8594;</button>':'<div style="width:38px"></div>')
-    +'</div>'
-    +'<div style="display:grid;grid-template-columns:repeat(7,1fr);border-bottom:1px solid var(--border)">';
+    +'</div><div style="display:grid;grid-template-columns:repeat(7,1fr);border-bottom:1px solid var(--border)">';
   ['MON','TUE','WED','THU','FRI','SAT','SUN'].forEach(function(dy,ii){h+='<div style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.1em;color:'+(ii>=5?'#2a2a2a':'#666')+';text-align:center;padding:10px 0">'+dy+'</div>';});
   h+='</div><div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;padding:10px">';
   var fd=(new Date(yr,mo,1).getDay()+6)%7,dim=new Date(yr,mo+1,0).getDate();
@@ -13155,12 +13127,17 @@ async function allCalRender(yr,mo){
       }).join('');
   };
 }
-function allCalNav(yrmo){
-  var p=yrmo.split('-');
-  allCalRender(parseInt(p[0]),parseInt(p[1])-1);
-  var l=document.getElementById('allCalList');if(l)l.innerHTML='';
-}
+function allCalNav(yrmo){var p=yrmo.split('-');allCalRender(parseInt(p[0]),parseInt(p[1])-1);var l=document.getElementById('allCalList');if(l)l.innerHTML='';}
 
+document.addEventListener('DOMContentLoaded', function() {
+  // Wire + New Entry buttons
+  document.querySelectorAll('[data-tl-add]').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      var loc = btn.getAttribute('data-tl-add');
+      try { tlOpenAdd(loc); }
+      catch(err) { console.error('tlOpenAdd error:', err); alert('Error opening form: ' + err.message); }
+    });
+  });
 });
 </script>
   <!-- PICK CAM KIT MODAL -->
