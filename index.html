@@ -9,7 +9,7 @@
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 .app{display:flex;height:100vh;background:var(--black);color:var(--white)}
-:root{--black:#0a0a0a;--near-black:#111;--dark:#1c1c1c;--border:#2e2e2e;--border-l:#3a3a3a;--muted:#aaa;--subtle:#ccc;--white:#f2f2f2;--pure:#fff;--accent:#4a9eff;--font:'Barlow',sans-serif;--cond:'Barlow Condensed',sans-serif}
+:root{--black:#efede3;--near-black:#302f2c;--dark:#e8e4da;--border:#c8c4bc;--border-l:#d4d0c8;--muted:#8a8680;--subtle:#6b6764;--white:#302f2c;--pure:#302f2c;--accent:#F4A258;--font:'Barlow',sans-serif;--cond:'Barlow Condensed',sans-serif}
 html[data-theme="light"]{--black:#e9ebee;--near-black:#f4f5f7;--dark:#e2e4e8;--border:#cdd0d6;--border-l:#b0b5bf;--muted:#5a6170;--subtle:#2e3340;--white:#1a1d23;--pure:#0a0c0f;--accent:#1a6fd4}
 html,body{height:100%;background:var(--black);color:var(--white);font-family:var(--font);font-size:17px;overflow:hidden;-webkit-font-smoothing:antialiased}
 .app{display:flex;height:100vh;overflow:hidden}
@@ -578,28 +578,37 @@ body.ops-sa .main-content{margin-left:0!important;}
 .tl-stat-n{font-family:var(--cond);font-size:24px;font-weight:900;line-height:1;margin-bottom:3px}
 .tl-stat-l{font-family:var(--cond);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 
-/* ── VERSA COLOUR THEME ── */
-/* Accent: blue → marigold */
-:root { --accent: #F4A258; }
+/* Sidebar: keep light text on dark charcoal background */
+.sb, .sidebar, [class*="sidebar"], nav.sb {
+  color: #efede3 !important;
+}
+.sb *, .sb .nav-item, .sb .nav-lbl, .sb .nav-icon,
+.sb button, .sb a, .sb span, .sb div {
+  color: #efede3;
+}
+.sb .nav-item.active { color: #F4A258; }
+.sb .nav-item:hover { color: #efede3; }
 
-/* Main app area: dark → warm cream */
-body { background: #efede3 !important; }
-.app { background: #efede3 !important; }
+/* Modals: dark bg with light text */
+.modal, .modal * { color: #efede3; }
+.modal input, .modal textarea, .modal select { 
+  color: #efede3 !important; background: rgba(239,237,227,.1) !important;
+  border-color: rgba(239,237,227,.2) !important;
+}
+.modal input::placeholder, .modal textarea::placeholder { color: rgba(239,237,227,.35) !important; }
 
-/* Page backgrounds */
-.page { background: #efede3; color: #302f2c; }
-.page.active { background: #efede3; }
+/* Inputs on cream bg — dark text */
+.page input:not([type=checkbox]):not([type=radio]):not([type=range]),
+.page textarea, .page select {
+  color: #302f2c !important;
+  border-color: rgba(48,47,44,.2) !important;
+}
+.page input::placeholder, .page textarea::placeholder { color: rgba(48,47,44,.3) !important; }
 
-/* Cards and panels */
-.card { background: #f5f2ec !important; border-color: rgba(48,47,44,.12) !important; }
-.card-hdr { background: rgba(48,47,44,.05) !important; border-color: rgba(48,47,44,.1) !important; }
-
-/* Text */
-.lbl, .field-lbl, .sublbl { color: rgba(48,47,44,.5) !important; }
-
-/* Tables */
-.tbl th { background: rgba(48,47,44,.06) !important; color: rgba(48,47,44,.6) !important; }
-.tbl tr:hover td { background: rgba(48,47,44,.04) !important; }
+/* Buttons: dark bg light text */
+.btn, .btn-sm, .pill-btn { background: #302f2c !important; color: #efede3 !important; border-color: #302f2c !important; }
+.btn:hover, .btn-sm:hover { background: #484140 !important; }
+.btn.active, .btn-pri { background: #F4A258 !important; color: #302f2c !important; border-color: #F4A258 !important; }
 </style>
 </head>
 <div id="appLoadingOverlay" style="position:fixed;inset:0;background:#0a0a0a;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px"><img src="data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMzY2IDk2Mi45MiI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiNmZmY7fTwvc3R5bGU+PC9kZWZzPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTE5NC4xNiw1MDcuMzN2LTE0LjdjOS4wOSw0LjQ1LDIzLjQsOS42NywzOC42Nyw5LjY3LDE4LjE3LDAsMzIuMDktOC4xMiwzMi4wOS0yMi4yM3MtNy41NC0yMS42NS0zMi4wOS0zMC4zNWMtMjcuNjQtOS44Ni0zOS4wNS0yMS42Ni0zOS4wNS00MS43NiwwLTIzLDE5LjcyLTM2LjE1LDQ0LjY2LTM2LjE1QTg2LjYsODYuNiwwLDAsMSwyNzIuMjcsMzc5djE0LjMxYy03LjU0LTMuODctMjAuODgtOC4xMy0zMy4yNS04LjEzLTE3Ljc5LDAtMzAuNzQsOC43MS0zMC43NCwyMi4yNCwwLDEyLjU3LDYuNzcsMjEuMjYsMzEuNywzMC4zNSwyNy44NCw5Ljg2LDM5LjQ0LDIxLjA3LDM5LjQ0LDQxLjM3LDAsMjMtMTguNTYsMzYuNTQtNDUuODIsMzYuNTRBOTkuMiw5OS4yLDAsMCwxLDE5NC4xNiw1MDcuMzNaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMzcxLjgzLDM4Ni41VjUxMy4zMkgzNTcuMTRWMzg2LjVIMzE0LjQyVjM3NC4xM0g0MTQuNzVWMzg2LjVaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNNTY1Ljc1LDQ2NS4zOGMwLDMxLjUxLTE5LjUzLDUwLjI2LTUyLjIsNTAuMjYtMzIuNDgsMC01Mi0xOC43NS01Mi01MC4yNlYzNzQuMTNoMTQuNjlWNDY0LjZjMCwyMy40LDEzLjkyLDM3LjMyLDM3LjMyLDM3LjMyczM3LjUtMTMuOTIsMzcuNS0zNy4zMlYzNzQuMTNoMTQuN1oiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik02MjguNTgsNTEzLjMyVjM3NC4xM2gzOC40N2M0MS41NiwwLDczLjQ2LDI2LjY4LDczLjQ2LDY5LjZTNzA5LDUxMy4zMiw2NjcuODIsNTEzLjMyWk02NDMuMjcsMzg2LjVWNTAxaDI0LjU1YzMyLjY4LDAsNTcuNjEtMjIuMjMsNTcuNjEtNTcuMjJTNzAwLjMsMzg2LjUsNjY2Ljg2LDM4Ni41WiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTc5NS4yMyw1MTMuMzJWMzc0LjEzaDE0LjY5VjUxMy4zMloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik05MzguMSwzNzEuODFjNDAsMCw3MC43NiwzMS43LDcwLjc2LDcxLjkyLDAsNDAuNC0zMC4zNiw3MS45MS03MC43Niw3MS45MS00MC4yMSwwLTcwLjc2LTMxLjUxLTcwLjc2LTcxLjkxQzg2Ny4zNCw0MDMuOSw4OTcuODksMzcxLjgxLDkzOC4xLDM3MS44MVptMCwxMzAuMTFjMzIuNDgsMCw1NS42OC0yNS4xNCw1NS42OC01OC4xOXMtMjMuMi01OC4yLTU1LjY4LTU4LjJjLTMyLjI5LDAtNTUuODcsMjUuMTQtNTUuODcsNTguMlM5MDUuODEsNTAxLjkyLDkzOC4xLDUwMS45MloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0xMDU1LjI1LDUwNy4zM3YtMTQuN2M5LjA5LDQuNDUsMjMuNCw5LjY3LDM4LjY3LDkuNjcsMTguMTcsMCwzMi4wOS04LjEyLDMyLjA5LTIyLjIzcy03LjU0LTIxLjY1LTMyLjA5LTMwLjM1Yy0yNy42NC05Ljg2LTM5LjA1LTIxLjY2LTM5LjA1LTQxLjc2LDAtMjMsMTkuNzItMzYuMTUsNDQuNjYtMzYuMTVhODYuNiw4Ni42LDAsMCwxLDMzLjgzLDcuMTV2MTQuMzFjLTcuNTQtMy44Ny0yMC44OC04LjEzLTMzLjI1LTguMTMtMTcuNzksMC0zMC43NCw4LjcxLTMwLjc0LDIyLjI0LDAsMTIuNTcsNi43NywyMS4yNiwzMS43LDMwLjM1LDI3Ljg0LDkuODYsMzkuNDQsMjEuMDcsMzkuNDQsNDEuMzcsMCwyMy0xOC41NiwzNi41NC00NS44MiwzNi41NEE5OS4yLDk5LjIsMCwwLDEsMTA1NS4yNSw1MDcuMzNaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMTMxLjIzLDI3MC44MmgtMi4xOEwwLDUuMDlINjEuMDdMOTUuMjQsODAuN2MxMy40NSwzMC4xNywyNS40NCw1NiwzNC41Myw4MS40M0MxMzcuNCwxNDMuNTgsMTUzLjQsMTA2LjUxLDE2NSw4MC43TDE5OS4yLDUuMDloNjAuNzFaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMzM0Ljc3LDI2Ni44MlY1LjA5SDUwMy4wOFY1MkgzOTAuNzVWMTExLjZINDg2djQ1LjA3SDM5MC43NXY2My4yNUg1MDguNTN2NDYuOVoiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik02OTEuMzYsNS4wOWM2MC43MSwwLDEwMSwzMC4xNywxMDEsODYuMTUsMCwzOC4xNy0yMS40NCw2My4yNS00OS44LDc0LjUyTDc5Ny41LDI2Ni44Mkg3MzguMjVsLTQ2LjE2LTkxLjYxSDY1NC4yOHY5MS42MUg1OTkuMzlWNS4wOVpNNjU0LjI4LDUydjc4LjE2aDQwYzI0LjcyLDAsNDEuOC0xMi4zNiw0MS44LTM4LjksMC0yNi4xNy0xNy44MS0zOS4yNi00My4yNi0zOS4yNloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik04NzUuNjQsMjU3VjIwMy4yYzE4LjE4LDkuNDUsNDIuMTcsMTcuNDUsNjUuOCwxOC45MWE5NS4wOCw5NS4wOCwwLDAsMCwyMy4yNi0xLjQ2YzIwLTIuOTEsMzEuNjMtMTAuNTQsMzEuNjMtMjMuMjYsMC0xNy40NS0xNS42My0yNi41NC01MS42Mi0zOS42My00NS44LTE2LjcyLTcyLjctMzYtNzIuNy04MS40MkM4NzIsMjkuODEsOTEwLjU0LDAsOTY2Ljg4LDBjMjYuMTgsMCw1Miw1LjgyLDY4LjM0LDEzLjA5VjY0LjcxYy0xNS4yNi05LjA5LTQwLTE2LTY0LTE2LTI2LjksMC00NC4zNSwxMC41NC00NC4zNSwyNy4yNywwLDE1LjI2LDE0LjE3LDI1LjgsNDkuOCwzOS4yNSw0NS44LDE3LjgxLDc0LjE1LDM3LjA4LDc0LjE1LDgxLjA3LDAsNDcuMjUtMzUuNjIsNzUuNjEtOTcuNDIsNzUuNjFDOTIzLjYzLDI3MS45MSw4OTQuNTQsMjY1LjM2LDg3NS42NCwyNTdaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMTIzOC43NywxLjA5aC0yLjE4TDExMDkuNzMsMjY2LjgyaDU4LjUybDEyLTI3LjIyYzExLTI0LjgxLDUwLjE3LTExNy44NCw1Ny43OS0xMzYsOCwyMi45LDQ4LjgxLDExNy4wNiw2MC44MSwxNDQuMzJoMGw4LjYyLDE4LjlIMTM2NloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik03NzQuNDYsNzA2Ljc4bC0zMS44OS02NS42NWgtMi42NGwtODYuMjIsMTc4LTUuNCwxMS4xNmMtMTEtMzAuNTEtMjUuMzUtNjEuNDktNDEuNDctOTcuNjVsLTQxLjM4LTkxLjU2aC03NEw2MTUuOSw4OTcuMjdsMzEuODgsNjUuNjVoMi42NGw4Ni4yMi0xNzgsNS40MS0xMS4xNmMxMSwzMC41LDI1LjM1LDYxLjQ5LDQxLjQ2LDk3LjY1bDQxLjM4LDkxLjU2aDc0WiIvPjwvc3ZnPg==" style="width:200px;opacity:.95"/><div style="font-size:22px;color:#aaa;letter-spacing:.1em;text-transform:uppercase;margin-top:-4px;font-weight:700;color:#ffffff">Technical Dashboard</div><div style="font-size:13px;color:#666;letter-spacing:.06em;text-transform:uppercase" id="appLoadingMsg">Connecting...</div><div style="width:180px;height:3px;background:#1a1a1a;border-radius:999px;overflow:hidden;margin-top:4px"><div id="appLoadingBar" style="height:100%;width:0%;background:#e8b84b;border-radius:999px;transition:width .4s"></div></div></div>
