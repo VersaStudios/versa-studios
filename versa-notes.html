@@ -347,7 +347,22 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:#efede3;color:#
 .nf-pill{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;border:1.5px solid rgba(48,47,44,.15);padding:5px 11px;color:rgba(48,47,44,.4);background:transparent;cursor:pointer;transition:all .15s}
 .nf-pill.on{background:#302f2c;border-color:#302f2c;color:#efede3}
 
-.nc-sec-hdr{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:rgba(48,47,44,.3);margin:12px 0 6px}</style>
+.nc-sec-hdr{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:rgba(48,47,44,.3);margin:12px 0 6px}
+/* ── Idea capture card ── */
+.idea-cap-card{background:#302f2c;border-color:#302f2c}
+.idea-cap-title{color:#efede3;opacity:.85}
+.idea-cap-inp{color:#efede3;border-bottom-color:rgba(239,237,227,.18)}
+.idea-cap-inp::placeholder{color:rgba(239,237,227,.28)}
+.idea-cap-ta{background:rgba(239,237,227,.06);border-color:rgba(239,237,227,.12);color:#efede3;min-height:52px}
+.idea-cap-ta::placeholder{color:rgba(239,237,227,.28)}
+.idea-col-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:rgba(239,237,227,.35);margin:8px 0 6px}
+.idea-col-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.idea-col-btn{width:26px;height:26px;border:none;cursor:pointer;flex-shrink:0;transition:transform .1s;outline:none}
+.idea-col-btn:hover{transform:scale(1.12)}
+.idea-col-btn.on{outline:2.5px solid #fff;outline-offset:2px}
+.idea-pin-btn{width:100%;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;background:#F4A258;color:#302f2c;border:none;padding:10px;cursor:pointer;transition:background .15s}
+.idea-pin-btn:hover{background:#f5b472}
+</style>
 </head>
 <body>
 <div class="layout">
@@ -435,24 +450,23 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:#efede3;color:#
           </div>
 
           <!-- Idea capture -->
-          <div class="card" style="background:#302f2c">
-            <div class="ch"><div class="ct" style="color:#efede3">Pin an idea</div></div>
-            <input class="cap-inp" id="iTitle" placeholder="What's the idea?" style="color:#efede3;border-bottom-color:rgba(239,237,227,.2)"/>
-            <textarea class="cap-ta" id="iBody" placeholder="Details…" style="background:rgba(239,237,227,.07);border-color:rgba(239,237,227,.12);color:#efede3;min-height:48px"></textarea>
-            <div class="cap-row" style="margin-top:8px;gap:5px;flex-wrap:wrap" id="iColRow">
-              <button class="idea-col-btn on" data-c="0" onclick="pickIdeaColBtn(this)" style="width:22px;height:22px;background:#4a9eff;border:none;cursor:pointer;outline:3px solid #fff;outline-offset:2px"></button>
-              <button class="idea-col-btn" data-c="1" onclick="pickIdeaColBtn(this)" style="width:22px;height:22px;background:#34d399;border:none;cursor:pointer"></button>
-              <button class="idea-col-btn" data-c="2" onclick="pickIdeaColBtn(this)" style="width:22px;height:22px;background:#f59e0b;border:none;cursor:pointer"></button>
-              <button class="idea-col-btn" data-c="3" onclick="pickIdeaColBtn(this)" style="width:22px;height:22px;background:#ef4444;border:none;cursor:pointer"></button>
-              <button class="idea-col-btn" data-c="4" onclick="pickIdeaColBtn(this)" style="width:22px;height:22px;background:#a78bfa;border:none;cursor:pointer"></button>
-              <button class="idea-col-btn" data-c="5" onclick="pickIdeaColBtn(this)" style="width:22px;height:22px;background:#f472b6;border:none;cursor:pointer"></button>
-              <button class="idea-col-btn" data-c="6" onclick="pickIdeaColBtn(this)" style="width:22px;height:22px;background:#2dd4bf;border:none;cursor:pointer"></button>
-              <button class="idea-col-btn" data-c="7" onclick="pickIdeaColBtn(this)" style="width:22px;height:22px;background:#fb923c;border:none;cursor:pointer"></button>
-              <button class="idea-col-btn" data-c="8" onclick="pickIdeaColBtn(this)" style="width:22px;height:22px;background:#e2e8f0;border:none;cursor:pointer"></button>
+          <div class="card idea-cap-card">
+            <div class="ch"><div class="ct idea-cap-title">Pin an idea</div></div>
+            <input class="cap-inp idea-cap-inp" id="iTitle" placeholder="What\'s the idea?"/>
+            <textarea class="cap-ta idea-cap-ta" id="iBody" placeholder="Details (optional)…"></textarea>
+            <div class="idea-col-label">Colour</div>
+            <div class="idea-col-row" id="iColRow">
+              <button class="idea-col-btn on" data-c="0" onclick="pickIdeaColBtn(this)" style="background:#5B5F8D"></button>
+              <button class="idea-col-btn" data-c="1" onclick="pickIdeaColBtn(this)" style="background:#9BB29E"></button>
+              <button class="idea-col-btn" data-c="2" onclick="pickIdeaColBtn(this)" style="background:#DA6B51"></button>
+              <button class="idea-col-btn" data-c="3" onclick="pickIdeaColBtn(this)" style="background:#F1DCBA"></button>
+              <button class="idea-col-btn" data-c="4" onclick="pickIdeaColBtn(this)" style="background:#484149"></button>
+              <button class="idea-col-btn" data-c="5" onclick="pickIdeaColBtn(this)" style="background:#013D5A"></button>
+              <button class="idea-col-btn" data-c="6" onclick="pickIdeaColBtn(this)" style="background:#BDD3CE"></button>
+              <button class="idea-col-btn" data-c="7" onclick="pickIdeaColBtn(this)" style="background:#708C69"></button>
+              <button class="idea-col-btn" data-c="8" onclick="pickIdeaColBtn(this)" style="background:#F4A258"></button>
             </div>
-            <div class="cap-row" style="margin-top:8px">
-              <button class="save-btn" onclick="addIdeaCapture()" style="background:#4a9eff;color:#fff;border-color:#4a9eff">Pin Idea</button>
-            </div>
+            <button class="idea-pin-btn" onclick="addIdeaCapture()">Pin Idea</button>
           </div>
 
           <!-- To-do focus -->
@@ -1418,9 +1432,9 @@ document.addEventListener('DOMContentLoaded',function(){
 
 // ── IDEAS BOARD ──────────────────────────────────────────────────────────
 var IDEA_PAL=[
-  {bg:'#4a9eff',txt:'#fff'},{bg:'#34d399',txt:'#052e16'},{bg:'#f59e0b',txt:'#1c0a00'},
-  {bg:'#ef4444',txt:'#fff'},{bg:'#a78bfa',txt:'#fff'},{bg:'#f472b6',txt:'#fff'},
-  {bg:'#2dd4bf',txt:'#042f2e'},{bg:'#fb923c',txt:'#fff'},{bg:'#e2e8f0',txt:'#1e293b'}
+  {bg:'#5B5F8D',txt:'#F1DCBA'},{bg:'#9BB29E',txt:'#013D5A'},{bg:'#DA6B51',txt:'#F1DCBA'},
+  {bg:'#F1DCBA',txt:'#484149'},{bg:'#484149',txt:'#F1DCBA'},{bg:'#013D5A',txt:'#BDD3CE'},
+  {bg:'#BDD3CE',txt:'#013D5A'},{bg:'#708C69',txt:'#F1DCBA'},{bg:'#F4A258',txt:'#484149'}
 ];
 
 function renderIdeas(){
