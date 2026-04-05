@@ -21,10 +21,10 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:#efede3;color:#
 .mob-btn.on svg{stroke:#302f2c}
 
 @media(max-width:860px){
-  .layout{grid-template-columns:1fr;height:100vh;overflow:hidden}
-  .sb{display:none}
-  .mob-nav{display:flex;align-items:center;justify-content:space-around;background:#efede3;border-top:1.5px solid rgba(48,47,44,.1);padding:8px 0 max(8px,env(safe-area-inset-bottom));flex-shrink:0;position:relative;z-index:50}
+  .sb{display:none!important}
+  .mob-nav{display:flex!important;align-items:center;justify-content:space-around;background:#efede3;border-top:1.5px solid rgba(48,47,44,.1);padding:8px 0 max(8px,env(safe-area-inset-bottom));flex-shrink:0;position:relative;z-index:50}
   .main{height:100%;overflow:hidden}
+  .layout{grid-template-columns:1fr!important;height:100vh;overflow:hidden;display:flex!important;flex-direction:column}
   .mhdr{padding:12px 16px 8px}
   .mhdr .sub{display:none}
   .mhdr .htitle{font-size:22px}
@@ -868,11 +868,7 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:#efede3;color:#
 
   <!-- Mobile bottom nav -->
   <nav class="mob-nav" id="mobNav">
-    <button class="mob-btn on" onclick="showPage('dashboard')" data-page="dashboard">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
-      <span>Home</span>
-    </button>
-    <button class="mob-btn" onclick="showPage('notes')" data-page="notes">
+    <button class="mob-btn on" onclick="showPage('notes')" data-page="notes">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 2h10v12H3z"/><path d="M6 5h4M6 8h4M6 11h2"/></svg>
       <span>Notes</span>
     </button>
@@ -908,7 +904,8 @@ var DEF_MTGS=[{id:1,name:'Versa Weekly',isSeries:true,prep:'',instances:[]},{id:
 async function init(){
   // Show UI immediately, load data in background
   if(!meetings.length)meetings=JSON.parse(JSON.stringify(DEF_MTGS));
-  curView='dashboard';
+  curView=window.innerWidth<=860?'notes':'dashboard';
+  showPage(curView);
   render();
   renderMtgList();
   // Fetch with 8s timeout
