@@ -68,12 +68,12 @@ html[data-theme="light"] .theme-btn::before{-webkit-mask-image:url("data:image/s
 .tbl{width:100%;border:1px solid var(--border);border-radius:5px;overflow:hidden;background:var(--near-black)}
 .tbl-hdr{display:grid;padding:9px 17px;border-bottom:1px solid var(--border);background:var(--dark)}
 .th{font-family:var(--cond);font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
-.tbl-row{display:grid;padding:12px 17px;border-bottom:1px solid var(--border);align-items:center;cursor:pointer;transition:background .1s;position:relative}
+.tbl-row{display:grid;padding:14px 17px;border-bottom:1px solid var(--border);align-items:center;cursor:pointer;transition:background .1s;position:relative}
 .tbl-row:last-child{border-bottom:none}
 .tbl-row:hover{background:rgba(255,255,255,.03)}
-.td{font-size:17px;font-weight:500;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:6px}
-.td.nm{font-family:var(--cond);font-weight:700;font-size:17px;color:var(--pure)}
-.td.mn{font-size:17px;font-weight:600;color:var(--subtle);font-family:monospace}
+.td{font-size:15px;font-weight:600;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:6px}
+.td.nm{font-family:var(--cond);font-weight:800;font-size:18px;color:var(--pure)}
+.td.mn{font-size:14px;font-weight:600;color:var(--subtle);font-family:monospace}
 .badge{display:inline-flex;align-items:center;font-family:var(--cond);font-size:17px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:3px 7px;border-radius:2px}
 .b-av{background:rgba(255,255,255,.1);color:var(--white)}
 .b-iu{background:rgba(200,60,60,.25);color:#f08080}
@@ -1172,6 +1172,7 @@ html[data-theme="light"] .drw-more-menu{background:#f4f2ec;border-color:rgba(48,
           <div class="panel"><div class="panel-hdr"><div class="panel-title">Current Jobs</div><button class="panel-act" onclick="nav('jobs',document.querySelector('[data-pg=jobs]'))">View All</button></div><div id="dJobsCurrent"></div></div>
           <div class="panel"><div class="panel-hdr"><div class="panel-title">Upcoming Jobs</div></div><div id="dJobsUpcoming"></div></div>
           <div id="dServiceAlerts" style="display:none"><div class="panel" style="border-left:3px solid #f59e0b"><div class="panel-hdr"><div class="panel-title" style="color:#f59e0b">&#9888; Service Due</div></div><div id="dServiceList"></div></div></div>
+<div id="dRecentKit" style="display:none"><div class="panel"><div class="panel-hdr"><div class="panel-title">Recently Viewed Kit</div></div><div id="dRecentKitList"></div></div></div>
 <div class="panel"><div class="panel-hdr"><div class="panel-title">Recent Activity</div></div><div id="dActivity"></div></div>
           
         </div>
@@ -2437,6 +2438,16 @@ async function renderDashActivity(el){
   if(!el)return;
   el.innerHTML='<div style="padding:14px 18px;font-size:13px;color:var(--muted);font-family:var(--cond)">Loading…</div>';
   var items=[];
+  var JP=window._JOB_PALETTE||[{bg:'#2A5B5B',bg2:'#1D4040'}];
+  function getJobColor(showName){
+    if(!showName)return{bg:'#5B4A3A',bg2:'#3D3228'};
+    var ln=showName.toLowerCase();
+    var j=jobs.find(function(x){return x.name.toLowerCase()===ln||ln.indexOf(x.name.toLowerCase())>=0;});
+    if(j&&j.color)return j.color;
+    if(j)return JP[jobs.indexOf(j)%JP.length];
+    return{bg:'#5B4A3A',bg2:'#3D3228'};
+  }
+  var tlCardCols={manchester:{bg:'#3A4A5B',bg2:'#283545'},london:{bg:'#8B5E3C',bg2:'#6B4428'},abc:{bg:'#2D5A3D',bg2:'#1F4030'}};
   // Last 3 engineering reports
   try{
     var r=await fetch('https://dttwgmoyxthczlzxjgag.supabase.co/rest/v1/engineering_reports?select=*&order=submitted_at.desc&limit=3',{
@@ -2449,13 +2460,17 @@ async function renderDashActivity(el){
       var col=isUrgent?'#e05050':rep.summary_mode==='ntr'?'#22c55e':'#f59e0b';
       var d=rep.show_date||'';var p=d.split('-');
       var dateDisp=p.length===3?p[2]+'/'+p[1]+'/'+p[0].slice(2):d;
+      var showName=rep.show_name||'Engineering Report';
+      var jc=getJobColor(showName);
       items.push({
         icon:'&#128196;',
-        title:(rep.show_name||'Engineering Report')+' — '+dateDisp,
+        title:showName+' — '+dateDisp,
         sub:rep.versa_tech_manager||(isUrgent?'⚠ Urgent':''),
         col:col,
         badge:isUrgent?'⚠ URGENT':mode,
         badgeCol:col,
+        jobColor:jc,
+        onclick:"nav(\\'allcal\\',document.querySelector(\\'[data-pg=allcal]\\'))",
         ts:rep.submitted_at
       });
     });
@@ -2480,13 +2495,16 @@ async function renderDashActivity(el){
       var s=e.status||'information';
       var p=e.date?e.date.split('-'):[];
       var dateDisp=p.length===3?p[2]+'/'+p[1]+'/'+p[0].slice(2):e.date||'';
+      var lc=tlCardCols[e._loc]||{bg:'#3A4A5B',bg2:'#283545'};
       items.push({
         icon:'&#128203;',
-        title:e.info?(e.info.length>60?e.info.slice(0,57)+'…':e.info):'Tech Log Entry',
+        title:e.info?(e.info.length>50?e.info.slice(0,47)+'…':e.info):'Tech Log Entry',
         sub:(e.by||'')+' · '+(e._loc?e._loc.charAt(0).toUpperCase()+e._loc.slice(1):'')+(e.studio?' · '+e.studio:''),
         col:tlCols[e._loc]||'var(--accent)',
         badge:tlSt[s]||s,
         badgeCol:tlSc[s]||'#888',
+        jobColor:lc,
+        onclick:"nav(\\'studios\\',document.querySelector(\\'[data-pg=studios]\\'))",
         ts:e.date
       });
     });
@@ -2495,16 +2513,17 @@ async function renderDashActivity(el){
     el.innerHTML='<div style="padding:16px 18px;font-size:13px;color:var(--muted);font-family:var(--cond)">No recent activity.</div>';
     return;
   }
-  el.innerHTML=items.map(function(it){
-    return '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border)">'
-      +'<div style="width:8px;height:8px;border-radius:50%;background:'+it.badgeCol+';flex-shrink:0"></div>'
-      +'<div style="flex:1;min-width:0">'
-      +'<div style="font-family:var(--cond);font-size:18px;font-weight:800;color:var(--white);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:.01em">'+it.title+'</div>'
-      +'<div style="font-family:var(--cond);font-size:13px;color:var(--muted);font-weight:600;letter-spacing:.04em">'+it.sub+'</div>'
+  el.innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;padding:14px">'+items.map(function(it){
+    var cc=it.jobColor||{bg:'#5B4A3A',bg2:'#3D3228'};
+    var onclick=it.onclick||'';
+    return '<div style="background:linear-gradient(135deg,'+cc.bg+','+(cc.bg2||cc.bg)+');border-radius:8px;padding:14px 16px;cursor:'+(onclick?'pointer':'default')+';display:flex;flex-direction:column;justify-content:flex-end;min-height:90px;transition:filter .15s" '+(onclick?'onclick="'+onclick+'" onmouseenter="this.style.filter=\'brightness(1.1)\'" onmouseleave="this.style.filter=\'none\'"':'')+'>'
+      +'<div style="font-family:var(--cond);font-size:16px;font-weight:900;color:#fff;line-height:1.1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-transform:uppercase;letter-spacing:.01em">'+it.title+'</div>'
+      +'<div style="font-family:var(--cond);font-size:11px;color:rgba(255,255,255,.6);font-weight:700;margin-top:3px">'+it.sub+'</div>'
+      +'<div style="display:flex;align-items:center;justify-content:flex-end;margin-top:6px;border-top:1px solid rgba(255,255,255,.15);padding-top:6px">'
+      +'<span style="font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#fff;border:1px solid rgba(255,255,255,.3);padding:2px 7px;border-radius:3px">'+it.badge+'</span>'
       +'</div>'
-      +'<span style="font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:3px;border:1px solid '+it.badgeCol+'40;color:'+it.badgeCol+';flex-shrink:0">'+it.badge+'</span>'
       +'</div>';
-  }).join('');
+  }).join('')+'</div>';
 }
 
 window._lastErr = null; // debug handler removed for production
@@ -3987,6 +4006,7 @@ let activity = [
   {icon:'✓',text:'Studio 12 floor repaint complete',time:'5 days ago'},
 ];
 let currentKid = null, currentJid = null, currentDrwTab = 'det';
+var recentKit = [];
 let slogTags = [], slogLoc = '', slogProj = '', slogStudio = '';
 let importRows = [], kitView = 'list', editUid = null, editCatIdx = null;
 let calWeekStart = null;
@@ -5437,7 +5457,7 @@ function nav(page, el) {
   if(page==='maintenance') { renderMaint(); renderPat(); renderSupp(); }
   if(page==='faults') renderFaults();
   if(page==='bin') renderBin();
-  if(page==='studios') { renderSlog('abc'); renderSlog('manchester'); renderSlog('london'); renderStudioInfo('manchester','Studio 12'); renderStudioInfo('london','Studio 1'); renderStudioInfo('abc',null); }
+  if(page==='studios') { renderSlog('abc'); renderSlog('manchester'); renderSlog('london'); renderStudioInfo('manchester','Studio 12'); renderStudioInfo('london','Studio 1'); renderStudioInfo('abc',null); setTimeout(function(){tlLoad('manchester');tlLoad('london');tlLoad('abc');},100); }
   if(page==='jobs') renderJobs();
   if(page==='calendar') { if(_planView==='cal') renderCal(); else if(_planView==='fl') { setPlanView('fl'); } else { setPlanView('ops'); } }
   if(page==='admin') renderAdmin();
@@ -5738,6 +5758,30 @@ function renderDash() {
       elUp.appendChild(grid);
     } else {
       elUp.innerHTML = '<div style="padding:20px;font-size:15px;color:var(--muted);font-family:var(--cond);font-weight:700;letter-spacing:.06em">NO UPCOMING JOBS</div>';
+    }
+  }
+
+  // Recently viewed kit
+  var rkWrap=document.getElementById('dRecentKit');
+  var rkList=document.getElementById('dRecentKitList');
+  if(rkWrap&&rkList){
+    if(recentKit.length){
+      rkWrap.style.display='block';
+      rkList.innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;padding:14px">'+recentKit.map(function(rid){
+        var k=kit.find(function(x){return x.id===rid;});
+        if(!k)return '';
+        var col=CAT_COLORS[k.cat]||'#5B4A3A';
+        return '<div onclick="nav(\'kit\',document.querySelector(\'[data-pg=kit]\'));setTimeout(function(){openDrawer('+k.id+')},200)" style="background:'+col+';border-radius:8px;padding:14px 16px;cursor:pointer;display:flex;flex-direction:column;justify-content:flex-end;min-height:80px;transition:filter .15s" onmouseenter="this.style.filter=\'brightness(1.1)\'" onmouseleave="this.style.filter=\'none\'">'
+          +'<div style="font-family:var(--cond);font-size:16px;font-weight:900;color:#fff;text-transform:uppercase;line-height:1.1;letter-spacing:.01em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+k.name+'</div>'
+          +'<div style="font-family:var(--cond);font-size:11px;color:rgba(255,255,255,.65);font-weight:700;margin-top:3px">'+k.cat+(k.subcat?' · '+k.subcat:'')+'</div>'
+          +'<div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;border-top:1px solid rgba(255,255,255,.15);padding-top:6px">'
+          +'<span style="font-family:var(--cond);font-size:10px;color:rgba(255,255,255,.5);font-weight:700;letter-spacing:.04em">'+(k.loc||'')+'</span>'
+          +'<span style="font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#fff;border:1px solid rgba(255,255,255,.3);padding:2px 6px;border-radius:3px">'+(k.status||'')+'</span>'
+          +'</div>'
+          +'</div>';
+      }).join('')+'</div>';
+    } else {
+      rkWrap.style.display='none';
     }
   }
 
@@ -6487,17 +6531,41 @@ function toggleGrp(id) {
   b.classList.toggle('open'); c.classList.toggle('open');
 }
 function doSearch(q) {
-  if(!q.trim()) { renderKit(); return; }
-  const lq=q.toLowerCase();
-  const el=document.getElementById('kitBody');
-  const res=kit.filter(k=>k.status!=='Bin'&&(
+  if(!q.trim()) { 
+    var kb=document.getElementById('kitBody');
+    if(kb) renderKit();
+    return; 
+  }
+  // Navigate to kit list view if not already there
+  var curPage=document.querySelector('.page.active');
+  if(!curPage||curPage.id!=='page-kit'){
+    nav('kit',document.querySelector('[data-pg="kit"]'));
+  }
+  // Switch to list view
+  if(typeof kitShowListView==='function'&&typeof _kitView!=='undefined'){
+    _kitView='list';
+    var kvl=document.getElementById('kvList'),kvg=document.getElementById('kvGroup');
+    if(kvl)kvl.classList.add('active');if(kvg)kvg.classList.remove('active');
+  }
+  var lq=q.toLowerCase();
+  var el=document.getElementById('kitBody');
+  if(!el) return;
+  var res=kit.filter(k=>k.status!=='Bin'&&(
     k.name.toLowerCase().includes(lq)||
     (k.tag||'').toLowerCase().includes(lq)||
     (k.serial||'').toLowerCase().includes(lq)||
     (k.model||'').toLowerCase().includes(lq)||
-    (k.make||'').toLowerCase().includes(lq)
+    (k.make||'').toLowerCase().includes(lq)||
+    (k.cat||'').toLowerCase().includes(lq)||
+    (k.subcat||'').toLowerCase().includes(lq)||
+    (k.loc||'').toLowerCase().includes(lq)
   ));
-  if(!res.length){el.innerHTML='<div class="empty"><div class="empty-icon">🔍</div><div class="empty-txt">No results</div></div>';return;}
+  // Show the list container
+  var kitList=document.getElementById('kitListView');
+  if(kitList) kitList.style.display='';
+  var kitLanding=document.getElementById('kitLanding');
+  if(kitLanding) kitLanding.style.display='none';
+  if(!res.length){el.innerHTML='<div class="empty"><div class="empty-icon">🔍</div><div class="empty-txt">No results for "'+q+'"</div></div>';return;}
   el.innerHTML=res.map(k=>{
     const lcls={Manchester:'kr-man',London:'kr-lon',ABC:'kr-abc'}[k.loc]||'';
     return '<div class="tbl-row '+lcls+'" style="grid-template-columns:2fr 1fr 1fr 1fr 34px" onclick="openDrawer('+k.id+')">'
@@ -6515,6 +6583,10 @@ function doSearch(q) {
 function openDrawer(id) {
   id=isNaN(+id)?id:+id; currentKid=id; currentDrwTab='det';
   const k=kit.find(x=>x.id==id); if(!k) return;
+  // Track recently viewed
+  recentKit=recentKit.filter(function(rid){return rid!==id;});
+  recentKit.unshift(id);
+  if(recentKit.length>4) recentKit=recentKit.slice(0,4);
   document.getElementById('drwName').textContent=k.name;
   // Hero image
   var hero=document.getElementById('drwHero');
@@ -7086,7 +7158,7 @@ function switchStudio(loc,el) {
   document.querySelectorAll('.loc-tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('sc-'+loc).classList.add('active');
   el.classList.add('active');
-  // Auto-render info panel for default studio of this loc
+  tlLoad(loc);
   if(loc==='manchester'){var s=document.getElementById('manInfoStudio');if(s)renderStudioInfo('manchester',s.value);}
   else if(loc==='london'){var s2=document.getElementById('lonInfoStudio');if(s2)renderStudioInfo('london',s2.value);}
   else if(loc==='abc'){renderStudioInfo('abc',null);}
@@ -8228,12 +8300,13 @@ function renderJobDet(j) {
   else if(_jdTab==='kit'){content=renderKitPrepTab(j);}
 
 
-  const _tcCols=CARD_COLS[j.status||'Confirmed']||{bg:'#1a5a9a',bg2:'#0f3d6b'};
-  const _tcGrad='linear-gradient(135deg,'+_tcCols.bg+' 0%,'+_tcCols.bg2+' 100%)';
+  const _JP=window._JOB_PALETTE||[{bg:'#2A5B5B',bg2:'#1D4040'}];
+  const _tcCols=j.color||_JP[jobs.indexOf(j)%_JP.length]||{bg:'#3A4A5B',bg2:'#283545'};
+  const _tcGrad='linear-gradient(135deg,'+_tcCols.bg+' 0%,'+((_tcCols.bg2)||_tcCols.bg)+' 100%)';
   var _fmtHdr=function(d){if(!d)return'';var p=d.split('-'),ms=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return parseInt(p[2])+' '+ms[parseInt(p[1])-1];};
   var _dateStr=(_fmtHdr(j.start)&&_fmtHdr(j.end))?_fmtHdr(j.start)+' – '+_fmtHdr(j.end):(_fmtHdr(j.start)||_fmtHdr(j.end)||'');
-  var _dateRow=_dateStr?'<span style="font-family:var(--cond);font-size:13px;color:rgba(255,255,255,.6);font-weight:600">'+_dateStr+'</span>':'';
-  const topCard='<div style="background:'+_tcGrad+';border-radius:6px;padding:18px 20px 16px;position:relative;overflow:hidden;margin-bottom:0">'    +'<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">'    +'<div style="flex:1;min-width:0">'    +'<div style="font-family:var(--cond);font-size:24px;font-weight:900;letter-spacing:.04em;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.45);margin-bottom:8px">'+j.name.toUpperCase()+'</div>'    +'<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px">'    +'<span style="font-family:var(--cond);font-size:14px;color:rgba(255,255,255,.8);font-weight:700">'+j.loc+'</span>'    +'<span style="font-family:var(--cond);font-size:13px;color:rgba(255,255,255,.5);font-weight:600">'+j.studio+'</span>'    +(j.txRx?'<span style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.06em;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:3px;padding:2px 7px;color:#fff">'+j.txRx+'</span>':'')    +'</div>'    +'<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">'    +_dateRow    +statusBadge    +'</div>'    +'</div>'    +'<div style="display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap;align-items:flex-start">'    +(j.name==='Morning Live'?'<button class="ibtn" onclick="om(\'opsBrkModal\')" style="font-size:13px;background:rgba(45,125,210,.15);color:#6ab0e8;border-color:rgba(45,125,210,.35)">&#9632; Off Air</button>':'')    +'<button class="ibtn" onclick="openJobNotes('+j.id+')" style="font-size:13px">📝 Notes</button>'    +'<button class="ibtn" onclick="openEditJob('+j.id+')" style="font-size:13px">Edit</button>'    +'<button class="ibtn" onclick="printJobPDF('+j.id+')" style="font-size:13px;background:rgba(255,107,53,.15);color:#ff6b35;border-color:rgba(255,107,53,.4)">🖨 PDF</button>'    +exportBtn    +'</div>'    +'</div>'    +'</div>';
+  var _dateRow=_dateStr?'<span style="font-family:var(--cond);font-size:15px;color:rgba(255,255,255,.7);font-weight:700;letter-spacing:.04em">'+_dateStr+'</span>':'';
+  const topCard='<div style="background:'+_tcGrad+';border-radius:8px;padding:24px 24px 20px;position:relative;overflow:hidden;margin-bottom:0">'    +'<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">'    +'<div style="flex:1;min-width:0">'    +'<div style="font-family:var(--cond);font-size:36px;font-weight:900;letter-spacing:.01em;color:#fff;text-transform:uppercase;line-height:.92;margin-bottom:12px">'+j.name.toUpperCase()+'</div>'    +'<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px">'    +'<span style="font-family:var(--cond);font-size:18px;color:rgba(255,255,255,.85);font-weight:800;letter-spacing:.04em;text-transform:uppercase">'+j.loc+'</span>'    +'<span style="font-family:var(--cond);font-size:16px;color:rgba(255,255,255,.6);font-weight:700;text-transform:uppercase">'+j.studio+'</span>'    +(j.txRx?'<span style="font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.06em;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:3px;padding:3px 9px;color:#fff">'+j.txRx+'</span>':'')    +'</div>'    +'<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">'    +_dateRow    +statusBadge    +'</div>'    +'</div>'    +'<div style="display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap;align-items:flex-start">'    +(j.name==='Morning Live'?'<button class="ibtn" onclick="om(\'opsBrkModal\')" style="font-size:13px;background:rgba(45,125,210,.15);color:#6ab0e8;border-color:rgba(45,125,210,.35)">&#9632; Off Air</button>':'')    +'<button class="ibtn" onclick="openJobNotes('+j.id+')" style="font-size:13px">📝 Notes</button>'    +'<button class="ibtn" onclick="openEditJob('+j.id+')" style="font-size:13px">Edit</button>'    +'<button class="ibtn" onclick="printJobPDF('+j.id+')" style="font-size:13px;background:rgba(255,107,53,.15);color:#ff6b35;border-color:rgba(255,107,53,.4)">🖨 PDF</button>'    +exportBtn    +'</div>'    +'</div>'    +'</div>';
 
   // Meeting notes for this tab
   if(!j.meetingNotes)j.meetingNotes=[];
