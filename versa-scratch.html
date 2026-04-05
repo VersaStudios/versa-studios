@@ -1,723 +1,282 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
 <title>Versa Scratch</title>
-<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Barlow+Condensed:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;font-family:'Barlow',sans-serif;user-select:none;-webkit-user-select:none;overflow:hidden}
-
-/* ── DICTAPHONE SHELL ── */
-.device{
-  display:flex;flex-direction:column;height:100vh;max-width:420px;margin:0 auto;
-  background:#1c1c1e;
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#E2DFDA;--surface:#ECEAE5;--border:#C8C5BF;--dark:#1A1916;--text:#2A2926;
+  --muted:rgba(42,41,38,.35);--rec:#E84D30;--rec-glow:rgba(232,77,48,.25);
+  --accent:#F4A258;--screen-bg:#0C0C0A;--screen-text:#C8F7C5;--screen-dim:rgba(200,247,197,.3);
 }
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);font-family:'JetBrains Mono',monospace;color:var(--text);display:flex;align-items:center;justify-content:center}
+.device{width:100%;max-width:400px;height:100vh;max-height:860px;background:var(--surface);display:flex;flex-direction:column;position:relative;overflow:hidden;box-shadow:0 1px 0 rgba(255,255,255,.6) inset,0 8px 40px rgba(0,0,0,.12)}
 
-/* ── DISPLAY PANEL (top 60%) ── */
-.display{
-  flex:1;display:flex;flex-direction:column;
-  background:#111;overflow:hidden;position:relative;
-}
+.top-bar{display:flex;align-items:center;justify-content:space-between;padding:14px 20px 8px;flex-shrink:0}
+.device-label{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;letter-spacing:.04em;color:var(--text)}
+.back-link{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-decoration:none;cursor:pointer;display:flex;align-items:center;gap:4px}
 
-/* Status bar */
-.d-status{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:14px 20px 10px;
-  font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;
-  letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.4);
-}
-.d-status-left{display:flex;align-items:center;gap:8px}
-.rec-dot{width:7px;height:7px;border-radius:50%;background:#ff3b30;opacity:0;transition:opacity .3s}
-.rec-dot.on{opacity:1;animation:blink 1.2s ease-in-out infinite}
+/* Mini screen */
+.mini-screen{position:absolute;top:8px;right:20px;background:var(--screen-bg);padding:6px 10px;min-width:100px;border-radius:4px;z-index:5}
+.mini-screen::before{content:'';position:absolute;inset:0;border-radius:4px;background:repeating-linear-gradient(0deg,transparent,transparent 1px,rgba(0,0,0,.06) 1px,rgba(0,0,0,.06) 2px);pointer-events:none}
+.scr-time{font-size:18px;font-weight:800;color:var(--screen-text);letter-spacing:.04em;font-variant-numeric:tabular-nums;position:relative;z-index:1}
+.scr-status{font-size:8px;font-weight:600;color:var(--screen-dim);letter-spacing:.14em;text-transform:uppercase;position:relative;z-index:1;margin-top:1px}
+.scr-status.recording{color:var(--rec);animation:blink 1s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 
-/* Waveform */
-.waveform-wrap{
-  flex:1;display:flex;align-items:center;justify-content:center;
-  padding:10px 20px;position:relative;overflow:hidden;
-}
-.waveform-canvas{width:100%;height:100px}
+/* Disc */
+.disc-wrap{flex-shrink:0;padding:8px 20px 0;display:flex;align-items:center;justify-content:center}
+.disc{width:280px;height:280px;border-radius:50%;border:1.5px solid var(--border);background:linear-gradient(145deg,#F0EEED 0%,#E0DEDB 50%,#D8D6D2 100%);position:relative;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 0 rgba(255,255,255,.5) inset,0 2px 12px rgba(0,0,0,.06)}
+.disc::before{content:'';position:absolute;width:240px;height:240px;border-radius:50%;border:1px solid rgba(0,0,0,.04);box-shadow:0 0 0 20px transparent,0 0 0 21px rgba(0,0,0,.03),0 0 0 42px transparent,0 0 0 43px rgba(0,0,0,.025),0 0 0 64px transparent,0 0 0 65px rgba(0,0,0,.02),0 0 0 86px transparent,0 0 0 87px rgba(0,0,0,.015)}
+.disc::after{content:'';position:absolute;width:100%;height:100%;border-radius:50%;background:linear-gradient(0deg,transparent calc(50% - .5px),rgba(0,0,0,.05) calc(50% - .5px),rgba(0,0,0,.05) calc(50% + .5px),transparent calc(50% + .5px)),linear-gradient(90deg,transparent calc(50% - .5px),rgba(0,0,0,.05) calc(50% - .5px),rgba(0,0,0,.05) calc(50% + .5px),transparent calc(50% + .5px))}
+.disc-label{position:absolute;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:rgba(42,41,38,.25);letter-spacing:.06em}
+.disc-label.tl{top:38px;right:52px}
+.disc-label.bl{bottom:50px;left:44px}
 
-/* Timer */
-.timer-wrap{padding:8px 20px 16px}
-.timer{
-  font-family:'Barlow Condensed',sans-serif;font-size:52px;font-weight:300;
-  letter-spacing:.02em;color:#fff;line-height:1;
-}
-.timer.recording{color:#ff3b30}
-.timer-label{
-  font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;
-  letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.3);
-  margin-top:4px;
-}
+/* LED */
+.led{position:absolute;top:30px;left:50%;transform:translateX(20px);width:6px;height:6px;border-radius:50%;background:rgba(0,0,0,.1)}
+.led.on{background:var(--rec);box-shadow:0 0 8px var(--rec-glow)}
 
-/* Transcript list inside display */
-.transcript{
-  display:none;flex-direction:column;gap:0;
-  overflow-y:auto;flex:1;
-  -webkit-overflow-scrolling:touch;
-}
-.transcript.visible{display:flex;}
-.t-item{
-  padding:14px 20px;border-bottom:1px solid rgba(255,255,255,.07);
-  position:relative;
-}
-.t-item:last-child{border-bottom:none}
-.t-meta{
-  font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;
-  letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.3);
-  margin-bottom:5px;display:flex;align-items:center;gap:6px;
-}
-.t-type-voice{color:rgba(255,180,60,.6)}
-.t-type-typed{color:rgba(80,180,120,.6)}
-.t-text{font-size:15px;line-height:1.55;color:rgba(255,255,255,.85)}
-.t-del{
-  position:absolute;top:12px;right:14px;background:none;border:none;
-  color:rgba(255,255,255,.2);cursor:pointer;font-size:15px;padding:4px;
-}
-.t-del:hover{color:rgba(255,255,255,.5)}
-.t-empty{
-  flex:1;display:flex;align-items:center;justify-content:center;
-  flex-direction:column;gap:10px;padding-bottom:40px;
-}
-.t-empty-icon{font-size:36px;opacity:.2}
-.t-empty-txt{
-  font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;
-  letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.2);
-}
+/* Hub (record button) */
+.hub{width:80px;height:80px;border-radius:50%;background:var(--surface);border:1.5px solid var(--border);position:relative;z-index:2;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.hub:active{transform:scale(.96);box-shadow:0 0 2px rgba(0,0,0,.06)}
+.hub-dot{width:32px;height:32px;border-radius:50%;background:var(--rec);transition:transform .2s,box-shadow .2s}
+.hub.active .hub-dot{animation:pulse-rec 1.2s infinite;box-shadow:0 0 20px var(--rec-glow),0 0 40px var(--rec-glow)}
+.hub.active{border-color:rgba(232,77,48,.3)}
+@keyframes pulse-rec{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
 
-/* Live interim */
-.live-interim{
-  padding:12px 20px;border-top:1px solid rgba(255,255,255,.08);
-  font-size:14px;color:rgba(255,255,255,.4);font-style:italic;line-height:1.5;
-  min-height:44px;display:none;
-}
-.live-interim.visible{display:block}
+/* Meter arc */
+.meter-ring{position:absolute;width:280px;height:280px;pointer-events:none}
+.meter-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.meter-arc{fill:none;stroke:var(--screen-text);stroke-width:3;opacity:.12;stroke-linecap:round;transition:stroke-dasharray .08s}
+.meter-arc.active{opacity:.6}
 
-/* View toggle */
-.view-toggle{
-  display:flex;align-items:center;justify-content:center;gap:0;
-  border-top:1px solid rgba(255,255,255,.08);
-}
-.vt-btn{
-  flex:1;padding:9px 0;background:none;border:none;cursor:pointer;
-  font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;
-  letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.3);
-  transition:color .15s;border-right:1px solid rgba(255,255,255,.08);
-}
-.vt-btn:last-child{border-right:none}
-.vt-btn.active{color:#fff}
+/* Transcript */
+.transcript-area{flex:1;overflow-y:auto;margin:10px 20px 0;padding:14px 16px;background:rgba(255,255,255,.5);border:1.5px solid var(--border);min-height:0}
+.transcript-label{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+.word-count{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.08em}
+.transcript-text{font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.7;color:var(--text);white-space:pre-wrap;word-break:break-word}
+.transcript-text:empty::after{content:'Press the centre button and speak…';color:var(--muted);font-style:italic;font-size:11px}
+.interim{color:var(--muted);font-style:italic}
+.transcript-edit{width:100%;min-height:80px;background:transparent;border:none;outline:none;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.7;color:var(--text);resize:none}
 
-/* ── CONTROL PANEL (bottom ~40%) ── */
-.controls{
-  background:#d4d4d2;
-  flex-shrink:0;
-}
+/* Controls */
+.controls{flex-shrink:0;padding:8px 20px 16px}
+.btn-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:6px}
+.ctrl-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:12px 6px;background:var(--surface);border:1.5px solid var(--border);border-radius:50px;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:7px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);transition:background .1s,border-color .1s}
+.ctrl-btn:active{background:var(--bg);border-color:#aaa}
+.ctrl-btn svg{width:16px;height:16px}
+.stop-icon{width:12px;height:12px;background:var(--text);border-radius:2px}
+.action-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.act-btn{display:flex;align-items:center;justify-content:center;gap:5px;padding:12px 6px;border:1.5px solid var(--border);border-radius:50px;background:var(--surface);cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--text);transition:background .1s}
+.act-btn:active{background:var(--bg)}
+.act-btn.save-act{background:var(--dark);color:var(--surface);border-color:var(--dark)}
+.act-btn.save-act:active{background:#333}
+.act-btn svg{width:12px;height:12px;flex-shrink:0}
 
-/* Speaker grille */
-.grille{
-  height:18px;background:#d4d4d2;
-  display:flex;align-items:center;justify-content:center;
-  border-top:1px solid rgba(0,0,0,.1);
-}
-.grille-inner{
-  width:160px;height:6px;
-  background-image:radial-gradient(circle, rgba(0,0,0,.35) 1px, transparent 1px);
-  background-size:4px 4px;
-}
-
-/* Button row */
-.btn-row{
-  display:flex;align-items:stretch;
-  border-top:1px solid rgba(0,0,0,.12);
-}
-.btn-cell{
-  flex:1;padding:20px 16px;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;gap:10px;
-  border-right:1px solid rgba(0,0,0,.1);position:relative;
-}
-.btn-cell:last-child{border-right:none}
-.btn-cell.half-stack{flex:0 0 40%;display:flex;flex-direction:column;padding:0}
-.half-top,.half-bot{
-  flex:1;display:flex;align-items:center;justify-content:center;
-  border-bottom:1px solid rgba(0,0,0,.1);
-}
-.half-bot{border-bottom:none}
-
-/* Round buttons */
-.round-btn{
-  width:70px;height:70px;border-radius:50%;border:none;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  transition:all .12s;position:relative;
-  box-shadow:0 2px 8px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.4);
-}
-.round-btn:active{transform:scale(.94);box-shadow:0 1px 4px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.3)}
-
-.btn-rec{background:#e8e6e2}
-.btn-rec .inner-dot{
-  width:22px;height:22px;border-radius:50%;background:#ff3b30;
-  box-shadow:0 0 0 0 rgba(255,59,48,.4);transition:all .2s;
-}
-.btn-rec.recording .inner-dot{
-  width:16px;height:16px;border-radius:3px;background:#ff3b30;
-  animation:recpulse 1.2s ease-in-out infinite;
-}
-@keyframes recpulse{0%,100%{box-shadow:0 0 0 0 rgba(255,59,48,.5)}50%{box-shadow:0 0 0 8px rgba(255,59,48,.0)}}
-
-.btn-stop{background:#e8e6e2}
-.btn-stop .inner-sq{
-  width:20px;height:20px;border-radius:3px;background:#3c3c3e;
-}
-
-.btn-sm{
-  width:44px;height:44px;border-radius:50%;border:1.5px solid rgba(0,0,0,.18);
-  background:#e0dedd;cursor:pointer;display:flex;align-items:center;justify-content:center;
-  transition:all .12s;
-  box-shadow:0 1px 3px rgba(0,0,0,.15),inset 0 1px 0 rgba(255,255,255,.5);
-}
-.btn-sm:active{transform:scale(.92)}
-.btn-sm svg{width:18px;height:18px;opacity:.5}
-
-/* Type area */
-.type-area{
-  display:flex;align-items:flex-end;gap:8px;
-  padding:10px 16px 14px;
-  border-top:1px solid rgba(0,0,0,.1);
-  background:#d4d4d2;
-}
-.type-inp{
-  flex:1;background:#eae9e6;border:1.5px solid rgba(0,0,0,.15);border-radius:20px;
-  padding:10px 16px;font-family:'Barlow',sans-serif;font-size:15px;
-  color:#1c1c1e;outline:none;resize:none;line-height:1.4;
-  min-height:40px;max-height:100px;-webkit-appearance:none;
-}
-.type-inp::placeholder{color:rgba(28,28,30,.35)}
-.type-inp:focus{border-color:rgba(0,0,0,.3)}
-.type-send{
-  width:36px;height:36px;border-radius:50%;background:#1c1c1e;border:none;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;
-  transition:opacity .15s;
-}
-.type-send:disabled{opacity:.3;cursor:not-allowed}
-.type-send svg{width:16px;height:16px;fill:#fff}
-
-/* Btn labels */
-.btn-lbl{
-  font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;
-  letter-spacing:.14em;text-transform:uppercase;color:rgba(28,28,30,.4);
-}
-
-/* Toast */
-.toast{
-  position:fixed;bottom:140px;left:50%;transform:translateX(-50%);
-  background:#1c1c1e;color:#fff;font-family:'Barlow Condensed',sans-serif;
-  font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
-  padding:9px 18px;border-radius:20px;box-shadow:0 4px 16px rgba(0,0,0,.3);
-  opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap;z-index:100;
-}
-.toast.show{opacity:1}
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--dark);color:var(--surface);padding:10px 20px;border-radius:40px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;opacity:0;transition:all .3s;pointer-events:none;z-index:100}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(max-width:340px){.disc{width:240px;height:240px}.disc::before{width:200px;height:200px}.hub{width:68px;height:68px}.hub-dot{width:26px;height:26px}}
 </style>
 </head>
 <body>
 <div class="device">
-
-  <!-- DISPLAY PANEL -->
-  <div class="display" id="displayPanel">
-
-    <!-- Status bar -->
-    <div class="d-status">
-      <div class="d-status-left">
-        <span class="rec-dot" id="recDot"></span>
-        <span id="statusTxt">READY</span>
+  <div class="top-bar">
+    <span class="device-label">VS-1</span>
+    <a class="back-link" onclick="window.close();history.back()">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12"><path d="M10 3L5 8l5 5"/></svg>
+      Notes
+    </a>
+  </div>
+  <div class="mini-screen">
+    <div class="scr-time" id="timer">00:00</div>
+    <div class="scr-status" id="statusText">READY</div>
+  </div>
+  <div class="disc-wrap">
+    <div class="disc">
+      <div class="led" id="led"></div>
+      <div class="disc-label tl" id="wordCount">0 W</div>
+      <div class="disc-label bl">96 / 24</div>
+      <svg class="meter-ring" id="meterRing" viewBox="0 0 280 280">
+        <circle class="meter-arc" id="meterArc" cx="140" cy="140" r="132" stroke-dasharray="0 830"/>
+      </svg>
+      <div class="hub" id="hubBtn" onclick="toggleRecord()">
+        <div class="hub-dot"></div>
       </div>
-      <span id="clockTxt"></span>
-    </div>
-
-    <!-- Waveform view -->
-    <div id="waveView" style="display:flex;flex-direction:column;flex:1">
-      <div class="waveform-wrap">
-        <canvas class="waveform-canvas" id="waveCanvas"></canvas>
-      </div>
-      <div class="timer-wrap">
-        <div class="timer" id="timerDisp">00:00</div>
-        <div class="timer-label" id="timerLabel">READY TO RECORD</div>
-      </div>
-    </div>
-
-    <!-- Transcript view -->
-    <div class="transcript" id="transcriptView">
-      <div class="t-empty" id="tEmpty">
-        <div class="t-empty-icon">📼</div>
-        <div class="t-empty-txt">No recordings yet</div>
-      </div>
-    </div>
-
-    <!-- Live interim -->
-    <div class="live-interim" id="liveInterim"></div>
-
-    <!-- View toggle -->
-    <div class="view-toggle">
-      <button class="vt-btn active" id="btnWave" onclick="showView('wave')">Waveform</button>
-      <button class="vt-btn" id="btnList" onclick="showView('list')">Recordings</button>
     </div>
   </div>
-
-  <!-- CONTROL PANEL -->
-  <div class="controls">
-
-    <!-- Speaker grille -->
-    <div class="grille"><div class="grille-inner"></div></div>
-
-    <!-- Main buttons -->
-    <div class="btn-row">
-      <!-- Record -->
-      <div class="btn-cell">
-        <button class="round-btn btn-rec" id="recBtn" onclick="toggleVoice()">
-          <div class="inner-dot" id="recDotBtn"></div>
-        </button>
-        <span class="btn-lbl">Record</span>
-      </div>
-
-      <!-- Stop -->
-      <div class="btn-cell">
-        <button class="round-btn btn-stop" id="stopBtn" onclick="stopVoice()">
-          <div class="inner-sq"></div>
-        </button>
-        <span class="btn-lbl">Stop</span>
-      </div>
-
-      <!-- Side buttons -->
-      <div class="btn-cell btn-cell" style="flex:0 0 30%;gap:8px">
-        <button class="btn-sm" onclick="clearAll()" title="Clear all">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/>
-          </svg>
-        </button>
-        <button class="btn-sm" onclick="sendAllToNotes()" title="Send to notes">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/>
-          </svg>
-        </button>
-      </div>
+  <div class="transcript-area" id="transcriptArea">
+    <div class="transcript-label">
+      <span>Transcript</span>
+      <span class="word-count" id="charCount">0 chars</span>
     </div>
-
-    <!-- Type area -->
-    <div class="type-area">
-      <textarea class="type-inp" id="typeInp" rows="1" placeholder="Type a note…" oninput="autoResize(this);checkSend()"></textarea>
-      <button class="type-send" id="typeSend" onclick="submitTyped()" disabled>
-        <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    <div class="transcript-text" id="transcript"></div>
+  </div>
+  <div class="controls">
+    <div class="btn-row">
+      <button class="ctrl-btn" onclick="toggleRecord()">
+        <svg viewBox="0 0 20 20" fill="var(--rec)" stroke="none"><circle cx="10" cy="10" r="6"/></svg>
+        <span>Rec</span>
+      </button>
+      <button class="ctrl-btn" onclick="pauseRecord()">
+        <svg viewBox="0 0 20 20" fill="var(--text)"><rect x="5" y="4" width="3.5" height="12" rx="1"/><rect x="11.5" y="4" width="3.5" height="12" rx="1"/></svg>
+        <span>Pause</span>
+      </button>
+      <button class="ctrl-btn" onclick="stopRecord()">
+        <div class="stop-icon"></div>
+        <span>Stop</span>
+      </button>
+      <button class="ctrl-btn" onclick="clearTranscript()">
+        <svg viewBox="0 0 20 20" fill="none" stroke="var(--text)" stroke-width="1.5" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg>
+        <span>Clear</span>
+      </button>
+    </div>
+    <div class="action-row">
+      <button class="act-btn save-act" onclick="saveToNotes()">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 2h9l3 3v9H2z"/><path d="M5 2v4h5V2"/><path d="M5 10h6v4H5z"/></svg>
+        Save
+      </button>
+      <button class="act-btn" onclick="copyText()">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="5" width="9" height="9" rx="1"/><path d="M5 11H3a1 1 0 01-1-1V3a1 1 0 011-1h7a1 1 0 011 1v2"/></svg>
+        Copy
+      </button>
+      <button class="act-btn" onclick="toggleEdit()">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11.5 1.5l3 3L5 14H2v-3z"/></svg>
+        Edit
       </button>
     </div>
   </div>
 </div>
-
 <div class="toast" id="toast"></div>
-
 <script>
+const SBU='https://dttwgmoyxthczlzxjgag.supabase.co';
+const SBK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ';
+const NK='notes_andrew_rowell_versastudios_com';
+const API=SBU+'/rest/v1/vault?key=eq.'+NK;
+var isRecording=false,isPaused=false,recognition=null;
+var fullTranscript='',interimText='';
+var timerInterval=null,seconds=0,isEditing=false;
+var SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;
 
-const SBU='https://dttwgmoyxthczlzxjgag.supabase.co',SBK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ',NK='notes_andrew_rowell_versastudios_com',SK='scratch_andrew_rowell_versastudios_com';
-var blocks=[],recognition=null,isRecording=false,liveBlock=null,saveTimer=null;
-
-// ── Speech Recognition ──────────────────────────────────────────────────────
-function initRecognition(){
-  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){setStatus('Voice not supported on this browser');return null;}
-  var r=new SR();
-  r.continuous=true;
-  r.interimResults=true;
-  r.lang='en-GB';
+function createRecognition(){
+  if(!SpeechRecognition)return null;
+  var r=new SpeechRecognition();r.continuous=true;r.interimResults=true;r.lang='en-GB';
   r.onresult=function(e){
     var interim='',final='';
-    for(var i=e.resultIndex;i<e.results.length;i++){
-      if(e.results[i].isFinal)final+=e.results[i][0].transcript;
-      else interim+=e.results[i][0].transcript;
-    }
-    if(final){addBlock(final.trim(),'voice');clearLive();}
-    else if(interim){showLive(interim);}
+    for(var i=e.resultIndex;i<e.results.length;i++){var t=e.results[i][0].transcript;if(e.results[i].isFinal)final+=t;else interim+=t;}
+    if(final){fullTranscript+=(fullTranscript?' ':'')+final.trim();}
+    interimText=interim;renderTranscript();updateCounts();
   };
-  r.onerror=function(e){
-    if(e.error==='not-allowed'){showToast('Microphone access denied');}
-    else if(e.error!=='aborted'){showToast('Voice error: '+e.error);}
-    stopVoice();
-  };
-  r.onend=function(){if(isRecording)try{r.start();}catch(ex){}};
+  r.onerror=function(e){if(e.error==='no-speech'||e.error==='aborted')return;};
+  r.onend=function(){if(isRecording&&!isPaused){try{recognition.start();}catch(e){}}};
   return r;
 }
-
-function toggleVoice(){
-  if(isRecording){stopVoice();}else{startVoice();}
+function toggleRecord(){if(isRecording)stopRecord();else startRecord();}
+function startRecord(){
+  if(!SpeechRecognition){showToast('Speech not supported');return;}
+  recognition=createRecognition();isRecording=true;isPaused=false;
+  try{recognition.start();}catch(e){}
+  document.getElementById('hubBtn').classList.add('active');
+  document.getElementById('led').classList.add('on');
+  document.getElementById('statusText').textContent='REC';
+  document.getElementById('statusText').classList.add('recording');
+  startTimer();startMeter();
 }
-
-function startVoice(){
-  if(isRecording)return;
-  if(!recognition)recognition=initRecognition();
-  if(!recognition)return;
-  isRecording=true;
-  try{recognition.start();}catch(e){isRecording=false;return;}
-  document.getElementById('micBtn').classList.add('recording');
-  document.getElementById('micHint').textContent='Tap to stop';
-  setStatus('Listening...');
-}
-
-function stopVoice(){
+function pauseRecord(){
   if(!isRecording)return;
-  isRecording=false;
-  if(recognition)try{recognition.stop();}catch(e){}
-  clearLive();
-  document.getElementById('micBtn').classList.remove('recording');
-  document.getElementById('micHint').textContent='Tap to speak';
-  setStatus('');
-}
-
-// ── Blocks ─────────────────────────────────────────────────────────────────
-function addBlock(text,type){
-  if(!text||!text.trim())return;
-  var block={id:Date.now(),text:text.trim(),type:type,time:new Date()};
-  blocks.push(block);
-  renderBlocks();
-  autoSave();
-  updateSendBtn();
-}
-
-function deleteBlock(id){
-  blocks=blocks.filter(function(b){return b.id!==id;});
-  renderBlocks();
-  autoSave();
-  updateSendBtn();
-}
-
-function clearAll(){
-  if(blocks.length&&!confirm('Clear all blocks?'))return;
-  blocks=[];renderBlocks();autoSave();updateSendBtn();
-}
-
-function showLive(text){
-  var t=document.getElementById('transcript');
-  if(!liveBlock){liveBlock=document.createElement('div');liveBlock.className='live-block';t.appendChild(liveBlock);}
-  liveBlock.innerHTML='<div class="block-text">'+esc(text)+'</div>';
-  t.scrollTop=t.scrollHeight;
-}
-
-function clearLive(){
-  if(liveBlock){liveBlock.remove();liveBlock=null;}
-}
-
-function renderBlocks(){
-  var t=document.getElementById('transcript');
-  var empty=document.getElementById('emptyState');
-  if(!blocks.length){
-    t.innerHTML='';t.appendChild(empty);empty.style.display='flex';
-    return;
-  }
-  empty.style.display='none';
-  // Keep existing live block if present
-  var live=t.querySelector('.live-block');
-  t.innerHTML='';
-  blocks.forEach(function(b){
-    var ds=b.time.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
-    var div=document.createElement('div');div.className='block'+(b.type==='voice'?' voice':' typed');
-    div.innerHTML='<div class="block-time"><span class="block-type-icon">'+(b.type==='voice'?'🎙':'✏️')+'</span>'+ds+'</div>'
-      +'<div class="block-text">'+esc(b.text)+'</div>'
-      +'<button class="block-del" onclick="deleteBlock('+b.id+')">&#215;</button>';
-    t.appendChild(div);
-  });
-  if(live)t.appendChild(live);
-  t.scrollTop=t.scrollHeight;
-}
-
-// ── Typed input ──────────────────────────────────────────────────────────────
-function submitTyped(){
-  var inp=document.getElementById('typeInp');
-  var txt=inp.value.trim();if(!txt)return;
-  addBlock(txt,'typed');
-  inp.value='';inp.style.height='auto';
-}
-
-// ── Send to Notes ─────────────────────────────────────────────────────────────
-async function sendToNotes(){
-  if(!blocks.length)return;
-  var btn=document.getElementById('sendBtn');
-  btn.disabled=true;btn.textContent='Sending...';
-  // Build a single note from all blocks
-  var text=blocks.map(function(b){
-    var t=b.time.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
-    return '['+t+'] '+b.text;
-  }).join('\n\n');
-  var today=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-  var noteTitle='Scratch — '+new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'2-digit'});
-  try{
-    // Load existing notes
-    var r=await fetch(SBU+'/rest/v1/app_data?key=eq.'+NK+'&select=value',{headers:{'apikey':SBK,'Authorization':'Bearer '+SBK}});
-    var d=await r.json();
-    var existing={notes:[],todos:[],meetings:[]};
-    if(d&&d[0]&&d[0].value)existing=d[0].value;
-    var notes=Array.isArray(existing.notes)?existing.notes:[];
-    notes.unshift({id:Date.now(),type:'note',title:noteTitle,content:text,jobTag:'Scratch',pinned:false,done:false,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()});
-    existing.notes=notes;
-    await fetch(SBU+'/rest/v1/app_data',{method:'POST',
-      headers:{'Content-Type':'application/json','apikey':SBK,'Authorization':'Bearer '+SBK,'Prefer':'resolution=merge-duplicates'},
-      body:JSON.stringify({key:NK,value:existing,updated_at:new Date().toISOString()})
-    });
-    showToast('Sent to Notes!');
-    blocks=[];renderBlocks();autoSave();updateSendBtn();
-    btn.textContent='Send to Notes';
-  }catch(e){
-    showToast('Error — check connection');
-    btn.disabled=false;btn.textContent='Send to Notes';
+  if(!isPaused){isPaused=true;try{recognition.stop();}catch(e){}
+    document.getElementById('statusText').textContent='PAUSED';
+    document.getElementById('statusText').classList.remove('recording');
+    clearInterval(timerInterval);stopMeter();
+  }else{isPaused=false;try{recognition.start();}catch(e){}
+    document.getElementById('statusText').textContent='REC';
+    document.getElementById('statusText').classList.add('recording');
+    startTimer();startMeter();
   }
 }
-
-// ── Local save (scratch pad persists between sessions) ────────────────────────
-async function autoSave(){
-  clearTimeout(saveTimer);
-  saveTimer=setTimeout(async function(){
-    try{
-      var payload=blocks.map(function(b){return {id:b.id,text:b.text,type:b.type,time:b.time.toISOString()};});
-      await fetch(SBU+'/rest/v1/app_data',{method:'POST',
-        headers:{'Content-Type':'application/json','apikey':SBK,'Authorization':'Bearer '+SBK,'Prefer':'resolution=merge-duplicates'},
-        body:JSON.stringify({key:SK,value:payload,updated_at:new Date().toISOString()})
-      });
-    }catch(e){}
-  },1500);
+function stopRecord(){
+  isRecording=false;isPaused=false;
+  if(recognition){try{recognition.stop();}catch(e){}}recognition=null;
+  document.getElementById('hubBtn').classList.remove('active');
+  document.getElementById('led').classList.remove('on');
+  document.getElementById('statusText').textContent='STOPPED';
+  document.getElementById('statusText').classList.remove('recording');
+  clearInterval(timerInterval);stopMeter();
+  if(interimText){fullTranscript+=(fullTranscript?' ':'')+interimText.trim();interimText='';renderTranscript();}
 }
-
-async function loadScratch(){
-  try{
-    var r=await fetch(SBU+'/rest/v1/app_data?key=eq.'+SK+'&select=value',{headers:{'apikey':SBK,'Authorization':'Bearer '+SBK}});
-    var d=await r.json();
-    if(d&&d[0]&&Array.isArray(d[0].value)&&d[0].value.length){
-      blocks=d[0].value.map(function(b){return {id:b.id,text:b.text,type:b.type,time:new Date(b.time)};});
-      renderBlocks();updateSendBtn();
-      setStatus(blocks.length+' unsent block'+(blocks.length!==1?'s':'')+' from last session');
-      setTimeout(function(){setStatus('');},3000);
-    }
-  }catch(e){}
+function clearTranscript(){
+  if(fullTranscript&&!confirm('Clear transcript?'))return;
+  stopRecord();fullTranscript='';interimText='';seconds=0;
+  document.getElementById('timer').textContent='00:00';
+  document.getElementById('statusText').textContent='READY';
+  renderTranscript();updateCounts();
 }
+function startTimer(){clearInterval(timerInterval);timerInterval=setInterval(function(){seconds++;var m=Math.floor(seconds/60),s=seconds%60;document.getElementById('timer').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');},1000);}
 
-// ── Utils ──────────────────────────────────────────────────────────────────
-function updateSendBtn(){
-  var btn=document.getElementById('sendBtn');
-  if(btn){btn.disabled=!blocks.length;btn.textContent='Send to Notes'+(blocks.length?' ('+blocks.length+')':'');}
+var audioCtx,analyser,micStream,meterRAF;
+function startMeter(){
+  if(!navigator.mediaDevices)return;
+  navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
+    micStream=stream;audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+    var source=audioCtx.createMediaStreamSource(stream);analyser=audioCtx.createAnalyser();analyser.fftSize=256;
+    source.connect(analyser);drawMeter();
+  }).catch(function(){});
 }
-function setStatus(msg){var el=document.getElementById('statusBar');if(el)el.textContent=msg;}
-function showToast(msg){
-  var t=document.getElementById('toast');if(!t)return;
-  t.textContent=msg;t.classList.add('show');
-  setTimeout(function(){t.classList.remove('show');},2200);
+function drawMeter(){
+  if(!analyser)return;
+  var data=new Uint8Array(analyser.frequencyBinCount);analyser.getByteFrequencyData(data);
+  var sum=0;for(var i=0;i<data.length;i++)sum+=data[i];var avg=sum/data.length;
+  var pct=Math.min(1,avg/128);var circumference=2*Math.PI*132;
+  var arc=document.getElementById('meterArc');
+  arc.setAttribute('stroke-dasharray',(pct*circumference)+' '+circumference);
+  arc.classList.toggle('active',pct>0.05);
+  arc.style.stroke=pct>0.75?'var(--rec)':'var(--screen-text)';
+  meterRAF=requestAnimationFrame(drawMeter);
+}
+function stopMeter(){
+  cancelAnimationFrame(meterRAF);
+  if(micStream){micStream.getTracks().forEach(function(t){t.stop();});micStream=null;}
+  if(audioCtx){try{audioCtx.close();}catch(e){}}audioCtx=null;analyser=null;
+  var arc=document.getElementById('meterArc');arc.setAttribute('stroke-dasharray','0 830');arc.classList.remove('active');
+}
+function renderTranscript(){
+  var el=document.getElementById('transcript');if(!el||isEditing)return;
+  el.innerHTML=esc(fullTranscript)+(interimText?' <span class="interim">'+esc(interimText)+'</span>':'');
+  var area=document.getElementById('transcriptArea');if(area)area.scrollTop=area.scrollHeight;
+}
+function updateCounts(){
+  var txt=fullTranscript+(interimText?' '+interimText:'');
+  var wc=txt.trim()?txt.trim().split(/\s+/).length:0;
+  document.getElementById('wordCount').textContent=wc+' W';
+  document.getElementById('charCount').textContent=txt.length+' chars';
 }
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-
-// ── Prevent scroll bounce on iOS ──────────────────────────────────────────
-document.addEventListener('touchmove',function(e){
-  if(e.target.closest('.mic-area'))e.preventDefault();
-},{passive:false});
-
-loadScratch();
-
-// ── Clock ──────────────────────────────────────────────────────────────────
-function updateClock(){
-  var d=new Date(),h=d.getHours().toString().padStart(2,'0'),m=d.getMinutes().toString().padStart(2,'0');
-  var el=document.getElementById('clockTxt');if(el)el.textContent=h+':'+m;
+function toggleEdit(){
+  var area=document.getElementById('transcriptArea'),el=document.getElementById('transcript');
+  if(!isEditing){stopRecord();isEditing=true;var ta=document.createElement('textarea');ta.className='transcript-edit';ta.id='transcriptEdit';ta.value=fullTranscript;el.style.display='none';area.appendChild(ta);ta.focus();showToast('Editing');}
+  else{var ta=document.getElementById('transcriptEdit');if(ta){fullTranscript=ta.value;ta.remove();}el.style.display='';isEditing=false;renderTranscript();updateCounts();showToast('Done');}
 }
-setInterval(updateClock,10000);updateClock();
-
-// ── Timer ──────────────────────────────────────────────────────────────────
-var _timerStart=0,_timerInterval=null;
-function startTimer(){
-  _timerStart=Date.now();
-  _timerInterval=setInterval(function(){
-    var s=Math.floor((Date.now()-_timerStart)/1000);
-    var mm=String(Math.floor(s/60)).padStart(2,'0'),ss=String(s%60).padStart(2,'0');
-    var el=document.getElementById('timerDisp');if(el)el.textContent=mm+':'+ss;
-  },500);
+async function saveToNotes(){
+  var txt=fullTranscript.trim();if(!txt){showToast('Nothing to save');return;}showToast('Saving…');
+  try{
+    var r=await fetch(API,{headers:{'apikey':SBK}});var rows=await r.json();
+    var existing=rows&&rows[0]?rows[0].value:{};var notes=Array.isArray(existing.notes)?existing.notes:[];
+    var title='Voice Note';var firstLine=txt.split(/[.\n]/)[0].trim();
+    if(firstLine.length>3&&firstLine.length<60)title=firstLine;
+    notes.unshift({id:Date.now(),type:'quick',title:title,content:txt,jobTag:'General',pinned:false,done:false,createdAt:new Date().toISOString()});
+    existing.notes=notes;
+    var method=rows&&rows[0]?'PATCH':'POST';var url=rows&&rows[0]?API:SBU+'/rest/v1/vault';
+    await fetch(url,{method:method,headers:{'Content-Type':'application/json','apikey':SBK,'Prefer':'return=minimal'},body:JSON.stringify(rows&&rows[0]?{value:existing}:{key:NK,value:existing,updated_at:new Date().toISOString()})});
+    showToast('Saved to Notes!');
+  }catch(e){console.error(e);showToast('Save failed');}
 }
-function stopTimer(){
-  clearInterval(_timerInterval);_timerInterval=null;
-  var el=document.getElementById('timerDisp');if(el)el.textContent='00:00';
-}
-
-// ── Waveform ───────────────────────────────────────────────────────────────
-var _waveAnim=null,_waveCtx=null,_waveBars=[];
-function initWave(){
-  var c=document.getElementById('waveCanvas');if(!c)return;
-  _waveCtx=c.getContext('2d');
-  var dpr=window.devicePixelRatio||1;
-  var rect=c.getBoundingClientRect();
-  c.width=rect.width*dpr;c.height=rect.height*dpr;
-  _waveCtx.scale(dpr,dpr);
-  drawIdleWave(rect.width,rect.height);
-}
-function drawIdleWave(w,h){
-  if(!_waveCtx)return;
-  _waveCtx.clearRect(0,0,w,h);
-  var bars=Math.floor(w/6);
-  _waveCtx.fillStyle='rgba(255,255,255,.15)';
-  for(var i=0;i<bars;i++){
-    var bh=4+Math.sin(i*0.4)*3;
-    var x=i*6,y=(h-bh)/2;
-    _waveCtx.beginPath();_waveCtx.roundRect(x,y,3,bh,1.5);_waveCtx.fill();
-  }
-}
-function startWave(){
-  var c=document.getElementById('waveCanvas');if(!c)return;
-  var dpr=window.devicePixelRatio||1;
-  var w=c.getBoundingClientRect().width,h=c.getBoundingClientRect().height;
-  var bars=Math.floor(w/6);
-  if(!_waveBars.length)for(var i=0;i<bars;i++)_waveBars.push(8);
-  _waveAnim=setInterval(function(){
-    _waveCtx.clearRect(0,0,w,h);
-    // Shift bars left, add new random bar on right
-    _waveBars.shift();
-    _waveBars.push(8+Math.random()*50);
-    var midBar=Math.floor(bars*0.72);
-    for(var i=0;i<_waveBars.length;i++){
-      var bh=_waveBars[i];
-      var x=i*6,y=(h-bh)/2;
-      var alpha=i===midBar?1:(i<midBar?0.6:0.25);
-      _waveCtx.fillStyle='rgba(255,255,255,'+alpha+')';
-      _waveCtx.beginPath();_waveCtx.roundRect(x,y,3,bh,1.5);_waveCtx.fill();
-    }
-    // Red playhead line
-    var px=midBar*6+1.5;
-    _waveCtx.strokeStyle='#ff3b30';_waveCtx.lineWidth=1.5;
-    _waveCtx.beginPath();_waveCtx.moveTo(px,4);_waveCtx.lineTo(px,h-4);_waveCtx.stroke();
-    // Red dot on top
-    _waveCtx.fillStyle='#ff3b30';
-    _waveCtx.beginPath();_waveCtx.arc(px,4,4,0,Math.PI*2);_waveCtx.fill();
-  },60);
-}
-function stopWave(){
-  clearInterval(_waveAnim);_waveAnim=null;_waveBars=[];
-  var c=document.getElementById('waveCanvas');if(!c)return;
-  var w=c.getBoundingClientRect().width,h=c.getBoundingClientRect().height;
-  drawIdleWave(w,h);
-}
-
-// ── Override voice functions to add UI updates ────────────────────────────
-var _origToggle=toggleVoice,_origStop=stopVoice;
-toggleVoice=function(){
-  _origToggle();
-  // After calling original, check state
-  setTimeout(function(){
-    var isRec=document.getElementById('recDot')&&document.getElementById('recDot').classList.contains('on');
-    updateRecUI(isRec);
-  },50);
-};
-stopVoice=function(){_origStop();updateRecUI(false);};
-
-function updateRecUI(isRecording){
-  var dot=document.getElementById('recDot');
-  var recBtn=document.getElementById('recBtn');
-  var recDotBtn=document.getElementById('recDotBtn');
-  var timer=document.getElementById('timerDisp');
-  var label=document.getElementById('timerLabel');
-  var status=document.getElementById('statusTxt');
-  if(isRecording){
-    if(dot)dot.classList.add('on');
-    if(recBtn)recBtn.classList.add('recording');
-    if(status)status.textContent='RECORDING';
-    if(label)label.textContent='RECORDING';
-    if(timer)timer.classList.add('recording');
-    startTimer();startWave();
-  }else{
-    if(dot)dot.classList.remove('on');
-    if(recBtn)recBtn.classList.remove('recording');
-    if(status)status.textContent='READY';
-    if(label)label.textContent='READY TO RECORD';
-    if(timer)timer.classList.remove('recording');
-    stopTimer();stopWave();
-  }
-}
-
-// ── View toggle ────────────────────────────────────────────────────────────
-function showView(v){
-  var wave=document.getElementById('waveView');
-  var list=document.getElementById('transcriptView');
-  var bw=document.getElementById('btnWave');
-  var bl=document.getElementById('btnList');
-  if(v==='wave'){
-    wave.style.display='flex';list.classList.remove('visible');
-    bw.classList.add('active');bl.classList.remove('active');
-  }else{
-    wave.style.display='none';list.classList.add('visible');
-    bw.classList.remove('active');bl.classList.add('active');
-    renderBlocks();
-  }
-}
-
-// ── Type helpers ───────────────────────────────────────────────────────────
-function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,100)+'px';}
-function checkSend(){var b=document.getElementById('typeSend'),i=document.getElementById('typeInp');if(b&&i)b.disabled=!i.value.trim();}
-
-// ── Send all to notes ──────────────────────────────────────────────────────
-function sendAllToNotes(){
-  if(!blocks.length){toast('Nothing to send');return;}
-  var text=blocks.map(function(b){return b.text;}).join('\n\n');
-  sendToNotes('Scratch dump',text);
-}
-
-// ── Override renderBlocks to use new UI ───────────────────────────────────
-var _baseRender=renderBlocks;
-renderBlocks=function(){
-  var v=document.getElementById('transcriptView');if(!v)return;
-  var empty=document.getElementById('tEmpty');
-  if(!blocks.length){
-    if(empty)empty.style.display='flex';
-    // Remove existing items
-    v.querySelectorAll('.t-item').forEach(function(el){el.remove()});
-    return;
-  }
-  if(empty)empty.style.display='none';
-  v.querySelectorAll('.t-item').forEach(function(el){el.remove()});
-  blocks.slice().reverse().forEach(function(b){
-    var div=document.createElement('div');div.className='t-item';
-    var typeLabel=b.type==='voice'?'<span class="t-type-voice">🎙 Voice</span>':'<span class="t-type-typed">✎ Typed</span>';
-    var ds=b.ts?new Date(b.ts).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}):'';
-    div.innerHTML='<div class="t-meta">'+typeLabel+'<span>'+ds+'</span></div>'
-      +'<div class="t-text">'+b.text.replace(/\n/g,'<br>')+'</div>'
-      +'<button class="t-del" onclick="deleteBlock(\'' + b.id + '\')">×</button>';
-    v.appendChild(div);
-  });
-};
-
-// ── Override showLive / clearLive ─────────────────────────────────────────
-var _baseLive=showLive,_baseClearLive=clearLive;
-showLive=function(t){
-  var el=document.getElementById('liveInterim');
-  if(el){el.textContent=t;el.classList.add('visible');}
-};
-clearLive=function(){
-  var el=document.getElementById('liveInterim');
-  if(el){el.textContent='';el.classList.remove('visible');}
-};
-
-// ── Override toast ─────────────────────────────────────────────────────────
-function toast(msg){
-  var el=document.getElementById('toast');if(!el)return;
-  el.textContent=msg;el.classList.add('show');
-  setTimeout(function(){el.classList.remove('show');},2200);
-}
-
-// ── Override submitTyped to use new input ─────────────────────────────────
-var _baseSubmit=submitTyped;
-submitTyped=function(){
-  var inp=document.getElementById('typeInp');if(!inp)return;
-  var txt=inp.value.trim();if(!txt)return;
-  addBlock(txt,'typed');
-  inp.value='';inp.style.height='auto';
-  document.getElementById('typeSend').disabled=true;
-  if(document.getElementById('btnList').classList.contains('active'))renderBlocks();
-};
-
-// ── Init ───────────────────────────────────────────────────────────────────
-window.addEventListener('load',function(){
-  setTimeout(initWave,100);
-  renderBlocks();
-});
-window.addEventListener('resize',function(){initWave();});
-
+function copyText(){var txt=fullTranscript.trim();if(!txt){showToast('Nothing to copy');return;}navigator.clipboard.writeText(txt).then(function(){showToast('Copied!');}).catch(function(){showToast('Copy failed');});}
+function showToast(msg){var el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},2000);}
 </script>
 </body>
 </html>

@@ -587,15 +587,52 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:#efede3;color:#
       <div id="dashTodos" class="vault-grid"></div>
     </div>
   </div>
-
-<div id="vMeetings" style="display:none;padding:16px 20px;overflow-y:auto">
-  <div id="mtgPageList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-bottom:16px">
-    <div class="vault-card" style="border-color:#5B5F8D;cursor:pointer" onclick="openMeeting(1)"><div class="vault-card-bar" style="background:#5B5F8D"></div><div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;line-height:1.15;color:#302f2c">Versa Weekly</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;color:rgba(48,47,44,.3);margin-top:6px">No sessions yet</div></div><div class="vault-card" style="border-color:#DA6B51;cursor:pointer" onclick="openMeeting(2)"><div class="vault-card-bar" style="background:#DA6B51"></div><div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;line-height:1.15;color:#302f2c">Weekly Engineering</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;color:rgba(48,47,44,.3);margin-top:6px">No sessions yet</div></div>
-  </div>
-  <button onclick="addMeeting()" style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;background:#302f2c;color:#efede3;border:none;padding:10px 20px;cursor:pointer">+ New Meeting</button>
-  <div style="margin-top:20px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:rgba(48,47,44,.3);margin-bottom:8px">Granola</div>
-  <div style="border:1.5px dashed rgba(48,47,44,.15);padding:12px 14px;max-width:400px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(48,47,44,.3)">Meeting transcripts — <span style="opacity:.6">Coming soon</span></div>
 </div>
+
+<div id="vMeetings" style="display:none;overflow-y:auto">
+  <!-- Top row: Meetings + Quick Add -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:16px 20px 0">
+    <!-- Meetings block -->
+    <div style="border:1.5px solid rgba(48,47,44,.12);padding:20px">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;color:#302f2c;margin-bottom:14px">Meetings</div>
+      <div id="mtgPageList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin-bottom:14px"></div>
+      <button onclick="addMeeting()" style="width:100%;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;background:#302f2c;color:#efede3;border:none;padding:12px 20px;cursor:pointer;text-align:center">+ New Meeting</button>
+    </div>
+    <!-- Stats block (dark) -->
+    <div style="border:1.5px solid #302f2c;background:#302f2c;padding:20px">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;color:#efede3;margin-bottom:14px">Overview</div>
+      <div id="mtgStats" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+        <div style="background:rgba(239,237,227,.06);padding:14px">
+          <div id="mtgStatCount" style="font-family:'Barlow Condensed',sans-serif;font-size:42px;font-weight:900;color:#F4A258;line-height:1">0</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(239,237,227,.4);margin-top:6px">Meetings</div>
+        </div>
+        <div style="background:rgba(239,237,227,.06);padding:14px">
+          <div id="mtgStatSessions" style="font-family:'Barlow Condensed',sans-serif;font-size:42px;font-weight:900;color:#F4A258;line-height:1">0</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(239,237,227,.4);margin-top:6px">Sessions</div>
+        </div>
+      </div>
+      <div style="background:rgba(239,237,227,.06);padding:14px;margin-bottom:12px">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(239,237,227,.4);margin-bottom:6px">Last Session</div>
+        <div id="mtgStatLast" style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;color:#efede3">—</div>
+      </div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(239,237,227,.25);margin-top:8px">Tip: use "Start Meeting" inside each meeting to log sessions</div>
+    </div>
+  </div>
+
+  <!-- Bottom row: Recent Sessions + Transcripts -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:16px 20px 20px">
+    <div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;color:#302f2c;margin-bottom:12px">Recent Sessions</div>
+      <div id="mtgRecentSessions" class="vault-grid"></div>
+    </div>
+    <div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;color:#302f2c;margin-bottom:12px">Transcripts</div>
+      <div style="border:1.5px dashed rgba(48,47,44,.15);padding:16px 18px">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:rgba(48,47,44,.3);margin-bottom:6px">Granola</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(48,47,44,.2)">Meeting transcripts — Coming soon</div>
+      </div>
+    </div>
+  </div>
 </div>
 
 
@@ -710,7 +747,6 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:#efede3;color:#
 
 
 
-    </div><!-- /content -->
 
     <!-- Meeting full page -->
     <div id="mtgPage" class="mtg-page">
@@ -1697,7 +1733,7 @@ function showPage(v){
   // Toggle header + content area
   var mhdr=document.getElementById('mainHdr'),content=document.getElementById('mainContent');
   if(mhdr)mhdr.style.display=isFullPage?'none':'flex';
-  if(content)content.style.display='block';
+  if(content)content.style.display=isFullPage?'none':'block';
   // Hide all section views
   ['vDash','vNotes','vTodos','vIdeas','vMeetings'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
   // Toggle full-page views
@@ -1818,13 +1854,57 @@ function renderMtgPage(){
   }
   ml.innerHTML=meetings.map(function(m,i){
     var col=MCOLS[i%MCOLS.length];
-    var lastDate=m.instances&&m.instances.length?new Date(m.instances[m.instances.length-1].date).toLocaleDateString('en-GB',{day:'numeric',month:'short'}):'';
+    var count=m.instances?m.instances.length:0;
+    var lastDate=count?new Date(m.instances[0].date).toLocaleDateString('en-GB',{day:'numeric',month:'short'}):'';
     return '<div class="vault-card" style="border-color:'+col+';cursor:pointer" onclick="openMeeting('+m.id+')">'
       +'<div class="vault-card-bar" style="background:'+col+'"></div>'
       +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:18px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;line-height:1.15;color:#302f2c">'+esc(m.name)+'</div>'
-      +(lastDate?'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;color:rgba(48,47,44,.3);margin-top:6px">Last: '+lastDate+'</div>':'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;color:rgba(48,47,44,.3);margin-top:6px">No sessions yet</div>')
+      +(count?'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;color:rgba(48,47,44,.3);margin-top:6px">'+count+' session'+(count>1?'s':'')+' &middot; Last: '+lastDate+'</div>':'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;color:rgba(48,47,44,.3);margin-top:6px">No sessions yet</div>')
       +'</div>';
   }).join('');
+
+  // Stats
+  var totalSessions=0;var latestDate=null;var latestName='';
+  meetings.forEach(function(m){
+    var insts=m.instances||[];
+    totalSessions+=insts.length;
+    insts.forEach(function(inst){
+      var d=new Date(inst.date);
+      if(!latestDate||d>latestDate){latestDate=d;latestName=m.name;}
+    });
+  });
+  var sc=document.getElementById('mtgStatCount');if(sc)sc.textContent=meetings.length;
+  var ss=document.getElementById('mtgStatSessions');if(ss)ss.textContent=totalSessions;
+  var sl=document.getElementById('mtgStatLast');
+  if(sl)sl.textContent=latestDate?latestName+' — '+latestDate.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'2-digit'}):'No sessions yet';
+
+  // Recent sessions across all meetings
+  var allSessions=[];
+  meetings.forEach(function(m,mi){
+    var col=MCOLS[mi%MCOLS.length];
+    (m.instances||[]).forEach(function(inst){
+      allSessions.push({date:inst.date,notes:inst.notes||'',name:m.name,id:m.id,col:col});
+    });
+  });
+  allSessions.sort(function(a,b){return b.date.localeCompare(a.date);});
+  var recent=allSessions.slice(0,6);
+  var rs=document.getElementById('mtgRecentSessions');
+  if(rs){
+    if(!recent.length){
+      rs.innerHTML='<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(48,47,44,.25);padding:8px 0">No sessions recorded yet</div>';
+    }else{
+      rs.innerHTML=recent.map(function(s){
+        var ds=new Date(s.date).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
+        var preview=(s.notes||'').slice(0,60);
+        return '<div class="vault-card" style="border-color:'+s.col+';cursor:pointer" onclick="openMeeting('+s.id+')">'
+          +'<div class="vault-card-bar" style="background:'+s.col+'"></div>'
+          +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;line-height:1.15;color:#302f2c">'+esc(s.name)+'</div>'
+          +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;color:rgba(48,47,44,.3);margin-top:4px">'+ds+'</div>'
+          +(preview?'<div style="font-family:\'Barlow\',sans-serif;font-size:12px;color:rgba(48,47,44,.45);margin-top:6px;line-height:1.4;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">'+esc(preview)+'</div>':'')
+          +'</div>';
+      }).join('');
+    }
+  }
 }
 
 var _dashDue='';
@@ -2083,25 +2163,8 @@ async function authRefreshToken(){
 
 // Check existing session on load
 (function checkAuth(){
-  var layout=document.getElementById('authScreen');
-  // Try sessionStorage first
-  try{
-    var tok=sessionStorage.getItem('vn_token');
-    var ref=sessionStorage.getItem('vn_refresh');
-    var usr=sessionStorage.getItem('vn_user');
-    if(tok){
-      _authToken=tok;_authRefresh=ref;
-      _authUser=usr?JSON.parse(usr):null;
-      authShowApp();
-      // Silently refresh token in background
-      setTimeout(authRefreshToken,2000);
-      return;
-    }
-  }catch(e){}
-  // No session — show login
-  document.getElementById('authScreen').style.display='flex';
-  document.getElementById('authBtn').dataset.tab='in';
-  setTimeout(function(){var el=document.getElementById('authEmail');if(el)el.focus();},200);
+  // Auth disabled — go straight to app
+  authShowApp();
 })();
 </script>
 <button class="td-fab" id="ideasFab" style="display:none;background:#5B5F8D" onclick="openIdeaForm(null)">+</button>
