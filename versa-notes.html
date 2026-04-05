@@ -13,7 +13,31 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;font-family:'Barlow',sans-serif;background:#efede3;color:#302f2c;overflow:hidden}
 .layout{display:grid;grid-template-columns:260px 1fr;height:100vh}
-@media(max-width:860px){.layout{grid-template-columns:1fr;overflow-y:auto}}
+/* Mobile bottom nav (hidden on desktop) */
+.mob-nav{display:none}
+.mob-btn{display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;padding:6px 0;cursor:pointer;color:rgba(48,47,44,.35);font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;flex:1;-webkit-tap-highlight-color:transparent}
+.mob-btn svg{width:20px;height:20px}
+.mob-btn.on{color:#302f2c}
+.mob-btn.on svg{stroke:#302f2c}
+
+@media(max-width:860px){
+  .layout{grid-template-columns:1fr;height:100vh;overflow:hidden}
+  .sb{display:none}
+  .mob-nav{display:flex;align-items:center;justify-content:space-around;background:#efede3;border-top:1.5px solid rgba(48,47,44,.1);padding:8px 0 max(8px,env(safe-area-inset-bottom));flex-shrink:0;position:relative;z-index:50}
+  .main{height:100%;overflow:hidden}
+  .mhdr{padding:12px 16px 8px}
+  .mhdr .sub{display:none}
+  .mhdr .htitle{font-size:22px}
+  #mainContent{overflow-y:auto;-webkit-overflow-scrolling:touch}
+  /* Stack all two-column grids */
+  #vDash>div[style*="grid-template-columns"],
+  #vMeetings>div[style*="grid-template-columns"],
+  #mtgPage div[style*="grid-template-columns"]{grid-template-columns:1fr!important}
+  #mtgInstEditor div[style*="grid-template-columns"]{grid-template-columns:1fr!important}
+  /* Full-page views */
+  .mtg-page.open{position:absolute;inset:0;z-index:40;background:#efede3}
+  .mtg-page-hdr{padding:12px 16px 10px}
+}
 
 /* Sidebar */
 .sb{background:#302f2c;color:#efede3;padding:28px 22px;display:flex;flex-direction:column;overflow-y:auto;height:100vh}
@@ -123,7 +147,10 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:#efede3;color:#
 .mtg-page-title{font-size:22px;font-weight:600;flex:1}
 .mtg-page-date{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(48,47,44,.4)}
 .mtg-page-body{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:14px 28px 24px;overflow-y:auto}
-@media(max-width:700px){.mtg-page-body{grid-template-columns:1fr}}
+@media(max-width:700px){.mtg-page-body{grid-template-columns:1fr}
+#mtgPage>div>div[style*="grid-template-columns"]{grid-template-columns:1fr!important}
+#mtgInstEditor div[style*="grid-template-columns"]{grid-template-columns:1fr!important}
+}
 .mtg-panel{border-radius:4px;background:#fff;border:1.5px solid rgba(48,47,44,.1);padding:20px;display:flex;flex-direction:column}
 .mtg-panel-lbl{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:rgba(48,47,44,.4);margin-bottom:12px}
 .mtg-panel-ta{flex:1;width:100%;background:transparent;border:none;outline:none;font-family:'Barlow',sans-serif;font-size:15px;color:#302f2c;resize:none;line-height:1.7;min-height:180px}
@@ -757,72 +784,80 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:#efede3;color:#
         </button>
         <div class="mtg-page-title" id="mtgPageTitle">Meeting</div>
         <div class="mtg-page-date" id="mtgPageDate"></div>
-        <button onclick="saveMeeting()" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:#302f2c;border:none;border-radius:4px;padding:7px 14px;color:#efede3;cursor:pointer;margin-left:auto">Save</button>
+        <button onclick="deleteMeeting()" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:none;border:1.5px solid rgba(48,47,44,.12);border-radius:4px;padding:6px 12px;color:rgba(48,47,44,.35);cursor:pointer;margin-left:auto">Delete</button>
       </div>
 
-      <!-- Body: two-column layout -->
-      <div style="display:grid;grid-template-columns:280px 1fr;flex:1;overflow:hidden;min-height:0">
-
-        <!-- Left col: prep + past sessions list -->
-        <div style="border-right:1.5px solid rgba(48,47,44,.1);display:flex;flex-direction:column;overflow:hidden">
-          <!-- Prep for next meeting -->
-          <div style="padding:16px 18px;border-bottom:1.5px solid rgba(48,47,44,.1);flex-shrink:0">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-              <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:rgba(48,47,44,.4)">Next meeting prep</div>
-              <button onclick="startMeeting()" style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:#302f2c;border:none;border-radius:4px;padding:5px 10px;color:#efede3;cursor:pointer">Start meeting</button>
-            </div>
-            <textarea id="mtgPrep" placeholder="Add agenda points, reminders..." oninput="saveMeeting()" style="width:100%;background:rgba(255,255,255,.7);border:1.5px solid rgba(48,47,44,.1);border-radius:4px;padding:10px 12px;font-family:'Barlow',sans-serif;font-size:13px;color:#302f2c;resize:none;min-height:100px;line-height:1.6;outline:none"></textarea>
+      <!-- Scrollable body -->
+      <div style="flex:1;overflow-y:auto">
+        <!-- Top row: Prep + Start Meeting -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:16px 20px 0">
+          <!-- Prep block -->
+          <div style="border:1.5px solid rgba(48,47,44,.12);padding:20px">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;color:#302f2c;margin-bottom:14px">Prep</div>
+            <textarea id="mtgPrep" placeholder="Agenda points, reminders, things to raise…" oninput="saveMeeting()" style="width:100%;background:rgba(255,255,255,.7);border:1.5px solid rgba(48,47,44,.1);padding:12px 14px;font-family:'Barlow',sans-serif;font-size:14px;color:#302f2c;resize:none;min-height:120px;line-height:1.65;outline:none"></textarea>
+            <button onclick="saveMeeting()" class="save-btn" style="width:100%;text-align:center;margin-top:12px">Save Prep</button>
           </div>
-
-          <!-- Past sessions list -->
-          <div style="padding:14px 18px 8px;flex-shrink:0">
-            <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:rgba(48,47,44,.4)">Past sessions</div>
-          </div>
-          <div id="mtgInstanceList" style="overflow-y:auto;flex:1;padding:0 10px 20px"></div>
-        </div>
-
-        <!-- Right col: selected session editor or to-do panel -->
-        <div style="display:flex;flex-direction:column;overflow:hidden">
-          <!-- Instance editor (hidden until session selected) -->
-          <div id="mtgInstEditor" style="display:none;flex-direction:column;flex:1;overflow:hidden">
-            <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 22px 12px;border-bottom:1.5px solid rgba(48,47,44,.1);flex-shrink:0;flex-wrap:wrap;gap:8px">
-              <div id="mtgInstTitle" style="font-size:15px;font-weight:600;color:#302f2c"></div>
-              <div style="display:flex;gap:8px">
-                <button onclick="saveInstNotes()" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:#302f2c;border:none;border-radius:4px;padding:6px 14px;color:#efede3;cursor:pointer">Save</button>
-                <button onclick="deleteInstance()" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:none;border:1.5px solid rgba(48,47,44,.1);border-radius:4px;padding:6px 12px;color:rgba(48,47,44,.4);cursor:pointer">Delete</button>
+          <!-- Start meeting block (dark) -->
+          <div style="border:1.5px solid #302f2c;background:#302f2c;padding:20px;display:flex;flex-direction:column">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;color:#efede3;margin-bottom:14px">Start Session</div>
+            <div style="font-family:'Barlow',sans-serif;font-size:13px;color:rgba(239,237,227,.45);line-height:1.5;margin-bottom:16px">Creates a new session for today. Any prep notes will be copied in as a starting point.</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+              <div style="background:rgba(239,237,227,.06);padding:12px">
+                <div id="mtgDetailSessions" style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;color:#F4A258;line-height:1">0</div>
+                <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(239,237,227,.35);margin-top:4px">Sessions</div>
+              </div>
+              <div style="background:rgba(239,237,227,.06);padding:12px">
+                <div id="mtgDetailLast" style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;color:#efede3;line-height:1.2">—</div>
+                <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(239,237,227,.35);margin-top:4px">Last Session</div>
               </div>
             </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:16px 22px;flex:1;overflow-y:auto">
-              <div style="display:flex;flex-direction:column">
-                <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:rgba(48,47,44,.4);margin-bottom:10px">Notes</div>
-                <textarea id="mtgInstNotes" placeholder="Meeting notes..." oninput="saveInstNotes()" style="flex:1;width:100%;background:#fff;border:1.5px solid rgba(48,47,44,.1);border-radius:4px;padding:12px 14px;font-family:'Barlow',sans-serif;font-size:14px;color:#302f2c;resize:none;line-height:1.65;outline:none;min-height:200px"></textarea>
-              </div>
-              <div style="display:flex;flex-direction:column">
-                <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:rgba(48,47,44,.4);margin-bottom:10px">Actions</div>
-                <textarea id="mtgInstActions" placeholder="Action points..." oninput="saveInstNotes()" style="flex:1;width:100%;background:#fff;border:1.5px solid rgba(48,47,44,.1);border-radius:4px;padding:12px 14px;font-family:'Barlow',sans-serif;font-size:14px;color:#302f2c;resize:none;line-height:1.65;outline:none;min-height:200px"></textarea>
-              </div>
-            </div>
-          </div>
-
-          <!-- To-Do panel (always visible at bottom, or full when no session) -->
-          <div style="border-top:1.5px solid rgba(48,47,44,.1);padding:16px 22px;flex-shrink:0;background:#f6f2e8">
-            <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:rgba(48,47,44,.4);margin-bottom:12px">Add to To-Do List</div>
-            <input id="mtgTdTxt" placeholder="To-do item..." style="width:100%;border:none;outline:none;font-family:'Barlow',sans-serif;font-size:14px;color:#302f2c;background:transparent;border-bottom:1.5px solid rgba(48,47,44,.12);padding-bottom:7px;margin-bottom:10px"/>
-            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-              <span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(48,47,44,.4)">Assign to</span>
-              <select id="mtgTdAssign" style="height:30px;border-radius:4px;border:1.5px solid rgba(48,47,44,.12);background:rgba(255,255,255,.9);padding:0 10px;font-family:'Barlow',sans-serif;font-size:13px;color:#302f2c;outline:none"></select>
-              <button onclick="addMtgTodo()" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:#302f2c;border:none;border-radius:4px;padding:7px 14px;color:#efede3;cursor:pointer">Add</button>
-            </div>
-            <div id="mtgTdList" style="margin-top:10px;display:flex;flex-direction:column;gap:6px;max-height:140px;overflow-y:auto"></div>
-          </div>
-
-          <!-- Empty state when no session selected -->
-          <div id="mtgNoSession" style="flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;opacity:.3">
-            <svg width="32" height="32" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1"><path d="M3 2h10v12H3z"/><path d="M6 5h4M6 8h4M6 11h2"/></svg>
-            <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">Select a session or start new meeting</div>
+            <button onclick="startMeeting()" style="width:100%;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;background:#F4A258;color:#302f2c;border:none;padding:14px 20px;cursor:pointer;text-align:center;margin-top:auto">Start Meeting</button>
           </div>
         </div>
 
+        <!-- Session editor (shown when a session is selected) -->
+        <div id="mtgInstEditor" style="display:none;padding:0 20px">
+          <div style="border:1.5px solid #F4A258;margin-top:16px;padding:20px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;color:#302f2c">Session</div>
+              <div id="mtgInstTitle" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(48,47,44,.4)"></div>
+              <div style="display:flex;gap:8px;margin-left:auto">
+                <button onclick="saveInstNotes()" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:#302f2c;border:none;padding:7px 14px;color:#efede3;cursor:pointer">Save</button>
+                <button onclick="deleteInstance()" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:none;border:1.5px solid rgba(48,47,44,.12);padding:6px 12px;color:rgba(48,47,44,.35);cursor:pointer">Delete</button>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+              <div>
+                <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:rgba(48,47,44,.4);margin-bottom:8px">Notes</div>
+                <textarea id="mtgInstNotes" placeholder="Meeting notes…" oninput="saveInstNotes()" style="width:100%;background:#fff;border:1.5px solid rgba(48,47,44,.1);padding:12px 14px;font-family:'Barlow',sans-serif;font-size:14px;color:#302f2c;resize:none;line-height:1.65;outline:none;min-height:200px"></textarea>
+              </div>
+              <div>
+                <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:rgba(48,47,44,.4);margin-bottom:8px">Actions</div>
+                <textarea id="mtgInstActions" placeholder="Action points…" oninput="saveInstNotes()" style="width:100%;background:#fff;border:1.5px solid rgba(48,47,44,.1);padding:12px 14px;font-family:'Barlow',sans-serif;font-size:14px;color:#302f2c;resize:none;line-height:1.65;outline:none;min-height:200px"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom row: Past Sessions + Add To-Do -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:16px 20px 20px">
+          <div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;color:#302f2c;margin-bottom:12px">Past Sessions</div>
+            <div id="mtgInstanceList" class="vault-grid"></div>
+          </div>
+          <div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;color:#302f2c;margin-bottom:12px">To-Dos</div>
+            <div style="border:1.5px solid rgba(48,47,44,.12);padding:20px">
+              <input id="mtgTdTxt" placeholder="Add a to-do from this meeting…" style="width:100%;border:none;outline:none;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;text-transform:uppercase;letter-spacing:.02em;color:#302f2c;background:transparent;border-bottom:1.5px solid rgba(48,47,44,.12);padding-bottom:8px;margin-bottom:12px" onkeydown="if(event.key==='Enter')addMtgTodo()"/>
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+                <span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(48,47,44,.35)">Assign</span>
+                <select id="mtgTdAssign" style="height:30px;border-radius:4px;border:1.5px solid rgba(48,47,44,.12);background:rgba(255,255,255,.9);padding:0 10px;font-family:'Barlow',sans-serif;font-size:13px;color:#302f2c;outline:none"></select>
+                <button onclick="addMtgTodo()" class="save-btn" style="padding:8px 18px">Add Task</button>
+              </div>
+              <div id="mtgTdList" style="display:flex;flex-direction:column;gap:6px;max-height:200px;overflow-y:auto"></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -830,6 +865,30 @@ html,body{height:100%;font-family:'Barlow',sans-serif;background:#efede3;color:#
     
 
   </div><!-- /main -->
+
+  <!-- Mobile bottom nav -->
+  <nav class="mob-nav" id="mobNav">
+    <button class="mob-btn on" onclick="showPage('dashboard')" data-page="dashboard">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+      <span>Home</span>
+    </button>
+    <button class="mob-btn" onclick="showPage('notes')" data-page="notes">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 2h10v12H3z"/><path d="M6 5h4M6 8h4M6 11h2"/></svg>
+      <span>Notes</span>
+    </button>
+    <button class="mob-btn" onclick="showPage('todos')" data-page="todos">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h2v2H2zm4 1h8M2 9h2v2H2zm4 1h8"/></svg>
+      <span>To-Dos</span>
+    </button>
+    <button class="mob-btn" onclick="showPage('ideas')" data-page="ideas">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="8,1 10,5.5 15.5,6.5 11.5,10.5 12.5,15.5 8,13 3.5,15.5 4.5,10.5 0.5,6.5 6,5.5"/></svg>
+      <span>Ideas</span>
+    </button>
+    <button class="mob-btn" onclick="showPage('meetings')" data-page="meetings">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="4" r="2"/><circle cx="11" cy="4" r="2"/><path d="M1 12c0-2.2 1.8-4 4-4h2M9 8c1.1.7 2 2 2 4"/></svg>
+      <span>Meetings</span>
+    </button>
+  </nav>
 </div>
 
 <script>
@@ -1507,6 +1566,10 @@ function openMeeting(id){
   var t=document.getElementById('mtgPageTitle');if(t)t.textContent=m.name;
   var d2=document.getElementById('mtgPageDate');if(d2)d2.textContent=m.isSeries?'Weekly recurring':'';
   var prep=document.getElementById('mtgPrep');if(prep)prep.value=m.prep||'';
+  var insts=m.instances||[];
+  var ds=document.getElementById('mtgDetailSessions');if(ds)ds.textContent=insts.length;
+  var dl=document.getElementById('mtgDetailLast');
+  if(dl)dl.textContent=insts.length?new Date(insts[0].date).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'}):'—';
   renderInstanceList(m);
   var sel=document.getElementById('mtgTdAssign');
   if(sel)sel.innerHTML=TEAM.map(function(t){return '<option value="'+t+'"'+(t==='Andrew Rowell'?' selected':'')+'>'+t+'</option>';}).join('');
@@ -1515,36 +1578,32 @@ function openMeeting(id){
 }
 function renderInstanceList(m){
   var el=document.getElementById('mtgInstanceList');if(!el)return;
+  var MCOLS=['#5B5F8D','#DA6B51','#708C69','#9BB29E','#F4A258','#013D5A','#BDD3CE','#484149'];
   var instances=(m.instances||[]).slice().sort(function(a,b){return b.date.localeCompare(a.date);});
   if(!instances.length){
-    el.innerHTML='<div style="font-family:Barlow Condensed,sans-serif;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(48,47,44,.28);padding:10px 2px">No past sessions yet</div>';
+    el.innerHTML='<div style="font-family:Barlow Condensed,sans-serif;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(48,47,44,.25);padding:8px 0">No past sessions yet</div>';
     return;
   }
-  var items=instances.map(function(inst){
-    var ds=new Date(inst.date).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'2-digit'});
-    var dow=new Date(inst.date).toLocaleDateString('en-GB',{weekday:'short'});
-    var preview=(inst.notes||'').slice(0,55);
-    var div=document.createElement('div');
-    div.className='inst-row';
-    div.dataset.iid=inst.id;
-    div.innerHTML='<div class="inst-date"><span class="inst-dow">'+dow+'</span> '+ds+'</div>'
-      +(preview?'<div class="inst-preview">'+esc(preview)+'...</div>':'<div class="inst-preview" style="opacity:.28">No notes</div>');
-    div.addEventListener('click',function(){showInstanceEditor(this.dataset.iid);});
-    return div.outerHTML;
-  });
-  el.innerHTML=items.join('');
-  // Re-wire events after innerHTML (since outerHTML loses them)
-  el.querySelectorAll('.inst-row').forEach(function(row){
-    row.addEventListener('click',function(){showInstanceEditor(row.dataset.iid);});
+  el.innerHTML=instances.map(function(inst,i){
+    var col=MCOLS[i%MCOLS.length];
+    var ds=new Date(inst.date).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
+    var preview=(inst.notes||'').slice(0,60);
+    return '<div class="vault-card" style="border-color:'+col+';cursor:pointer" data-iid="'+inst.id+'">'
+      +'<div class="vault-card-bar" style="background:'+col+'"></div>'
+      +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;line-height:1.15;color:#302f2c">'+ds+'</div>'
+      +(preview?'<div style="font-family:\'Barlow\',sans-serif;font-size:12px;color:rgba(48,47,44,.4);margin-top:5px;line-height:1.4;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">'+esc(preview)+'</div>':'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;color:rgba(48,47,44,.2);margin-top:5px">No notes</div>')
+      +'</div>';
+  }).join('');
+  el.querySelectorAll('.vault-card[data-iid]').forEach(function(card){
+    card.addEventListener('click',function(){showInstanceEditor(card.dataset.iid);});
   });
 }
 function showInstanceEditor(instId){
-  var ed=document.getElementById('mtgInstEditor'),ns=document.getElementById('mtgNoSession');
-  if(!instId||!curMtg){if(ed)ed.style.display='none';if(ns)ns.style.display='flex';return;}
+  var ed=document.getElementById('mtgInstEditor');
+  if(!instId||!curMtg){if(ed)ed.style.display='none';return;}
   var inst=(curMtg.instances||[]).find(function(x){return x.id===instId;});
-  if(!inst){if(ed)ed.style.display='none';if(ns)ns.style.display='flex';return;}
-  if(ns)ns.style.display='none';
-  if(ed){ed.style.display='flex';ed.dataset.instId=instId;}
+  if(!inst){if(ed)ed.style.display='none';return;}
+  if(ed){ed.style.display='block';ed.dataset.instId=instId;}
   var ti=document.getElementById('mtgInstTitle');
   if(ti)ti.textContent=new Date(inst.date).toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   var mn=document.getElementById('mtgInstNotes');if(mn)mn.value=inst.notes||'';
@@ -1562,6 +1621,9 @@ function deleteInstance(){
   var ed=document.getElementById('mtgInstEditor');if(!ed||!curMtg)return;
   if(!confirm('Delete this session?'))return;
   curMtg.instances=(curMtg.instances||[]).filter(function(x){return x.id!==ed.dataset.instId;});
+  var ds=document.getElementById('mtgDetailSessions');if(ds)ds.textContent=curMtg.instances.length;
+  var dl=document.getElementById('mtgDetailLast');
+  if(dl)dl.textContent=curMtg.instances.length?new Date(curMtg.instances[0].date).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'}):'—';
   showInstanceEditor(null);renderInstanceList(curMtg);save();renderMtgList();
 }
 
@@ -1578,6 +1640,9 @@ function startMeeting(){
   curMtg.instances.unshift(inst);
   curMtg.prep='';
   var prep=document.getElementById('mtgPrep');if(prep)prep.value='';
+  var ds=document.getElementById('mtgDetailSessions');if(ds)ds.textContent=curMtg.instances.length;
+  var dl=document.getElementById('mtgDetailLast');
+  if(dl)dl.textContent=new Date(today).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
   save();renderMtgList();renderInstanceList(curMtg);showInstanceEditor(inst.id);
 }
 function saveMeetingFromWindow(id,notesVal,actionsVal,newTodos){
@@ -1745,6 +1810,7 @@ function showPage(v){
     var target=document.getElementById(map[v]||'vDash');
     if(target)target.style.display='block';
     document.querySelectorAll('.nv[data-page]').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-page')===v);});
+    document.querySelectorAll('.mob-btn[data-page]').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-page')===v);});
     var vt=document.getElementById('viewTitle');if(vt)vt.textContent={dashboard:'Dashboard',notes:'Notes',todos:'To-Dos',ideas:'Ideas Board',meetings:'Meetings'}[v]||v;
     var fab=document.getElementById('tdFab');if(fab)fab.style.display=v==='todos'?'flex':'none';
   var ifab=document.getElementById('ideasFab');if(ifab)ifab.style.display=v==='ideas'?'flex':'none';
