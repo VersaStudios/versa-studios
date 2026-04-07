@@ -61,9 +61,9 @@ html[data-theme="light"] .theme-btn::before{-webkit-mask-image:url("data:image/s
 .panel-act:hover{color:var(--white)}
 .filters{display:flex;align-items:center;gap:8px;margin-bottom:15px;flex-wrap:wrap}
 .fsel{background:var(--near-black);border:1px solid var(--border);color:var(--white);font-family:var(--cond);font-size:17px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:8px 26px 8px 10px;border-radius:4px;outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23aaa'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;background-color:var(--near-black)}
-.btn-add{display:flex;align-items:center;gap:6px;background:var(--pure);color:var(--black);border:none;border-radius:4px;padding:8px 13px;font-family:var(--cond);font-size:17px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;margin-left:auto;transition:opacity .13s}
+.btn-add{display:flex;align-items:center;gap:6px;background:var(--pure);color:var(--black);border:none;border-radius:8px;padding:8px 14px;font-family:var(--cond);font-size:14px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;margin-left:auto;transition:opacity .13s}
 .btn-add:hover{opacity:.87}
-.btn-sec{background:none;color:var(--white);border:1px solid var(--border);border-radius:4px;padding:7px 12px;font-family:var(--cond);font-size:17px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .13s}
+.btn-sec{background:none;color:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:7px 14px;font-family:var(--cond);font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .13s}
 .btn-sec:hover{border-color:var(--subtle);color:var(--pure)}
 .tbl{width:100%;border:1px solid var(--border);border-radius:5px;overflow:hidden;background:var(--near-black)}
 .tbl-hdr{display:grid;padding:9px 17px;border-bottom:1px solid var(--border);background:var(--dark)}
@@ -141,22 +141,21 @@ html[data-theme="light"] .theme-btn::before{-webkit-mask-image:url("data:image/s
 .drw-more-item.danger:hover{background:rgba(200,80,80,.1);color:#e89090}
 .x-btn{background:none;border:none;color:var(--muted);cursor:pointer;padding:4px;font-size:19px;line-height:1;transition:color .13s}
 .x-btn:hover{color:var(--white)}
-.det-sec{margin-bottom:8px}
-.det-sec-lbl{font-family:var(--cond);font-size:9px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--white);margin-bottom:4px;padding-bottom:3px;border-bottom:1px solid var(--border)}
-.det-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px}
-.det-kv{background:var(--dark);border:1px solid var(--border);border-radius:3px;padding:4px 7px}
-.det-kv .dfl{margin-bottom:0}
-.det-inline{display:flex;gap:3px;flex-wrap:wrap}
+.det-sec{margin-bottom:12px;background:var(--near-black);border:1.5px solid var(--border);border-radius:10px;padding:16px 18px}
+.det-sec-lbl{font-family:var(--cond);font-size:13px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--white);margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--border)}
+.det-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.det-kv{background:var(--dark);border:1.5px solid var(--border);border-radius:8px;padding:10px 14px}
+.det-kv .dfl{margin-bottom:2px}
+.det-inline{display:flex;gap:6px;flex-wrap:wrap}
 .det-inline>div{flex:1;min-width:120px}
-/* Inline-editable field: looks like text, becomes input on focus */
-.det-edit{background:transparent;border:1px solid transparent;border-radius:3px;color:var(--pure);font-size:13px;font-weight:700;font-family:var(--font);padding:2px 4px;width:100%;outline:none;transition:all .15s;box-sizing:border-box;-webkit-appearance:none;appearance:none}
+.det-edit{background:transparent;border:1.5px solid transparent;border-radius:6px;color:var(--pure);font-size:14px;font-weight:700;font-family:var(--font);padding:4px 8px;width:100%;outline:none;transition:all .15s;box-sizing:border-box;-webkit-appearance:none;appearance:none}
 .det-edit:hover{border-color:var(--border)}
 .det-edit:focus{background:var(--dark);border-color:var(--accent);color:var(--pure)}
 .det-edit::placeholder{color:var(--border-l);font-weight:500}
-.det-edit.mn{font-family:monospace;font-size:13px;color:var(--pure);font-weight:700}
+.det-edit.mn{font-family:monospace;font-size:14px;color:var(--pure);font-weight:700}
 select.det-edit{cursor:pointer}
-textarea.det-edit{resize:vertical;line-height:1.4;font-weight:600;font-size:13px;padding:4px 5px}
-.dfl{font-size:9px;font-family:var(--cond);font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--subtle);margin-bottom:0}
+textarea.det-edit{resize:vertical;line-height:1.4;font-weight:600;font-size:14px;padding:6px 8px}
+.dfl{font-size:11px;font-family:var(--cond);font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--subtle);margin-bottom:4px}
 .dfv{font-size:17px;font-weight:600;color:var(--white)}
 .dfv.mn{font-family:monospace;font-size:17px;color:var(--subtle)}
 .tl-entry{padding:11px 0;border-bottom:1px solid var(--border)}
@@ -204,7 +203,7 @@ textarea.det-edit{resize:vertical;line-height:1.4;font-weight:600;font-size:13px
 .adm-row:last-child{border-bottom:none}
 .adm-row-nm{font-family:var(--cond);font-size:17px;font-weight:700;color:var(--white)}
 .adm-row-sub{font-size:17px;color:var(--muted);margin-top:1px}
-.ibtn{background:none;border:1px solid var(--border);color:var(--subtle);cursor:pointer;padding:4px 9px;border-radius:3px;font-size:17px;font-family:var(--cond);font-weight:700;letter-spacing:.08em;text-transform:uppercase;transition:all .13s}
+.ibtn{background:none;border:1.5px solid var(--border);color:var(--subtle);cursor:pointer;padding:6px 12px;border-radius:6px;font-size:13px;font-family:var(--cond);font-weight:700;letter-spacing:.08em;text-transform:uppercase;transition:all .13s}
 .ibtn:hover{border-color:var(--subtle);color:var(--white)}
 .ibtn.del:hover{border-color:#cc5555;color:#cc5555}
 .cat-row{display:flex;align-items:center;gap:9px;padding:10px 18px;border-bottom:1px solid var(--border)}
@@ -233,11 +232,11 @@ textarea.det-edit{resize:vertical;line-height:1.4;font-weight:600;font-size:13px
 .ff{display:flex;flex-direction:column;gap:5px}
 .ff.full{grid-column:1/-1}
 .flbl{font-family:var(--cond);font-size:17px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
-.fi,.fta{background:var(--dark);border:1px solid var(--border);color:var(--white);font-family:var(--font);font-size:17px;font-weight:500;padding:10px 11px;border-radius:4px;outline:none;transition:border-color .13s;width:100%}
+.fi,.fta{background:var(--near-black);border:1.5px solid var(--border);color:var(--white);font-family:var(--font);font-size:16px;font-weight:500;padding:11px 14px;border-radius:8px;outline:none;transition:border-color .13s;width:100%}
 .fta{resize:vertical;min-height:70px}
 .fi:focus,.fta:focus{border-color:var(--subtle)}
 .fi::placeholder,.fta::placeholder{color:var(--muted)}
-.btn-p{flex:1;background:var(--pure);color:var(--black);border:none;border-radius:4px;padding:10px;font-family:var(--cond);font-weight:800;font-size:17px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:opacity .13s}
+.btn-p{flex:1;background:var(--pure);color:var(--black);border:none;border-radius:8px;padding:10px;font-family:var(--cond);font-weight:800;font-size:16px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:opacity .13s}
 .btn-p:hover{opacity:.88}
 .btn-s{background:none;color:var(--white);border:1px solid var(--border);border-radius:4px;padding:10px 13px;font-family:var(--cond);font-weight:700;font-size:17px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .13s}
 .btn-s:hover{border-color:var(--subtle);color:var(--pure)}
@@ -461,9 +460,9 @@ textarea.det-edit{resize:vertical;line-height:1.4;font-weight:600;font-size:13px
 
 
 /* ── JOB DETAIL TABS ─────────────────────────────────────────────────────── */
-.jd-tab{font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;padding:8px 14px;cursor:pointer;color:rgba(255,255,255,.75);white-space:nowrap;transition:all .12s;border-radius:5px;border:2px solid transparent;opacity:.7}
+.jd-tab{font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;padding:8px 14px;cursor:pointer;color:rgba(255,255,255,.75);white-space:nowrap;border-radius:5px;border:none;opacity:.7;box-sizing:border-box}
 .jd-tab:hover{opacity:1;color:#fff}
-.jd-tab.active{opacity:1;color:#fff;border-color:rgba(255,255,255,.9);box-shadow:0 0 0 1px rgba(255,255,255,.2)}
+.jd-tab.active{opacity:1;color:#fff;outline:2px solid rgba(255,255,255,.9);outline-offset:-2px}
 
 
 
@@ -692,14 +691,14 @@ html[data-theme="light"] .search-wrap input{color:#302f2c}
 html[data-theme="light"] .search-wrap input::placeholder{color:rgba(48,47,44,.3)}
 html[data-theme="light"] .notif-btn{color:#302f2c}
 /* Kit detail modal — light mode contrast fixes */
-html[data-theme="light"] .det-kv{background:rgba(48,47,44,.04);border-color:rgba(48,47,44,.1)}
-html[data-theme="light"] .det-sec-lbl{color:#302f2c;border-bottom-color:rgba(48,47,44,.15)}
+html[data-theme="light"] .det-kv{background:rgba(48,47,44,.03);border-color:rgba(48,47,44,.1)}
+html[data-theme="light"] .det-sec{background:rgba(255,255,255,.5);border-color:rgba(48,47,44,.1)}
+html[data-theme="light"] .det-sec-lbl{color:#302f2c;border-bottom-color:rgba(48,47,44,.12)}
 html[data-theme="light"] .dfl{color:#3d4250}
 html[data-theme="light"] .det-edit{color:#1a1916}
 html[data-theme="light"] .det-edit.mn{color:#1a1916}
 html[data-theme="light"] .det-edit:focus{background:#fff;border-color:var(--accent)}
 html[data-theme="light"] .det-edit::placeholder{color:rgba(48,47,44,.3)}
-html[data-theme="light"] .det-sec-lbl{color:rgba(48,47,44,.5)}
 html[data-theme="light"] #kitDrawer{background:#f4f2ec;border-color:rgba(48,47,44,.15);box-shadow:0 16px 60px rgba(48,47,44,.25)}
 html[data-theme="light"] .drw-hdr{border-bottom-color:rgba(48,47,44,.1)}
 html[data-theme="light"] .drw-tabs{border-bottom-color:rgba(48,47,44,.1)}
@@ -1227,7 +1226,7 @@ html[data-theme="light"] .drw-more-menu{background:#f4f2ec;border-color:rgba(48,
             <select class="fsel" id="fLoc" onchange="renderKit()" style="font-family:var(--cond);font-weight:700;font-size:13px"><option value="">All Locations</option><option>Manchester</option><option>London</option></select>
             <select class="fsel" id="fStat" onchange="renderKit()" style="font-family:var(--cond);font-weight:700;font-size:13px"><option value="">All Statuses</option><option>Available</option><option>In Use</option><option>Maintenance</option><option>Fault</option></select>
             <div class="tog-group"><button class="tog-opt active" id="kvList" onclick="setKV('list')">List</button><button class="tog-opt" id="kvGroup" onclick="setKV('group')">Grouped</button><button class="tog-opt" id="kvIcon" onclick="setKV('icon')">Icons</button></div>
-            <button class="ibtn" style="font-family:var(--cond);font-size:12px;font-weight:800;padding:5px 10px;letter-spacing:.04em;background:rgba(45,125,210,.12);color:#4a9eff;border-color:rgba(45,125,210,.3)" onclick="openBulkTransfer()">TRANSFER</button>
+            <button class="ibtn" style="font-family:var(--cond);font-size:12px;font-weight:800;padding:5px 10px;letter-spacing:.04em;background:rgba(45,125,210,.12);color:#2a6cb8;border-color:rgba(45,125,210,.3)" onclick="openBulkTransfer()">TRANSFER</button>
           </div>
           <div class="tbl"><div class="tbl-hdr" style="grid-template-columns:2fr 1fr 1fr 1fr 1.4fr 34px"><div class="th">Item</div><div class="th">Category</div><div class="th">Location</div><div class="th">Status</div><div class="th">Allocated To</div><div></div></div><div id="kitBody"></div></div>
       </div>
@@ -1245,14 +1244,14 @@ html[data-theme="light"] .drw-more-menu{background:#f4f2ec;border-color:rgba(48,
             <select class="fsel" id="fMType" onchange="renderMaint()" style="font-family:var(--cond);font-weight:700;font-size:13px"><option value="">All</option><option>Internal</option><option>External</option></select>
             <select class="fsel" id="fMStatus" onchange="renderMaint()" style="font-family:var(--cond);font-weight:700;font-size:13px"><option value="">All Statuses</option><option>In Progress</option><option>Complete</option><option>Awaiting Parts</option></select>
             <div style="flex:1"></div>
-            <button class="ibtn" style="font-family:var(--cond);font-size:13px;font-weight:800;padding:6px 14px;letter-spacing:.04em;background:rgba(45,125,210,.12);color:#4a9eff;border-color:rgba(45,125,210,.3)" onclick="openAddMaint()">+ ADD RECORD</button>
+            <button class="ibtn" style="font-family:var(--cond);font-size:13px;font-weight:800;padding:6px 14px;letter-spacing:.04em;background:rgba(45,125,210,.12);color:#2a6cb8;border-color:rgba(45,125,210,.3)" onclick="openAddMaint()">+ ADD RECORD</button>
           </div>
           <div id="maintBody"></div>
         </div>
         <div id="mc-repair" style="display:none">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;padding:10px 14px;background:var(--near-black);border:1px solid var(--border);border-radius:8px">
             <div style="flex:1"></div>
-            <button class="ibtn" style="font-family:var(--cond);font-size:13px;font-weight:800;padding:6px 14px;letter-spacing:.04em;background:rgba(45,125,210,.12);color:#4a9eff;border-color:rgba(45,125,210,.3)" onclick="openAddRepair()">+ SEND TO REPAIR</button>
+            <button class="ibtn" style="font-family:var(--cond);font-size:13px;font-weight:800;padding:6px 14px;letter-spacing:.04em;background:rgba(45,125,210,.12);color:#2a6cb8;border-color:rgba(45,125,210,.3)" onclick="openAddRepair()">+ SEND TO REPAIR</button>
           </div>
           <div id="repairBody"></div>
         </div>
@@ -1269,7 +1268,7 @@ html[data-theme="light"] .drw-more-menu{background:#f4f2ec;border-color:rgba(48,
           </div>
           <div id="patBody"></div>
         </div>
-        <div id="mc-sup" style="display:none"><div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;padding:10px 14px;background:var(--near-black);border:1px solid var(--border);border-radius:8px"><div style="flex:1"></div><button class="ibtn" style="font-family:var(--cond);font-size:13px;font-weight:800;padding:6px 14px;letter-spacing:.04em;background:rgba(45,125,210,.12);color:#4a9eff;border-color:rgba(45,125,210,.3)" onclick="openAddSupp()">+ ADD SUPPLIER</button></div><div id="suppList"></div></div>
+        <div id="mc-sup" style="display:none"><div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;padding:10px 14px;background:var(--near-black);border:1px solid var(--border);border-radius:8px"><div style="flex:1"></div><button class="ibtn" style="font-family:var(--cond);font-size:13px;font-weight:800;padding:6px 14px;letter-spacing:.04em;background:rgba(45,125,210,.12);color:#2a6cb8;border-color:rgba(45,125,210,.3)" onclick="openAddSupp()">+ ADD SUPPLIER</button></div><div id="suppList"></div></div>
       </div>
 
       <div class="page" id="page-faults">
@@ -1279,7 +1278,7 @@ html[data-theme="light"] .drw-more-menu{background:#f4f2ec;border-color:rgba(48,
           <select class="fsel" id="fFaultSort" onchange="renderFaults()" style="font-family:var(--cond);font-weight:700;font-size:13px"><option value="newest">Newest First</option><option value="oldest">Oldest First</option><option value="severity">By Severity</option></select>
           <div style="flex:1;display:flex;align-items:center;gap:6px;background:var(--dark);border:1px solid var(--border);border-radius:6px;padding:5px 10px;min-width:120px"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.4;flex-shrink:0"><circle cx="6.5" cy="6.5" r="5"/><path d="M11 11l3.5 3.5"/></svg><input id="fFaultSearch" placeholder="Search..." style="background:none;border:none;outline:none;color:var(--white);font-family:var(--cond);font-size:13px;font-weight:700;width:100%" oninput="renderFaults()"/></div>
           <div style="flex:1"></div>
-          <button class="ibtn" style="font-family:var(--cond);font-size:13px;font-weight:800;padding:6px 14px;letter-spacing:.04em;background:rgba(45,125,210,.12);color:#4a9eff;border-color:rgba(45,125,210,.3)" onclick="showAddFault()">+ LOG FAULT</button>
+          <button class="ibtn" style="font-family:var(--cond);font-size:13px;font-weight:800;padding:6px 14px;letter-spacing:.04em;background:rgba(45,125,210,.12);color:#2a6cb8;border-color:rgba(45,125,210,.3)" onclick="showAddFault()">+ LOG FAULT</button>
         </div>
         <div id="faultBody"></div>
       </div>
@@ -2121,6 +2120,11 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
             <div style="padding:10px 17px;font-size:13px;color:var(--muted)">Manage the dropdown options used in Camera Spec. Changes apply immediately to all jobs.</div>
             <div id="dvAdminWrap" style="padding:0 17px 16px"></div>
           </div>
+          <div class="adm-sec full" style="background:var(--panel);border-radius:6px;border:1px solid var(--border);margin-top:14px">
+            <div class="adm-sec-hdr"><div class="adm-sec-title">Versa Freelance Crew</div></div>
+            <div style="padding:10px 17px;font-size:13px;color:var(--muted)">Manage the freelance crew list used in the Crew tab picker and Freelance Planner.</div>
+            <div id="dvFreelanceWrap" style="padding:0 17px 16px"></div>
+          </div>
         </div>
         <div id="admContent-suppliers" style="display:none">
           <div class="adm-sec full" style="background:var(--panel);border-radius:6px;border:1px solid var(--border)">
@@ -2594,7 +2598,7 @@ function _getDataMap() {
     repairItems: repairItems, holidays: holidays, activity: activity,
     slogData: slogData, studioInfo: studioInfo, camPlans: camPlans, jobNotes: jobNotes,
     opsPlanner: Object.assign({}, _opsD), opsBrk: _opsBrk.slice(), job_access: _jobAccessGrants.slice(),
-    patTesters: patTesters, suppliers: suppliers
+    patTesters: patTesters, suppliers: suppliers, freelanceCrew: VERSA_FREELANCE
   };
 }
 
@@ -2650,6 +2654,7 @@ async function loadData() {
           else if(row.key==='slogData'&&v&&typeof v==='object'){Object.assign(slogData,v);}
           else if(row.key==='studioInfo'&&v&&typeof v==='object'){Object.assign(studioInfo,v);}
           else if(row.key==='camPlans'&&v&&typeof v==='object'){Object.assign(camPlans,v);}
+          else if(row.key==='freelanceCrew'&&Array.isArray(v)){VERSA_FREELANCE=v;}
           else if(row.key==='jobNotes'&&v&&typeof v==='object'){Object.assign(jobNotes,v);}
           else if(row.key==='opsPlanner'&&v&&typeof v==='object'){Object.keys(v).forEach(function(k){_opsD[k]=v[k];});}
           else if(row.key==='opsBrk'&&Array.isArray(v)){_opsBrk.length=0;v.forEach(function(x){_opsBrk.push(x);})}
@@ -4181,7 +4186,7 @@ function renderStudioInfo(loc, studioKey){
     var isImg=/\.(jpg|jpeg|png|gif|webp)$/i.test(si.drawing)||(si.drawing.startsWith('data:image'));
     var isPdf=/\.pdf$/i.test(si.drawing)||(si.drawing.startsWith('data:application/pdf'));
     if(isImg) drawingHtml='<img src="'+si.drawing+'" style="max-width:100%;max-height:280px;border-radius:6px;margin-top:8px;display:block;border:1px solid var(--border)"/>';
-    else if(isPdf) drawingHtml='<div style="margin-top:8px"><a href="'+si.drawing+'" target="_blank" style="color:#4a9eff;font-size:13px">&#128196; View Drawing PDF</a></div>';
+    else if(isPdf) drawingHtml='<div style="margin-top:8px"><a href="'+si.drawing+'" target="_blank" style="color:#2a6cb8;font-size:13px">&#128196; View Drawing PDF</a></div>';
     drawingHtml+='<button onclick="clearStudioDrawing(\''+loc+'\',\''+studioKey+'\')" style="margin-top:6px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:11px;text-decoration:underline">Remove</button>';
   }
 
@@ -4190,7 +4195,7 @@ function renderStudioInfo(loc, studioKey){
   if(si.sqft||si.visionMixer){
     statsHtml='<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px">';
     if(si.sqft) statsHtml+='<div style="background:rgba(74,158,255,.12);border:1px solid rgba(74,158,255,.25);border-radius:8px;padding:8px 14px;flex:1;min-width:120px">'
-      +'<div style="font-size:9px;font-family:var(--cond);font-weight:800;letter-spacing:.15em;color:#4a9eff;margin-bottom:2px">FLOOR SIZE</div>'
+      +'<div style="font-size:9px;font-family:var(--cond);font-weight:800;letter-spacing:.15em;color:#2a6cb8;margin-bottom:2px">FLOOR SIZE</div>'
       +'<div style="font-size:14px;font-weight:700;color:var(--white)">'+si.sqft+'</div></div>';
     if(si.visionMixer) statsHtml+='<div style="background:rgba(42,138,106,.12);border:1px solid rgba(42,138,106,.25);border-radius:8px;padding:8px 14px;flex:1;min-width:120px">'
       +'<div style="font-size:9px;font-family:var(--cond);font-weight:800;letter-spacing:.15em;color:#2a8a6a;margin-bottom:2px">VISION MIXER</div>'
@@ -4338,7 +4343,7 @@ function renderHiredCatalogue(catFilter, subcatFilter){
     +'<div style="font-family:var(--cond);font-size:16px;font-weight:900;color:'+col+'">'+subLabel+'</div>'
     +'<div style="font-family:var(--cond);font-size:13px;color:var(--muted);font-weight:700">'+items.length+' items</div>'
     +'<div style="flex:1"></div>'
-    +'<button class="ibtn" style="font-family:var(--cond);font-size:13px;font-weight:800;padding:6px 14px;background:rgba(45,125,210,.12);color:#4a9eff;border-color:rgba(45,125,210,.3)" onclick="openAddHiredItem(\'' +catFilter+'\',\''+subcatFilter+'\')" >+ ADD ITEM</button>'
+    +'<button class="ibtn" style="font-family:var(--cond);font-size:13px;font-weight:800;padding:6px 14px;background:rgba(45,125,210,.12);color:#2a6cb8;border-color:rgba(45,125,210,.3)" onclick="openAddHiredItem(\'' +catFilter+'\',\''+subcatFilter+'\')" >+ ADD ITEM</button>'
     +'</div>';
   if(!items.length){
     html+='<div style="background:var(--near-black);border:1px solid var(--border);border-radius:8px;padding:60px 20px;text-align:center"><div style="font-size:40px;margin-bottom:10px">📦</div><div style="font-family:var(--cond);font-size:18px;font-weight:800;color:var(--muted)">NO ITEMS YET</div></div>';
@@ -5018,7 +5023,7 @@ function erCalOpenDay(dateStr) {
   if(kitNames)
     h+='<div style="margin-bottom:10px">'
       +'<div style="font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px">Tagged Kit</div>'
-      +'<div style="display:flex;flex-wrap:wrap;gap:6px">'+kitNames.split(', ').map(function(k){return '<span style="font-size:12px;background:rgba(74,158,255,.12);border:1px solid rgba(74,158,255,.3);border-radius:4px;padding:2px 8px;color:#6ab0ff">'+k+'</span>';}).join('')+'</div></div>';
+      +'<div style="display:flex;flex-wrap:wrap;gap:6px">'+kitNames.split(', ').map(function(k){return '<span style="font-size:12px;background:rgba(74,158,255,.12);border:1px solid rgba(74,158,255,.3);border-radius:4px;padding:2px 8px;color:#2a6cb8">'+k+'</span>';}).join('')+'</div></div>';
 
   h+='<div style="font-size:11px;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.06)">Submitted '+submittedTime+'</div>'
     +'</div>';
@@ -5430,7 +5435,7 @@ function renderRepairs(){
       +'<div style="font-size:15px;font-weight:700;color:var(--white);margin-bottom:3px">'+r.item+'</div>'
       +(r.fault?'<div style="font-size:12px;color:var(--muted);margin-bottom:5px">'+r.fault+'</div>':'')
       +'<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:4px">'
-      +(supp?'<span style="font-size:11px;font-family:var(--cond);font-weight:700;color:#4a9eff">&#127981; '+supp.name+'</span>':'<span style="font-size:11px;color:var(--muted)">Internal</span>')
+      +(supp?'<span style="font-size:11px;font-family:var(--cond);font-weight:700;color:#2a6cb8">&#127981; '+supp.name+'</span>':'<span style="font-size:11px;color:var(--muted)">Internal</span>')
       +'<span style="font-size:11px;color:var(--muted)">Sent: '+fmtD(r.dateSent)+'</span>'
       +(r.dateBack?'<span style="font-size:11px;color:#3dbf7a">Back: '+fmtD(r.dateBack)+'</span>':'')
       +(r.notes?'<span style="font-size:11px;color:var(--subtle)">'+r.notes+'</span>':'')
@@ -5580,7 +5585,7 @@ function renderInfoPage(){
     if(em) return '<div style="margin-bottom:10px"><div style="font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px">'+label+' URL</div>'
       +'<input class="fi" id="'+id+'" value="'+((val||'').replace(/"/g,'&quot;'))+'" placeholder="https://..." style="font-size:13px;padding:7px 10px;width:100%;box-sizing:border-box"/></div>';
     if(!val)return '';
-    return '<a href="'+val+'" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:#4a9eff;text-decoration:none;background:rgba(74,158,255,.1);border:1px solid rgba(74,158,255,.25);border-radius:8px;padding:6px 12px;margin-bottom:10px">'+label+' ↗</a>';
+    return '<a href="'+val+'" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:#2a6cb8;text-decoration:none;background:rgba(74,158,255,.1);border:1px solid rgba(74,158,255,.25);border-radius:8px;padding:6px 12px;margin-bottom:10px">'+label+' ↗</a>';
   };
 
   // Read-only: categorise extra fields into visual sections
@@ -5978,7 +5983,7 @@ function openBulkTransfer() {
       return k.loc === from && k.status !== 'Bin' && (!cat || k.cat === cat);
     }).length;
     preview.innerHTML = '<span style="color:var(--white);font-weight:600">' + count + ' item' + (count===1?'':'s') + '</span> will move'
-      + (to ? ' → <span style="color:#4a9eff">' + to + '</span>' : '');
+      + (to ? ' → <span style="color:#2a6cb8">' + to + '</span>' : '');
   }
   document.getElementById('btFrom').addEventListener('change', updatePreview);
   document.getElementById('btTo').addEventListener('change', updatePreview);
@@ -6405,7 +6410,7 @@ function kitShowAllocPicker(id, ev) {
   if(allocated){
     var av=kitAvailInfo(k);
     html+='<div style="padding:8px 13px;background:rgba(60,120,200,.12);border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between;flex-shrink:0">'
-      +'<div><div style="font-size:12px;font-weight:600;color:#4a9eff">'+allocated.name+'</div>'
+      +'<div><div style="font-size:12px;font-weight:600;color:#2a6cb8">'+allocated.name+'</div>'
       +'<div style="font-size:11px;color:'+av.color+'">'+av.sub+'</div></div>'
       +'<button data-action="remove" style="background:rgba(200,60,60,.18);border:1px solid rgba(200,60,60,.4);border-radius:3px;color:#e06060;font-size:11px;padding:2px 8px;cursor:pointer;flex-shrink:0">Remove</button>'
       +'</div>';
@@ -7604,7 +7609,7 @@ const VERSA_ROSTER = [
   {name:'Chris Warden',  role:'Technical Manager', calRow:'chris'},
   {name:'Ian Curry',     role:'Senior Engineer',   calRow:'ian'},
 ];
-const VERSA_FREELANCE = [
+let VERSA_FREELANCE = [
   {name:'Marcus Lamb'},
   {name:'Andy McLannahan'},
   {name:'James Laishley'},
@@ -7912,98 +7917,104 @@ function renderJobDet(j) {
 
   if(_jdTab==='info') {
     const isTX = (j.txRx||'TX')==='TX';
-    const txRxSwitch = '<div style="display:inline-flex;border:1px solid var(--border);border-radius:4px;overflow:hidden;margin-left:8px">'
-      +'<button style="padding:4px 14px;font-size:13px;font-family:var(--cond);font-weight:800;letter-spacing:.06em;background:'+(isTX?'var(--accent)':'transparent')+';color:'+(isTX?'#000':'var(--muted)')+';border:none;cursor:pointer" onclick="jdSetField('+j.id+',\'txRx\',\'TX\');renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))">TX</button>'
-      +'<button style="padding:4px 14px;font-size:13px;font-family:var(--cond);font-weight:800;letter-spacing:.06em;background:'+(!isTX?'var(--accent)':'transparent')+';color:'+(!isTX?'#000':'var(--muted)')+';border:none;cursor:pointer" onclick="jdSetField('+j.id+',\'txRx\',\'RX\');renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))">RX</button>'
+    var jc=j.color||{bg:'#5B5F8D',bg2:'#454868'};
+    var locColor={Manchester:'#F4A258',London:'#e8c56d',ABC:'#d4a574'}[j.loc]||'#F4A258';
+    const txRxSwitch = '<div style="display:inline-flex;border-radius:20px;overflow:hidden;border:2px solid '+jc.bg+'">'
+      +'<button style="padding:5px 16px;font-size:12px;font-family:var(--cond);font-weight:800;letter-spacing:.08em;background:'+(isTX?jc.bg:'transparent')+';color:'+(isTX?'#fff':'var(--muted)')+';border:none;cursor:pointer" onclick="jdSetField('+j.id+',\'txRx\',\'TX\');renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))">TX</button>'
+      +'<button style="padding:5px 16px;font-size:12px;font-family:var(--cond);font-weight:800;letter-spacing:.08em;background:'+(!isTX?jc.bg:'transparent')+';color:'+(!isTX?'#fff':'var(--muted)')+';border:none;cursor:pointer" onclick="jdSetField('+j.id+',\'txRx\',\'RX\');renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))">RX</button>'
       +'</div>';
-    const mkEdit = function(label,field,val){
-      return '<div><div class="dfl">'+label+'</div><input class="fi" style="max-width:220px;font-size:14px;padding:5px 8px" value="'+(val||'')+'" onchange="jdSetField('+j.id+',\''+field+'\',this.value)"/></div>';
-    };
-    const mkDate = function(label,field,val){
-      return '<div><div class="dfl">'+label+'</div><div style="display:flex;align-items:center;gap:6px">'
-        +'<input type="date" class="fi" style="max-width:160px;font-size:14px;padding:5px 8px" value="'+(val||'')+'" onchange="jdSetField('+j.id+',\''+field+'\',this.value)"/>'
-        +(val?'<a href="#" onclick="jdGoCalDate(\''+val+'\',\'show\')" style="font-size:11px;color:#3a5aaa;font-family:var(--cond);font-weight:700;letter-spacing:.05em;text-transform:uppercase">↗ Cal</a>':'')
-        +'</div></div>';
-    };
-    const stOpts = ['Confirmed','Ongoing','Likely','Possible','Cancelled'].map(function(s){return '<option'+(s===(j.status||'Confirmed')?' selected':'')+'>'+s+'</option>';}).join('');
+    var _lbl=function(t){return '<div style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:5px">'+t+'</div>';};
+    var _inp=function(field,val,ph){return '<input class="fi" style="width:100%;font-size:16px;padding:11px 14px;border-radius:8px;border:1.5px solid var(--border);background:var(--near-black)" value="'+((val||'').replace(/"/g,'&quot;'))+'" placeholder="'+(ph||'')+'" onchange="jdSetField('+j.id+',\''+field+'\',this.value)"/>';};
+    var _sel=function(field,opts){return '<select class="fi" style="width:100%;font-size:16px;padding:11px 14px;border-radius:8px;border:1.5px solid var(--border);background:var(--near-black)" onchange="jdSetField('+j.id+',\''+field+'\',this.value);renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))">'+opts+'</select>';};
+    var _date=function(field,val){return '<div style="display:flex;align-items:center;gap:8px"><input type="date" class="fi" style="font-size:16px;padding:11px 14px;border-radius:8px;border:1.5px solid var(--border);background:var(--near-black);flex:1" value="'+(val||'')+'" onchange="jdSetField('+j.id+',\''+field+'\',this.value)"/>'+(val?'<a href="#" onclick="jdGoCalDate(\''+val+'\',\'show\')" style="font-size:11px;color:'+jc.bg+';font-family:var(--cond);font-weight:800;letter-spacing:.06em;text-transform:uppercase;text-decoration:none">\u2197 CAL</a>':'')+'</div>';};
+    var _card=function(borderCol,content){return '<div style="background:var(--near-black);border:1.5px solid var(--border);border-top:3px solid '+borderCol+';border-radius:10px;padding:18px 20px">'+content+'</div>';};
     const locOpts = ['ABC','Manchester','London'].map(function(l){return '<option'+(l===j.loc?' selected':'')+'>'+l+'</option>';}).join('');
     const studs = studiosByLoc[j.loc]||[j.studio||''];
     const stuOpts = studs.map(function(s){return '<option'+(s===j.studio?' selected':'')+'>'+s+'</option>';}).join('');
-    const txLabel = isTX?'TX Date':'RX Date';
-    const txField = isTX?'txDate':'rxDate';
-    const txCount = isTX?(j.txCount||1):(j.rxCount||1);
-    const txCountField = isTX?'txCount':'rxCount';
-    content = '<div class="det-sec"><div class="det-sec-lbl" style="display:flex;align-items:center;gap:8px">Job Details'+txRxSwitch+'</div>'
-      +'<div class="det-grid" style="grid-template-columns:repeat(2,1fr);row-gap:12px">'
-      +mkEdit('Job Name','name',j.name)
-      +'<div><div class="dfl">Location</div><select class="fi" style="max-width:160px;font-size:14px;padding:5px 8px" onchange="jdSetField('+j.id+',\'loc\',this.value);renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))">'+locOpts+'</select></div>'
-      +'<div><div class="dfl">Studio</div><select class="fi" style="max-width:160px;font-size:14px;padding:5px 8px" onchange="jdSetField('+j.id+',\'studio\',this.value)">'+stuOpts+'</select></div>'
-      +mkEdit('Production Company','prodCompany',j.prodCompany||j.client||'')
+
+    var nameHeader='<div style="margin-bottom:20px">'
+      +'<input class="fi" style="width:100%;font-family:var(--cond);font-size:18px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;padding:11px 14px;border-radius:8px;border:1.5px solid var(--border);background:var(--near-black);color:var(--white)" value="'+((j.name||'').replace(/"/g,'&quot;'))+'" onchange="jdSetField('+j.id+',\'name\',this.value);document.getElementById(\'topTitle\').textContent=this.value"/>'
+      +'<div style="display:flex;align-items:center;gap:10px;margin-top:10px">'
+      +'<span style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:4px 14px;border-radius:20px;background:'+locColor+';color:#fff">'+j.loc+'</span>'
+      +'<span style="font-family:var(--cond);font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--muted)">'+(j.studio||'')+'</span>'
+      +'<div style="flex:1"></div>'
+      +txRxSwitch
+      +'</div></div>';
+
+    content = '<div class="det-sec"><div class="det-sec-lbl">Job Details</div>'
+      +'<div class="det-grid" style="grid-template-columns:1fr 1fr;row-gap:14px;column-gap:14px">'
+      +'<div>'+_lbl('Location')+_sel('loc',locOpts)+'</div>'
+      +'<div>'+_lbl('Production Company')+_inp('prodCompany',j.prodCompany||j.client||'','Company name...')+'</div>'
+      +'<div>'+_lbl('Studio')+_sel('studio',stuOpts)+'</div>'
+      +'<div>'+_lbl('Director')+_inp('director',j.director||'','Director name...')+'</div>'
+      +'</div></div>'
+      +'<div class="det-sec"><div class="det-sec-lbl">Dates</div>'
+      +'<div class="det-grid" style="grid-template-columns:1fr 1fr;row-gap:14px;column-gap:14px">'
       +(j.status==='Ongoing'
-        ?('<div><div class="dfl">Season Start</div><input type="month" class="fi" style="max-width:160px;font-size:14px;padding:5px 8px" value="'+(j.start?j.start.slice(0,7):'')+'" onchange="jdSetField('+j.id+',\'start\',this.value+\'-01\')" /></div>'
-         +'<div><div class="dfl">Season End</div><input type="month" class="fi" style="max-width:160px;font-size:14px;padding:5px 8px" value="'+(j.end?j.end.slice(0,7):'')+'" onchange="jdSetField('+j.id+',\'end\',this.value+\'-01\')" /></div>')
-        :(mkDate('Start Date','start',j.start)
-         +mkDate('End Date','end',j.end)))
-      +(function(){var sts=['Confirmed','Ongoing','Likely','Possible','Cancelled'];var btns=sts.map(function(s){var sc=STATUS_CFG[s]||{color:'#888',bg:'rgba(128,128,128,.1)'};var act=s===(j.status||'Confirmed');return '<button style="display:inline-flex;align-items:center;padding:5px 12px;border-radius:4px;border:2px solid '+(act?sc.color:sc.color+'99')+';background:'+(act?sc.bg:sc.bg.replace(',.',',0.')+'aa')+';color:'+(act?sc.color:sc.color+'cc')+';font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;opacity:'+(act?'1':'.6')+'" onclick="jdSetField('+j.id+',\'status\',\''+s+'\');renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))">'+(act?'&#9679; ':'')+s+'</button>';}).join('');return '<div><div class="dfl">Status</div><div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px">'+btns+'</div></div>';}())
+        ?'<div>'+_lbl('Season Start')+'<input type="month" class="fi" value="'+(j.start?j.start.slice(0,7):'')+'" onchange="jdSetField('+j.id+',\'start\',this.value+\'-01\')"/></div>'
+         +'<div>'+_lbl('Season End')+'<input type="month" class="fi" value="'+(j.end?j.end.slice(0,7):'')+'" onchange="jdSetField('+j.id+',\'end\',this.value+\'-01\')"/></div>'
+        :'<div>'+_lbl('Start Date')+_date('start',j.start)+'</div>'
+         +'<div>'+_lbl('End Date')+_date('end',j.end)+'</div>')
       +'</div></div>'
       +(j.status!=='Ongoing'
-      ?('<div class="det-sec"><div class="det-sec-lbl">Key Production Dates</div>'
-          +'<div class="det-grid" style="grid-template-columns:repeat(2,1fr);row-gap:12px">'
+      ?('<div class="det-sec"><div class="det-sec-lbl" style="font-size:14px">Key Production Dates</div>'
+          +'<div style="display:flex;flex-direction:column;gap:20px">'
           +(function(){
             if(!j.rigDates)j.rigDates=[];
-            var addBtn='<button class="ibtn" style="font-size:12px;margin-top:6px" onclick="jdAddRigDate('+j.id+')">+ Add Rig Day</button>';
+            var addBtn='<button class="ibtn" style="font-size:13px;margin-top:8px;padding:6px 14px" onclick="jdAddRigDate('+j.id+')">+ Add Rig Day</button>';
             var dateList=j.rigDates.map(function(d,di){
-              return '<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px">'
-                +'<span style="font-family:var(--cond);font-size:12px;font-weight:800;color:#3dbf7a;min-width:22px">'+(di+1)+'.</span>'
-                +'<input type="date" class="fi" style="font-size:13px;padding:4px 7px;max-width:148px" value="'+(d.date||'')+'" onchange="jdSetRigDate('+j.id+','+di+',\'date\',this.value)"/>'
-                +'<input class="fi" style="font-size:12px;padding:4px 8px;flex:1;max-width:180px" value="'+(d.note||'')+'" placeholder="e.g. Camera Rig, Tech Rig, Rehearsal..." onchange="jdSetRigDate('+j.id+','+di+',\'note\',this.value)"/>'
-                +'<button onclick="jdRmRigDate('+j.id+','+di+')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;padding:0">×</button>'
+              return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">'
+                +'<span style="font-family:var(--cond);font-size:14px;font-weight:800;color:#3dbf7a;min-width:24px">'+(di+1)+'.</span>'
+                +'<input type="date" class="fi" style="font-size:15px;padding:8px 10px;border-radius:6px;max-width:180px" value="'+(d.date||'')+'" onchange="jdSetRigDate('+j.id+','+di+',\'date\',this.value)"/>'
+                +'<input class="fi" style="font-size:15px;padding:8px 10px;border-radius:6px;flex:1" value="'+(d.note||'')+'" placeholder="e.g. Camera Rig, Tech Rig, Rehearsal..." onchange="jdSetRigDate('+j.id+','+di+',\'note\',this.value)"/>'
+                +'<button onclick="jdRmRigDate('+j.id+','+di+')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:4px">×</button>'
                 +'</div>';
             }).join('');
-            return '<div style="grid-column:1/-1"><div class="dfl">Rig Days ('+j.rigDates.length+')  <span style="font-size:11px;font-weight:400;color:var(--muted)">— add a note for each day</span></div>'
-              +(dateList||'<div style="color:var(--muted);font-size:13px;padding:2px 0 4px">No rig days added yet.</div>')
+            return '<div><div style="font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Rig Days ('+j.rigDates.length+')</div>'
+              +(dateList||'<div style="color:var(--muted);font-size:14px;padding:2px 0 4px">No rig days added yet.</div>')
               +addBtn+'</div>';
           }())
           +(function(){
             if(!j.txDates)j.txDates=[];
-            var lbl=isTX?'RX':'TX'; // label matches toggle swap above
-            var addBtn='<button class="ibtn" style="font-size:12px;margin-top:6px" onclick="jdAddTxDate('+j.id+')">+ Add '+lbl+' Date</button>';
+            var isTX2=(j.txRx||'TX')==='TX';
+            var lbl=isTX2?'RX':'TX';
+            var addBtn='<button class="ibtn" style="font-size:13px;margin-top:8px;padding:6px 14px" onclick="jdAddTxDate('+j.id+')">+ Add '+lbl+' Date</button>';
             var dateList=j.txDates.map(function(d,di){
-              return '<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px">'
-                +'<span style="font-family:var(--cond);font-size:12px;font-weight:800;color:var(--accent);min-width:24px">'+(di+1)+'.</span>'
-                +'<input type="date" class="fi" style="font-size:13px;padding:4px 7px;max-width:150px" value="'+(d.date||'')+'" onchange="jdSetTxDate('+j.id+','+di+',this.value)"/>'
-                +(d.date?'<a href="#" onclick="jdGoCalDate(\''+d.date+'\',\'show\')" style="font-size:11px;color:#3a5aaa;font-family:var(--cond);font-weight:700;letter-spacing:.05em;text-transform:uppercase">↗ Cal</a>':'')
-                +'<button onclick="jdRmTxDate('+j.id+','+di+')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;padding:0;margin-left:2px">×</button>'
+              return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">'
+                +'<span style="font-family:var(--cond);font-size:14px;font-weight:800;color:var(--accent);min-width:24px">'+(di+1)+'.</span>'
+                +'<input type="date" class="fi" style="font-size:15px;padding:8px 10px;border-radius:6px;max-width:180px" value="'+(d.date||'')+'" onchange="jdSetTxDate('+j.id+','+di+',this.value)"/>'
+                +(d.date?'<a href="#" onclick="jdGoCalDate(\''+d.date+'\',\'show\')" style="font-size:12px;color:#3a5aaa;font-family:var(--cond);font-weight:700;letter-spacing:.05em;text-transform:uppercase">↗ Cal</a>':'')
+                +'<button onclick="jdRmTxDate('+j.id+','+di+')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:4px">×</button>'
                 +'</div>';
             }).join('');
-            return '<div style="grid-column:1/-1"><div class="dfl">'+lbl+' Dates ('+j.txDates.length+')</div>'
-              +(dateList||'<div style="color:var(--muted);font-size:13px;padding:2px 0 4px">No dates added yet.</div>')
+            return '<div><div style="font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px">'+lbl+' Dates ('+j.txDates.length+')</div>'
+              +(dateList||'<div style="color:var(--muted);font-size:14px;padding:2px 0 4px">No dates added yet.</div>')
               +addBtn+'</div>';
           }())
-
-          +mkDate('De-Rig Date','drigDate',j.drigDate||'')
+          +'<div><div style="font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px">De-Rig Date</div>'
+          +'<input type="date" class="fi" style="font-size:16px;padding:10px 12px;border-radius:6px;max-width:240px" value="'+(j.drigDate||'')+'" onchange="jdSetField('+j.id+',\'drigDate\',this.value)"/></div>'
           +'</div></div>')
       :'')
     +(function(){
       if(!j.contacts)j.contacts=[];
       var cRows=j.contacts.map(function(c,ci){
-        return '<div style="display:grid;grid-template-columns:1fr 1fr 1.2fr 1fr auto;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05)">'
-          +'<input class="fi" style="font-size:13px;padding:3px 7px" value="'+(c.name||'')+'" placeholder="Name..." onchange="jdContSet('+j.id+','+ci+',\'name\',this.value)"/>'
-          +'<input class="fi" style="font-size:13px;padding:3px 7px" value="'+(c.company||'')+'" placeholder="Company..." onchange="jdContSet('+j.id+','+ci+',\'company\',this.value)"/>'
-          +'<input class="fi" style="font-size:13px;padding:3px 7px" value="'+(c.email||'')+'" placeholder="Email..." onchange="jdContSet('+j.id+','+ci+',\'email\',this.value)"/>'
-          +'<input class="fi" style="font-size:13px;padding:3px 7px" value="'+(c.tel||'')+'" placeholder="Tel..." onchange="jdContSet('+j.id+','+ci+',\'tel\',this.value)"/>'
-          +'<button class="rm-btn" style="font-size:11px" onclick="jdContRm('+j.id+','+ci+')">×</button>'
+        return '<div style="display:grid;grid-template-columns:1fr 1fr 1.2fr 1fr auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)">'
+          +'<input class="fi" style="font-size:15px;padding:8px 10px;border-radius:6px" value="'+(c.name||'')+'" placeholder="Name..." onchange="jdContSet('+j.id+','+ci+',\'name\',this.value)"/>'
+          +'<input class="fi" style="font-size:15px;padding:8px 10px;border-radius:6px" value="'+(c.company||'')+'" placeholder="Company..." onchange="jdContSet('+j.id+','+ci+',\'company\',this.value)"/>'
+          +'<input class="fi" style="font-size:15px;padding:8px 10px;border-radius:6px" value="'+(c.email||'')+'" placeholder="Email..." onchange="jdContSet('+j.id+','+ci+',\'email\',this.value)"/>'
+          +'<input class="fi" style="font-size:15px;padding:8px 10px;border-radius:6px" value="'+(c.tel||'')+'" placeholder="Tel..." onchange="jdContSet('+j.id+','+ci+',\'tel\',this.value)"/>'
+          +'<button class="rm-btn" style="font-size:14px" onclick="jdContRm('+j.id+','+ci+')">×</button>'
           +'</div>';
       }).join('');
-      return '<div class="det-sec"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">'
-        +'<div class="det-sec-lbl" style="margin-bottom:0">Important Contacts</div>'
-        +'<button class="ibtn" style="font-size:12px" onclick="jdContAdd('+j.id+')">+ Add Contact</button>'
+      return '<div class="det-sec"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'
+        +'<div class="det-sec-lbl" style="margin-bottom:0;font-size:14px">Important Contacts</div>'
+        +'<button class="ibtn" style="font-size:13px;padding:6px 14px" onclick="jdContAdd('+j.id+')">+ Add Contact</button>'
         +'</div>'
         +(j.contacts.length
-          ?'<div style="display:grid;grid-template-columns:1fr 1fr 1.2fr 1fr auto;gap:8px;padding:4px 0;border-bottom:2px solid rgba(255,255,255,.08);margin-bottom:4px">'
-            +['Name','Company','Email','Tel',''].map(function(h){return '<div style="font-size:10px;font-family:var(--cond);font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)">'+h+'</div>';}).join('')+'</div>'
+          ?'<div style="display:grid;grid-template-columns:1fr 1fr 1.2fr 1fr auto;gap:10px;padding:6px 0;border-bottom:2px solid rgba(255,255,255,.08);margin-bottom:4px">'
+            +['Name','Company','Email','Tel',''].map(function(h){return '<div style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">'+h+'</div>';}).join('')+'</div>'
             +cRows
-          :'<div style="color:var(--muted);font-size:13px;padding:4px 0">No contacts added yet.</div>')
+          :'<div style="color:var(--muted);font-size:14px;padding:4px 0">No contacts added yet.</div>')
         +'</div>';
     }())
   }
@@ -8022,7 +8033,7 @@ function renderJobDet(j) {
     var frClean=_fr.replace('.00','').replace('.','');
     var fmtLabel=_res?(resNum+scanLtr+frClean):'';
     var allCodecs=CODEC_LIST.concat(j.techCodecExtra||[]);
-    var codecSel='<option value="">--</option>'+allCodecs.map(function(x){return '<option'+(x===_codec?' selected':'')+'>'+x+'</option>';}).join('')+'<option value="__add__" style="color:#4a9eff;font-style:italic">+ Add codec...</option>';
+    var codecSel='<option value="">--</option>'+allCodecs.map(function(x){return '<option'+(x===_codec?' selected':'')+'>'+x+'</option>';}).join('')+'<option value="__add__" style="color:#2a6cb8;font-style:italic">+ Add codec...</option>';
     var mkTechDd=function(lbl,field,val,opts){
       var o=opts.map(function(x){return '<option'+(x===val?' selected':'')+'>'+x+'</option>';}).join('');
       return '<div><div class="dfl">'+lbl+'</div><select class="fi" style="max-width:180px;font-size:14px;padding:5px 8px" onchange="jdSetField('+j.id+',\''+field+'\',this.value);renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))"><option value="">--</option>'+o+'</select></div>';
@@ -8086,9 +8097,9 @@ function renderJobDet(j) {
            +'<div style="display:flex;gap:4px"><button class="ibtn" style="font-size:11px;flex:1" onclick="jdPickCamKit('+jid+','+i+')">Change</button>'
            +'<button class="rm-btn" style="font-size:11px" onclick="jdSetCamDetail('+jid+','+i+',\'kitId\',null)">x</button></div>'
           :'<button class="ibtn" style="font-size:12px;width:100%" onclick="jdPickCamKit('+jid+','+i+')">From Inventory</button>'
-           +'<button class="ibtn" style="font-size:12px;width:100%;background:rgba(250,160,0,.12);color:#fa0" onclick="jdCamPickHired('+jid+','+i+')">+ Hired</button>'
+           +'<button class="ibtn" style="font-size:12px;width:100%;background:rgba(250,160,0,.12);color:#b87400" onclick="jdCamPickHired('+jid+','+i+')">+ Hired</button>'
         )
-        +(cd.hired&&!aKit?'<span style="font-size:11px;background:rgba(250,160,0,.15);color:#fa0;border:1px solid rgba(250,160,0,.4);border-radius:3px;padding:2px 6px;text-align:center">Hired'+(cd.hiredType?' · '+cd.hiredType:'')+'</span>':'')
+        +(cd.hired&&!aKit?'<span style="font-size:11px;background:rgba(250,160,0,.15);color:#b87400;border:1px solid rgba(250,160,0,.4);border-radius:3px;padding:2px 6px;text-align:center">Hired'+(cd.hiredType?' · '+cd.hiredType:'')+'</span>':'')
         +'</div></div>';
 
       // Active field rows — each has Data-Val / Inventory / Hired mode
@@ -8103,7 +8114,7 @@ function renderJobDet(j) {
           +[['dv','List'],['inv','Inventory'],['hired','Hired']].map(function(opt,oi){
             var active=mode===opt[0];
             var borderR=oi<2?'border-right:none;':'';
-            return '<button onclick="jdCamFMode('+jid+','+i+',\''+fkey+'\',\''+opt[0]+'\');renderJobDet(jobs.find(function(x){return x.id==='+jid+';}));" style="padding:2px 7px;font-size:10px;font-family:var(--cond);font-weight:800;border:1px solid rgba(255,255,255,.12);'+borderR+'background:'+(active?'rgba(74,158,255,.3)':'rgba(255,255,255,.04)')+';color:'+(active?'#4a9eff':'var(--muted)')+';cursor:pointer">'+opt[1]+'</button>';
+            return '<button onclick="jdCamFMode('+jid+','+i+',\''+fkey+'\',\''+opt[0]+'\');renderJobDet(jobs.find(function(x){return x.id==='+jid+';}));" style="padding:5px 12px;font-size:13px;font-family:var(--cond);font-weight:800;border:1.5px solid var(--border);'+borderR+'background:'+(active?'rgba(74,158,255,.3)':'rgba(255,255,255,.04)')+';color:'+(active?'#4a9eff':'var(--muted)')+';cursor:pointer">'+opt[1]+'</button>';
           }).join('')+'</div>';
         var input='';
         if(mode==='inv'){
@@ -8161,15 +8172,15 @@ function renderJobDet(j) {
       var lensInvItems=kit.filter(function(k){return (k.subcat==='Lens'||k.subcat==='Lens Range')&&k.status!=='Bin';});
       var aLensKit=ld.kitId?kit.find(function(x){return x.id===ld.kitId;}):null;
       var aLensHired=ld.hiredCatId?hiredCatalogue.find(function(x){return x.id===ld.hiredCatId;}):null;
-      var lensModeBar='<div style="display:flex;margin-bottom:4px">'        +[['inv','Inventory'],['hired','Hired']].map(function(opt,oi){          var active=(ld.mode||'inv')===opt[0];          return '<button onclick="jdCamLensMode('+jid+','+i+',\''+opt[0]+'\')" style="padding:2px 7px;font-size:10px;font-family:var(--cond);font-weight:800;border:1px solid rgba(255,255,255,.12);'+(oi===0?'border-right:none;':'')+'background:'+(active?'rgba(74,158,255,.3)':'rgba(255,255,255,.04)')+';color:'+(active?'#4a9eff':'var(--muted)')+';cursor:pointer">'+opt[1]+'</button>';        }).join('')+'</div>';      var lensInput='';      if(ld.mode==='hired'){
+      var lensModeBar='<div style="display:flex;margin-bottom:4px">'        +[['inv','Inventory'],['hired','Hired']].map(function(opt,oi){          var active=(ld.mode||'inv')===opt[0];          return '<button onclick="jdCamLensMode('+jid+','+i+',\''+opt[0]+'\')" style="padding:5px 12px;font-size:13px;font-family:var(--cond);font-weight:800;border:1.5px solid var(--border);'+(oi===0?'border-right:none;':'')+'background:'+(active?'rgba(74,158,255,.3)':'rgba(255,255,255,.04)')+';color:'+(active?'#4a9eff':'var(--muted)')+';cursor:pointer">'+opt[1]+'</button>';        }).join('')+'</div>';      var lensInput='';      if(ld.mode==='hired'){
         var hiredLensCat=hiredCatalogue.filter(function(h){return h.subcat==='Lens'||h.subcat==='Lens Range';});
         var hiredLensOpts='<option value="">-- select hired lens --</option>'
           +hiredLensCat.map(function(h){return '<option value="h'+h.id+'"'+(ld.hiredCatId===h.id?' selected':'')+'>'+h.name+'</option>';}).join('')
-          +'<option value="custom" style="color:#4a9eff;font-style:italic">+ Type custom...</option>';
+          +'<option value="custom" style="color:#2a6cb8;font-style:italic">+ Type custom...</option>';
         var selVal=ld.hiredCatId?'h'+ld.hiredCatId:(ld.hiredCustom?'custom':'');
         lensInput=ld.hiredCatId||ld.hiredCustom
           ?'<div style="display:flex;flex-direction:column;gap:3px">'
-            +'<span style="background:rgba(250,160,0,.12);border:1px solid rgba(250,160,0,.35);border-radius:3px;font-size:12px;padding:2px 8px;color:#fa0">'+(ld.hiredCustom||hiredLensCat.find(function(h){return h.id===ld.hiredCatId;})||{name:'?'}).name+'</span>'
+            +'<span style="background:rgba(250,160,0,.12);border:1px solid rgba(250,160,0,.35);border-radius:3px;font-size:12px;padding:2px 8px;color:#b87400">'+(ld.hiredCustom||hiredLensCat.find(function(h){return h.id===ld.hiredCatId;})||{name:'?'}).name+'</span>'
             +'<div style="display:flex;gap:4px"><select class="fi" style="font-size:11px;flex:1" onchange="jdCamLensHiredPick('+jid+','+i+',this.value)"><option value="">change...</option>'+hiredLensOpts+'</select>'
             +'<button class="rm-btn" style="font-size:11px" onclick="jdCamLensSetHired('+jid+','+i+',null)">×</button></div>'
             +(ld.hiredCustom!==undefined&&ld.hiredCatId===undefined?'<input class="fi" style="font-size:11px;padding:2px 6px;margin-top:2px" value="'+(ld.hiredCustom||'')+'" placeholder="Lens description..." onchange="jdCamLensSetCustom('+jid+','+i+',this.value)"/>':'')
@@ -8258,14 +8269,22 @@ function renderJobDet(j) {
             }())
             +'</div>';
         }).join('');
+        var hasSpec=j.specCams&&j.specCams.length>0;
+        var specOn=j.hasSpecCams||hasSpec;
         return '<div style="margin-top:18px">'
           +'<div style="font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">'
           +'<span>Specialist Cameras</span>'
-          +'<button class="ibtn" style="font-size:11px;padding:3px 10px" onclick="jdAddSpecCam('+j.id+')">+ Add</button>'
+          +'<div style="display:flex;gap:4px;align-items:center">'
+          +'<button style="padding:3px 10px;font-size:11px;font-family:var(--cond);font-weight:800;border:1px solid '+(specOn?'var(--border)':'rgba(42,125,72,.5)')+';background:'+(specOn?'rgba(255,255,255,.04)':'rgba(42,125,72,.12)')+';color:'+(specOn?'var(--muted)':'#2a7d48')+';cursor:pointer;border-radius:3px" onclick="jdSetField('+j.id+',\'hasSpecCams\',false);if(!jobs.find(function(x){return x.id==='+j.id+'}).specCams)jobs.find(function(x){return x.id==='+j.id+'}).specCams=[];jobs.find(function(x){return x.id==='+j.id+'}).specCams=[];renderJobDet(jobs.find(function(x){return x.id==='+j.id+'}))">No</button>'
+          +'<button style="padding:3px 10px;font-size:11px;font-family:var(--cond);font-weight:800;border:1px solid '+(!specOn?'var(--border)':'rgba(42,125,72,.5)')+';background:'+(!specOn?'rgba(255,255,255,.04)':'rgba(42,125,72,.12)')+';color:'+(!specOn?'var(--muted)':'#2a7d48')+';cursor:pointer;border-radius:3px" onclick="jdSetField('+j.id+',\'hasSpecCams\',true);renderJobDet(jobs.find(function(x){return x.id==='+j.id+'}))">Yes</button>'
+          +(specOn?'<button class="ibtn" style="font-size:11px;padding:3px 10px;margin-left:6px" onclick="jdAddSpecCam('+j.id+')">+ Add</button>':'')
           +'</div>'
-          +'<div style="overflow-x:auto;padding-bottom:8px"><div style="display:flex;gap:10px;min-width:max-content">'
-          +(specRows||'<div style="color:var(--muted);font-size:13px;padding:6px 0">No specialist cameras added.</div>')
-          +'</div></div>'
+          +'</div>'
+          +(specOn
+            ?'<div style="overflow-x:auto;padding-bottom:8px"><div style="display:flex;gap:10px;min-width:max-content">'
+              +(specRows||'<div style="color:var(--muted);font-size:13px;padding:6px 0">No specialist cameras added — click + Add above.</div>')
+              +'</div></div>'
+            :'')
           +'</div>';
       }())
       +'<div style="margin-top:14px"><div class="dfl">Spec Notes</div><textarea class="fta" style="min-height:70px;font-size:14px" placeholder="Camera spec notes..." onchange="jdSetField('+j.id+',\'camSpecNotes\',this.value)">'+(j.camSpecNotes||'')+'</textarea></div>'
@@ -8342,7 +8361,7 @@ function renderJobDet(j) {
       var mcsGModeBtn='<div style="display:flex;margin-bottom:6px">'
         +[['inv','Inventory'],['hired','Hired']].map(function(opt,oi){
           var active=(mcsG.mode||'inv')===opt[0];
-          return '<button onclick="lvMcsGMode('+j.id+',\''+opt[0]+'\')" style="padding:2px 8px;font-size:10px;font-family:var(--cond);font-weight:800;border:1px solid rgba(255,255,255,.12);'+(oi===0?'border-right:none;':'')+'background:'+(active?'rgba(74,158,255,.3)':'rgba(255,255,255,.04)')+';color:'+(active?'#4a9eff':'var(--muted)')+';cursor:pointer">'+opt[1]+'</button>';
+          return '<button onclick="lvMcsGMode('+j.id+',\''+opt[0]+'\')" style="padding:5px 12px;font-size:13px;font-family:var(--cond);font-weight:800;border:1.5px solid var(--border);'+(oi===0?'border-right:none;':'')+'background:'+(active?'rgba(74,158,255,.3)':'rgba(255,255,255,.04)')+';color:'+(active?'#4a9eff':'var(--muted)')+';cursor:pointer">'+opt[1]+'</button>';
         }).join('')+'</div>';
       var mcsGPick=mcsG.mode==='inv'
         ?(mcsGKit
@@ -8520,12 +8539,12 @@ function renderJobDet(j) {
           +'<div style="display:flex;gap:4px;margin-top:3px"><button class="ibtn" style="font-size:11px;flex:1" onclick="auPickHydra('+j.id+','+hi+')">Change</button>'
           +'<button class="rm-btn" style="font-size:11px" onclick="auHydraSet('+j.id+','+hi+',\'kitId\',null)">×</button></div>'
         :(h.hired
-          ?'<span style="font-size:12px;background:rgba(250,160,0,.12);color:#fa0;border:1px solid rgba(250,160,0,.4);border-radius:3px;padding:2px 8px">Hired</span>'
+          ?'<span style="font-size:12px;background:rgba(250,160,0,.12);color:#b87400;border:1px solid rgba(250,160,0,.4);border-radius:3px;padding:2px 8px">Hired</span>'
             +'<div style="display:flex;gap:4px;margin-top:3px"><button class="ibtn" style="font-size:11px;flex:1" onclick="auPickHydra('+j.id+','+hi+')">Inventory</button>'
             +'<button class="rm-btn" style="font-size:11px" onclick="auHydraSet('+j.id+','+hi+',\'hired\',false)">×</button></div>'
           :'<div style="display:flex;flex-direction:column;gap:3px">'
             +'<button class="ibtn" style="font-size:12px" onclick="auPickHydra('+j.id+','+hi+')">From Inventory</button>'
-            +'<button class="ibtn" style="font-size:12px;background:rgba(250,160,0,.12);color:#fa0" onclick="auHydraSet('+j.id+','+hi+',\'hired\',true);renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))">+ Hired</button></div>');
+            +'<button class="ibtn" style="font-size:12px;background:rgba(250,160,0,.12);color:#b87400" onclick="auHydraSet('+j.id+','+hi+',\'hired\',true);renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))">+ Hired</button></div>');
       return '<div style="display:grid;grid-template-columns:160px 1fr 1fr auto;gap:8px;align-items:start;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)">'
         +hCell
         +'<input class="fi" style="font-size:13px;padding:3px 7px" value="'+(h.location||'')+'" placeholder="Location / patch..." onchange="auHydraSet('+j.id+','+hi+',\'location\',this.value)"/>'
@@ -8553,7 +8572,11 @@ function renderJobDet(j) {
   else if(_jdTab==='post'){
     const po=j.post||{};
     content='<div class="det-sec"><div class="det-sec-lbl">Post Production</div><div class="det-grid" style="grid-template-columns:repeat(2,1fr);row-gap:12px">'
-      +'<div class="full"><div class="dfl">Notes</div><textarea class="fta" style="min-height:120px;font-size:14px" placeholder="Post production notes..." onchange="jdSetPo('+j.id+',\'notes\',this.value)">'+(po.notes||'')+'</textarea></div>'
+      +'<div><div class="dfl">Post House</div><input class="fi" value="'+(po.postHouse||'')+'" placeholder="Post house name..." onchange="jdSetPo('+j.id+',\'postHouse\',this.value)"/></div>'
+      +'<div><div class="dfl">Contact Name</div><input class="fi" value="'+(po.contactName||'')+'" placeholder="Contact name..." onchange="jdSetPo('+j.id+',\'contactName\',this.value)"/></div>'
+      +'<div><div class="dfl">Email</div><input class="fi" type="email" value="'+(po.contactEmail||'')+'" placeholder="Email address..." onchange="jdSetPo('+j.id+',\'contactEmail\',this.value)"/></div>'
+      +'<div><div class="dfl">Phone</div><input class="fi" value="'+(po.contactTel||'')+'" placeholder="Phone number..." onchange="jdSetPo('+j.id+',\'contactTel\',this.value)"/></div>'
+      +'<div style="grid-column:1/-1"><div class="dfl">Notes</div><textarea class="fta" style="min-height:120px;font-size:14px" placeholder="Post production notes..." onchange="jdSetPo('+j.id+',\'notes\',this.value)">'+(po.notes||'')+'</textarea></div>'
       +'</div></div>';
   }
   else if(_jdTab==='monitors'){content=renderMonitorTab(j);}
@@ -8863,7 +8886,7 @@ function jdOpenCamFieldPick(jid,camIdx,fieldKey,subcat){
     var rows=filtered.map(function(h){
       return '<div data-hid="'+h.id+'" style="padding:9px 14px;border-bottom:1px solid var(--border);cursor:pointer;font-size:13px;color:var(--white)">'+h.name+'</div>';
     }).join('');
-    rows+='<div data-custom="1" style="padding:9px 14px;border-top:1px solid var(--border);cursor:pointer;font-size:12px;color:#4a9eff">+ Custom text…</div>';
+    rows+='<div data-custom="1" style="padding:9px 14px;border-top:1px solid var(--border);cursor:pointer;font-size:12px;color:#2a6cb8">+ Custom text…</div>';
     if(!filtered.length) rows='<div style="padding:12px 14px;color:var(--muted);font-size:13px">No matches</div>'+rows;
     var el=document.getElementById('camFieldPickRows');
     el.innerHTML=rows;
@@ -8932,6 +8955,7 @@ function exportJobData(jid) {
   lines.push('Studio: '+(j.studio||''));
   lines.push('Location: '+(j.loc||''));
   lines.push('Production Company: '+(j.prodCompany||j.client||''));
+  if(j.director) lines.push('Director: '+j.director);
   lines.push('Start: '+fmt(j.start)+'  End: '+fmt(j.end));
   if(j.rigDates&&j.rigDates.length){
     lines.push('');lines.push('RIG DAYS');
@@ -9092,7 +9116,7 @@ function jdPickSpecCamKit(jid,si){
     return '<div style="display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid var(--border);cursor:pointer'+(onJob?';opacity:.5':'')+'" onclick="jdAssignSpecCamKit('+jid+','+si+','+k.id+')">'
       +'<div style="flex:1"><div style="font-size:14px;font-weight:600;color:var(--white)">'+k.name+'</div>'
       +'<div style="font-size:11px;color:var(--muted)">'+k.subcat+' · '+k.loc+'</div></div>'
-      +(onJob?'<span style="font-size:11px;color:#fa0">On Job</span>':'<span style="font-size:12px;color:#3dbf7a">'+k.status+'</span>')
+      +(onJob?'<span style="font-size:11px;color:#b87400">On Job</span>':'<span style="font-size:12px;color:#3dbf7a">'+k.status+'</span>')
       +'</div>';
   }).join('');
   document.getElementById('pickSpecCamRows').innerHTML=rows||'<div style="padding:14px;color:var(--muted)">No specialist camera kit in inventory.</div>';
@@ -9249,7 +9273,7 @@ function jdPickCamKit(jid,camIdx){
       var onJob=allocMap.has(k.id)&&allocMap.get(k.id)!==j.name;
       var el=document.createElement('div');
       el.style.cssText='padding:10px 14px;cursor:pointer;font-size:13px;color:'+(onJob?'#fa0':'#fff')+';border-bottom:1px solid rgba(255,255,255,.04);display:flex;justify-content:space-between;align-items:center';
-      el.innerHTML='<div><div style="font-weight:600">'+k.name+'</div><div style="font-size:11px;color:var(--muted);margin-top:1px">'+k.tag+' · '+k.loc+'</div></div>'+(onJob?'<span style="font-size:10px;background:rgba(250,160,0,.15);color:#fa0;padding:2px 6px;border-radius:3px">On Job</span>':'<span style="font-size:10px;color:#3dbf7a">'+k.status+'</span>');
+      el.innerHTML='<div><div style="font-weight:600">'+k.name+'</div><div style="font-size:11px;color:var(--muted);margin-top:1px">'+k.tag+' · '+k.loc+'</div></div>'+(onJob?'<span style="font-size:10px;background:rgba(250,160,0,.15);color:#b87400;padding:2px 6px;border-radius:3px">On Job</span>':'<span style="font-size:10px;color:#3dbf7a">'+k.status+'</span>');
       el.setAttribute('data-n', k.name.toLowerCase());
       el.addEventListener('mouseover',function(){if(!onJob)el.style.background='rgba(255,255,255,.06)';});
       el.addEventListener('mouseout',function(){el.style.background='';});
@@ -9379,7 +9403,7 @@ function jdPickCamLens(jid,i){
       var onJob=allocMap.has(k.id)&&allocMap.get(k.id)!==j.name;
       var el=document.createElement('div');
       el.style.cssText='padding:10px 14px;cursor:pointer;font-size:13px;color:'+(onJob?'#fa0':'#fff')+';border-bottom:1px solid rgba(255,255,255,.04);display:flex;justify-content:space-between;align-items:center';
-      el.innerHTML='<div><div style="font-weight:600">'+k.name+'</div><div style="font-size:11px;color:var(--muted);margin-top:1px">'+k.tag+' · '+k.loc+'</div></div>'+(onJob?'<span style="font-size:10px;background:rgba(250,160,0,.15);color:#fa0;padding:2px 6px;border-radius:3px">On Job</span>':'<span style="font-size:10px;color:#3dbf7a">'+k.status+'</span>');
+      el.innerHTML='<div><div style="font-weight:600">'+k.name+'</div><div style="font-size:11px;color:var(--muted);margin-top:1px">'+k.tag+' · '+k.loc+'</div></div>'+(onJob?'<span style="font-size:10px;background:rgba(250,160,0,.15);color:#b87400;padding:2px 6px;border-radius:3px">On Job</span>':'<span style="font-size:10px;color:#3dbf7a">'+k.status+'</span>');
       el.setAttribute('data-n', k.name.toLowerCase());
       el.addEventListener('mouseover',function(){if(!onJob)el.style.background='rgba(255,255,255,.06)';});
       el.addEventListener('mouseout',function(){el.style.background='';});
@@ -9613,7 +9637,7 @@ function renderIpTab(j) {
   var autoRows=autoIps.map(function(ip){
     return '<tr style="border-bottom:1px solid rgba(255,255,255,.04)">'
       +'<td style="padding:5px 8px;font-size:13px;color:var(--white)">'+ip.label+'</td>'
-      +'<td style="padding:5px 8px;font-family:monospace;font-size:13px;color:#4a9eff">'+ip.value+'</td>'
+      +'<td style="padding:5px 8px;font-family:monospace;font-size:13px;color:#2a6cb8">'+ip.value+'</td>'
       +'<td style="padding:5px 8px"><span style="font-size:10px;font-family:var(--cond);font-weight:800;color:var(--muted)">'+ip.type+'</span></td>'
       +'<td style="padding:3px 4px"><button class="ibtn" style="font-size:10px;padding:2px 8px" onclick="try{navigator.clipboard.writeText(\''+ip.value+'\');}catch(e){}">Copy</button></td>'
       +'</tr>';
@@ -9663,6 +9687,7 @@ function printJobPDF(jid){
   var sc=STATUS_CFG[j.status]||{color:'#888',bg:'rgba(128,128,128,.15)',label:j.status||'TBC'};
   var infoHTML=''
     +row('Production Company',j.prodCompany||j.client||'')
+    +row('Director',j.director||'')
     +row('Location',j.loc)
     +row('Studio',j.studio)
     +row('Start',fmtD(j.start))
@@ -9961,7 +9986,7 @@ function renderIngestTab(j) {
             var allCodecs=CODEC_LIST.concat(j.techCodecExtra||[]);
             var codecOpts='<option value="">Codec...</option>'
               +allCodecs.map(function(x){return '<option'+(x===s.codec?' selected':'')+'>'+x+'</option>';}).join('')
-              +'<option value="__add__" style="color:#4a9eff;font-style:italic">+ Add...</option>';
+              +'<option value="__add__" style="color:#2a6cb8;font-style:italic">+ Add...</option>';
             var recOpts='<option value="">Recorder...</option>'
               +['Prolog','Hyperdeck Studio','Hyperdeck Mini','Atomos Shogun','Atomos Sumo','Ki Pro Ultra','Ki Pro Rack'].map(function(r){return '<option'+(r===s.recorder?' selected':'')+'>'+r+'</option>';}).join('');
             return '<select class="fi" style="font-size:12px;padding:2px 6px;max-width:130px;flex-shrink:0" onchange="ingestSetStreamCodec('+j.id+','+si+',this.value)">'+codecOpts+'</select>'
@@ -9990,7 +10015,7 @@ function renderIngestTab(j) {
     +(techCodec||fmtLabel
       ?'<div style="display:flex;gap:10px;align-items:center;margin-bottom:16px;padding:8px 14px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:5px;flex-wrap:wrap">'
         +(fmtLabel?'<span style="font-family:var(--cond);font-size:14px;font-weight:800;letter-spacing:.06em;color:var(--white)">'+fmtLabel+'</span>':'')
-        +(techCodec?'<span style="font-family:var(--cond);font-size:13px;font-weight:700;color:#4a9eff;margin-left:8px">'+techCodec+'</span>':'')
+        +(techCodec?'<span style="font-family:var(--cond);font-size:13px;font-weight:700;color:#2a6cb8;margin-left:8px">'+techCodec+'</span>':'')
         +'<span style="font-size:11px;color:var(--muted);margin-left:auto">From Tech Overview — edit in Tech tab</span></div>'
       :'')
     // Stream count + add controls
@@ -10099,7 +10124,7 @@ function renderCommsTab(j) {
   // Comms suppliers (from DV or default)
   var suppliers = (j._commsSuppliersCustom||[]).concat(COMMS_SUPPLIERS_DEFAULT).filter(function(v,i,a){return a.indexOf(v)===i;});
   var suppOpts  = '<option value="">— Supplier —</option>'+suppliers.map(function(s){return '<option'+(s===c.supplier?' selected':'')+'>'+s+'</option>';}).join('')
-    +'<option value="__add__" style="color:#4a9eff;font-style:italic">+ Add supplier...</option>';
+    +'<option value="__add__" style="color:#2a6cb8;font-style:italic">+ Add supplier...</option>';
 
   // ── Crew List ────────────────────────────────────────────────────────────
   var pRows = c.people.map(function(p,pi){
@@ -10167,7 +10192,7 @@ function renderCommsTab(j) {
   var walkieRows = walkieList.length
     ? walkieList.map(function(p,i){
         return '<div style="display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.05)">'
-          +'<div style="font-family:var(--cond);font-size:11px;font-weight:800;color:#4a9eff;min-width:22px;text-align:center">'+(i+1)+'</div>'
+          +'<div style="font-family:var(--cond);font-size:11px;font-weight:800;color:#2a6cb8;min-width:22px;text-align:center">'+(i+1)+'</div>'
           +'<div style="font-size:13px;color:var(--white);font-weight:600">'+p.name+'</div>'
           +'<div style="font-size:12px;color:var(--muted)">'+p.role+'</div>'
           +'</div>';
@@ -10185,7 +10210,7 @@ function renderCommsTab(j) {
     // ── Totals bar ────────────────────────────────────────────────────────────
     +'<div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap">'
     +'<div style="background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:5px;padding:8px 16px;text-align:center">'
-    +'<div style="font-size:22px;font-weight:900;font-family:var(--cond);color:#4a9eff">'+walkieList.length+'</div>'
+    +'<div style="font-size:22px;font-weight:900;font-family:var(--cond);color:#2a6cb8">'+walkieList.length+'</div>'
     +'<div style="font-size:11px;color:var(--muted);font-family:var(--cond);font-weight:700;letter-spacing:.06em;text-transform:uppercase">Walkies</div></div>'
     +'<div style="background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:5px;padding:8px 16px;text-align:center">'
     +'<div style="font-size:22px;font-weight:900;font-family:var(--cond);color:#3dbf7a">'+boleroList2.length+'</div>'
@@ -10316,12 +10341,12 @@ function renderMonitorTab(j) {
         +'<div style="display:flex;gap:3px"><button class="ibtn" style="font-size:10px;flex:1" onclick="monPickKit('+j.id+','+mi+')">Change</button>'
         +'<button class="rm-btn" style="font-size:10px" onclick="monSet('+j.id+','+mi+',\'kitId\',null)">×</button></div>'
       :(m.hired
-        ?'<span style="font-size:11px;background:rgba(250,160,0,.12);color:#fa0;border:1px solid rgba(250,160,0,.4);border-radius:3px;padding:2px 6px;display:block;margin-bottom:3px">Hired</span>'
+        ?'<span style="font-size:11px;background:rgba(250,160,0,.12);color:#b87400;border:1px solid rgba(250,160,0,.4);border-radius:3px;padding:2px 6px;display:block;margin-bottom:3px">Hired</span>'
           +'<div style="display:flex;gap:3px"><button class="ibtn" style="font-size:10px;flex:1" onclick="monPickKit('+j.id+','+mi+')">Inventory</button>'
           +'<button class="rm-btn" style="font-size:10px" onclick="monSet('+j.id+','+mi+',\'hired\',false)">×</button></div>'
         :'<div style="display:flex;flex-direction:column;gap:3px">'
           +'<button class="ibtn" style="font-size:11px" onclick="monPickKit('+j.id+','+mi+')">From Inventory</button>'
-          +'<button class="ibtn" style="font-size:11px;background:rgba(250,160,0,.12);color:#fa0" onclick="monSet('+j.id+','+mi+',\'hired\',true);renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))">+ Hired</button></div>');
+          +'<button class="ibtn" style="font-size:11px;background:rgba(250,160,0,.12);color:#b87400" onclick="monSet('+j.id+','+mi+',\'hired\',true);renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))">+ Hired</button></div>');
     var rtOpts='<select class="fi" style="font-size:12px;padding:2px 4px;width:100%" onchange="monSet('+j.id+','+mi+',\'routerOut\',parseInt(this.value)||null)"><option value="">--</option>';
     for(var n=1;n<=384;n++) rtOpts+='<option'+(m.routerOut===n?' selected':'')+'>'+n+'</option>';
     rtOpts+='</select>';
@@ -10437,7 +10462,7 @@ function renderCrewTab(j) {
     else if(type==='freelance')moveBtn='<button onclick="crewMove('+j.id+','+ci+',\'freelance\',\'versa\')" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:3px;font-size:10px;padding:1px 6px;cursor:pointer;font-family:var(--cond);font-weight:700">→ Versa</button>';
     return '<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);flex-wrap:wrap"><div style="flex:1;min-width:120px;font-size:14px;font-weight:600;color:var(--white)">'+c.name+'</div>'+roleOpts+moveBtn+'<button onclick="crewRm('+j.id+',\''+type+'\','+ci+')" class="rm-btn" style="font-size:11px">×</button></div>';
   };
-  var mkSuggChips=function(suggestions,type){return suggestions.map(function(p,pi){return '<button data-jid="'+j.id+'" data-pi="'+pi+'" data-type="'+type+'" onclick="_crewSuggAdd(this,'+j.id+',\''+type+'\')" style="display:inline-flex;align-items:center;gap:4px;background:rgba(74,158,255,.12);border:1px solid rgba(74,158,255,.35);color:#4a9eff;border-radius:3px;font-size:12px;padding:3px 9px;cursor:pointer;margin:2px">+ '+p.name+(p.role?' <span style="opacity:.6;font-size:11px">('+p.role+')</span>':'')+'</button>';}).join('');};
+  var mkSuggChips=function(suggestions,type){return suggestions.map(function(p,pi){return '<button data-jid="'+j.id+'" data-pi="'+pi+'" data-type="'+type+'" onclick="_crewSuggAdd(this,'+j.id+',\''+type+'\')" style="display:inline-flex;align-items:center;gap:4px;background:rgba(74,158,255,.12);border:1px solid rgba(74,158,255,.35);color:#2a6cb8;border-radius:3px;font-size:12px;padding:3px 9px;cursor:pointer;margin:2px">+ '+p.name+(p.role?' <span style="opacity:.6;font-size:11px">('+p.role+')</span>':'')+'</button>';}).join('');};
   var flSuggHtml=flSugg.length?'<div style="margin-bottom:8px">'+mkSuggChips(flSugg,'freelance')+'</div>':'';
   var prodSuggHtml=prodSugg.length?'<div style="margin-bottom:8px">'+mkSuggChips(prodSugg,'production')+'</div>':'';
   var camOpsHtml=camOps.length?'<div class="det-sec"><div class="det-sec-lbl">Camera Operators</div>'+camOps.map(function(op){return '<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border)"><div style="font-family:var(--cond);font-size:12px;font-weight:800;color:var(--accent);min-width:52px">CAM '+op.camNum+(op.label?' · '+op.label:'')+'</div><div style="flex:1;font-size:14px;font-weight:600;color:var(--white)">'+op.name+'</div></div>';}).join('')+'</div>':'';
@@ -10567,7 +10592,7 @@ function renderKitPrepTab(j) {
   // Render a single prep item row
   function renderPrepItem(p,k,jid){
     var isHired=p.supplier&&p.supplier!=='Versa Inventory';
-    var badge=isHired?'<span style="font-size:10px;font-family:var(--cond);font-weight:800;color:#fa0">HIRED</span>'
+    var badge=isHired?'<span style="font-size:10px;font-family:var(--cond);font-weight:800;color:#b87400">HIRED</span>'
       :'<span style="font-size:10px;font-family:var(--cond);font-weight:800;color:#2a7d48">INV</span>';
     var moveOpts='<option value="">Move to...</option><option value="unassigned">Unassigned</option>'
       +allAreas.map(function(a){return '<option value="'+a.id+'"'+(p.area===a.id?' disabled':'')+'>'+a.label+'</option>';}).join('');
@@ -10611,7 +10636,7 @@ function renderKitPrepTab(j) {
   var hireRows=j.hireIns.map(function(h,hi){
     var suppList2=[''].concat(COMMS_SUPPLIERS_DEFAULT,(j._prepSuppliers||[]));
     var sOpts=suppList2.map(function(s){return '<option'+(s===h.supplier?' selected':'')+'>'+s+'</option>';}).join('')
-      +'<option value="__add__" style="color:#4a9eff;font-style:italic">+ Add supplier...</option>';
+      +'<option value="__add__" style="color:#2a6cb8;font-style:italic">+ Add supplier...</option>';
     var camLabel=(h._camspec&&typeof h._camIdx==='number')
       ?'<div style="font-size:9px;font-family:var(--cond);font-weight:800;letter-spacing:.08em;color:#f59e0b;text-transform:uppercase;margin-bottom:2px">Cam '+(h._camIdx+1)+' — Hired</div>'
       :'';
@@ -11523,7 +11548,10 @@ function opsInit2(){
     for(let i=0;i<OPS_CAL.length;i++){
       if(OPS_CAL[i].month.toLowerCase()===curS.toLowerCase()){
         const qi=QS.findIndex(function(q){return q.si<=i&&q.ei>=i;});
-        if(qi>=0){opsShowQ2(qi,QS);jumped=true;break;}
+        if(qi>=0){opsShowQ2(qi,QS);jumped=true;
+          // Scroll current month into view
+          setTimeout(function(){var sec=document.getElementById('opsMs2-'+i);if(sec)sec.scrollIntoView({behavior:'auto',block:'start'});},50);
+          break;}
       }
     }
     if(!jumped)opsShowQ2(0,QS);
@@ -11621,7 +11649,7 @@ function renderHireKit(j){
     var suppO='<select class="fi" style="font-size:12px;padding:3px 6px;width:100%" onchange="setHireField('+j.id+','+hi+',\'supplier\',this.value)">'
       +'<option value="">Supplier...</option>'
       +HIRE_SUPS.map(function(s){return '<option'+(s===h.supplier?' selected':'')+'>'+s+'</option>';}).join('')
-      +'<option value="__add__" style="color:#4a9eff">+ Add...</option></select>';
+      +'<option value="__add__" style="color:#2a6cb8">+ Add...</option></select>';
     var r2='<div style="display:grid;grid-template-columns:2fr 1fr 0.5fr 0.9fr 1.2fr auto;gap:10px;padding:10px 17px;border-bottom:1px solid rgba(255,255,255,.05);align-items:center;background:'+(h.arrived?'rgba(60,180,100,.05)':'rgba(250,160,0,.03)')+'">'
       +'<input class="fi" style="font-size:13px;padding:3px 8px" value="'+(h.name||'')+'" placeholder="Item name..." onchange="setHireField('+j.id+','+hi+',\'name\',this.value)"/>'
       +suppO
@@ -11726,7 +11754,7 @@ function saveCamRole() {
 }
 // ── ADMIN ─────────────────────────────────────────────────────────────────────
 function renderAdmin() {
-  renderUsers(); renderCats(); renderPatEmails(); renderDvAdmin(); renderDvHired(); renderSupp();
+  renderUsers(); renderCats(); renderPatEmails(); renderDvAdmin(); renderDvHired(); renderDvFreelance(); renderSupp();
   populateCatSelect('nkCat');
 }
 
@@ -11834,7 +11862,7 @@ function admSwitch(tab) {
     if(c) c.style.display = t===tab ? '' : 'none';
     if(b) { b.classList.toggle('active', t===tab); b.style.opacity=t===tab?'1':'.5'; b.style.borderColor=t===tab?'#302f2c':'transparent'; }
   });
-  if(tab==='dv') { renderDvAdmin(); renderDvHired(); }
+  if(tab==='dv') { renderDvAdmin(); renderDvHired(); renderDvFreelance(); }
   if(tab==='suppliers') renderSupp();
   if(tab==='cats') renderCats();
   if(tab==='pat') renderPatEmails();
@@ -11910,6 +11938,42 @@ function dvDelItem(i){
   renderDvAdmin();
 }
 
+function renderDvFreelance(){
+  var el=document.getElementById('dvFreelanceWrap');if(!el)return;
+  el.innerHTML='<div style="display:flex;gap:8px;margin-bottom:10px">'
+    +'<input id="dvFlName" class="fi" style="font-size:14px;padding:5px 10px;flex:1" placeholder="Name..." onkeydown="if(event.key===\'Enter\')dvFlAdd()"/>'
+    +'<input id="dvFlRole" class="fi" style="font-size:14px;padding:5px 10px;flex:1" placeholder="Role (optional)..." onkeydown="if(event.key===\'Enter\')dvFlAdd()"/>'
+    +'<button class="btn-pri" onclick="dvFlAdd()" style="font-size:14px;padding:5px 14px">Add</button>'
+    +'</div>'
+    +(VERSA_FREELANCE.length
+      ?'<div style="display:flex;flex-direction:column;gap:4px">'+VERSA_FREELANCE.map(function(f,i){
+        return '<div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:6px;padding:8px 12px">'
+          +'<span style="font-size:14px;font-weight:600;color:var(--white);flex:1">'+f.name+'</span>'
+          +(f.role?'<span style="font-size:12px;color:var(--muted)">'+f.role+'</span>':'')
+          +'<button onclick="dvFlDel('+i+')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:0;line-height:1" title="Remove">×</button>'
+          +'</div>';
+      }).join('')+'</div>'
+      :'<div style="color:var(--muted);font-size:14px">No freelance crew added yet.</div>');
+}
+function dvFlAdd(){
+  var nameInp=document.getElementById('dvFlName');
+  var roleInp=document.getElementById('dvFlRole');
+  if(!nameInp)return;
+  var name=nameInp.value.trim();if(!name){toast('Enter a name');return;}
+  if(VERSA_FREELANCE.some(function(f){return f.name===name;})){toast('Already exists');return;}
+  var role=roleInp?roleInp.value.trim():'';
+  VERSA_FREELANCE.push({name:name,role:role});
+  nameInp.value='';if(roleInp)roleInp.value='';
+  toast('Added: '+name);
+  saveData();renderDvFreelance();
+}
+function dvFlDel(i){
+  if(!confirm('Remove \''+VERSA_FREELANCE[i].name+'\' from freelance crew?'))return;
+  VERSA_FREELANCE.splice(i,1);
+  toast('Removed');
+  saveData();renderDvFreelance();
+}
+
 function togPatEmail(id){const u=users.find(x=>x.id===id);if(u)u.patEmail=!u.patEmail;renderPatEmails();}
 
 function renderDvHired() {
@@ -11938,7 +12002,7 @@ function renderDvHired() {
     +catKeys.map(function(cat){
       return '<button class="ibtn'+(_dvHiredCat===cat?' active':'')+'" style="font-size:12px" onclick="dvHiredSetCat(\''+cat+'\')">'+cat+'</button>';
     }).join('')
-    +'<button class="ibtn" style="font-size:12px;color:#4a9eff;border-color:rgba(74,158,255,.3)" onclick="dvHiredNewCat()">+ Category</button>'
+    +'<button class="ibtn" style="font-size:12px;color:#2a6cb8;border-color:rgba(74,158,255,.3)" onclick="dvHiredNewCat()">+ Category</button>'
     +'</div>';
   var body='';
   if(_dvHiredCat && cats[_dvHiredCat]){
