@@ -10,7 +10,7 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 .app{display:flex;height:100vh;background:var(--black);color:var(--white)}
 :root{--black:#0a0a0a;--near-black:#111;--dark:#1c1c1c;--border:#2e2e2e;--border-l:#3a3a3a;--muted:#aaa;--subtle:#ccc;--white:#f2f2f2;--pure:#fff;--accent:#F4A258;--font:'Barlow',sans-serif;--cond:'Barlow Condensed',sans-serif}
-html[data-theme="light"]{--black:#e9ebee;--near-black:#f4f5f7;--dark:#e2e4e8;--border:#cdd0d6;--border-l:#b0b5bf;--muted:#5a6170;--subtle:#2e3340;--white:#1a1d23;--pure:#0a0c0f;--accent:#1a6fd4}
+html[data-theme="light"]{--black:#e9ebee;--near-black:#f4f5f7;--dark:#e2e4e8;--border:#cdd0d6;--border-l:#b0b5bf;--muted:#3d4250;--subtle:#1e2330;--white:#1a1d23;--pure:#0a0c0f;--accent:#1a6fd4}
 html,body{height:100%;background:var(--black);color:var(--white);font-family:var(--font);font-size:17px;overflow:hidden;-webkit-font-smoothing:antialiased}
 .app{display:flex;height:100vh;overflow:hidden}
 .sb{width:216px;background:var(--near-black);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
@@ -694,7 +694,7 @@ html[data-theme="light"] .notif-btn{color:#302f2c}
 /* Kit detail modal — light mode contrast fixes */
 html[data-theme="light"] .det-kv{background:rgba(48,47,44,.04);border-color:rgba(48,47,44,.1)}
 html[data-theme="light"] .det-sec-lbl{color:#302f2c;border-bottom-color:rgba(48,47,44,.15)}
-html[data-theme="light"] .dfl{color:#5a6170}
+html[data-theme="light"] .dfl{color:#3d4250}
 html[data-theme="light"] .det-edit{color:#1a1916}
 html[data-theme="light"] .det-edit.mn{color:#1a1916}
 html[data-theme="light"] .det-edit:focus{background:#fff;border-color:var(--accent)}
@@ -735,7 +735,7 @@ html[data-theme="light"] .drw-more-menu{background:#f4f2ec;border-color:rgba(48,
   <div style="font-family:var(--cond);font-size:20px;font-weight:900;color:#d85a61;letter-spacing:.04em;">Ops Planner</div>
   <div style="flex:1"></div>
   <button onclick="opsOpenEmail()" style="font-size:12px;font-weight:800;padding:5px 13px;border-radius:8px;border:1px solid rgba(216,90,97,.3);background:rgba(216,90,97,.1);color:#d85a61;cursor:pointer;">✉ ML Email</button>
-  <a href="?" style="font-size:11px;font-weight:700;padding:5px 11px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:#888;text-decoration:none;">← Full App</a>
+  <a href="?" style="font-size:11px;font-weight:700;padding:5px 11px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:var(--muted);text-decoration:none;">← Full App</a>
 </div>
 
 
@@ -764,7 +764,7 @@ html[data-theme="light"] .drw-more-menu{background:#f4f2ec;border-color:rgba(48,
     <div class="drw-hdr-top">
       <div class="drw-title" id="drwName">Item</div>
       <div class="drw-hdr-actions">
-        <button class="x-btn" onclick="closeDrawer()">&#215;</button>
+        <button class="x-btn" onclick="closeDrawer()" style="font-size:28px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:var(--near-black);border:1px solid var(--border);border-radius:6px">&#215;</button>
       </div>
     </div>
     <div class="drw-subtitle" id="drwSubtitle"></div>
@@ -1130,7 +1130,7 @@ html[data-theme="light"] .drw-more-menu{background:#f4f2ec;border-color:rgba(48,
       <div class="nav-item" data-pg="tools" onclick="nav('tools',this)" style="display:none"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 14l3-3 1.5 1.5L10 9l1 3 3-8-8 3 3 1-3.5 3.5L4 12z"/><circle cx="11" cy="5" r="1.5"/></svg>Tools</div>
       <div class="nav-lbl" data-lbl="reference">Reference</div>
       <div class="nav-item" data-pg="info" onclick="nav('info',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 7v5M8 5v.5"/></svg>Studio Info</div>
-      <div class="nav-item" onclick="window.open('versa-vault.html','_blank')" style="cursor:pointer"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="7" width="12" height="8" rx="1"/><path d="M5 7V5a3 3 0 016 0v2"/><circle cx="8" cy="11" r="1"/></svg>Vault</div>
+      <div class="nav-item" data-pg="vault" onclick="nav('vault',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="7" width="12" height="8" rx="1"/><path d="M5 7V5a3 3 0 016 0v2"/><circle cx="8" cy="11" r="1"/></svg>Vault</div>
     </nav>
     <div class="sb-foot" style="position:relative">
       <div style="display:flex;align-items:center;gap:9px;padding-bottom:8px;border-bottom:1px solid var(--border);margin-bottom:8px">
@@ -1213,7 +1213,7 @@ html[data-theme="light"] .drw-more-menu{background:#f4f2ec;border-color:rgba(48,
           <div id="kitSubcatView" style="display:none"></div>
           </div><!-- /kitTabPanelInv -->
           <div id="kitTabPanelHired" style="display:none">
-            <div id="hiredCatHeader" style="display:none;margin-bottom:6px"><button class="btn-sec" onclick="renderHiredCatalogue()" style="font-size:13px;padding:5px 12px">&#8592; All Categories</button></div>
+            <div id="hiredCatHeader" style="display:none"></div>
             <div id="hiredCatalogueList"></div>
           </div>
         </div>
@@ -1348,7 +1348,7 @@ html[data-theme="light"] .drw-more-menu{background:#f4f2ec;border-color:rgba(48,
 .er-pbody{padding:16px 20px 0;font-size:16px}
 .er-sec{background:#F8F8F6;border-radius:7px;margin-bottom:10px;border:1px solid #C8C7C3;overflow:hidden;box-shadow:0 1px 0 rgba(255,255,255,.9),0 -1px 0 rgba(0,0,0,.06),0 2px 4px rgba(0,0,0,.1)}
 .er-shead{background:#E0DFDC;border-bottom:1px solid #AEADA9;padding:7px 14px;display:flex;align-items:center;gap:8px}
-.er-snum{font-size:10px;font-weight:700;letter-spacing:.14em;color:#777770;font-family:"IBM Plex Mono",monospace;background:#C8C7C3;padding:2px 5px;border-radius:2px}
+.er-snum{font-size:10px;font-weight:700;letter-spacing:.14em;color:var(--muted)770;font-family:"IBM Plex Mono",monospace;background:#C8C7C3;padding:2px 5px;border-radius:2px}
 .er-stitle{font-size:10px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:#333;font-family:"IBM Plex Mono",monospace}
 .er-sbody{padding:12px 14px}
 .er-btnrow{display:flex;flex-wrap:wrap;gap:7px}
@@ -1365,7 +1365,7 @@ html[data-theme="light"] .drw-more-menu{background:#f4f2ec;border-color:rgba(48,
 .er-oinput:focus{border-color:#111;background:#fff}
 .er-oinput::placeholder{color:#C8C7C3}
 .er-datechips{display:flex;gap:7px;margin-bottom:10px}
-.er-datechip{flex:1;padding:10px 14px;border-radius:5px;font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border:1px solid #AEADA9;background:#EFEFED;color:#777770;text-align:center;transition:all .1s;box-shadow:0 1px 0 rgba(255,255,255,.9),0 2px 3px rgba(0,0,0,.08)}
+.er-datechip{flex:1;padding:10px 14px;border-radius:5px;font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border:1px solid #AEADA9;background:#EFEFED;color:var(--muted)770;text-align:center;transition:all .1s;box-shadow:0 1px 0 rgba(255,255,255,.9),0 2px 3px rgba(0,0,0,.08)}
 .er-datechip:hover{color:#111}
 .er-datechip.er-active{background:#111;color:#FFD000;border-color:#111;box-shadow:inset 0 1px 3px rgba(0,0,0,.2)}
 .er-datedisp{font-family:"IBM Plex Mono",monospace;font-size:11px;color:#111;padding:8px 12px;background:#E0DFDC;border-radius:4px;border:1px solid #AEADA9}
@@ -1373,7 +1373,7 @@ html[data-theme="light"] .drw-more-menu{background:#f4f2ec;border-color:rgba(48,
 .er-dinput:focus{border-color:#111}
 input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;cursor:pointer}
 .er-modegrid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
-.er-modebtn{padding:18px 14px;border-radius:7px;font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border:1px solid #AEADA9;background:#EFEFED;color:#777770;text-align:center;transition:all .1s;box-shadow:0 1px 0 rgba(255,255,255,.9),0 2px 3px rgba(0,0,0,.1)}
+.er-modebtn{padding:18px 14px;border-radius:7px;font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border:1px solid #AEADA9;background:#EFEFED;color:var(--muted)770;text-align:center;transition:all .1s;box-shadow:0 1px 0 rgba(255,255,255,.9),0 2px 3px rgba(0,0,0,.1)}
 .er-modebtn .er-micon{font-size:20px;display:block;margin-bottom:8px;opacity:.3;transition:opacity .15s}
 .er-modebtn:hover{color:#333}.er-modebtn:hover .er-micon{opacity:.6}
 .er-modebtn.er-ntr{background:#111;color:#fff;border-color:#111;box-shadow:inset 0 1px 3px rgba(0,0,0,.2)}
@@ -1382,12 +1382,12 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
 .er-modebtn.er-str .er-micon{opacity:1}
 .er-strfields{display:none;flex-direction:column;gap:9px;margin-top:10px;padding-top:10px;border-top:1px dashed #C8C7C3}
 .er-strfields.open{display:flex}
-.er-flabel{font-size:9px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#777770;margin-bottom:5px;font-family:"IBM Plex Mono",monospace}
+.er-flabel{font-size:9px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)770;margin-bottom:5px;font-family:"IBM Plex Mono",monospace}
 .er-ftxt{width:100%;border:1px solid #AEADA9;border-radius:4px;padding:10px 12px;font-family:"IBM Plex Mono",monospace;font-size:11px;color:#111;background:#E0DFDC;resize:vertical;min-height:90px;outline:none;line-height:1.7}
 .er-ftxt:focus{border-color:#111;background:#fff}
 .er-ftxt::placeholder{color:#C8C7C3}
 .er-catbar{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:7px}
-.er-catbtn{padding:3px 8px;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:1px solid #AEADA9;background:#EFEFED;color:#777770;cursor:pointer;border-radius:3px;font-family:"IBM Plex Mono",monospace}
+.er-catbtn{padding:3px 8px;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:1px solid #AEADA9;background:#EFEFED;color:var(--muted)770;cursor:pointer;border-radius:3px;font-family:"IBM Plex Mono",monospace}
 .er-catbtn.er-active{background:#111;color:#FFD000;border-color:#111}
 .er-ksearch{width:100%;border:1px solid #AEADA9;border-radius:4px;padding:8px 12px;font-family:"IBM Plex Mono",monospace;font-size:11px;background:#E0DFDC;color:#111;outline:none;margin-bottom:5px}
 .er-ksearch:focus{border-color:#111}.er-ksearch::placeholder{color:#C8C7C3}
@@ -1399,8 +1399,8 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
 .er-krow.er-sel .er-kchk{background:#111;border-color:#111}
 .er-krow.er-sel .er-kchk::after{content:"";width:3px;height:6px;border:1.5px solid #FFD000;border-top:none;border-left:none;transform:rotate(45deg);display:block;margin-top:-1px}
 .er-kname{font-size:11px;font-weight:500;color:#111;flex:1;font-family:"IBM Plex Mono",monospace}
-.er-kpill{font-size:8px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:1px 5px;background:#E0DFDC;color:#777770;border-radius:2px;font-family:"IBM Plex Mono",monospace}
-.er-ktag{font-size:10px;color:#777770;font-family:"IBM Plex Mono",monospace}
+.er-kpill{font-size:8px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:1px 5px;background:#E0DFDC;color:var(--muted)770;border-radius:2px;font-family:"IBM Plex Mono",monospace}
+.er-ktag{font-size:10px;color:var(--muted)770;font-family:"IBM Plex Mono",monospace}
 .er-tagchips{display:flex;flex-wrap:wrap;gap:4px;margin-top:7px}
 .er-tagchip{display:inline-flex;align-items:center;gap:4px;padding:3px 8px 3px 9px;background:#111;color:#FFD000;font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:700;border-radius:3px}
 .er-tagchip button{background:rgba(255,208,0,.2);border:none;cursor:pointer;color:#FFD000;width:13px;height:13px;border-radius:50%;font-size:10px;display:flex;align-items:center;justify-content:center;line-height:1}
@@ -1410,7 +1410,7 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
 .er-urgtitle{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.6);font-family:"IBM Plex Mono",monospace}
 .er-urgbody{padding:12px 14px}
 .er-urgrow{display:flex;gap:7px}
-.er-urgbtn{flex:1;padding:14px 10px;border-radius:6px;font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border:1px solid #AEADA9;background:#EFEFED;color:#777770;text-align:center;transition:all .1s;position:relative;box-shadow:0 1px 0 rgba(255,255,255,.9),0 2px 3px rgba(0,0,0,.08)}
+.er-urgbtn{flex:1;padding:14px 10px;border-radius:6px;font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border:1px solid #AEADA9;background:#EFEFED;color:var(--muted)770;text-align:center;transition:all .1s;position:relative;box-shadow:0 1px 0 rgba(255,255,255,.9),0 2px 3px rgba(0,0,0,.08)}
 .er-urgbtn:hover{color:#333}
 .er-urgbtn::after{content:"";position:absolute;bottom:6px;left:50%;transform:translateX(-50%);width:5px;height:5px;border-radius:50%;background:#C8C7C3;transition:all .15s}
 .er-urgbtn.er-urg-no::after{background:#00C472;box-shadow:0 0 4px rgba(0,196,114,.8)}
@@ -1428,7 +1428,7 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
 .er-statusbar.er-ready{border-color:#00C472;background:rgba(0,196,114,.07)}
 .er-statusled{width:7px;height:7px;border-radius:50%;background:#C8C7C3;flex-shrink:0;transition:all .25s}
 .er-statusbar.er-ready .er-statusled{background:#00C472;box-shadow:0 0 5px rgba(0,196,114,.8)}
-.er-statustxt{font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#777770;transition:color .2s}
+.er-statustxt{font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)770;transition:color .2s}
 .er-statusbar.er-ready .er-statustxt{color:#111}
 .er-submit{width:100%;padding:16px;border:none;background:#111;color:#fff;font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;border-radius:6px;transition:all .15s;box-shadow:0 2px 0 rgba(0,0,0,.25)}
 .er-submit:hover:not(:disabled){background:#222}
@@ -1446,10 +1446,10 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
 .er-suctitle span{color:#00C472}
 .er-sucsub{font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.35)}
 .er-sucbody{padding:0 20px}
-.er-suctblhd{font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#777770;padding:12px 0 7px;border-bottom:1px solid #C8C7C3}
+.er-suctblhd{font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)770;padding:12px 0 7px;border-bottom:1px solid #C8C7C3}
 .er-sucrow{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid #E0DFDC}
 .er-sucrow:last-child{border-bottom:none}
-.er-suclbl{font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#777770;width:120px;flex-shrink:0}
+.er-suclbl{font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)770;width:120px;flex-shrink:0}
 .er-sucval{font-family:"IBM Plex Mono",monospace;font-size:11px;color:#111;flex:1}
 .er-sucdet{font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#E8002A;padding:12px 0 4px;display:none}
 .er-newrpt{width:100%;margin-top:14px;padding:14px;border:1px solid #AEADA9;background:#EFEFED;color:#333;font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;border-radius:6px;box-shadow:0 1px 0 rgba(255,255,255,.9),0 2px 3px rgba(0,0,0,.1);transition:all .15s}
@@ -1614,8 +1614,8 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
 
 </div>
 
-<!-- Past Reports -->
-<div id="abcLastReportContent" style="margin-top:14px;padding:0 4px"></div>
+<!-- Past Reports (moved to All Reports page) -->
+<div id="abcLastReportContent" style="display:none"></div>
 
 </div><!-- /erSubPanelReport -->
 <div id="erSubPanelHist" style="display:none"></div>
@@ -1731,16 +1731,16 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
 .so-versa-logo{height:22px;opacity:.55}
 .so-divider{width:1px;height:28px;background:#ddd}
 .so-shop-logo{height:36px}
-.so-head-right{font-family:var(--cond);font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#999;text-align:right}
+.so-head-right{font-family:var(--cond);font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);text-align:right}
 .so-body{padding:0 24px 24px;background:#fff}
 .so-sec{padding:18px 0;border-bottom:1px solid #e8e8e8}
 .so-sec:last-child{border-bottom:none}
 .so-lbl{font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#555;margin-bottom:10px}
-.so-btn{padding:13px 18px;border-radius:7px;font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border:2px solid #d8d8d8;background:#f5f5f5;color:#777;transition:all .15s;flex:1}
+.so-btn{padding:13px 18px;border-radius:7px;font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border:2px solid #d8d8d8;background:#f5f5f5;color:var(--muted);transition:all .15s;flex:1}
 .so-btn.active{background:#fff8f2;border-color:#ff7800;color:#e06500}
 .so-inp{width:100%;background:#f7f7f7;border:1.5px solid #d8d8d8;border-radius:7px;color:#111;padding:12px 14px;font-size:15px;font-family:var(--font);outline:none;transition:border-color .15s}
 .so-inp:focus{border-color:#ff7800;background:#fff}
-.so-inp::placeholder{color:#aaa}
+.so-inp::placeholder{color:var(--muted)}
 .so-submit{width:100%;padding:15px;background:linear-gradient(135deg,#ff4f9a 0%,#e000d4 40%,#5b3dff 70%,#0090d8 100%);border:none;border-radius:8px;font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#fff;cursor:pointer;margin-top:4px}
 .so-submit:disabled{opacity:.3;cursor:not-allowed}
 .so-success{display:none;text-align:center;padding:30px 20px;background:#fff}
@@ -1773,14 +1773,14 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
         <textarea class="so-inp" id="soInfo" style="min-height:120px;resize:vertical" placeholder="Describe technical activity, issues or observations&#x2026;"></textarea>
       </div>
       <div class="so-sec" style="border:none;padding-bottom:0">
-        <div style="font-family:var(--cond);font-size:11px;color:#777;margin-bottom:10px" id="soStatus" style="color:#999">Complete all fields to submit</div>
+        <div style="font-family:var(--cond);font-size:11px;color:var(--muted);margin-bottom:10px" id="soStatus" style="color:var(--muted)">Complete all fields to submit</div>
         <button class="so-submit" id="soSubmitBtn" onclick="soSubmit()" disabled>Submit Report</button>
       </div>
     </div>
     <div class="so-success" id="soSuccess" style="background:#fff">
       <div style="font-size:40px;margin-bottom:12px;color:#ff7800">✓</div>
       <div style="font-family:var(--cond);font-size:18px;font-weight:800;color:#ff7800;margin-bottom:8px">Report Submitted</div>
-      <div style="font-size:14px;color:#888;margin-bottom:20px" id="soSuccessDetail"></div>
+      <div style="font-size:14px;color:var(--muted);margin-bottom:20px" id="soSuccessDetail"></div>
       <button class="so-submit" onclick="soReset()" style="background:#f0f0f0;color:#555;border:1px solid #ddd;padding:10px 20px;border-radius:6px;font-family:var(--cond);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer">Submit Another</button>
     </div>
   </div>
@@ -2092,13 +2092,13 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
 
       <div class="page" id="page-admin">
         <div style="display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:18px;overflow-x:auto">
-          <div class="jd-tab active" id="admTab-users" onclick="admSwitch('users')">Users</div>
-          <div class="jd-tab" id="admTab-cats" onclick="admSwitch('cats')">Kit Categories</div>
-          <div class="jd-tab" id="admTab-dv" onclick="admSwitch('dv')">Data Validation Lists</div>
-          <div class="jd-tab" id="admTab-suppliers" onclick="admSwitch('suppliers')">Suppliers</div>
-          <div class="jd-tab" id="admTab-pat" onclick="admSwitch('pat')">PAT Emails</div>
-          <div class="jd-tab" id="admTab-access" onclick="admSwitch('access')">Job Access</div>
-          <div class="jd-tab" id="admTab-notes" onclick="admSwitch('notes')">My Notes</div>
+          <div class="jd-tab active" id="admTab-users" onclick="admSwitch('users')" style="color:#302f2c;opacity:1;border-color:#302f2c">Users</div>
+          <div class="jd-tab" id="admTab-cats" onclick="admSwitch('cats')" style="color:#302f2c;opacity:.5">Kit Categories</div>
+          <div class="jd-tab" id="admTab-dv" onclick="admSwitch('dv')" style="color:#302f2c;opacity:.5">Data Validation Lists</div>
+          <div class="jd-tab" id="admTab-suppliers" onclick="admSwitch('suppliers')" style="color:#302f2c;opacity:.5">Suppliers</div>
+          <div class="jd-tab" id="admTab-pat" onclick="admSwitch('pat')" style="color:#302f2c;opacity:.5">PAT Emails</div>
+          <div class="jd-tab" id="admTab-access" onclick="admSwitch('access')" style="color:#302f2c;opacity:.5">Job Access</div>
+          <div class="jd-tab" id="admTab-notes" onclick="admSwitch('notes')" style="color:#302f2c;opacity:.5">My Notes</div>
         </div>
         <div id="admContent-users">
           <div class="adm-grid">
@@ -2168,6 +2168,15 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
       <div class="page" id="page-notes" style="position:fixed;inset:0;z-index:500;background:var(--bg)">
         <div style="position:absolute;top:8px;right:12px;z-index:501"><button class="ibtn" style="font-family:var(--cond);font-size:13px;font-weight:800;padding:6px 14px;background:rgba(0,0,0,.5);color:#fff;border:none;backdrop-filter:blur(4px)" onclick="nav('dashboard',document.querySelector('[data-pg=dashboard]'))">✕ CLOSE</button></div>
         <iframe id="notesFrame" src="" style="width:100%;height:100%;border:none" allow="clipboard-write"></iframe>
+      </div>
+
+      <div class="page" id="page-info">
+        <div id="infoPageBody"></div>
+      </div>
+
+      <div class="page" id="page-vault" style="position:fixed;inset:0;z-index:500;background:var(--bg)">
+        <div style="position:absolute;top:8px;right:12px;z-index:501"><button class="ibtn" style="font-family:var(--cond);font-size:13px;font-weight:800;padding:6px 14px;background:rgba(0,0,0,.5);color:#fff;border:none;backdrop-filter:blur(4px)" onclick="nav('dashboard',document.querySelector('[data-pg=dashboard]'))">✕ CLOSE</button></div>
+        <iframe id="vaultFrame" src="" style="width:100%;height:100%;border:none" allow="clipboard-write"></iframe>
       </div>
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js">
 function notesPickType(btn,type){
@@ -2619,7 +2628,16 @@ async function loadData() {
       rows.forEach(function(row) {
         try {
           const v = row.value;
-          if (row.key==='jobs'&&Array.isArray(v)){jobs.length=0;v.forEach(x=>jobs.push(x));}
+          if (row.key==='jobs'&&Array.isArray(v)){jobs.length=0;v.forEach(x=>jobs.push(x));
+            // Fix duplicate IDs
+            var _seenIds={};var _dupFixed=false;
+            jobs.forEach(function(j){
+              if(_seenIds[j.id]){j.id=Date.now()+Math.floor(Math.random()*10000);_dupFixed=true;}
+              _seenIds[j.id]=true;
+            });
+            if(_dupFixed)setTimeout(saveData,500);
+            nextJid=Math.max(nextJid,...jobs.map(function(j){return(typeof j.id==='number'?j.id:0)+1;}));
+          }
           else if(row.key==='kit'&&Array.isArray(v)){kit.length=0;v.forEach(x=>kit.push(x));}
           else if(row.key==='hiredCatalogue'&&Array.isArray(v)){hiredCatalogue.length=0;v.forEach(x=>hiredCatalogue.push(x));}
           else if(row.key==='users'&&Array.isArray(v)){users.length=0;v.forEach(x=>users.push(x));}
@@ -4185,7 +4203,7 @@ function renderStudioInfo(loc, studioKey){
     +sectionsHtml
     +'<div style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px">'
     +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">'
-    +'<div style="font-size:9px;font-family:var(--cond);font-weight:800;letter-spacing:.18em;color:#888">STUDIO DRAWING</div>'
+    +'<div style="font-size:9px;font-family:var(--cond);font-weight:800;letter-spacing:.18em;color:var(--muted)">STUDIO DRAWING</div>'
     +'<input type="file" accept="image/*,.pdf" style="display:none" id="drawingFile_'+(studioKey||loc)+'" onchange="loadStudioDrawing(\''+loc+'\',\''+studioKey+'\',this)"/>'
     +'<button class="ibtn" style="font-size:11px" onclick="document.getElementById(\'drawingFile_'+(studioKey||loc)+'\').click()">+ Upload</button>'
     +'</div>'
@@ -4193,13 +4211,13 @@ function renderStudioInfo(loc, studioKey){
     +'</div>'
     +'<div style="border-top:1px solid var(--border);padding-top:14px;margin-top:14px">'
     +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">'
-    +'<div style="font-size:9px;font-family:var(--cond);font-weight:800;letter-spacing:.18em;color:#888">NOTES</div>'
+    +'<div style="font-size:9px;font-family:var(--cond);font-weight:800;letter-spacing:.18em;color:var(--muted)">NOTES</div>'
     +'</div>'
     +'<textarea class="fta" style="min-height:60px;font-size:13px;width:100%;box-sizing:border-box" placeholder="Add studio notes..." onchange="'+saveFn+'\'notes\',this.value)">'+(si.notes||'')+'</textarea>'
     +'</div>'
     +'<div style="border-top:1px solid var(--border);padding-top:14px;margin-top:14px">'
     +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">'
-    +'<div style="font-size:9px;font-family:var(--cond);font-weight:800;letter-spacing:.18em;color:#888">CUSTOM FIELDS</div>'
+    +'<div style="font-size:9px;font-family:var(--cond);font-weight:800;letter-spacing:.18em;color:var(--muted)">CUSTOM FIELDS</div>'
     +'<button class="ibtn" style="font-size:11px" onclick="addStudioInfoExtra(\''+loc+'\',\''+studioKey+'\')">+ Add Field</button>'
     +'</div>'
     +(fields.length?'':'<div style="font-size:12px;color:var(--muted);font-style:italic">No custom fields</div>')
@@ -4312,41 +4330,51 @@ function renderHiredCatalogue(catFilter, subcatFilter){
   var items=subcatFilter==='__all'
     ? hiredCatalogue.filter(function(h){return h.cat===catFilter;})
     : hiredCatalogue.filter(function(h){return h.cat===catFilter&&h.subcat===subcatFilter;});
+  // Sort alphabetically
+  items.sort(function(a,b){return a.name.localeCompare(b.name);});
   var subLabel=subcatFilter==='__all'?catFilter:catFilter+' / '+subcatFilter;
-  var html='<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap">'
-    +'<div style="width:4px;height:28px;border-radius:2px;background:'+col+';flex-shrink:0"></div>'
-    +'<div style="font-family:var(--cond);font-size:18px;font-weight:900;color:'+col+'">'+subLabel+'</div>'
-    +'<div style="font-size:12px;color:var(--muted);margin-top:2px">'+items.length+' item'+(items.length===1?'':'s')+'</div>'
-    +'<button class="ibtn" style="margin-left:auto;font-size:12px;padding:4px 12px" onclick="openAddHiredItem(\'' +catFilter+'\',\''+subcatFilter+'\')" >+ Add Item</button>'
+  var html='<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;padding:10px 14px;background:var(--near-black);border:1px solid var(--border);border-radius:8px;flex-wrap:wrap">'
+    +'<button class="ibtn" style="font-family:var(--cond);font-size:13px;font-weight:800;padding:6px 12px" onclick="renderHiredCatalogue(\''+catFilter+'\')">&#8592; ALL CATEGORIES</button>'
+    +'<div style="font-family:var(--cond);font-size:16px;font-weight:900;color:'+col+'">'+subLabel+'</div>'
+    +'<div style="font-family:var(--cond);font-size:13px;color:var(--muted);font-weight:700">'+items.length+' items</div>'
+    +'<div style="flex:1"></div>'
+    +'<button class="ibtn" style="font-family:var(--cond);font-size:13px;font-weight:800;padding:6px 14px;background:rgba(45,125,210,.12);color:#4a9eff;border-color:rgba(45,125,210,.3)" onclick="openAddHiredItem(\'' +catFilter+'\',\''+subcatFilter+'\')" >+ ADD ITEM</button>'
     +'</div>';
   if(!items.length){
-    html+='<div style="color:var(--muted);font-size:14px;padding:12px 0;border:1px dashed rgba(255,255,255,.1);border-radius:8px;text-align:center">No items in this sub-category yet.</div>';
+    html+='<div style="background:var(--near-black);border:1px solid var(--border);border-radius:8px;padding:60px 20px;text-align:center"><div style="font-size:40px;margin-bottom:10px">📦</div><div style="font-family:var(--cond);font-size:18px;font-weight:800;color:var(--muted)">NO ITEMS YET</div></div>';
     el.innerHTML=html; return;
   }
-  html+=items.map(function(h){
+  html+=items.map(function(h,idx){
     var suppBadges=(h.suppliers||[]).map(function(s){
-      return '<span style="background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:3px;font-size:11px;padding:1px 7px;color:var(--subtle)">'+s+'</span>';
+      return '<span style="font-family:var(--cond);font-size:10px;font-weight:700;background:rgba(48,47,44,.06);border:1px solid var(--border);border-radius:3px;padding:2px 7px;color:var(--muted)">'+s+'</span>';
     }).join('');
-    return '<div style="background:rgba(255,255,255,.02);border:1px solid var(--border);border-left:3px solid '+col+';border-radius:6px;padding:12px 14px;display:flex;gap:12px;align-items:flex-start;margin-bottom:8px">'
-      +(h.photos&&h.photos.length?'<img src="'+h.photos[0]+'" style="width:64px;height:48px;object-fit:cover;border-radius:4px;flex-shrink:0;background:rgba(255,255,255,.04)" onerror="this.style.display=\'none\'"/>':'')
+    return '<div style="background:var(--near-black);border:1px solid var(--border);border-left:4px solid '+col+';border-radius:6px;padding:10px 16px;margin-bottom:5px;display:flex;align-items:center;gap:14px">'
+      +'<div style="font-family:var(--cond);font-size:18px;font-weight:900;color:var(--border-l);min-width:32px;text-align:center;line-height:1">'+(idx+1)+'</div>'
       +'<div style="flex:1;min-width:0">'
-      +'<div style="font-size:14px;font-weight:700;color:var(--white);margin-bottom:2px">'+h.name+'</div>'
-      +(h.subcat&&subcatFilter==='__all'?'<div style="font-size:11px;font-weight:700;color:'+col+';margin-bottom:2px">'+h.subcat+'</div>':'')
-      +(h.compat?'<div style="font-size:11px;color:var(--muted);margin-bottom:3px">&#128279; '+h.compat+'</div>':'')
-      +(h.notes?'<div style="font-size:11px;color:var(--subtle);margin-bottom:3px">'+h.notes+'</div>':'')
-      +(suppBadges?'<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:5px">'+suppBadges+'</div>':'')
+      +'<div style="font-family:var(--cond);font-size:20px;font-weight:900;color:var(--pure);text-transform:uppercase;line-height:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+h.name+'</div>'
+      +'<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:3px">'
+      +(h.compat?'<span style="font-family:var(--cond);font-size:11px;color:var(--muted);font-weight:600">&#128279; '+h.compat+'</span>':'')
+      +(h.notes?'<span style="font-family:var(--cond);font-size:11px;color:var(--muted);font-weight:600">'+h.notes+'</span>':'')
       +'</div>'
-      +'<div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0">'
-      +'<button class="ibtn" style="font-size:11px" onclick="editHiredItem('+h.id+')">Edit</button>'
-      +'<button class="ibtn" style="font-size:11px;color:var(--danger)" onclick="deleteHiredItem('+h.id+')">Delete</button>'
+      +(suppBadges?'<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px">'+suppBadges+'</div>':'')
+      +'</div>'
+      +'<div style="display:flex;gap:6px;flex-shrink:0">'
+      +'<button class="ibtn" style="font-size:12px" onclick="editHiredItem('+h.id+')">Edit</button>'
+      +'<button class="ibtn" style="font-size:12px;color:var(--danger)" onclick="deleteHiredItem('+h.id+')">Delete</button>'
       +'</div>'
       +'</div>';
   }).join('');
   el.innerHTML=html;
 }
 function deleteHiredItem(id){
+  if(!confirm('Delete this item?'))return;
+  var h=hiredCatalogue.find(function(x){return x.id===id;});
+  var cat=h?h.cat:'';var sub=h?h.subcat:'';
   hiredCatalogue=hiredCatalogue.filter(function(h){return h.id!==id;});
-  saveData();renderHiredCatalogue();
+  saveData();
+  if(cat&&sub) renderHiredCatalogue(cat,sub);
+  else if(cat) renderHiredCatalogue(cat);
+  else renderHiredCatalogue();
 }
 function editHiredItem(id){
   var h=hiredCatalogue.find(function(x){return x.id===id;});if(!h)return;
@@ -4503,11 +4531,13 @@ function saveHiredItem(){
   var id=parseInt(document.getElementById('hiredFormId').value)||0;
   var name=(document.getElementById('hiredFormName').value||'').trim();
   if(!name){toast('Name required');return;}
+  var cat=document.getElementById('hiredFormCat').value.trim();
+  var subcat=document.getElementById('hiredFormSubcat').value.trim();
   var entry={
     id:id||(nextHCid?nextHCid++:(_hiredCatNextId++)),
     name:name,
-    cat:document.getElementById('hiredFormCat').value.trim(),
-    subcat:document.getElementById('hiredFormSubcat').value.trim(),
+    cat:cat,
+    subcat:subcat,
     compat:document.getElementById('hiredFormCompat').value.trim(),
     notes:document.getElementById('hiredFormNotes').value.trim(),
     suppliers:document.getElementById('hiredFormSuppliers').value.split(',').map(function(s){return s.trim();}).filter(Boolean),
@@ -4515,7 +4545,12 @@ function saveHiredItem(){
   };
   if(id){var idx=hiredCatalogue.findIndex(function(x){return x.id===id;});if(idx>=0)hiredCatalogue[idx]=entry;}
   else hiredCatalogue.push(entry);
-  saveData();cm('mHiredItem');renderHiredCatalogue();renderDvHired();
+  saveData();cm('mHiredItem');
+  // Re-render at current category level
+  if(cat&&subcat) renderHiredCatalogue(cat,subcat);
+  else if(cat) renderHiredCatalogue(cat);
+  else renderHiredCatalogue();
+  renderDvHired();
 }
 
 function showKitTab(tab){
@@ -4929,7 +4964,9 @@ function erCalOpenDay(dateStr) {
 
   var box=document.getElementById('erCalReport');
   if(!box) return;
-  var rep=_engReportCache[dateStr];
+  var _sn=erGetActiveShowName()||'';
+  var _snKey=_sn?(_sn+':'+dateStr):'';
+  var rep=(_snKey?_engReportCache[_snKey]:null)||(_engReportCache[dateStr]&&_erCalFilter(_engReportCache[dateStr],_sn)?_engReportCache[dateStr]:null);
   var parts=dateStr.split('-');
   var dObj=new Date(parseInt(parts[0]),parseInt(parts[1])-1,parseInt(parts[2]));
   var dayNames=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
@@ -5102,17 +5139,25 @@ function renderEngLogTab(j){
     +'<div style="display:flex;align-items:center;gap:5px"><div style="width:12px;height:12px;border-radius:3px;background:rgba(232,184,75,.12);border:1px solid #e8b84b"></div><span style="font-size:12px;color:var(--muted)">Report submitted</span></div>'
     +'</div>';
 
-  // Fetch submitted reports for this month in background and re-render when done
-  _fetchEngReportsForMonth(yr, mo).then(function(){
-    var panel = document.getElementById('engLogPanel');
-    if(panel) { renderJobDet(jobs.find(function(x){return x.id===j.id;})); }
-  });
+  // Fetch submitted reports for this month in background and update dots when done
+  var _engLogFetchKey = yr+'-'+mo;
+  if(!window._engLogFetched || window._engLogFetched!==_engLogFetchKey){
+    window._engLogFetched=_engLogFetchKey;
+    _fetchEngReportsForMonth(yr, mo).then(function(){
+      var panel = document.getElementById('engLogPanel');
+      if(panel) { 
+        window._engLogFetched=_engLogFetchKey;
+        renderJobDet(jobs.find(function(x){return x.id===j.id;}));
+      }
+    });
+  }
 
   return '<div class="det-sec" id="engLogPanel"><div class="det-sec-lbl" style="margin-bottom:14px">Engineering Log</div>'+header+legend+calHtml+'</div>';
 }
 
 function engLogNav(monthStr, jid){
   _engLogMonth = monthStr;
+  window._engLogFetched=null;
   var j=jobs.find(function(x){return x.id==jid;});
   if(j) renderJobDet(j);
 }
@@ -5212,15 +5257,20 @@ function saveEngLogDay(dateStr, jid){
 var _engReportCache = {}; // dateStr -> report object or null
 
 async function _fetchEngReport(dateStr) {
-  if (_engReportCache.hasOwnProperty(dateStr)) return _engReportCache[dateStr];
+  var _sn=erGetActiveShowName()||'';
+  var _snKey=_sn?(_sn+':'+dateStr):'';
+  if (_snKey && _engReportCache.hasOwnProperty(_snKey)) return _engReportCache[_snKey];
+  if (!_sn && _engReportCache.hasOwnProperty(dateStr)) return _engReportCache[dateStr];
   try {
     const resp = await fetch(
-      _SB_URL+'/rest/v1/engineering_reports?show_date=eq.'+dateStr+'&order=submitted_at.desc&limit=1'+(erGetActiveShowName()?'&show_name=eq.'+encodeURIComponent(erGetActiveShowName()):''),
+      _SB_URL+'/rest/v1/engineering_reports?show_date=eq.'+dateStr+'&order=submitted_at.desc&limit=1'+(_sn?'&show_name=eq.'+encodeURIComponent(_sn):''),
       {headers: {'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY}}
     );
     const rows = await resp.json();
-    _engReportCache[dateStr] = (rows && rows.length) ? rows[0] : null;
-    return _engReportCache[dateStr];
+    var result = (rows && rows.length) ? rows[0] : null;
+    if(_snKey) _engReportCache[_snKey] = result;
+    else _engReportCache[dateStr] = result;
+    return result;
   } catch(e) {
     console.warn('_fetchEngReport error:', e);
     return null;
@@ -5484,7 +5534,7 @@ function today() { return new Date().toISOString().split('T')[0]; }
 const titles = {dashboard:'Dashboard',kit:'Kit List',maintenance:'Maintenance',holidays:'Staff Holidays',
   faults:'Fault Log',bin:'Bin',studios:'Tech Log',jobs:'Jobs',
   jobdet:'Job Detail',calendar:'Planner',admin:'Admin',ops:'Ops Planner',tools:'Tools',
-  engreport:'Eng Report',allcal:'All Reports',notes:'Notes'};
+  engreport:'Eng Report',allcal:'All Reports',notes:'Notes',vault:'Vault'};
 function nav(page, el) {
   closeDrawer();
   if(page==='engreport') setTimeout(erInitPage, 50);
@@ -5503,7 +5553,7 @@ function nav(page, el) {
   if(page==='maintenance') { renderMaint(); renderPat(); renderSupp(); }
   if(page==='faults') renderFaults();
   if(page==='bin') renderBin();
-  if(page==='studios') { renderSlog('abc'); renderSlog('manchester'); renderSlog('london'); renderStudioInfo('manchester','Studio 12'); renderStudioInfo('london','Studio 1'); renderStudioInfo('abc',null); setTimeout(function(){tlLoad('manchester');tlLoad('london');tlLoad('abc');},100); }
+  if(page==='studios') { renderStudioInfo('manchester','Studio 12'); renderStudioInfo('london','Studio 1'); renderStudioInfo('abc',null); _tlok={};tlLoad('manchester');tlLoad('london');tlLoad('abc'); }
   if(page==='jobs') renderJobs();
   if(page==='calendar') { if(_planView==='cal') renderCal(); else if(_planView==='fl') { setPlanView('fl'); } else { setPlanView('ops'); } }
   if(page==='admin') renderAdmin();
@@ -5511,6 +5561,7 @@ function nav(page, el) {
   if(page==='ops') opsInit();
   if(page==='info') renderInfoPage();
   if(page==='notes') { var nf=document.getElementById('notesFrame'); if(nf&&!nf.src.includes('versa-notes')) nf.src='versa-notes.html'; }
+  if(page==='vault') { var vf=document.getElementById('vaultFrame'); if(vf&&!vf.src.includes('versa-vault')) vf.src='versa-vault.html'; }
 }
 // ── STUDIO INFO PAGE ─────────────────────────────────────────────────────────
 function renderInfoPage(){
@@ -6372,8 +6423,8 @@ function kitShowAllocPicker(id, ev) {
       +'</div>'
       +(rigDate||j.studio?'<div style="font-size:11px;color:#555;margin-top:3px;pointer-events:none">'
         +(j.studio?studioBadge(j.studio)+' <span style="color:var(--muted)">&middot; ':'')
-        +(rigDate?'Rig: <span style="color:#888">'+fmt(rigDate)+'</span>':'')
-        +(freeDate?' &rarr; <span style="color:#888">'+fmt(freeDate)+'</span>':'')
+        +(rigDate?'Rig: <span style="color:var(--muted)">'+fmt(rigDate)+'</span>':'')
+        +(freeDate?' &rarr; <span style="color:var(--muted)">'+fmt(freeDate)+'</span>':'')
         +'</div>':'')
       +'</div>';
   });
@@ -6667,10 +6718,12 @@ function openDrawer(id) {
   }
   // Subtitle badges
   var catLine=k.cat+(k.subcat?' / '+k.subcat:'');
+  var locOpts=['Manchester','London','ABC'].map(function(l){return '<option'+(l===k.loc?' selected':'')+'>'+l+'</option>';}).join('');
+  var locCol={Manchester:'#2d7dd2',London:'#e63946',ABC:'#2d7dd2'}[k.loc]||'#888';
   document.getElementById('drwSubtitle').innerHTML=
     '<span style="font-family:var(--cond);font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em">'+catLine+'</span>'
     +statBadge(k.status)
-    +locBadge(k.loc);
+    +'<select style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:'+locCol+';color:#fff;border:none;padding:2px 8px;border-radius:3px;cursor:pointer;appearance:none;-webkit-appearance:none" onchange="updateKitField('+k.id+',\'loc\',this.value);openDrawer('+k.id+')">'+locOpts+'</select>';
   document.getElementById('drwOv').classList.add('open');
   document.getElementById('kitDrawer').classList.add('open');
   ['det','tl','jbs','hist'].forEach(t=>{
@@ -6739,7 +6792,7 @@ function renderDet(k) {
     +'</div>';
 
   // Dates row
-  var dates='<div class="det-sec"><div class="det-sec-lbl">Dates</div><div class="det-grid">'
+  var dates='<div class="det-sec" style="background:var(--near-black);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-top:8px"><div class="det-sec-lbl" style="margin-top:0">Dates</div><div class="det-grid">'
     +'<div class="det-kv"><div class="dfl">Purchased</div><input type="date" class="det-edit" style="width:100%" value="'+(k.purchaseDate||'')+'" onchange="updateKitField('+k.id+',\'purchaseDate\',this.value)"></div>'
     +'<div class="det-kv"><div class="dfl">Warranty</div><input type="date" class="det-edit" style="width:100%" value="'+(k.warrantyExpiry||'')+'" onchange="updateKitField('+k.id+',\'warrantyExpiry\',this.value)"></div>'
     +'<div class="det-kv"><div class="dfl">Service</div><input type="date" class="det-edit" style="width:100%" value="'+(k.serviceDate||'')+'" onchange="updateKitField('+k.id+',\'serviceDate\',this.value)"></div>'
@@ -6749,7 +6802,7 @@ function renderDet(k) {
 
   // PAT Testing
   var patNA=k.patNA||false;
-  var pat='<div class="det-sec"><div class="det-sec-lbl">PAT Testing</div>';
+  var pat='<div class="det-sec" style="background:var(--near-black);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-top:8px"><div class="det-sec-lbl" style="margin-top:0">PAT Testing</div>';
   pat+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'
     +'<label style="display:flex;align-items:center;gap:5px;font-family:var(--cond);font-size:12px;font-weight:700;color:var(--muted);cursor:pointer">'
     +'<input type="checkbox" '+(patNA?'checked':'')+' onchange="updateKitField('+k.id+',\'patNA\',this.checked);setTimeout(function(){switchTab(\'det\')},50)"> N/A — item does not require PAT testing'
@@ -6775,7 +6828,7 @@ function renderDet(k) {
 
   // Notes (merged description + notes)
   var noteVal=((k.description||'')+(k.description&&k.notes?'\n':'')+((k.notes||'').replace(/</g,'&lt;'))).trim();
-  var notes='<div class="det-sec"><div class="det-sec-lbl">Notes</div>'
+  var notes='<div class="det-sec" style="background:var(--near-black);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-top:8px"><div class="det-sec-lbl" style="margin-top:0">Notes</div>'
     +'<textarea class="det-edit" style="width:100%;min-height:28px;resize:vertical" placeholder="Add notes or description..." '
     +'onchange="updateKitField('+k.id+',\'description\',this.value)">'+noteVal+'</textarea></div>';
 
@@ -7482,7 +7535,7 @@ function renderJobs() {
     var locColor = {Manchester:'#F4A258',London:'#e8c56d',ABC:'#d4a574'}[j.loc]||'#F4A258';
     card.className='job-card';
     card.style.cssText='background:linear-gradient(135deg,'+cc.bg+' 0%,'+(cc.bg2||cc.bg)+' 100%);border:none;border-left:4px solid '+locColor;
-    card.addEventListener('click', (function(id){return function(){openJobDet(id);};})(j.id));
+    card.addEventListener('click', (function(id,name){return function(){openJobDet(id,name);};})(j.id,j.name));
     var nm=document.createElement('div');
     nm.className='job-nm'; nm.textContent=j.name;
     card.appendChild(nm);
@@ -7541,7 +7594,7 @@ function addJob() {
 function jobStatusBadge(s) {
   const m={Confirmed:'background:rgba(60,140,90,.25);color:#80d0a0;border:1px solid rgba(70,160,100,.35)',
            Likely:'background:rgba(120,100,30,.25);color:#f0c870;border:1px solid rgba(160,130,40,.35)',
-           Possible:'background:rgba(80,80,80,.2);color:#aaa;border:1px solid rgba(100,100,100,.3)'};
+           Possible:'background:rgba(80,80,80,.2);color:var(--muted);border:1px solid rgba(100,100,100,.3)'};
   return '<span style="display:inline-flex;align-items:center;font-family:var(--cond);font-size:17px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border-radius:3px;'+( m[s]||m.Possible)+'">'+( s||'Possible')+'</span>';
 }
 
@@ -8029,7 +8082,7 @@ function renderJobDet(j) {
         +'<div class="dfl" style="margin-bottom:4px">Camera Body</div>'
         +'<div style="display:flex;flex-direction:column;gap:4px">'
         +(aKit
-          ?'<span style="background:rgba(60,180,100,.12);border:1px solid rgba(60,180,100,.35);border-radius:3px;font-size:12px;padding:3px 8px;color:#7de0a0">'+aKit.name+'</span>'
+          ?'<span style="background:rgba(42,125,72,.12);border:1px solid rgba(42,125,72,.4);border-radius:3px;font-size:12px;padding:3px 8px;color:#2a7d48">'+aKit.name+'</span>'
            +'<div style="display:flex;gap:4px"><button class="ibtn" style="font-size:11px;flex:1" onclick="jdPickCamKit('+jid+','+i+')">Change</button>'
            +'<button class="rm-btn" style="font-size:11px" onclick="jdSetCamDetail('+jid+','+i+',\'kitId\',null)">x</button></div>'
           :'<button class="ibtn" style="font-size:12px;width:100%" onclick="jdPickCamKit('+jid+','+i+')">From Inventory</button>'
@@ -8055,7 +8108,7 @@ function renderJobDet(j) {
         var input='';
         if(mode==='inv'){
           input=aFKit
-            ?'<div style="display:flex;flex-direction:column;gap:3px"><span style="background:rgba(60,180,100,.12);border:1px solid rgba(60,180,100,.3);border-radius:3px;font-size:11px;padding:2px 7px;color:#7de0a0">'+aFKit.name+'</span>'
+            ?'<div style="display:flex;flex-direction:column;gap:3px"><span style="background:rgba(42,125,72,.12);border:1px solid rgba(60,180,100,.3);border-radius:3px;font-size:11px;padding:2px 7px;color:#2a7d48">'+aFKit.name+'</span>'
               +'<div style="display:flex;gap:3px"><button class="ibtn" style="font-size:10px;flex:1" onclick="jdPickCamFKit('+jid+','+i+',\''+fkey+'\')">Change</button>'
               +'<button class="rm-btn" style="font-size:10px" onclick="jdCamFKitSet('+jid+','+i+',\''+fkey+'\',null)">×</button></div></div>'
             :'<button class="ibtn" style="font-size:11px;width:100%" onclick="jdPickCamFKit('+jid+','+i+',\''+fkey+'\')">Pick from Inventory</button>';
@@ -8123,7 +8176,7 @@ function renderJobDet(j) {
             +'</div>'
           :'<select class="fi" style="font-size:12px;width:100%" onchange="jdCamLensHiredPick('+jid+','+i+',this.value)">'+hiredLensOpts+'</select>'
           +'<div id="lensCustom_'+jid+'_'+i+'" style="display:none;margin-top:4px"><input class="fi" style="font-size:12px;padding:3px 6px;width:100%" placeholder="Describe the hired lens..." onchange="jdCamLensSetCustom('+jid+','+i+',this.value)"/></div>';
-      } else {        lensInput=aLensKit          ?'<div style="display:flex;flex-direction:column;gap:3px"><span style="background:rgba(60,180,100,.12);border:1px solid rgba(60,180,100,.35);border-radius:3px;font-size:12px;padding:2px 8px;color:#7de0a0">'+aLensKit.name+'</span>'           +'<div style="display:flex;gap:4px"><button class="ibtn" style="font-size:11px;flex:1" onclick="jdPickCamLens('+jid+','+i+')">Change</button>'           +'<button class="rm-btn" style="font-size:11px" onclick="jdCamLensSetInv('+jid+','+i+',null)">×</button></div></div>'          :'<button class="ibtn" style="font-size:12px;width:100%" onclick="jdPickCamLens('+jid+','+i+')">From Inventory</button>';      }      var lensRow='<div style="margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--border-l)">'        +'<div class="dfl" style="margin-bottom:4px">Lens</div>'        +lensModeBar+lensInput+'</div>';
+      } else {        lensInput=aLensKit          ?'<div style="display:flex;flex-direction:column;gap:3px"><span style="background:rgba(42,125,72,.12);border:1px solid rgba(42,125,72,.4);border-radius:3px;font-size:12px;padding:2px 8px;color:#2a7d48">'+aLensKit.name+'</span>'           +'<div style="display:flex;gap:4px"><button class="ibtn" style="font-size:11px;flex:1" onclick="jdPickCamLens('+jid+','+i+')">Change</button>'           +'<button class="rm-btn" style="font-size:11px" onclick="jdCamLensSetInv('+jid+','+i+',null)">×</button></div></div>'          :'<button class="ibtn" style="font-size:12px;width:100%" onclick="jdPickCamLens('+jid+','+i+')">From Inventory</button>';      }      var lensRow='<div style="margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--border-l)">'        +'<div class="dfl" style="margin-bottom:4px">Lens</div>'        +lensModeBar+lensInput+'</div>';
       var camNum=cd.camNum!==undefined?cd.camNum:(i+1);
       return '<div style="min-width:200px;max-width:200px;background:rgba(255,255,255,.025);border:2px solid '+_rc.bg+';border-radius:6px;padding:12px;flex-shrink:0">'
         +'<div style="font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;display:flex;align-items:center;gap:4px">'
@@ -8166,24 +8219,27 @@ function renderJobDet(j) {
         }
         var specRows=j.specCams.map(function(sc,si){
           var scKit=sc.kitId?kit.find(function(x){return x.id===sc.kitId;}):null;
-          return '<div style="background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:6px;padding:10px 12px;margin-bottom:8px">'
-            +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'
-            +'<span style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.06em;color:var(--muted)">CAM</span>'
-            +'<select class="fi" style="font-size:13px;font-family:var(--cond);font-weight:800;width:64px;padding:2px 4px;text-align:center" onchange="jdSetSpecCam('+j.id+','+si+',\'camNum\',+this.value)">'
+          var _rc2=sc.camNum&&RESISTOR_COLORS[sc.camNum-1]?RESISTOR_COLORS[sc.camNum-1]:{bg:'var(--border-l)',fg:'var(--white)',name:''};
+          return '<div style="min-width:200px;max-width:200px;background:rgba(255,255,255,.025);border:2px solid '+_rc2.bg+';border-radius:6px;padding:12px;flex-shrink:0">'
+            +'<div style="font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;display:flex;align-items:center;gap:4px">'
+            +'CAM <select class="fi" style="font-size:13px;font-family:var(--cond);font-weight:800;width:50px;padding:1px 4px;text-align:center" onchange="jdSetSpecCam('+j.id+','+si+',\'camNum\',+this.value);renderJobDet(jobs.find(function(x){return x.id==='+j.id+'}))">'
             +'<option value="">—</option>'+numOpts
             +(sc.camNum?'<option value="'+sc.camNum+'" selected>'+sc.camNum+'</option>':'')
             +'</select>'
-            +'<div style="flex:1">'
-            +(scKit
-              ?'<div style="display:flex;align-items:center;gap:6px"><span style="background:rgba(60,180,100,.12);border:1px solid rgba(60,180,100,.35);border-radius:3px;font-size:12px;padding:2px 8px;color:#7de0a0;flex:1">'+scKit.name+'</span><button class="ibtn" style="font-size:11px" onclick="jdPickSpecCamKit('+j.id+','+si+')">Change</button><button class="rm-btn" style="font-size:11px" onclick="jdSetSpecCam('+j.id+','+si+',\'kitId\',null)">×</button></div>'
-              :'<button class="ibtn" style="font-size:12px;width:100%" onclick="jdPickSpecCamKit('+j.id+','+si+')">Pick from Inventory</button>'
-            )
+            +'<div style="flex:1"></div>'
+            +'<button onclick="jdRemoveSpecCam('+j.id+','+si+')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;line-height:1;padding:0">×</button>'
             +'</div>'
-            +'<button onclick="jdRemoveSpecCam('+j.id+','+si+')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;line-height:1;padding:0;flex-shrink:0">×</button>'
-            +'</div>'
-            +'<div><div class="dfl" style="font-size:10px;margin-bottom:3px">Operator</div>'
+            +'<div style="margin-bottom:8px"><div class="dfl" style="font-size:10px;margin-bottom:2px">Operator</div>'
             +'<input class="fi" style="font-size:12px;padding:3px 6px;width:100%" value="'+(sc.operator||'')+'" placeholder="Operator name..." onchange="jdSetSpecCam('+j.id+','+si+',\'operator\',this.value)"/>'
             +'</div>'
+            +'<div style="margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--border-l)"><div class="dfl" style="margin-bottom:4px">Camera Body</div>'
+            +'<div style="display:flex;flex-direction:column;gap:4px">'
+            +(scKit
+              ?'<span style="background:rgba(42,125,72,.12);border:1px solid rgba(42,125,72,.4);border-radius:3px;font-size:12px;padding:3px 8px;color:#2a7d48">'+scKit.name+'</span>'
+               +'<div style="display:flex;gap:4px"><button class="ibtn" style="font-size:11px;flex:1" onclick="jdPickSpecCamKit('+j.id+','+si+')">Change</button><button class="rm-btn" style="font-size:11px" onclick="jdSetSpecCam('+j.id+','+si+',\'kitId\',null)">×</button></div>'
+              :'<button class="ibtn" style="font-size:12px;width:100%" onclick="jdPickSpecCamKit('+j.id+','+si+')">From Inventory</button>'
+            )
+            +'</div></div>'
             +(function(){
               var accs=(sc.accessories||[]);
               var accTags=accs.map(function(kid){
@@ -8192,7 +8248,7 @@ function renderJobDet(j) {
                 return '<span style="display:inline-flex;align-items:center;gap:4px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:3px;font-size:11px;padding:2px 6px;color:var(--subtle);margin:2px 2px 2px 0">'
                   +ak.name+'<span onclick="jdRemoveSpecCamAcc('+j.id+','+si+','+kid+')" style="cursor:pointer;color:var(--muted);margin-left:2px">×</span></span>';
               }).filter(Boolean).join('');
-              return '<div style="margin-top:8px">'
+              return '<div>'
                 +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">'
                 +'<div class="dfl" style="font-size:10px">Accessories</div>'
                 +'<button class="ibtn" style="font-size:10px;padding:2px 8px" onclick="jdPickSpecCamAcc('+j.id+','+si+')">+ Add</button>'
@@ -8207,7 +8263,9 @@ function renderJobDet(j) {
           +'<span>Specialist Cameras</span>'
           +'<button class="ibtn" style="font-size:11px;padding:3px 10px" onclick="jdAddSpecCam('+j.id+')">+ Add</button>'
           +'</div>'
+          +'<div style="overflow-x:auto;padding-bottom:8px"><div style="display:flex;gap:10px;min-width:max-content">'
           +(specRows||'<div style="color:var(--muted);font-size:13px;padding:6px 0">No specialist cameras added.</div>')
+          +'</div></div>'
           +'</div>';
       }())
       +'<div style="margin-top:14px"><div class="dfl">Spec Notes</div><textarea class="fta" style="min-height:70px;font-size:14px" placeholder="Camera spec notes..." onchange="jdSetField('+j.id+',\'camSpecNotes\',this.value)">'+(j.camSpecNotes||'')+'</textarea></div>'
@@ -8288,7 +8346,7 @@ function renderJobDet(j) {
         }).join('')+'</div>';
       var mcsGPick=mcsG.mode==='inv'
         ?(mcsGKit
-          ?'<div style="display:flex;flex-direction:column;gap:3px"><span style="background:rgba(60,180,100,.12);border:1px solid rgba(60,180,100,.3);border-radius:3px;font-size:11px;padding:2px 7px;color:#7de0a0">'+mcsGKit.name+'</span>'
+          ?'<div style="display:flex;flex-direction:column;gap:3px"><span style="background:rgba(42,125,72,.12);border:1px solid rgba(60,180,100,.3);border-radius:3px;font-size:11px;padding:2px 7px;color:#2a7d48">'+mcsGKit.name+'</span>'
             +'<div style="display:flex;gap:3px"><button class="ibtn" style="font-size:10px;flex:1" onclick="lvPickMcsG('+j.id+')">Change</button>'
             +'<button class="rm-btn" style="font-size:10px" onclick="lvMcsGSet('+j.id+',\'kitId\',null)">×</button></div></div>'
           :'<button class="ibtn" style="font-size:11px;width:100%;max-width:200px" onclick="lvPickMcsG('+j.id+')">Pick from Inventory</button>')
@@ -8382,7 +8440,7 @@ function renderJobDet(j) {
             var srcPick=srcMode==='inv'
               ?(rcpKit
                 ?'<div style="display:flex;flex-direction:column;gap:3px">'
-                  +'<span style="background:rgba(60,180,100,.12);border:1px solid rgba(60,180,100,.3);border-radius:3px;font-size:11px;padding:2px 7px;color:#7de0a0">'+rcpKit.name+'</span>'
+                  +'<span style="background:rgba(42,125,72,.12);border:1px solid rgba(60,180,100,.3);border-radius:3px;font-size:11px;padding:2px 7px;color:#2a7d48">'+rcpKit.name+'</span>'
                   +'<div style="display:flex;gap:3px">'
                   +'<button class="ibtn" style="font-size:10px;flex:1" onclick="lvPickRcp('+j.id+','+ci+')">Change</button>'
                   +'<button class="rm-btn" style="font-size:10px" onclick="lvRcpSet('+j.id+','+ci+',\'kitId\',null)">×</button>'
@@ -8458,7 +8516,7 @@ function renderJobDet(j) {
     var hydraRows=au.hydras.map(function(h,hi){
       var hKit=h.kitId?kit.find(function(k){return k.id===h.kitId;}):null;
       var hCell=hKit
-        ?'<span style="background:rgba(60,180,100,.12);border:1px solid rgba(60,180,100,.3);border-radius:3px;font-size:12px;padding:2px 8px;color:#7de0a0">'+hKit.name+'</span>'
+        ?'<span style="background:rgba(42,125,72,.12);border:1px solid rgba(60,180,100,.3);border-radius:3px;font-size:12px;padding:2px 8px;color:#2a7d48">'+hKit.name+'</span>'
           +'<div style="display:flex;gap:4px;margin-top:3px"><button class="ibtn" style="font-size:11px;flex:1" onclick="auPickHydra('+j.id+','+hi+')">Change</button>'
           +'<button class="rm-btn" style="font-size:11px" onclick="auHydraSet('+j.id+','+hi+',\'kitId\',null)">×</button></div>'
         :(h.hired
@@ -8558,7 +8616,7 @@ function jdMnRm(jid,ni,tab){
 }
 function jdSwitch(tab, jid) {
   closeDrawer();
-  if(tab!=='englog') _engLogMonth=null;
+  if(tab!=='englog'){ _engLogMonth=null; window._engLogFetched=null; }
   _jdTab = tab;
   const j = jobs.find(x=>x.id==jid); if(!j) return;
   renderJobDet(j);
@@ -8591,8 +8649,8 @@ function _openGenKitPicker(title,filterFn,onSelect){
   var avail=kit.filter(filterFn);
   var html='<div id="_gkPicker" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1a1a1a;border:1px solid rgba(255,255,255,.15);border-radius:8px;z-index:9999;width:320px;max-height:55vh;display:flex;flex-direction:column;box-shadow:0 12px 48px rgba(0,0,0,.9);overflow:hidden">'
     +'<div style="padding:9px 14px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;justify-content:space-between;align-items:center">'
-    +'<span style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#888">'+title+'</span>'
-    +'<button onclick="document.getElementById(\'_gkPicker\').remove()" style="background:none;border:none;color:#888;cursor:pointer;font-size:16px">×</button></div>'
+    +'<span style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">'+title+'</span>'
+    +'<button onclick="document.getElementById(\'_gkPicker\').remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px">×</button></div>'
     +'<input id="_gkQ" class="fi" style="margin:8px 14px 0;font-size:13px;padding:4px 8px" placeholder="Search..." oninput="_gkFilter()"/>'
     +'<div id="_gkList" style="overflow-y:auto;flex:1;margin-top:6px"></div></div>';
   document.body.insertAdjacentHTML('beforeend',html);
@@ -8768,8 +8826,8 @@ function jdPickCamFKit(jid,ci,fkey){
   });
   var html='<div id="_cfkPicker" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1a1a1a;border:1px solid rgba(255,255,255,.15);border-radius:8px;z-index:9999;width:320px;max-height:55vh;display:flex;flex-direction:column;box-shadow:0 12px 48px rgba(0,0,0,.9);overflow:hidden">'
     +'<div style="padding:9px 14px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;justify-content:space-between;align-items:center">'
-    +'<span style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#888">Pick Kit Item</span>'
-    +'<button onclick="document.getElementById(\'_cfkPicker\').remove()" style="background:none;border:none;color:#888;cursor:pointer;font-size:16px">×</button></div>'
+    +'<span style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Pick Kit Item</span>'
+    +'<button onclick="document.getElementById(\'_cfkPicker\').remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px">×</button></div>'
     +'<input id="_cfkQ" class="fi" style="margin:8px 14px 0;font-size:13px;padding:4px 8px" placeholder="Search..." oninput="_cfkFilter()"/>'
     +'<div id="_cfkList" style="overflow-y:auto;flex:1;margin-top:6px"></div></div>';
   document.body.insertAdjacentHTML('beforeend',html);
@@ -9100,8 +9158,8 @@ function jdCamPickHired(jid,i){
     return h.subcat==='Studio Camera'||h.subcat==='Camera Body'||h.subcat==='Specialist Camera';
   });
   var html='<div id="camHiredPicker" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1a1a1a;border:1px solid rgba(255,255,255,.15);border-radius:8px;z-index:9999;width:340px;max-height:60vh;display:flex;flex-direction:column;box-shadow:0 12px 48px rgba(0,0,0,.9);overflow:hidden">'
-    +'<div style="padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.08);font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#888;display:flex;justify-content:space-between;align-items:center">Hired Camera Body'
-    +'<button onclick="document.getElementById(\'camHiredPicker\').remove()" style="background:none;border:none;color:#888;cursor:pointer;font-size:16px">×</button></div>'
+    +'<div style="padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.08);font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;align-items:center">Hired Camera Body'
+    +'<button onclick="document.getElementById(\'camHiredPicker\').remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px">×</button></div>'
     +'<input id="camHiredQ" class="fi" style="margin:8px 12px 0;font-size:13px;padding:4px 8px" placeholder="Search..." oninput="_camHiredSearch()"/>'
     +'<div style="overflow-y:auto;flex:1;margin-top:6px" id="camHiredList"></div>'
     +'<div style="padding:8px 12px;border-top:1px solid rgba(255,255,255,.08);display:flex;gap:6px">'
@@ -9128,7 +9186,7 @@ function jdCamPickHired(jid,i){
       list.appendChild(el);
     });
   } else {
-    list.innerHTML='<div style="padding:12px 14px;color:#888;font-size:13px">No cameras in hired catalogue — use Custom below.</div>';
+    list.innerHTML='<div style="padding:12px 14px;color:var(--muted);font-size:13px">No cameras in hired catalogue — use Custom below.</div>';
   }
   document.getElementById('camHiredAddBtn').addEventListener('click',function(){
     var v=(document.getElementById('camHiredCustom').value||'').trim();if(!v)return;
@@ -9178,8 +9236,8 @@ function jdPickCamKit(jid,camIdx){
   if(!camKit.length) camKit=kit.filter(function(k){return k.cat==='Camera'&&k.status!=='Bin';});
 
   var html='<div id="camKitPicker" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1a1a1a;border:1px solid rgba(255,255,255,.2);border-radius:10px;z-index:99999;width:320px;max-height:65vh;display:flex;flex-direction:column;box-shadow:0 16px 64px rgba(0,0,0,.95)">'
-    +'<div style="padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.08);font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#888;display:flex;justify-content:space-between;align-items:center">Select Camera Body'
-    +'<button onclick="document.getElementById(\'camKitPicker\').remove()" style="background:none;border:none;color:#888;cursor:pointer;font-size:18px;line-height:1">×</button></div>'
+    +'<div style="padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.08);font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;align-items:center">Select Camera Body'
+    +'<button onclick="document.getElementById(\'camKitPicker\').remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;line-height:1">×</button></div>'
     +'<input id="camKitQ" class="fi" style="margin:8px 12px 0;font-size:13px;padding:4px 8px" placeholder="Search..." oninput="_camKitSearch()"/>'
     +'<div style="overflow-y:auto;flex:1;margin-top:6px" id="camKitList"></div>'
     +'</div>';
@@ -9191,7 +9249,7 @@ function jdPickCamKit(jid,camIdx){
       var onJob=allocMap.has(k.id)&&allocMap.get(k.id)!==j.name;
       var el=document.createElement('div');
       el.style.cssText='padding:10px 14px;cursor:pointer;font-size:13px;color:'+(onJob?'#fa0':'#fff')+';border-bottom:1px solid rgba(255,255,255,.04);display:flex;justify-content:space-between;align-items:center';
-      el.innerHTML='<div><div style="font-weight:600">'+k.name+'</div><div style="font-size:11px;color:#888;margin-top:1px">'+k.tag+' · '+k.loc+'</div></div>'+(onJob?'<span style="font-size:10px;background:rgba(250,160,0,.15);color:#fa0;padding:2px 6px;border-radius:3px">On Job</span>':'<span style="font-size:10px;color:#3dbf7a">'+k.status+'</span>');
+      el.innerHTML='<div><div style="font-weight:600">'+k.name+'</div><div style="font-size:11px;color:var(--muted);margin-top:1px">'+k.tag+' · '+k.loc+'</div></div>'+(onJob?'<span style="font-size:10px;background:rgba(250,160,0,.15);color:#fa0;padding:2px 6px;border-radius:3px">On Job</span>':'<span style="font-size:10px;color:#3dbf7a">'+k.status+'</span>');
       el.setAttribute('data-n', k.name.toLowerCase());
       el.addEventListener('mouseover',function(){if(!onJob)el.style.background='rgba(255,255,255,.06)';});
       el.addEventListener('mouseout',function(){el.style.background='';});
@@ -9203,7 +9261,7 @@ function jdPickCamKit(jid,camIdx){
     });
   } else {
     var _acs=kit.filter(function(k){return k.cat==='Camera';}).map(function(k){return k.subcat;}).filter(function(v,i,a){return a.indexOf(v)===i;}).join(', ');
-    list.innerHTML='<div style="padding:14px;color:#888;font-size:13px">No cameras found.<br><span style="font-size:11px;opacity:.6">Kit subcats: '+(_acs||'none')+'</span></div>';
+    list.innerHTML='<div style="padding:14px;color:var(--muted);font-size:13px">No cameras found.<br><span style="font-size:11px;opacity:.6">Kit subcats: '+(_acs||'none')+'</span></div>';
   }
 
   setTimeout(function(){
@@ -9308,8 +9366,8 @@ function jdPickCamLens(jid,i){
   if(!lensKit.length) lensKit=kit.filter(function(k){return k.cat==='Camera'&&k.status!=='Bin'&&k.name.toLowerCase().indexOf('lens')>=0;});
 
   var html='<div id="camLensPicker" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1a1a1a;border:1px solid rgba(255,255,255,.2);border-radius:10px;z-index:99999;width:320px;max-height:65vh;display:flex;flex-direction:column;box-shadow:0 16px 64px rgba(0,0,0,.95)">'
-    +'<div style="padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.08);font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#888;display:flex;justify-content:space-between;align-items:center">Select Lens'
-    +'<button onclick="document.getElementById(\'camLensPicker\').remove()" style="background:none;border:none;color:#888;cursor:pointer;font-size:18px;line-height:1">×</button></div>'
+    +'<div style="padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.08);font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;align-items:center">Select Lens'
+    +'<button onclick="document.getElementById(\'camLensPicker\').remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;line-height:1">×</button></div>'
     +'<input id="camLensQ" class="fi" style="margin:8px 12px 0;font-size:13px;padding:4px 8px" placeholder="Search..." oninput="_camLensSearch()"/>'
     +'<div style="overflow-y:auto;flex:1;margin-top:6px" id="camLensList"></div>'
     +'</div>';
@@ -9321,7 +9379,7 @@ function jdPickCamLens(jid,i){
       var onJob=allocMap.has(k.id)&&allocMap.get(k.id)!==j.name;
       var el=document.createElement('div');
       el.style.cssText='padding:10px 14px;cursor:pointer;font-size:13px;color:'+(onJob?'#fa0':'#fff')+';border-bottom:1px solid rgba(255,255,255,.04);display:flex;justify-content:space-between;align-items:center';
-      el.innerHTML='<div><div style="font-weight:600">'+k.name+'</div><div style="font-size:11px;color:#888;margin-top:1px">'+k.tag+' · '+k.loc+'</div></div>'+(onJob?'<span style="font-size:10px;background:rgba(250,160,0,.15);color:#fa0;padding:2px 6px;border-radius:3px">On Job</span>':'<span style="font-size:10px;color:#3dbf7a">'+k.status+'</span>');
+      el.innerHTML='<div><div style="font-weight:600">'+k.name+'</div><div style="font-size:11px;color:var(--muted);margin-top:1px">'+k.tag+' · '+k.loc+'</div></div>'+(onJob?'<span style="font-size:10px;background:rgba(250,160,0,.15);color:#fa0;padding:2px 6px;border-radius:3px">On Job</span>':'<span style="font-size:10px;color:#3dbf7a">'+k.status+'</span>');
       el.setAttribute('data-n', k.name.toLowerCase());
       el.addEventListener('mouseover',function(){if(!onJob)el.style.background='rgba(255,255,255,.06)';});
       el.addEventListener('mouseout',function(){el.style.background='';});
@@ -9332,7 +9390,7 @@ function jdPickCamLens(jid,i){
       list.appendChild(el);
     });
   } else {
-    list.innerHTML='<div style="padding:14px;color:#888;font-size:13px">No lenses found in kit.</div>';
+    list.innerHTML='<div style="padding:14px;color:var(--muted);font-size:13px">No lenses found in kit.</div>';
   }
 
   setTimeout(function(){
@@ -9381,6 +9439,16 @@ function jdPhotoUploader(j,field){
   if(!j[field])j[field]=[];
   var photos=j[field];
   var thumbs=photos.map(function(p,i){
+    var isPdf=p.name&&p.name.toLowerCase().endsWith('.pdf');
+    if(isPdf){
+      return '<div style="position:relative;display:inline-block;margin:4px">'
+        +'<div onclick="jdViewPhoto(\''+p.data.replace(/'/g,"\\'")+'\',\''+p.name.replace(/'/g,"\\'")+'\',true)" style="width:90px;height:68px;border-radius:4px;border:1px solid var(--border);cursor:pointer;background:#f5f3ee;display:flex;flex-direction:column;align-items:center;justify-content:center">'
+        +'<div style="font-size:22px">📄</div>'
+        +'<div style="font-size:8px;font-family:var(--cond);font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">PDF</div>'
+        +'</div>'
+        +'<button onclick="jdRmPhoto('+j.id+',\''+field+'\','+i+')" style="position:absolute;top:2px;right:2px;background:rgba(0,0,0,.7);border:none;border-radius:50%;width:18px;height:18px;cursor:pointer;color:#fff;font-size:11px;line-height:1">x</button>'
+        +'</div>';
+    }
     return '<div style="position:relative;display:inline-block;margin:4px">'
       +'<img src="'+p.data+'" title="'+p.name+'" style="width:90px;height:68px;object-fit:cover;border-radius:4px;border:1px solid var(--border);cursor:pointer" onclick="jdViewPhoto(this.src,this.title)"/>'
       +'<button onclick="jdRmPhoto('+j.id+',\''+field+'\','+i+')" style="position:absolute;top:2px;right:2px;background:rgba(0,0,0,.7);border:none;border-radius:50%;width:18px;height:18px;cursor:pointer;color:#fff;font-size:11px;line-height:1">x</button>'
@@ -9388,7 +9456,7 @@ function jdPhotoUploader(j,field){
   }).join('');
   return '<div>'+(thumbs?'<div style="margin-bottom:8px">'+thumbs+'</div>':'')
     +'<label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:4px;padding:6px 12px;font-size:13px;font-family:var(--cond);font-weight:700;letter-spacing:.05em;color:var(--subtle)">'
-    +'Upload Image<input type="file" accept="image/*" multiple style="display:none" onchange="jdHandlePhotoUpload(event,'+j.id+',\''+field+'\')">'+'</label></div>';
+    +'Upload File<input type="file" accept="image/*,.pdf,application/pdf" multiple style="display:none" onchange="jdHandlePhotoUpload(event,'+j.id+',\''+field+'\')">'+'</label></div>';
 }
 
 function jdHandlePhotoUpload(event,jid,field){
@@ -9414,7 +9482,12 @@ function jdRmPhoto(jid,field,idx){ /* saveData called below */
   j[field].splice(idx,1);renderJobDet(j);
 }
 
-function jdViewPhoto(src,name){
+function jdViewPhoto(src,name,isPdf){
+  if(isPdf){
+    var w=window.open('','_blank');
+    if(w){w.document.write('<iframe src="'+src+'" style="width:100%;height:100%;border:none;position:fixed;inset:0"></iframe>');w.document.title=name||'PDF';}
+    return;
+  }
   document.getElementById('photoViewImg').src=src;
   document.getElementById('photoViewTitle').textContent=name||'Photo';
   om('mPhotoView');
@@ -9910,6 +9983,9 @@ function renderIngestTab(j) {
     +'</div>';
 
   return '<div class="det-sec">'
+    // Ingest Operator
+    +'<div style="margin-bottom:14px"><div class="dfl" style="margin-bottom:4px">Ingest Operator</div>'
+    +'<input class="fi" style="font-size:14px;padding:5px 8px;width:100%;max-width:300px" value="'+(j.ingestOperator||'')+'" placeholder="Operator name..." onchange="jdSetField('+j.id+',\'ingestOperator\',this.value)"/></div>'
     // Tech spec banner from Tech Overview
     +(techCodec||fmtLabel
       ?'<div style="display:flex;gap:10px;align-items:center;margin-bottom:16px;padding:8px 14px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:5px;flex-wrap:wrap">'
@@ -10236,7 +10312,7 @@ function renderMonitorTab(j) {
     var bc=rigged?'rgba(60,180,100,.4)':'var(--border)';
     var aKit=m.kitId?kit.find(function(k){return k.id===m.kitId;}):null;
     var kitCell=aKit
-      ?'<span style="background:rgba(60,180,100,.12);border:1px solid rgba(60,180,100,.3);border-radius:3px;font-size:11px;padding:2px 6px;color:#7de0a0;display:block;margin-bottom:3px">'+aKit.name+'</span>'
+      ?'<span style="background:rgba(42,125,72,.12);border:1px solid rgba(60,180,100,.3);border-radius:3px;font-size:11px;padding:2px 6px;color:#2a7d48;display:block;margin-bottom:3px">'+aKit.name+'</span>'
         +'<div style="display:flex;gap:3px"><button class="ibtn" style="font-size:10px;flex:1" onclick="monPickKit('+j.id+','+mi+')">Change</button>'
         +'<button class="rm-btn" style="font-size:10px" onclick="monSet('+j.id+','+mi+',\'kitId\',null)">×</button></div>'
       :(m.hired
@@ -10456,42 +10532,80 @@ function renderKitPrepTab(j) {
     +mkPDArr('Transport Out','transportOut')
     +'</div></div>';
 
-  // ── Kit prep rows ─────────────────────────────────────────────
-  const prepRows=j.prep.map(p=>{
-    const k=kit.find(x=>x.id===p.kid);if(!k)return'';
-    const isHired=p.supplier&&p.supplier!=='Versa Inventory';
-    const custom=(p.ks&&p.ks!==j.start)||(p.ke&&p.ke!==j.end);
-    const areaOpts=KIT_AREAS.map(a=>'<option'+(p.area===a?' selected':'')+'>'+a+'</option>').join('');
-    var suppList=['Versa Inventory'].concat(COMMS_SUPPLIERS_DEFAULT,(j._prepSuppliers||[]));
-    var suppOpts=suppList.map(function(s){return '<option'+(s===p.supplier?' selected':'')+'>'+s+'</option>';}).join('')
-      +'<option value="__add__" style="color:#4a9eff;font-style:italic">+ Add...</option>';
-    var versaCrew=VERSA_FREELANCE.map(function(u){return u.name;});
-    var preppedOpts='<option value="">Prepped by...</option>'+versaCrew.map(function(n){return '<option'+(n===p.preppedBy?' selected':'')+'>'+n+'</option>';}).join('');
-    // Colour: green=inventory, amber=hired
-    var bg=isHired?'rgba(250,160,0,.07)':'rgba(60,180,100,.05)';
-    var bc=isHired?'rgba(250,160,0,.3)':'rgba(60,180,100,.2)';
-    var badge=isHired?'<span style="font-size:10px;font-family:var(--cond);font-weight:800;background:rgba(250,160,0,.15);color:#fa0;border:1px solid rgba(250,160,0,.35);border-radius:2px;padding:1px 5px">HIRED</span>'
-      :'<span style="font-size:10px;font-family:var(--cond);font-weight:800;background:rgba(60,180,100,.15);color:#7de0a0;border:1px solid rgba(60,180,100,.3);border-radius:2px;padding:1px 5px">INVENTORY</span>';
-    return '<div class="prep-item'+(p.done?' done':'')+'" id="pi-'+p.kid+'" style="background:'+bg+';border-color:'+bc+'">'
-      +'<input type="checkbox" class="prep-cb"'+(p.done?' checked':'')+' onchange="togglePrep('+j.id+','+p.kid+',this.checked)"/>'
-      +'<div style="flex:1;min-width:0"><div class="prep-nm">'+k.name+'</div>'
-      +'<div style="font-size:11px;color:var(--muted);font-family:monospace;margin-top:1px">'+k.tag+' · '+k.loc+'</div>'
-      +(custom?'<div style="font-size:11px;color:#f0c870;font-family:var(--cond);font-weight:700;margin-top:2px">'+fmtD(p.ks)+' – '+fmtD(p.ke)+'</div>':'')
-      +(p.supplier&&p.supplier!=='Versa Inventory'?'<div style="font-size:11px;color:#fa0;margin-top:2px">Hired from: '+p.supplier+'</div>':'')
-      +(p.arrivalDate?'<div style="font-size:11px;color:#4a9eff;margin-top:1px">Arrives: '+fmtD(p.arrivalDate)+'</div>':'')
-      +(p.hireNotes?'<div style="font-size:11px;color:var(--muted);margin-top:1px;font-style:italic">'+p.hireNotes+'</div>':'')
-      +(p.preppedBy?'<div style="font-size:11px;color:#3dbf7a;margin-top:1px">Prepped: '+p.preppedBy+'</div>':'')
-      +'</div>'+badge
-      +'<select style="background:var(--dark);border:1px solid var(--border);color:'+(p.area?'var(--white)':'var(--muted)')+';font-family:var(--cond);font-size:11px;font-weight:700;letter-spacing:.06em;padding:3px 6px;border-radius:3px;outline:none;cursor:pointer;text-transform:uppercase;max-width:120px" onchange="setPrepArea('+j.id+','+p.kid+',this.value)" onclick="event.stopPropagation()">'
-      +'<option value="" style="color:var(--muted)"'+((!p.area||p.area==='')?' selected':'')+'>Area...</option>'+areaOpts+'</select>'
-      +'<select style="background:var(--dark);border:1px solid var(--border);color:var(--muted);font-size:12px;padding:3px 6px;border-radius:3px;outline:none;cursor:pointer;max-width:110px" onchange="setPrepSupplier('+j.id+','+p.kid+',this.value)" onclick="event.stopPropagation()"><option value="">Source...</option>'+suppOpts+'</select>'
-      +(isHired?'<input class="fi" type="date" style="font-size:11px;padding:2px 5px;max-width:130px" value="'+(p.arrivalDate||'')+'" title="Arrival date" onchange="setPrepArrival('+j.id+','+p.kid+',this.value)" onclick="event.stopPropagation()"  placeholder="Arrival..."/>':'')
-      +(isHired?'<input class="fi" style="font-size:11px;padding:2px 6px;max-width:130px" value="'+(p.hireNotes||'')+'" placeholder="Hire notes..." onchange="setPrepHireNotes('+j.id+','+p.kid+',this.value)" onclick="event.stopPropagation()"  />':'')
-      +'<select style="background:var(--dark);border:1px solid var(--border);color:var(--muted);font-size:12px;padding:3px 6px;border-radius:3px;outline:none;cursor:pointer;max-width:120px" onchange="setPrepPrepper('+j.id+','+p.kid+',this.value)" onclick="event.stopPropagation()">'+preppedOpts+'</select>'
-      +'<button class="ibtn" style="padding:3px 8px;font-size:11px" onclick="editKitDates('+j.id+','+p.kid+')">Dates</button>'
-      +'<button class="rm-btn" onclick="rmPrep('+j.id+','+p.kid+')">×</button>'
+  // ── Kit prep rows grouped by area ─────────────────────────────
+  // Dynamic areas: cameras + standard
+  var numCams=parseInt(j.cameras)||0;
+  var camAreas=[];
+  for(var ci=0;ci<numCams;ci++){
+    var rc=RESISTOR_COLORS[ci]||{name:'Cam '+(ci+1),bg:'#666'};
+    camAreas.push({id:'cam'+(ci+1),label:'Camera '+(ci+1),color:rc.bg});
+  }
+  var stdAreas=[
+    {id:'studio',label:'Studio Floor',color:'#5B5F8D'},
+    {id:'gallery',label:'Production Gallery',color:'#6A8A72'},
+    {id:'vision',label:'Lighting / Vision',color:'#C8923A'},
+    {id:'sound',label:'Sound',color:'#7B614D'},
+    {id:'car',label:'CAR / Tech Room',color:'#484149'},
+    {id:'other',label:'Other',color:'#5A7A6A'}
+  ];
+  var allAreas=camAreas.concat(stdAreas);
+  var areaMap={};
+  allAreas.forEach(function(a){areaMap[a.id]=a;});
+
+  // Group prep items
+  var grouped={};
+  allAreas.forEach(function(a){grouped[a.id]=[];});
+  grouped['unassigned']=[];
+  j.prep.forEach(function(p){
+    var k=kit.find(function(x){return x.id===p.kid;});
+    if(!k)return;
+    var areaId=p.area||'unassigned';
+    if(!grouped[areaId])grouped[areaId]=[];
+    grouped[areaId].push({p:p,k:k});
+  });
+
+  // Render a single prep item row
+  function renderPrepItem(p,k,jid){
+    var isHired=p.supplier&&p.supplier!=='Versa Inventory';
+    var badge=isHired?'<span style="font-size:10px;font-family:var(--cond);font-weight:800;color:#fa0">HIRED</span>'
+      :'<span style="font-size:10px;font-family:var(--cond);font-weight:800;color:#2a7d48">INV</span>';
+    var moveOpts='<option value="">Move to...</option><option value="unassigned">Unassigned</option>'
+      +allAreas.map(function(a){return '<option value="'+a.id+'"'+(p.area===a.id?' disabled':'')+'>'+a.label+'</option>';}).join('');
+    return '<div draggable="true" ondragstart="prepDragStart(event,'+jid+','+p.kid+')" class="prep-item'+(p.done?' done':'')+'" id="pi-'+p.kid+'" style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-bottom:1px solid var(--border);cursor:grab">'
+      +'<input type="checkbox" class="prep-cb"'+(p.done?' checked':'')+' onchange="togglePrep('+jid+','+p.kid+',this.checked)" onclick="event.stopPropagation()"/>'
+      +'<div style="flex:1;min-width:0">'
+      +'<div style="font-family:var(--cond);font-size:14px;font-weight:800;color:var(--pure)">'+k.name+'</div>'
+      +'<div style="font-size:11px;color:var(--muted)">'+( k.tag||'' )+( k.tag&&k.loc?' · ':'' )+k.loc+'</div>'
+      +'</div>'
+      +badge
+      +'<select style="font-family:var(--cond);font-size:11px;font-weight:700;background:var(--dark);border:1px solid var(--border);color:var(--muted);padding:3px 6px;border-radius:4px;cursor:pointer;max-width:110px" onchange="if(this.value){setPrepArea('+jid+','+p.kid+',this.value===\'unassigned\'?\'\':this.value);}" onclick="event.stopPropagation()">'+moveOpts+'</select>'
+      +'<button class="rm-btn" style="font-size:11px" onclick="event.stopPropagation();rmPrep('+jid+','+p.kid+')">×</button>'
       +'</div>';
-  }).join('');
+  }
+
+  // Render area zones
+  var zonesHtml='';
+  // Unassigned first if any
+  if(grouped['unassigned'].length){
+    zonesHtml+='<div class="prep-zone" data-area="unassigned" ondragover="event.preventDefault();this.style.outline=\'2px dashed var(--accent)\'" ondragleave="this.style.outline=\'none\'" ondrop="prepDrop(event,'+j.id+',\'unassigned\');this.style.outline=\'none\'" style="background:var(--near-black);border:1px solid var(--border);border-radius:8px;margin-bottom:8px;overflow:hidden">'
+      +'<div style="padding:8px 12px;font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.06em;color:var(--muted);text-transform:uppercase;border-bottom:1px solid var(--border)">Unassigned</div>'
+      +grouped['unassigned'].map(function(item){return renderPrepItem(item.p,item.k,j.id);}).join('')
+      +'</div>';
+  }
+  allAreas.forEach(function(area){
+    var items=grouped[area.id]||[];
+    zonesHtml+='<div class="prep-zone" data-area="'+area.id+'" ondragover="event.preventDefault();this.style.outline=\'2px dashed '+area.color+'\'" ondragleave="this.style.outline=\'none\'" ondrop="prepDrop(event,'+j.id+',\''+area.id+'\');this.style.outline=\'none\'" style="background:var(--near-black);border:1px solid var(--border);border-left:4px solid '+area.color+';border-radius:8px;margin-bottom:8px;overflow:hidden">'
+      +'<div style="padding:8px 12px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border)">'
+      +'<span style="font-family:var(--cond);font-size:15px;font-weight:900;letter-spacing:.02em;color:var(--pure);text-transform:uppercase">'+area.label+'</span>'
+      +'<span style="font-family:var(--cond);font-size:11px;font-weight:700;color:'+area.color+'">'+items.length+' items</span>'
+      +'</div>'
+      +(items.length
+        ?items.map(function(item){return renderPrepItem(item.p,item.k,j.id);}).join('')
+        :'<div style="padding:14px 12px;font-family:var(--cond);font-size:12px;color:var(--border-l);text-align:center">Drop items here</div>')
+      +'</div>';
+  });
+
+  const prepRows=zonesHtml;
 
   // ── Hire In list ─────────────────────────────────────────────
   var hireRows=j.hireIns.map(function(h,hi){
@@ -11161,7 +11275,7 @@ function opsRenderBrkList(){const el=document.getElementById('opsBrkList');if(!e
 // ML Email
 function opsOpenEmail(){if(new Date().getDay()===5)document.getElementById('opsFriBanner').style.display='block';const d=new Date();const diff=d.getDay()===0?1:(8-d.getDay());d.setDate(d.getDate()+diff);document.getElementById('opsEmailWeek').value=d.toISOString().split('T')[0];opsBuildPreview();om('opsEmailModal');}
 function opsWeekData(){const ws=document.getElementById('opsEmailWeek').value;if(!ws)return[];const mon=new Date(ws);const names=['Monday','Tuesday','Wednesday','Thursday','Friday'];const res=[];for(let i=0;i<5;i++){const d=new Date(mon);d.setDate(mon.getDate()+i);const ds=d.toISOString().split('T')[0];const[yr,mo,day]=ds.split('-').map(Number);let tech='TBC';for(const m of OPS_CAL){const px=OPS_MPX[m.month];if(!px)continue;const[py,pm]=px.split('-').map(Number);if(py===yr&&pm===mo){const v=og(m.month,day,'ml');if(v.length&&v[0]!=='Break / Off Air')tech=v[0];break;}}res.push({name:names[i],date:d.toLocaleDateString('en-GB',{day:'numeric',month:'long'}),tech});}return res;}
-function opsBuildPreview(){const ws=document.getElementById('opsEmailWeek').value;if(!ws)return;const mon=new Date(ws);const wl=mon.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})+' \u2013 '+new Date(mon.getTime()+4*86400000).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});const rows=opsWeekData().map(d=>'<tr><td style="padding:10px 15px;border-bottom:1px solid #eee;font-weight:600;color:#222">'+d.name+' '+d.date+'</td><td style="padding:10px 15px;border-bottom:1px solid #eee;color:#2d7dd2;font-weight:700">'+d.tech+'</td></tr>').join('');document.getElementById('opsEmailPrev').innerHTML='<div style="font-family:Arial,sans-serif"><div style="background:#0a0a0a;padding:14px 18px"><div style="color:#fff;font-size:15px;font-weight:900;letter-spacing:.08em;text-transform:uppercase">VERSA STUDIOS</div><div style="color:#555;font-size:10px;letter-spacing:.1em;text-transform:uppercase;margin-top:2px">Morning Live \u2014 Tech Schedule</div></div><div style="background:#f4f4f4;padding:10px 18px;border-bottom:2px solid #ddd"><div style="font-size:10px;color:#999;text-transform:uppercase;letter-spacing:.07em">Week of</div><div style="font-size:14px;font-weight:700;color:#111;margin-top:2px">'+wl+'</div></div><table style="width:100%;border-collapse:collapse"><thead><tr><th style="padding:8px 15px;text-align:left;font-size:10px;color:#999;border-bottom:2px solid #eee">Day</th><th style="padding:8px 15px;text-align:left;font-size:10px;color:#999;border-bottom:2px solid #eee">Tech Manager</th></tr></thead><tbody>'+rows+'</tbody></table><div style="background:#f4f4f4;padding:9px 18px;font-size:10px;color:#bbb">Versa Studios Tech Ops</div></div>';}
+function opsBuildPreview(){const ws=document.getElementById('opsEmailWeek').value;if(!ws)return;const mon=new Date(ws);const wl=mon.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})+' \u2013 '+new Date(mon.getTime()+4*86400000).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});const rows=opsWeekData().map(d=>'<tr><td style="padding:10px 15px;border-bottom:1px solid #eee;font-weight:600;color:#222">'+d.name+' '+d.date+'</td><td style="padding:10px 15px;border-bottom:1px solid #eee;color:#2d7dd2;font-weight:700">'+d.tech+'</td></tr>').join('');document.getElementById('opsEmailPrev').innerHTML='<div style="font-family:Arial,sans-serif"><div style="background:#0a0a0a;padding:14px 18px"><div style="color:#fff;font-size:15px;font-weight:900;letter-spacing:.08em;text-transform:uppercase">VERSA STUDIOS</div><div style="color:#555;font-size:10px;letter-spacing:.1em;text-transform:uppercase;margin-top:2px">Morning Live \u2014 Tech Schedule</div></div><div style="background:#f4f4f4;padding:10px 18px;border-bottom:2px solid #ddd"><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em">Week of</div><div style="font-size:14px;font-weight:700;color:#111;margin-top:2px">'+wl+'</div></div><table style="width:100%;border-collapse:collapse"><thead><tr><th style="padding:8px 15px;text-align:left;font-size:10px;color:var(--muted);border-bottom:2px solid #eee">Day</th><th style="padding:8px 15px;text-align:left;font-size:10px;color:var(--muted);border-bottom:2px solid #eee">Tech Manager</th></tr></thead><tbody>'+rows+'</tbody></table><div style="background:#f4f4f4;padding:9px 18px;font-size:10px;color:#bbb">Versa Studios Tech Ops</div></div>';}
 function opsCopyEmail(){const wd=opsWeekData();const ws=document.getElementById('opsEmailWeek').value;const mon=new Date(ws);const wl=mon.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})+' to '+new Date(mon.getTime()+4*86400000).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});let body='Morning Live Tech Schedule\nWeek of '+wl+'\n\n';wd.forEach(d=>{body+=d.name+' '+d.date+': '+d.tech+'\n';});navigator.clipboard.writeText(body+'\nVersa Studios Tech Ops').then(()=>alert('Copied'));}
 function opsMailto(){const wd=opsWeekData();const ws=document.getElementById('opsEmailWeek').value;const wl=new Date(ws).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});let body='Morning Live Tech Schedule\nWeek commencing '+wl+'\n\n';wd.forEach(d=>{body+=d.name+' '+d.date+': '+d.tech+'\n';});window.location.href='mailto:?subject='+encodeURIComponent('Morning Live Tech Schedule - w/c '+wl)+'&body='+encodeURIComponent(body+'\nVersa Studios Tech Ops');}
 
@@ -11457,7 +11571,10 @@ function prepHireSupplier(jid,hi,val){
 }
 function togglePrep(jid,kid,checked){const j=jobs.find(x=>x.id==jid);if(!j)return;const p=j.prep.find(x=>x.kid===kid);if(!p)return;p.done=checked;renderJobDet(j);}
 function rmPrep(jid,kid){const j=jobs.find(x=>x.id==jid);if(!j)return;j.prep=j.prep.filter(p=>p.kid!==kid);renderJobDet(j);}
-function setPrepArea(jid,kid,area){const j=jobs.find(x=>x.id==jid);if(!j)return;const p=j.prep.find(x=>x.kid===kid);if(p)p.area=area;}
+function setPrepArea(jid,kid,area){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;var p=j.prep.find(function(x){return x.kid===kid;});if(p)p.area=area;saveData();renderJobDet(j);}
+var _prepDragKid=null;
+function prepDragStart(e,jid,kid){_prepDragKid=kid;e.dataTransfer.setData('text/plain',kid);e.dataTransfer.effectAllowed='move';}
+function prepDrop(e,jid,area){e.preventDefault();var kid=_prepDragKid||parseInt(e.dataTransfer.getData('text/plain'));if(!kid)return;var j=jobs.find(function(x){return x.id==jid;});if(!j)return;var p=j.prep.find(function(x){return x.kid===kid;});if(p){p.area=area==='unassigned'?'':area;saveData();renderJobDet(j);}}
 function setPrepSupplier(jid,kid,val){
   var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   if(val==='__add__'){
@@ -11715,7 +11832,7 @@ function admSwitch(tab) {
     var c = document.getElementById('admContent-'+t);
     var b = document.getElementById('admTab-'+t);
     if(c) c.style.display = t===tab ? '' : 'none';
-    if(b) { b.classList.toggle('active', t===tab); }
+    if(b) { b.classList.toggle('active', t===tab); b.style.opacity=t===tab?'1':'.5'; b.style.borderColor=t===tab?'#302f2c':'transparent'; }
   });
   if(tab==='dv') { renderDvAdmin(); renderDvHired(); }
   if(tab==='suppliers') renderSupp();
@@ -12785,11 +12902,12 @@ function siImport() {
 function genQR(kitId,containerId){
   var el=document.getElementById(containerId);if(!el)return;
   var url=window.location.origin+window.location.pathname+'?kit='+kitId;
-  var data=encodeURIComponent(url);
   var img=document.createElement('img');
-  img.src='https://api.qrserver.com/v1/create-qr-code/?data='+data+'&size=100x100&margin=2';
+  img.src='https://api.qrserver.com/v1/create-qr-code/?data='+encodeURIComponent(url)+'&size=200x200&margin=4&format=png';
   img.width=80;img.height=80;img.style.cssText='border-radius:2px;display:block';
-  img.onerror=function(){el.innerHTML='<span style="font-size:10px;color:#888">QR unavailable</span>';};
+  img.alt=url;
+  img.title='Scan to open: '+url;
+  img.onerror=function(){el.innerHTML='<span style="font-size:10px;color:var(--muted)">QR unavailable</span>';};
   el.innerHTML='';el.appendChild(img);
 }
 
@@ -12797,8 +12915,7 @@ function printQR(kitId){
   var k=kit.find(function(x){return x.id===kitId;});if(!k)return;
   var w=window.open('','_blank','width=380,height=500');if(!w)return;
   var url=window.location.origin+window.location.pathname+'?kit='+kitId;
-  var data=encodeURIComponent(url);
-  var imgUrl='https://api.qrserver.com/v1/create-qr-code/?data='+data+'&size=200x200&margin=4';
+  var imgUrl='https://api.qrserver.com/v1/create-qr-code/?data='+encodeURIComponent(url)+'&size=300x300&margin=4&format=png';
   var logoUrl='data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMzY2IDk2Mi45MiI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiNmZmY7fTwvc3R5bGU+PC9kZWZzPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTE5NC4xNiw1MDcuMzN2LTE0LjdjOS4wOSw0LjQ1LDIzLjQsOS42NywzOC42Nyw5LjY3LDE4LjE3LDAsMzIuMDktOC4xMiwzMi4wOS0yMi4yM3MtNy41NC0yMS42NS0zMi4wOS0zMC4zNWMtMjcuNjQtOS44Ni0zOS4wNS0yMS42Ni0zOS4wNS00MS43NiwwLTIzLDE5LjcyLTM2LjE1LDQ0LjY2LTM2LjE1QTg2LjYsODYuNiwwLDAsMSwyNzIuMjcsMzc5djE0LjMxYy03LjU0LTMuODctMjAuODgtOC4xMy0zMy4yNS04LjEzLTE3Ljc5LDAtMzAuNzQsOC43MS0zMC43NCwyMi4yNCwwLDEyLjU3LDYuNzcsMjEuMjYsMzEuNywzMC4zNSwyNy44NCw5Ljg2LDM5LjQ0LDIxLjA3LDM5LjQ0LDQxLjM3LDAsMjMtMTguNTYsMzYuNTQtNDUuODIsMzYuNTRBOTkuMiw5OS4yLDAsMCwxLDE5NC4xNiw1MDcuMzNaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMzcxLjgzLDM4Ni41VjUxMy4zMkgzNTcuMTRWMzg2LjVIMzE0LjQyVjM3NC4xM0g0MTQuNzVWMzg2LjVaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNNTY1Ljc1LDQ2NS4zOGMwLDMxLjUxLTE5LjUzLDUwLjI2LTUyLjIsNTAuMjYtMzIuNDgsMC01Mi0xOC43NS01Mi01MC4yNlYzNzQuMTNoMTQuNjlWNDY0LjZjMCwyMy40LDEzLjkyLDM3LjMyLDM3LjMyLDM3LjMyczM3LjUtMTMuOTIsMzcuNS0zNy4zMlYzNzQuMTNoMTQuN1oiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik02MjguNTgsNTEzLjMyVjM3NC4xM2gzOC40N2M0MS41NiwwLDczLjQ2LDI2LjY4LDczLjQ2LDY5LjZTNzA5LDUxMy4zMiw2NjcuODIsNTEzLjMyWk02NDMuMjcsMzg2LjVWNTAxaDI0LjU1YzMyLjY4LDAsNTcuNjEtMjIuMjMsNTcuNjEtNTcuMjJTNzAwLjMsMzg2LjUsNjY2Ljg2LDM4Ni41WiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTc5NS4yMyw1MTMuMzJWMzc0LjEzaDE0LjY5VjUxMy4zMloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik05MzguMSwzNzEuODFjNDAsMCw3MC43NiwzMS43LDcwLjc2LDcxLjkyLDAsNDAuNC0zMC4zNiw3MS45MS03MC43Niw3MS45MS00MC4yMSwwLTcwLjc2LTMxLjUxLTcwLjc2LTcxLjkxQzg2Ny4zNCw0MDMuOSw4OTcuODksMzcxLjgxLDkzOC4xLDM3MS44MVptMCwxMzAuMTFjMzIuNDgsMCw1NS42OC0yNS4xNCw1NS42OC01OC4xOXMtMjMuMi01OC4yLTU1LjY4LTU4LjJjLTMyLjI5LDAtNTUuODcsMjUuMTQtNTUuODcsNTguMlM5MDUuODEsNTAxLjkyLDkzOC4xLDUwMS45MloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0xMDU1LjI1LDUwNy4zM3YtMTQuN2M5LjA5LDQuNDUsMjMuNCw5LjY3LDM4LjY3LDkuNjcsMTguMTcsMCwzMi4wOS04LjEyLDMyLjA5LTIyLjIzcy03LjU0LTIxLjY1LTMyLjA5LTMwLjM1Yy0yNy42NC05Ljg2LTM5LjA1LTIxLjY2LTM5LjA1LTQxLjc2LDAtMjMsMTkuNzItMzYuMTUsNDQuNjYtMzYuMTVhODYuNiw4Ni42LDAsMCwxLDMzLjgzLDcuMTV2MTQuMzFjLTcuNTQtMy44Ny0yMC44OC04LjEzLTMzLjI1LTguMTMtMTcuNzksMC0zMC43NCw4LjcxLTMwLjc0LDIyLjI0LDAsMTIuNTcsNi43NywyMS4yNiwzMS43LDMwLjM1LDI3Ljg0LDkuODYsMzkuNDQsMjEuMDcsMzkuNDQsNDEuMzcsMCwyMy0xOC41NiwzNi41NC00NS44MiwzNi41NEE5OS4yLDk5LjIsMCwwLDEsMTA1NS4yNSw1MDcuMzNaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMTMxLjIzLDI3MC44MmgtMi4xOEwwLDUuMDlINjEuMDdMOTUuMjQsODAuN2MxMy40NSwzMC4xNywyNS40NCw1NiwzNC41Myw4MS40M0MxMzcuNCwxNDMuNTgsMTUzLjQsMTA2LjUxLDE2NSw4MC43TDE5OS4yLDUuMDloNjAuNzFaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMzM0Ljc3LDI2Ni44MlY1LjA5SDUwMy4wOFY1MkgzOTAuNzVWMTExLjZINDg2djQ1LjA3SDM5MC43NXY2My4yNUg1MDguNTN2NDYuOVoiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik02OTEuMzYsNS4wOWM2MC43MSwwLDEwMSwzMC4xNywxMDEsODYuMTUsMCwzOC4xNy0yMS40NCw2My4yNS00OS44LDc0LjUyTDc5Ny41LDI2Ni44Mkg3MzguMjVsLTQ2LjE2LTkxLjYxSDY1NC4yOHY5MS42MUg1OTkuMzlWNS4wOVpNNjU0LjI4LDUydjc4LjE2aDQwYzI0LjcyLDAsNDEuOC0xMi4zNiw0MS44LTM4LjksMC0yNi4xNy0xNy44MS0zOS4yNi00My4yNi0zOS4yNloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik04NzUuNjQsMjU3VjIwMy4yYzE4LjE4LDkuNDUsNDIuMTcsMTcuNDUsNjUuOCwxOC45MWE5NS4wOCw5NS4wOCwwLDAsMCwyMy4yNi0xLjQ2YzIwLTIuOTEsMzEuNjMtMTAuNTQsMzEuNjMtMjMuMjYsMC0xNy40NS0xNS42My0yNi41NC01MS42Mi0zOS42My00NS44LTE2LjcyLTcyLjctMzYtNzIuNy04MS40MkM4NzIsMjkuODEsOTEwLjU0LDAsOTY2Ljg4LDBjMjYuMTgsMCw1Miw1LjgyLDY4LjM0LDEzLjA5VjY0LjcxYy0xNS4yNi05LjA5LTQwLTE2LTY0LTE2LTI2LjksMC00NC4zNSwxMC41NC00NC4zNSwyNy4yNywwLDE1LjI2LDE0LjE3LDI1LjgsNDkuOCwzOS4yNSw0NS44LDE3LjgxLDc0LjE1LDM3LjA4LDc0LjE1LDgxLjA3LDAsNDcuMjUtMzUuNjIsNzUuNjEtOTcuNDIsNzUuNjFDOTIzLjYzLDI3MS45MSw4OTQuNTQsMjY1LjM2LDg3NS42NCwyNTdaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMTIzOC43NywxLjA5aC0yLjE4TDExMDkuNzMsMjY2LjgyaDU4LjUybDEyLTI3LjIyYzExLTI0LjgxLDUwLjE3LTExNy44NCw1Ny43OS0xMzYsOCwyMi45LDQ4LjgxLDExNy4wNiw2MC44MSwxNDQuMzJoMGw4LjYyLDE4LjlIMTM2NloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik03NzQuNDYsNzA2Ljc4bC0zMS44OS02NS42NWgtMi42NGwtODYuMjIsMTc4LTUuNCwxMS4xNmMtMTEtMzAuNTEtMjUuMzUtNjEuNDktNDEuNDctOTcuNjVsLTQxLjM4LTkxLjU2aC03NEw2MTUuOSw4OTcuMjdsMzEuODgsNjUuNjVoMi42NGw4Ni4yMi0xNzgsNS40MS0xMS4xNmMxMSwzMC41LDI1LjM1LDYxLjQ5LDQxLjQ2LDk3LjY1bDQxLjM4LDkxLjU2aDc0WiIvPjwvc3ZnPg==';
   var html='<!DOCTYPE html><html><head><meta charset="utf-8">'
     +'<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@500;600&display=swap" rel="stylesheet">'
@@ -13336,30 +13453,30 @@ function tlOpenAdd(loc){
   div.innerHTML='<div style="background:#1c1c1c;border-radius:12px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.6)">'
     +'<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid #2e2e2e">'
     +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:16px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#f2f2f2" id="_tlMTitle">New Entry</div>'
-    +'<button onclick="document.getElementById(\'_tlModal\').remove()" style="background:none;border:none;color:#aaa;font-size:22px;cursor:pointer;padding:0 4px">&#215;</button>'
+    +'<button onclick="document.getElementById(\'_tlModal\').remove()" style="background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;padding:0 4px">&#215;</button>'
     +'</div>'
     +'<div style="padding:16px 20px;display:flex;flex-direction:column;gap:12px">'
     +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'
-    +'<div><label style="font-family:\'Barlow Condensed\',sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#aaa;display:block;margin-bottom:4px">Date</label>'
+    +'<div><label style="font-family:\'Barlow Condensed\',sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:4px">Date</label>'
     +'<input type="date" id="_tlMDate" value="'+today()+'" style="width:100%;background:#111;border:1px solid #3a3a3a;border-radius:6px;color:#f2f2f2;padding:8px 10px;font-size:14px;outline:none"/></div>'
-    +'<div><label style="font-family:\'Barlow Condensed\',sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#aaa;display:block;margin-bottom:4px">Status</label>'
+    +'<div><label style="font-family:\'Barlow Condensed\',sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:4px">Status</label>'
     +'<select id="_tlMStatus" style="width:100%;background:#111;border:1px solid #3a3a3a;border-radius:6px;color:#f2f2f2;padding:8px 10px;font-size:14px;outline:none"><option value="information">Info</option><option value="ongoing">Ongoing</option><option value="resolved">Resolved</option></select></div>'
     +'</div>'
     +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'
-    +'<div><label style="font-family:\'Barlow Condensed\',sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#aaa;display:block;margin-bottom:4px">Studio</label>'
+    +'<div><label style="font-family:\'Barlow Condensed\',sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:4px">Studio</label>'
     +'<select id="_tlMStudio" style="width:100%;background:#111;border:1px solid #3a3a3a;border-radius:6px;color:#f2f2f2;padding:8px 10px;font-size:14px;outline:none">'+studioOpts+'</select></div>'
-    +'<div><label style="font-family:\'Barlow Condensed\',sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#aaa;display:block;margin-bottom:4px">Department</label>'
+    +'<div><label style="font-family:\'Barlow Condensed\',sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:4px">Department</label>'
     +'<select id="_tlMDept" style="width:100%;background:#111;border:1px solid #3a3a3a;border-radius:6px;color:#f2f2f2;padding:8px 10px;font-size:14px;outline:none"><option>Engineering</option><option>Cameras</option><option>Connectivity</option><option>Audio</option><option>Lighting</option><option>Vision</option><option>Comms</option><option>General</option></select></div>'
     +'</div>'
     +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'
-    +'<div><label style="font-family:\'Barlow Condensed\',sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#aaa;display:block;margin-bottom:4px">Reported By</label>'
+    +'<div><label style="font-family:\'Barlow Condensed\',sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:4px">Reported By</label>'
     +'<select id="_tlMBy" style="width:100%;background:#111;border:1px solid #3a3a3a;border-radius:6px;color:#f2f2f2;padding:8px 10px;font-size:14px;outline:none">'+TLCREW+'</select></div>'
-    +'<div><label style="font-family:\'Barlow Condensed\',sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#aaa;display:block;margin-bottom:4px">Job</label>'
+    +'<div><label style="font-family:\'Barlow Condensed\',sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:4px">Job</label>'
     +'<input id="_tlMJob" placeholder="e.g. Dragons Den" style="width:100%;background:#111;border:1px solid #3a3a3a;border-radius:6px;color:#f2f2f2;padding:8px 10px;font-size:14px;outline:none"/></div>'
     +'</div>'
-    +'<div><label style="font-family:\'Barlow Condensed\',sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#aaa;display:block;margin-bottom:4px">Issue / Information</label>'
+    +'<div><label style="font-family:\'Barlow Condensed\',sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:4px">Issue / Information</label>'
     +'<textarea id="_tlMInfo" placeholder="Describe the issue\u2026" style="width:100%;background:#111;border:1px solid #3a3a3a;border-radius:6px;color:#f2f2f2;padding:8px 10px;font-size:14px;outline:none;min-height:90px;resize:vertical"></textarea></div>'
-    +'<div><label style="font-family:\'Barlow Condensed\',sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#aaa;display:block;margin-bottom:4px">Next Stage</label>'
+    +'<div><label style="font-family:\'Barlow Condensed\',sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:4px">Next Stage</label>'
     +'<input id="_tlMNext" placeholder="e.g. Re-end cable" style="width:100%;background:#111;border:1px solid #3a3a3a;border-radius:6px;color:#f2f2f2;padding:8px 10px;font-size:14px;outline:none"/></div>'
     +'<button id="_tlMSubmit" onclick="_tlSubmitNew()" style="width:100%;padding:13px;background:'+col+';border:none;border-radius:8px;font-family:\'Barlow Condensed\',sans-serif;font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#000;cursor:pointer;margin-top:4px">Add Entry</button>'
     +'</div></div>';
