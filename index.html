@@ -1194,6 +1194,7 @@ html[data-theme="light"] .drw-more-menu{background:#f4f2ec;border-color:rgba(48,
           <div style="display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:16px">
             <button id="kitTabInv" onclick="showKitTab('inv')" style="padding:7px 18px;font-size:12px;font-family:var(--cond);font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:none;border:none;border-bottom:2px solid var(--accent);color:var(--accent);cursor:pointer">Inventory</button>
             <button id="kitTabHired" onclick="showKitTab('hired')" style="padding:7px 18px;font-size:12px;font-family:var(--cond);font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer">Hired Catalogue</button>
+            <button id="kitTabLogistics" onclick="showKitTab('logistics')" style="padding:7px 18px;font-size:12px;font-family:var(--cond);font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer">Logistics</button>
           </div>
           <div id="kitTabPanelInv">
           <div style="position:relative;margin-bottom:22px">
@@ -1212,8 +1213,11 @@ html[data-theme="light"] .drw-more-menu{background:#f4f2ec;border-color:rgba(48,
           <div id="kitSubcatView" style="display:none"></div>
           </div><!-- /kitTabPanelInv -->
           <div id="kitTabPanelHired" style="display:none">
-            <div id="hiredCatHeader" style="display:none"></div>
+            <div id="hiredCatHeader" style="display:none;margin-bottom:12px"><button class="ibtn" style="font-size:13px;padding:6px 14px">&#8592; Back</button></div>
             <div id="hiredCatalogueList"></div>
+          </div>
+          <div id="kitTabPanelLogistics" style="display:none">
+            <div id="kitLogisticsView"></div>
           </div>
         </div>
       <!-- List view (sibling of kitLanding, not child) -->
@@ -2125,6 +2129,11 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
             <div style="padding:10px 17px;font-size:13px;color:var(--muted)">Manage the freelance crew list used in the Crew tab picker and Freelance Planner.</div>
             <div id="dvFreelanceWrap" style="padding:0 17px 16px"></div>
           </div>
+          <div class="adm-sec full" style="background:var(--panel);border-radius:6px;border:1px solid var(--border);margin-top:14px">
+            <div class="adm-sec-hdr"><div class="adm-sec-title">Kit Preppers</div></div>
+            <div style="padding:10px 17px;font-size:13px;color:var(--muted)">Manage the list of people who prep kit for transport between locations.</div>
+            <div id="dvPreppersWrap" style="padding:0 17px 16px"></div>
+          </div>
         </div>
         <div id="admContent-suppliers" style="display:none">
           <div class="adm-sec full" style="background:var(--panel);border-radius:6px;border:1px solid var(--border)">
@@ -2174,7 +2183,7 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
         <iframe id="notesFrame" src="" style="width:100%;height:100%;border:none" allow="clipboard-write"></iframe>
       </div>
 
-      <div class="page" id="page-info">
+      <div class="page" id="page-info" style="overflow-y:auto;height:100%;padding-bottom:40px">
         <div id="infoPageBody"></div>
       </div>
 
@@ -2598,7 +2607,7 @@ function _getDataMap() {
     repairItems: repairItems, holidays: holidays, activity: activity,
     slogData: slogData, studioInfo: studioInfo, camPlans: camPlans, jobNotes: jobNotes,
     opsPlanner: Object.assign({}, _opsD), opsBrk: _opsBrk.slice(), job_access: _jobAccessGrants.slice(),
-    patTesters: patTesters, suppliers: suppliers, freelanceCrew: VERSA_FREELANCE
+    patTesters: patTesters, suppliers: suppliers, freelanceCrew: VERSA_FREELANCE, kitPreppers: KIT_PREPPERS, kitTransports: KIT_TRANSPORTS
   };
 }
 
@@ -2655,6 +2664,8 @@ async function loadData() {
           else if(row.key==='studioInfo'&&v&&typeof v==='object'){Object.assign(studioInfo,v);}
           else if(row.key==='camPlans'&&v&&typeof v==='object'){Object.assign(camPlans,v);}
           else if(row.key==='freelanceCrew'&&Array.isArray(v)){VERSA_FREELANCE=v;}
+          else if(row.key==='kitPreppers'&&Array.isArray(v)){KIT_PREPPERS=v;}
+          else if(row.key==='kitTransports'&&Array.isArray(v)){KIT_TRANSPORTS=v;}
           else if(row.key==='jobNotes'&&v&&typeof v==='object'){Object.assign(jobNotes,v);}
           else if(row.key==='opsPlanner'&&v&&typeof v==='object'){Object.keys(v).forEach(function(k){_opsD[k]=v[k];});}
           else if(row.key==='opsBrk'&&Array.isArray(v)){_opsBrk.length=0;v.forEach(function(x){_opsBrk.push(x);})}
@@ -4286,10 +4297,12 @@ function renderHiredCatalogue(catFilter, subcatFilter){
       return;
     }
     var html='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:10px;margin-bottom:24px">';
-    allCats.forEach(function(cat){
+    window._hcAllCats=allCats;
+    window._hcClick=function(ci){try{renderHiredCatalogue(window._hcAllCats[ci]);}catch(e){alert('HC Error: '+e.message);}};
+    allCats.forEach(function(cat,ci){
       var col=CAT_COLORS[cat]||'#6b7280';
       var n=hcats[cat]||0;
-      html+='<div onclick="renderHiredCatalogue(\''+cat+'\')" style="background:'+col+';border-radius:12px;padding:20px 18px;cursor:pointer;min-height:90px;display:flex;flex-direction:column;justify-content:flex-end">'
+      html+='<div onclick="window._hcClick('+ci+')" style="background:'+col+';border-radius:12px;padding:20px 18px;cursor:pointer;min-height:90px;display:flex;flex-direction:column;justify-content:flex-end">'
         +'<div style="font-size:16px;font-weight:900;color:#fff;font-family:var(--cond);line-height:1.15;letter-spacing:-.01em;text-transform:uppercase;pointer-events:none;overflow-wrap:anywhere">'+cat+'</div>'
         +(n?'<div style="font-size:11px;color:rgba(255,255,255,.7);margin-top:4px;pointer-events:none">'+n+' item'+(n===1?'':'s')+'</div>':'')
         +'</div>';
@@ -4300,10 +4313,11 @@ function renderHiredCatalogue(catFilter, subcatFilter){
   }
 
   var col=CAT_COLORS[catFilter]||'#6b7280';
+  window._hcCatFilter=catFilter;
 
   // ── Level 2: Subcat tiles ────────────────────────────────────────────────
   if(!subcatFilter){
-    if(hdr){ hdr.style.display='block'; hdr.querySelector('button').onclick=function(){renderHiredCatalogue();}; }
+    if(hdr){ hdr.style.display='block'; var _hb=hdr.querySelector('button'); if(_hb)_hb.onclick=function(){renderHiredCatalogue();}; }
     var subs=(KIT_SUBCATS[catFilter]||[]).slice(); // copy — don't mutate KIT_SUBCATS
     // Add any subcats from data not in KIT_SUBCATS
     hiredCatalogue.filter(function(h){return h.cat===catFilter&&h.subcat&&subs.indexOf(h.subcat)<0;})
@@ -4315,12 +4329,14 @@ function renderHiredCatalogue(catFilter, subcatFilter){
       +'</div>'
       +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px">'
       // All items tile
-      +'<div onclick="renderHiredCatalogue(\''+catFilter+'\',\'__all\')" style="background:'+col+';border-radius:12px;padding:18px 16px;cursor:pointer;min-height:80px;display:flex;flex-direction:column;justify-content:flex-end;opacity:.75">'
+      +'<div onclick="window._hcSubClick(-1)" style="background:'+col+';border-radius:12px;padding:18px 16px;cursor:pointer;min-height:80px;display:flex;flex-direction:column;justify-content:flex-end;opacity:.75">'
       +'<div><div style="pointer-events:none;font-size:16px;font-weight:900;color:#fff;font-family:var(--cond);letter-spacing:-.01em;text-transform:uppercase;line-height:1.15">All '+catFilter+'</div><div style="pointer-events:none;font-size:11px;color:rgba(255,255,255,.7)">'+allItems.length+' item'+(allItems.length!==1?'s':'')+' total</div></div>'
       +'</div>';
-    subs.forEach(function(sub){
+    window._hcSubs=subs;
+    window._hcSubClick=function(si){try{if(si===-1)renderHiredCatalogue(window._hcCatFilter,'__all');else renderHiredCatalogue(window._hcCatFilter,window._hcSubs[si]);}catch(e){alert('Error: '+e.message);}};
+    subs.forEach(function(sub,si){
       var items=hiredCatalogue.filter(function(h){return h.cat===catFilter&&h.subcat===sub;});
-      html+='<div onclick="renderHiredCatalogue(\''+catFilter+'\',\''+sub+'\')" style="background:'+col+';border-radius:12px;padding:18px 16px;cursor:pointer;min-height:80px;display:flex;flex-direction:column;justify-content:flex-end">'
+      html+='<div onclick="window._hcSubClick('+si+')" style="background:'+col+';border-radius:12px;padding:18px 16px;cursor:pointer;min-height:80px;display:flex;flex-direction:column;justify-content:flex-end">'
         +'<div style="pointer-events:none;font-size:16px;font-weight:900;color:#fff;font-family:var(--cond);letter-spacing:-.01em;text-transform:uppercase;line-height:1.15;overflow-wrap:anywhere">'+sub+'</div>'
         +(items.length?'<div style="pointer-events:none;font-size:11px;color:rgba(255,255,255,.75);margin-top:4px">'+items.length+' item'+(items.length!==1?'s':'')+'</div>':'')
         +'</div>';
@@ -4331,7 +4347,7 @@ function renderHiredCatalogue(catFilter, subcatFilter){
   }
 
   // ── Level 3: Items list ──────────────────────────────────────────────────
-  if(hdr){ hdr.style.display='block'; hdr.querySelector('button').onclick=function(){renderHiredCatalogue(catFilter);}; }
+  if(hdr){ hdr.style.display='block'; var _hb2=hdr.querySelector('button'); if(_hb2)_hb2.onclick=function(){renderHiredCatalogue(catFilter);}; }
   var items=subcatFilter==='__all'
     ? hiredCatalogue.filter(function(h){return h.cat===catFilter;})
     : hiredCatalogue.filter(function(h){return h.cat===catFilter&&h.subcat===subcatFilter;});
@@ -4339,7 +4355,7 @@ function renderHiredCatalogue(catFilter, subcatFilter){
   items.sort(function(a,b){return a.name.localeCompare(b.name);});
   var subLabel=subcatFilter==='__all'?catFilter:catFilter+' / '+subcatFilter;
   var html='<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;padding:10px 14px;background:var(--near-black);border:1px solid var(--border);border-radius:8px;flex-wrap:wrap">'
-    +'<button class="ibtn" style="font-family:var(--cond);font-size:13px;font-weight:800;padding:6px 12px" onclick="renderHiredCatalogue(\''+catFilter+'\')">&#8592; ALL CATEGORIES</button>'
+    +'<button class="ibtn" style="font-family:var(--cond);font-size:13px;font-weight:800;padding:6px 12px" onclick="renderHiredCatalogue(window._hcCatFilter)">&#8592; ALL CATEGORIES</button>'
     +'<div style="font-family:var(--cond);font-size:16px;font-weight:900;color:'+col+'">'+subLabel+'</div>'
     +'<div style="font-family:var(--cond);font-size:13px;color:var(--muted);font-weight:700">'+items.length+' items</div>'
     +'<div style="flex:1"></div>'
@@ -4381,6 +4397,8 @@ function deleteHiredItem(id){
   else if(cat) renderHiredCatalogue(cat);
   else renderHiredCatalogue();
 }
+
+
 function editHiredItem(id){
   var h=hiredCatalogue.find(function(x){return x.id===id;});if(!h)return;
   document.getElementById('hiredFormId').value=id;
@@ -4561,15 +4579,19 @@ function saveHiredItem(){
 function showKitTab(tab){
   document.getElementById('kitTabPanelInv').style.display=tab==='inv'?'':'none';
   document.getElementById('kitTabPanelHired').style.display=tab==='hired'?'':'none';
+  var lp=document.getElementById('kitTabPanelLogistics');if(lp)lp.style.display=tab==='logistics'?'':'none';
   var ti=document.getElementById('kitTabInv');
   var th=document.getElementById('kitTabHired');
+  var tl=document.getElementById('kitTabLogistics');
   if(ti){ti.style.borderBottomColor=tab==='inv'?'var(--accent)':'transparent';ti.style.color=tab==='inv'?'var(--accent)':'var(--muted)';}
   if(th){th.style.borderBottomColor=tab==='hired'?'var(--accent)':'transparent';th.style.color=tab==='hired'?'var(--accent)':'var(--muted)';}
+  if(tl){tl.style.borderBottomColor=tab==='logistics'?'var(--accent)':'transparent';tl.style.color=tab==='logistics'?'var(--accent)':'var(--muted)';}
   var invBtns=document.getElementById('kitInvBtns');
   var hiredBtns=document.getElementById('kitHiredBtns');
   if(invBtns)invBtns.style.display=tab==='inv'?'flex':'none';
   if(hiredBtns)hiredBtns.style.display=tab==='hired'?'flex':'none';
   if(tab==='hired')renderHiredCatalogue();
+  if(tab==='logistics')renderKitLogistics();
 }
 
 function openPickFromCatalogue(){
@@ -5600,14 +5622,13 @@ function renderInfoPage(){
     return -1;
   }
 
-  function renderStudio(st, stData, stId, em){
+  function renderStudio(st, stData, stId, em, siteCol){
     if(!stData) return '';
     var fields=stData.extraFields||[];
-    var h='<div style="padding:16px;border-bottom:1px solid rgba(255,255,255,.05)">';
-    h+='<div style="font-family:var(--cond);font-size:15px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--white);margin-bottom:12px">'+st+'</div>';
 
     if(em){
-      // Edit mode: flat list of inputs
+      var h='<div style="padding:16px;border-bottom:1px solid var(--border)">';
+      h+='<div style="font-family:var(--cond);font-size:15px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--white);margin-bottom:12px">'+st+'</div>';
       h+=fld(stId+'_sqft','Size / Sq Ft',stData.sqft,'');
       h+=fld(stId+'_visionMixer','Vision Mixer',stData.visionMixer,'');
       h+=lnkFld(stId+'_website','Studio Page',stData.website||'');
@@ -5619,21 +5640,20 @@ function renderInfoPage(){
       return h;
     }
 
-    // Read-only: stat pills for key figures
-    var stats=[];
-    if(stData.sqft) stats.push({label:'Floor Size',val:stData.sqft,col:'#4a9eff'});
-    if(stData.visionMixer) stats.push({label:'Vision Mixer',val:stData.visionMixer,col:'#2aaa7a'});
-    if(stats.length){
-      h+='<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">';
-      stats.forEach(function(s){
-        h+='<div style="flex:1;min-width:120px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-top:2px solid '+s.col+';border-radius:8px;padding:8px 12px">'
-          +'<div style="font-size:9px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:'+s.col+';margin-bottom:3px">'+s.label+'</div>'
-          +'<div style="font-size:13px;font-weight:600;color:var(--white);line-height:1.3">'+s.val+'</div></div>';
-      });
-      h+='</div>';
-    }
+    // ── Subway-style read-only card ──
+    var h='<div style="margin-bottom:2px">';
+    // Studio header bar (charcoal)
+    h+='<div style="background:#302f2c;padding:16px 20px;display:flex;align-items:center;gap:14px">';
+    h+='<div style="width:42px;height:42px;border-radius:50%;background:'+(siteCol||'#F4A258')+';display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--cond);font-size:16px;font-weight:900;color:#fff">'+(st.match(/\d+/)?st.match(/\d+/)[0]:st.charAt(0))+'</div>';
+    h+='<div style="flex:1"><div style="font-family:var(--cond);font-size:22px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;color:#fff;line-height:1">'+st+'</div></div>';
+    // Quick stats inline
+    var qStats=[];
+    if(stData.sqft) qStats.push(stData.sqft);
+    if(stData.visionMixer) qStats.push(stData.visionMixer);
+    if(qStats.length) h+='<div style="display:flex;gap:8px;flex-wrap:wrap">'+qStats.map(function(s){return '<span style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:rgba(255,255,255,.12);border-radius:4px;padding:5px 10px;color:rgba(255,255,255,.8)">'+s+'</span>';}).join('')+'</div>';
+    h+='</div>';
 
-    // Group extra fields by category
+    // Category sections
     if(fields.length){
       var grouped={};
       CATS.forEach(function(cat){grouped[cat.key]=[];});
@@ -5645,26 +5665,30 @@ function renderInfoPage(){
         else grouped._other.push(ef);
       });
 
-      function renderCat(cat,items){
-        if(!items.length)return '';
-        var rows=items.map(function(ef){
-          return '<div style="display:flex;align-items:baseline;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04)">'
-            +'<div style="font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:rgba(200,200,200,.5);min-width:140px;flex-shrink:0;padding-right:10px;line-height:1.4">'+ef.label+'</div>'
-            +'<div style="font-size:13px;color:var(--white);line-height:1.4;flex:1">'+ef.value+'</div>'
-            +'</div>';
-        }).join('');
-        return '<div style="margin-bottom:12px">'
-          +'<div style="font-size:9px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:'+cat.color+';margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid '+cat.color+'33">'+cat.label+'</div>'
-          +'<div style="border:1px solid rgba(255,255,255,.07);border-radius:8px;padding:0 12px;background:rgba(255,255,255,.02)">'+rows+'</div>'
-          +'</div>';
+      h+='<div style="padding:12px 20px 16px;background:var(--near-black)">';
+      function renderCatBoxes(cat,items){
+        if(!items.length)return;
+        h+='<div style="margin-bottom:16px">';
+        h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">';
+        h+='<div style="width:4px;height:18px;border-radius:2px;background:'+cat.color+';flex-shrink:0"></div>';
+        h+='<div style="font-family:var(--cond);font-size:13px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:'+cat.color+'">'+cat.label+'</div>';
+        h+='</div>';
+        h+='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px">';
+        items.forEach(function(ef){
+          h+='<div style="background:var(--dark);border:1.5px solid var(--border);border-radius:8px;padding:10px 14px">';
+          h+='<div style="font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:'+cat.color+';margin-bottom:4px">'+ef.label+'</div>';
+          h+='<div style="font-size:15px;font-weight:600;color:var(--white);line-height:1.35">'+ef.value+'</div>';
+          h+='</div>';
+        });
+        h+='</div></div>';
       }
-
-      CATS.forEach(function(cat){ h+=renderCat(cat,grouped[cat.key]); });
-      if(grouped._other.length) h+=renderCat({label:'Other',color:'#888'},grouped._other);
+      CATS.forEach(function(cat){ renderCatBoxes(cat,grouped[cat.key]); });
+      if(grouped._other.length) renderCatBoxes({label:'Other',color:'var(--muted)'},grouped._other);
+      h+='</div>';
     }
 
-    if(stData.notes) h+='<div style="margin-top:8px;font-size:12px;color:var(--muted);font-style:italic;line-height:1.5">'+stData.notes+'</div>';
-    if(stData.website) h+=lnkFld('','Studio Page',stData.website);
+    if(stData.notes) h+='<div style="padding:10px 20px;font-size:13px;color:var(--muted);font-style:italic;line-height:1.5;background:var(--near-black)">'+stData.notes+'</div>';
+    if(stData.website) h+='<div style="padding:8px 20px;background:var(--near-black)">'+lnkFld('','Studio Page',stData.website)+'</div>';
     h+='</div>';
     return h;
   }
@@ -5674,40 +5698,46 @@ function renderInfoPage(){
     {key:'london',label:'London',col:'#1a4e8a',studios:['London']},
   ];
 
-  var h='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">';
-  h+='<div style="font-family:var(--cond);font-size:22px;font-weight:900;letter-spacing:.04em;color:var(--white)">Studio Information</div>';
-  h+='<button onclick="infoToggleEdit()" style="font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:7px 16px;border-radius:8px;border:1px solid var(--border);background:'+(em?'#d85a61':'rgba(255,255,255,.06)')+';color:'+(em?'#fff':'var(--muted)')+';cursor:pointer">'+(em?'✓ Save':'✎ Edit')+'</button>';
+  // Page title
+  var h='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px">';
+  h+='<div style="font-family:var(--cond);font-size:28px;font-weight:900;letter-spacing:.02em;text-transform:uppercase;color:var(--white)">Studio Information</div>';
+  h+='<button onclick="infoToggleEdit()" style="font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:8px 18px;border-radius:8px;border:1.5px solid var(--border);background:'+(em?'#d85a61':'rgba(255,255,255,.06)')+';color:'+(em?'#fff':'var(--muted)')+';cursor:pointer">'+(em?'\u2713 Save':'\u270E Edit')+'</button>';
   h+='</div>';
 
   sites.forEach(function(site){
     var si=siteInfo[site.key]||{};
-    h+='<div style="border:1px solid rgba(255,255,255,.09);border-top:3px solid '+site.col+';border-radius:12px;margin-bottom:24px;overflow:hidden;background:rgba(255,255,255,.015)">';
-    // Site header
-    h+='<div style="padding:14px 16px;background:rgba(255,255,255,.03);border-bottom:1px solid rgba(255,255,255,.07)">';
-    h+='<div style="font-family:var(--cond);font-size:18px;font-weight:900;letter-spacing:.05em;color:'+site.col+';margin-bottom:10px">'+site.label+'</div>';
+    h+='<div style="border:1.5px solid var(--border);border-radius:12px;margin-bottom:20px;overflow:hidden">';
+
+    // Site header — subway station style
+    h+='<div style="background:'+site.col+';padding:18px 22px;display:flex;align-items:center;gap:14px">';
+    h+='<div style="font-family:var(--cond);font-size:26px;font-weight:900;letter-spacing:.03em;text-transform:uppercase;color:#fff;flex:1">'+site.label+'</div>';
+    // Site details pills
+    var pills=[];
+    if(si.address)pills.push('\uD83D\uDCCD '+si.address);
+    if(si.phone)pills.push('\uD83D\uDCDE '+si.phone);
+    if(si.wifi)pills.push('\uD83D\uDCF6 '+si.wifi);
+    if(pills.length) h+='<div style="display:flex;flex-direction:column;gap:3px;align-items:flex-end">'+pills.map(function(p){return '<span style="font-size:12px;color:rgba(255,255,255,.75)">'+p+'</span>';}).join('')+'</div>';
+    h+='</div>';
+
     if(em){
+      h+='<div style="padding:14px 16px;background:rgba(255,255,255,.03);border-bottom:1px solid var(--border)">';
       h+=fld('si_'+site.key+'_address','Address',si.address,'');
       h+=fld('si_'+site.key+'_phone','Phone',si.phone,'');
       h+=lnkFld('si_'+site.key+'_website','Website',si.website);
       h+=fld('si_'+site.key+'_wifi','Wi-Fi',si.wifi,'');
       h+=fld('si_'+site.key+'_notes','Notes',si.notes,'');
+      h+='</div>';
     } else {
-      var siteDetails=[];
-      if(si.address)siteDetails.push('📍 '+si.address);
-      if(si.phone)siteDetails.push('📞 '+si.phone);
-      if(si.wifi)siteDetails.push('📶 '+si.wifi);
-      if(siteDetails.length)h+='<div style="font-size:12px;color:var(--muted);line-height:1.8">'+siteDetails.join('<br>')+'</div>';
-      if(si.website)h+=lnkFld('','Visit Site',si.website);
-      if(!siteDetails.length&&!si.website)h+='<div style="font-size:12px;color:rgba(180,180,180,.35);font-style:italic">No site details — tap Edit to add</div>';
+      if(si.website) h+='<div style="padding:8px 22px;background:var(--near-black);border-bottom:1px solid var(--border)">'+lnkFld('','Visit Site',si.website)+'</div>';
+      if(si.notes) h+='<div style="padding:10px 22px;font-size:13px;color:var(--muted);line-height:1.5;background:var(--near-black);border-bottom:1px solid var(--border)">'+si.notes+'</div>';
     }
-    h+='</div>';
 
     site.studios.forEach(function(st){
       var stData=(site.key==='london')
         ?(studioInfo['london']&&studioInfo['london'][st]?studioInfo['london'][st]:studioInfo['london']||{})
         :(studioInfo['manchester']&&studioInfo['manchester'][st]?studioInfo['manchester'][st]:{});
       var stId=('stu_'+site.key+'_'+st).replace(/[\s]/g,'_');
-      h+=renderStudio(st,stData,stId,em);
+      h+=renderStudio(st,stData,stId,em,site.col);
     });
     h+='</div>';
   });
@@ -7616,6 +7646,15 @@ let VERSA_FREELANCE = [
   {name:'James Forshaw'},
 ];
 
+let KIT_PREPPERS = [
+  {name:'Andrew Rowell'},
+  {name:'Ian Curry'},
+  {name:'Dan Brown'},
+];
+
+// Kit transport manifests: [{id, jobId, jobName, fromLoc, toLoc, transportDate, prepDate, status:'planned'|'prepped'|'in-transit'|'delivered', items:[{kid,name,cat,tag,preppedBy}], notes}]
+let KIT_TRANSPORTS = [];
+
 // ── FREELANCE CREW PLANNER ─────────────────────────────────────────────────
 
 if(!window.FL_CREW_DB)window.FL_CREW_DB=[];
@@ -8189,6 +8228,39 @@ function renderJobDet(j) {
           +'<div id="lensCustom_'+jid+'_'+i+'" style="display:none;margin-top:4px"><input class="fi" style="font-size:12px;padding:3px 6px;width:100%" placeholder="Describe the hired lens..." onchange="jdCamLensSetCustom('+jid+','+i+',this.value)"/></div>';
       } else {        lensInput=aLensKit          ?'<div style="display:flex;flex-direction:column;gap:3px"><span style="background:rgba(42,125,72,.12);border:1px solid rgba(42,125,72,.4);border-radius:3px;font-size:12px;padding:2px 8px;color:#2a7d48">'+aLensKit.name+'</span>'           +'<div style="display:flex;gap:4px"><button class="ibtn" style="font-size:11px;flex:1" onclick="jdPickCamLens('+jid+','+i+')">Change</button>'           +'<button class="rm-btn" style="font-size:11px" onclick="jdCamLensSetInv('+jid+','+i+',null)">×</button></div></div>'          :'<button class="ibtn" style="font-size:12px;width:100%" onclick="jdPickCamLens('+jid+','+i+')">From Inventory</button>';      }      var lensRow='<div style="margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--border-l)">'        +'<div class="dfl" style="margin-bottom:4px">Lens</div>'        +lensModeBar+lensInput+'</div>';
       var camNum=cd.camNum!==undefined?cd.camNum:(i+1);
+
+      // ── Equipment row builder (Pedestal, Head, Zoom, Focus) ──
+      function mkEquipRow(label, dataKey, subcat, jid2, ci2, cd2){
+        if(!cd2[dataKey])cd2[dataKey]={mode:'inv',kitId:null,hiredVal:''};
+        var ed=cd2[dataKey];
+        var isNA=ed.mode==='na';
+        var modeBar='<div style="display:flex;margin-bottom:4px">'
+          +[['inv','Inventory'],['hired','Hired'],['na','N/A']].map(function(opt,oi){
+            var active=ed.mode===opt[0];
+            return '<button onclick="jdEquipMode('+jid2+','+ci2+',\''+dataKey+'\',\''+opt[0]+'\')" style="padding:5px 12px;font-size:13px;font-family:var(--cond);font-weight:800;border:1.5px solid var(--border);'+(oi===0?'border-right:none;':'')+(oi===1?'border-right:none;':'')+'background:'+(active?(opt[0]==='na'?'rgba(128,128,128,.2)':'rgba(74,158,255,.3)'):'rgba(255,255,255,.04)')+';color:'+(active?(opt[0]==='na'?'var(--muted)':'#2a6cb8'):'var(--muted)')+';cursor:pointer">'+opt[1]+'</button>';
+          }).join('')+'</div>';
+        if(isNA) return '<div style="margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--border-l);opacity:.4">'
+          +'<div class="dfl" style="margin-bottom:4px">'+label+'</div>'+modeBar+'</div>';
+        var eqInput='';
+        if(ed.mode==='hired'){
+          eqInput='<input class="fi" style="font-size:12px;padding:3px 5px;width:100%" value="'+(ed.hiredVal||'')+'" placeholder="Type / model..." onchange="jdEquipHired('+jid2+','+ci2+',\''+dataKey+'\',this.value)"/>';
+        } else {
+          var eqKit=ed.kitId?kit.find(function(x){return x.id===ed.kitId;}):null;
+          eqInput=eqKit
+            ?'<div style="display:flex;flex-direction:column;gap:3px"><span style="background:rgba(42,125,72,.12);border:1px solid rgba(42,125,72,.4);border-radius:3px;font-size:12px;padding:2px 8px;color:#2a7d48">'+eqKit.name+'</span>'
+              +'<div style="display:flex;gap:4px"><button class="ibtn" style="font-size:11px;flex:1" onclick="jdEquipPick('+jid2+','+ci2+',\''+dataKey+'\',\''+subcat+'\')">Change</button>'
+              +'<button class="rm-btn" style="font-size:11px" onclick="jdEquipSetKit('+jid2+','+ci2+',\''+dataKey+'\',null)">×</button></div></div>'
+            :'<button class="ibtn" style="font-size:12px;width:100%" onclick="jdEquipPick('+jid2+','+ci2+',\''+dataKey+'\',\''+subcat+'\')">From Inventory</button>';
+        }
+        return '<div style="margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--border-l)">'
+          +'<div class="dfl" style="margin-bottom:4px">'+label+'</div>'+modeBar+eqInput+'</div>';
+      }
+
+      var pedRow=mkEquipRow('Pedestal','pedestalData','Pedestal',jid,i,cd);
+      var headRow=mkEquipRow('Head','headData','Head',jid,i,cd);
+      var zoomRow=mkEquipRow('Zoom Demand','zoomData','Zoom Demand',jid,i,cd);
+      var focusRow=mkEquipRow('Focus Demand','focusData','Focus Demand',jid,i,cd);
+
       return '<div style="min-width:200px;max-width:200px;background:rgba(255,255,255,.025);border:2px solid '+_rc.bg+';border-radius:6px;padding:12px;flex-shrink:0">'
         +'<div style="font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;display:flex;align-items:center;gap:4px">'
         +'CAM <input class="fi" style="font-size:13px;padding:1px 4px;width:38px;font-family:var(--cond);font-weight:800;letter-spacing:.06em;text-align:center;" value="'+camNum+'" placeholder="1" onchange="jdSetCamDetail('+jid+','+i+',\'camNum\',isNaN(+this.value)?this.value:+this.value)" onclick="event.stopPropagation()"/>'
@@ -8197,6 +8269,7 @@ function renderJobDet(j) {
         +opField
         +kitRow
         +lensRow
+        +pedRow+headRow+zoomRow+focusRow
         +fieldRows
         +addBtn
         +'</div>';
@@ -9379,6 +9452,53 @@ function jdCamLensSetCustom(jid,i,val){
   saveData();
 }
 
+// ── Generic equipment field handlers (Pedestal, Head, Zoom, Focus) ──
+function jdEquipMode(jid,ci,dataKey,mode){
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.camDetails||!j.camDetails[ci])return;
+  if(!j.camDetails[ci][dataKey])j.camDetails[ci][dataKey]={mode:'inv',kitId:null,hiredVal:''};
+  j.camDetails[ci][dataKey].mode=mode;
+  saveData();renderJobDet(j);
+}
+function jdEquipHired(jid,ci,dataKey,val){
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.camDetails||!j.camDetails[ci])return;
+  if(!j.camDetails[ci][dataKey])j.camDetails[ci][dataKey]={mode:'hired',kitId:null,hiredVal:''};
+  j.camDetails[ci][dataKey].hiredVal=val;
+  saveData();
+}
+function jdEquipSetKit(jid,ci,dataKey,kid){
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.camDetails||!j.camDetails[ci])return;
+  if(!j.camDetails[ci][dataKey])j.camDetails[ci][dataKey]={mode:'inv',kitId:null,hiredVal:''};
+  var oldKid=j.camDetails[ci][dataKey].kitId;
+  if(oldKid&&oldKid!==kid){if(!j.prep)j.prep=[];j.prep=j.prep.filter(function(p){return p.kid!==oldKid||p._camspec!==true;});}
+  j.camDetails[ci][dataKey].kitId=kid;
+  if(kid){if(!j.prep)j.prep=[];var exists=j.prep.find(function(p){return p.kid===kid;});if(!exists)j.prep.push({kid:kid,done:false,area:'',supplier:'Versa Inventory',_camspec:true});}
+  saveData();renderJobDet(j);
+}
+function jdEquipPick(jid,ci,dataKey,subcat){
+  jid=parseInt(jid)||0;ci=parseInt(ci)||0;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
+  var ex=document.getElementById('equipPicker');if(ex)ex.remove();
+  var allocMap=getAllocatedKitMap();
+  var items=kit.filter(function(k){return k.subcat===subcat&&k.status!=='Bin';});
+  if(!items.length)items=kit.filter(function(k){return k.name.toLowerCase().indexOf(subcat.toLowerCase())>=0&&k.status!=='Bin';});
+  var rows=items.map(function(k){
+    var alloc=allocMap[k.id];
+    var allocBadge=alloc?'<span style="font-size:10px;color:#b87400;margin-left:auto;font-family:var(--cond);font-weight:700">'+alloc+'</span>':'';
+    return '<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--border);cursor:pointer" onclick="jdEquipSetKit('+jid+','+ci+',\''+dataKey+'\','+k.id+');document.getElementById(\'equipPicker\').remove()">'
+      +'<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;color:var(--white)">'+k.name+'</div>'
+      +'<div style="font-size:11px;color:var(--muted)">'+(k.tag||'')+' · '+(k.loc||'')+'</div></div>'
+      +allocBadge+'</div>';
+  }).join('');
+  if(!rows)rows='<div style="padding:12px;color:var(--muted)">No '+subcat+' items in inventory</div>';
+  var pop=document.createElement('div');pop.id='equipPicker';
+  pop.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);z-index:400;display:flex;align-items:center;justify-content:center';
+  pop.onclick=function(e){if(e.target===pop)pop.remove();};
+  pop.innerHTML='<div style="background:var(--dark);border:1px solid var(--border);border-radius:10px;width:340px;max-height:70vh;overflow-y:auto">'
+    +'<div style="padding:12px 14px;border-bottom:1px solid var(--border);font-family:var(--cond);font-size:15px;font-weight:800;color:var(--white)">Pick '+subcat+'</div>'
+    +rows+'</div>';
+  document.body.appendChild(pop);
+}
+
 
 function jdPickCamLens(jid,i){
   jid=parseInt(jid)||0; i=parseInt(i)||0;
@@ -10557,6 +10677,130 @@ function renderKitPrepTab(j) {
     +mkPDArr('Transport Out','transportOut')
     +'</div></div>';
 
+  // ── Transport Manifest ──────────────────────────────────────
+  var jobLoc=j.loc||'Manchester';
+  var transports=KIT_TRANSPORTS.filter(function(t){return t.jobId===j.id;});
+  
+  // Analyse prep items: which are on site vs need transport
+  var onSite=[],needsTransport=[];
+  j.prep.forEach(function(p){
+    var k=kit.find(function(x){return x.id===p.kid;});
+    if(!k)return;
+    var kitLoc=k.loc||'Manchester';
+    if(kitLoc.toLowerCase()===jobLoc.toLowerCase()){
+      onSite.push({p:p,k:k});
+    } else {
+      // Check if already on a transport
+      var onTransport=transports.some(function(t){return t.items.some(function(ti){return ti.kid===p.kid;});});
+      needsTransport.push({p:p,k:k,onTransport:onTransport});
+    }
+  });
+
+  var transportHtml='<div class="det-sec"><div class="det-sec-lbl" style="display:flex;align-items:center;justify-content:space-between">'
+    +'<span>Kit Logistics — '+jobLoc+'</span>'
+    +'<button class="ibtn" style="font-size:12px" onclick="ktCreateTransport('+j.id+')">+ New Transport</button>'
+    +'</div>';
+
+  // Summary badges
+  transportHtml+='<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">'
+    +'<div class="det-kv" style="flex:1;min-width:100px">'
+    +'<div style="font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#2a7d48;margin-bottom:2px">On Site</div>'
+    +'<div style="font-size:20px;font-weight:900;color:var(--white)">'+onSite.length+'</div></div>'
+    +'<div class="det-kv" style="flex:1;min-width:100px">'
+    +'<div style="font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#b87400;margin-bottom:2px">Needs Transport</div>'
+    +'<div style="font-size:20px;font-weight:900;color:var(--white)">'+needsTransport.length+'</div></div>'
+    +'<div class="det-kv" style="flex:1;min-width:100px">'
+    +'<div style="font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#2a6cb8;margin-bottom:2px">Hired In</div>'
+    +'<div style="font-size:20px;font-weight:900;color:var(--white)">'+j.hireIns.length+'</div></div>'
+    +'</div>';
+
+  // Needs transport list (not yet on a manifest)
+  var unmanifested=needsTransport.filter(function(n){return !n.onTransport;});
+  if(unmanifested.length){
+    transportHtml+='<div style="background:rgba(184,116,0,.08);border:1.5px solid rgba(184,116,0,.25);border-radius:8px;padding:12px 14px;margin-bottom:12px">'
+      +'<div style="font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#b87400;margin-bottom:8px">⚠ Not Yet on a Transport</div>';
+    unmanifested.forEach(function(n){
+      transportHtml+='<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid rgba(184,116,0,.15)">'
+        +'<div style="font-size:14px;font-weight:600;color:var(--white);flex:1">'+n.k.name+'</div>'
+        +'<div style="font-size:11px;color:var(--muted)">'+(n.k.tag||'')+'</div>'
+        +'<div style="font-size:11px;color:#b87400;font-family:var(--cond);font-weight:700">'+(n.k.loc||'Manchester')+' → '+jobLoc+'</div>'
+        +'</div>';
+    });
+    transportHtml+='</div>';
+  }
+
+  // Transport manifests
+  transports.forEach(function(t,ti){
+    var stCol={planned:'#2a6cb8',prepped:'#b87400','in-transit':'#9a6aee',delivered:'#2a7d48'}[t.status]||'#2a6cb8';
+    var stLabel={planned:'Planned',prepped:'Prepped','in-transit':'In Transit',delivered:'Delivered'}[t.status]||'Planned';
+    transportHtml+='<div style="background:var(--dark);border:1.5px solid var(--border);border-top:3px solid '+stCol+';border-radius:10px;margin-bottom:12px;overflow:hidden">';
+    // Header
+    transportHtml+='<div style="padding:12px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">'
+      +'<div style="font-family:var(--cond);font-size:16px;font-weight:900;text-transform:uppercase;color:var(--white);flex:1">'+t.fromLoc+' → '+t.toLoc+'</div>'
+      +'<span style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.08em;padding:4px 12px;border-radius:20px;background:'+stCol+';color:#fff">'+stLabel+'</span>'
+      +'<select class="fi" style="font-size:11px;padding:3px 8px;width:auto;min-width:100px" onchange="ktSetStatus('+j.id+','+ti+',this.value)">'
+      +['planned','prepped','in-transit','delivered'].map(function(s){return '<option value="'+s+'"'+(t.status===s?' selected':'')+'>'+{planned:'Planned',prepped:'Prepped','in-transit':'In Transit',delivered:'Delivered'}[s]+'</option>';}).join('')
+      +'</select>'
+      +'<button onclick="ktDeleteTransport('+j.id+','+ti+')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px">×</button>'
+      +'</div>';
+    // Dates
+    transportHtml+='<div style="padding:0 14px 10px;display:flex;gap:12px;flex-wrap:wrap">'
+      +'<div><div class="dfl" style="font-size:10px">Transport Date</div><input type="date" class="fi" style="font-size:13px;padding:4px 8px" value="'+(t.transportDate||'')+'" onchange="ktSetField('+j.id+','+ti+',\'transportDate\',this.value)"/></div>'
+      +'<div><div class="dfl" style="font-size:10px">Prep Date</div><input type="date" class="fi" style="font-size:13px;padding:4px 8px" value="'+(t.prepDate||'')+'" onchange="ktSetField('+j.id+','+ti+',\'prepDate\',this.value)"/></div>'
+      +'<div style="flex:1"><div class="dfl" style="font-size:10px">Notes</div><input class="fi" style="font-size:13px;padding:4px 8px" value="'+(t.notes||'')+'" placeholder="Transport notes..." onchange="ktSetField('+j.id+','+ti+',\'notes\',this.value)"/></div>'
+      +'</div>';
+    // Items with prepper and zone assignment
+    // Build area options from job cameras + standard areas
+    var numCams2=parseInt(j.cameras)||0;
+    var areaOpts2='<option value="">— Assign —</option>';
+    for(var ci2=0;ci2<numCams2;ci2++){
+      var rc2=RESISTOR_COLORS[ci2]||{name:'Cam '+(ci2+1)};
+      areaOpts2+='<option value="cam'+(ci2+1)+'">Camera '+(ci2+1)+'</option>';
+    }
+    [{id:'studio',l:'Studio Floor'},{id:'gallery',l:'Gallery'},{id:'vision',l:'Lighting / Vision'},{id:'sound',l:'Sound'},{id:'car',l:'CAR / Tech Room'},{id:'other',l:'Other'}].forEach(function(a){
+      areaOpts2+='<option value="'+a.id+'">'+a.l+'</option>';
+    });
+
+    transportHtml+='<div style="border-top:1px solid var(--border)">';
+    if(t.items.length){
+      transportHtml+='<div style="display:grid;grid-template-columns:1fr auto 140px 140px;gap:6px;padding:6px 14px;border-bottom:1px solid var(--border)">'
+        +'<div style="font-size:10px;font-family:var(--cond);font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">Item</div>'
+        +'<div style="font-size:10px;font-family:var(--cond);font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">Tag</div>'
+        +'<div style="font-size:10px;font-family:var(--cond);font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">Assign To</div>'
+        +'<div style="font-size:10px;font-family:var(--cond);font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">Prepped By</div>'
+        +'</div>';
+      t.items.forEach(function(item,ii){
+        var prepOpts='<option value="">—</option>'+KIT_PREPPERS.map(function(pr){return '<option'+(item.preppedBy===pr.name?' selected':'')+'>'+pr.name+'</option>';}).join('');
+        var areaSelOpts='<option value="">— Assign —</option>';
+        for(var ci3=0;ci3<numCams2;ci3++){
+          areaSelOpts+='<option value="cam'+(ci3+1)+'"'+(item.area==='cam'+(ci3+1)?' selected':'')+'>Camera '+(ci3+1)+'</option>';
+        }
+        [{id:'studio',l:'Studio Floor'},{id:'gallery',l:'Gallery'},{id:'vision',l:'Lighting / Vision'},{id:'sound',l:'Sound'},{id:'car',l:'CAR / Tech Room'},{id:'other',l:'Other'}].forEach(function(a){
+          areaSelOpts+='<option value="'+a.id+'"'+(item.area===a.id?' selected':'')+'>'+a.l+'</option>';
+        });
+        transportHtml+='<div style="display:grid;grid-template-columns:1fr auto 140px 140px;gap:6px;align-items:center;padding:6px 14px;border-bottom:1px solid rgba(255,255,255,.04)">'
+          +'<div style="font-size:14px;font-weight:600;color:var(--white)">'+item.name+'</div>'
+          +'<div style="font-size:11px;color:var(--muted);font-family:var(--cond)">'+(item.tag||'')+'</div>'
+          +'<select class="fi" style="font-size:12px;padding:3px 6px" onchange="ktSetArea('+j.id+','+ti+','+ii+',this.value)">'+areaSelOpts+'</select>'
+          +'<select class="fi" style="font-size:12px;padding:3px 6px" onchange="ktSetPrepper('+j.id+','+ti+','+ii+',this.value)">'+prepOpts+'</select>'
+          +'</div>';
+      });
+    } else {
+      transportHtml+='<div style="padding:12px 14px;font-size:13px;color:var(--muted)">No items added yet.</div>';
+    }
+    // Add items button
+    transportHtml+='<div style="padding:8px 14px;border-top:1px solid var(--border)">'
+      +'<button class="ibtn" style="font-size:12px" onclick="ktAddItemsFromPrep('+j.id+','+ti+')">+ Add Unmanifested Items</button>'
+      +'</div>';
+    transportHtml+='</div></div>';
+  });
+
+  if(!transports.length && !unmanifested.length && onSite.length){
+    transportHtml+='<div style="padding:12px;font-size:14px;color:#2a7d48;font-family:var(--cond);font-weight:700;text-align:center">✓ All kit is on site — no transport needed</div>';
+  }
+
+  transportHtml+='</div>';
+
   // ── Kit prep rows grouped by area ─────────────────────────────
   // Dynamic areas: cameras + standard
   var numCams=parseInt(j.cameras)||0;
@@ -10650,6 +10894,7 @@ function renderKitPrepTab(j) {
   }).join('');
 
   return datesSection
+    +transportHtml
     +'<div class="panel-hdr" style="margin-top:8px"><div class="panel-title">Prep List</div><button class="panel-act" onclick="openKitJob('+j.id+')">+ Add Kit</button></div>'
     +(total?'<div style="padding:12px 17px 7px;display:flex;align-items:center;gap:10px"><div class="prog-bar"><div class="prog-fill" id="pf-'+j.id+'" style="width:'+pct+'%"></div></div><span style="font-family:var(--cond);font-size:13px;font-weight:700;color:var(--muted);white-space:nowrap">'+done+'/'+total+' prepped ('+pct+'%)</span></div>':'')
     +'<div id="prepList">'+prepRows+'</div>'
@@ -10670,6 +10915,173 @@ function renderKitPrepTab(j) {
 }
 
 
+
+// ── Kit Transport Functions ──────────────────────────────────
+function renderKitLogistics(){
+  var el=document.getElementById('kitLogisticsView');if(!el)return;
+  var h='';
+  // Sort transports by date (soonest first), then by status
+  var sorted=KIT_TRANSPORTS.slice().sort(function(a,b){
+    var sa={planned:0,prepped:1,'in-transit':2,delivered:3}[a.status]||0;
+    var sb={planned:0,prepped:1,'in-transit':2,delivered:3}[b.status]||0;
+    if(sa!==sb)return sa-sb;
+    return (a.transportDate||'9').localeCompare(b.transportDate||'9');
+  });
+
+  // Summary counts
+  var planned=sorted.filter(function(t){return t.status==='planned';}).length;
+  var prepped=sorted.filter(function(t){return t.status==='prepped';}).length;
+  var inTransit=sorted.filter(function(t){return t.status==='in-transit';}).length;
+  var delivered=sorted.filter(function(t){return t.status==='delivered';}).length;
+
+  h+='<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">';
+  [{n:planned,l:'Planned',c:'#2a6cb8'},{n:prepped,l:'Prepped',c:'#b87400'},{n:inTransit,l:'In Transit',c:'#9a6aee'},{n:delivered,l:'Delivered',c:'#2a7d48'}].forEach(function(s){
+    h+='<div class="det-kv" style="flex:1;min-width:90px;text-align:center">'
+      +'<div style="font-size:24px;font-weight:900;color:var(--white)">'+s.n+'</div>'
+      +'<div style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:'+s.c+'">'+s.l+'</div></div>';
+  });
+  h+='</div>';
+
+  if(!sorted.length){
+    h+='<div style="padding:24px;text-align:center;color:var(--muted);font-size:15px">No transports created yet. Go to a job\'s Kit Prep tab to create one.</div>';
+    el.innerHTML=h;return;
+  }
+
+  // Group by status
+  var groups=[
+    {key:'planned',label:'Planned',col:'#2a6cb8'},
+    {key:'prepped',label:'Prepped — Ready to Go',col:'#b87400'},
+    {key:'in-transit',label:'In Transit',col:'#9a6aee'},
+    {key:'delivered',label:'Delivered',col:'#2a7d48'}
+  ];
+
+  groups.forEach(function(grp){
+    var items=sorted.filter(function(t){return t.status===grp.key;});
+    if(!items.length)return;
+    h+='<div style="margin-bottom:20px">';
+    h+='<div style="font-family:var(--cond);font-size:14px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:'+grp.col+';margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid '+grp.col+'">'+grp.label+' ('+items.length+')</div>';
+    items.forEach(function(t){
+      var j=jobs.find(function(x){return x.id===t.jobId;});
+      var jc=(j&&j.color)?j.color:{bg:'#5B5F8D'};
+      var fmtDate=function(d){if(!d)return '—';var p=d.split('-');return parseInt(p[2])+'/'+parseInt(p[1]);};
+      h+='<div style="background:var(--near-black);border:1.5px solid var(--border);border-left:4px solid '+jc.bg+';border-radius:10px;margin-bottom:10px;overflow:hidden">';
+      // Header
+      h+='<div style="padding:12px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">'
+        +'<div style="flex:1;min-width:0">'
+        +'<div style="font-family:var(--cond);font-size:18px;font-weight:900;text-transform:uppercase;color:var(--white)">'+t.fromLoc+' → '+t.toLoc+'</div>'
+        +'<div style="font-size:13px;color:var(--muted);margin-top:2px">'+(t.jobName||'Unknown Job')+'</div>'
+        +'</div>'
+        +'<div style="text-align:right">'
+        +'<div style="font-family:var(--cond);font-size:12px;font-weight:800;color:var(--muted);letter-spacing:.06em">TRANSPORT '+fmtDate(t.transportDate)+'</div>'
+        +'<div style="font-family:var(--cond);font-size:11px;color:var(--muted)">Prep '+fmtDate(t.prepDate)+'</div>'
+        +'</div>'
+        +'<button onclick="nav(\'jobs\');setTimeout(function(){var jj=jobs.find(function(x){return x.id==='+t.jobId+';});if(jj){renderJobDet(jj);_jdTab=\'kit\';renderJobDet(jj);}},100)" class="ibtn" style="font-size:11px;padding:4px 10px">Open Job</button>'
+        +'</div>';
+      // Items summary
+      if(t.items.length){
+        h+='<div style="padding:0 16px 12px">';
+        t.items.forEach(function(item){
+          var areaLabel=item.area?item.area.replace(/^cam/,'Cam ').replace(/^studio$/,'Studio Floor').replace(/^gallery$/,'Gallery').replace(/^vision$/,'LV').replace(/^sound$/,'Sound').replace(/^car$/,'CAR').replace(/^other$/,'Other'):'';
+          h+='<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04)">'
+            +'<div style="font-size:13px;font-weight:600;color:var(--white);flex:1">'+item.name+'</div>'
+            +'<div style="font-size:11px;color:var(--muted);font-family:var(--cond)">'+(item.tag||'')+'</div>'
+            +(areaLabel?'<span style="font-size:10px;font-family:var(--cond);font-weight:800;letter-spacing:.06em;padding:2px 8px;border-radius:4px;background:rgba(255,255,255,.08);color:var(--subtle)">'+areaLabel+'</span>':'')
+            +(item.preppedBy?'<span style="font-size:10px;font-family:var(--cond);font-weight:700;color:var(--muted)">'+item.preppedBy+'</span>':'')
+            +'</div>';
+        });
+        h+='</div>';
+      }
+      h+='</div>';
+    });
+    h+='</div>';
+  });
+
+  el.innerHTML=h;
+}
+
+function ktCreateTransport(jid){
+  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var jobLoc=j.loc||'Manchester';
+  var fromLoc=jobLoc==='London'?'Manchester':'Manchester';
+  if(jobLoc==='Manchester')fromLoc='London';
+  KIT_TRANSPORTS.push({
+    id:Date.now(),jobId:jid,jobName:j.name,
+    fromLoc:fromLoc,toLoc:jobLoc,
+    transportDate:'',prepDate:'',
+    status:'planned',
+    items:[],notes:''
+  });
+  saveData();renderJobDet(j);
+}
+function ktDeleteTransport(jid,ti){
+  var transports=KIT_TRANSPORTS.filter(function(t){return t.jobId===jid;});
+  if(!transports[ti])return;
+  if(!confirm('Delete this transport manifest?'))return;
+  var idx=KIT_TRANSPORTS.indexOf(transports[ti]);
+  if(idx>=0)KIT_TRANSPORTS.splice(idx,1);
+  saveData();var j=jobs.find(function(x){return x.id===jid;});if(j)renderJobDet(j);
+}
+function ktSetField(jid,ti,field,val){
+  var transports=KIT_TRANSPORTS.filter(function(t){return t.jobId===jid;});
+  if(!transports[ti])return;
+  transports[ti][field]=val;
+  saveData();
+}
+function ktSetStatus(jid,ti,val){
+  var transports=KIT_TRANSPORTS.filter(function(t){return t.jobId===jid;});
+  if(!transports[ti])return;
+  transports[ti].status=val;
+  // If delivered, update kit locations
+  if(val==='delivered'){
+    transports[ti].items.forEach(function(item){
+      var k=kit.find(function(x){return x.id===item.kid;});
+      if(k)k.loc=transports[ti].toLoc;
+    });
+  }
+  saveData();var j=jobs.find(function(x){return x.id===jid;});if(j)renderJobDet(j);
+}
+function ktSetPrepper(jid,ti,ii,val){
+  var transports=KIT_TRANSPORTS.filter(function(t){return t.jobId===jid;});
+  if(!transports[ti])return;
+  transports[ti].items[ii].preppedBy=val;
+  saveData();
+}
+function ktSetArea(jid,ti,ii,val){
+  var transports=KIT_TRANSPORTS.filter(function(t){return t.jobId===jid;});
+  if(!transports[ti])return;
+  transports[ti].items[ii].area=val;
+  // Also update the prep list item's area
+  var j=jobs.find(function(x){return x.id===jid;});
+  if(j&&j.prep){
+    var kid=transports[ti].items[ii].kid;
+    var prepItem=j.prep.find(function(p){return p.kid===kid;});
+    if(prepItem)prepItem.area=val;
+  }
+  saveData();
+}
+function ktAddItemsFromPrep(jid,ti){
+  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  var transports=KIT_TRANSPORTS.filter(function(t){return t.jobId===jid;});
+  if(!transports[ti])return;
+  var transport=transports[ti];
+  var jobLoc=j.loc||'Manchester';
+  var existing=transport.items.map(function(i){return i.kid;});
+  var added=0;
+  (j.prep||[]).forEach(function(p){
+    if(existing.includes(p.kid))return;
+    var k=kit.find(function(x){return x.id===p.kid;});
+    if(!k)return;
+    var kitLoc=k.loc||'Manchester';
+    if(kitLoc.toLowerCase()!==jobLoc.toLowerCase()){
+      var prepItem=(j.prep||[]).find(function(pp){return pp.kid===k.id;});
+      transport.items.push({kid:k.id,name:k.name,cat:k.cat||'',tag:k.tag||'',preppedBy:'',area:(prepItem&&prepItem.area)||''});
+      added++;
+    }
+  });
+  if(added)toast(added+' item'+(added>1?'s':'')+' added');
+  else toast('No unmanifested items to add');
+  saveData();renderJobDet(j);
+}
 
 const STAGE_DEFS = [
   {id:'lx-rig',  label:'Set / Light Rig'},
@@ -11754,7 +12166,7 @@ function saveCamRole() {
 }
 // ── ADMIN ─────────────────────────────────────────────────────────────────────
 function renderAdmin() {
-  renderUsers(); renderCats(); renderPatEmails(); renderDvAdmin(); renderDvHired(); renderDvFreelance(); renderSupp();
+  renderUsers(); renderCats(); renderPatEmails(); renderDvAdmin(); renderDvHired(); renderDvFreelance(); renderDvPreppers(); renderSupp();
   populateCatSelect('nkCat');
 }
 
@@ -11862,7 +12274,7 @@ function admSwitch(tab) {
     if(c) c.style.display = t===tab ? '' : 'none';
     if(b) { b.classList.toggle('active', t===tab); b.style.opacity=t===tab?'1':'.5'; b.style.borderColor=t===tab?'#302f2c':'transparent'; }
   });
-  if(tab==='dv') { renderDvAdmin(); renderDvHired(); renderDvFreelance(); }
+  if(tab==='dv') { renderDvAdmin(); renderDvHired(); renderDvFreelance(); renderDvPreppers(); }
   if(tab==='suppliers') renderSupp();
   if(tab==='cats') renderCats();
   if(tab==='pat') renderPatEmails();
@@ -11972,6 +12384,33 @@ function dvFlDel(i){
   VERSA_FREELANCE.splice(i,1);
   toast('Removed');
   saveData();renderDvFreelance();
+}
+
+function renderDvPreppers(){
+  var el=document.getElementById('dvPreppersWrap');if(!el)return;
+  el.innerHTML='<div style="display:flex;gap:8px;margin-bottom:10px">'
+    +'<input id="dvPrepName" class="fi" style="font-size:14px;padding:5px 10px;flex:1" placeholder="Name..." onkeydown="if(event.key===\'Enter\')dvPrepAdd()"/>'
+    +'<button class="btn-pri" onclick="dvPrepAdd()" style="font-size:14px;padding:5px 14px">Add</button>'
+    +'</div>'
+    +(KIT_PREPPERS.length
+      ?'<div style="display:flex;flex-direction:column;gap:4px">'+KIT_PREPPERS.map(function(f,i){
+        return '<div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:6px;padding:8px 12px">'
+          +'<span style="font-size:14px;font-weight:600;color:var(--white);flex:1">'+f.name+'</span>'
+          +'<button onclick="dvPrepDel('+i+')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:0;line-height:1" title="Remove">×</button>'
+          +'</div>';
+      }).join('')+'</div>'
+      :'<div style="color:var(--muted);font-size:14px">No preppers added yet.</div>');
+}
+function dvPrepAdd(){
+  var inp=document.getElementById('dvPrepName');if(!inp)return;
+  var name=inp.value.trim();if(!name){toast('Enter a name');return;}
+  if(KIT_PREPPERS.some(function(f){return f.name===name;})){toast('Already exists');return;}
+  KIT_PREPPERS.push({name:name});inp.value='';
+  toast('Added: '+name);saveData();renderDvPreppers();
+}
+function dvPrepDel(i){
+  if(!confirm('Remove \''+KIT_PREPPERS[i].name+'\'?'))return;
+  KIT_PREPPERS.splice(i,1);toast('Removed');saveData();renderDvPreppers();
 }
 
 function togPatEmail(id){const u=users.find(x=>x.id===id);if(u)u.patEmail=!u.patEmail;renderPatEmails();}
