@@ -1026,6 +1026,16 @@ async function init(){
     } else { _dataLoaded=true; }// No data yet, allow saving new notes
   }catch(e){console.error(e);_dataLoaded=true;}
   render();
+  /* Load jobs from main app for job tagging */
+  try{
+    var jr=await fetch(SBU+'/rest/v1/app_data?key=eq.jobs&select=value',
+      {headers:{'apikey':SBK,'Authorization':'Bearer '+SBK}});
+    var jd=await jr.json();
+    if(jd&&jd[0]&&Array.isArray(jd[0].value)){
+      var appJobs=jd[0].value.map(function(j){return j.name;}).filter(Boolean);
+      appJobs.forEach(function(n){if(JOBS.indexOf(n)<0)JOBS.push(n);});
+    }
+  }catch(e2){}
 }
 
 
@@ -1857,6 +1867,22 @@ function nmDelete(){
   document.getElementById('noteModal').style.display='none';
 }
 function nmFmt(cmd){document.execCommand(cmd,false,null);document.getElementById('nmBody').focus();}
+function nmEmail(){
+  nmSync();
+  var title=(document.getElementById('nmTitle')||{}).value||'Versa Studios Note';
+  var bodyEl=document.getElementById('nmBody');
+  if(!bodyEl){toast('Nothing to email');return;}
+  /* Convert HTML to clean plain text */
+  var tmp=document.createElement('div');tmp.innerHTML=bodyEl.innerHTML;
+  /* Convert <br> and block elements to newlines */
+  tmp.querySelectorAll('br').forEach(function(br){br.replaceWith('\n');});
+  tmp.querySelectorAll('div,p,h1,h2,h3,h4,li').forEach(function(el){el.prepend('\n');});
+  var plain=tmp.textContent||tmp.innerText||'';
+  plain=plain.replace(/\n{3,}/g,'\n\n').trim();
+  /* Build mailto with formatted body */
+  var mailto='mailto:?subject='+encodeURIComponent(title)+'&body='+encodeURIComponent(plain);
+  window.open(mailto,'_blank');
+}
 function nmFmtBlock(tag){document.execCommand('formatBlock',false,'<'+tag+'>');document.getElementById('nmBody').focus();}
 function nmFmtSize(size){if(!size)return;document.execCommand('fontSize',false,'7');var els=document.getElementById('nmBody').querySelectorAll('font[size="7"]');els.forEach(function(el){el.removeAttribute('size');el.style.fontSize=size;});document.getElementById('nmBody').focus();}
 function nmFmtFont(font){if(!font)return;document.execCommand('fontName',false,font);document.getElementById('nmBody').focus();}
@@ -2713,6 +2739,7 @@ function sheetDelete(){
     <!-- Footer -->
     <div style="display:flex;align-items:center;gap:8px;padding:10px 20px;border-top:1.5px solid rgba(48,47,44,.1);flex-shrink:0">
       <span id="nmMeta" style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(48,47,44,.3);flex:1"></span>
+      <button onclick="nmEmail()" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;background:none;border:1.5px solid rgba(48,47,44,.2);padding:6px 14px;cursor:pointer;color:rgba(48,47,44,.6)">&#9993; Email</button>
       <button onclick="nmPin()" id="nmPinBtn" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;background:none;border:1.5px solid rgba(48,47,44,.2);padding:6px 14px;cursor:pointer;color:rgba(48,47,44,.6)">Pin</button>
       <button onclick="nmDelete()" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;background:none;border:1.5px solid rgba(218,107,81,.4);padding:6px 14px;cursor:pointer;color:#DA6B51">Delete</button>
       <button onclick="nmSave()" id="nmSaveBtn" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;background:#302f2c;border:none;padding:6px 18px;cursor:pointer;color:#efede3">Save</button>

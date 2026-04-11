@@ -7764,7 +7764,7 @@ function addJob() {
     notes:document.getElementById('njNotes').value.trim(),
     prep:[],camRoles:[],hireKit:[]});
   activity.unshift({icon:'🎬',text:'New job: '+name,time:'Just now'});
-  cm('mAddJob'); toast('Job created'); renderJobs(); renderDash();
+  cm('mAddJob'); toast('Job created'); saveData(); renderJobs(); renderDash(); opsSeedFromJobs();
 }
 // openJobDet now in job detail section
 function jobStatusBadge(s) {
