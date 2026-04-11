@@ -2913,7 +2913,6 @@ function appPromptOK() {
   // no-op: appPrompt now uses window.prompt directly
 }
 // ── DATA ──────────────────────────────────────────────────────────────────────
-let cats = Object.keys(KIT_SUBCATS);
 const KIT_SUBCATS = {
   Camera:['Studio Camera','Lens','Pedestal','Head','Zoom Demand','Focus Demand','CCU','RCP','MCS','Grip','Specialist Camera','Mini Camera','PTZ Camera','Autocue','Viewfinder','Return Monitor'],
   Audio:['Desks','Hydras','Radio Mics','Transmitters','Receivers','Monitoring','Speaker','Audio Panel'],
@@ -2934,6 +2933,7 @@ const KIT_SUBCATS = {
   Offair:[],
   Other:[],
 };
+let cats = Object.keys(KIT_SUBCATS);
 const ROLE_PERMS = {
   Admin:   {viewKit:true,editKit:true,viewJobs:true,editJobs:true,viewMaint:true,editMaint:true,viewAdmin:true,editAdmin:true,viewFaults:true,editFaults:true},
   Staff:   {viewKit:true,editKit:true,viewJobs:true,editJobs:true,viewMaint:true,editMaint:false,viewAdmin:false,editAdmin:false,viewFaults:true,editFaults:false},
@@ -6228,7 +6228,9 @@ function kitRenderLanding() {
   var catEl=document.getElementById('kitCatTiles');
   if(catEl){
     catEl.innerHTML='';
-    Object.keys(CAT_COLORS).forEach(function(cat){
+    // Show ALL KIT_SUBCATS top-level cats, not just ones with items
+    var allCats=Object.keys(KIT_SUBCATS);
+    allCats.forEach(function(cat){
       var col=CAT_COLORS[cat]||'#6b7280';
       var d=document.createElement('div');
       d.style.cssText='background:'+col+';border-radius:12px;padding:20px 18px;cursor:pointer;min-height:90px;display:flex;align-items:flex-end';
@@ -12775,7 +12777,7 @@ function renderCats() {
   document.getElementById('fCat').innerHTML='<option value="">All Categories</option>'+cats.map(c=>'<option>'+c+'</option>').join('');
 }
 function openAddCat(){editCatIdx=null;document.getElementById('catMT').textContent='Add Category';document.getElementById('catName').value='';om('mCat');}
-function saveCat(){const n=document.getElementById('catName').value.trim();if(!n){toast('Enter name');return;}if(editCatIdx!==null)cats[editCatIdx]=n;else{cats.push(n);if(!KIT_SUBCATS[n])KIT_SUBCATS[n]=[];}cm('mCat');saveData();toast('Saved');renderCats();}
+function saveCat(){const n=document.getElementById('catName').value.trim();if(!n){toast('Enter name');return;}if(editCatIdx!==null)cats[editCatIdx]=n;else{cats.push(n);if(!KIT_SUBCATS[n])KIT_SUBCATS[n]=[];if(!CAT_COLORS[n])CAT_COLORS[n]='#'+Math.floor(Math.random()*0x808080+0x404040).toString(16);}cm('mCat');saveData();toast('Saved');renderCats();}
 function delCat(i){if(!confirm('Delete category "'+cats[i]+'"?'))return;var nm=cats[i];cats.splice(i,1);if(KIT_SUBCATS[nm]&&KIT_SUBCATS[nm].length===0)delete KIT_SUBCATS[nm];saveData();renderCats();}
 function renderPatEmails() {
   document.getElementById('patEmailList').innerHTML=users.filter(u=>u.patEmail).map(u=>'<div class="adm-row"><div style="flex:1"><div class="adm-row-nm">'+u.fn+' '+u.ln+'</div><div class="adm-row-sub">'+u.email+'</div></div><button class="ibtn del" onclick="togPatEmail('+u.id+')">Remove</button></div>').join('')||'<div style="padding:11px 18px;font-size:17px;color:var(--muted)">No recipients.</div>';
