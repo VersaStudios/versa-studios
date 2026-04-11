@@ -14,17 +14,17 @@ html[data-theme="light"]{--black:#e9ebee;--near-black:#f4f5f7;--dark:#e2e4e8;--b
 html,body{height:100%;background:var(--black);color:var(--white);font-family:var(--font);font-size:17px;overflow:hidden;-webkit-font-smoothing:antialiased}
 .app{display:flex;height:100vh;overflow:hidden}
 .sb{width:216px;background:var(--near-black);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
-.sb-logo{padding:20px 18px 16px;border-bottom:1px solid var(--border)}
-.sb-logo img{width:124px;opacity:.92}
+.sb-logo{padding:22px 18px 18px;border-bottom:1px solid var(--border);text-align:center}
+.sb-logo img{width:120px;display:block;margin:0 auto;opacity:.92}
 .sb-nav{flex:1;overflow-y:auto;padding:7px 0}
-.nav-lbl{font-family:var(--cond);font-size:10px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:#fff;padding:6px 12px;margin:8px 8px 3px;border-radius:4px}
-.nav-lbl[data-lbl="overview"]{background:#3c5aa0}
-.nav-lbl[data-lbl="kit"]{background:#a0641e}
-.nav-lbl[data-lbl="studio-log"]{background:#1e737d}
-.nav-lbl[data-lbl="jobs"]{background:#327846}
-.nav-lbl[data-lbl="admin"]{background:#874b23}
-.nav-lbl[data-lbl="reference"]{background:#4b7d2d}
-.nav-item{display:flex;align-items:center;gap:9px;padding:10px 16px;cursor:pointer;transition:all .13s;border-left:2px solid transparent;color:var(--muted);font-family:var(--cond);font-size:17px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;user-select:none}
+.nav-lbl{font-family:var(--cond);font-size:9px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:#fff;padding:8px 16px 7px;margin:0;border-radius:0}
+.nav-lbl[data-lbl="overview"]{background:#5B5F8D}
+.nav-lbl[data-lbl="kit"]{background:#DA6B51}
+.nav-lbl[data-lbl="studio-log"]{background:#708C69}
+.nav-lbl[data-lbl="jobs"]{background:#013D5A}
+.nav-lbl[data-lbl="admin"]{background:#484149}
+.nav-lbl[data-lbl="reference"]{background:#9BB29E}
+.nav-item{display:flex;align-items:center;gap:9px;padding:9px 16px;cursor:pointer;transition:all .13s;border-left:3px solid transparent;color:var(--muted);font-family:var(--cond);font-size:14px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;user-select:none}
 .nav-item:hover{color:var(--white);background:rgba(255,255,255,.04)}
 .nav-item.active{color:var(--pure);border-left-color:var(--pure);background:rgba(255,255,255,.06)}
 .nav-icon{width:15px;height:15px;flex-shrink:0;opacity:.65}.nav-item.active .nav-icon,.nav-item:hover .nav-icon{opacity:1}
@@ -782,6 +782,7 @@ html[data-theme="light"] .drw-more-menu{background:#f4f2ec;border-color:rgba(48,
     <div class="drw-more-wrap" id="drwMoreWrap">
       <button class="ibtn" style="font-size:13px;padding:5px 10px" onclick="toggleDrwMore(event)">&#8943;</button>
       <div class="drw-more-menu" id="drwMoreMenu">
+        <button class="drw-more-item" onclick="copyKitToHired(currentKid);closeDrwMore()">&#128203; Copy to Hired Catalogue</button>
         <button class="drw-more-item" onclick="sendToRepair(currentKid);closeDrwMore()">&#128295; Send to Repair</button>
         <button class="drw-more-item danger" onclick="confirmDelKit(currentKid);closeDrwMore()">&#128465; Move to Bin</button>
       </div>
@@ -874,6 +875,17 @@ html[data-theme="light"] .drw-more-menu{background:#f4f2ec;border-color:rgba(48,
       <div class="ff"><label class="flbl">Asset Tag</label><input class="fi" id="nkTag" placeholder="VS-CAM-001"/></div>
       <div class="ff"><label class="flbl">Status</label><select class="fi" id="nkStatus" style="width:100%"><option>Available</option><option>In Use</option><option>Maintenance</option><option>Fault</option></select></div>
       <div class="ff"><label class="flbl">Condition</label><select class="fi" id="nkCond" style="width:100%"><option>Excellent</option><option>Good</option><option>Fair</option><option>Poor</option></select></div>
+      <div class="ff full" style="border:1.5px solid rgba(250,160,0,.25);background:rgba(250,160,0,.06);border-radius:8px;padding:12px 14px;margin-top:4px">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-family:var(--cond);font-weight:800;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--white)">
+          <input type="checkbox" id="nkHired" onchange="document.getElementById('nkHiredFields').style.display=this.checked?'grid':'none'"/> Long-Term Hired Kit
+        </label>
+      </div>
+      <div class="ff full" id="nkHiredFields" style="display:none">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div><label class="flbl">Hire Company</label><input class="fi" id="nkHireCo" placeholder="e.g. Gravity Media, Presteigne"/></div>
+          <div><label class="flbl">External Asset No.</label><input class="fi" id="nkExtAsset" placeholder="e.g. GRV-12345"/></div>
+        </div>
+      </div>
       <div class="ff"><label class="flbl">PAT Date</label><input class="fi" type="date" id="nkPat"/></div>
       <div class="ff"><label class="flbl">PAT Tester</label><input class="fi" id="nkPatTester"/></div>
       <div class="ff full"><label class="flbl">Notes</label><textarea class="fta" id="nkNotes"></textarea></div>
@@ -895,7 +907,7 @@ html[data-theme="light"] .drw-more-menu{background:#f4f2ec;border-color:rgba(48,
       <div class="ff"><label class="flbl">Client / Broadcaster</label><input class="fi" id="njClient" placeholder="BBC, ITV..."/></div>
       <div class="ff"><label class="flbl">Cameras</label><input class="fi" type="number" id="njCameras" min="0" value="0"/></div>
       <div class="ff"><label class="flbl">TX Date</label><input class="fi" type="date" id="njTx"/></div>
-      <div class="ff"><label class="flbl">Status</label><select class="fi" id="njStatus" style="width:100%"><option>Confirmed</option><option>Likely</option><option>Possible</option></select></div>
+      <div class="ff"><label class="flbl">Status</label><select class="fi" id="njStatus" style="width:100%"><option>Confirmed</option><option>Likely</option><option>Possible</option><option>Ongoing</option></select></div>
       <div class="ff full"><label class="flbl">Card Colour</label><div id="njColorPicker" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px"></div><input type="hidden" id="njColor" value="0"/></div>
       <div class="ff full"><label class="flbl">Notes</label><textarea class="fta" id="njNotes"></textarea></div>
     </div></div>
@@ -1050,7 +1062,7 @@ html[data-theme="light"] .drw-more-menu{background:#f4f2ec;border-color:rgba(48,
       <div class="ff"><label class="flbl">Client / Broadcaster</label><input class="fi" id="ejClient" placeholder="BBC, ITV..."/></div>
       <div class="ff"><label class="flbl">Cameras</label><input class="fi" type="number" id="ejCams" min="0"/></div>
       <div class="ff"><label class="flbl">TX Date</label><input class="fi" type="date" id="ejTx"/></div>
-      <div class="ff"><label class="flbl">Status</label><select class="fi" id="ejStatus" style="width:100%"><option>Confirmed</option><option>Likely</option><option>Possible</option></select></div>
+      <div class="ff"><label class="flbl">Status</label><select class="fi" id="ejStatus" style="width:100%"><option>Confirmed</option><option>Likely</option><option>Possible</option><option>Ongoing</option></select></div>
       <div class="ff full"><label class="flbl">Notes</label><textarea class="fta" id="ejNotes"></textarea></div>
       <div class="ff full"><label class="flbl">Card Colour</label><div id="ejColorPicker" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px"></div></div>
     </div></div>
@@ -1157,7 +1169,7 @@ html[data-theme="light"] .drw-more-menu{background:#f4f2ec;border-color:rgba(48,
       </div>
       <div style="display:flex;align-items:center;gap:7px">
         <div class="search-wrap"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><path d="M11 11l3 3"/></svg><input type="text" placeholder="Search..." id="gSearch" oninput="doSearch(this.value)"/></div>
-        <button id="themeBtn" onclick="toggleTheme()" style="border:none;border-radius:20px;padding:7px 16px;cursor:pointer;font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;display:flex;align-items:center;gap:6px;flex-shrink:0">&#9789; Dark</button>
+        <button id="themeBtn" class="theme-btn" onclick="toggleTheme()" style="border:none;border-radius:20px;padding:7px 16px;cursor:pointer;font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;display:flex;align-items:center;gap:6px;flex-shrink:0;background:#302f2c;color:#efede3">&#9789; Dark</button>
         <button class="notif-btn" id="notifBtn" onclick="toggleNotifs()" title="Notifications">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2a5 5 0 015 5v3l1 2H2l1-2V7a5 5 0 015-5z"/><path d="M6.5 13a1.5 1.5 0 003 0"/></svg>
           <div class="notif-badge" id="notifBadge"></div>
@@ -2138,7 +2150,7 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
         <div id="admContent-suppliers" style="display:none">
           <div class="adm-sec full" style="background:var(--panel);border-radius:6px;border:1px solid var(--border)">
             <div class="adm-sec-hdr"><div class="adm-sec-title">Suppliers</div><button class="btn-add" onclick="openAddSupp()" style="margin-left:0">+ Add Supplier</button></div>
-            <div style="padding:4px 0"><div id="suppList"></div></div>
+            <div style="padding:4px 0"><div id="suppListAdmin"></div></div>
           </div>
         </div>
         <div id="admContent-pat" style="display:none">
@@ -2806,7 +2818,12 @@ function updateThemeBtn(t){
   var t=localStorage.getItem('vsTheme')||'light';
   if(!localStorage.getItem('vsThemeMigrated2')){t='light';localStorage.setItem('vsTheme','light');localStorage.setItem('vsThemeMigrated2','1');}
   document.documentElement.setAttribute('data-theme',t);
-  document.addEventListener('DOMContentLoaded',function(){updateThemeBtn(t);});
+  /* Apply button styles immediately via inline injection so it's correct before DOMContentLoaded */
+  document.addEventListener('DOMContentLoaded',function(){
+    updateThemeBtn(t);
+    /* Ensure #themeBtn also gets .theme-btn class for CSS overrides */
+    var b=document.getElementById('themeBtn');if(b)b.classList.add('theme-btn');
+  });
 })();
 function toggleAcctPop() {
   var pop = document.getElementById('acctPop');
@@ -2896,9 +2913,9 @@ function appPromptOK() {
   // no-op: appPrompt now uses window.prompt directly
 }
 // ── DATA ──────────────────────────────────────────────────────────────────────
-let cats = ['Camera','Audio','Comms','Grip & Support','Vision','Floor Monitors','Cables','Lighting','Monitors','Other'];
+let cats = Object.keys(KIT_SUBCATS);
 const KIT_SUBCATS = {
-  Camera:['Studio Camera','Lens','Pedestal','Head','Zoom Demand','Focus Demand','CCU','RCP','MCS','Grip','Specialist Camera','Mini Camera','PTZ Camera'],
+  Camera:['Studio Camera','Lens','Pedestal','Head','Zoom Demand','Focus Demand','CCU','RCP','MCS','Grip','Specialist Camera','Mini Camera','PTZ Camera','Autocue','Viewfinder','Return Monitor'],
   Audio:['Desks','Hydras','Radio Mics','Transmitters','Receivers','Monitoring','Speaker','Audio Panel'],
   Comms:['Frame','Panels','Boleros','Headsets','Chargers'],
   'Grip & Support':['Tripods','Heads','Dollies','Jibs','Misc Grip'],
@@ -4407,7 +4424,7 @@ function editHiredItem(id){
   document.getElementById('hiredFormCompat').value=h.compat||'';
   document.getElementById('hiredFormNotes').value=h.notes||'';
   document.getElementById('hiredFormSuppliers').value=(h.suppliers||[]).join(', ');
-  document.getElementById('hiredFormPhotos').value=(h.photos||[]).join('\n');
+  var _ph=document.getElementById('hiredFormPhotos');if(_ph)_ph.value=(h.photos||[]).join('\n');
   _hiredPhotoPreview();
   var _t=document.getElementById('hiredItemModalTitle');if(_t)_t.textContent='Edit Item';
   om('mHiredItem');
@@ -4453,18 +4470,30 @@ function openHiredImport(){
 }
 function _parseHiredCSV(text){
   var lines=text.replace(/\r\n/g,'\n').replace(/\r/g,'\n').split('\n').filter(function(l){return l.trim();});
-  if(lines.length<2) return [];
-  var headers=lines[0].split(',').map(function(h){return h.trim().toLowerCase().replace(/[^a-z0-9]/g,'');});
-  var ci={
-    cat: headers.indexOf('category'),
-    sub: headers.indexOf('subcategory'),
-    brand: headers.indexOf('brand'),
-    model: headers.indexOf('model'),
-    desc: headers.indexOf('description'),
-    img: headers.indexOf('imageurl')
-  };
+  if(!lines.length) return [];
+  /* Check if first row is a header row by looking for known header keywords */
+  var firstLower=lines[0].toLowerCase();
+  var hasHeaders=firstLower.indexOf('category')>=0||firstLower.indexOf('subcategory')>=0||firstLower.indexOf('brand')>=0||firstLower.indexOf('model')>=0;
+  var startIdx=0;
+  var ci;
+  if(hasHeaders){
+    var headers=lines[0].split(',').map(function(h){return h.trim().toLowerCase().replace(/[^a-z0-9]/g,'');});
+    ci={
+      cat: headers.indexOf('category'),
+      sub: headers.indexOf('subcategory'),
+      brand: headers.indexOf('brand'),
+      model: headers.indexOf('model'),
+      desc: headers.indexOf('description'),
+      img: headers.indexOf('imageurl')
+    };
+    startIdx=1;
+  } else {
+    /* Positional: col0=cat, col1=subcat, col2=brand/make, col3=model, col4+=description */
+    ci={cat:0,sub:1,brand:2,model:3,desc:4,img:-1};
+    startIdx=0;
+  }
   var rows=[];
-  for(var i=1;i<lines.length;i++){
+  for(var i=startIdx;i<lines.length;i++){
     var cols=lines[i].split(',');
     var row={
       cat: ci.cat>=0?(cols[ci.cat]||'').trim():'',
@@ -4564,7 +4593,7 @@ function saveHiredItem(){
     compat:document.getElementById('hiredFormCompat').value.trim(),
     notes:document.getElementById('hiredFormNotes').value.trim(),
     suppliers:document.getElementById('hiredFormSuppliers').value.split(',').map(function(s){return s.trim();}).filter(Boolean),
-    photos:(document.getElementById('hiredFormPhotos').value||'').split('\n').map(function(s){return s.trim();}).filter(function(s){return s.length>5;})
+    photos:((document.getElementById('hiredFormPhotos')||{value:''}).value||'').split('\n').map(function(s){return s.trim();}).filter(function(s){return s.length>5;})
   };
   if(id){var idx=hiredCatalogue.findIndex(function(x){return x.id===id;});if(idx>=0)hiredCatalogue[idx]=entry;}
   else hiredCatalogue.push(entry);
@@ -5119,6 +5148,40 @@ function renderEngLogTab(j){
   // Empty cells before first day
   for(var e=0;e<firstDay;e++) calHtml+='<div></div>';
 
+  /* Build TX number lookup from Ops Planner data */
+  var _txDateMap={};
+  /* First try explicit txDates on the job */
+  if(j.txDates&&j.txDates.length){
+    var _sorted=j.txDates.map(function(d){return d.date;}).filter(Boolean).sort();
+    _sorted.forEach(function(dt,i){_txDateMap[dt]=i+1;});
+  }
+  /* Then scan OPS_CAL for episode numbers matching this job */
+  if(typeof OPS_CAL!=='undefined'){
+    var _jnLower=(j.name||'').toLowerCase();
+    var _moMap={'January':0,'February':1,'March':2,'April':3,'May':4,'June':5,'July':6,'August':7,'September':8,'October':9,'November':10,'December':11};
+    OPS_CAL.forEach(function(cal){
+      var mParts=cal.month.split(' ');var mIdx=_moMap[mParts[0]];var mYr=parseInt(mParts[1]);
+      if(isNaN(mIdx)||isNaN(mYr))return;
+      cal.days.forEach(function(day){
+        var allEntries=[].concat(day.andrew||[],day.ian||[],day.chris||[],day.other||[]);
+        /* Also check _opsD runtime overrides */
+        ['andrew','ian','chris','other','ml'].forEach(function(row){
+          var dk=cal.month+'|'+day.day+'|'+row;
+          if(_opsD[dk])allEntries=allEntries.concat(_opsD[dk]);
+        });
+        allEntries.forEach(function(entry){
+          var txt=typeof entry==='string'?entry:(entry.text||'');
+          if(txt.toLowerCase().indexOf(_jnLower)<0)return;
+          var epMatch=txt.match(/Ep\s*(\d+)/i);
+          if(epMatch){
+            var ds=mYr+'-'+String(mIdx+1).padStart(2,'0')+'-'+String(day.day).padStart(2,'0');
+            _txDateMap[ds]=parseInt(epMatch[1]);
+          }
+        });
+      });
+    });
+  }
+
   for(var d=1;d<=daysInMonth;d++){
     var dateStr = yr+'-'+String(mo+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
     var dateObj = new Date(yr, mo, d);
@@ -5130,6 +5193,7 @@ function renderEngLogTab(j){
     var hasLog = j.engLog[dateStr] && (j.engLog[dateStr].notes||j.engLog[dateStr].faults||j.engLog[dateStr].attendees);
     var hasSubmitted = _engReportCache[dateStr] != null;
     var isTxDay = inJobRange && !isWeekend; // TX days = weekdays within job range
+    var txNum = _txDateMap[dateStr];
 
     var bg, border, color, cursor, click;
     if(!inJobRange||isWeekend){
@@ -5151,9 +5215,11 @@ function renderEngLogTab(j){
       ? '<div style="width:5px;height:5px;border-radius:50%;background:#e8b84b;margin:2px auto 0"></div>'
       : hasLog ? '<div style="width:5px;height:5px;border-radius:50%;background:#4a9eff;margin:2px auto 0"></div>' : '';
     var todayRing = isToday ? 'outline:2px solid var(--accent);outline-offset:1px;' : '';
+    var txLabel = txNum ? '<div style="font-size:8px;font-family:var(--cond);font-weight:700;color:var(--accent);letter-spacing:.04em;margin-top:1px">Ep'+txNum+'</div>' : '';
 
     calHtml+='<div '+click+' style="background:'+bg+';border:'+border+';border-radius:6px;padding:6px 4px 4px;text-align:center;cursor:'+cursor+';'+todayRing+'">'
       +'<div style="font-size:13px;font-weight:'+(isTxDay&&!isFuture?'700':'400')+';color:'+color+'">'+d+'</div>'
+      +txLabel
       +dot
       +'</div>';
   }
@@ -5179,7 +5245,9 @@ function renderEngLogTab(j){
     });
   }
 
-  return '<div class="det-sec" id="engLogPanel"><div class="det-sec-lbl" style="margin-bottom:14px">Engineering Log</div>'+header+legend+calHtml+'</div>';
+  return '<div class="det-sec" id="engLogPanel"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px"><div class="det-sec-lbl" style="margin-bottom:0">Engineering Log</div>'
+    +'<button class="btn-add" style="font-size:12px;padding:8px 16px;border-radius:6px" onclick="nav(\'engreport\',document.querySelector(\'[data-pg=engreport]\'))">&#128221; Submit Engineering Report</button>'
+    +'</div>'+header+legend+calHtml+'</div>';
 }
 
 function engLogNav(monthStr, jid){
@@ -5195,6 +5263,35 @@ function openEngLogDay(dateStr, jid){
   if(!j.engLog) j.engLog={};
   if(!j.engLog[dateStr]) j.engLog[dateStr]={notes:'',faults:'',attendees:'',txNum:'',issues:''};
   var entry=j.engLog[dateStr];
+  /* Auto-calculate TX number from ops planner or explicit txDates */
+  var autoTxNum='';
+  if(j.txDates&&j.txDates.length){
+    var sortedDates=j.txDates.map(function(d){return d.date;}).filter(Boolean).sort();
+    var idx=sortedDates.indexOf(dateStr);
+    if(idx>=0) autoTxNum='TX '+(idx+1);
+  }
+  if(!autoTxNum&&typeof OPS_CAL!=='undefined'){
+    var _jnL=(j.name||'').toLowerCase();
+    var _moMap2={'January':0,'February':1,'March':2,'April':3,'May':4,'June':5,'July':6,'August':7,'September':8,'October':9,'November':10,'December':11};
+    OPS_CAL.forEach(function(cal){
+      if(autoTxNum)return;
+      var mP=cal.month.split(' ');var mI=_moMap2[mP[0]];var mY=parseInt(mP[1]);
+      var dayNum=parseInt(parts[2]);
+      if(mY===parseInt(parts[0])&&mI===parseInt(parts[1])-1){
+        var dayObj=cal.days.find(function(d){return d.day===dayNum;});
+        if(!dayObj)return;
+        var all2=[].concat(dayObj.andrew||[],dayObj.ian||[],dayObj.chris||[],dayObj.other||[]);
+        ['andrew','ian','chris','other','ml'].forEach(function(row){var dk=cal.month+'|'+dayNum+'|'+row;if(_opsD[dk])all2=all2.concat(_opsD[dk]);});
+        all2.forEach(function(e2){
+          var t2=typeof e2==='string'?e2:(e2.text||'');
+          if(t2.toLowerCase().indexOf(_jnL)<0)return;
+          var m2=t2.match(/Ep\s*(\d+)/i);
+          if(m2)autoTxNum='Ep '+m2[1];
+        });
+      }
+    });
+  }
+  if(!entry.txNum&&autoTxNum) entry.txNum=autoTxNum;
   var parts=dateStr.split('-');
   var dObj=new Date(parseInt(parts[0]),parseInt(parts[1])-1,parseInt(parts[2]));
   var dayNames=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
@@ -5424,6 +5521,26 @@ function sendToRepair(kid){
   sel.innerHTML='<option value="">No supplier / internal</option>'+suppliers.map(function(s){return '<option value="'+s.id+'">'+s.name+'</option>';}).join('');
   document.getElementById('mRepairTitle').textContent='Send to Repair — '+k.name;
   closeDrawer();setTimeout(function(){om('mRepair');},150);
+}
+function copyKitToHired(kid){
+  var k=kit.find(function(x){return x.id===kid;});if(!k)return;
+  var name=(k.make&&k.model)?k.make+' '+k.model:k.name;
+  var cat=k.cat||'';
+  var subcat=k.subcat||'';
+  /* Check if already exists */
+  var exists=hiredCatalogue.find(function(h){return h.name.toLowerCase()===name.toLowerCase()&&h.subcat===subcat;});
+  if(exists){toast(name+' already in hired catalogue');return;}
+  /* Pre-fill the hired item form so user can review before saving */
+  var el=document.getElementById('hiredFormId');if(el)el.value='0';
+  var nm=document.getElementById('hiredFormName');if(nm)nm.value=name;
+  _populateHiredCatDropdown(cat,subcat);
+  var cp=document.getElementById('hiredFormCompat');if(cp)cp.value='';
+  var nt=document.getElementById('hiredFormNotes');if(nt)nt.value=k.notes||'';
+  var sp=document.getElementById('hiredFormSuppliers');if(sp)sp.value='';
+  var _t2=document.getElementById('hiredItemModalTitle');if(_t2)_t2.textContent='Copy to Hired Catalogue';
+  closeDrawer();
+  setTimeout(function(){om('mHiredItem');},150);
+  toast('Review and save to add to Hired Catalogue');
 }
 function openAddRepair(){
   _repairKitId=null;var inp=document.getElementById('repairItem');inp.value='';inp.removeAttribute('readonly');
@@ -6549,7 +6666,7 @@ function filterKit() {
     if(stat&&k.status!==stat) return false;
     if(q&&!(k.name.toLowerCase().includes(q)||(k.tag||'').toLowerCase().includes(q)||(k.serial||'').toLowerCase().includes(q))) return false;
     return true;
-  });
+  }).sort(function(a,b){return a.name.localeCompare(b.name);});
 }
 function getAllocatedKitMap() {
   var m = new Map();
@@ -6607,13 +6724,15 @@ function renderKit() {
   el.innerHTML=filtered.map(function(k,idx){
     const col=CAT_COLORS[k.cat]||'#6b7280';
     const av=kitAvailInfo(k);
-    var tagDisp=k.tag?(k.tag+' · '):'';
+    var tagDisp=k.tag?(k.tag+' · '):(k.isHired&&k.extAssetNo?(k.extAssetNo+' · '):'');
     var metaStr=tagDisp+(k.make?k.make+' · ':'')+k.cat+(k.subcat?' / '+k.subcat:'');
+    var hiredBadge=k.isHired?'<span style="font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.1em;background:rgba(250,160,0,.18);color:#b87400;border:1px solid rgba(250,160,0,.35);border-radius:3px;padding:2px 7px;white-space:nowrap;flex-shrink:0">'+(k.hireCompany||'HIRED')+'</span>':'';
     return '<div onclick="openDrawer('+k.id+')" style="background:var(--near-black);border:1px solid var(--border);border-left:4px solid '+col+';border-radius:6px;padding:10px 16px;margin-bottom:5px;cursor:pointer;display:flex;align-items:center;gap:14px">'
       +'<div style="font-family:var(--cond);font-size:18px;font-weight:900;color:var(--border-l);min-width:32px;text-align:center;line-height:1">'+(idx+1)+'</div>'
       +'<div style="flex:1;min-width:0;display:flex;align-items:center;gap:12px;overflow:hidden">'
       +'<span style="font-family:var(--cond);font-size:26px;font-weight:900;color:var(--pure);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-transform:uppercase;letter-spacing:-.01em;flex-shrink:1;min-width:0;line-height:1">'+k.name+'</span>'
       +locBadge(k.loc)
+      +hiredBadge
       +'<span style="font-family:var(--cond);font-size:16px;color:var(--muted);font-weight:700;white-space:nowrap;flex-shrink:0">'+metaStr+'</span>'
       +(av.label?'<span style="font-family:var(--cond);font-size:16px;color:'+av.color+';font-weight:800;white-space:nowrap;flex-shrink:0">'+av.label+'</span>':'')
       +'</div>'
@@ -6758,6 +6877,7 @@ function openDrawer(id) {
   document.getElementById('drwSubtitle').innerHTML=
     '<span style="font-family:var(--cond);font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em">'+catLine+'</span>'
     +statBadge(k.status)
+    +(k.isHired?'<span style="font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.1em;background:rgba(250,160,0,.18);color:#b87400;border:1px solid rgba(250,160,0,.35);border-radius:3px;padding:2px 7px">'+(k.hireCompany||'HIRED')+'</span>':'')
     +'<select style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:'+locCol+';color:#fff;border:none;padding:2px 8px;border-radius:3px;cursor:pointer;appearance:none;-webkit-appearance:none" onchange="updateKitField('+k.id+',\'loc\',this.value);openDrawer('+k.id+')">'+locOpts+'</select>';
   document.getElementById('drwOv').classList.add('open');
   document.getElementById('kitDrawer').classList.add('open');
@@ -6824,6 +6944,16 @@ function renderDet(k) {
     +'<div class="det-kv"><div class="dfl">Serial</div><input class="det-edit mn" style="width:100%" value="'+(k.serial||'')+'" onchange="updateKitField('+k.id+',\'serial\',this.value)"></div>'
     +'<div class="det-kv"><div class="dfl">Status</div><select class="det-edit" style="width:100%" onchange="updateKitField('+k.id+',\'status\',this.value);openDrawer('+k.id+')">'+statusOpts+'</select></div>'
     +'<div class="det-kv"><div class="dfl">Condition</div><select class="det-edit" style="width:100%" onchange="updateKitField('+k.id+',\'cond\',this.value)">'+condOpts+'</select></div>'
+    +'</div>'
+    +'<div class="det-sec" style="background:rgba(250,160,0,.06);border:1.5px solid rgba(250,160,0,.25);border-radius:8px;padding:12px 14px;margin-top:10px">'
+    +'<label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-family:var(--cond);font-weight:800;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--white)"><input type="checkbox" '+(k.isHired?'checked':'')+' onchange="updateKitField('+k.id+',\'isHired\',this.checked);renderDet(kit.find(function(x){return x.id==='+k.id+'}))"> Long-Term Hired Kit</label>'
+    +(k.isHired
+      ?'<div class="det-grid" style="margin-top:10px">'
+       +'<div class="det-kv"><div class="dfl">Hire Company</div><input class="det-edit" style="width:100%" value="'+(k.hireCompany||'')+'" onchange="updateKitField('+k.id+',\'hireCompany\',this.value)" placeholder="e.g. Gravity Media"></div>'
+       +'<div class="det-kv"><div class="dfl">External Asset No.</div><input class="det-edit mn" style="width:100%" value="'+(k.extAssetNo||'')+'" onchange="updateKitField('+k.id+',\'extAssetNo\',this.value)" placeholder="e.g. GRV-12345"></div>'
+       +'<div class="det-kv"><div class="dfl">Hire Start</div><input type="date" class="det-edit" style="width:100%" value="'+(k.hireStart||'')+'" onchange="updateKitField('+k.id+',\'hireStart\',this.value)"></div>'
+       +'</div>'
+      :'')
     +'</div>';
 
   // Dates row
@@ -7097,6 +7227,10 @@ function openAddKit() {
   document.getElementById('nkNotes').value='';
   document.getElementById('nkPat').value='';
   document.getElementById('nkPatTester').value='';
+  document.getElementById('nkHired').checked=false;
+  document.getElementById('nkHiredFields').style.display='none';
+  document.getElementById('nkHireCo').value='';
+  document.getElementById('nkExtAsset').value='';
   populateCatSelect('nkCat');
   om('mAddKit');
 }
@@ -7155,7 +7289,10 @@ function addKit() {
     make:document.getElementById('nkMake').value.trim(),serial:document.getElementById('nkSerial').value.trim(),tag:document.getElementById('nkTag').value.trim(),
     status:document.getElementById('nkStatus').value,cond:document.getElementById('nkCond').value,
     patDate:document.getElementById('nkPat').value,patTester:document.getElementById('nkPatTester').value.trim(),
-    notes:document.getElementById('nkNotes').value.trim(),history:[],tl:[]};
+    notes:document.getElementById('nkNotes').value.trim(),history:[],tl:[],
+    isHired:document.getElementById('nkHired').checked,
+    hireCompany:(document.getElementById('nkHireCo').value||'').trim(),
+    extAssetNo:(document.getElementById('nkExtAsset').value||'').trim()};
   kit.push(k);
   activity.unshift({icon:'➕',text:'Added: '+name,time:'Just now'});
   cm('mAddKit'); toast('Added: '+name); renderKit(); renderDash();
@@ -7334,9 +7471,9 @@ function saveSupplier() {
   saveData(); cm('mSupplier'); toast(editSuppId?'Supplier updated':'Supplier added'); renderSupp();
 }
 function renderSupp() {
-  var el=document.getElementById('suppList'); if(!el) return;
-  if(!suppliers.length){el.innerHTML='<div class="empty"><div class="empty-icon">🏢</div><div class="empty-txt">No suppliers added yet</div></div>';return;}
-  el.innerHTML=suppliers.map(function(s){
+  var html='';
+  if(!suppliers.length){html='<div class="empty"><div class="empty-icon">🏢</div><div class="empty-txt">No suppliers added yet</div></div>';}
+  else{html=suppliers.map(function(s){
     return '<div style="background:var(--near-black);border:1px solid var(--border);border-left:4px solid #5B5F8D;border-radius:6px;padding:10px 16px;margin-bottom:5px;display:flex;align-items:center;gap:14px">'
       +'<div style="flex:1;min-width:0">'
       +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:2px">'
@@ -7353,7 +7490,9 @@ function renderSupp() {
       +'<button class="ibtn" style="font-size:12px" onclick="editSupp('+s.id+')">Edit</button>'
       +'<button class="ibtn" style="font-size:12px;color:var(--danger)" onclick="delSupp('+s.id+')">Delete</button>'
       +'</div></div>';
-  }).join('');
+  }).join('');}
+  var el=document.getElementById('suppList');if(el)el.innerHTML=html;
+  var el2=document.getElementById('suppListAdmin');if(el2)el2.innerHTML=html;
 }
 function delSupp(id){if(!confirm('Delete this supplier?'))return;suppliers=suppliers.filter(function(s){return s.id!==id;});saveData();toast('Supplier deleted');renderSupp();}
 
@@ -7878,7 +8017,7 @@ function flAddPerson(){
 
 
 var _CAM_OPTS_SUBCAT={'Grip':'Grip & Track','Body':'Camera Body','Lens Range':'Lens','Support':'Support','Matte Box':'Matte Box','Filters':'Filters','Iris Control':'Iris Control','Focus Motor':'Focus Motor','Zoom':'Zoom','Remote Panel':'Remote Panel','Power':'Power','Conenction':'Video Connection','Timecode':'Timecode','Data Bridge':'Data Bridge','Control':'RCP / Control','Frame':'Frame Rate','Codec':'Codec','SENSOR':'Sensor Resolution','Look / LUT':'Look / LUT','Monitor':'Monitor','coms':'Comms','SDI':'SDI Output','Processing':'Processing','Plug':'Camera Plug'};
-const CAM_PLAN_OPTS = {"Grip": ["HD1", "HD2", "Baby Legs", "250 tripod", "250 head flat", "250 head bowl", "430 head", "750 head", "Osprey", "SL Quattro", "OB Quattro", "Static Quattro", "Skquattro", "Monopod", "Moose bars", "Easirig", "Ergo rig", "TCS Special base", "Meercat v1 (0.9-1.5m)", "Meercat v3 (1-2m)", "Starcam", "Towercam", "Railcam", "Steadicam", "Steadicam Trinity", "Agito", "Furio", "Jib", "Helicopter", "Drone", "Mini tripod", "Waterbird", "Handheld", "Autopod S (0.6-1.3m)", "Autopod D (1.2-2.6m)", "Scaff slug", "Ronford Scaff", "Newton Stabilised", "G1 Shotover", "Trinity", "PeePod", "Rolling Base", "Floor Spreader", "Mid Spreader", "HiHat on base", "Vinten HiHat Risor", "World Cup", "Tracking Skid", "Technocrane", "X-Trak", "MOY 2ft", "MOY 4ft", "MOY 8ft", "MOY 16ft", "MOY 24ft", "MOY 32ft", "MOY 40ft", "MagTrax", "Jib Track", "MOY Track", "Rail Track", "Drum Stool", "Script Holder", "Magic Arm", "Sachtler 18", "Ronford 3-way leveller", "4 bolt to Mitchell adapter", "Track connectors", "Wedges", "PTZ Unicol Stand", "TCS Bazuka", "Vinten Quick Release Mount", "3D Cable Cam"], "Body": ["Amira", "Alexa Mini", "Sony FX9", "Sony FX6", "ZCam", "Venice 2 8K", "Venice 2 6K", "Sony FR7", "Sony 3500", "Sony 3100", "Sony 1700", "PL w/ Hirose", "B4 Mount", "WOW US - Blackmagic URSA G1", "WOW UK - Blackmagic URSA G2"], "Lens Range": ["Angenieux 15-40", "Angenieux 45-120", "Angenieux 17-80", "Angenieux 19.5-94", "Angenieux 24-290", "Angenieux 28-340", "Angenieux 28-76", "Angenieux 44-440", "Angenieux 30-90 EZ1", "Angenieux 15-40 EZ2", "Angenieux 21-56", "Canon 11-55 CN5", "Canon 15-120 CN8", "Canon 17-120 CN7", "Canon 25-250 CN10", "Canon 50-1000 CN20", "Fujinon 14-100", "Fujinon 14-35", "Fujinon 19-90", "Fujinon 24-300", "Fujinon 85-300", "Fujinon 20-120", "Fujinon 25-1000", "Tokina 11-20", "Tokina 11-16", "Tokina 50-130", "DZO 12-25", "DZO 14-30", "DZO 20-55", "DZO 50-125", "Xeen PL Prime", "Prime 12mm", "Prime 135mm", "Prime 16mm", "Prime 18mm", "Prime 24mm", "Prime 35mm", "Prime 50mm", "Prime 85mm", "Prime 8mm", "Sony E 16-35 T3.1", "Sony E 16-35 f4", "Sony E 28-135 T4", "Sony E 12-24 f2.8", "Chrosziel E To PL", "Arri B4 to PL", "Canon CJ14", "Canon CJ24", "Canon CJ25", "Canon HJ14", "Canon HJ22", "Canon HJ24", "Canon XJ122", "Canon XJ86", "Pana 14-42 MFT", "Meike 8mm", "Meike 12mm", "Meike 16mm", "Meike 24mm", "Meike 35mm", "2x PL Extender", "1.4x PL Extender"], "Support": ["-", "MAP-1", "MAP-2", "BPA-3", "BP-8", "UAP-2", "WPA-1", "Dovetail plate", "Blackmagic Tripod Mount For Studio Camera 4K"], "Matte Box": ["-", "6x6 LMB", "4x5.65 LMB", "4x5.65 MB-T15", "4x5.65 MB-T12", "80mm", "100mm", "104mm", "110mm", "114mm", "162mm", "Lens Hood"], "Filters": ["-", "6x6", "4x5.65", "72mm", "77mm", "82mm", "95mm", "ND", "Black Pro Mist", "Glimmer Glass", "Black Satin", "Black Pro Mist", "White Pro Mist", "1 / 8", "1 / 4", "1 / 2", "1", "2", "Full Set"], "Iris Control": ["-", "Camin", "k2.0015759", "cforce RF Mini", "cforce Mini", "Lens internal motor", "Preset"], "Monitor": ["-", "SmallHD 703", "SmallHD 1303", "SmallHD 702", "SmallHD Ultra 5", "Sony PVM 14", "Sony PVM 17", "Arri VMM-1", "Eye EVF", "Sony 5\" viewfinder", "Steadicam", "Jib Monitor", "Return video", "(Shared Monitor)"], "Control": ["Cyanview RCP", "RCP-1500", "RCP-3500", "CNA-1", "BoxIO"], "Conenction": ["CCU", "CamRacer", "Clipon RF", "Nano RF", "HDMI \u2192 SDI", "Stage Racer", "Stage Racer", "Gimbal Head", "Blackmagic CCU"], "Zoom": ["-", "Mini Zoom", "hand", "ZSD-300D", "cforce Mini", "Jib Rocker", "Lens internal motor", "Chrosziel CDM-SFR"], "Remote Panel": ["-", "RM-IP500", "(Sharing other PTZ)", "AW Panel", "AutoPod Pedals"], "Question": ["No", "Yes"], "Focus Motor": ["-", "cforce RF Mini", "WCU-4", "Preston motor", "Preston FIZ", "hand", "FPD-400D", "FF4", "cforce Mini", "Jib Focus wheel", "Lens internal motor", "CineRT Tape", "Preset"], "Tally": ["-", "CamRacer", "PVM GPI", "Tally box", "Arri overlay", "Jib Tally"], "Timecode": ["-", "UltraSync One", "via CamRacer", "Alexa Lemo DIN", "Alexa Lemo BNC"], "Data Bridge": ["Domo Mesh", "via CamRacer", "Rocket + Bullet", "VisSys", "Other network", "Alexa Lemo RJ45"], "SENSOR": ["HD", "2K", "3.2K", "UHD"], "Frame": ["-", "23.976p", "24p", "25p", "25 PsF", "29.97p", "30p", "48p", "50p", "59.94p", "60p", "50i", "59.94i", "60i"], "coms": ["Bolero", "via Camera", "Desktop panel", "Roameo", "Walkie Talkie"], "SDI": ["-", "422 1.5G HD", "422 3G HD", "422 6G UHD", "HDMI HD", "HDMI UHD"], "Processing": ["-", "Clean", "Processed", "Char"], "Image": ["-", "Log-C", "Look", "Alexa Classic 709", "SDR (BT.709)"], "Colour Space": ["-", "Rec709", "Rec 2020"], "Look / LUT": ["-", "Rec709 Multicam", "Custom", "Rec709", "Vivid FR7-->Arri"], "Plug": ["-", "Cam Racer 12G -1", "Cam Racer 12G-2", "Cam Racer 3G-1", "Cam Racer 3G-2", "Cam Racer 12G-3", "Cam Racer 12G-4", "Cam Racer HDMI", "RF TX SDI In", "Operator monitor", "Other thing"], "Codec": ["ProRes LT", "ProRes", "ProRes HQ", "XAVC-Intra", "XAVC-L"], "Power": ["Vlock Batts", "CamRacer", "Block Battery", "Hotswap plate", "PoE", "D-tap to Sony cable", "Sony 240v PSU", "Gimbal Powered"], "Excludes": ["-", "hand", "Lens internal motor", "handheld", "Return video", "(Sharing other PTZ)", "AutoPod Pedals", "via CamRacer", "(Shared Monitor)", "Preset", "Other thing"]};
+const CAM_PLAN_OPTS = {"Grip": ["HD1", "HD2", "Baby Legs", "250 tripod", "250 head flat", "250 head bowl", "430 head", "750 head", "Osprey", "SL Quattro", "OB Quattro", "Static Quattro", "Skquattro", "Monopod", "Moose bars", "Easirig", "Ergo rig", "TCS Special base", "Meercat v1 (0.9-1.5m)", "Meercat v3 (1-2m)", "Starcam", "Towercam", "Railcam", "Steadicam", "Steadicam Trinity", "Agito", "Furio", "Jib", "Helicopter", "Drone", "Mini tripod", "Waterbird", "Handheld", "Autopod S (0.6-1.3m)", "Autopod D (1.2-2.6m)", "Scaff slug", "Ronford Scaff", "Newton Stabilised", "G1 Shotover", "Trinity", "PeePod", "Rolling Base", "Floor Spreader", "Mid Spreader", "HiHat on base", "Vinten HiHat Risor", "World Cup", "Tracking Skid", "Technocrane", "X-Trak", "MOY 2ft", "MOY 4ft", "MOY 8ft", "MOY 16ft", "MOY 24ft", "MOY 32ft", "MOY 40ft", "MagTrax", "Jib Track", "MOY Track", "Rail Track", "Drum Stool", "Script Holder", "Magic Arm", "Sachtler 18", "Ronford 3-way leveller", "4 bolt to Mitchell adapter", "Track connectors", "Wedges", "PTZ Unicol Stand", "TCS Bazuka", "Vinten Quick Release Mount", "3D Cable Cam"], "Body": ["Amira", "Alexa Mini", "Sony FX9", "Sony FX6", "ZCam", "Venice 2 8K", "Venice 2 6K", "Sony FR7", "Sony 3500", "Sony 3100", "Sony 1700", "PL w/ Hirose", "B4 Mount", "WOW US - Blackmagic URSA G1", "WOW UK - Blackmagic URSA G2"], "Lens Range": ["Angenieux 15-40", "Angenieux 45-120", "Angenieux 17-80", "Angenieux 19.5-94", "Angenieux 24-290", "Angenieux 28-340", "Angenieux 28-76", "Angenieux 44-440", "Angenieux 30-90 EZ1", "Angenieux 15-40 EZ2", "Angenieux 21-56", "Canon 11-55 CN5", "Canon 15-120 CN8", "Canon 17-120 CN7", "Canon 25-250 CN10", "Canon 50-1000 CN20", "Fujinon 14-100", "Fujinon 14-35", "Fujinon 19-90", "Fujinon 24-300", "Fujinon 85-300", "Fujinon 20-120", "Fujinon 25-1000", "Tokina 11-20", "Tokina 11-16", "Tokina 50-130", "DZO 12-25", "DZO 14-30", "DZO 20-55", "DZO 50-125", "Xeen PL Prime", "Prime 12mm", "Prime 135mm", "Prime 16mm", "Prime 18mm", "Prime 24mm", "Prime 35mm", "Prime 50mm", "Prime 85mm", "Prime 8mm", "Sony E 16-35 T3.1", "Sony E 16-35 f4", "Sony E 28-135 T4", "Sony E 12-24 f2.8", "Chrosziel E To PL", "Arri B4 to PL", "Canon CJ14", "Canon CJ24", "Canon CJ25", "Canon HJ14", "Canon HJ22", "Canon HJ24", "Canon XJ122", "Canon XJ86", "Pana 14-42 MFT", "Meike 8mm", "Meike 12mm", "Meike 16mm", "Meike 24mm", "Meike 35mm", "2x PL Extender", "1.4x PL Extender"], "Support": ["-", "MAP-1", "MAP-2", "BPA-3", "BP-8", "UAP-2", "WPA-1", "Dovetail plate", "Blackmagic Tripod Mount For Studio Camera 4K"], "Matte Box": ["-", "6x6 LMB", "4x5.65 LMB", "4x5.65 MB-T15", "4x5.65 MB-T12", "80mm", "100mm", "104mm", "110mm", "114mm", "162mm", "Lens Hood"], "Filters": ["-", "6x6", "4x5.65", "72mm", "77mm", "82mm", "95mm", "ND", "Black Pro Mist", "Glimmer Glass", "Black Satin", "Black Pro Mist", "White Pro Mist", "1 / 8", "1 / 4", "1 / 2", "1", "2", "Full Set"], "Iris Control": ["-", "Camin", "k2.0015759", "cforce RF Mini", "cforce Mini", "Lens internal motor", "Preset"], "Monitor": ["-", "SmallHD 703", "SmallHD 1303", "SmallHD 702", "SmallHD Ultra 5", "Sony PVM 14", "Sony PVM 17", "Arri VMM-1", "Eye EVF", "Sony 5\" viewfinder", "Steadicam", "Jib Monitor", "Return video", "(Shared Monitor)"], "Control": ["Cyanview RCP", "RCP-1500", "RCP-3500", "CNA-1", "BoxIO"], "Conenction": ["CCU", "CamRacer", "Clipon RF", "Nano RF", "HDMI \u2192 SDI", "Stage Racer", "Stage Racer", "Gimbal Head", "Blackmagic CCU"], "Zoom": ["-", "Mini Zoom", "hand", "ZSD-300D", "cforce Mini", "Jib Rocker", "Lens internal motor", "Chrosziel CDM-SFR"], "Remote Panel": ["-", "RM-IP500", "(Sharing other PTZ)", "AW Panel", "AutoPod Pedals"], "Question": ["No", "Yes"], "Focus Motor": ["-", "cforce RF Mini", "WCU-4", "Preston motor", "Preston FIZ", "hand", "FPD-400D", "FF4", "cforce Mini", "Jib Focus wheel", "Lens internal motor", "CineRT Tape", "Preset"], "Tally": ["-", "CamRacer", "PVM GPI", "Tally box", "Arri overlay", "Jib Tally"], "Timecode": ["-", "UltraSync One", "via CamRacer", "Alexa Lemo DIN", "Alexa Lemo BNC"], "Data Bridge": ["Domo Mesh", "via CamRacer", "Rocket + Bullet", "VisSys", "Other network", "Alexa Lemo RJ45"], "SENSOR": ["HD", "2K", "3.2K", "UHD"], "Frame": ["-", "23.976p", "24p", "25p", "25 PsF", "29.97p", "30p", "48p", "50p", "59.94p", "60p", "50i", "59.94i", "60i"], "coms": ["Bolero", "via Camera", "Desktop panel", "Roameo", "Walkie Talkie"], "SDI": ["-", "422 1.5G HD", "422 3G HD", "422 6G UHD", "HDMI HD", "HDMI UHD"], "Processing": ["-", "Clean", "Processed", "Char"], "Image": ["-", "Log-C", "Look", "Alexa Classic 709", "SDR (BT.709)"], "Colour Space": ["-", "Rec709", "Rec 2020"], "Look / LUT": ["-", "Rec709 Multicam", "Custom", "Rec709", "Vivid FR7-->Arri"], "Plug": ["-", "Cam Racer 12G -1", "Cam Racer 12G-2", "Cam Racer 3G-1", "Cam Racer 3G-2", "Cam Racer 12G-3", "Cam Racer 12G-4", "Cam Racer HDMI", "RF TX SDI In", "Operator monitor", "Other thing"], "Codec": ["ProRes LT", "ProRes", "ProRes HQ", "XAVC-Intra", "XAVC-L"], "Power": ["Vlock Batts", "CamRacer", "Block Battery", "Hotswap plate", "PoE", "D-tap to Sony cable", "Sony 240v PSU", "Gimbal Powered"], "Excludes": ["-", "hand", "Lens internal motor", "handheld", "Return video", "(Sharing other PTZ)", "AutoPod Pedals", "via CamRacer", "(Shared Monitor)", "Preset", "Other thing"], "EVS System": ["XT3", "XT-VIA", "XS-VIA", "XT4K", "XT-GO", "VMIX", "Blackmagic Replay"], "EVS Software": ["LSM 12.x", "LSM 14.x", "LSM 15.x", "Multicam 16", "Multicam 21", "VIA 21.x", "VIA 22.x"], "EVS Channels": ["2in/2out", "4in/4out", "6in/6out", "8in/8out", "12ch", "16ch"], "EVS Codec": ["XDCAM HD422", "DNxHD 120", "DNxHD 185", "DNxHD 220", "ProRes 422", "ProRes HQ", "XAVC-Intra", "AVC-Intra"], "EVS Extra Kit": ["IPDirector", "IPLink", "XT-Access", "XFile", "XHub", "CleanEdit", "IPWeb", "Multicam Go"], "GFX System": ["VizRT", "Chyron", "Ross XPression", "Unreal Engine", "Vmix", "CasparCG", "Brainstorm", "Zero Density"], "GFX Engine Version": ["Viz Engine 3.x", "Viz Engine 4.x", "Viz Engine 5.x", "Chyron Prime", "Chyron LyricX", "Ross XPression 9.x", "Unreal 5.x"], "GFX Engines": ["1 (Main only)", "2 (Main + Backup)", "3 (Main + Backup + Dev)", "4+"], "OLED Position": ["Lighting Desk", "Vision Desk 1", "Vision Desk 2", "Vision Desk 3", "Director", "Producer", "PA", "Sound Desk", "Production Gallery", "Lighting Room", "VT Area", "GFX Desk", "EVS Desk", "Comms Desk", "Edit Suite", "MCR", "Ingest"]};
 const CAM_FORMATS = ['HD 1080i','HD 1080p','4K UHD','HD 720p','SD','RAW'];
 const CAM_RESOLUTIONS = ['720p','1080i','1080p','2K','UHD','4K DCI','8K'];
 const CAM_FRAMERATES  = ['23.98','24.00','25.00','29.97','30.00','50.00','59.94','60.00'];
@@ -7941,15 +8080,15 @@ function renderJobDet(j) {
     {id:'info',label:'Info'},{id:'tech',label:'Tech Overview'},{id:'camspec',label:'Camera Spec'},
     {id:'set',label:'Set'},{id:'lv',label:'Lighting / Vision'},{id:'gallery',label:'Gallery'},
     {id:'crew',label:'Crew'},{id:'audio',label:'Audio'},{id:'post',label:'Post'},
-    {id:'monitors',label:'Monitors'},{id:'ingest',label:'Ingest'},{id:'comms',label:'Comms'},
+    {id:'monitors',label:'Monitors'},{id:'ingest',label:'Ingest'},{id:'evs',label:'EVS'},{id:'gfx',label:'GFX'},{id:'comms',label:'Comms'},
     {id:'ip',label:'IP Addresses'},{id:'kit',label:'Prep List'},
-    {id:'englog',label:'Eng Log'},{id:'engrpt',label:'Eng Report'},{id:'improve',label:'Improvements'}
+    {id:'englog',label:'Eng Log'},{id:'improve',label:'Improvements'}
   ];
   const isAdmin = CU && CU.role==='Admin';
   const exportBtn = isAdmin
     ? '<button class="ibtn" style="font-size:13px;padding:6px 14px;background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.3);font-family:var(--cond);font-weight:800;letter-spacing:.06em;text-transform:uppercase" onclick="exportJobData('+j.id+')">Export</button>'
     : '';
-  const JD_TAB_COLS={info:'rgba(60,90,160,.85)',tech:'rgba(160,100,30,.85)',camspec:'rgba(50,120,70,.85)',set:'rgba(120,60,140,.85)',lv:'rgba(30,115,125,.85)',gallery:'rgba(150,65,65,.85)',crew:'rgba(50,105,80,.85)',audio:'rgba(100,65,130,.85)',post:'rgba(130,85,35,.85)',monitors:'rgba(35,95,145,.85)',ingest:'rgba(75,125,45,.85)',comms:'rgba(145,55,95,.85)',ip:'rgba(40,105,105,.85)',kit:'rgba(135,75,35,.85)',englog:'rgba(55,85,155,.85)',engrpt:'rgba(155,45,45,.85)',improve:'rgba(75,115,55,.85)'};
+  const JD_TAB_COLS={info:'rgba(60,90,160,.85)',tech:'rgba(160,100,30,.85)',camspec:'rgba(50,120,70,.85)',set:'rgba(120,60,140,.85)',lv:'rgba(30,115,125,.85)',gallery:'rgba(150,65,65,.85)',crew:'rgba(50,105,80,.85)',audio:'rgba(100,65,130,.85)',post:'rgba(130,85,35,.85)',monitors:'rgba(35,95,145,.85)',ingest:'rgba(75,125,45,.85)',evs:'rgba(180,70,40,.85)',gfx:'rgba(55,130,160,.85)',comms:'rgba(145,55,95,.85)',ip:'rgba(40,105,105,.85)',kit:'rgba(135,75,35,.85)',englog:'rgba(55,85,155,.85)',improve:'rgba(75,115,55,.85)'};
   const tabBar = '<div style="display:flex;gap:5px;overflow-x:auto;padding:14px 0 10px;margin-bottom:6px;flex-shrink:0;align-items:center;flex-wrap:wrap">'
     +tabs.map(function(t){var isAct=t.id===_jdTab;var col=JD_TAB_COLS[t.id]||'rgba(60,90,160,.85)';return '<div class="jd-tab'+(isAct?' active':'')+'" data-tid="'+t.id+'" style="background:'+col+';" onclick="jdSwitch(\''+ t.id +'\','+j.id+')">'+t.label+'</div>';}).join('')+'</div>';
   let content = '';
@@ -7962,39 +8101,42 @@ function renderJobDet(j) {
       +'<button style="padding:5px 16px;font-size:12px;font-family:var(--cond);font-weight:800;letter-spacing:.08em;background:'+(isTX?jc.bg:'transparent')+';color:'+(isTX?'#fff':'var(--muted)')+';border:none;cursor:pointer" onclick="jdSetField('+j.id+',\'txRx\',\'TX\');renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))">TX</button>'
       +'<button style="padding:5px 16px;font-size:12px;font-family:var(--cond);font-weight:800;letter-spacing:.08em;background:'+(!isTX?jc.bg:'transparent')+';color:'+(!isTX?'#fff':'var(--muted)')+';border:none;cursor:pointer" onclick="jdSetField('+j.id+',\'txRx\',\'RX\');renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))">RX</button>'
       +'</div>';
-    var _lbl=function(t){return '<div style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:5px">'+t+'</div>';};
-    var _inp=function(field,val,ph){return '<input class="fi" style="width:100%;font-size:16px;padding:11px 14px;border-radius:8px;border:1.5px solid var(--border);background:var(--near-black)" value="'+((val||'').replace(/"/g,'&quot;'))+'" placeholder="'+(ph||'')+'" onchange="jdSetField('+j.id+',\''+field+'\',this.value)"/>';};
-    var _sel=function(field,opts){return '<select class="fi" style="width:100%;font-size:16px;padding:11px 14px;border-radius:8px;border:1.5px solid var(--border);background:var(--near-black)" onchange="jdSetField('+j.id+',\''+field+'\',this.value);renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))">'+opts+'</select>';};
-    var _date=function(field,val){return '<div style="display:flex;align-items:center;gap:8px"><input type="date" class="fi" style="font-size:16px;padding:11px 14px;border-radius:8px;border:1.5px solid var(--border);background:var(--near-black);flex:1" value="'+(val||'')+'" onchange="jdSetField('+j.id+',\''+field+'\',this.value)"/>'+(val?'<a href="#" onclick="jdGoCalDate(\''+val+'\',\'show\')" style="font-size:11px;color:'+jc.bg+';font-family:var(--cond);font-weight:800;letter-spacing:.06em;text-transform:uppercase;text-decoration:none">\u2197 CAL</a>':'')+'</div>';};
-    var _card=function(borderCol,content){return '<div style="background:var(--near-black);border:1.5px solid var(--border);border-top:3px solid '+borderCol+';border-radius:10px;padding:18px 20px">'+content+'</div>';};
+    var _lbl=function(t){return '<div style="font-family:var(--cond);font-size:11px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--pure);margin-bottom:2px">'+t+'</div>';};
+    var _inp=function(field,val,ph){return '<input class="fi" style="width:100%;font-size:15px;font-weight:600;padding:6px 10px;border-radius:6px;border:1.5px solid var(--border);background:var(--near-black);color:var(--pure)" value="'+((val||'').replace(/"/g,'&quot;'))+'" placeholder="'+(ph||'')+'" onchange="jdSetField('+j.id+',\''+field+'\',this.value)"/>';};
+    var _sel=function(field,opts){return '<select class="fi" style="width:100%;font-size:15px;font-weight:600;padding:6px 10px;border-radius:6px;border:1.5px solid var(--border);background:var(--near-black);color:var(--pure)" onchange="jdSetField('+j.id+',\''+field+'\',this.value);renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))">'+opts+'</select>';};
+    var _date=function(field,val){return '<div style="display:flex;align-items:center;gap:6px"><input type="date" class="fi" style="font-size:15px;font-weight:600;padding:6px 10px;border-radius:6px;border:1.5px solid var(--border);background:var(--near-black);color:var(--pure);flex:1" value="'+(val||'')+'" onchange="jdSetField('+j.id+',\''+field+'\',this.value)"/>'+(val?'<a href="#" onclick="jdGoCalDate(\''+val+'\',\'show\')" style="font-size:10px;color:'+jc.bg+';font-family:var(--cond);font-weight:800;letter-spacing:.06em;text-transform:uppercase;text-decoration:none">\u2197 CAL</a>':'')+'</div>';};
+    var _card=function(borderCol,content){return '<div style="background:var(--near-black);border:1.5px solid var(--border);border-top:3px solid '+borderCol+';border-radius:8px;padding:12px 14px">'+content+'</div>';};
     const locOpts = ['ABC','Manchester','London'].map(function(l){return '<option'+(l===j.loc?' selected':'')+'>'+l+'</option>';}).join('');
     const studs = studiosByLoc[j.loc]||[j.studio||''];
     const stuOpts = studs.map(function(s){return '<option'+(s===j.studio?' selected':'')+'>'+s+'</option>';}).join('');
 
-    var nameHeader='<div style="margin-bottom:20px">'
-      +'<input class="fi" style="width:100%;font-family:var(--cond);font-size:18px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;padding:11px 14px;border-radius:8px;border:1.5px solid var(--border);background:var(--near-black);color:var(--white)" value="'+((j.name||'').replace(/"/g,'&quot;'))+'" onchange="jdSetField('+j.id+',\'name\',this.value);document.getElementById(\'topTitle\').textContent=this.value"/>'
-      +'<div style="display:flex;align-items:center;gap:10px;margin-top:10px">'
+    var nameHeader='<div style="margin-bottom:12px">'
+      +'<input class="fi" style="width:100%;font-family:var(--cond);font-size:16px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;padding:6px 10px;border-radius:6px;border:1.5px solid var(--border);background:var(--near-black);color:var(--white)" value="'+((j.name||'').replace(/"/g,'&quot;'))+'" onchange="jdSetField('+j.id+',\'name\',this.value);document.getElementById(\'topTitle\').textContent=this.value"/>'
+      +'<div style="display:flex;align-items:center;gap:8px;margin-top:6px">'
       +'<span style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:4px 14px;border-radius:20px;background:'+locColor+';color:#fff">'+j.loc+'</span>'
       +'<span style="font-family:var(--cond);font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--muted)">'+(j.studio||'')+'</span>'
       +'<div style="flex:1"></div>'
       +txRxSwitch
       +'</div></div>';
 
-    content = '<div class="det-sec"><div class="det-sec-lbl">Job Details</div>'
-      +'<div class="det-grid" style="grid-template-columns:1fr 1fr;row-gap:14px;column-gap:14px">'
+    content = '<div class="det-sec" style="padding:10px 14px">'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px 10px;margin-bottom:8px">'
       +'<div>'+_lbl('Location')+_sel('loc',locOpts)+'</div>'
-      +'<div>'+_lbl('Production Company')+_inp('prodCompany',j.prodCompany||j.client||'','Company name...')+'</div>'
       +'<div>'+_lbl('Studio')+_sel('studio',stuOpts)+'</div>'
-      +'<div>'+_lbl('Director')+_inp('director',j.director||'','Director name...')+'</div>'
-      +'</div></div>'
-      +'<div class="det-sec"><div class="det-sec-lbl">Dates</div>'
-      +'<div class="det-grid" style="grid-template-columns:1fr 1fr;row-gap:14px;column-gap:14px">'
+      +'<div>'+_lbl('Production Company')+_inp('prodCompany',j.prodCompany||j.client||'','Company...')+'</div>'
+      +'<div>'+_lbl('Director')+_inp('director',j.director||'','Director...')+'</div>'
+      +'</div>'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px 10px;padding-top:6px;border-top:1px solid var(--border)">'
       +(j.status==='Ongoing'
-        ?'<div>'+_lbl('Season Start')+'<input type="month" class="fi" value="'+(j.start?j.start.slice(0,7):'')+'" onchange="jdSetField('+j.id+',\'start\',this.value+\'-01\')"/></div>'
-         +'<div>'+_lbl('Season End')+'<input type="month" class="fi" value="'+(j.end?j.end.slice(0,7):'')+'" onchange="jdSetField('+j.id+',\'end\',this.value+\'-01\')"/></div>'
+        ?'<div>'+_lbl('Season Start')+'<input type="month" class="fi" style="font-size:15px;font-weight:600;padding:6px 10px;color:var(--pure)" value="'+(j.start?j.start.slice(0,7):'')+'" onchange="jdSetField('+j.id+',\'start\',this.value+\'-01\')"/></div>'
+         +'<div>'+_lbl('Season End')+'<input type="month" class="fi" style="font-size:15px;font-weight:600;padding:6px 10px;color:var(--pure)" value="'+(j.end?j.end.slice(0,7):'')+'" onchange="jdSetField('+j.id+',\'end\',this.value+\'-01\')"/></div>'
         :'<div>'+_lbl('Start Date')+_date('start',j.start)+'</div>'
          +'<div>'+_lbl('End Date')+_date('end',j.end)+'</div>')
-      +'</div></div>'
+      +'<div>'+_lbl('Status')+'<select class="fi" style="font-size:15px;font-weight:600;padding:6px 10px;border-radius:6px;border:1.5px solid var(--border);background:var(--near-black);color:var(--pure)" onchange="jdSetField('+j.id+',\'status\',this.value);saveData();renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))">'
+      +['Confirmed','Likely','Possible','Ongoing','Cancelled'].map(function(s){return '<option'+(s===j.status?' selected':'')+'>'+s+'</option>';}).join('')+'</select></div>'
+      +'<div>'+_lbl('TX / RX')+txRxSwitch+'</div>'
+      +'</div>'
+      +'</div>'
       +(j.status!=='Ongoing'
       ?('<div class="det-sec"><div class="det-sec-lbl" style="font-size:14px">Key Production Dates</div>'
           +'<div style="display:flex;flex-direction:column;gap:20px">'
@@ -8034,28 +8176,7 @@ function renderJobDet(j) {
           +'<input type="date" class="fi" style="font-size:16px;padding:10px 12px;border-radius:6px;max-width:240px" value="'+(j.drigDate||'')+'" onchange="jdSetField('+j.id+',\'drigDate\',this.value)"/></div>'
           +'</div></div>')
       :'')
-    +(function(){
-      if(!j.contacts)j.contacts=[];
-      var cRows=j.contacts.map(function(c,ci){
-        return '<div style="display:grid;grid-template-columns:1fr 1fr 1.2fr 1fr auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)">'
-          +'<input class="fi" style="font-size:15px;padding:8px 10px;border-radius:6px" value="'+(c.name||'')+'" placeholder="Name..." onchange="jdContSet('+j.id+','+ci+',\'name\',this.value)"/>'
-          +'<input class="fi" style="font-size:15px;padding:8px 10px;border-radius:6px" value="'+(c.company||'')+'" placeholder="Company..." onchange="jdContSet('+j.id+','+ci+',\'company\',this.value)"/>'
-          +'<input class="fi" style="font-size:15px;padding:8px 10px;border-radius:6px" value="'+(c.email||'')+'" placeholder="Email..." onchange="jdContSet('+j.id+','+ci+',\'email\',this.value)"/>'
-          +'<input class="fi" style="font-size:15px;padding:8px 10px;border-radius:6px" value="'+(c.tel||'')+'" placeholder="Tel..." onchange="jdContSet('+j.id+','+ci+',\'tel\',this.value)"/>'
-          +'<button class="rm-btn" style="font-size:14px" onclick="jdContRm('+j.id+','+ci+')">×</button>'
-          +'</div>';
-      }).join('');
-      return '<div class="det-sec"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'
-        +'<div class="det-sec-lbl" style="margin-bottom:0;font-size:14px">Important Contacts</div>'
-        +'<button class="ibtn" style="font-size:13px;padding:6px 14px" onclick="jdContAdd('+j.id+')">+ Add Contact</button>'
-        +'</div>'
-        +(j.contacts.length
-          ?'<div style="display:grid;grid-template-columns:1fr 1fr 1.2fr 1fr auto;gap:10px;padding:6px 0;border-bottom:2px solid rgba(255,255,255,.08);margin-bottom:4px">'
-            +['Name','Company','Email','Tel',''].map(function(h){return '<div style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">'+h+'</div>';}).join('')+'</div>'
-            +cRows
-          :'<div style="color:var(--muted);font-size:14px;padding:4px 0">No contacts added yet.</div>')
-        +'</div>';
-    }())
+    +hodSection(j)
   }
 
   else if(_jdTab==='tech') {
@@ -8128,18 +8249,21 @@ function renderJobDet(j) {
       var aKit=cd.kitId?kit.find(function(x){return x.id===cd.kitId;}):null;
 
       // Kit row (always shown)
-      var kitRow='<div style="margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--border-l)">'
-        +'<div class="dfl" style="margin-bottom:4px">Camera Body</div>'
-        +'<div style="display:flex;flex-direction:column;gap:4px">'
-        +(aKit
-          ?'<span style="background:rgba(42,125,72,.12);border:1px solid rgba(42,125,72,.4);border-radius:3px;font-size:12px;padding:3px 8px;color:#2a7d48">'+aKit.name+'</span>'
-           +'<div style="display:flex;gap:4px"><button class="ibtn" style="font-size:11px;flex:1" onclick="jdPickCamKit('+jid+','+i+')">Change</button>'
-           +'<button class="rm-btn" style="font-size:11px" onclick="jdSetCamDetail('+jid+','+i+',\'kitId\',null)">x</button></div>'
-          :'<button class="ibtn" style="font-size:12px;width:100%" onclick="jdPickCamKit('+jid+','+i+')">From Inventory</button>'
-           +'<button class="ibtn" style="font-size:12px;width:100%;background:rgba(250,160,0,.12);color:#b87400" onclick="jdCamPickHired('+jid+','+i+')">+ Hired</button>'
-        )
-        +(cd.hired&&!aKit?'<span style="font-size:11px;background:rgba(250,160,0,.15);color:#b87400;border:1px solid rgba(250,160,0,.4);border-radius:3px;padding:2px 6px;text-align:center">Hired'+(cd.hiredType?' · '+cd.hiredType:'')+'</span>':'')
-        +'</div></div>';
+      var bodyName=aKit?aKit.name:(cd.hired?(cd.hiredType||'Hired'):'');
+      var kitRow;
+      if(aKit||cd.hired){
+        kitRow='<div style="display:flex;align-items:baseline;gap:6px;padding:4px 0;margin-bottom:6px;border-bottom:1px solid var(--border-l);cursor:pointer" onclick="jdSetCamDetail('+jid+','+i+',\'kitId\',null);jdSetCamDetail('+jid+','+i+',\'hired\',false)">'
+          +'<div style="font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);min-width:50px;flex-shrink:0">Body</div>'
+          +'<div style="flex:1;font-family:var(--cond);font-size:14px;font-weight:700;color:var(--pure);line-height:1.2;text-transform:uppercase">'+bodyName+'</div>'
+          +'</div>';
+      } else {
+        kitRow='<div style="margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid var(--border-l)">'
+          +'<div class="dfl" style="margin-bottom:3px">Camera Body</div>'
+          +'<div style="display:flex;flex-direction:column;gap:3px">'
+          +'<button class="ibtn" style="font-size:11px;width:100%;padding:3px 0" onclick="jdPickCamKit('+jid+','+i+')">From Inventory</button>'
+          +'<button class="ibtn" style="font-size:11px;width:100%;padding:3px 0;background:rgba(250,160,0,.12);color:#b87400" onclick="jdCamPickHired('+jid+','+i+')">+ Hired</button>'
+          +'</div></div>';
+      }
 
       // Active field rows — each has Data-Val / Inventory / Hired mode
       var fieldRows=af.map(function(fkey){
@@ -8149,42 +8273,44 @@ function renderJobDet(j) {
         var fm=cd.fieldData[fkey]||(cd.fieldData[fkey]={mode:'dv',val:cd[fkey]||'',kitId:null,hiredVal:''});
         var mode=fm.mode||'dv';
         var aFKit=fm.kitId?kit.find(function(k){return k.id===fm.kitId;}):null;
-        var modeTabs='<div style="display:flex;margin-bottom:4px">'
+        /* Determine if we have a selected value */
+        var hasVal=false,valDisp='';
+        if(mode==='inv'&&aFKit){hasVal=true;valDisp=aFKit.name;}
+        else if(mode==='hired'&&fm.hiredVal){hasVal=true;valDisp=fm.hiredVal;}
+        else if(mode==='dv'&&fm.val){hasVal=true;valDisp=fm.val;}
+
+        if(hasVal){
+          /* Compact selected view - click to change */
+          return '<div style="display:flex;align-items:baseline;gap:6px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer" onclick="jdCamFClear('+jid+','+i+',\''+fkey+'\')">'
+            +'<div style="font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);min-width:50px;flex-shrink:0">'+fd.label+'</div>'
+            +'<div style="flex:1;font-family:var(--cond);font-size:14px;font-weight:700;color:var(--pure);line-height:1.2;text-transform:uppercase">'+valDisp+'</div>'
+            +'<button onclick="event.stopPropagation();jdRemoveCamField('+jid+','+i+',\''+fkey+'\')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:11px;padding:0;line-height:1;flex-shrink:0">×</button>'
+            +'</div>';
+        }
+
+        /* Empty - show mode tabs + picker */
+        var modeTabs='<div style="display:flex;margin-bottom:3px">'
           +[['dv','List'],['inv','Inventory'],['hired','Hired']].map(function(opt,oi){
             var active=mode===opt[0];
             var borderR=oi<2?'border-right:none;':'';
-            return '<button onclick="jdCamFMode('+jid+','+i+',\''+fkey+'\',\''+opt[0]+'\');renderJobDet(jobs.find(function(x){return x.id==='+jid+';}));" style="padding:5px 12px;font-size:13px;font-family:var(--cond);font-weight:800;border:1.5px solid var(--border);'+borderR+'background:'+(active?'rgba(74,158,255,.3)':'rgba(255,255,255,.04)')+';color:'+(active?'#4a9eff':'var(--muted)')+';cursor:pointer">'+opt[1]+'</button>';
+            return '<button onclick="jdCamFMode('+jid+','+i+',\''+fkey+'\',\''+opt[0]+'\');renderJobDet(jobs.find(function(x){return x.id==='+jid+';}));" style="padding:3px 10px;font-size:11px;font-family:var(--cond);font-weight:800;border:1.5px solid var(--border);'+borderR+'background:'+(active?'rgba(74,158,255,.3)':'rgba(255,255,255,.04)')+';color:'+(active?'#4a9eff':'var(--muted)')+';cursor:pointer">'+opt[1]+'</button>';
           }).join('')+'</div>';
         var input='';
         if(mode==='inv'){
-          input=aFKit
-            ?'<div style="display:flex;flex-direction:column;gap:3px"><span style="background:rgba(42,125,72,.12);border:1px solid rgba(60,180,100,.3);border-radius:3px;font-size:11px;padding:2px 7px;color:#2a7d48">'+aFKit.name+'</span>'
-              +'<div style="display:flex;gap:3px"><button class="ibtn" style="font-size:10px;flex:1" onclick="jdPickCamFKit('+jid+','+i+',\''+fkey+'\')">Change</button>'
-              +'<button class="rm-btn" style="font-size:10px" onclick="jdCamFKitSet('+jid+','+i+',\''+fkey+'\',null)">×</button></div></div>'
-            :'<button class="ibtn" style="font-size:11px;width:100%" onclick="jdPickCamFKit('+jid+','+i+',\''+fkey+'\')">Pick from Inventory</button>';
+          input='<button class="ibtn" style="font-size:11px;width:100%;padding:3px 0" onclick="jdPickCamFKit('+jid+','+i+',\''+fkey+'\')">From Inventory</button>';
         } else if(mode==='hired'){
           input='<input class="fi" style="font-size:12px;padding:3px 5px;width:100%" value="'+(fm.hiredVal||'')+'" placeholder="Type / model..." onchange="jdCamFHired('+jid+','+i+',\''+fkey+'\',this.value)"/>';
         } else {
           if(fd.type==='sel'){
             var _subcat2=(_CAM_OPTS_SUBCAT[fd.opts]||fd.opts);
-            var _curVal=fm.val||'';
-            if(_curVal){
-              input='<div style="display:flex;align-items:center;gap:4px">'
-                +'<span style="flex:1;font-size:12px;color:var(--white);background:rgba(255,255,255,.07);border-radius:4px;padding:3px 7px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+_curVal+'</span>'
-                +'<button class="ibtn" style="font-size:11px;padding:2px 6px;flex-shrink:0" onclick="jdSetCamDetail('+jid+','+i+',\''+fkey+'\',\'\');renderJobDet(jobs.find(function(x){return x.id==='+jid+';}))">×</button>'
-                +'<button class="ibtn" style="font-size:11px;padding:2px 6px;flex-shrink:0" onclick="jdOpenCamFieldPick('+jid+','+i+',\''+fkey+'\',\''+_subcat2+'\')">↓</button>'
-                +'</div>';
-            } else {
-              input='<button class="ibtn" style="font-size:12px;width:100%;text-align:left;color:var(--muted)" onclick="jdOpenCamFieldPick('+jid+','+i+',\''+fkey+'\',\''+_subcat2+'\')">'
-                +'<span style="opacity:.5">-- pick --</span>'
-                +'</button>';
-            }
+            input='<button class="ibtn" style="font-size:11px;width:100%;text-align:left;color:var(--muted);padding:3px 6px" onclick="jdOpenCamFieldPick('+jid+','+i+',\''+fkey+'\',\''+_subcat2+'\')">'
+              +'<span style="opacity:.5">-- pick --</span></button>';
           } else {
-            input='<input class="fi" style="font-size:12px;padding:3px 5px;width:100%" value="'+(fm.val||'')+'" placeholder="'+(fd.ph||'')+'" onchange="jdSetCamDetail('+jid+','+i+',\''+fkey+'\',this.value)"/>';
+            input='<input class="fi" style="font-size:12px;padding:3px 5px;width:100%" value="" placeholder="'+(fd.ph||'')+'" onchange="jdSetCamDetail('+jid+','+i+',\''+fkey+'\',this.value)"/>';
           }
         }
-        return '<div style="margin-bottom:7px">'
-          +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px">'
+        return '<div style="margin-bottom:5px">'
+          +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1px">'
           +'<div class="dfl" style="font-size:10px">'+fd.label+'</div>'
           +'<button onclick="jdRemoveCamField('+jid+','+i+',\''+fkey+'\')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:11px;padding:0;line-height:1">×</button>'
           +'</div>'+modeTabs+input+'</div>';
@@ -8202,7 +8328,7 @@ function renderJobDet(j) {
           +'</div></div>'
         :'';
 
-      var opField='<div style="margin-bottom:8px"><div class="dfl" style="font-size:10px;margin-bottom:2px">Operator</div>'
+      var opField=j.hideOperators?'':'<div style="margin-bottom:8px"><div class="dfl" style="font-size:10px;margin-bottom:2px">Operator</div>'
         +'<input class="fi" style="font-size:12px;padding:3px 5px;width:100%" value="'+(cd.operator||'')+'" placeholder="Operator name..." onchange="jdSetCamDetail('+jid+','+i+',\'operator\',this.value)"/></div>';
 
       // ── Always-visible Lens row ──────────────────────────────────────────
@@ -8211,22 +8337,34 @@ function renderJobDet(j) {
       var lensInvItems=kit.filter(function(k){return (k.subcat==='Lens'||k.subcat==='Lens Range')&&k.status!=='Bin';});
       var aLensKit=ld.kitId?kit.find(function(x){return x.id===ld.kitId;}):null;
       var aLensHired=ld.hiredCatId?hiredCatalogue.find(function(x){return x.id===ld.hiredCatId;}):null;
-      var lensModeBar='<div style="display:flex;margin-bottom:4px">'        +[['inv','Inventory'],['hired','Hired']].map(function(opt,oi){          var active=(ld.mode||'inv')===opt[0];          return '<button onclick="jdCamLensMode('+jid+','+i+',\''+opt[0]+'\')" style="padding:5px 12px;font-size:13px;font-family:var(--cond);font-weight:800;border:1.5px solid var(--border);'+(oi===0?'border-right:none;':'')+'background:'+(active?'rgba(74,158,255,.3)':'rgba(255,255,255,.04)')+';color:'+(active?'#4a9eff':'var(--muted)')+';cursor:pointer">'+opt[1]+'</button>';        }).join('')+'</div>';      var lensInput='';      if(ld.mode==='hired'){
+      var lensModeBar='<div style="display:flex;margin-bottom:3px">'+[['inv','Inventory'],['hired','Hired']].map(function(opt,oi){var active=(ld.mode||'inv')===opt[0];return '<button onclick="jdCamLensMode('+jid+','+i+',\''+opt[0]+'\')" style="padding:3px 10px;font-size:11px;font-family:var(--cond);font-weight:800;border:1.5px solid var(--border);'+(oi===0?'border-right:none;':'')+'background:'+(active?'rgba(74,158,255,.3)':'rgba(255,255,255,.04)')+';color:'+(active?'#4a9eff':'var(--muted)')+';cursor:pointer">'+opt[1]+'</button>';}).join('')+'</div>';
+      /* Determine selected lens name */
+      var lensHasVal=false,lensValDisp='';
+      if(aLensKit){lensHasVal=true;lensValDisp=aLensKit.name;}
+      else if(ld.hiredCatId){var _hl=hiredCatalogue.find(function(h){return h.id===ld.hiredCatId;});lensHasVal=!!_hl;lensValDisp=_hl?_hl.name:'';}
+      else if(ld.hiredCustom){lensHasVal=true;lensValDisp=ld.hiredCustom;}
+
+      var lensRow;
+      if(lensHasVal){
+        lensRow='<div style="display:flex;align-items:baseline;gap:6px;padding:4px 0;margin-bottom:6px;border-bottom:1px solid var(--border-l);cursor:pointer" onclick="jdCamLensSetInv('+jid+','+i+',null);jdCamLensSetHired('+jid+','+i+',null)">'
+          +'<div style="font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);min-width:50px;flex-shrink:0">Lens</div>'
+          +'<div style="flex:1;font-family:var(--cond);font-size:14px;font-weight:700;color:var(--pure);line-height:1.2;text-transform:uppercase">'+lensValDisp+'</div>'
+          +'</div>';
+      } else {
+        var lensInput='';
+        if(ld.mode==='hired'){
         var hiredLensCat=hiredCatalogue.filter(function(h){return h.subcat==='Lens'||h.subcat==='Lens Range';});
         var hiredLensOpts='<option value="">-- select hired lens --</option>'
           +hiredLensCat.map(function(h){return '<option value="h'+h.id+'"'+(ld.hiredCatId===h.id?' selected':'')+'>'+h.name+'</option>';}).join('')
           +'<option value="custom" style="color:#2a6cb8;font-style:italic">+ Type custom...</option>';
-        var selVal=ld.hiredCatId?'h'+ld.hiredCatId:(ld.hiredCustom?'custom':'');
-        lensInput=ld.hiredCatId||ld.hiredCustom
-          ?'<div style="display:flex;flex-direction:column;gap:3px">'
-            +'<span style="background:rgba(250,160,0,.12);border:1px solid rgba(250,160,0,.35);border-radius:3px;font-size:12px;padding:2px 8px;color:#b87400">'+(ld.hiredCustom||hiredLensCat.find(function(h){return h.id===ld.hiredCatId;})||{name:'?'}).name+'</span>'
-            +'<div style="display:flex;gap:4px"><select class="fi" style="font-size:11px;flex:1" onchange="jdCamLensHiredPick('+jid+','+i+',this.value)"><option value="">change...</option>'+hiredLensOpts+'</select>'
-            +'<button class="rm-btn" style="font-size:11px" onclick="jdCamLensSetHired('+jid+','+i+',null)">×</button></div>'
-            +(ld.hiredCustom!==undefined&&ld.hiredCatId===undefined?'<input class="fi" style="font-size:11px;padding:2px 6px;margin-top:2px" value="'+(ld.hiredCustom||'')+'" placeholder="Lens description..." onchange="jdCamLensSetCustom('+jid+','+i+',this.value)"/>':'')
-            +'</div>'
-          :'<select class="fi" style="font-size:12px;width:100%" onchange="jdCamLensHiredPick('+jid+','+i+',this.value)">'+hiredLensOpts+'</select>'
-          +'<div id="lensCustom_'+jid+'_'+i+'" style="display:none;margin-top:4px"><input class="fi" style="font-size:12px;padding:3px 6px;width:100%" placeholder="Describe the hired lens..." onchange="jdCamLensSetCustom('+jid+','+i+',this.value)"/></div>';
-      } else {        lensInput=aLensKit          ?'<div style="display:flex;flex-direction:column;gap:3px"><span style="background:rgba(42,125,72,.12);border:1px solid rgba(42,125,72,.4);border-radius:3px;font-size:12px;padding:2px 8px;color:#2a7d48">'+aLensKit.name+'</span>'           +'<div style="display:flex;gap:4px"><button class="ibtn" style="font-size:11px;flex:1" onclick="jdPickCamLens('+jid+','+i+')">Change</button>'           +'<button class="rm-btn" style="font-size:11px" onclick="jdCamLensSetInv('+jid+','+i+',null)">×</button></div></div>'          :'<button class="ibtn" style="font-size:12px;width:100%" onclick="jdPickCamLens('+jid+','+i+')">From Inventory</button>';      }      var lensRow='<div style="margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--border-l)">'        +'<div class="dfl" style="margin-bottom:4px">Lens</div>'        +lensModeBar+lensInput+'</div>';
+        lensInput='<select class="fi" style="font-size:12px;width:100%" onchange="jdCamLensHiredPick('+jid+','+i+',this.value)">'+hiredLensOpts+'</select>';
+      } else {
+        lensInput='<button class="ibtn" style="font-size:11px;width:100%;padding:3px 0" onclick="jdPickCamLens('+jid+','+i+')">From Inventory</button>';
+      }
+        lensRow='<div style="margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid var(--border-l)">'
+          +'<div class="dfl" style="margin-bottom:3px">Lens</div>'
+          +lensModeBar+lensInput+'</div>';
+      }
       var camNum=cd.camNum!==undefined?cd.camNum:(i+1);
 
       // ── Equipment row builder (Pedestal, Head, Zoom, Focus) ──
@@ -8234,26 +8372,37 @@ function renderJobDet(j) {
         if(!cd2[dataKey])cd2[dataKey]={mode:'inv',kitId:null,hiredVal:''};
         var ed=cd2[dataKey];
         var isNA=ed.mode==='na';
-        var modeBar='<div style="display:flex;margin-bottom:4px">'
+        /* Check if we have a selected value */
+        var eqKit=ed.kitId?kit.find(function(x){return x.id===ed.kitId;}):null;
+        var eqHasVal=!!(eqKit||(ed.mode==='hired'&&ed.hiredVal));
+        var eqValDisp=eqKit?eqKit.name:(ed.hiredVal||'');
+
+        if(isNA) return '<div style="display:flex;align-items:center;gap:6px;padding:2px 0;opacity:.35">'
+          +'<div style="font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);min-width:70px">'+label+'</div>'
+          +'<div style="flex:1;font-size:11px;color:var(--muted)">N/A</div>'
+          +'<button class="ibtn" style="font-size:9px;padding:1px 6px" onclick="jdEquipMode('+jid2+','+ci2+',\''+dataKey+'\',\'inv\')">enable</button></div>';
+
+        if(eqHasVal){
+          return '<div style="display:flex;align-items:baseline;gap:6px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer" onclick="jdEquipSetKit('+jid2+','+ci2+',\''+dataKey+'\',null);jdEquipHired('+jid2+','+ci2+',\''+dataKey+'\',\'\')">'
+            +'<div style="font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);min-width:50px;flex-shrink:0">'+label+'</div>'
+            +'<div style="flex:1;font-family:var(--cond);font-size:14px;font-weight:700;color:var(--pure);line-height:1.2;text-transform:uppercase">'+eqValDisp+'</div>'
+            +'</div>';
+        }
+
+        /* Empty - show compact picker */
+        var modeBar='<div style="display:flex;margin-bottom:3px">'
           +[['inv','Inventory'],['hired','Hired'],['na','N/A']].map(function(opt,oi){
             var active=ed.mode===opt[0];
-            return '<button onclick="jdEquipMode('+jid2+','+ci2+',\''+dataKey+'\',\''+opt[0]+'\')" style="padding:5px 12px;font-size:13px;font-family:var(--cond);font-weight:800;border:1.5px solid var(--border);'+(oi===0?'border-right:none;':'')+(oi===1?'border-right:none;':'')+'background:'+(active?(opt[0]==='na'?'rgba(128,128,128,.2)':'rgba(74,158,255,.3)'):'rgba(255,255,255,.04)')+';color:'+(active?(opt[0]==='na'?'var(--muted)':'#2a6cb8'):'var(--muted)')+';cursor:pointer">'+opt[1]+'</button>';
+            return '<button onclick="jdEquipMode('+jid2+','+ci2+',\''+dataKey+'\',\''+opt[0]+'\')" style="padding:3px 10px;font-size:11px;font-family:var(--cond);font-weight:800;border:1.5px solid var(--border);'+(oi<2?'border-right:none;':'')+'background:'+(active?(opt[0]==='na'?'rgba(128,128,128,.2)':'rgba(74,158,255,.3)'):'rgba(255,255,255,.04)')+';color:'+(active?(opt[0]==='na'?'var(--muted)':'#2a6cb8'):'var(--muted)')+';cursor:pointer">'+opt[1]+'</button>';
           }).join('')+'</div>';
-        if(isNA) return '<div style="margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--border-l);opacity:.4">'
-          +'<div class="dfl" style="margin-bottom:4px">'+label+'</div>'+modeBar+'</div>';
         var eqInput='';
         if(ed.mode==='hired'){
-          eqInput='<input class="fi" style="font-size:12px;padding:3px 5px;width:100%" value="'+(ed.hiredVal||'')+'" placeholder="Type / model..." onchange="jdEquipHired('+jid2+','+ci2+',\''+dataKey+'\',this.value)"/>';
+          eqInput='<input class="fi" style="font-size:12px;padding:3px 5px;width:100%" value="" placeholder="Type / model..." onchange="jdEquipHired('+jid2+','+ci2+',\''+dataKey+'\',this.value)"/>';
         } else {
-          var eqKit=ed.kitId?kit.find(function(x){return x.id===ed.kitId;}):null;
-          eqInput=eqKit
-            ?'<div style="display:flex;flex-direction:column;gap:3px"><span style="background:rgba(42,125,72,.12);border:1px solid rgba(42,125,72,.4);border-radius:3px;font-size:12px;padding:2px 8px;color:#2a7d48">'+eqKit.name+'</span>'
-              +'<div style="display:flex;gap:4px"><button class="ibtn" style="font-size:11px;flex:1" onclick="jdEquipPick('+jid2+','+ci2+',\''+dataKey+'\',\''+subcat+'\')">Change</button>'
-              +'<button class="rm-btn" style="font-size:11px" onclick="jdEquipSetKit('+jid2+','+ci2+',\''+dataKey+'\',null)">×</button></div></div>'
-            :'<button class="ibtn" style="font-size:12px;width:100%" onclick="jdEquipPick('+jid2+','+ci2+',\''+dataKey+'\',\''+subcat+'\')">From Inventory</button>';
+          eqInput='<button class="ibtn" style="font-size:11px;width:100%;padding:3px 0" onclick="jdEquipPick('+jid2+','+ci2+',\''+dataKey+'\',\''+subcat+'\')">From Inventory</button>';
         }
-        return '<div style="margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--border-l)">'
-          +'<div class="dfl" style="margin-bottom:4px">'+label+'</div>'+modeBar+eqInput+'</div>';
+        return '<div style="margin-bottom:5px;padding-bottom:5px;border-bottom:1px solid var(--border-l)">'
+          +'<div class="dfl" style="margin-bottom:3px">'+label+'</div>'+modeBar+eqInput+'</div>';
       }
 
       var pedRow=mkEquipRow('Pedestal','pedestalData','Pedestal',jid,i,cd);
@@ -8261,17 +8410,40 @@ function renderJobDet(j) {
       var zoomRow=mkEquipRow('Zoom Demand','zoomData','Zoom Demand',jid,i,cd);
       var focusRow=mkEquipRow('Focus Demand','focusData','Focus Demand',jid,i,cd);
 
-      return '<div style="min-width:200px;max-width:200px;background:rgba(255,255,255,.025);border:2px solid '+_rc.bg+';border-radius:6px;padding:12px;flex-shrink:0">'
-        +'<div style="font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;display:flex;align-items:center;gap:4px">'
-        +'CAM <input class="fi" style="font-size:13px;padding:1px 4px;width:38px;font-family:var(--cond);font-weight:800;letter-spacing:.06em;text-align:center;" value="'+camNum+'" placeholder="1" onchange="jdSetCamDetail('+jid+','+i+',\'camNum\',isNaN(+this.value)?this.value:+this.value)" onclick="event.stopPropagation()"/>'
-        +'<input class="fi" style="font-size:11px;padding:2px 5px;flex:1;min-width:0;font-family:var(--cond);font-weight:700;letter-spacing:.04em;text-transform:uppercase;margin-left:4px" value="'+(cd.camLabel||'')+'" placeholder="e.g. Jib" onchange="jdSetCamDetail('+jid+','+i+',\'camLabel\',this.value)" onclick="event.stopPropagation()"/>'
+      var autocueRow=mkEquipRow('Autocue','autocueData','Autocue',jid,i,cd);
+      var retMonRow=mkEquipRow('Return Mon','retMonData','Monitor',jid,i,cd);
+      var vfRow=mkEquipRow('Viewfinder','viewfinderData','Viewfinder',jid,i,cd);
+
+      /* Camera photos */
+      if(!cd.photos)cd.photos=[];
+      var camPhotos=cd.photos.length
+        ?'<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:6px">'+cd.photos.map(function(p,pi){
+          return '<div style="position:relative;width:48px;height:36px"><img src="'+p+'" style="width:100%;height:100%;object-fit:cover;border-radius:3px;cursor:pointer" onclick="window.open(\''+p.replace(/'/g,"\\'")+'\')"/>'
+            +'<button onclick="event.stopPropagation();jdCamPhotoRm('+jid+','+i+','+pi+')" style="position:absolute;top:-4px;right:-4px;background:rgba(0,0,0,.7);color:#fff;border:none;border-radius:50%;width:14px;height:14px;font-size:9px;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center">×</button></div>';
+        }).join('')+'</div>'
+        :'';
+      var camPhotoBtn='<label style="display:inline-flex;align-items:center;gap:4px;font-size:10px;color:var(--muted);cursor:pointer;margin-top:4px"><span>📷</span> Add photo<input type="file" accept="image/*" style="display:none" onchange="jdCamPhotoAdd('+jid+','+i+',this)"/></label>';
+
+      /* Label toggle - only show input if has value or clicking + */
+      var labelHtml=cd.camLabel
+        ?'<input class="fi" style="font-size:12px;padding:2px 5px;flex:1;min-width:0;font-family:var(--cond);font-weight:700;letter-spacing:.04em;text-transform:uppercase" value="'+(cd.camLabel||'')+'" placeholder="e.g. Jib" onchange="jdSetCamDetail('+jid+','+i+',\'camLabel\',this.value)" onclick="event.stopPropagation()"/>'
+        :'<button class="ibtn" style="font-size:9px;padding:1px 6px;color:var(--muted)" onclick="this.style.display=\'none\';this.nextElementSibling.style.display=\'\'">+ label</button>'
+         +'<input class="fi" style="display:none;font-size:12px;padding:2px 5px;flex:1;min-width:0;font-family:var(--cond);font-weight:700;letter-spacing:.04em;text-transform:uppercase" value="" placeholder="e.g. Jib" onchange="jdSetCamDetail('+jid+','+i+',\'camLabel\',this.value)" onclick="event.stopPropagation()"/>';
+
+      return '<div style="min-width:240px;max-width:260px;background:rgba(255,255,255,.025);border:2px solid '+_rc.bg+';border-radius:6px;padding:10px;flex-shrink:0">'
+        +'<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px">'
+        +'<div style="font-family:var(--cond);font-size:22px;font-weight:900;color:'+_rc.bg+';letter-spacing:-.01em;flex-shrink:0">'+camNum+'</div>'
+        +labelHtml
+        +'<button class="ibtn" style="font-size:9px;padding:2px 6px;flex-shrink:0;margin-left:auto" onclick="jdCamPopout('+jid+','+i+')">⤢</button>'
         +'</div>'
         +opField
         +kitRow
         +lensRow
         +pedRow+headRow+zoomRow+focusRow
+        +autocueRow+retMonRow+vfRow
         +fieldRows
         +addBtn
+        +camPhotos+camPhotoBtn
         +'</div>';
     };
 
@@ -8287,6 +8459,7 @@ function renderJobDet(j) {
       +'<div><div class="dfl">Camera Supervisor</div><input class="fi" style="font-size:14px;padding:5px 8px;width:100%" value="'+(j.camSupervisor||'')+'" placeholder="Supervisor name" onchange="jdSetField('+j.id+',\'camSupervisor\',this.value)"/></div>'
       +'<div><div class="dfl">Camera Guarantee</div><input class="fi" style="font-size:14px;padding:5px 8px;width:100%" value="'+(j.camGuarantee||'')+'" placeholder="Guarantee name" onchange="jdSetField('+j.id+',\'camGuarantee\',this.value)"/></div>'
       +'</div>'
+      +'<div style="margin-bottom:12px"><label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-family:var(--cond);font-weight:700;font-size:12px;color:var(--muted)"><input type="checkbox" '+(j.hideOperators?'checked':'')+' onchange="jdSetField('+j.id+',\'hideOperators\',this.checked);saveData();renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))"> Hide operator names on cameras</label></div>'
       +'<div style="font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border)">Studio Cameras</div>'
       +'<div style="overflow-x:auto;padding-bottom:8px"><div style="display:flex;gap:10px;min-width:max-content">'
       +camCols
@@ -8591,6 +8764,7 @@ function renderJobDet(j) {
       +veSection
       +mcsGSection
       +'<div class="det-sec"><div class="det-sec-lbl">Camera Control</div>'+camCtrlRows+'</div>'
+      +lvOledSection(j)
       +'<div class="det-sec"><div class="det-sec-lbl">Gallery Images</div>'
       +'<div style="color:var(--muted);font-size:13px;margin-bottom:10px">Upload gallery layout photos.</div>'
       +jdPhotoUploader(j,'galleryPhotos')+'</div>'
@@ -8643,17 +8817,34 @@ function renderJobDet(j) {
       +'</div>';
   }
   else if(_jdTab==='post'){
+    var postNA=j.postNA||false;
+    var naBtn='<div style="margin-bottom:12px;display:flex;align-items:center;gap:10px">'
+      +'<button class="ibtn" style="font-size:12px;padding:6px 16px;background:'+(postNA?'rgba(250,160,0,.2)':'rgba(255,255,255,.06)')+';color:'+(postNA?'#b87400':'var(--muted)')+';border-color:'+(postNA?'rgba(250,160,0,.4)':'var(--border)')+';font-family:var(--cond);font-weight:800;letter-spacing:.08em" onclick="jdSetField('+j.id+',\'postNA\','+(!postNA)+');saveData();renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))">'+(postNA?'N/A — Post not required ✓':'Mark as N/A')+'</button>'
+      +'</div>';
+    if(postNA){
+      content=naBtn+'<div style="opacity:.3;pointer-events:none">';
+    } else {
+      content=naBtn;
+    }
     const po=j.post||{};
-    content='<div class="det-sec"><div class="det-sec-lbl">Post Production</div><div class="det-grid" style="grid-template-columns:repeat(2,1fr);row-gap:12px">'
+    content+='<div class="det-sec"><div class="det-sec-lbl">Post Production</div><div class="det-grid" style="grid-template-columns:repeat(2,1fr);row-gap:12px">'
       +'<div><div class="dfl">Post House</div><input class="fi" value="'+(po.postHouse||'')+'" placeholder="Post house name..." onchange="jdSetPo('+j.id+',\'postHouse\',this.value)"/></div>'
       +'<div><div class="dfl">Contact Name</div><input class="fi" value="'+(po.contactName||'')+'" placeholder="Contact name..." onchange="jdSetPo('+j.id+',\'contactName\',this.value)"/></div>'
       +'<div><div class="dfl">Email</div><input class="fi" type="email" value="'+(po.contactEmail||'')+'" placeholder="Email address..." onchange="jdSetPo('+j.id+',\'contactEmail\',this.value)"/></div>'
       +'<div><div class="dfl">Phone</div><input class="fi" value="'+(po.contactTel||'')+'" placeholder="Phone number..." onchange="jdSetPo('+j.id+',\'contactTel\',this.value)"/></div>'
       +'<div style="grid-column:1/-1"><div class="dfl">Notes</div><textarea class="fta" style="min-height:120px;font-size:14px" placeholder="Post production notes..." onchange="jdSetPo('+j.id+',\'notes\',this.value)">'+(po.notes||'')+'</textarea></div>'
-      +'</div></div>';
+      +'</div></div>'+(postNA?'</div>':'');
   }
   else if(_jdTab==='monitors'){content=renderMonitorTab(j);}
-  else if(_jdTab==='ingest'){content=renderIngestTab(j);}
+  else if(_jdTab==='ingest'){
+    var ingestNA=j.ingestNA||false;
+    var naBtn2='<div style="margin-bottom:12px;display:flex;align-items:center;gap:10px">'
+      +'<button class="ibtn" style="font-size:12px;padding:6px 16px;background:'+(ingestNA?'rgba(250,160,0,.2)':'rgba(255,255,255,.06)')+';color:'+(ingestNA?'#b87400':'var(--muted)')+';border-color:'+(ingestNA?'rgba(250,160,0,.4)':'var(--border)')+';font-family:var(--cond);font-weight:800;letter-spacing:.08em" onclick="jdSetField('+j.id+',\'ingestNA\','+(!ingestNA)+');saveData();renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))">'+(ingestNA?'N/A — Ingest not required ✓':'Mark as N/A')+'</button>'
+      +'</div>';
+    content=naBtn2+(ingestNA?'<div style="opacity:.3;pointer-events:none">'+renderIngestTab(j)+'</div>':renderIngestTab(j));
+  }
+  else if(_jdTab==='evs'){content=renderEvsTab(j);}
+  else if(_jdTab==='gfx'){content=renderGfxTab(j);}
   else if(_jdTab==='comms'){content=renderCommsTab(j);}
   else if(_jdTab==='ip'){content=renderIpTab(j);}
   else if(_jdTab==='englog'){content=renderEngLogTab(j);}
@@ -8722,6 +8913,48 @@ function jdSetField(jid, field, val) {
   j[field]=val;
   saveData();
 }
+var HOD_ROLES=['Director','Executive Producer','Lighting Supervisor','Sound Supervisor','Floor Manager','Graphics Operator','VT Operator','Autocue Operator'];
+function hodSection(j){
+  if(!j.hods)j.hods=[];
+  // Ensure default roles exist
+  var defaults=['Director','Executive Producer','Lighting Supervisor','Sound Supervisor'];
+  defaults.forEach(function(r){if(!j.hods.find(function(h){return h.role===r;}))j.hods.push({role:r,name:''});});
+  var rows=j.hods.map(function(h,i){
+    /* Merge saved custom roles into options */
+    var allRoles=HOD_ROLES.slice();
+    if(h.role&&allRoles.indexOf(h.role)<0)allRoles.push(h.role);
+    j.hods.forEach(function(hh){if(hh.role&&allRoles.indexOf(hh.role)<0)allRoles.push(hh.role);});
+    var roleOpts=allRoles.map(function(r){return '<option'+(r===h.role?' selected':'')+'>'+r+'</option>';}).join('');
+    return '<div style="display:flex;align-items:center;gap:4px;padding:2px 0">'
+      +'<select class="fi" style="width:130px;font-size:12px;font-weight:600;padding:3px 5px;flex-shrink:0;color:var(--pure)" onchange="hodSetRole('+j.id+','+i+',this.value)"><option value="">-- Role --</option>'+roleOpts+'<option value="__custom__" style="color:var(--accent);font-style:italic">+ Custom...</option></select>'
+      +'<input class="fi" style="flex:1;font-size:13px;font-weight:600;padding:3px 6px;color:var(--pure)" value="'+((h.name||'').replace(/"/g,'&quot;'))+'" placeholder="Name..." onchange="hodSetName('+j.id+','+i+',this.value)"/>'
+      +'<button class="rm-btn" style="font-size:12px" onclick="hodRemove('+j.id+','+i+')">×</button>'
+      +'</div>';
+  }).join('');
+  return '<div class="det-sec" style="margin-top:8px;padding:10px 14px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px"><div class="det-sec-lbl" style="margin-bottom:0;padding-bottom:0;border-bottom:none;font-size:11px">Heads of Department</div><button class="ibtn" style="font-size:10px;padding:3px 10px" onclick="hodAdd('+j.id+')">+ Add</button></div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:0 12px">'
+    +rows
+    +'</div></div>';
+}
+function hodSetRole(jid,idx,val){
+  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.hods[idx])return;
+  if(val==='__custom__'){var c=prompt('Enter custom role:');if(c){j.hods[idx].role=c;if(HOD_ROLES.indexOf(c)<0)HOD_ROLES.push(c);}else return;}
+  else j.hods[idx].role=val;
+  saveData();renderJobDet(j);
+}
+function hodSetName(jid,idx,val){
+  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.hods[idx])return;
+  j.hods[idx].name=val;saveData();
+}
+function hodAdd(jid){
+  var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
+  if(!j.hods)j.hods=[];
+  j.hods.push({role:'',name:''});saveData();renderJobDet(j);
+}
+function hodRemove(jid,idx){
+  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.hods)return;
+  j.hods.splice(idx,1);saveData();renderJobDet(j);
+}
 function techHandleCodecSel(jid,val){
   var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   if(val==='__add__'){
@@ -8740,6 +8973,66 @@ function noteAdd(jid){var j=jobs.find(function(x){return x.id==jid;});if(!j)retu
 function noteRm(jid,ni){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.meetingNotes)return;j.meetingNotes.splice(ni,1);renderJobDet(j);}
 function noteSet(jid,ni,field,val){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.meetingNotes||!j.meetingNotes[ni])return;j.meetingNotes[ni][field]=val;}
 function jdSetLv(jid, field, val) { const j=jobs.find(x=>x.id==jid);if(!j)return;if(!j.lvSpec)j.lvSpec={};j.lvSpec[field]=val; }
+
+function lvOledSection(j){
+  if(!j.lvSpec)j.lvSpec={};
+  if(!j.lvSpec.oleds)j.lvSpec.oleds=[];
+  var oleds=j.lvSpec.oleds;
+  var posOpts=(CAM_PLAN_OPTS['OLED Position']||[]).map(function(o){return '<option>'+o+'</option>';}).join('');
+  var monItems=kit.filter(function(k){return k.subcat==='Monitor'||k.cat==='Monitors'||(k.name||'').toLowerCase().indexOf('monitor')>=0||(k.name||'').toLowerCase().indexOf('oled')>=0;});
+
+  var rows=oleds.map(function(o,i){
+    var mKit=o.kitId?kit.find(function(k){return k.id===o.kitId;}):null;
+    var monCell=mKit
+      ?'<span style="background:rgba(42,125,72,.12);border:1px solid rgba(60,180,100,.3);border-radius:3px;font-size:12px;padding:2px 8px;color:#2a7d48">'+mKit.name+'</span>'
+        +'<div style="display:flex;gap:3px;margin-top:2px"><button class="ibtn" style="font-size:10px;flex:1" onclick="lvOledPickKit('+j.id+','+i+')">Change</button>'
+        +'<button class="rm-btn" style="font-size:10px" onclick="lvOledSet('+j.id+','+i+',\'kitId\',null)">×</button></div>'
+      :(o.hiredModel
+        ?'<span style="font-size:12px;background:rgba(250,160,0,.12);color:#b87400;border:1px solid rgba(250,160,0,.4);border-radius:3px;padding:2px 8px">'+o.hiredModel+'</span>'
+          +'<div style="display:flex;gap:3px;margin-top:2px"><button class="ibtn" style="font-size:10px;flex:1" onclick="lvOledSet('+j.id+','+i+',\'hiredModel\',\'\')">×</button></div>'
+        :'<div style="display:flex;flex-direction:column;gap:3px">'
+          +'<button class="ibtn" style="font-size:11px" onclick="lvOledPickKit('+j.id+','+i+')">From Inventory</button>'
+          +'<input class="fi" style="font-size:11px;padding:2px 6px" placeholder="Or type hired model..." onchange="lvOledSet('+j.id+','+i+',\'hiredModel\',this.value)"/></div>');
+
+    var selPos='<select class="fi" style="font-size:13px;padding:4px 8px" onchange="lvOledSet('+j.id+','+i+',\'position\',this.value)"><option value="">-- Position --</option>'
+      +(CAM_PLAN_OPTS['OLED Position']||[]).map(function(p){return '<option'+(p===o.position?' selected':'')+'>'+p+'</option>';}).join('')
+      +'</select>';
+
+    return '<div style="display:grid;grid-template-columns:160px 1fr 140px auto;gap:8px;align-items:start;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)">'
+      +selPos
+      +'<div>'+monCell+'</div>'
+      +'<input class="fi" style="font-size:13px;padding:4px 8px" value="'+((o.person||'').replace(/"/g,'&quot;'))+'" placeholder="Person name..." onchange="lvOledSet('+j.id+','+i+',\'person\',this.value)"/>'
+      +'<button class="rm-btn" style="font-size:14px;align-self:center" onclick="lvOledRm('+j.id+','+i+')">×</button>'
+      +'</div>';
+  }).join('');
+
+  return '<div class="det-sec"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">'
+    +'<div class="det-sec-lbl" style="margin-bottom:0">OLED Monitors</div>'
+    +'<button class="ibtn" style="font-size:12px;padding:6px 14px" onclick="lvOledAdd('+j.id+')">+ Add Monitor</button></div>'
+    +(oleds.length
+      ?'<div style="display:grid;grid-template-columns:160px 1fr 140px auto;gap:8px;padding:4px 0;border-bottom:2px solid rgba(255,255,255,.08);margin-bottom:4px">'
+        +['Position','Monitor','Person',''].map(function(h){return '<div style="font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">'+h+'</div>';}).join('')+'</div>'
+        +rows
+      :'<div style="color:var(--muted);font-size:14px;padding:4px 0">No OLED monitors allocated yet.</div>')
+    +'</div>';
+}
+function lvOledAdd(jid){var j=jobs.find(function(x){return x.id===jid;});if(!j)return;if(!j.lvSpec)j.lvSpec={};if(!j.lvSpec.oleds)j.lvSpec.oleds=[];j.lvSpec.oleds.push({position:'',kitId:null,hiredModel:'',person:''});saveData();renderJobDet(j);}
+function lvOledSet(jid,i,field,val){var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.lvSpec||!j.lvSpec.oleds[i])return;j.lvSpec.oleds[i][field]=val;saveData();renderJobDet(j);}
+function lvOledRm(jid,i){var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.lvSpec)return;j.lvSpec.oleds.splice(i,1);saveData();renderJobDet(j);}
+function lvOledPickKit(jid,idx){
+  var monItems=kit.filter(function(k){return k.subcat==='Monitor'||k.cat==='Monitors'||(k.name||'').toLowerCase().indexOf('monitor')>=0||(k.name||'').toLowerCase().indexOf('oled')>=0||(k.name||'').toLowerCase().indexOf('pvm')>=0||(k.name||'').toLowerCase().indexOf('bvm')>=0;}).sort(function(a,b){return a.name.localeCompare(b.name);});
+  var rows=monItems.map(function(k){
+    return '<div style="padding:8px 12px;border-bottom:1px solid var(--border);cursor:pointer;font-size:13px;color:var(--white)" onmouseover="this.style.background=\'rgba(255,255,255,.06)\'" onmouseout="this.style.background=\'\'" onclick="lvOledSetKit('+jid+','+idx+','+k.id+')">'+k.name+(k.tag?' <span style="color:var(--muted);font-size:11px">'+k.tag+'</span>':'')+(k.isHired?' <span style="color:#b87400;font-size:10px">HIRED</span>':'')+'</div>';
+  }).join('');
+  var html='<div style="max-height:300px;overflow-y:auto">'+rows+'</div>';
+  var ex=document.getElementById('mOledPick');if(ex)ex.remove();
+  document.body.insertAdjacentHTML('beforeend','<div class="modal-ov open" id="mOledPick" onclick="if(event.target===this)cm(\'mOledPick\')"><div class="modal" style="width:400px"><div class="modal-hdr"><div class="modal-title">Pick Monitor</div><button class="x-btn" onclick="cm(\'mOledPick\')">×</button></div><div class="modal-body" style="padding:0">'+html+'</div></div></div>');
+}
+function lvOledSetKit(jid,idx,kitId){
+  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.lvSpec||!j.lvSpec.oleds[idx])return;
+  j.lvSpec.oleds[idx].kitId=kitId;j.lvSpec.oleds[idx].hiredModel='';
+  saveData();cm('mOledPick');renderJobDet(j);
+}
 function _openGenKitPicker(title,filterFn,onSelect){
   var ex=document.getElementById('_gkPicker');if(ex)ex.remove();
   var avail=kit.filter(filterFn);
@@ -8797,7 +9090,7 @@ function lvRcpSet(jid,ci,field,val){
   if(field==='kitId')renderJobDet(j);
 }
 function lvPickRcp(jid,ci){
-  _openGenKitPicker('Pick RCP / Control Unit',function(k){return k.status!=='Bin';},function(kid){lvRcpSet(jid,ci,'kitId',kid);renderJobDet(jobs.find(function(x){return x.id==jid;}));});
+  _openGenKitPicker('Pick RCP / Control Unit',function(k){if(k.status==='Bin')return false;var sc=(k.subcat||'').toLowerCase(),nm=(k.name||'').toLowerCase();return sc==='rcp'||sc==='control'||nm.indexOf('rcp')>=0||nm.indexOf('remote control panel')>=0||nm.indexOf('ccu remote')>=0;},function(kid){lvRcpSet(jid,ci,'kitId',kid);renderJobDet(jobs.find(function(x){return x.id==jid;}));});
 }
 function lvMcsMode(jid,ci,mode){
   var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
@@ -8889,6 +9182,12 @@ function jdCamFMode(jid,ci,fkey,mode){
   cd.fieldData[fkey].mode=mode;
 
   saveData();
+}
+function jdCamFClear(jid,ci,fkey){
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.camDetails||!j.camDetails[ci])return;
+  var cd=j.camDetails[ci];if(!cd.fieldData||!cd.fieldData[fkey])return;
+  cd.fieldData[fkey].val='';cd.fieldData[fkey].kitId=null;cd.fieldData[fkey].hiredVal='';
+  saveData();renderJobDet(j);
 }
 function jdCamFHired(jid,ci,fkey,val){
   var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.camDetails||!j.camDetails[ci])return;
@@ -9154,6 +9453,78 @@ function jdSetCamDetail(jid,i,field,val){
   j.camDetails[i][field]=val;
   saveData();
   renderJobDet(j);
+}
+function jdCamPhotoAdd(jid,ci,input){
+  var file=input.files[0];if(!file)return;
+  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.camDetails[ci])return;
+  var reader=new FileReader();
+  reader.onload=function(e){
+    if(!j.camDetails[ci].photos)j.camDetails[ci].photos=[];
+    j.camDetails[ci].photos.push(e.target.result);
+    saveData();renderJobDet(j);
+  };
+  reader.readAsDataURL(file);
+}
+function jdCamPhotoRm(jid,ci,pi){
+  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.camDetails[ci])return;
+  j.camDetails[ci].photos.splice(pi,1);saveData();renderJobDet(j);
+}
+function jdCamPopout(jid,ci){
+  var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.camDetails[ci])return;
+  var cd=j.camDetails[ci];
+  var _rc=RESISTOR_COLORS[ci]||{bg:'#555',fg:'#fff',name:'Cam '+(ci+1)};
+  var camNum=cd.camNum!==undefined?cd.camNum:(ci+1);
+  var aKit=cd.kitId?kit.find(function(x){return x.id===cd.kitId;}):null;
+
+  /* Build info rows */
+  var rows=[];
+  if(cd.operator)rows.push({l:'Operator',v:cd.operator});
+  if(aKit)rows.push({l:'Body',v:aKit.name});
+  else if(cd.hired&&cd.hiredType)rows.push({l:'Body',v:cd.hiredType+' (Hired)'});
+  if(cd.lensData){
+    var lk=cd.lensData.kitId?kit.find(function(x){return x.id===cd.lensData.kitId;}):null;
+    if(lk)rows.push({l:'Lens',v:lk.name});
+    else if(cd.lensData.hiredCatId){var hl=hiredCatalogue.find(function(x){return x.id===cd.lensData.hiredCatId;});if(hl)rows.push({l:'Lens',v:hl.name});}
+    else if(cd.lensData.hiredCustom)rows.push({l:'Lens',v:cd.lensData.hiredCustom});
+  }
+  ['pedestalData','headData','zoomData','focusData','autocueData','retMonData','viewfinderData'].forEach(function(dk){
+    var label={'pedestalData':'Pedestal','headData':'Head','zoomData':'Zoom','focusData':'Focus','autocueData':'Autocue','retMonData':'Return Mon','viewfinderData':'Viewfinder'}[dk];
+    if(cd[dk]){
+      if(cd[dk].mode==='na')rows.push({l:label,v:'N/A'});
+      else if(cd[dk].kitId){var k2=kit.find(function(x){return x.id===cd[dk].kitId;});if(k2)rows.push({l:label,v:k2.name});}
+      else if(cd[dk].hiredVal)rows.push({l:label,v:cd[dk].hiredVal});
+    }
+  });
+  if(cd.fieldData){
+    Object.keys(cd.fieldData).forEach(function(fk){
+      var fm=cd.fieldData[fk];if(!fm)return;
+      var fk2=fm.kitId?kit.find(function(x){return x.id===fm.kitId;}):null;
+      var val=fk2?fk2.name:(fm.hiredVal||fm.val||'');
+      if(val)rows.push({l:fk.replace(/([A-Z])/g,' $1').replace(/^./,function(s){return s.toUpperCase();}),v:val});
+    });
+  }
+
+  var infoHtml=rows.map(function(r){
+    return '<div style="display:flex;gap:10px;padding:6px 0;border-bottom:1px solid var(--border)">'
+      +'<div style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);width:90px;flex-shrink:0">'+r.l+'</div>'
+      +'<div style="font-family:var(--cond);font-size:15px;font-weight:700;color:var(--pure)">'+r.v+'</div></div>';
+  }).join('');
+
+  /* Photos */
+  var photoHtml='';
+  if(cd.photos&&cd.photos.length){
+    photoHtml='<div style="margin-top:12px"><div style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px">Photos</div>'
+      +'<div style="display:flex;gap:6px;flex-wrap:wrap">'+cd.photos.map(function(p){
+        return '<img src="'+p+'" style="max-width:200px;max-height:150px;object-fit:cover;border-radius:4px;cursor:pointer;border:1px solid var(--border)" onclick="window.open(\''+p.replace(/'/g,"\\'")+'\')">';
+      }).join('')+'</div></div>';
+  }
+
+  var ex=document.getElementById('mCamPopout');if(ex)ex.remove();
+  document.body.insertAdjacentHTML('beforeend',
+    '<div class="modal-ov open" id="mCamPopout" onclick="if(event.target===this)cm(\'mCamPopout\')">'
+    +'<div class="modal" style="width:500px;max-height:85vh">'
+    +'<div class="modal-hdr" style="background:'+_rc.bg+';color:#fff"><div class="modal-title" style="color:#fff">Camera '+camNum+(cd.camLabel?' — '+cd.camLabel:'')+'</div><button class="x-btn" style="color:#fff" onclick="cm(\'mCamPopout\')">×</button></div>'
+    +'<div class="modal-body" style="overflow-y:auto">'+infoHtml+photoHtml+'</div></div></div>');
 }
 
 // ── Specialist camera helpers ──────────────────────────────────────────────
@@ -9569,7 +9940,11 @@ function jdAssignCamKit(jid,camIdx,kid){
 }
 
 function jdPickVisionMixer(jid){
-  var vmKit=kit.filter(function(k){return k.status!=='Bin';});
+  var vmKit=kit.filter(function(k){
+    if(k.status==='Bin')return false;
+    var nm=(k.name||'').toLowerCase(),sc=(k.subcat||'').toLowerCase(),cat=(k.cat||'').toLowerCase();
+    return sc==='vision mixer'||sc==='switchers'||cat==='vision'||nm.indexOf('vision mixer')>=0||nm.indexOf('switcher')>=0||nm.indexOf('mvs')>=0;
+  });
   var rows=vmKit.map(function(k){
     return '<div style="display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid var(--border);cursor:pointer" onclick="jdSetField('+jid+',\'visionMixerKid\','+k.id+');cm(\'mPickVisionMixer\');renderJobDet(jobs.find(function(x){return x.id==='+jid+';}));">'
       +'<div style="flex:1"><div style="font-size:14px;font-weight:600;color:var(--white)">'+k.name+'</div>'
@@ -10228,6 +10603,110 @@ var COMMS_CHANNELS = [
 ];
 var BOLERO_PANELS = ['Gallery Front Row','Gallery Middle Row','Gallery Back Row','Sound Gallery','Lighting Gallery','Floor','Ingest','TM Room'];
 
+
+function _naToggle(j,field,label){
+  var na=j[field]||false;
+  return '<div style="margin-bottom:12px;display:flex;align-items:center;gap:10px">'
+    +'<button class="ibtn" style="font-size:12px;padding:6px 16px;background:'+(na?'rgba(250,160,0,.2)':'rgba(255,255,255,.06)')+';color:'+(na?'#b87400':'var(--muted)')+';border-color:'+(na?'rgba(250,160,0,.4)':'var(--border)')+';font-family:var(--cond);font-weight:800;letter-spacing:.08em" onclick="jdSetField('+j.id+',\''+field+'\','+(!na)+');saveData();renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))">'+(na?'N/A — '+label+' ✓':'Mark as N/A')+'</button>'
+    +'</div>';
+}
+function _dvSel(jid,obj,field,dvKey,label){
+  var val=obj[field]||'';
+  var opts=(CAM_PLAN_OPTS[dvKey]||[]).map(function(o){return '<option'+(o===val?' selected':'')+'>'+o+'</option>';}).join('');
+  return '<div><div class="dfl">'+label+'</div><select class="fi" style="font-size:14px;padding:5px 8px" onchange="jdSetNested('+jid+',this.value,\''+field+'\')"><option value="">--</option>'+opts+'</select></div>';
+}
+
+function renderEvsTab(j){
+  if(!j.evs)j.evs={supervisor:'',operators:[],system:'',software:'',channels:'',codec:'',extraKit:[],notes:''};
+  var e=j.evs;var na=j.evsNA||false;
+  var naBtn=_naToggle(j,'evsNA','EVS not required');
+  if(na)return naBtn+'<div style="opacity:.3;pointer-events:none">'+_evsContent(j)+'</div>';
+  return naBtn+_evsContent(j);
+}
+function _evsContent(j){
+  var e=j.evs;
+  /* Operators */
+  var opRows=(e.operators||[]).map(function(op,i){
+    return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">'
+      +'<input class="fi" style="flex:1;font-size:14px;padding:5px 8px" value="'+((op||'').replace(/"/g,'&quot;'))+'" placeholder="Operator name..." onchange="jdEvsOp('+j.id+','+i+',this.value)"/>'
+      +'<button class="rm-btn" style="font-size:14px" onclick="jdEvsOpRm('+j.id+','+i+')">×</button></div>';
+  }).join('');
+
+  /* Extra kit */
+  var kitRows=(e.extraKit||[]).map(function(k,i){
+    return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">'
+      +'<select class="fi" style="width:180px;font-size:13px;padding:5px 8px" onchange="jdEvsKit('+j.id+','+i+',\'type\',this.value)"><option value="">-- Type --</option>'
+      +(CAM_PLAN_OPTS['EVS Extra Kit']||[]).map(function(o){return '<option'+(o===k.type?' selected':'')+'>'+o+'</option>';}).join('')
+      +'</select>'
+      +'<input class="fi" style="flex:1;font-size:14px;padding:5px 8px" value="'+((k.model||'').replace(/"/g,'&quot;'))+'" placeholder="Model / serial..." onchange="jdEvsKit('+j.id+','+i+',\'model\',this.value)"/>'
+      +'<button class="rm-btn" style="font-size:14px" onclick="jdEvsKitRm('+j.id+','+i+')">×</button></div>';
+  }).join('');
+
+  var sysOpts=(CAM_PLAN_OPTS['EVS System']||[]).map(function(o){return '<option'+(o===e.system?' selected':'')+'>'+o+'</option>';}).join('');
+  var swOpts=(CAM_PLAN_OPTS['EVS Software']||[]).map(function(o){return '<option'+(o===e.software?' selected':'')+'>'+o+'</option>';}).join('');
+  var chOpts=(CAM_PLAN_OPTS['EVS Channels']||[]).map(function(o){return '<option'+(o===e.channels?' selected':'')+'>'+o+'</option>';}).join('');
+  var cdOpts=(CAM_PLAN_OPTS['EVS Codec']||[]).map(function(o){return '<option'+(o===e.codec?' selected':'')+'>'+o+'</option>';}).join('');
+
+  return '<div class="det-sec"><div class="det-sec-lbl">EVS / Replay</div>'
+    +'<div class="det-grid" style="grid-template-columns:1fr 1fr;row-gap:12px;margin-bottom:14px">'
+    +'<div><div class="dfl">Supervisor</div><input class="fi" style="font-size:14px;padding:5px 8px" value="'+((e.supervisor||'').replace(/"/g,'&quot;'))+'" placeholder="Supervisor name..." onchange="jdSetEvs('+j.id+',\'supervisor\',this.value)"/></div>'
+    +'<div><div class="dfl">System Type</div><select class="fi" style="font-size:14px;padding:5px 8px" onchange="jdSetEvs('+j.id+',\'system\',this.value)"><option value="">--</option>'+sysOpts+'</select></div>'
+    +'<div><div class="dfl">Software Version</div><select class="fi" style="font-size:14px;padding:5px 8px" onchange="jdSetEvs('+j.id+',\'software\',this.value)"><option value="">--</option>'+swOpts+'</select></div>'
+    +'<div><div class="dfl">Channels</div><select class="fi" style="font-size:14px;padding:5px 8px" onchange="jdSetEvs('+j.id+',\'channels\',this.value)"><option value="">--</option>'+chOpts+'</select></div>'
+    +'<div><div class="dfl">Codec</div><select class="fi" style="font-size:14px;padding:5px 8px" onchange="jdSetEvs('+j.id+',\'codec\',this.value)"><option value="">--</option>'+cdOpts+'</select></div>'
+    +'</div>'
+    +'<div style="margin-bottom:14px"><div class="dfl">Operators</div>'+opRows
+    +'<button class="ibtn" style="font-size:12px;margin-top:4px" onclick="jdEvsOpAdd('+j.id+')">+ Add Operator</button></div>'
+    +'<div style="margin-bottom:14px"><div class="dfl">Extra Kit</div>'+kitRows
+    +'<button class="ibtn" style="font-size:12px;margin-top:4px" onclick="jdEvsKitAdd('+j.id+')">+ Add Kit</button></div>'
+    +'<div><div class="dfl">Notes</div><textarea class="fta" style="min-height:80px;font-size:14px" placeholder="EVS notes..." onchange="jdSetEvs('+j.id+',\'notes\',this.value)">'+(e.notes||'')+'</textarea></div>'
+    +'</div>';
+}
+function jdSetEvs(jid,field,val){var j=jobs.find(function(x){return x.id===jid;});if(!j)return;if(!j.evs)j.evs={};j.evs[field]=val;saveData();}
+function jdEvsOpAdd(jid){var j=jobs.find(function(x){return x.id===jid;});if(!j)return;if(!j.evs)j.evs={};if(!j.evs.operators)j.evs.operators=[];j.evs.operators.push('');saveData();renderJobDet(j);}
+function jdEvsOp(jid,i,val){var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.evs)return;j.evs.operators[i]=val;saveData();}
+function jdEvsOpRm(jid,i){var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.evs)return;j.evs.operators.splice(i,1);saveData();renderJobDet(j);}
+function jdEvsKitAdd(jid){var j=jobs.find(function(x){return x.id===jid;});if(!j)return;if(!j.evs)j.evs={};if(!j.evs.extraKit)j.evs.extraKit=[];j.evs.extraKit.push({type:'',model:''});saveData();renderJobDet(j);}
+function jdEvsKit(jid,i,field,val){var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.evs)return;j.evs.extraKit[i][field]=val;saveData();}
+function jdEvsKitRm(jid,i){var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.evs)return;j.evs.extraKit.splice(i,1);saveData();renderJobDet(j);}
+
+function renderGfxTab(j){
+  if(!j.gfx)j.gfx={supervisor:'',operators:[],system:'',engineVersion:'',numEngines:'',templatePack:'',outputRes:'',notes:''};
+  var g=j.gfx;var na=j.gfxNA||false;
+  var naBtn=_naToggle(j,'gfxNA','GFX not required');
+  if(na)return naBtn+'<div style="opacity:.3;pointer-events:none">'+_gfxContent(j)+'</div>';
+  return naBtn+_gfxContent(j);
+}
+function _gfxContent(j){
+  var g=j.gfx;
+  var opRows=(g.operators||[]).map(function(op,i){
+    return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">'
+      +'<input class="fi" style="flex:1;font-size:14px;padding:5px 8px" value="'+((op||'').replace(/"/g,'&quot;'))+'" placeholder="Operator name..." onchange="jdGfxOp('+j.id+','+i+',this.value)"/>'
+      +'<button class="rm-btn" style="font-size:14px" onclick="jdGfxOpRm('+j.id+','+i+')">×</button></div>';
+  }).join('');
+
+  var sysOpts=(CAM_PLAN_OPTS['GFX System']||[]).map(function(o){return '<option'+(o===g.system?' selected':'')+'>'+o+'</option>';}).join('');
+  var verOpts=(CAM_PLAN_OPTS['GFX Engine Version']||[]).map(function(o){return '<option'+(o===g.engineVersion?' selected':'')+'>'+o+'</option>';}).join('');
+  var engOpts=(CAM_PLAN_OPTS['GFX Engines']||[]).map(function(o){return '<option'+(o===g.numEngines?' selected':'')+'>'+o+'</option>';}).join('');
+
+  return '<div class="det-sec"><div class="det-sec-lbl">Graphics</div>'
+    +'<div class="det-grid" style="grid-template-columns:1fr 1fr;row-gap:12px;margin-bottom:14px">'
+    +'<div><div class="dfl">Supervisor</div><input class="fi" style="font-size:14px;padding:5px 8px" value="'+((g.supervisor||'').replace(/"/g,'&quot;'))+'" placeholder="Supervisor name..." onchange="jdSetGfx('+j.id+',\'supervisor\',this.value)"/></div>'
+    +'<div><div class="dfl">Graphics System</div><select class="fi" style="font-size:14px;padding:5px 8px" onchange="jdSetGfx('+j.id+',\'system\',this.value)"><option value="">--</option>'+sysOpts+'</select></div>'
+    +'<div><div class="dfl">Engine Version</div><select class="fi" style="font-size:14px;padding:5px 8px" onchange="jdSetGfx('+j.id+',\'engineVersion\',this.value)"><option value="">--</option>'+verOpts+'</select></div>'
+    +'<div><div class="dfl">Number of Engines</div><select class="fi" style="font-size:14px;padding:5px 8px" onchange="jdSetGfx('+j.id+',\'numEngines\',this.value)"><option value="">--</option>'+engOpts+'</select></div>'
+    +'<div><div class="dfl">Template Pack</div><input class="fi" style="font-size:14px;padding:5px 8px" value="'+((g.templatePack||'').replace(/"/g,'&quot;'))+'" placeholder="Template pack name..." onchange="jdSetGfx('+j.id+',\'templatePack\',this.value)"/></div>'
+    +'<div><div class="dfl">Output Resolution</div><input class="fi" style="font-size:14px;padding:5px 8px" value="'+((g.outputRes||'').replace(/"/g,'&quot;'))+'" placeholder="e.g. 1080i50, UHD..." onchange="jdSetGfx('+j.id+',\'outputRes\',this.value)"/></div>'
+    +'</div>'
+    +'<div style="margin-bottom:14px"><div class="dfl">Operators</div>'+opRows
+    +'<button class="ibtn" style="font-size:12px;margin-top:4px" onclick="jdGfxOpAdd('+j.id+')">+ Add Operator</button></div>'
+    +'<div><div class="dfl">Notes</div><textarea class="fta" style="min-height:80px;font-size:14px" placeholder="Graphics notes..." onchange="jdSetGfx('+j.id+',\'notes\',this.value)">'+(g.notes||'')+'</textarea></div>'
+    +'</div>';
+}
+function jdSetGfx(jid,field,val){var j=jobs.find(function(x){return x.id===jid;});if(!j)return;if(!j.gfx)j.gfx={};j.gfx[field]=val;saveData();}
+function jdGfxOpAdd(jid){var j=jobs.find(function(x){return x.id===jid;});if(!j)return;if(!j.gfx)j.gfx={};if(!j.gfx.operators)j.gfx.operators=[];j.gfx.operators.push('');saveData();renderJobDet(j);}
+function jdGfxOp(jid,i,val){var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.gfx)return;j.gfx.operators[i]=val;saveData();}
+function jdGfxOpRm(jid,i){var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.gfx)return;j.gfx.operators.splice(i,1);saveData();renderJobDet(j);}
 
 function renderCommsTab(j) {
   if(!j.comms)j.comms={people:[],channels:[],notes:'',showChannels:true,supervisor:'',supplier:''};
@@ -12296,8 +12775,8 @@ function renderCats() {
   document.getElementById('fCat').innerHTML='<option value="">All Categories</option>'+cats.map(c=>'<option>'+c+'</option>').join('');
 }
 function openAddCat(){editCatIdx=null;document.getElementById('catMT').textContent='Add Category';document.getElementById('catName').value='';om('mCat');}
-function saveCat(){const n=document.getElementById('catName').value.trim();if(!n){toast('Enter name');return;}if(editCatIdx!==null)cats[editCatIdx]=n;else cats.push(n);cm('mCat');toast('Saved');renderCats();}
-function delCat(i){if(!confirm('Delete category "'+cats[i]+'"?'))return;cats.splice(i,1);renderCats();}
+function saveCat(){const n=document.getElementById('catName').value.trim();if(!n){toast('Enter name');return;}if(editCatIdx!==null)cats[editCatIdx]=n;else{cats.push(n);if(!KIT_SUBCATS[n])KIT_SUBCATS[n]=[];}cm('mCat');saveData();toast('Saved');renderCats();}
+function delCat(i){if(!confirm('Delete category "'+cats[i]+'"?'))return;var nm=cats[i];cats.splice(i,1);if(KIT_SUBCATS[nm]&&KIT_SUBCATS[nm].length===0)delete KIT_SUBCATS[nm];saveData();renderCats();}
 function renderPatEmails() {
   document.getElementById('patEmailList').innerHTML=users.filter(u=>u.patEmail).map(u=>'<div class="adm-row"><div style="flex:1"><div class="adm-row-nm">'+u.fn+' '+u.ln+'</div><div class="adm-row-sub">'+u.email+'</div></div><button class="ibtn del" onclick="togPatEmail('+u.id+')">Remove</button></div>').join('')||'<div style="padding:11px 18px;font-size:17px;color:var(--muted)">No recipients.</div>';
 }
@@ -14605,32 +15084,6 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
   </div>
 
-
-  <!-- HIRED CATALOGUE ITEM EDIT MODAL -->
-  <div class="modal-ov" id="mHiredItem">
-    <div class="modal" style="max-width:480px">
-      <div class="modal-hdr">
-        <div class="modal-title" id="hiredItemModalTitle">Add Item</div>
-        <button class="x-btn" onclick="cm('mHiredItem')">&#215;</button>
-      </div>
-      <div class="modal-body" style="display:flex;flex-direction:column;gap:12px">
-        <input type="hidden" id="hiredFormId" value="0"/>
-        <div><div class="dfl">Name</div>
-          <input class="fi" id="hiredFormName" style="width:100%" placeholder="e.g. Angenieux 15-40"/></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-          <div><div class="dfl">Category</div>
-            <select class="fi" id="hiredFormCat" style="width:100%" onchange="hiredCatChange(this.value)">
-              <option value="">Select category...</option></select></div>
-          <div><div class="dfl">Sub-category</div>
-            <select class="fi" id="hiredFormSubcat" style="width:100%">
-              <option value="">Select sub-category...</option></select></div>
-        </div>
-        <div><div class="dfl">Compatible With</div>
-          <input class="fi" id="hiredFormCompat" style="width:100%" placeholder="e.g. Sony HDC cameras"/></div>
-        <div><div class="dfl">Notes</div>
-          <textarea class="fi fta" id="hiredFormNotes" style="width:100%;min-height:60px"></textarea></div>
-        <div><div class="dfl">Suppliers <span style="font-size:11px;color:var(--muted);font-weight:400">(comma separated)</span></div>
-          <input class="fi" id="hiredFormSuppliers" style
         <div id="admContent-notes" style="display:none">
           <div id="notesWrap" style="background:#efede3;color:#302f2c;border-radius:10px;transition:background .2s,color .2s;font-family:'Barlow',sans-serif">
             <!-- Header -->
