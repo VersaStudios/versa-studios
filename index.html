@@ -61,6 +61,12 @@ html[data-theme="light"] .theme-btn::before{-webkit-mask-image:url("data:image/s
 .panel-act:hover{color:var(--white)}
 .filters{display:flex;align-items:center;gap:8px;margin-bottom:15px;flex-wrap:wrap}
 .fsel{background:var(--near-black);border:1px solid var(--border);color:var(--white);font-family:var(--cond);font-size:17px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:8px 26px 8px 10px;border-radius:4px;outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23aaa'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;background-color:var(--near-black)}
+.jfchip{background:var(--near-black);border:1px solid var(--border);color:var(--muted);font-family:var(--cond);font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:8px 12px;border-radius:4px;cursor:pointer;transition:all .13s;display:inline-flex;align-items:center;gap:6px}
+.jfchip:hover{color:var(--white);border-color:var(--subtle)}
+.jfchip.on{background:var(--pure);color:var(--black);border-color:var(--pure)}
+.jfchip .ct{font-size:11px;font-weight:800;opacity:.7;padding:1px 6px;border-radius:8px;background:rgba(255,255,255,.08);color:inherit}
+.jfchip.on .ct{background:rgba(0,0,0,.15);opacity:.85}
+.past-pill{display:inline-block;font-family:var(--cond);font-size:10px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#fff;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);padding:2px 7px;border-radius:3px;margin-left:6px;vertical-align:middle}
 .btn-add{display:flex;align-items:center;gap:6px;background:var(--pure);color:var(--black);border:none;border-radius:8px;padding:8px 14px;font-family:var(--cond);font-size:14px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;margin-left:auto;transition:opacity .13s}
 .btn-add:hover{opacity:.87}
 .btn-sec{background:none;color:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:7px 14px;font-family:var(--cond);font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .13s}
@@ -1955,6 +1961,11 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
 <div class="page" id="page-jobs">
         <div class="filters">
           <select class="fsel" id="fJobLoc" onchange="renderJobs()"><option value="">All Locations</option><option>Manchester</option><option>London</option></select>
+          <button class="jfchip on" data-jf="all" onclick="setJobFilter('all')">All <span class="ct" id="jfCtAll">0</span></button>
+          <button class="jfchip" data-jf="active" onclick="setJobFilter('active')">Active <span class="ct" id="jfCtActive">0</span></button>
+          <button class="jfchip" data-jf="upcoming" onclick="setJobFilter('upcoming')">Upcoming <span class="ct" id="jfCtUpcoming">0</span></button>
+          <button class="jfchip" data-jf="past" onclick="setJobFilter('past')">Past <span class="ct" id="jfCtPast">0</span></button>
+          <button class="jfchip" data-jf="archived" onclick="setJobFilter('archived')">Archived <span class="ct" id="jfCtArchived">0</span></button>
           <button class="btn-add" onclick="openAddJob()">+ New Job</button>
         </div>
         <div class="jobs-grid" id="jobsGrid"></div>
@@ -7687,27 +7698,78 @@ function submitSlog() {
 }
 
 // ── JOBS ──────────────────────────────────────────────────────────────────────
+// Categorise a job into one of: 'active' | 'upcoming' | 'past' | 'archived'
+// 'active'   = start <= today <= end   (or no end date and start has begun)
+// 'upcoming' = start > today
+// 'past'     = end < today  (and not archived)
+// 'archived' = j.archived === true   (manually archived — overrides date category)
+function _jobCat(j){
+  if(j.archived) return 'archived';
+  var t = today();
+  if(j.end && j.end < t) return 'past';
+  if(j.start && j.start > t) return 'upcoming';
+  return 'active';
+}
+// Filter state — persists for the session
+window._jobFilter = window._jobFilter || 'all';
+function setJobFilter(f){
+  window._jobFilter = f;
+  // Update chip on/off state
+  var chips = document.querySelectorAll('.jfchip[data-jf]');
+  for(var i=0;i<chips.length;i++){
+    chips[i].classList.toggle('on', chips[i].getAttribute('data-jf')===f);
+  }
+  renderJobs();
+}
+
 function renderJobs() {
   var loc=document.getElementById('fJobLoc').value;
-  var filtered=jobs.filter(function(j){
-    if(j.archived) return false;
+  var f=window._jobFilter||'all';
+
+  // Base access filter — applied to every view
+  function _passesAccess(j){
     if(loc && j.loc!==loc) return false;
-    if(CU && CU.role==='Crew' && CU.allowedJobs) {
+    if(CU && CU.role==='Crew' && CU.allowedJobs){
       var nm=(j.name||'').toLowerCase();
-      return CU.allowedJobs.some(function(a){return nm.indexOf(a.toLowerCase())!==-1;});
+      if(!CU.allowedJobs.some(function(a){return nm.indexOf(a.toLowerCase())!==-1;})) return false;
     }
     return true;
+  }
+
+  // Categorise every accessible job once
+  var cats={active:[],upcoming:[],past:[],archived:[]};
+  jobs.forEach(function(j){
+    if(!_passesAccess(j)) return;
+    cats[_jobCat(j)].push(j);
   });
-  var archivedJobs=jobs.filter(function(j){return j.archived&&(!loc||j.loc===loc);});
+
+  // Update chip counts
+  var setCt=function(id,n){var e=document.getElementById(id);if(e)e.textContent=n;};
+  setCt('jfCtAll', cats.active.length+cats.upcoming.length+cats.past.length);
+  setCt('jfCtActive', cats.active.length);
+  setCt('jfCtUpcoming', cats.upcoming.length);
+  setCt('jfCtPast', cats.past.length);
+  setCt('jfCtArchived', cats.archived.length);
+
+  // Sort each category sensibly
+  cats.active.sort(function(a,b){return String(a.end||'').localeCompare(String(b.end||''));});     // ending soonest first
+  cats.upcoming.sort(function(a,b){return String(a.start||'').localeCompare(String(b.start||''));});// starting soonest first
+  cats.past.sort(function(a,b){return String(b.end||'').localeCompare(String(a.end||''));});       // most recently ended first
+  cats.archived.sort(function(a,b){return String(b.end||'').localeCompare(String(a.end||''));});
+
+  // Build the main list based on active filter
+  var filtered;
+  if(f==='all')      filtered = cats.active.concat(cats.upcoming, cats.past);
+  else if(f==='archived') filtered = cats.archived.slice();
+  else                filtered = cats[f].slice();
+
+  // Extra bottom section: when viewing 'all', also show archived under a divider
+  var extraArchived = (f==='all') ? cats.archived.slice() : [];
+
   var el=document.getElementById('jobsGrid');
   if(!el) return;
   el.innerHTML='';
-  if(!filtered.length){
-    var empty=document.createElement('div');
-    empty.className='empty'; empty.style.gridColumn='1/-1';
-    empty.innerHTML='<div class="empty-icon">&#x1F4CB;</div><div class="empty-txt">No jobs</div>';
-    el.appendChild(empty); return;
-  }
+
   var JOB_PALETTE = [
     {bg:'#5B5F8D', bg2:'#454868', label:'Kyoto Dusk'},
     {bg:'#7A9A80', bg2:'#5E7A64', label:'Matcha'},
@@ -7721,26 +7783,46 @@ function renderJobs() {
     {bg:'#5A7A6A', bg2:'#445A50', label:'Deep Sage'},
   ];
   window._JOB_PALETTE = JOB_PALETTE;
-  // Ensure all jobs use new palette colours
+  // Ensure all jobs use new palette colours (only the ones we're about to render)
   var newBgs=JOB_PALETTE.map(function(c){return c.bg;});
   var _migrated=false;
-  filtered.forEach(function(j,idx){
+  filtered.concat(extraArchived).forEach(function(j,idx){
     if(!j.color || !j.color.bg || newBgs.indexOf(j.color.bg)===-1){
       j.color=JOB_PALETTE[idx % JOB_PALETTE.length];
       _migrated=true;
     }
   });
   if(_migrated)saveData();
-  var DEF = JOB_PALETTE[0];
+
+  if(!filtered.length && !extraArchived.length){
+    var empty=document.createElement('div');
+    empty.className='empty'; empty.style.gridColumn='1/-1';
+    var emptyMsg = {
+      active:'No active jobs', upcoming:'No upcoming jobs',
+      past:'No past jobs', archived:'No archived jobs', all:'No jobs'
+    }[f] || 'No jobs';
+    empty.innerHTML='<div class="empty-icon">&#x1F4CB;</div><div class="empty-txt">'+emptyMsg+'</div>';
+    el.appendChild(empty); return;
+  }
+
+  // Render the main grid — cards for each filtered job
   filtered.forEach(function(j, idx){
     var cc = j.color || JOB_PALETTE[idx % JOB_PALETTE.length];
+    var cat = _jobCat(j);
     var card=document.createElement('div');
     var locColor = {Manchester:'#F4A258',London:'#e8c56d',ABC:'#d4a574'}[j.loc]||'#F4A258';
     card.className='job-card';
-    card.style.cssText='background:linear-gradient(135deg,'+cc.bg+' 0%,'+(cc.bg2||cc.bg)+' 100%);border:none;border-left:4px solid '+locColor;
+    var extra = (cat==='past') ? ';opacity:.72' : '';
+    card.style.cssText='background:linear-gradient(135deg,'+cc.bg+' 0%,'+(cc.bg2||cc.bg)+' 100%);border:none;border-left:4px solid '+locColor+extra;
     card.addEventListener('click', (function(id,name){return function(){openJobDet(id,name);};})(j.id,j.name));
     var nm=document.createElement('div');
-    nm.className='job-nm'; nm.textContent=j.name;
+    nm.className='job-nm';
+    nm.textContent=j.name;
+    if(cat==='past'){
+      var pp=document.createElement('span'); pp.className='past-pill'; pp.textContent='Past'; nm.appendChild(pp);
+    } else if(cat==='upcoming'){
+      var up=document.createElement('span'); up.className='past-pill'; up.style.cssText+='background:rgba(0,180,120,.2);border-color:rgba(0,200,140,.45)'; up.textContent='Upcoming'; nm.appendChild(up);
+    }
     card.appendChild(nm);
     var meta=document.createElement('div'); meta.className='job-meta';
     var locDiv=document.createElement('div'); locDiv.className='jmv'; locDiv.textContent=j.loc;
@@ -7756,14 +7838,15 @@ function renderJobs() {
     foot.appendChild(dates); foot.appendChild(badge); card.appendChild(foot);
     el.appendChild(card);
   });
-  /* Past Jobs section */
-  if(archivedJobs.length){
+
+  /* Archived section — shown below main grid only when viewing 'all' */
+  if(extraArchived.length){
     var archSec=document.createElement('div');
     archSec.style.cssText='grid-column:1/-1;margin-top:24px;border-top:2px solid var(--border);padding-top:16px';
-    archSec.innerHTML='<div style="font-family:var(--cond);font-size:14px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:12px">Past Jobs ('+archivedJobs.length+')</div>';
+    archSec.innerHTML='<div style="font-family:var(--cond);font-size:14px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:12px">Archived ('+extraArchived.length+')</div>';
     var archGrid=document.createElement('div');
     archGrid.style.cssText='display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px';
-    archivedJobs.forEach(function(j,idx){
+    extraArchived.forEach(function(j,idx){
       var cc=j.color||JOB_PALETTE[idx%JOB_PALETTE.length];
       var d=document.createElement('div');
       d.style.cssText='background:linear-gradient(135deg,'+cc.bg+' 0%,'+(cc.bg2||cc.bg)+' 100%);border-radius:8px;padding:12px 14px;cursor:pointer;opacity:.6;transition:opacity .15s';
