@@ -67,6 +67,46 @@ html[data-theme="light"] .theme-btn::before{-webkit-mask-image:url("data:image/s
 .jfchip .ct{font-size:11px;font-weight:800;opacity:.7;padding:1px 6px;border-radius:8px;background:rgba(255,255,255,.08);color:inherit}
 .jfchip.on .ct{background:rgba(0,0,0,.15);opacity:.85}
 .past-pill{display:inline-block;font-family:var(--cond);font-size:10px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#fff;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);padding:2px 7px;border-radius:3px;margin-left:6px;vertical-align:middle}
+
+/* ── Job detail tab layout utilities (reusable across tabs) ─────────────── */
+.jd-auto{display:flex;flex-wrap:wrap;gap:6px 12px}
+.jd-auto > *{flex:1 1 180px;max-width:320px;min-width:0}
+.jd-auto-sm{display:flex;flex-wrap:wrap;gap:4px 10px}
+.jd-auto-sm > *{flex:1 1 140px;max-width:240px;min-width:0}
+.jd-auto-wide{display:flex;flex-wrap:wrap;gap:8px 14px}
+.jd-auto-wide > *{flex:1 1 240px;max-width:360px;min-width:0}
+.jd-split{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+.jd-split-13{display:grid;grid-template-columns:1fr 3fr;gap:14px;align-items:start}
+.jd-split-31{display:grid;grid-template-columns:3fr 1fr;gap:14px;align-items:start}
+@media(max-width:960px){.jd-split,.jd-split-13,.jd-split-31{grid-template-columns:1fr}}
+.jd-pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.jd-pill{font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:3px 10px;border-radius:20px;background:rgba(255,255,255,.08);color:var(--pure);border:1px solid rgba(255,255,255,.12);display:inline-flex;align-items:center;gap:5px;line-height:1.4}
+.jd-pill .jd-pill-k{color:var(--muted);font-weight:700;font-size:10px}
+.jd-hod-row{display:grid;grid-template-columns:135px 1fr 22px;gap:5px;align-items:center;padding:3px 0}
+.jd-hod-row select,.jd-hod-row input{font-family:var(--font);font-size:13px;font-weight:600;padding:5px 7px;border-radius:4px;border:1.5px solid var(--border);background:var(--near-black);color:var(--pure);width:100%}
+.jd-hod-row select{font-size:12px;padding:5px 5px}
+.jd-hod-row .rm-btn{font-size:14px;padding:0;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center}
+.jd-card{background:var(--near-black);border:1.5px solid var(--border);border-radius:8px;padding:12px 14px}
+.jd-card-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.jd-card-ti{font-family:var(--cond);font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--pure)}
+.jd-card-ct{font-family:var(--cond);font-size:10px;font-weight:700;color:var(--muted);padding:1px 8px;border-radius:10px;background:rgba(255,255,255,.05)}
+/* HOD identifier at top of department tabs (Camera, Audio, Lighting/Vision, etc.) — kept subtle, no box */
+.jd-hod-banner{display:flex;align-items:baseline;gap:10px;margin:0 0 14px 2px;flex-wrap:wrap;line-height:1.2}
+.jd-hod-banner-role{font-family:var(--cond);font-size:11px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.jd-hod-banner-sep{color:var(--muted);font-size:12px;opacity:.4}
+.jd-hod-banner-name{font-family:var(--font);font-size:14px;font-weight:600;color:var(--pure)}
+.jd-hod-banner-empty{font-family:var(--font);font-size:13px;color:var(--muted);font-style:italic}
+
+/* Manage Tabs modal */
+.mt-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:6px 10px;margin:8px 0}
+.mt-row{display:flex;align-items:center;gap:8px;padding:7px 10px;border:1.5px solid var(--border);border-radius:6px;background:var(--near-black);cursor:pointer;transition:all .12s;user-select:none}
+.mt-row:hover{border-color:var(--subtle)}
+.mt-row.on{border-color:var(--accent);background:rgba(244,162,88,.08)}
+.mt-row.locked{opacity:.7;cursor:not-allowed;background:rgba(255,255,255,.04)}
+.mt-row input[type=checkbox]{width:14px;height:14px;accent-color:var(--accent);cursor:pointer;flex-shrink:0}
+.mt-row .mt-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.mt-row .mt-lbl{font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--white);flex:1}
+.mt-row .mt-req{font-family:var(--cond);font-size:9px;font-weight:700;letter-spacing:.1em;color:var(--muted);padding:1px 6px;border:1px solid var(--border);border-radius:3px}
 .btn-add{display:flex;align-items:center;gap:6px;background:var(--pure);color:var(--black);border:none;border-radius:8px;padding:8px 14px;font-family:var(--cond);font-size:14px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;margin-left:auto;transition:opacity .13s}
 .btn-add:hover{opacity:.87}
 .btn-sec{background:none;color:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:7px 14px;font-family:var(--cond);font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .13s}
@@ -921,6 +961,29 @@ html[data-theme="light"] .drw-more-menu{background:#f4f2ec;border-color:rgba(48,
   </div>
 </div>
 
+<!-- Manage Tabs modal — per-job tab visibility -->
+<div class="modal-ov" id="mManageTabs">
+  <div class="modal" style="max-width:720px">
+    <div class="modal-hdr">
+      <div class="modal-title">Visible Tabs <span id="mtJobName" style="font-weight:400;color:var(--muted);font-size:14px;margin-left:8px"></span></div>
+      <button class="x-btn" onclick="cm('mManageTabs')">&#215;</button>
+    </div>
+    <div class="modal-body">
+      <div style="color:var(--muted);font-size:13px;line-height:1.5;margin-bottom:10px">Show only the tabs relevant to this job. Hidden tabs still keep any data you've saved — you can bring them back any time.</div>
+      <div class="mt-grid" id="mtList"></div>
+      <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+        <button class="btn-s" onclick="mtToggleAll(true)" style="flex:none;padding:7px 14px">Show all</button>
+        <button class="btn-s" onclick="mtToggleAll(false)" style="flex:none;padding:7px 14px">Hide all (except required)</button>
+        <span id="mtCount" style="margin-left:auto;font-family:var(--cond);font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--muted);align-self:center">— visible</span>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-s" onclick="cm('mManageTabs')">Cancel</button>
+      <button class="btn-p" onclick="mtSave()" style="flex:none;padding:10px 18px">Apply</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-ov" id="mAddMaint">
   <div class="modal">
     <div class="modal-hdr"><div class="modal-title">Add Maintenance Record</div><button class="x-btn" onclick="cm('mAddMaint')">&#215;</button></div>
@@ -1759,6 +1822,10 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
 .so-lbl{font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#555;margin-bottom:10px}
 .so-btn{padding:13px 18px;border-radius:7px;font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border:2px solid #d8d8d8;background:#f5f5f5;color:var(--muted);transition:all .15s;flex:1}
 .so-btn.active{background:#fff8f2;border-color:#ff7800;color:#e06500}
+.so-btn.so-temp-ok.active{background:#e9f7ed;border-color:#2a8a4a;color:#1a6b3a}
+.so-btn.so-temp-nok.active{background:#fce6e6;border-color:#bf2a2a;color:#8f1a1a}
+.so-btn.so-stat-ntr.active{background:#e9f7ed;border-color:#2a8a4a;color:#1a6b3a}
+.so-btn.so-stat-str.active{background:#fff3e6;border-color:#ff7800;color:#e06500}
 .so-inp{width:100%;background:#f7f7f7;border:1.5px solid #d8d8d8;border-radius:7px;color:#111;padding:12px 14px;font-size:15px;font-family:var(--font);outline:none;transition:border-color .15s}
 .so-inp:focus{border-color:#ff7800;background:#fff}
 .so-inp::placeholder{color:var(--muted)}
@@ -1779,23 +1846,84 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
     <div id="soFormView">
       <div class="so-sec">
         <div class="so-lbl">Show Date</div>
-        <input type="date" class="so-inp" id="soDate"/>
+        <div style="display:flex;gap:8px;margin-bottom:10px">
+          <button type="button" class="so-btn active" id="soBtnToday" onclick="soSetDate('today')">Today</button>
+          <button type="button" class="so-btn" id="soBtnYest" onclick="soSetDate('yesterday')">Yesterday</button>
+          <button type="button" class="so-btn" id="soBtnOther" onclick="soSetDate('other')">Other</button>
+        </div>
+        <div id="soDateDisplay" style="font-family:var(--cond);font-size:15px;font-weight:700;color:#302f2c;padding:8px 0"></div>
+        <input type="date" class="so-inp" id="soDate" style="display:none" onchange="soOtherDatePicked()"/>
       </div>
       <div class="so-sec">
         <div class="so-lbl">Director</div>
-        <div style="display:flex;gap:10px">
-          <button class="so-btn active" id="soBtnPK" onclick="soPick('PK')">Paul Keetley</button>
-          <button class="so-btn" id="soBtnKB" onclick="soPick('KB')">Kieron Bateman</button>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button type="button" class="so-btn active" id="soBtnPK" onclick="soPick('PK')">Paul Keetley</button>
+          <button type="button" class="so-btn" id="soBtnKB" onclick="soPick('KB')">Kieron Bateman</button>
+          <button type="button" class="so-btn" id="soBtnOT" onclick="soPick('OT')">Other</button>
         </div>
+        <input type="text" class="so-inp" id="soDirOther" placeholder="Enter director name..." style="display:none;margin-top:10px" oninput="soDirOtherTyped()"/>
         <input type="hidden" id="soDirector" value="Paul Keetley"/>
       </div>
       <div class="so-sec">
+        <div class="so-lbl">Studio Temperature</div>
+        <div style="display:flex;gap:8px" id="soTempRow">
+          <button type="button" class="so-btn so-temp so-temp-ok active" data-temp="OK" onclick="soPickTemp(this)" style="flex:1">OK</button>
+          <button type="button" class="so-btn so-temp so-temp-nok" data-temp="Not OK" onclick="soPickTemp(this)" style="flex:1">Not OK</button>
+        </div>
+        <div id="soTempDetailWrap" style="display:none;margin-top:10px">
+          <textarea class="so-inp" id="soTempDetail" style="min-height:60px;resize:vertical" placeholder="What's the issue? (e.g. too cold in production gallery, too warm on studio floor...)"></textarea>
+        </div>
+      </div>
+      <div class="so-sec">
+        <div class="so-lbl">Transmission Delay</div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <input type="number" class="so-inp" id="soDelay" min="0" step="1" placeholder="0" style="max-width:120px;text-align:center;font-size:18px;font-weight:700;font-family:var(--cond)"/>
+          <span style="font-family:var(--cond);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">Seconds</span>
+        </div>
+      </div>
+      <div class="so-sec">
+        <div class="so-lbl">Report Status</div>
+        <div style="display:flex;gap:8px" id="soStatRow">
+          <button type="button" class="so-btn so-stat so-stat-ntr" data-stat="ntr" onclick="soPickStat(this)" style="flex:1;padding:14px 10px;display:flex;flex-direction:column;gap:3px;align-items:center">
+            <span style="font-size:14px;font-weight:900;letter-spacing:.04em">NTR</span>
+            <span style="font-size:9px;font-weight:700;opacity:.7;letter-spacing:.06em">Nothing to Report</span>
+          </button>
+          <button type="button" class="so-btn so-stat so-stat-str active" data-stat="str" onclick="soPickStat(this)" style="flex:1;padding:14px 10px;display:flex;flex-direction:column;gap:3px;align-items:center">
+            <span style="font-size:14px;font-weight:900;letter-spacing:.04em">STR</span>
+            <span style="font-size:9px;font-weight:700;opacity:.7;letter-spacing:.06em">Something to Report</span>
+          </button>
+        </div>
+      </div>
+      <div class="so-sec" id="soInfoWrap">
         <div class="so-lbl">Technical Information</div>
-        <textarea class="so-inp" id="soInfo" style="min-height:120px;resize:vertical" placeholder="Describe technical activity, issues or observations&#x2026;"></textarea>
+        <textarea class="so-inp" id="soInfo" style="min-height:120px;resize:vertical" placeholder="Describe technical activity, issues or observations&#x2026;" oninput="soUpdateStatus()"></textarea>
+      </div>
+      <div class="so-sec">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <div class="so-lbl" style="margin-bottom:0">Tag Equipment</div>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+            <span style="font-family:var(--cond);font-size:10px;font-weight:800;color:var(--muted);letter-spacing:.08em;text-transform:uppercase" id="soKitTogLbl">OFF</span>
+            <div style="position:relative;width:40px;height:22px" onclick="soToggleKit()">
+              <div id="soKitTogTrack" style="width:40px;height:22px;border-radius:11px;background:#d8d8d8;transition:background .2s"></div>
+              <div id="soKitTogThumb" style="position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:left .2s"></div>
+            </div>
+          </label>
+        </div>
+        <div id="soKitSection" style="display:none">
+          <div id="soKitChips" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px"></div>
+          <div onclick="soToggleKitDrop()" style="background:#f7f7f7;border:1.5px solid #d8d8d8;border-radius:7px;padding:10px 14px;cursor:pointer;display:flex;align-items:center;justify-content:space-between">
+            <span id="soKitDropLbl" style="font-size:14px;color:var(--muted)">Select equipment...</span>
+            <span id="soKitDropArrow" style="font-size:11px;color:var(--muted);transition:transform .2s">▼</span>
+          </div>
+          <div id="soKitDrop" style="display:none;margin-top:4px;border:1.5px solid #d8d8d8;border-radius:7px;overflow:hidden;background:#fafafa">
+            <div style="padding:6px"><input type="text" class="so-inp" id="soKitSearch" placeholder="Search kit..." oninput="soRenderKitList()" style="font-size:13px;padding:8px 10px"/></div>
+            <div id="soKitList" style="max-height:200px;overflow-y:auto"></div>
+          </div>
+        </div>
       </div>
       <div class="so-sec" style="border:none;padding-bottom:0">
-        <div style="font-family:var(--cond);font-size:11px;color:var(--muted);margin-bottom:10px" id="soStatus" style="color:var(--muted)">Complete all fields to submit</div>
-        <button class="so-submit" id="soSubmitBtn" onclick="soSubmit()" disabled>Submit Report</button>
+        <div style="font-family:var(--cond);font-size:11px;color:var(--muted);margin-bottom:10px" id="soStatus">Complete all fields to submit</div>
+        <button type="button" class="so-submit" id="soSubmitBtn" onclick="soSubmit()" disabled>Submit Report</button>
       </div>
     </div>
     <div class="so-success" id="soSuccess" style="background:#fff">
@@ -2676,12 +2804,27 @@ async function loadData() {
             if(_dupFixed)setTimeout(saveData,500);
             nextJid=Math.max(nextJid,...jobs.map(function(j){return(typeof j.id==='number'?j.id:0)+1;}));
           }
-          else if(row.key==='kit'&&Array.isArray(v)){kit.length=0;v.forEach(x=>kit.push(x));}
+          else if(row.key==='kit'&&Array.isArray(v)){
+            kit.length=0;v.forEach(x=>kit.push(x));
+            // Update nextKid based on loaded data to prevent ID collisions on new adds
+            nextKid = Math.max(nextKid, ...kit.map(function(k){return(typeof k.id==='number'?k.id:0);}))+1;
+            // Auto-repair: if any duplicate IDs exist (from the pre-fix nextKid bug), re-assign later duplicates
+            var _seen={}, _dupeRepair=0;
+            kit.forEach(function(k){
+              if(_seen[k.id]!==undefined){ k.id = nextKid++; _dupeRepair++; }
+              else { _seen[k.id]=true; }
+            });
+            if(_dupeRepair>0){ console.warn('Repaired '+_dupeRepair+' duplicate kit IDs'); setTimeout(function(){saveData();},200); }
+          }
           else if(row.key==='hiredCatalogue'&&Array.isArray(v)){hiredCatalogue.length=0;v.forEach(x=>hiredCatalogue.push(x));}
           else if(row.key==='users'&&Array.isArray(v)){users.length=0;v.forEach(x=>users.push(x));}
           else if(row.key==='maintenance'&&Array.isArray(v)){maintenance.length=0;v.forEach(x=>maintenance.push(x));}
           else if(row.key==='faults'&&Array.isArray(v)){faults.length=0;v.forEach(x=>faults.push(x));}
-          else if(row.key==='binItems'&&Array.isArray(v)){binItems.length=0;v.forEach(x=>binItems.push(x));}
+          else if(row.key==='binItems'&&Array.isArray(v)){
+            binItems.length=0;v.forEach(x=>binItems.push(x));
+            // Include bin items in nextKid calculation - they retain their ID on restore
+            nextKid = Math.max(nextKid, ...binItems.map(function(b){return(b.item&&typeof b.item.id==='number'?b.item.id:0);}))+1;
+          }
           else if(row.key==='repairItems'&&Array.isArray(v)){repairItems.length=0;v.forEach(x=>repairItems.push(x));}
           else if(row.key==='holidays'&&Array.isArray(v)){holidays.length=0;v.forEach(x=>holidays.push(x));}
           else if(row.key==='activity'&&Array.isArray(v)){activity.length=0;v.forEach(x=>activity.push(x));}
@@ -2694,7 +2837,13 @@ async function loadData() {
           else if(row.key==='jobNotes'&&v&&typeof v==='object'){Object.assign(jobNotes,v);}
           else if(row.key==='opsPlanner'&&v&&typeof v==='object'){Object.keys(v).forEach(function(k){_opsD[k]=v[k];});}
           else if(row.key==='opsBrk'&&Array.isArray(v)){_opsBrk.length=0;v.forEach(function(x){_opsBrk.push(x);});}
-          else if(row.key==='kitSubcats'&&v&&typeof v==='object'){Object.keys(v).forEach(function(k){KIT_SUBCATS[k]=v[k];});cats=Object.keys(KIT_SUBCATS);}
+          else if(row.key==='kitSubcats'&&v&&typeof v==='object'){Object.keys(v).forEach(function(k){KIT_SUBCATS[k]=v[k];});cats=Object.keys(KIT_SUBCATS);
+            // Ensure required Audio subcats exist (Mics + Playout needed for Audio tab pickers)
+            if(!KIT_SUBCATS.Audio)KIT_SUBCATS.Audio=[];
+            ['Desks','Hydras','Mics','Radio Mics','Playout'].forEach(function(sub){
+              if(KIT_SUBCATS.Audio.indexOf(sub)<0)KIT_SUBCATS.Audio.push(sub);
+            });
+          }
           else if(row.key==='catColors'&&v&&typeof v==='object'){Object.keys(v).forEach(function(k){CAT_COLORS[k]=v[k];});}
           else if(row.key==='jobTemplates'&&Array.isArray(v)){jobTemplates=v;}
           else if(row.key==='job_access'&&Array.isArray(v)){_jobAccessGrants.length=0;v.forEach(function(x){_jobAccessGrants.push(x);});}
@@ -2931,7 +3080,7 @@ function appPromptOK() {
 // ── DATA ──────────────────────────────────────────────────────────────────────
 const KIT_SUBCATS = {
   Camera:['Studio Camera','Lens','Pedestal','Head','Zoom Demand','Focus Demand','CCU','RCP','MCS','Grip','Specialist Camera','Mini Camera','PTZ Camera','Autocue','Viewfinder','Return Monitor'],
-  Audio:['Desks','Hydras','Radio Mics','Transmitters','Receivers','Monitoring','Speaker','Audio Panel'],
+  Audio:['Desks','Hydras','Mics','Radio Mics','Transmitters','Receivers','Playout','Monitoring','Speaker','Audio Panel'],
   Comms:['Frame','Panels','Boleros','Headsets','Chargers'],
   'Grip & Support':['Tripods','Heads','Dollies','Jibs','Misc Grip'],
   Vision:['RCPs','OLEDs','Switchers','Routers','Multiviewers','Signal Converters','Colour Corrector','Vision Mixer','Waveform Monitors'],
@@ -7223,6 +7372,7 @@ function restoreKit(id) {
   kit.push(entry.item);
   binItems=binItems.filter(b=>b.item.id!==id);
   activity.unshift({icon:'♻️',text:'Restored: '+entry.item.name,time:'Just now'});
+  saveData();
   toast('Restored: '+entry.item.name);
   updateBinBadge(); renderBin(); renderKit(); renderDash();
 }
@@ -7324,7 +7474,10 @@ function kitSubcatBadge(subcat){
 function addKit() {
   const name=document.getElementById('nkName').value.trim();
   if(!name){toast('Enter item name');return;}
-  const k={id:nextKid++,name,cat:document.getElementById('nkCat').value,loc:document.getElementById('nkLoc').value,
+  const subcatEl=document.getElementById('nkSubcat');
+  const k={id:nextKid++,name,cat:document.getElementById('nkCat').value,
+    subcat:(subcatEl && subcatEl.value)?subcatEl.value:'',
+    loc:document.getElementById('nkLoc').value,
     make:document.getElementById('nkMake').value.trim(),serial:document.getElementById('nkSerial').value.trim(),tag:document.getElementById('nkTag').value.trim(),
     status:document.getElementById('nkStatus').value,cond:document.getElementById('nkCond').value,
     patDate:document.getElementById('nkPat').value,patTester:document.getElementById('nkPatTester').value.trim(),
@@ -7334,6 +7487,7 @@ function addKit() {
     extAssetNo:(document.getElementById('nkExtAsset').value||'').trim()};
   kit.push(k);
   activity.unshift({icon:'➕',text:'Added: '+name,time:'Just now'});
+  saveData();
   cm('mAddKit'); toast('Added: '+name); renderKit(); renderDash();
 }
 function drawerFault() {
@@ -8263,15 +8417,39 @@ function renderJobDet(j) {
   const sc = STATUS_CFG[j.status||'Confirmed'];
   const statusBadge = '<span style="background:'+sc.bg+';color:'+sc.color+';border:1px solid '+sc.color+'40;font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:3px 10px;border-radius:3px">'+sc.label+'</span>';
   const locCls = {Manchester:'jc-man',London:'jc-lon',ABC:'jc-man'}[j.loc]||'';
-  const tabs = [
-    {id:'info',label:'Info'},{id:'tech',label:'Tech Overview'},{id:'camspec',label:'Camera Spec'},
-    {id:'set',label:'Set'},{id:'lv',label:'Lighting / Vision'},{id:'gallery',label:'Gallery'},
-    {id:'crew',label:'Crew'},{id:'audio',label:'Audio'},{id:'post',label:'Post'},
-    {id:'monitors',label:'Monitors'},{id:'ingest',label:'Ingest'},{id:'evs',label:'EVS'},{id:'gfx',label:'GFX'},{id:'comms',label:'Comms'},
-    {id:'ip',label:'IP Addresses'},{id:'kit',label:'Prep List'},
-    {id:'englog',label:'Eng Log'},{id:'improve',label:'Improvements'}
+  const allTabs = [
+    {id:'info',label:'Info',required:true},
+    {id:'camspec',label:'Camera'},
+    {id:'audio',label:'Audio'},
+    {id:'comms',label:'Comms'},
+    {id:'ingest',label:'Ingest'},
+    {id:'evs',label:'EVS'},
+    {id:'post',label:'Post'},
+    {id:'gfx',label:'GFX'},
+    {id:'set',label:'Set'},
+    {id:'lv',label:'Lighting / Vision'},
+    {id:'gallery',label:'Gallery'},
+    {id:'crew',label:'Crew'},
+    {id:'monitors',label:'Monitors'},
+    {id:'ip',label:'IP Addresses'},
+    {id:'kit',label:'Prep List'},
+    {id:'englog',label:'Eng Log'},
+    {id:'improve',label:'Improvements'}
   ];
+  // Per-job visibility — j.visibleTabs is an array of tab ids. Null/undefined = show all.
+  // Info is always included regardless of what's stored.
+  var _vtSet = null;
+  if(Array.isArray(j.visibleTabs)){
+    _vtSet = {};
+    j.visibleTabs.forEach(function(id){_vtSet[id]=true;});
+    _vtSet['info']=true; // info is required
+  }
+  const tabs = _vtSet ? allTabs.filter(function(t){return t.required || _vtSet[t.id];}) : allTabs;
+  // If the currently-active tab was just hidden, fall back to info
+  if(!tabs.find(function(t){return t.id===_jdTab;})) _jdTab='info';
   const isAdmin = CU && CU.role==='Admin';
+  const hiddenCount = allTabs.length - tabs.length;
+  const manageBtn = '<button class="ibtn" title="Show/hide tabs for this job" style="font-size:13px;padding:6px 12px;background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.25);font-family:var(--cond);font-weight:800;letter-spacing:.06em;text-transform:uppercase" onclick="openManageTabs('+j.id+')">&#9881; Tabs'+(hiddenCount?' <span style=\"background:var(--accent);color:#000;padding:0 6px;border-radius:8px;font-size:10px;margin-left:4px\">'+hiddenCount+' hidden</span>':'')+'</button>';
   const exportBtn = isAdmin
     ? '<button class="ibtn" style="font-size:13px;padding:6px 14px;background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.3);font-family:var(--cond);font-weight:800;letter-spacing:.06em;text-transform:uppercase" onclick="exportJobData('+j.id+')">Export</button>'
     : '';
@@ -8288,10 +8466,10 @@ function renderJobDet(j) {
       +'<button style="padding:5px 16px;font-size:12px;font-family:var(--cond);font-weight:800;letter-spacing:.08em;background:'+(isTX?jc.bg:'transparent')+';color:'+(isTX?'#fff':'var(--muted)')+';border:none;cursor:pointer" onclick="jdSetField('+j.id+',\'txRx\',\'TX\');renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))">TX</button>'
       +'<button style="padding:5px 16px;font-size:12px;font-family:var(--cond);font-weight:800;letter-spacing:.08em;background:'+(!isTX?jc.bg:'transparent')+';color:'+(!isTX?'#fff':'var(--muted)')+';border:none;cursor:pointer" onclick="jdSetField('+j.id+',\'txRx\',\'RX\');renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))">RX</button>'
       +'</div>';
-    var _lbl=function(t){return '<div style="font-family:var(--cond);font-size:11px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--pure);margin-bottom:2px">'+t+'</div>';};
-    var _inp=function(field,val,ph){return '<input class="fi" style="width:100%;font-size:15px;font-weight:600;padding:6px 10px;border-radius:6px;border:1.5px solid var(--border);background:var(--near-black);color:var(--pure)" value="'+((val||'').replace(/"/g,'&quot;'))+'" placeholder="'+(ph||'')+'" onchange="jdSetField('+j.id+',\''+field+'\',this.value)"/>';};
-    var _sel=function(field,opts){return '<select class="fi" style="width:100%;font-size:15px;font-weight:600;padding:6px 10px;border-radius:6px;border:1.5px solid var(--border);background:var(--near-black);color:var(--pure)" onchange="jdSetField('+j.id+',\''+field+'\',this.value);renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))">'+opts+'</select>';};
-    var _date=function(field,val){return '<div style="display:flex;align-items:center;gap:6px"><input type="date" class="fi" style="font-size:15px;font-weight:600;padding:6px 10px;border-radius:6px;border:1.5px solid var(--border);background:var(--near-black);color:var(--pure);flex:1" value="'+(val||'')+'" onchange="jdSetField('+j.id+',\''+field+'\',this.value)"/>'+(val?'<a href="#" onclick="jdGoCalDate(\''+val+'\',\'show\')" style="font-size:10px;color:'+jc.bg+';font-family:var(--cond);font-weight:800;letter-spacing:.06em;text-transform:uppercase;text-decoration:none">\u2197 CAL</a>':'')+'</div>';};
+    var _lbl=function(t){return '<div style="font-family:var(--cond);font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--pure);margin-bottom:1px">'+t+'</div>';};
+    var _inp=function(field,val,ph){return '<input class="fi" style="width:100%;font-size:15px;font-weight:600;padding:4px 9px;border-radius:5px;border:1.5px solid var(--border);background:var(--near-black);color:var(--pure)" value="'+((val||'').replace(/"/g,'&quot;'))+'" placeholder="'+(ph||'')+'" onchange="jdSetField('+j.id+',\''+field+'\',this.value)"/>';};
+    var _sel=function(field,opts){return '<select class="fi" style="width:100%;font-size:15px;font-weight:600;padding:4px 9px;border-radius:5px;border:1.5px solid var(--border);background:var(--near-black);color:var(--pure)" onchange="jdSetField('+j.id+',\''+field+'\',this.value);renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))">'+opts+'</select>';};
+    var _date=function(field,val){return '<div style="display:flex;align-items:center;gap:6px"><input type="date" class="fi" style="font-size:15px;font-weight:600;padding:4px 9px;border-radius:5px;border:1.5px solid var(--border);background:var(--near-black);color:var(--pure);flex:1" value="'+(val||'')+'" onchange="jdSetField('+j.id+',\''+field+'\',this.value)"/>'+(val?'<a href="#" onclick="jdGoCalDate(\''+val+'\',\'show\')" style="font-size:10px;color:'+jc.bg+';font-family:var(--cond);font-weight:800;letter-spacing:.06em;text-transform:uppercase;text-decoration:none">\u2197 CAL</a>':'')+'</div>';};
     var _card=function(borderCol,content){return '<div style="background:var(--near-black);border:1.5px solid var(--border);border-top:3px solid '+borderCol+';border-radius:8px;padding:12px 14px">'+content+'</div>';};
     const locOpts = ['ABC','Manchester','London'].map(function(l){return '<option'+(l===j.loc?' selected':'')+'>'+l+'</option>';}).join('');
     const studs = studiosByLoc[j.loc]||[j.studio||''];
@@ -8306,27 +8484,61 @@ function renderJobDet(j) {
       +txRxSwitch
       +'</div></div>';
 
-    content = '<div class="det-sec" style="padding:10px 14px">'
-      +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px 10px;margin-bottom:8px">'
+    content = '<div class="det-sec" style="padding:8px 12px">'
+      +'<div class="jd-auto-sm" style="margin-bottom:6px;row-gap:4px">'
       +'<div>'+_lbl('Location')+_sel('loc',locOpts)+'</div>'
       +'<div>'+_lbl('Studio')+_sel('studio',stuOpts)+'</div>'
       +'<div>'+_lbl('Production Company')+_inp('prodCompany',j.prodCompany||j.client||'','Company...')+'</div>'
       +'<div>'+_lbl('Director')+_inp('director',j.director||'','Director...')+'</div>'
       +'</div>'
-      +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px 10px;padding-top:6px;border-top:1px solid var(--border)">'
+      +'<div class="jd-auto-sm" style="padding-top:4px;border-top:1px solid var(--border);row-gap:4px">'
       +(j.status==='Ongoing'
-        ?'<div>'+_lbl('Season Start')+'<input type="month" class="fi" style="font-size:15px;font-weight:600;padding:6px 10px;color:var(--pure)" value="'+(j.start?j.start.slice(0,7):'')+'" onchange="jdSetField('+j.id+',\'start\',this.value+\'-01\')"/></div>'
-         +'<div>'+_lbl('Season End')+'<input type="month" class="fi" style="font-size:15px;font-weight:600;padding:6px 10px;color:var(--pure)" value="'+(j.end?j.end.slice(0,7):'')+'" onchange="jdSetField('+j.id+',\'end\',this.value+\'-01\')"/></div>'
+        ?'<div>'+_lbl('Season Start')+'<input type="month" class="fi" style="width:100%;font-size:15px;font-weight:600;padding:4px 9px;color:var(--pure)" value="'+(j.start?j.start.slice(0,7):'')+'" onchange="jdSetField('+j.id+',\'start\',this.value+\'-01\')"/></div>'
+         +'<div>'+_lbl('Season End')+'<input type="month" class="fi" style="width:100%;font-size:15px;font-weight:600;padding:4px 9px;color:var(--pure)" value="'+(j.end?j.end.slice(0,7):'')+'" onchange="jdSetField('+j.id+',\'end\',this.value+\'-01\')"/></div>'
         :'<div>'+_lbl('Start Date')+_date('start',j.start)+'</div>'
          +'<div>'+_lbl('End Date')+_date('end',j.end)+'</div>')
-      +'<div>'+_lbl('Status')+'<select class="fi" style="font-size:15px;font-weight:600;padding:6px 10px;border-radius:6px;border:1.5px solid var(--border);background:var(--near-black);color:var(--pure)" onchange="jdSetField('+j.id+',\'status\',this.value);saveData();renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))">'
+      +'<div>'+_lbl('Status')+'<select class="fi" style="width:100%;font-size:15px;font-weight:600;padding:4px 9px;border-radius:5px;border:1.5px solid var(--border);background:var(--near-black);color:var(--pure)" onchange="jdSetField('+j.id+',\'status\',this.value);saveData();renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))">'
       +['Confirmed','Likely','Possible','Ongoing','Cancelled'].map(function(s){return '<option'+(s===j.status?' selected':'')+'>'+s+'</option>';}).join('')+'</select></div>'
       +'<div>'+_lbl('TX / RX')+txRxSwitch+'</div>'
       +'</div>'
       +'</div>'
+      // ── Technical Overview (merged from former Tech tab) ──
+      +(function(){
+        var vmKit = j.visionMixerKid?kit.find(function(x){return x.id===j.visionMixerKid;}):null;
+        var vmPicker = '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">'
+          +(vmKit
+            ? '<span style="background:rgba(255,255,255,.07);border:1px solid var(--border);border-radius:4px;font-size:13px;font-weight:600;padding:5px 8px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+vmKit.name+'</span>'
+            : '<span style="color:var(--muted);font-size:13px;font-style:italic;padding:5px 0;flex:1">Not assigned</span>')
+          +'<button class="ibtn" style="font-size:11px;padding:4px 8px;flex-shrink:0" onclick="jdPickVisionMixer('+j.id+')">'+(vmKit?'Change':'Pick')+'</button>'
+          +(vmKit?'<button class="rm-btn" style="font-size:12px;flex-shrink:0" onclick="jdSetField('+j.id+',\'visionMixerKid\',null);renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))">×</button>':'')
+          +'</div>';
+        var _res=j.techRes||'',_fr=j.techFR||'',_scan=j.techScan||'',_codec=j.techCodec||'';
+        var resNum={'720p':'720','1080i':'1080','1080p':'1080','2K':'2K','UHD':'2160','4K DCI':'4K','8K':'8K'}[_res]||_res;
+        var scanLtr={'Progressive':'p','Interlaced':'i','PsF':'PsF'}[_scan]||'';
+        var frClean=_fr.replace('.00','').replace('.','');
+        var fmtLabel=_res?(resNum+scanLtr+frClean):'';
+        var allCodecs=(typeof CODEC_LIST!=='undefined'?CODEC_LIST:[]).concat(j.techCodecExtra||[]);
+        var codecSel='<option value="">--</option>'+allCodecs.map(function(x){return '<option'+(x===_codec?' selected':'')+'>'+x+'</option>';}).join('')+'<option value="__add__" style="color:var(--accent);font-style:italic">+ Add codec...</option>';
+        var _ddOpts=function(val,opts){return '<option value="">--</option>'+opts.map(function(x){return '<option'+(x===val?' selected':'')+'>'+x+'</option>';}).join('');};
+        return '<div class="det-sec" style="padding:8px 12px;margin-top:8px">'
+          +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border)">'
+            +'<div class="jd-card-ti">Technical Overview</div>'
+            +(fmtLabel?'<span style="font-family:var(--cond);font-size:13px;font-weight:900;letter-spacing:.04em;color:var(--accent)">'+fmtLabel+(_codec?' &middot; '+_codec:'')+'</span>':'<span style="font-family:var(--cond);font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em">Set format below</span>')
+          +'</div>'
+          +'<div class="jd-auto-sm">'
+          +'<div>'+_lbl('Cameras')+'<input type="number" class="fi" style="width:100%;font-size:15px;font-weight:600;padding:4px 9px;border-radius:5px;border:1.5px solid var(--border);background:var(--near-black);color:var(--pure)" min="0" max="50" value="'+(j.cameras||0)+'" onchange="jdSetField('+j.id+',\'cameras\',parseInt(this.value)||0);renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))"/></div>'
+          +'<div>'+_lbl('Resolution')+'<select class="fi" style="width:100%;font-size:15px;font-weight:600;padding:4px 9px;border-radius:5px;border:1.5px solid var(--border);background:var(--near-black);color:var(--pure)" onchange="jdSetField('+j.id+',\'techRes\',this.value);renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))">'+_ddOpts(_res,typeof CAM_RESOLUTIONS!=='undefined'?CAM_RESOLUTIONS:[])+'</select></div>'
+          +'<div>'+_lbl('Frame Rate')+'<select class="fi" style="width:100%;font-size:15px;font-weight:600;padding:4px 9px;border-radius:5px;border:1.5px solid var(--border);background:var(--near-black);color:var(--pure)" onchange="jdSetField('+j.id+',\'techFR\',this.value);renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))">'+_ddOpts(_fr,typeof CAM_FRAMERATES!=='undefined'?CAM_FRAMERATES:[])+'</select></div>'
+          +'<div>'+_lbl('Scan')+'<select class="fi" style="width:100%;font-size:15px;font-weight:600;padding:4px 9px;border-radius:5px;border:1.5px solid var(--border);background:var(--near-black);color:var(--pure)" onchange="jdSetField('+j.id+',\'techScan\',this.value);renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))">'+_ddOpts(_scan,typeof CAM_SCANTYPES!=='undefined'?CAM_SCANTYPES:[])+'</select></div>'
+          +'<div>'+_lbl('Codec')+'<select class="fi" style="width:100%;font-size:15px;font-weight:600;padding:4px 9px;border-radius:5px;border:1.5px solid var(--border);background:var(--near-black);color:var(--pure)" onchange="techHandleCodecSel('+j.id+',this.value)">'+codecSel+'</select></div>'
+          +'<div>'+_lbl('Vision Mixer')+vmPicker+'</div>'
+          +'</div>'
+          +'<div style="margin-top:10px">'+_lbl('Technical Notes')+'<textarea class="fta" style="width:100%;min-height:56px;font-size:14px;padding:8px 10px;border-radius:6px;border:1.5px solid var(--border);background:var(--near-black);color:var(--pure)" placeholder="Overall technical notes for this production..." onchange="jdSetField('+j.id+',\'techNotes\',this.value)">'+(j.techNotes||'').replace(/</g,'&lt;')+'</textarea></div>'
+          +'</div>';
+      }())
       +(j.status!=='Ongoing'
       ?('<div class="det-sec"><div class="det-sec-lbl" style="font-size:14px">Key Production Dates</div>'
-          +'<div style="display:flex;flex-direction:column;gap:20px">'
+          +'<div class="jd-auto-wide" style="gap:16px">'
           +(function(){
             if(!j.rigDates)j.rigDates=[];
             var addBtn='<button class="ibtn" style="font-size:13px;margin-top:8px;padding:6px 14px" onclick="jdAddRigDate('+j.id+')">+ Add Rig Day</button>';
@@ -8360,41 +8572,14 @@ function renderJobDet(j) {
               +addBtn+'</div>';
           }())
           +'<div><div style="font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px">De-Rig Date</div>'
-          +'<input type="date" class="fi" style="font-size:16px;padding:10px 12px;border-radius:6px;max-width:240px" value="'+(j.drigDate||'')+'" onchange="jdSetField('+j.id+',\'drigDate\',this.value)"/></div>'
+          +'<input type="date" class="fi" style="font-size:16px;padding:10px 12px;border-radius:6px;width:100%;max-width:240px" value="'+(j.drigDate||'')+'" onchange="jdSetField('+j.id+',\'drigDate\',this.value)"/></div>'
           +'</div></div>')
       :'')
-    +hodSection(j)
-  }
-
-  else if(_jdTab==='tech') {
-    const vmKit = j.visionMixerKid?kit.find(function(x){return x.id===j.visionMixerKid;}):null;
-    const vmPicker = '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'
-      +(vmKit?'<span style="background:rgba(255,255,255,.07);border:1px solid var(--border);border-radius:3px;font-size:13px;padding:3px 9px">'+vmKit.name+'</span>':'<span style="color:var(--muted);font-size:13px">Not assigned</span>')
-      +'<button class="ibtn" style="font-size:12px" onclick="jdPickVisionMixer('+j.id+')">'+(vmKit?'Change':'Assign from Kit')+'</button>'
-      +(vmKit?'<button class="rm-btn" style="font-size:11px" onclick="jdSetField('+j.id+',\'visionMixerKid\',null);renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))">×</button>':'')
-      +'</div>';
-    // Format summary label e.g. "1080i50", "2160p50"
-    var _res=j.techRes||'',_fr=j.techFR||'',_scan=j.techScan||'',_codec=j.techCodec||'';
-    var resNum={'720p':'720','1080i':'1080','1080p':'1080','2K':'2K','UHD':'2160','4K DCI':'4K','8K':'8K'}[_res]||_res;
-    var scanLtr={'Progressive':'p','Interlaced':'i','PsF':'PsF'}[_scan]||'';
-    var frClean=_fr.replace('.00','').replace('.','');
-    var fmtLabel=_res?(resNum+scanLtr+frClean):'';
-    var allCodecs=CODEC_LIST.concat(j.techCodecExtra||[]);
-    var codecSel='<option value="">--</option>'+allCodecs.map(function(x){return '<option'+(x===_codec?' selected':'')+'>'+x+'</option>';}).join('')+'<option value="__add__" style="color:#2a6cb8;font-style:italic">+ Add codec...</option>';
-    var mkTechDd=function(lbl,field,val,opts){
-      var o=opts.map(function(x){return '<option'+(x===val?' selected':'')+'>'+x+'</option>';}).join('');
-      return '<div><div class="dfl">'+lbl+'</div><select class="fi" style="max-width:180px;font-size:14px;padding:5px 8px" onchange="jdSetField('+j.id+',\''+field+'\',this.value);renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))"><option value="">--</option>'+o+'</select></div>';
-    };
-    content = '<div class="det-sec"><div class="det-sec-lbl">Technical Overview'+(fmtLabel?'<span style="font-family:var(--cond);font-size:14px;font-weight:800;color:var(--accent);margin-left:12px">'+fmtLabel+(_codec?' · '+_codec:'')+'</span>':'')+'</div>'
-      +'<div class="det-grid" style="grid-template-columns:repeat(2,1fr);row-gap:12px">'
-      +'<div><div class="dfl">Number of Cameras</div><div style="display:flex;align-items:center;gap:6px"><input type="number" class="fi" style="width:80px;font-size:14px;padding:5px 8px" min="0" max="20" value="'+(j.cameras||0)+'" onchange="jdSetField('+j.id+',\'cameras\',parseInt(this.value)||0);renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))"/><span style="font-size:13px;color:var(--muted)">cameras</span></div></div>'
-      +mkTechDd('Resolution','techRes',_res,CAM_RESOLUTIONS)
-      +mkTechDd('Frame Rate','techFR',_fr,CAM_FRAMERATES)
-      +mkTechDd('Scan Type','techScan',_scan,CAM_SCANTYPES)
-      +'<div><div class="dfl">Codec</div><select class="fi" style="max-width:220px;font-size:14px;padding:5px 8px" onchange="techHandleCodecSel('+j.id+',this.value)">'+codecSel+'</select></div>'
-      +'<div><div class="dfl">Vision Mixer</div>'+vmPicker+'</div>'
-      +'<div><div class="dfl">Notes</div><textarea class="fta" style="min-height:60px;font-size:14px" placeholder="Technical notes..." onchange="jdSetField('+j.id+',\'techNotes\',this.value)">'+(j.techNotes||'')+'</textarea></div>'
-      +'</div></div>';
+    // ── Split section: HODs (left) + Meeting Notes (right) ──
+    +'<div class="jd-split" style="margin-top:10px">'
+      +hodSection(j)
+      +infoInlineMeetingNotes(j)
+    +'</div>'
   }
 
   else if(_jdTab==='camspec') {
@@ -8800,57 +8985,66 @@ function renderJobDet(j) {
     while(lv.camRcp.length<numCams)lv.camRcp.push({mode:'local',kitId:null,hiredVal:'',rcpType:'legacy',ccuIp:'',rcpIp:'',targetIp:''});
     lv.camRcp=lv.camRcp.slice(0,numCams);
 
-    // ── Global MCS ────────────────────────────────────────────
+    // ── Vision Engineers rows (reused inside merged card) ──
+    var vOpCount=lv.visionOps.length;
+    var vOpRows=lv.visionOps.map(function(op,vi){
+      return '<div style="display:grid;grid-template-columns:28px 1fr 86px 74px 22px;gap:6px;align-items:center;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.05)">'
+        +'<div style="font-family:var(--cond);font-size:10px;font-weight:800;color:var(--muted);text-align:center">'+('0'+(vi+1)).slice(-2)+'</div>'
+        +'<input class="fi" style="font-size:12px;padding:3px 6px" value="'+((op.name||'').replace(/"/g,'&quot;'))+'" placeholder="Engineer name..." onchange="lvVopSet('+j.id+','+vi+',\'name\',this.value)"/>'
+        +'<div style="display:flex;align-items:center;gap:4px"><span style="font-size:10px;color:var(--muted);font-family:var(--cond);text-transform:uppercase;letter-spacing:.05em">Mons</span><input type="number" class="fi" min="0" max="20" style="width:44px;font-size:12px;padding:3px 4px;text-align:center" value="'+(op.monCount||0)+'" onchange="lvVopSet('+j.id+','+vi+',\'monCount\',parseInt(this.value)||0)"/></div>'
+        +'<label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:11px;color:var(--muted)"><input type="checkbox"'+(op.evs?' checked':'')+' onchange="lvVopSet('+j.id+','+vi+',\'evs\',this.checked)"/> EVS</label>'
+        +'<button class="rm-btn" style="font-size:12px;padding:0;width:22px;height:22px" onclick="lvVopRm('+j.id+','+vi+')">×</button>'
+        +'</div>';
+    }).join('');
+
+    // ── MCS body (inline, only when enabled) ──
     var mcsG=lv.mcsGlobal;
     var mcsGKit=mcsG.kitId?kit.find(function(k){return k.id===mcsG.kitId;}):null;
     var mcsGBody='';
     if(mcsG.enabled){
-      var mcsGModeBtn='<div style="display:flex;margin-bottom:6px">'
-        +[['inv','Inventory'],['hired','Hired']].map(function(opt,oi){
-          var active=(mcsG.mode||'inv')===opt[0];
-          return '<button onclick="lvMcsGMode('+j.id+',\''+opt[0]+'\')" style="padding:5px 12px;font-size:13px;font-family:var(--cond);font-weight:800;border:1.5px solid var(--border);'+(oi===0?'border-right:none;':'')+'background:'+(active?'rgba(74,158,255,.3)':'rgba(255,255,255,.04)')+';color:'+(active?'#4a9eff':'var(--muted)')+';cursor:pointer">'+opt[1]+'</button>';
-        }).join('')+'</div>';
-      var mcsGPick=mcsG.mode==='inv'
-        ?(mcsGKit
-          ?'<div style="display:flex;flex-direction:column;gap:3px"><span style="background:rgba(42,125,72,.12);border:1px solid rgba(60,180,100,.3);border-radius:3px;font-size:11px;padding:2px 7px;color:#2a7d48">'+mcsGKit.name+'</span>'
-            +'<div style="display:flex;gap:3px"><button class="ibtn" style="font-size:10px;flex:1" onclick="lvPickMcsG('+j.id+')">Change</button>'
-            +'<button class="rm-btn" style="font-size:10px" onclick="lvMcsGSet('+j.id+',\'kitId\',null)">×</button></div></div>'
-          :'<button class="ibtn" style="font-size:11px;width:100%;max-width:200px" onclick="lvPickMcsG('+j.id+')">Pick from Inventory</button>')
-        :'<input class="fi" style="font-size:12px;padding:3px 7px;max-width:300px;width:100%" value="'+(mcsG.hiredVal||'')+'" placeholder="MCS model / type..." onchange="lvMcsGSet('+j.id+',\'hiredVal\',this.value)"/>';
-      mcsGBody='<div style="display:grid;grid-template-columns:220px 1fr;gap:14px;align-items:start">'
-        +'<div>'+mcsGModeBtn+mcsGPick+'</div>'
-        +'<div><div class="dfl" style="font-size:11px;margin-bottom:4px">MCS IP Address</div>'
-        +'<input class="fi" style="font-size:12px;padding:3px 7px;width:100%;font-family:monospace" value="'+(mcsG.ip||'')+'" placeholder="0.0.0.0" onchange="lvMcsGSet('+j.id+',\'ip\',this.value)"/></div>'
-        +'</div>';
+      // New compact picker style matching Audio tab
+      var mcsModeBtns='';
+      var mcsM=mcsG.mode||'inv';
+      var mcsContent;
+      if(mcsM==='hired'){
+        mcsContent='<span style="background:rgba(250,160,0,.14);border:1px solid rgba(250,160,0,.35);border-radius:4px;font-size:10px;font-family:var(--cond);font-weight:900;letter-spacing:.1em;text-transform:uppercase;padding:4px 8px;color:#b87400;flex-shrink:0">Hired</span>'
+          +'<input class="fi" style="font-size:12px;padding:3px 7px;flex:1;min-width:120px;max-width:240px" value="'+((mcsG.hiredVal||'').replace(/"/g,'&quot;'))+'" placeholder="MCS model / type..." onchange="lvMcsGSet('+j.id+',\'hiredVal\',this.value)"/>'
+          +'<button type="button" class="rm-btn" style="font-size:12px;padding:0;width:22px;height:22px;flex-shrink:0" title="Clear" onclick="lvMcsGSet('+j.id+',\'mode\',\'inv\');lvMcsGSet('+j.id+',\'hiredVal\',\'\')">×</button>';
+      } else if(mcsGKit){
+        mcsContent='<span style="background:rgba(60,160,100,.14);border:1px solid rgba(80,200,120,.35);border-radius:4px;font-size:12px;font-weight:600;padding:3px 8px;color:#6dbf90;flex-shrink:0">'+mcsGKit.name+'</span>'
+          +'<button type="button" class="ibtn" style="font-size:11px;padding:2px 7px;flex-shrink:0" onclick="lvPickMcsG('+j.id+')">Change</button>'
+          +'<button type="button" class="rm-btn" style="font-size:12px;padding:0;width:22px;height:22px;flex-shrink:0" onclick="lvMcsGSet('+j.id+',\'kitId\',null)">×</button>';
+      } else {
+        mcsContent='<button type="button" class="ibtn" style="font-size:11px;padding:3px 9px;flex-shrink:0" onclick="lvPickMcsG('+j.id+')">Pick from Inventory</button>'
+          +'<button type="button" class="ibtn" style="font-size:11px;padding:3px 9px;color:#b87400;background:rgba(250,160,0,.08);border-color:rgba(250,160,0,.3);flex-shrink:0" onclick="lvMcsGSet('+j.id+',\'mode\',\'hired\')">+ Hired</button>';
+      }
+      mcsGBody='<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">'+mcsContent+'</div>'
+        +'<div style="display:flex;align-items:center;gap:6px"><span style="font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">IP</span>'
+          +'<input class="fi" style="font-size:12px;padding:3px 7px;font-family:monospace;width:130px" value="'+((mcsG.ip||'').replace(/"/g,'&quot;'))+'" placeholder="0.0.0.0" onchange="lvMcsGSet('+j.id+',\'ip\',this.value)"/></div>';
     }
-    var mcsGSection='<div class="det-sec"><div style="display:flex;align-items:center;gap:12px;margin-bottom:'+(mcsG.enabled?'12':'4')+'px">'
-      +'<div class="det-sec-lbl" style="margin-bottom:0">MCS</div>'
-      +'<label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;color:var(--muted)">'
-      +'<input type="checkbox"'+(mcsG.enabled?' checked':'')+' onchange="lvMcsGSet('+j.id+',\'enabled\',this.checked);renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))"/> Yes</label>'
-      +'</div>'+(mcsG.enabled?mcsGBody:'')+'</div>';
 
-    // ── Vision Engineers ──────────────────────────────────────
-    var vOpCount=lv.visionOps.length;
-    var vOpRows=lv.visionOps.map(function(op,vi){
-      return '<div style="display:grid;grid-template-columns:36px 1fr 90px 70px auto;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.05)">'
-        +'<div style="font-family:var(--cond);font-size:11px;font-weight:800;color:var(--accent);text-align:center">'+('0'+(vi+1)).slice(-2)+'</div>'
-        +'<input class="fi" style="font-size:13px;padding:3px 7px" value="'+(op.name||'')+'" placeholder="Engineer name..." onchange="lvVopSet('+j.id+','+vi+',\'name\',this.value)"/>'
-        +'<div style="display:flex;align-items:center;gap:5px"><span style="font-size:11px;color:var(--muted);white-space:nowrap">Mons</span><input type="number" class="fi" min="0" max="20" style="width:44px;font-size:13px;padding:3px 5px;text-align:center" value="'+(op.monCount||0)+'" onchange="lvVopSet('+j.id+','+vi+',\'monCount\',parseInt(this.value)||0)"/></div>'
-        +'<label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:12px;color:var(--muted)"><input type="checkbox"'+(op.evs?' checked':'')+' onchange="lvVopSet('+j.id+','+vi+',\'evs\',this.checked)"/> EVS Panel</label>'
-        +'<button class="rm-btn" style="font-size:11px" onclick="lvVopRm('+j.id+','+vi+')">×</button>'
-        +'</div>';
-    }).join('');
-    var veSection='<div class="det-sec">'
-      +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">'
-      +'<div class="det-sec-lbl" style="margin-bottom:0">Vision Engineers</div>'
-      +'<div style="display:flex;align-items:center;gap:10px">'
-      +'<span style="font-family:var(--cond);font-size:13px;font-weight:700;color:var(--muted)">'+vOpCount+' engineer'+(vOpCount!==1?'s':'')+'</span>'
-      +'<button class="ibtn" style="font-size:12px" onclick="lvVopAdd('+j.id+')">+ Add Engineer</button>'
-      +'</div></div>'
+    // ── Left card: Lighting / Vision ──
+    var lvCard='<div class="det-sec" style="padding:8px 12px;margin-bottom:0;flex:0 0 auto;min-width:0">'
+      +'<div class="det-sec-lbl" style="font-size:12px;margin-bottom:8px;padding-bottom:6px">Lighting / Vision</div>'
+      // LD + Gallery
+      +'<div style="display:flex;flex-wrap:wrap;gap:6px 12px;align-items:flex-end">'
+        +'<div style="width:180px"><div class="dfl">Lighting Director</div><input class="fi" style="width:100%;font-size:13px;padding:4px 9px" value="'+((lv.ld||'').replace(/"/g,'&quot;'))+'" placeholder="Lighting Director" onchange="jdSetLv('+j.id+',\'ld\',this.value)"/></div>'
+        +'<div style="width:180px"><div class="dfl">Gallery Layout</div><input class="fi" style="width:100%;font-size:13px;padding:4px 9px" value="'+((lv.galleryLayout||'').replace(/"/g,'&quot;'))+'" placeholder="e.g. Control Room A" onchange="jdSetLv('+j.id+',\'galleryLayout\',this.value)"/></div>'
+      +'</div>'
+      +'</div>';
+
+    // ── Middle card: Vision Engineers ──
+    var veCard='<div class="det-sec" style="padding:8px 12px;margin-bottom:0;flex:1 1 280px;min-width:0">'
+      +'<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px;flex-wrap:wrap;padding-bottom:6px;border-bottom:1px solid var(--border)">'
+        +'<div class="det-sec-lbl" style="margin:0;padding:0;border:none;font-size:12px">Vision Engineers</div>'
+        +'<span class="jd-card-ct">'+vOpCount+'</span>'
+        +'<button class="ibtn" style="font-size:11px;padding:3px 8px;margin-left:auto" onclick="lvVopAdd('+j.id+')">+ Add Engineer</button>'
+      +'</div>'
       +(vOpCount
-        ?'<div style="display:grid;grid-template-columns:36px 1fr 90px 70px auto;gap:8px;padding:4px 0;border-bottom:2px solid rgba(255,255,255,.08);margin-bottom:2px">'
-          +['#','Name','Monitors','EVS',''].map(function(h){return '<div style="font-size:10px;font-family:var(--cond);font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:'+(h==="#"?'center':'left')+'">'+h+'</div>';}).join('')+'</div>'+vOpRows
-        :'<div style="color:var(--muted);font-size:13px;padding:4px 0">No engineers added yet.</div>')
+        ?'<div style="display:grid;grid-template-columns:28px minmax(160px,1fr) 86px 74px 22px;gap:6px;padding:3px 0">'
+          +['#','Name','Mons','EVS',''].map(function(h){return '<div style="font-size:9px;font-family:var(--cond);font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:'+(h==='#'?'center':'left')+'">'+h+'</div>';}).join('')+'</div>'
+          +vOpRows
+        :'<div style="color:var(--muted);font-size:12px;padding:2px 0">None yet.</div>')
       +'</div>';
 
     // ── Per-camera RCP cards ──────────────────────────────────
@@ -8956,21 +9150,29 @@ function renderJobDet(j) {
             +'</div>';
         }).join('');
 
-    content = '<div class="det-sec"><div class="det-sec-lbl">Lighting / Vision</div>'
-      +'<div class="det-grid" style="grid-template-columns:repeat(2,1fr);row-gap:12px;margin-bottom:4px">'
-      +'<div><div class="dfl">Lighting Director</div><input class="fi" style="max-width:200px;font-size:14px;padding:5px 8px" value="'+(lv.ld||'')+'" placeholder="Lighting Director" onchange="jdSetLv('+j.id+',\'ld\',this.value)"/></div>'
-      +'<div><div class="dfl">Gallery Layout</div><input class="fi" style="max-width:200px;font-size:14px;padding:5px 8px" value="'+(lv.galleryLayout||'')+'" placeholder="e.g. Control Room A" onchange="jdSetLv('+j.id+',\'galleryLayout\',this.value)"/></div>'
-      +'<div class="full"><div class="dfl">Notes</div><textarea class="fta" style="min-height:60px;font-size:14px" placeholder="Lighting/Vision notes..." onchange="jdSetLv('+j.id+',\'notes\',this.value)">'+(lv.notes||'')+'</textarea></div>'
-      +'</div></div>'
-      +veSection
-      +mcsGSection
-      +'<div class="det-sec"><div class="det-sec-lbl">Camera Control</div>'+camCtrlRows+'</div>'
-      +lvOledSection(j)
+    content = '<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start;margin-bottom:10px">'
+        +lvCard
+        +veCard
+        +lvOledSection(j)
+      +'</div>'
+      +'<div class="det-sec"><div class="det-sec-lbl">Camera Control</div>'
+        // MCS at top of Camera Control
+        +'<div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:6px 0 10px;margin-bottom:10px;border-bottom:1px solid var(--border)">'
+          +'<span class="dfl" style="margin:0">MCS</span>'
+          +'<label style="display:inline-flex;align-items:center;gap:5px;cursor:pointer;font-size:13px;color:var(--pure)">'
+          +'<input type="checkbox"'+(mcsG.enabled?' checked':'')+' onchange="lvMcsGSet('+j.id+',\'enabled\',this.checked);renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))"/> Yes</label>'
+          +(mcsG.enabled?mcsGBody:'')
+        +'</div>'
+        +camCtrlRows
+      +'</div>'
       +'<div class="det-sec"><div class="det-sec-lbl">Gallery Images</div>'
       +'<div style="color:var(--muted);font-size:13px;margin-bottom:10px">Upload gallery layout photos.</div>'
       +jdPhotoUploader(j,'galleryPhotos')+'</div>'
       +'<div class="det-sec"><div class="det-sec-lbl">Multiviewer Layout</div>'
-      +jdPhotoUploader(j,'multiviewerPhotos')+'</div>';
+      +jdPhotoUploader(j,'multiviewerPhotos')+'</div>'
+      +'<div class="det-sec" style="padding:8px 12px"><div class="det-sec-lbl" style="font-size:12px;margin-bottom:6px;padding-bottom:4px">Notes</div>'
+      +'<textarea class="fta" style="width:100%;min-height:70px;font-size:13px;padding:6px 10px" placeholder="Lighting/Vision notes..." onchange="jdSetLv('+j.id+',\'notes\',this.value)">'+(lv.notes||'').replace(/</g,'&lt;')+'</textarea>'
+      +'</div>';
   }
 
   else if(_jdTab==='gallery'){content=renderGalleryTab(j);}
@@ -8979,43 +9181,217 @@ function renderJobDet(j) {
   else if(_jdTab==='audio'){
     if(!j.audio)j.audio={};
     var au=j.audio;
+    // Initialise new fields lazily (preserves existing data)
     if(!au.hydras)au.hydras=[];
-    var hydraRows=au.hydras.map(function(h,hi){
-      var hKit=h.kitId?kit.find(function(k){return k.id===h.kitId;}):null;
-      var hCell=hKit
-        ?'<span style="background:rgba(42,125,72,.12);border:1px solid rgba(60,180,100,.3);border-radius:3px;font-size:12px;padding:2px 8px;color:#2a7d48">'+hKit.name+'</span>'
-          +'<div style="display:flex;gap:4px;margin-top:3px"><button class="ibtn" style="font-size:11px;flex:1" onclick="auPickHydra('+j.id+','+hi+')">Change</button>'
-          +'<button class="rm-btn" style="font-size:11px" onclick="auHydraSet('+j.id+','+hi+',\'kitId\',null)">×</button></div>'
-        :(h.hired
-          ?'<span style="font-size:12px;background:rgba(250,160,0,.12);color:#b87400;border:1px solid rgba(250,160,0,.4);border-radius:3px;padding:2px 8px">Hired</span>'
-            +'<div style="display:flex;gap:4px;margin-top:3px"><button class="ibtn" style="font-size:11px;flex:1" onclick="auPickHydra('+j.id+','+hi+')">Inventory</button>'
-            +'<button class="rm-btn" style="font-size:11px" onclick="auHydraSet('+j.id+','+hi+',\'hired\',false)">×</button></div>'
-          :'<div style="display:flex;flex-direction:column;gap:3px">'
-            +'<button class="ibtn" style="font-size:12px" onclick="auPickHydra('+j.id+','+hi+')">From Inventory</button>'
-            +'<button class="ibtn" style="font-size:12px;background:rgba(250,160,0,.12);color:#b87400" onclick="auHydraSet('+j.id+','+hi+',\'hired\',true);renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))">+ Hired</button></div>');
-      return '<div style="display:grid;grid-template-columns:160px 1fr 1fr auto;gap:8px;align-items:start;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)">'
-        +hCell
-        +'<input class="fi" style="font-size:13px;padding:3px 7px" value="'+(h.location||'')+'" placeholder="Location / patch..." onchange="auHydraSet('+j.id+','+hi+',\'location\',this.value)"/>'
-        +'<input class="fi" style="font-size:13px;padding:3px 7px" value="'+(h.notes||'')+'" placeholder="Notes..." onchange="auHydraSet('+j.id+','+hi+',\'notes\',this.value)"/>'
-        +'<button class="rm-btn" style="font-size:11px;align-self:center" onclick="auHydraRm('+j.id+','+hi+')">×</button>'
+    if(!au.floorCrew)au.floorCrew=[];
+    if(!au.radioMics)au.radioMics=[];
+    if(!au.otherMics)au.otherMics=[];
+    if(!au.gramsDesk)au.gramsDesk={mode:'inv',kitId:null,hiredVal:''};
+    if(!au.spotOn)au.spotOn={mode:'inv',kitId:null,hiredVal:''};
+
+    // Reusable Inv-or-Hired picker builder. Returns HTML.
+    // data = {mode,kitId,hiredVal,hiredCatId,hiredKind}; setterName = 'auGramsDeskSet' etc; pickerName = 'auPickGramsDesk' etc
+    // Each picker callback name is expected to exist: pickerName (inventory) and pickerName+'Hired' (catalogue).
+    // States:
+    //   Empty (inv, no kit)       → [Pick from Inventory] [+ Hired]
+    //   Inv picked                → [green pill] [Change] [×]
+    //   Hired (empty choice)      → [Pick from Catalogue] [Type Freehand] [×]
+    //   Hired catalogue picked    → [orange pill] [Change] [×]
+    //   Hired freehand            → [HIRED label] [text input] [×]
+    var _auIH = function(data, setterName, pickerName, hiredPh, extraArgs){
+      var m = data.mode || 'inv';
+      var kObj = data.kitId ? kit.find(function(k){return k.id===data.kitId;}) : null;
+      var hcObj = data.hiredCatId ? hiredCatalogue.find(function(h){return h.id===data.hiredCatId;}) : null;
+      var extra = (extraArgs!==undefined && extraArgs!==null) ? ','+extraArgs : '';
+      var pickCall = pickerName+'('+j.id+extra+')';
+      var pickHiredCatCall = pickerName+'Hired('+j.id+extra+')';
+      var switchToHiredCall = setterName+'('+j.id+extra+',\'mode\',\'hired\');renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))';
+      var cancelHiredCall = setterName+'('+j.id+extra+',\'mode\',\'inv\');'+setterName+'('+j.id+extra+',\'hiredVal\',\'\');'+setterName+'('+j.id+extra+',\'hiredCatId\',null);'+setterName+'('+j.id+extra+',\'hiredKind\',\'\');renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))';
+      var setFreehandCall = setterName+'('+j.id+extra+',\'hiredKind\',\'freehand\');renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))';
+      var clearHiredCatCall = setterName+'('+j.id+extra+',\'hiredCatId\',null);'+setterName+'('+j.id+extra+',\'hiredKind\',\'\');'+setterName+'('+j.id+extra+',\'hiredVal\',\'\');renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))';
+      var clearFreehandCall = setterName+'('+j.id+extra+',\'hiredVal\',\'\');'+setterName+'('+j.id+extra+',\'hiredKind\',\'\');renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))';
+      var clearKitCall = setterName+'('+j.id+extra+',\'kitId\',null);renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))';
+      var setHVCall = setterName+'('+j.id+extra+',\'hiredVal\',this.value)';
+      var body;
+      if(m==='hired'){
+        if(hcObj){
+          // Hired catalogue picked — orange pill
+          body = '<span style="background:rgba(250,160,0,.14);border:1px solid rgba(250,160,0,.4);border-radius:4px;font-size:12px;font-weight:600;padding:4px 9px;color:#b87400;flex-shrink:0">'+hcObj.name+'</span>'
+            +'<button type="button" class="ibtn" style="font-size:11px;padding:3px 8px;flex-shrink:0" onclick="'+pickHiredCatCall+'">Change</button>'
+            +'<button type="button" class="rm-btn" style="font-size:13px;padding:0;width:22px;height:22px;flex-shrink:0" title="Remove" onclick="'+clearHiredCatCall+'">×</button>';
+        } else if(data.hiredKind==='freehand' || (data.hiredVal && String(data.hiredVal).trim())){
+          // Freehand input
+          body = '<span style="background:rgba(250,160,0,.14);border:1px solid rgba(250,160,0,.35);border-radius:4px;font-size:10px;font-family:var(--cond);font-weight:900;letter-spacing:.1em;text-transform:uppercase;padding:4px 8px;color:#b87400;flex-shrink:0">Hired</span>'
+            +'<input class="fi" style="font-size:13px;padding:4px 8px;flex:1;min-width:120px;max-width:260px" value="'+((data.hiredVal||'').replace(/"/g,'&quot;'))+'" placeholder="'+hiredPh+'" onchange="'+setHVCall+'"/>'
+            +'<button type="button" class="rm-btn" style="font-size:13px;padding:0;width:22px;height:22px;flex-shrink:0" title="Remove" onclick="'+clearFreehandCall+'">×</button>';
+        } else {
+          // Empty hired - show choice buttons
+          body = '<button type="button" class="ibtn" style="font-size:12px;padding:4px 12px;flex-shrink:0;color:#b87400;background:rgba(250,160,0,.08);border-color:rgba(250,160,0,.3)" onclick="'+pickHiredCatCall+'">Pick from Catalogue</button>'
+            +'<button type="button" class="ibtn" style="font-size:12px;padding:4px 12px;flex-shrink:0" onclick="'+setFreehandCall+'">Type Freehand</button>'
+            +'<button type="button" class="rm-btn" style="font-size:13px;padding:0;width:22px;height:22px;flex-shrink:0" title="Cancel — back to Inventory" onclick="'+cancelHiredCall+'">×</button>';
+        }
+      } else if(kObj){
+        // Inventory with kit picked: green pill + Change + ×
+        body = '<span style="background:rgba(60,160,100,.14);border:1px solid rgba(80,200,120,.35);border-radius:4px;font-size:12px;font-weight:600;padding:4px 9px;color:#6dbf90;flex-shrink:0">'+kObj.name+'</span>'
+          +'<button type="button" class="ibtn" style="font-size:11px;padding:3px 8px;flex-shrink:0" onclick="'+pickCall+'">Change</button>'
+          +'<button type="button" class="rm-btn" style="font-size:13px;padding:0;width:22px;height:22px;flex-shrink:0" title="Remove" onclick="'+clearKitCall+'">×</button>';
+      } else {
+        // Initial empty state (inv mode, no kit): two action buttons
+        body = '<button type="button" class="ibtn" style="font-size:12px;padding:4px 12px;flex-shrink:0" onclick="'+pickCall+'">Pick from Inventory</button>'
+          +'<button type="button" class="ibtn" style="font-size:12px;padding:4px 12px;color:#b87400;background:rgba(250,160,0,.08);border-color:rgba(250,160,0,.3);flex-shrink:0" onclick="'+switchToHiredCall+'">+ Hired</button>';
+      }
+      return '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">'+body+'</div>';
+    };
+
+    // ── Legacy Sound Supervisor migration banner ──
+    var legacySupHint = (au.supervisor && !(j.hods||[]).find(function(h){return h.role==='Sound Supervisor' && h.name===au.supervisor;}))
+      ? '<div style="padding:7px 12px;background:rgba(244,162,88,.08);border:1px solid rgba(244,162,88,.25);border-radius:4px;margin-bottom:12px;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:8px;flex-wrap:wrap">'
+        +'<span style="font-family:var(--cond);font-size:10px;font-weight:900;letter-spacing:.12em;color:var(--accent);text-transform:uppercase">Legacy</span>'
+        +'<span>Old Sound Supervisor on this tab: <b style="color:var(--pure)">'+au.supervisor.replace(/</g,'&lt;')+'</b></span>'
+        +'<button class="ibtn" style="font-size:10px;padding:3px 8px;margin-left:auto" onclick="auMigrateSup('+j.id+')">Move to HODs</button>'
+        +'<button class="ibtn" style="font-size:10px;padding:3px 8px" onclick="auClearLegacySup('+j.id+')">Dismiss</button>'
+      +'</div>'
+      : '';
+
+    // ── Legacy Grams Op migration banner (for jobs saved before we merged Grams Op into Floor Crew) ──
+    var legacyGramsOpHint = (au.gramsOp && String(au.gramsOp).trim() && !(au.floorCrew||[]).find(function(c){return /grams/i.test(c.role||'')&&c.name===au.gramsOp;}))
+      ? '<div style="padding:7px 12px;background:rgba(244,162,88,.08);border:1px solid rgba(244,162,88,.25);border-radius:4px;margin-bottom:12px;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:8px;flex-wrap:wrap">'
+        +'<span style="font-family:var(--cond);font-size:10px;font-weight:900;letter-spacing:.12em;color:var(--accent);text-transform:uppercase">Legacy</span>'
+        +'<span>Old Grams Op field value: <b style="color:var(--pure)">'+au.gramsOp.replace(/</g,'&lt;')+'</b></span>'
+        +'<button class="ibtn" style="font-size:10px;padding:3px 8px;margin-left:auto" onclick="auMigrateGramsOp('+j.id+')">Move to Sound Crew</button>'
+        +'<button class="ibtn" style="font-size:10px;padding:3px 8px" onclick="auClearLegacyGramsOp('+j.id+')">Dismiss</button>'
+      +'</div>'
+      : '';
+
+    // ── Audio Setup ──
+    var suppOpts = '<option value="">— None —</option>'+(suppliers||[]).slice().sort(function(a,b){return (a.name||'').localeCompare(b.name||'');}).map(function(s){return '<option value="'+s.id+'"'+(au.hiredFromId===s.id?' selected':'')+'>'+(s.name||'').replace(/</g,'&lt;')+'</option>';}).join('');
+    var danteSet = (au.dante===true || au.dante===false);
+    var danteToggle = '<div style="display:inline-flex;border-radius:4px;overflow:hidden">'
+      +[['yes','Yes',true,'#3dbf7a'],['no','No',false,'#c56a6a']].map(function(opt,oi){
+        var active = danteSet && au.dante===opt[2];
+        return '<button type="button" onclick="jdSetAu('+j.id+',\'dante\','+opt[2]+');renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))" style="padding:4px 14px;font-size:12px;font-family:var(--cond);font-weight:800;letter-spacing:.08em;text-transform:uppercase;border:1.5px solid var(--border);'+(oi===0?'border-right:none;':'')+'background:'+(active?'rgba(61,191,122,.22)':'rgba(255,255,255,.04)')+';color:'+(active?opt[3]:'var(--muted)')+';cursor:pointer">'+opt[1]+'</button>';
+      }).join('')+'</div>';
+
+    var setupCard = '<div class="det-sec" style="padding:8px 12px;margin-bottom:0">'
+      +'<div class="det-sec-lbl" style="font-size:12px;margin-bottom:8px;padding-bottom:6px">Audio Setup</div>'
+      +'<div class="jd-auto-sm">'
+      +'<div><div class="dfl">Audio Console</div><input class="fi" style="width:100%;font-size:14px;padding:4px 9px" value="'+((au.console||'').replace(/"/g,'&quot;'))+'" placeholder="e.g. Calrec Artemis" onchange="jdSetAu('+j.id+',\'console\',this.value)"/></div>'
+      +'<div><div class="dfl">Audio Kit Hired From</div><select class="fi" style="width:100%;font-size:14px;padding:4px 9px" onchange="jdSetAu('+j.id+',\'hiredFromId\',parseInt(this.value)||null)">'+suppOpts+'</select></div>'
+      +'<div style="max-width:180px;flex:0 1 auto"><div class="dfl">Dante</div>'+danteToggle+'</div>'
+      +'</div>'
+      +'</div>';
+
+    // ── Sound Crew ──
+    // Grams Op is entered as a row in Floor Sound Crew (name + role = 'Grams Op')
+    var _hasData = function(v){return !!(v && String(v).trim());};
+    var _hasKitData = function(o){return !!(o && (o.kitId || _hasData(o.hiredVal)));};
+    var floorRows = au.floorCrew.map(function(c,ci){
+      return '<div style="display:grid;grid-template-columns:1fr 1fr 22px;gap:6px;align-items:center;padding:3px 0;max-width:620px">'
+        +'<input class="fi" style="font-size:13px;padding:3px 7px" value="'+((c.name||'').replace(/"/g,'&quot;'))+'" placeholder="Name..." onchange="auFloorSet('+j.id+','+ci+',\'name\',this.value)"/>'
+        +'<input class="fi" style="font-size:13px;padding:3px 7px" value="'+((c.role||'').replace(/"/g,'&quot;'))+'" placeholder="Role (e.g. Grams Op, Boom, A2)..." onchange="auFloorSet('+j.id+','+ci+',\'role\',this.value)"/>'
+        +'<button class="rm-btn" style="font-size:13px;padding:0;width:22px;height:22px" onclick="auFloorRm('+j.id+','+ci+')">×</button>'
         +'</div>';
     }).join('');
-    content='<div class="det-sec"><div class="det-sec-lbl">Audio</div>'
-      +'<div class="det-grid" style="grid-template-columns:repeat(2,1fr);row-gap:12px">'
-      +'<div><div class="dfl">Audio Console</div><input class="fi" style="max-width:200px;font-size:14px;padding:5px 8px" value="'+(au.console||'')+'" placeholder="e.g. Calrec Artemis" onchange="jdSetAu('+j.id+',\'console\',this.value)"/></div>'
-      +'<div><div class="dfl">Sound Supervisor</div><input class="fi" style="max-width:200px;font-size:14px;padding:5px 8px" value="'+(au.supervisor||'')+'" placeholder="Sound Supervisor" onchange="jdSetAu('+j.id+',\'supervisor\',this.value)"/></div>'
-      +'<div class="full"><div class="dfl">Notes</div><textarea class="fta" style="min-height:80px;font-size:14px" placeholder="Audio notes..." onchange="jdSetAu('+j.id+',\'notes\',this.value)">'+(au.notes||'')+'</textarea></div>'
-      +'</div></div>'
-      +'<div class="det-sec"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">'
-      +'<div class="det-sec-lbl" style="margin-bottom:0">Hydras</div>'
-      +'<button class="ibtn" style="font-size:12px" onclick="auHydraAdd('+j.id+')">+ Add Hydra</button>'
+    var crewCard = '<div class="det-sec" style="padding:8px 12px;margin-bottom:0">'
+      +'<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid var(--border);max-width:620px">'
+        +'<div class="det-sec-lbl" style="margin:0;padding:0;border:none;font-size:12px">Sound Crew</div>'
+        +'<span class="jd-card-ct">'+au.floorCrew.length+'</span>'
+        +'<button class="ibtn" style="font-size:11px;padding:3px 8px;margin-left:auto" onclick="auFloorAdd('+j.id+')">+ Add Crew</button>'
       +'</div>'
-      +(au.hydras.length
-        ?'<div style="display:grid;grid-template-columns:160px 1fr 1fr auto;gap:8px;padding:4px 0;border-bottom:2px solid rgba(255,255,255,.08);margin-bottom:4px">'
-          +['Unit','Location / Patch','Notes',''].map(function(h){return '<div style="font-size:10px;font-family:var(--cond);font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)">'+h+'</div>';}).join('')+'</div>'
-          +hydraRows
-        :'<div style="color:var(--muted);font-size:13px;padding:4px 0">No hydras added yet.</div>')
+      +(floorRows||'<div style="color:var(--muted);font-size:13px;padding:2px 0">None yet.</div>')
       +'</div>';
+
+    // ── Key Equipment (Grams Desk + SpotOn both optional, Hydras list at bottom) ──
+    var showGramsDesk = (au.hasGramsDesk===true) || (au.hasGramsDesk===undefined && _hasKitData(au.gramsDesk));
+    var showSpotOn = (au.hasSpotOn===true) || (au.hasSpotOn===undefined && _hasKitData(au.spotOn));
+    var equipBits = [];
+    if(showGramsDesk){
+      equipBits.push('<div style="display:flex;gap:6px;align-items:flex-start"><div style="flex:1;min-width:0"><div class="dfl">Grams Desk</div>'+_auIH(au.gramsDesk,'auGramsDeskSet','auPickGramsDesk','Grams desk model / type...',null)+'</div><button class="rm-btn" style="font-size:13px;padding:0;width:22px;height:22px;margin-top:18px;flex-shrink:0" title="Remove Grams Desk (data kept)" onclick="auToggleField('+j.id+',\'hasGramsDesk\',false)">×</button></div>');
+    }
+    if(showSpotOn){
+      equipBits.push('<div style="display:flex;gap:6px;align-items:flex-start"><div style="flex:1;min-width:0"><div class="dfl">SpotOn Machine</div>'+_auIH(au.spotOn,'auSpotOnSet','auPickSpotOn','SpotOn model / notes...',null)+'</div><button class="rm-btn" style="font-size:13px;padding:0;width:22px;height:22px;margin-top:18px;flex-shrink:0" title="Remove SpotOn (data kept)" onclick="auToggleField('+j.id+',\'hasSpotOn\',false)">×</button></div>');
+    }
+    // Hydra rows (migrated non-destructively)
+    var hydraRowsNew = au.hydras.map(function(h,hi){
+      if(h.mode===undefined){
+        if(h.kitId) h.mode='inv';
+        else if(h.hired) { h.mode='hired'; }
+        else h.mode='inv';
+        if(h.hiredVal===undefined) h.hiredVal='';
+      }
+      return '<div style="display:grid;grid-template-columns:320px 1fr 1fr 22px;gap:10px;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.05)">'
+        +_auIH(h,'auHydraSet','auPickHydra','Hired hydra model...',hi)
+        +'<input class="fi" style="font-size:13px;padding:3px 7px" value="'+((h.location||'').replace(/"/g,'&quot;'))+'" placeholder="Location / patch..." onchange="auHydraSet('+j.id+','+hi+',\'location\',this.value)"/>'
+        +'<input class="fi" style="font-size:13px;padding:3px 7px" value="'+((h.notes||'').replace(/"/g,'&quot;'))+'" placeholder="Notes..." onchange="auHydraSet('+j.id+','+hi+',\'notes\',this.value)"/>'
+        +'<button class="rm-btn" style="font-size:13px;padding:0;width:22px;height:22px" onclick="auHydraRm('+j.id+','+hi+')">×</button>'
+        +'</div>';
+    }).join('');
+    var hydraSection = '<div style="margin-top:10px;padding-top:8px;border-top:1px solid var(--border)">'
+      +'<div style="display:flex;align-items:baseline;gap:10px;margin-bottom:6px"><div class="det-sec-lbl" style="margin:0;padding:0;border:none;font-size:12px">Hydras</div><span class="jd-card-ct">'+au.hydras.length+'</span><button class="ibtn" style="font-size:11px;padding:3px 8px;margin-left:auto" onclick="auHydraAdd('+j.id+')">+ Add Hydra</button></div>'
+      +(au.hydras.length
+        ?'<div style="display:grid;grid-template-columns:320px 1fr 1fr 22px;gap:10px;padding:4px 0">'
+          +['Unit','Location / Patch','Notes',''].map(function(h){return '<div style="font-size:10px;font-family:var(--cond);font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">'+h+'</div>';}).join('')+'</div>'
+          +hydraRowsNew
+        :'<div style="color:var(--muted);font-size:13px;padding:2px 0">No hydras yet.</div>')
+      +'</div>';
+    var equipCard = '<div class="det-sec" style="padding:8px 12px;flex:1 1 560px;max-width:900px;margin-bottom:0">'
+      +'<div style="display:flex;align-items:baseline;gap:10px;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border);flex-wrap:wrap">'
+        +'<div class="det-sec-lbl" style="margin:0;padding:0;border:none;font-size:12px">Key Equipment</div>'
+        +(!showGramsDesk?'<button class="ibtn" style="font-size:11px;padding:3px 8px" onclick="auToggleField('+j.id+',\'hasGramsDesk\',true)">+ Grams Desk</button>':'')
+        +(!showSpotOn?'<button class="ibtn" style="font-size:11px;padding:3px 8px" onclick="auToggleField('+j.id+',\'hasSpotOn\',true)">+ SpotOn</button>':'')
+      +'</div>'
+      +(equipBits.length
+        ? '<div class="jd-auto-wide" style="align-items:flex-start">'+equipBits.join('')+'</div>'
+        : '<div style="color:var(--muted);font-size:12px;padding:2px 0;font-style:italic">No Grams/SpotOn for this job.</div>')
+      +hydraSection
+      +'</div>';
+
+    // ── Mics (Radio + Other, in one card) ──
+    var rmRows = au.radioMics.map(function(m,mi){
+      return '<div style="display:grid;grid-template-columns:64px 1fr 140px 22px;gap:8px;align-items:center;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.05);max-width:720px">'
+        +'<input class="fi" style="font-size:13px;padding:3px 6px;text-align:center" value="'+((m.num||'').toString().replace(/"/g,'&quot;'))+'" placeholder="#" onchange="auRadioSet('+j.id+','+mi+',\'num\',this.value)"/>'
+        +'<input class="fi" style="font-size:13px;padding:3px 7px" value="'+((m.forWhom||'').replace(/"/g,'&quot;'))+'" placeholder="For... (e.g. Presenter, Guest 1)" onchange="auRadioSet('+j.id+','+mi+',\'forWhom\',this.value)"/>'
+        +'<input class="fi" style="font-size:13px;padding:3px 7px;font-family:monospace" value="'+((m.freq||'').replace(/"/g,'&quot;'))+'" placeholder="MHz" onchange="auRadioSet('+j.id+','+mi+',\'freq\',this.value)"/>'
+        +'<button class="rm-btn" style="font-size:13px;padding:0;width:22px;height:22px" onclick="auRadioRm('+j.id+','+mi+')">×</button>'
+        +'</div>';
+    }).join('');
+    var omRows = au.otherMics.map(function(m,mi){
+      return '<div style="display:grid;grid-template-columns:1fr 1fr 320px 22px;gap:10px;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.05)">'
+        +'<input class="fi" style="font-size:13px;padding:3px 7px" value="'+((m.model||'').replace(/"/g,'&quot;'))+'" placeholder="Mic model / name..." onchange="auOtherSet('+j.id+','+mi+',\'model\',this.value)"/>'
+        +'<input class="fi" style="font-size:13px;padding:3px 7px" value="'+((m.forWhom||'').replace(/"/g,'&quot;'))+'" placeholder="For..." onchange="auOtherSet('+j.id+','+mi+',\'forWhom\',this.value)"/>'
+        +_auIH(m,'auOtherSet','auPickOther','Hired model...',mi)
+        +'<button class="rm-btn" style="font-size:13px;padding:0;width:22px;height:22px" onclick="auOtherRm('+j.id+','+mi+')">×</button>'
+        +'</div>';
+    }).join('');
+    var micsCard = '<div class="det-sec" style="padding:8px 12px;flex:1 1 560px;max-width:900px;margin-bottom:0">'
+      +'<div style="display:flex;align-items:baseline;gap:10px;margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid var(--border)"><div class="det-sec-lbl" style="margin:0;padding:0;border:none;font-size:12px">Radio Mics</div><span class="jd-card-ct">'+au.radioMics.length+'</span><button class="ibtn" style="font-size:11px;padding:3px 8px;margin-left:auto" onclick="auRadioAdd('+j.id+')">+ Add Radio Mic</button></div>'
+      +(au.radioMics.length
+        ?'<div style="display:grid;grid-template-columns:64px 1fr 140px 22px;gap:8px;padding:4px 0;max-width:720px">'
+          +['#','For','Frequency',''].map(function(h){return '<div style="font-size:10px;font-family:var(--cond);font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">'+h+'</div>';}).join('')+'</div>'
+          +rmRows
+        :'<div style="color:var(--muted);font-size:13px;padding:2px 0">No radio mics yet.</div>')
+      +'<div style="display:flex;align-items:baseline;gap:10px;margin:12px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--border)"><div class="det-sec-lbl" style="margin:0;padding:0;border:none;font-size:12px">Other Mics</div><span class="jd-card-ct">'+au.otherMics.length+'</span><button class="ibtn" style="font-size:11px;padding:3px 8px;margin-left:auto" onclick="auOtherAdd('+j.id+')">+ Add Mic</button></div>'
+      +(au.otherMics.length
+        ? omRows
+        :'<div style="color:var(--muted);font-size:13px;padding:2px 0">No mics yet.</div>')
+      +'</div>';
+
+    // ── Notes (at bottom, full width) ──
+    var notesCard = '<div class="det-sec" style="padding:8px 12px;flex:1 1 100%;max-width:1100px;margin-bottom:0">'
+      +'<div class="det-sec-lbl" style="font-size:12px;margin-bottom:6px;padding-bottom:4px">Notes</div>'
+      +'<textarea class="fta" style="width:100%;min-height:80px;font-size:14px;padding:6px 10px" placeholder="Audio notes..." onchange="jdSetAu('+j.id+',\'notes\',this.value)">'+(au.notes||'').replace(/</g,'&lt;')+'</textarea>'
+      +'</div>';
+
+    content = legacySupHint + legacyGramsOpHint
+      + '<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start">'
+      + '<div style="display:flex;flex-direction:column;gap:10px;flex:1 1 380px;max-width:520px">'
+      +   setupCard
+      +   crewCard
+      + '</div>'
+      + equipCard
+      + micsCard
+      + notesCard
+      + '</div>';
   }
   else if(_jdTab==='post'){
     var postNA=j.postNA||false;
@@ -9091,6 +9467,7 @@ function renderJobDet(j) {
     +'<button class="ibtn" onclick="printJobPDF('+j.id+')" style="font-size:13px;padding:6px 14px;background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.3);font-family:var(--cond);font-weight:800;letter-spacing:.06em;text-transform:uppercase">PDF</button>'
     +'<button class="ibtn" onclick="saveJobAsTemplate('+j.id+')" style="font-size:13px;padding:6px 14px;background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.3);font-family:var(--cond);font-weight:800;letter-spacing:.06em;text-transform:uppercase">Save Template</button>'
     +'<button class="ibtn" onclick="archiveJob('+j.id+')" style="font-size:13px;padding:6px 14px;background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.3);font-family:var(--cond);font-weight:800;letter-spacing:.06em;text-transform:uppercase">Archive</button>'
+    +manageBtn
     +exportBtn
     +'</div>'
     +'</div>'
@@ -9115,7 +9492,7 @@ function renderJobDet(j) {
     +'</div>'
     +(mnRows||'<div style="color:var(--muted);font-size:12px;padding:2px 0">No notes for this tab yet.</div>')
     +'</div>';
-  document.getElementById('jobDet').innerHTML=topCard+'<div style="margin-top:14px">'+tabBar+'<div id="jdContent">'+content+mnSection+'</div></div>';
+  document.getElementById('jobDet').innerHTML=topCard+'<div style="margin-top:14px">'+tabBar+'<div id="jdContent">'+_tabHodBanner(j,_jdTab)+content+(_jdTab==='info'?'':mnSection)+'</div></div>';
 }
 
 function jdMnAdd(jid,tab){
@@ -9136,6 +9513,129 @@ function jdMnRm(jid,ni,tab){
   saveData();
   renderJobDet(j);
 }
+
+/* ── Manage Tabs (per-job tab visibility) ──────────────────────────────── */
+var _mtJid = null;
+var _mtAllTabs = [
+  {id:'info',label:'Info',required:true,col:'rgba(60,90,160,.85)'},
+  {id:'camspec',label:'Camera',col:'rgba(50,120,70,.85)'},
+  {id:'audio',label:'Audio',col:'rgba(100,65,130,.85)'},
+  {id:'comms',label:'Comms',col:'rgba(145,55,95,.85)'},
+  {id:'ingest',label:'Ingest',col:'rgba(75,125,45,.85)'},
+  {id:'evs',label:'EVS',col:'rgba(180,70,40,.85)'},
+  {id:'post',label:'Post',col:'rgba(130,85,35,.85)'},
+  {id:'gfx',label:'GFX',col:'rgba(55,130,160,.85)'},
+  {id:'set',label:'Set',col:'rgba(120,60,140,.85)'},
+  {id:'lv',label:'Lighting / Vision',col:'rgba(30,115,125,.85)'},
+  {id:'gallery',label:'Gallery',col:'rgba(150,65,65,.85)'},
+  {id:'crew',label:'Crew',col:'rgba(50,105,80,.85)'},
+  {id:'monitors',label:'Monitors',col:'rgba(35,95,145,.85)'},
+  {id:'ip',label:'IP Addresses',col:'rgba(40,105,105,.85)'},
+  {id:'kit',label:'Prep List',col:'rgba(135,75,35,.85)'},
+  {id:'englog',label:'Eng Log',col:'rgba(55,85,155,.85)'},
+  {id:'improve',label:'Improvements',col:'rgba(75,115,55,.85)'}
+];
+
+/* ── HOD <-> Tab mapping ─────────────────────────────────────────────────
+   Each department tab shows a banner with the relevant Head-of-Dept from j.hods.
+   The value is the HOD role name — must match what's stored on the job. */
+var HOD_TAB_MAP = {
+  camspec: 'Camera Supervisor',
+  audio:   'Sound Supervisor',
+  lv:      'Lighting Supervisor',
+  comms:   'Comms Supervisor',
+  ingest:  'Ingest Supervisor',
+  evs:     'EVS Supervisor',
+  post:    'Post Supervisor',
+  gfx:     'GFX Supervisor'
+};
+function _getTabHod(j, tabId){
+  var role = HOD_TAB_MAP[tabId];
+  if(!role || !j.hods) return null;
+  var h = j.hods.find(function(hh){ return hh.role === role; });
+  return h || {role:role, name:''};  // return with empty name so banner can prompt to fill it
+}
+function _tabHodBanner(j, tabId){
+  var h = _getTabHod(j, tabId);
+  if(!h) return '';
+  var nameHtml = h.name
+    ? '<span class="jd-hod-banner-name">'+h.name.replace(/</g,'&lt;')+'</span>'
+    : '<span class="jd-hod-banner-empty">Not assigned &mdash; add on Info</span>';
+  return '<div class="jd-hod-banner">'
+    +'<span class="jd-hod-banner-role">'+h.role+'</span>'
+    +'<span class="jd-hod-banner-sep">&middot;</span>'
+    +nameHtml
+    +'</div>';
+}
+function openManageTabs(jid){
+  var j = jobs.find(function(x){return x.id==jid;}); if(!j) return;
+  _mtJid = jid;
+  document.getElementById('mtJobName').textContent = '· '+(j.name||'');
+  // Seed current visibility: if j.visibleTabs is null, all on
+  var cur = {};
+  if(Array.isArray(j.visibleTabs)){
+    j.visibleTabs.forEach(function(id){cur[id]=true;});
+    cur['info']=true;
+  } else {
+    _mtAllTabs.forEach(function(t){cur[t.id]=true;});
+  }
+  mtRenderList(cur);
+  om('mManageTabs');
+}
+function mtRenderList(cur){
+  var el = document.getElementById('mtList');
+  if(!el) return;
+  var html = _mtAllTabs.map(function(t){
+    var on = !!cur[t.id] || t.required;
+    var cls = 'mt-row'+(on?' on':'')+(t.required?' locked':'');
+    return '<label class="'+cls+'" data-tid="'+t.id+'">'
+      +'<input type="checkbox" '+(on?'checked':'')+(t.required?' disabled':'')+' onchange="mtToggle(\''+t.id+'\', this.checked)"/>'
+      +'<span class="mt-dot" style="background:'+t.col+'"></span>'
+      +'<span class="mt-lbl">'+t.label+'</span>'
+      +(t.required?'<span class="mt-req">Required</span>':'')
+      +'</label>';
+  }).join('');
+  el.innerHTML = html;
+  mtUpdateCount();
+}
+function mtToggle(tid, on){
+  var row = document.querySelector('.mt-row[data-tid="'+tid+'"]');
+  if(row) row.classList.toggle('on', on);
+  mtUpdateCount();
+}
+function mtToggleAll(on){
+  var boxes = document.querySelectorAll('#mtList input[type=checkbox]');
+  for(var i=0;i<boxes.length;i++){
+    if(boxes[i].disabled) continue; // skip required
+    boxes[i].checked = on;
+    var row = boxes[i].closest('.mt-row');
+    if(row) row.classList.toggle('on', on);
+  }
+  mtUpdateCount();
+}
+function mtUpdateCount(){
+  var boxes = document.querySelectorAll('#mtList input[type=checkbox]');
+  var n = 0;
+  for(var i=0;i<boxes.length;i++){ if(boxes[i].checked) n++; }
+  var cEl = document.getElementById('mtCount');
+  if(cEl) cEl.textContent = n + ' of ' + boxes.length + ' visible';
+}
+function mtSave(){
+  var j = jobs.find(function(x){return x.id==_mtJid;}); if(!j){ cm('mManageTabs'); return; }
+  var boxes = document.querySelectorAll('#mtList input[type=checkbox]');
+  var visible = [];
+  for(var i=0;i<boxes.length;i++){
+    if(boxes[i].checked) visible.push(boxes[i].closest('.mt-row').getAttribute('data-tid'));
+  }
+  // If all are visible, clear the field so defaults apply (null = show all)
+  if(visible.length === _mtAllTabs.length) j.visibleTabs = null;
+  else j.visibleTabs = visible;
+  saveData();
+  cm('mManageTabs');
+  toast('Tab visibility updated');
+  renderJobDet(j);
+}
+
 function jdSwitch(tab, jid) {
   closeDrawer();
   if(tab!=='englog'){ _engLogMonth=null; window._engLogFetched=null; }
@@ -9148,7 +9648,7 @@ function jdSetField(jid, field, val) {
   j[field]=val;
   saveData();
 }
-var HOD_ROLES=['Director','Executive Producer','Lighting Supervisor','Sound Supervisor','Floor Manager','Graphics Operator','VT Operator','Autocue Operator'];
+var HOD_ROLES=['Director','Executive Producer','Camera Supervisor','Lighting Supervisor','Sound Supervisor','EVS Supervisor','GFX Supervisor','Ingest Supervisor','Post Supervisor','Comms Supervisor','BBC Tech Manager','BBC Eng Manager','Floor Manager','Graphics Operator','VT Operator','Autocue Operator'];
 function hodSection(j){
   if(!j.hods)j.hods=[];
   // Ensure default roles exist
@@ -9160,16 +9660,47 @@ function hodSection(j){
     if(h.role&&allRoles.indexOf(h.role)<0)allRoles.push(h.role);
     j.hods.forEach(function(hh){if(hh.role&&allRoles.indexOf(hh.role)<0)allRoles.push(hh.role);});
     var roleOpts=allRoles.map(function(r){return '<option'+(r===h.role?' selected':'')+'>'+r+'</option>';}).join('');
-    return '<div style="display:flex;align-items:center;gap:4px;padding:2px 0">'
-      +'<select class="fi" style="width:130px;font-size:12px;font-weight:600;padding:3px 5px;flex-shrink:0;color:var(--pure)" onchange="hodSetRole('+j.id+','+i+',this.value)"><option value="">-- Role --</option>'+roleOpts+'<option value="__custom__" style="color:var(--accent);font-style:italic">+ Custom...</option></select>'
-      +'<input class="fi" style="flex:1;font-size:13px;font-weight:600;padding:3px 6px;color:var(--pure)" value="'+((h.name||'').replace(/"/g,'&quot;'))+'" placeholder="Name..." onchange="hodSetName('+j.id+','+i+',this.value)"/>'
-      +'<button class="rm-btn" style="font-size:12px" onclick="hodRemove('+j.id+','+i+')">×</button>'
+    return '<div class="jd-hod-row">'
+      +'<select onchange="hodSetRole('+j.id+','+i+',this.value)"><option value="">-- Role --</option>'+roleOpts+'<option value="__custom__" style="color:var(--accent);font-style:italic">+ Custom...</option></select>'
+      +'<input value="'+((h.name||'').replace(/"/g,'&quot;'))+'" placeholder="Name..." onchange="hodSetName('+j.id+','+i+',this.value)"/>'
+      +'<button class="rm-btn" onclick="hodRemove('+j.id+','+i+')">×</button>'
       +'</div>';
   }).join('');
-  return '<div class="det-sec" style="margin-top:8px;padding:10px 14px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px"><div class="det-sec-lbl" style="margin-bottom:0;padding-bottom:0;border-bottom:none;font-size:11px">Heads of Department</div><button class="ibtn" style="font-size:10px;padding:3px 10px" onclick="hodAdd('+j.id+')">+ Add</button></div>'
-    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:0 12px">'
-    +rows
-    +'</div></div>';
+  return '<div class="jd-card">'
+    +'<div class="jd-card-hd">'
+      +'<div class="jd-card-ti">Heads of Department</div>'
+      +'<div style="display:flex;gap:6px;align-items:center">'
+        +'<span class="jd-card-ct">'+j.hods.length+'</span>'
+        +'<button class="ibtn" style="font-size:10px;padding:3px 10px" onclick="hodAdd('+j.id+')">+ Add</button>'
+      +'</div>'
+    +'</div>'
+    +(rows||'<div style="color:var(--muted);font-size:13px;padding:4px 0">No HODs yet.</div>')
+    +'</div>';
+}
+
+// Meeting notes rendered inline on the Info tab (replaces global mnSection for info)
+function infoInlineMeetingNotes(j){
+  if(!j.meetingNotes)j.meetingNotes=[];
+  var tabNotes=j.meetingNotes.filter(function(n){return n.tab==='info';});
+  var rows=tabNotes.map(function(n,ni){
+    return '<div style="display:flex;gap:8px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05)">'
+      +'<div style="flex:1">'
+      +'<div style="font-size:11px;color:var(--muted);margin-bottom:2px">'+n.date+(n.author?' · '+n.author:'')+'</div>'
+      +'<div style="font-size:13px;color:var(--white);white-space:pre-wrap">'+n.text+'</div>'
+      +'</div>'
+      +'<button class="rm-btn" style="font-size:10px;align-self:start;flex-shrink:0" onclick="jdMnRm('+j.id+','+ni+',\'info\')">×</button>'
+      +'</div>';
+  }).join('');
+  return '<div class="jd-card">'
+    +'<div class="jd-card-hd">'
+      +'<div class="jd-card-ti">Meeting Notes</div>'
+      +'<div style="display:flex;gap:6px;align-items:center">'
+        +'<span class="jd-card-ct">'+tabNotes.length+'</span>'
+        +'<button class="ibtn" style="font-size:10px;padding:3px 10px" onclick="jdMnAdd('+j.id+',\'info\')">+ Add Note</button>'
+      +'</div>'
+    +'</div>'
+    +(rows||'<div style="color:var(--muted);font-size:13px;padding:4px 0">No notes yet.</div>')
+    +'</div>';
 }
 function hodSetRole(jid,idx,val){
   var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.hods[idx])return;
@@ -9218,75 +9749,226 @@ function lvOledSection(j){
 
   var rows=oleds.map(function(o,i){
     var mKit=o.kitId?kit.find(function(k){return k.id===o.kitId;}):null;
-    var monCell=mKit
-      ?'<span style="background:rgba(42,125,72,.12);border:1px solid rgba(60,180,100,.3);border-radius:3px;font-size:12px;padding:2px 8px;color:#2a7d48">'+mKit.name+'</span>'
-        +'<div style="display:flex;gap:3px;margin-top:2px"><button class="ibtn" style="font-size:10px;flex:1" onclick="lvOledPickKit('+j.id+','+i+')">Change</button>'
-        +'<button class="rm-btn" style="font-size:10px" onclick="lvOledSet('+j.id+','+i+',\'kitId\',null)">×</button></div>'
-      :(o.hiredModel
-        ?'<span style="font-size:12px;background:rgba(250,160,0,.12);color:#b87400;border:1px solid rgba(250,160,0,.4);border-radius:3px;padding:2px 8px">'+o.hiredModel+'</span>'
-          +'<div style="display:flex;gap:3px;margin-top:2px"><button class="ibtn" style="font-size:10px;flex:1" onclick="lvOledSet('+j.id+','+i+',\'hiredModel\',\'\')">×</button></div>'
-        :'<div style="display:flex;flex-direction:column;gap:3px">'
-          +'<button class="ibtn" style="font-size:11px" onclick="lvOledPickKit('+j.id+','+i+')">From Inventory</button>'
-          +'<input class="fi" style="font-size:11px;padding:2px 6px" placeholder="Or type hired model..." onchange="lvOledSet('+j.id+','+i+',\'hiredModel\',this.value)"/></div>');
+    var oMode=o.mode||(o.hiredModel?'hired':'inv');
+    var monOpts=(CAM_PLAN_OPTS['Monitor']||[]).filter(function(m){return m&&m!=='-';});
+    var hiredSel='';
+    if(oMode==='hired'){
+      // Build dropdown with current hired value preselected (even if not in list)
+      var curH=o.hiredModel||'';
+      var inList=monOpts.indexOf(curH)>=0;
+      var selOpts='<option value="">— Select model —</option>'
+        +monOpts.map(function(m){return '<option'+(m===curH?' selected':'')+'>'+m.replace(/</g,'&lt;')+'</option>';}).join('')
+        +(curH&&!inList?'<option selected>'+curH.replace(/</g,'&lt;')+'</option>':'')
+        +'<option value="__custom__" style="color:#2a6cb8;font-style:italic">+ Type custom...</option>';
+      hiredSel='<select class="fi" style="font-size:12px;padding:3px 7px;flex:1;min-width:110px" onchange="lvOledHiredSelect('+j.id+','+i+',this)">'+selOpts+'</select>';
+    }
+    var monCell;
+    if(oMode==='hired'){
+      monCell='<div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap">'
+        +'<span style="background:rgba(250,160,0,.14);border:1px solid rgba(250,160,0,.35);border-radius:4px;font-size:10px;font-family:var(--cond);font-weight:900;letter-spacing:.1em;text-transform:uppercase;padding:3px 7px;color:#b87400;flex-shrink:0">Hired</span>'
+        +hiredSel
+        +'<button class="rm-btn" style="font-size:11px;padding:0;width:20px;height:20px;flex-shrink:0" title="Clear" onclick="lvOledSet('+j.id+','+i+',\'mode\',\'inv\');lvOledSet('+j.id+','+i+',\'hiredModel\',\'\')">×</button>'
+        +'</div>';
+    } else if(mKit){
+      monCell='<div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap">'
+        +'<span style="background:rgba(42,125,72,.12);border:1px solid rgba(60,180,100,.3);border-radius:3px;font-size:12px;padding:3px 8px;color:#2a7d48;flex-shrink:0">'+mKit.name+'</span>'
+        +'<button class="ibtn" style="font-size:10px;padding:2px 7px;flex-shrink:0" onclick="lvOledPickKit('+j.id+','+i+')">Change</button>'
+        +'<button class="rm-btn" style="font-size:11px;padding:0;width:20px;height:20px;flex-shrink:0" onclick="lvOledSet('+j.id+','+i+',\'kitId\',null)">×</button>'
+        +'</div>';
+    } else {
+      monCell='<div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap">'
+        +'<button class="ibtn" style="font-size:11px;padding:3px 9px;white-space:nowrap;flex-shrink:0" onclick="lvOledPickKit('+j.id+','+i+')">Pick from Inventory</button>'
+        +'<button class="ibtn" style="font-size:11px;padding:3px 9px;color:#b87400;background:rgba(250,160,0,.08);border-color:rgba(250,160,0,.3);flex-shrink:0" onclick="lvOledSet('+j.id+','+i+',\'mode\',\'hired\')">+ Hired</button>'
+        +'</div>';
+    }
 
     var selPos='<select class="fi" style="font-size:13px;padding:4px 8px" onchange="lvOledSet('+j.id+','+i+',\'position\',this.value)"><option value="">-- Position --</option>'
       +(CAM_PLAN_OPTS['OLED Position']||[]).map(function(p){return '<option'+(p===o.position?' selected':'')+'>'+p+'</option>';}).join('')
       +'</select>';
 
-    return '<div style="display:grid;grid-template-columns:160px 1fr 140px auto;gap:8px;align-items:start;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)">'
+    return '<div style="display:grid;grid-template-columns:140px 1fr 130px 22px;gap:8px;align-items:center;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.05)">'
       +selPos
       +'<div>'+monCell+'</div>'
       +'<input class="fi" style="font-size:13px;padding:4px 8px" value="'+((o.person||'').replace(/"/g,'&quot;'))+'" placeholder="Person name..." onchange="lvOledSet('+j.id+','+i+',\'person\',this.value)"/>'
-      +'<button class="rm-btn" style="font-size:14px;align-self:center" onclick="lvOledRm('+j.id+','+i+')">×</button>'
+      +'<button class="rm-btn" style="font-size:12px;padding:0;width:22px;height:22px" onclick="lvOledRm('+j.id+','+i+')">×</button>'
       +'</div>';
   }).join('');
 
-  return '<div class="det-sec"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">'
-    +'<div class="det-sec-lbl" style="margin-bottom:0">OLED Monitors</div>'
-    +'<button class="ibtn" style="font-size:12px;padding:6px 14px" onclick="lvOledAdd('+j.id+')">+ Add Monitor</button></div>'
+  return '<div class="det-sec" style="padding:8px 12px;margin-bottom:0;flex:1 1 340px;min-width:0"><div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px;flex-wrap:wrap;padding-bottom:6px;border-bottom:1px solid var(--border)">'
+    +'<div class="det-sec-lbl" style="margin:0;padding:0;border:none;font-size:12px">OLED Monitors</div>'
+    +'<span class="jd-card-ct">'+oleds.length+'</span>'
+    +'<button class="ibtn" style="font-size:11px;padding:3px 8px;margin-left:auto" onclick="lvOledAdd('+j.id+')">+ Add Monitor</button></div>'
     +(oleds.length
-      ?'<div style="display:grid;grid-template-columns:160px 1fr 140px auto;gap:8px;padding:4px 0;border-bottom:2px solid rgba(255,255,255,.08);margin-bottom:4px">'
+      ?'<div style="display:grid;grid-template-columns:140px 1fr 130px 22px;gap:8px;padding:4px 0;border-bottom:2px solid rgba(255,255,255,.08);margin-bottom:2px">'
         +['Position','Monitor','Person',''].map(function(h){return '<div style="font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">'+h+'</div>';}).join('')+'</div>'
         +rows
-      :'<div style="color:var(--muted);font-size:14px;padding:4px 0">No OLED monitors allocated yet.</div>')
+      :'<div style="color:var(--muted);font-size:12px;padding:2px 0">None yet.</div>')
     +'</div>';
 }
 function lvOledAdd(jid){var j=jobs.find(function(x){return x.id===jid;});if(!j)return;if(!j.lvSpec)j.lvSpec={};if(!j.lvSpec.oleds)j.lvSpec.oleds=[];j.lvSpec.oleds.push({position:'',kitId:null,hiredModel:'',person:''});saveData();renderJobDet(j);}
 function lvOledSet(jid,i,field,val){var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.lvSpec||!j.lvSpec.oleds[i])return;j.lvSpec.oleds[i][field]=val;saveData();renderJobDet(j);}
 function lvOledRm(jid,i){var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.lvSpec)return;j.lvSpec.oleds.splice(i,1);saveData();renderJobDet(j);}
+// Handle hired-model dropdown: support "+ Type custom..." prompt
+function lvOledHiredSelect(jid,i,sel){
+  var j=jobs.find(function(x){return x.id==jid;});
+  if(!j||!j.lvSpec||!j.lvSpec.oleds[i])return;
+  if(sel.value==='__custom__'){
+    var v=prompt('Type monitor model:',j.lvSpec.oleds[i].hiredModel||'');
+    if(v===null){sel.value=j.lvSpec.oleds[i].hiredModel||'';return;}
+    v=(v||'').trim();
+    j.lvSpec.oleds[i].hiredModel=v;
+    // Optionally add to CAM_PLAN_OPTS so it appears next time
+    if(v && (CAM_PLAN_OPTS['Monitor']||[]).indexOf(v)<0){
+      if(!CAM_PLAN_OPTS['Monitor'])CAM_PLAN_OPTS['Monitor']=[];
+      CAM_PLAN_OPTS['Monitor'].push(v);
+    }
+  } else {
+    j.lvSpec.oleds[i].hiredModel=sel.value;
+  }
+  saveData();renderJobDet(j);
+}
 function lvOledPickKit(jid,idx){
-  var monItems=kit.filter(function(k){return k.subcat==='Monitor'||k.cat==='Monitors'||(k.name||'').toLowerCase().indexOf('monitor')>=0||(k.name||'').toLowerCase().indexOf('oled')>=0||(k.name||'').toLowerCase().indexOf('pvm')>=0||(k.name||'').toLowerCase().indexOf('bvm')>=0;}).sort(function(a,b){return a.name.localeCompare(b.name);});
-  var rows=monItems.map(function(k){
-    return '<div style="padding:8px 12px;border-bottom:1px solid var(--border);cursor:pointer;font-size:13px;color:var(--white)" onmouseover="this.style.background=\'rgba(255,255,255,.06)\'" onmouseout="this.style.background=\'\'" onclick="lvOledSetKit('+jid+','+idx+','+k.id+')">'+k.name+(k.tag?' <span style="color:var(--muted);font-size:11px">'+k.tag+'</span>':'')+(k.isHired?' <span style="color:#b87400;font-size:10px">HIRED</span>':'')+'</div>';
-  }).join('');
-  var html='<div style="max-height:300px;overflow-y:auto">'+rows+'</div>';
-  var ex=document.getElementById('mOledPick');if(ex)ex.remove();
-  document.body.insertAdjacentHTML('beforeend','<div class="modal-ov open" id="mOledPick" onclick="if(event.target===this)cm(\'mOledPick\')"><div class="modal" style="width:400px"><div class="modal-hdr"><div class="modal-title">Pick Monitor</div><button class="x-btn" onclick="cm(\'mOledPick\')">×</button></div><div class="modal-body" style="padding:0">'+html+'</div></div></div>');
+  _openGenKitPicker('Pick Monitor',
+    function(k){return k.status!=='Bin' && ((k.subcat||'').toLowerCase()==='monitor' || (k.cat||'').toLowerCase()==='monitors' || (k.name||'').toLowerCase().indexOf('oled')>=0 || (k.name||'').toLowerCase().indexOf('pvm')>=0 || (k.name||'').toLowerCase().indexOf('bvm')>=0 || (k.name||'').toLowerCase().indexOf('monitor')>=0);},
+    function(kid){
+      var j=jobs.find(function(x){return x.id==jid;});
+      if(!j||!j.lvSpec||!j.lvSpec.oleds[idx])return;
+      j.lvSpec.oleds[idx].kitId=kid;
+      j.lvSpec.oleds[idx].hiredModel='';
+      j.lvSpec.oleds[idx].mode='inv';
+      saveData();renderJobDet(j);
+    },
+    {strict:true,
+     fallbackFilter:function(k){return k.status!=='Bin' && ((k.cat||'').toLowerCase()==='monitors' || (k.cat||'').toLowerCase()==='camera');},
+     fallbackLabel:'showing all Monitor/Camera kit',
+     emptyMsg:'No monitors in inventory.<br><span style="font-size:11px;opacity:.7">Add kit with Category = Monitors or a name containing OLED/PVM/BVM/Monitor.</span>'}
+  );
 }
 function lvOledSetKit(jid,idx,kitId){
   var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.lvSpec||!j.lvSpec.oleds[idx])return;
   j.lvSpec.oleds[idx].kitId=kitId;j.lvSpec.oleds[idx].hiredModel='';
   saveData();cm('mOledPick');renderJobDet(j);
 }
-function _openGenKitPicker(title,filterFn,onSelect){
+function _openGenKitPicker(title,filterFn,onSelect,opts){
   var ex=document.getElementById('_gkPicker');if(ex)ex.remove();
-  var avail=kit.filter(filterFn);
-  var html='<div id="_gkPicker" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1a1a1a;border:1px solid rgba(255,255,255,.15);border-radius:8px;z-index:9999;width:320px;max-height:55vh;display:flex;flex-direction:column;box-shadow:0 12px 48px rgba(0,0,0,.9);overflow:hidden">'
-    +'<div style="padding:9px 14px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;justify-content:space-between;align-items:center">'
-    +'<span style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">'+title+'</span>'
-    +'<button onclick="document.getElementById(\'_gkPicker\').remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px">×</button></div>'
-    +'<input id="_gkQ" class="fi" style="margin:8px 14px 0;font-size:13px;padding:4px 8px" placeholder="Search..." oninput="_gkFilter()"/>'
-    +'<div id="_gkList" style="overflow-y:auto;flex:1;margin-top:6px"></div></div>';
+  opts=opts||{};
+  var strict=!!opts.strict;
+  var fallbackFilter=opts.fallbackFilter||null;
+  var fallbackLabel=opts.fallbackLabel||'Showing broader match';
+  var emptyMsg=opts.emptyMsg||'';
+  var all=kit.filter(function(k){return k.status!=='Bin';});
+  var filtered=filterFn?all.filter(filterFn):all;
+  // 3-tier: strict filter → fallback filter → all kit
+  var usingFallback=false, usingFullFallback=false;
+  var avail=filtered;
+  if(filtered.length===0){
+    if(fallbackFilter){
+      var fb=all.filter(fallbackFilter);
+      if(fb.length>0){avail=fb; usingFallback=true;}
+      else if(all.length>0){avail=all; usingFullFallback=true;}
+    } else if(filterFn && all.length>0){
+      avail=all; usingFullFallback=true;
+    }
+  }
+  var fallbackHtml='';
+  if(usingFallback){
+    fallbackHtml='<div style="padding:7px 14px;font-size:11px;color:var(--muted);font-style:italic;border-bottom:1px solid rgba(255,255,255,.06);background:rgba(244,162,88,.08)">⚠ No exact matches — '+fallbackLabel+' ('+avail.length+'). Check subcategory if your item is missing.</div>';
+  } else if(usingFullFallback){
+    fallbackHtml='<div style="padding:7px 14px;font-size:11px;color:var(--muted);font-style:italic;border-bottom:1px solid rgba(255,255,255,.06);background:rgba(200,100,100,.08)">⚠ No matches in expected category — showing ALL kit ('+avail.length+'). The item\'s category/subcategory may need updating.</div>';
+  }
+  var emptyHtml='';
+  if(avail.length===0){
+    emptyHtml='<div style="padding:18px 14px;font-size:13px;color:var(--muted);text-align:center">No kit in inventory yet.<br><span style="font-size:11px;opacity:.7">Total items in kit array: '+kit.length+' · Non-Bin: '+all.length+'<br>Add items via the Kit tab.</span></div>';
+  }
+  var html='<div id="_gkPicker" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1a1a1a;border:1px solid rgba(255,255,255,.15);border-radius:8px;z-index:9999;width:360px;max-height:60vh;display:flex;flex-direction:column;box-shadow:0 12px 48px rgba(0,0,0,.9);overflow:hidden">'
+    +'<div style="padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.1);display:flex;justify-content:space-between;align-items:center">'
+    +'<span style="font-family:var(--cond);font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#fff">'+title+'</span>'
+    +'<button onclick="document.getElementById(\'_gkPicker\').remove()" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:20px;line-height:1;padding:0 4px" title="Close">×</button></div>'
+    +fallbackHtml
+    +(avail.length>8 ? '<input id="_gkQ" style="margin:8px 14px 0;font-size:13px;padding:6px 10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:4px;color:#fff;outline:none" placeholder="Search..." oninput="_gkFilter()"/>' : '')
+    +'<div id="_gkList" style="overflow-y:auto;flex:1;margin-top:6px">'+emptyHtml+'</div>'
+    +'<div style="padding:8px 14px;border-top:1px solid rgba(255,255,255,.08);display:flex;justify-content:flex-end;background:rgba(0,0,0,.2)">'
+      +'<button onclick="document.getElementById(\'_gkPicker\').remove()" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);color:#ddd;cursor:pointer;font-size:12px;font-family:var(--cond);font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:5px 14px;border-radius:4px">Cancel</button>'
+    +'</div>'
+    +'</div>';
   document.body.insertAdjacentHTML('beforeend',html);
   var list=document.getElementById('_gkList');
   avail.forEach(function(k){
     var el=document.createElement('div');
-    el.innerHTML='<div style="font-size:13px;font-weight:600;color:#fff">'+k.name+'</div><div style="font-size:11px;color:#666">'+k.tag+' · '+k.cat+'</div>';
+    var subParts=[k.tag,k.cat||'(no cat)',k.subcat].filter(function(p){return p && String(p).trim();});
+    el.innerHTML='<div style="font-size:13px;font-weight:600;color:#fff">'+k.name+'</div><div style="font-size:11px;color:#888">'+subParts.join(' · ')+'</div>';
     el.style.cssText='padding:8px 14px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.04)';
-    el.setAttribute('data-s',(k.name+' '+k.tag+' '+k.cat).toLowerCase());
+    el.setAttribute('data-s',(k.name+' '+(k.tag||'')+' '+(k.cat||'')+' '+(k.subcat||'')).toLowerCase());
     el.addEventListener('mouseover',function(){el.style.background='rgba(255,255,255,.07)';});
     el.addEventListener('mouseout',function(){el.style.background='';});
     el.addEventListener('click',function(){document.getElementById('_gkPicker').remove();onSelect(k.id);});
+    list.appendChild(el);
+  });
+  window._gkFilter=function(){
+    var q=(document.getElementById('_gkQ').value||'').toLowerCase();
+    list.querySelectorAll('[data-s]').forEach(function(el){el.style.display=el.getAttribute('data-s').includes(q)?'':'none';});
+  };
+  setTimeout(function(){
+    document.addEventListener('click',function _gkx(e){
+      var p=document.getElementById('_gkPicker');if(p&&!p.contains(e.target)){p.remove();}document.removeEventListener('click',_gkx);
+    });
+  },50);
+}
+
+// Hired Catalogue picker — parallel to _openGenKitPicker but operates on hiredCatalogue
+function _openHiredCatPicker(title,filterFn,onSelect,opts){
+  var ex=document.getElementById('_gkPicker');if(ex)ex.remove();
+  opts=opts||{};
+  var strict=!!opts.strict;
+  var fallbackFilter=opts.fallbackFilter||null;
+  var fallbackLabel=opts.fallbackLabel||'Showing broader match';
+  var emptyMsg=opts.emptyMsg||'No items in hired catalogue.';
+  var all=hiredCatalogue.slice();
+  var filtered=filterFn?all.filter(filterFn):all;
+  var usingFallback=false, usingFullFallback=false;
+  var avail=filtered;
+  if(filtered.length===0){
+    if(fallbackFilter){
+      var fb=all.filter(fallbackFilter);
+      if(fb.length>0){avail=fb; usingFallback=true;}
+      else if(all.length>0){avail=all; usingFullFallback=true;}
+    } else if(filterFn && all.length>0){
+      avail=all; usingFullFallback=true;
+    }
+  }
+  var fallbackHtml='';
+  if(usingFallback){
+    fallbackHtml='<div style="padding:7px 14px;font-size:11px;color:var(--muted);font-style:italic;border-bottom:1px solid rgba(255,255,255,.06);background:rgba(244,162,88,.08)">⚠ No exact matches — '+fallbackLabel+' ('+avail.length+').</div>';
+  } else if(usingFullFallback){
+    fallbackHtml='<div style="padding:7px 14px;font-size:11px;color:var(--muted);font-style:italic;border-bottom:1px solid rgba(255,255,255,.06);background:rgba(200,100,100,.08)">⚠ No matches — showing ALL catalogue ('+avail.length+').</div>';
+  }
+  var emptyHtml=avail.length===0
+    ? '<div style="padding:18px 14px;font-size:13px;color:var(--muted);text-align:center">'+emptyMsg+'<br><span style="font-size:11px;opacity:.7">Total items: '+hiredCatalogue.length+'<br>Add items via the Admin → Hired Catalogue tab.</span></div>'
+    : '';
+  var html='<div id="_gkPicker" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1a1a1a;border:1px solid rgba(255,255,255,.15);border-radius:8px;z-index:9999;width:380px;max-height:60vh;display:flex;flex-direction:column;box-shadow:0 12px 48px rgba(0,0,0,.9);overflow:hidden">'
+    +'<div style="padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.1);display:flex;justify-content:space-between;align-items:center">'
+    +'<span style="font-family:var(--cond);font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#e08c3a">'+title+'</span>'
+    +'<button onclick="document.getElementById(\'_gkPicker\').remove()" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:20px;line-height:1;padding:0 4px" title="Close">×</button></div>'
+    +fallbackHtml
+    +(avail.length>8 ? '<input id="_gkQ" style="margin:8px 14px 0;font-size:13px;padding:6px 10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:4px;color:#fff;outline:none" placeholder="Search hired catalogue..." oninput="_gkFilter()"/>' : '')
+    +'<div id="_gkList" style="overflow-y:auto;flex:1;margin-top:6px">'+emptyHtml+'</div>'
+    +'<div style="padding:8px 14px;border-top:1px solid rgba(255,255,255,.08);display:flex;justify-content:flex-end;background:rgba(0,0,0,.2)">'
+      +'<button onclick="document.getElementById(\'_gkPicker\').remove()" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);color:#ddd;cursor:pointer;font-size:12px;font-family:var(--cond);font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:5px 14px;border-radius:4px">Cancel</button>'
+    +'</div>'
+    +'</div>';
+  document.body.insertAdjacentHTML('beforeend',html);
+  var list=document.getElementById('_gkList');
+  avail.forEach(function(h){
+    var el=document.createElement('div');
+    var subParts=[h.cat,h.subcat].filter(function(p){return p && String(p).trim();});
+    var sups=(h.suppliers||[]).slice(0,2).join(', ');
+    el.innerHTML='<div style="font-size:13px;font-weight:600;color:#fff">'+(h.name||'')+'</div>'
+      +'<div style="font-size:11px;color:#888">'+subParts.join(' · ')+(sups?' · <span style="color:#b87400">'+sups+'</span>':'')+'</div>';
+    el.style.cssText='padding:8px 14px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.04)';
+    el.setAttribute('data-s',((h.name||'')+' '+(h.cat||'')+' '+(h.subcat||'')+' '+(h.suppliers||[]).join(' ')).toLowerCase());
+    el.addEventListener('mouseover',function(){el.style.background='rgba(255,255,255,.07)';});
+    el.addEventListener('mouseout',function(){el.style.background='';});
+    el.addEventListener('click',function(){document.getElementById('_gkPicker').remove();onSelect(h);});
     list.appendChild(el);
   });
   window._gkFilter=function(){
@@ -9356,7 +10038,14 @@ function lvMcsGSet(jid,field,val){
   if(field==='enabled'||field==='kitId')renderJobDet(j);
 }
 function lvPickMcsG(jid){
-  _openGenKitPicker('Pick MCS Unit',function(k){return k.status!=='Bin'&&k.cat==='Camera'&&k.subcat==='MCS';},function(kid){lvMcsGSet(jid,'kitId',kid);});
+  _openGenKitPicker('Pick MCS Unit',
+    function(k){return k.status!=='Bin' && (k.cat||'').trim().toLowerCase()==='camera' && (k.subcat||'').trim().toLowerCase()==='mcs';},
+    function(kid){lvMcsGSet(jid,'kitId',kid);var j=jobs.find(function(x){return x.id==jid;});if(j){saveData();renderJobDet(j);}},
+    {strict:true,
+     fallbackFilter:function(k){return k.status!=='Bin' && (k.cat||'').trim().toLowerCase()==='camera';},
+     fallbackLabel:'showing all Camera kit',
+     emptyMsg:'No MCS units in inventory.<br><span style="font-size:11px;opacity:.7">Add kit with Category = Camera, Subcategory = MCS.</span>'}
+  );
 }
 function lvVopAdd(jid){
   var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
@@ -9371,11 +10060,89 @@ function lvVopSet(jid,vi,field,val){
   var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.lvSpec||!j.lvSpec.visionOps||!j.lvSpec.visionOps[vi])return;
   j.lvSpec.visionOps[vi][field]=val;
 }
-function auHydraAdd(jid){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;if(!j.audio)j.audio={};if(!j.audio.hydras)j.audio.hydras=[];j.audio.hydras.push({kitId:null,hired:false,location:'',notes:''});renderJobDet(j);}
-function auHydraRm(jid,hi){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.audio||!j.audio.hydras)return;j.audio.hydras.splice(hi,1);renderJobDet(j);}
-function auHydraSet(jid,hi,field,val){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.audio||!j.audio.hydras||!j.audio.hydras[hi])return;j.audio.hydras[hi][field]=val;if(field==='hired'||field==='kitId')renderJobDet(j);}
-function auPickHydra(jid,hi){_openGenKitPicker('Pick Hydra',function(k){return k.status!=='Bin'&&(/hydra/i.test(k.name)||k.subcat==='Hydras');},function(kid){auHydraSet(jid,hi,'kitId',kid);});}
-function jdSetAu(jid, field, val) { const j=jobs.find(x=>x.id==jid);if(!j)return;if(!j.audio)j.audio={};j.audio[field]=val; }
+function auHydraAdd(jid){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;if(!j.audio)j.audio={};if(!j.audio.hydras)j.audio.hydras=[];j.audio.hydras.push({mode:'inv',kitId:null,hiredVal:'',location:'',notes:''});saveData();renderJobDet(j);}
+function auHydraRm(jid,hi){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.audio||!j.audio.hydras)return;j.audio.hydras.splice(hi,1);saveData();renderJobDet(j);}
+function auHydraSet(jid,hi,field,val){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.audio||!j.audio.hydras||!j.audio.hydras[hi])return;j.audio.hydras[hi][field]=val;saveData();if(field==='mode'||field==='kitId')renderJobDet(j);}
+function auPickHydra(jid,hi){_openGenKitPicker('Pick Hydra',function(k){return k.status!=='Bin' && (k.cat||'').trim().toLowerCase()==='audio' && (k.subcat||'').trim().toLowerCase()==='hydras';},function(kid){auHydraSet(jid,hi,'kitId',kid);},{strict:true,fallbackFilter:function(k){return k.status!=='Bin' && (k.cat||'').trim().toLowerCase()==='audio';},fallbackLabel:'showing all Audio kit',emptyMsg:'No Hydras in inventory.<br><span style="font-size:11px;opacity:.7">Add kit with Category = Audio, Subcategory = Hydras.</span>'});}
+
+// ── Grams Desk ──
+function auGramsDeskSet(jid,field,val){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;if(!j.audio)j.audio={};if(!j.audio.gramsDesk)j.audio.gramsDesk={mode:'inv',kitId:null,hiredVal:''};j.audio.gramsDesk[field]=val;saveData();}
+function auPickGramsDesk(jid){_openGenKitPicker('Pick Grams Desk',function(k){return k.status!=='Bin' && (k.cat||'').trim().toLowerCase()==='audio' && (k.subcat||'').trim().toLowerCase()==='desks';},function(kid){auGramsDeskSet(jid,'kitId',kid);renderJobDet(jobs.find(function(x){return x.id==jid;}));},{strict:true,fallbackFilter:function(k){return k.status!=='Bin' && (k.cat||'').trim().toLowerCase()==='audio';},fallbackLabel:'showing all Audio kit',emptyMsg:'No Grams Desks in inventory.<br><span style="font-size:11px;opacity:.7">Add kit with Category = Audio, Subcategory = Desks.</span>'});}
+
+// ── SpotOn ──
+function auSpotOnSet(jid,field,val){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;if(!j.audio)j.audio={};if(!j.audio.spotOn)j.audio.spotOn={mode:'inv',kitId:null,hiredVal:''};j.audio.spotOn[field]=val;saveData();}
+function auPickSpotOn(jid){_openGenKitPicker('Pick SpotOn',function(k){return k.status!=='Bin' && (k.cat||'').trim().toLowerCase()==='audio' && (k.subcat||'').trim().toLowerCase()==='playout';},function(kid){auSpotOnSet(jid,'kitId',kid);renderJobDet(jobs.find(function(x){return x.id==jid;}));},{strict:true,fallbackFilter:function(k){return k.status!=='Bin' && (k.cat||'').trim().toLowerCase()==='audio';},fallbackLabel:'showing all Audio kit',emptyMsg:'No Playout kit in inventory.<br><span style="font-size:11px;opacity:.7">Add kit with Category = Audio, Subcategory = Playout.</span>'});}
+
+// ── Floor Sound Crew ──
+function auFloorAdd(jid){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;if(!j.audio)j.audio={};if(!j.audio.floorCrew)j.audio.floorCrew=[];j.audio.floorCrew.push({name:'',role:''});saveData();renderJobDet(j);}
+function auFloorRm(jid,ci){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.audio||!j.audio.floorCrew)return;j.audio.floorCrew.splice(ci,1);saveData();renderJobDet(j);}
+function auFloorSet(jid,ci,field,val){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.audio||!j.audio.floorCrew||!j.audio.floorCrew[ci])return;j.audio.floorCrew[ci][field]=val;saveData();}
+
+// ── Radio Mics ──
+function auRadioAdd(jid){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;if(!j.audio)j.audio={};if(!j.audio.radioMics)j.audio.radioMics=[];j.audio.radioMics.push({num:j.audio.radioMics.length+1,forWhom:'',freq:''});saveData();renderJobDet(j);}
+function auRadioRm(jid,mi){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.audio||!j.audio.radioMics)return;j.audio.radioMics.splice(mi,1);saveData();renderJobDet(j);}
+function auRadioSet(jid,mi,field,val){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.audio||!j.audio.radioMics||!j.audio.radioMics[mi])return;j.audio.radioMics[mi][field]=val;saveData();}
+
+// ── Other Mics ──
+function auOtherAdd(jid){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;if(!j.audio)j.audio={};if(!j.audio.otherMics)j.audio.otherMics=[];j.audio.otherMics.push({model:'',forWhom:'',mode:'inv',kitId:null,hiredVal:''});saveData();renderJobDet(j);}
+function auOtherRm(jid,mi){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.audio||!j.audio.otherMics)return;j.audio.otherMics.splice(mi,1);saveData();renderJobDet(j);}
+function auOtherSet(jid,mi,field,val){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.audio||!j.audio.otherMics||!j.audio.otherMics[mi])return;j.audio.otherMics[mi][field]=val;saveData();if(field==='mode'||field==='kitId')renderJobDet(j);}
+function auPickOther(jid,mi){_openGenKitPicker('Pick Mic',function(k){return k.status!=='Bin' && (k.cat||'').trim().toLowerCase()==='audio' && (k.subcat||'').trim().toLowerCase()==='mics';},function(kid){auOtherSet(jid,mi,'kitId',kid);renderJobDet(jobs.find(function(x){return x.id==jid;}));},{strict:true,fallbackFilter:function(k){return k.status!=='Bin' && (k.cat||'').trim().toLowerCase()==='audio';},fallbackLabel:'showing all Audio kit',emptyMsg:'No Mics in inventory.<br><span style="font-size:11px;opacity:.7">Add kit with Category = Audio, Subcategory = Mics.</span>'});}
+
+// ── Hired Catalogue pickers (orange) — each paired with its inventory picker above ──
+function auPickHydraHired(jid,hi){_openHiredCatPicker('Pick Hydra (Hired)',function(h){return (h.cat||'').trim().toLowerCase()==='audio' && (h.subcat||'').trim().toLowerCase()==='hydras';},function(h){auHydraSet(jid,hi,'hiredCatId',h.id);auHydraSet(jid,hi,'hiredVal',h.name||'');auHydraSet(jid,hi,'hiredKind','catalogue');renderJobDet(jobs.find(function(x){return x.id==jid;}));},{strict:true,fallbackFilter:function(h){return (h.cat||'').trim().toLowerCase()==='audio';},fallbackLabel:'showing all Audio catalogue',emptyMsg:'No Hydras in Hired Catalogue.'});}
+function auPickGramsDeskHired(jid){_openHiredCatPicker('Pick Grams Desk (Hired)',function(h){return (h.cat||'').trim().toLowerCase()==='audio' && (h.subcat||'').trim().toLowerCase()==='desks';},function(h){auGramsDeskSet(jid,'hiredCatId',h.id);auGramsDeskSet(jid,'hiredVal',h.name||'');auGramsDeskSet(jid,'hiredKind','catalogue');renderJobDet(jobs.find(function(x){return x.id==jid;}));},{strict:true,fallbackFilter:function(h){return (h.cat||'').trim().toLowerCase()==='audio';},fallbackLabel:'showing all Audio catalogue',emptyMsg:'No Grams Desks in Hired Catalogue.'});}
+function auPickSpotOnHired(jid){_openHiredCatPicker('Pick SpotOn (Hired)',function(h){return (h.cat||'').trim().toLowerCase()==='audio' && (h.subcat||'').trim().toLowerCase()==='playout';},function(h){auSpotOnSet(jid,'hiredCatId',h.id);auSpotOnSet(jid,'hiredVal',h.name||'');auSpotOnSet(jid,'hiredKind','catalogue');renderJobDet(jobs.find(function(x){return x.id==jid;}));},{strict:true,fallbackFilter:function(h){return (h.cat||'').trim().toLowerCase()==='audio';},fallbackLabel:'showing all Audio catalogue',emptyMsg:'No Playout kit in Hired Catalogue.'});}
+function auPickOtherHired(jid,mi){_openHiredCatPicker('Pick Mic (Hired)',function(h){return (h.cat||'').trim().toLowerCase()==='audio' && (h.subcat||'').trim().toLowerCase()==='mics';},function(h){auOtherSet(jid,mi,'hiredCatId',h.id);auOtherSet(jid,mi,'hiredVal',h.name||'');auOtherSet(jid,mi,'hiredKind','catalogue');renderJobDet(jobs.find(function(x){return x.id==jid;}));},{strict:true,fallbackFilter:function(h){return (h.cat||'').trim().toLowerCase()==='audio';},fallbackLabel:'showing all Audio catalogue',emptyMsg:'No Mics in Hired Catalogue.'});}
+
+// ── Optional-section toggle (Grams Op, Grams Desk, SpotOn) ──
+function auToggleField(jid,field,val){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;if(!j.audio)j.audio={};j.audio[field]=val;saveData();renderJobDet(j);}
+
+function jdSetAu(jid, field, val) { const j=jobs.find(x=>x.id==jid);if(!j)return;if(!j.audio)j.audio={};j.audio[field]=val;saveData(); }
+// Migrate legacy au.supervisor value into HODs (Sound Supervisor role)
+function auMigrateSup(jid){
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.audio||!j.audio.supervisor)return;
+  if(!j.hods)j.hods=[];
+  var existing=j.hods.find(function(h){return h.role==='Sound Supervisor';});
+  var val=j.audio.supervisor;
+  if(existing){
+    if(existing.name && existing.name!==val){
+      if(!confirm('Overwrite existing HOD Sound Supervisor "'+existing.name+'" with "'+val+'"?')) return;
+    }
+    existing.name=val;
+  } else {
+    j.hods.push({role:'Sound Supervisor',name:val});
+  }
+  delete j.audio.supervisor;
+  saveData();
+  toast('Moved to HODs');
+  renderJobDet(j);
+}
+// Dismiss legacy au.supervisor value (clears it without migrating)
+function auClearLegacySup(jid){
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.audio)return;
+  if(!confirm('Discard the legacy Sound Supervisor value?')) return;
+  delete j.audio.supervisor;
+  saveData();
+  renderJobDet(j);
+}
+// Migrate legacy au.gramsOp into floorCrew as a Grams Op row
+function auMigrateGramsOp(jid){
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.audio||!j.audio.gramsOp)return;
+  if(!j.audio.floorCrew)j.audio.floorCrew=[];
+  j.audio.floorCrew.unshift({name:j.audio.gramsOp,role:'Grams Op'});
+  delete j.audio.gramsOp;
+  saveData();
+  toast('Moved to Sound Crew');
+  renderJobDet(j);
+}
+function auClearLegacyGramsOp(jid){
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.audio)return;
+  if(!confirm('Discard the legacy Grams Op value?')) return;
+  delete j.audio.gramsOp;
+  saveData();
+  renderJobDet(j);
+}
 function jdSetPo(jid, field, val) { const j=jobs.find(x=>x.id==jid);if(!j)return;if(!j.post)j.post={};j.post[field]=val; }
 function jdGoCalDate(dateStr, row) {
   const d=new Date(dateStr);
@@ -10689,7 +11456,7 @@ function renderIngestTab(j) {
 
   var streamHtml=streams.length===0
     ?'<div style="color:var(--muted);font-size:14px;padding:8px 0">No streams added yet.</div>'
-    :'<div style="display:flex;flex-direction:column;gap:12px;margin-bottom:16px">'
+    :'<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(520px,1fr));gap:12px;margin-bottom:16px;align-items:start">'
       +streams.map(function(s,si){
         var isISO=s.type==='ISO';
         var rc=s.camNum&&RESISTOR_COLORS[s.camNum-1]?RESISTOR_COLORS[s.camNum-1]:null;
@@ -10755,13 +11522,13 @@ function renderIngestTab(j) {
   return '<div class="det-sec">'
     // Ingest Operator
     +'<div style="margin-bottom:14px"><div class="dfl" style="margin-bottom:4px">Ingest Operator</div>'
-    +'<input class="fi" style="font-size:14px;padding:5px 8px;width:100%;max-width:300px" value="'+(j.ingestOperator||'')+'" placeholder="Operator name..." onchange="jdSetField('+j.id+',\'ingestOperator\',this.value)"/></div>'
-    // Tech spec banner from Tech Overview
+    +'<input class="fi" style="font-size:14px;padding:5px 8px;width:100%;max-width:480px" value="'+(j.ingestOperator||'')+'" placeholder="Operator name..." onchange="jdSetField('+j.id+',\'ingestOperator\',this.value)"/></div>'
+    // Tech spec banner from Info tab (compact, left-aligned, no dead space)
     +(techCodec||fmtLabel
-      ?'<div style="display:flex;gap:10px;align-items:center;margin-bottom:16px;padding:8px 14px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:5px;flex-wrap:wrap">'
+      ?'<div style="display:inline-flex;gap:10px;align-items:baseline;margin-bottom:16px;padding:6px 12px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:5px;flex-wrap:wrap">'
         +(fmtLabel?'<span style="font-family:var(--cond);font-size:14px;font-weight:800;letter-spacing:.06em;color:var(--white)">'+fmtLabel+'</span>':'')
-        +(techCodec?'<span style="font-family:var(--cond);font-size:13px;font-weight:700;color:#2a6cb8;margin-left:8px">'+techCodec+'</span>':'')
-        +'<span style="font-size:11px;color:var(--muted);margin-left:auto">From Tech Overview — edit in Tech tab</span></div>'
+        +(techCodec?'<span style="font-family:var(--cond);font-size:13px;font-weight:700;color:#2a6cb8">'+techCodec+'</span>':'')
+        +'<span style="font-size:10px;color:var(--muted);font-family:var(--cond);letter-spacing:.08em;text-transform:uppercase">Set on Info</span></div>'
       :'')
     // Stream count + add controls
     +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">'
@@ -10959,217 +11726,264 @@ function jdGfxOp(jid,i,val){var j=jobs.find(function(x){return x.id===jid;});if(
 function jdGfxOpRm(jid,i){var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.gfx)return;j.gfx.operators.splice(i,1);saveData();renderJobDet(j);}
 
 function renderCommsTab(j) {
-  if(!j.comms)j.comms={people:[],channels:[],notes:'',showChannels:true,supervisor:'',supplier:''};
+  if(!j.comms)j.comms={people:[],channels:[],boleroChannels:[],notes:'',showChannels:true,showBoleroChannels:true,supervisor:'',supplier:''};
   var c=j.comms;
   if(!c.people)c.people=[];
   if(!c.channels)c.channels=[];
+  if(!c.boleroChannels)c.boleroChannels=[];
   if(c.showChannels===undefined)c.showChannels=true;
+  if(c.showBoleroChannels===undefined)c.showBoleroChannels=true;
 
-  // Derived counts
-  var walkieList  = c.people.filter(function(p){return p.commType==='Walkie';});
-  var boleroList2 = c.people.filter(function(p){return p.commType==='Bolero';});
-  var panelList   = c.people.filter(function(p){return p.commType==='Panel';});
+  // Non-destructive migration: old commType → boolean flags
+  c.people.forEach(function(p){
+    if(p.commType && !p._migrated){
+      if(p.commType==='Bolero') p.bolero=true;
+      else if(p.commType==='Walkie') p.walkie=true;
+      else if(p.commType==='Panel') p.panel=true;
+      p._migrated=true;
+    }
+  });
 
-  // Comms suppliers (from DV or default)
-  var suppliers = (j._commsSuppliersCustom||[]).concat(COMMS_SUPPLIERS_DEFAULT).filter(function(v,i,a){return a.indexOf(v)===i;});
-  var suppOpts  = '<option value="">— Supplier —</option>'+suppliers.map(function(s){return '<option'+(s===c.supplier?' selected':'')+'>'+s+'</option>';}).join('')
-    +'<option value="__add__" style="color:#2a6cb8;font-style:italic">+ Add supplier...</option>';
+  // Headset options
+  var HEADSETS=['Lightweight','Wildtalk','Single Ear','Mic30'];
 
-  // ── Crew List ────────────────────────────────────────────────────────────
-  var pRows = c.people.map(function(p,pi){
-    var typeOpts=['Bolero','Walkie','Panel'].map(function(t){
-      return '<option'+(t===p.commType?' selected':'')+'>'+t+'</option>';
-    }).join('');
-    var panelSel = p.commType==='Panel'
-      ? '<select class="fi" style="font-size:12px;padding:2px 4px;width:130px" onchange="commsSetPerson('+j.id+','+pi+',\'panelPos\',this.value)">'
-        +'<option value="">Panel position...</option>'
-        +BOLERO_PANELS.map(function(bp){return '<option'+(bp===p.panelPos?' selected':'')+'>'+bp+'</option>';}).join('')
-        +'</select>'
-      : '<span style="color:var(--muted);font-size:11px">—</span>';
-    // Bolero number field (only when Bolero)
-    var boleroNum = p.commType==='Bolero'
-      ? '<input type="number" class="fi" style="font-size:12px;padding:2px 4px;width:52px;text-align:center" min="1" max="99" value="'+(p.boleroNum||'')+'" placeholder="#" onchange="commsSetPerson('+j.id+','+pi+',\'boleroNum\',parseInt(this.value)||\'\')" title="Bolero unit number"/>'
-      : '<span style="color:var(--muted);font-size:11px">—</span>';
+  // Compute auto IDs (Bolero 1, Panel 1, etc.) based on order in list
+  var bC=0,pC=0,wC=0,fC=0;
+  var peopleIds=c.people.map(function(p){
+    var ids={};
+    if(p.bolero){ bC++; ids.bolero=bC; }
+    if(p.panel){ pC++; ids.panel=pC; }
+    if(p.walkie){ wC++; ids.walkie=wC; }
+    if(p.wire4){ fC++; ids.wire4=fC; }
+    return ids;
+  });
+  var totals={bolero:bC, panel:pC, walkie:wC, wire4:fC};
+
+  // Suppliers dropdown — uses global `suppliers` array from Admin → Suppliers
+  var supList=(typeof suppliers!=='undefined'&&suppliers?suppliers.slice():[]).sort(function(a,b){return (a.name||'').localeCompare(b.name||'');});
+  var curSup=c.supplier||'';
+  var hasCurInList=supList.some(function(s){return (s.name||'')===curSup;});
+  var suppOpts='<option value="">— Supplier —</option>'
+    +supList.map(function(s){var nm=(s.name||'');return '<option'+(nm===curSup?' selected':'')+'>'+nm.replace(/</g,'&lt;')+'</option>';}).join('')
+    +(curSup&&!hasCurInList?'<option selected style="color:#b87400">'+curSup.replace(/</g,'&lt;')+' (legacy)</option>':'');
+
+  // ── Top bar — Supervisor, Supplier, Stats on one line ──
+  var statPill=function(label,count,color){
+    return '<div style="display:flex;align-items:center;gap:6px;padding:4px 10px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:5px"><span style="font-family:var(--cond);font-size:16px;font-weight:900;color:'+color+';line-height:1">'+count+'</span><span style="font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">'+label+'</span></div>';
+  };
+  var topBar='<div class="det-sec" style="padding:8px 12px;margin-bottom:10px">'
+    +'<div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px">'
+      +'<div style="flex:1 1 200px;max-width:280px;min-width:0"><div class="dfl">Comms Supervisor</div><input class="fi" style="font-size:14px;padding:4px 9px;width:100%" value="'+((c.supervisor||'').replace(/"/g,'&quot;'))+'" placeholder="Supervisor name..." onchange="commsSetField('+j.id+',\'supervisor\',this.value)"/></div>'
+      +'<div style="flex:1 1 200px;max-width:280px;min-width:0"><div class="dfl">Comms Supplier</div><select class="fi" style="font-size:14px;padding:4px 9px;width:100%" onchange="commsSetField('+j.id+',\'supplier\',this.value)">'+suppOpts+'</select></div>'
+      +'<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">'
+        +statPill('Bolero',totals.bolero,'#3dbf7a')
+        +statPill('Panel',totals.panel,'#a855f7')
+        +statPill('Walkie',totals.walkie,'#2a6cb8')
+        +statPill('4-Wire',totals.wire4,'#e08c3a')
+      +'</div>'
+    +'</div>'
+    +'</div>';
+
+  // ── Spreadsheet-style crew table ──
+  var deviceCell=function(checked,id,color){
+    var box='<span style="display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border:1.5px solid '+(checked?color:'var(--border)')+';border-radius:3px;background:'+(checked?color:'transparent')+';flex-shrink:0">'+(checked?'<span style="color:#fff;font-size:11px;font-weight:900;line-height:1">✓</span>':'')+'</span>';
+    var idPill=checked && id ? '<span style="font-family:var(--cond);font-size:10px;font-weight:800;color:'+color+';letter-spacing:.05em;margin-left:4px">#'+id+'</span>' : '';
+    return box+idPill;
+  };
+
+  var th='padding:5px 6px;font-size:9px;font-family:var(--cond);font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left;white-space:nowrap;background:rgba(255,255,255,.04);border-bottom:1.5px solid var(--border)';
+
+  var pRows=c.people.map(function(p,pi){
+    var ids=peopleIds[pi];
+    var hsOpts='<option value="">—</option>'+HEADSETS.map(function(h){return '<option'+(h===p.headset?' selected':'')+'>'+h+'</option>';}).join('');
     return '<tr style="border-bottom:1px solid rgba(255,255,255,.05)">'
-      +'<td style="padding:3px 6px;font-family:var(--cond);font-size:12px;font-weight:800;color:var(--muted);text-align:center;width:28px">'+(pi+1)+'</td>'
-      +'<td style="padding:3px 5px"><input class="fi" style="font-size:12px;padding:2px 5px;width:130px" value="'+(p.name||'')+'" placeholder="Name..." onchange="commsSetPerson('+j.id+','+pi+',\'name\',this.value)"/></td>'
-      +'<td style="padding:3px 5px"><input class="fi" style="font-size:12px;padding:2px 5px;width:130px" value="'+(p.role||'')+'" placeholder="Role..." onchange="commsSetPerson('+j.id+','+pi+',\'role\',this.value)"/></td>'
-      +'<td style="padding:3px 5px"><select class="fi" style="font-size:12px;padding:2px 5px;width:80px" onchange="commsSetPerson('+j.id+','+pi+',\'commType\',this.value);renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))"><option value="">—</option>'+typeOpts+'</select></td>'
-      +'<td style="padding:3px 5px">'+panelSel+'</td>'
-      +'<td style="padding:3px 5px">'+boleroNum+'</td>'
-      +'<td style="padding:3px 5px"><input class="fi" style="font-size:12px;padding:2px 5px;width:100%" value="'+(p.notes||'')+'" placeholder="Notes..." onchange="commsSetPerson('+j.id+','+pi+',\'notes\',this.value)"/></td>'
-      +'<td style="padding:3px 3px"><button class="rm-btn" style="font-size:11px" onclick="commsRmPerson('+j.id+','+pi+')">×</button></td>'
+      +'<td style="padding:3px 6px;font-family:var(--cond);font-size:11px;font-weight:800;color:var(--muted);text-align:center">'+(pi+1)+'</td>'
+      +'<td style="padding:3px 4px"><input class="fi" style="font-size:12px;padding:2px 6px;width:100%;min-width:120px" value="'+((p.name||'').replace(/"/g,'&quot;'))+'" placeholder="Name..." onchange="commsSetPerson('+j.id+','+pi+',\'name\',this.value)"/></td>'
+      +'<td style="padding:3px 4px"><input class="fi" style="font-size:12px;padding:2px 6px;width:100%;min-width:100px" value="'+((p.role||'').replace(/"/g,'&quot;'))+'" placeholder="Role..." onchange="commsSetPerson('+j.id+','+pi+',\'role\',this.value)"/></td>'
+      +'<td style="padding:3px 4px"><input class="fi" style="font-size:12px;padding:2px 6px;width:100%;min-width:120px" value="'+((p.location||'').replace(/"/g,'&quot;'))+'" placeholder="Location..." onchange="commsSetPerson('+j.id+','+pi+',\'location\',this.value)"/></td>'
+      +'<td style="padding:3px 6px;cursor:pointer;text-align:center" onclick="commsToggleDev('+j.id+','+pi+',\'bolero\')" title="Toggle Bolero">'+deviceCell(!!p.bolero,ids.bolero,'#3dbf7a')+'</td>'
+      +'<td style="padding:3px 6px;cursor:pointer;text-align:center" onclick="commsToggleDev('+j.id+','+pi+',\'panel\')" title="Toggle Panel">'+deviceCell(!!p.panel,ids.panel,'#a855f7')+'</td>'
+      +'<td style="padding:3px 6px;cursor:pointer;text-align:center" onclick="commsToggleDev('+j.id+','+pi+',\'walkie\')" title="Toggle Walkie">'+deviceCell(!!p.walkie,ids.walkie,'#2a6cb8')+'</td>'
+      +'<td style="padding:3px 4px"><select class="fi" style="font-size:12px;padding:2px 4px;width:100%;min-width:90px" onchange="commsSetPerson('+j.id+','+pi+',\'headset\',this.value)">'+hsOpts+'</select></td>'
+      +'<td style="padding:3px 6px;cursor:pointer;text-align:center" onclick="commsToggleDev('+j.id+','+pi+',\'wire4\')" title="Toggle 4-Wire">'+deviceCell(!!p.wire4,ids.wire4,'#e08c3a')+'</td>'
+      +'<td style="padding:3px 4px"><input class="fi" style="font-size:12px;padding:2px 6px;width:100%;min-width:140px" value="'+((p.notes||'').replace(/"/g,'&quot;'))+'" placeholder="Notes..." onchange="commsSetPerson('+j.id+','+pi+',\'notes\',this.value)"/></td>'
+      +'<td style="padding:3px 3px;text-align:center"><button class="rm-btn" style="font-size:11px;padding:0;width:22px;height:22px" onclick="commsRmPerson('+j.id+','+pi+')">×</button></td>'
       +'</tr>';
   }).join('');
 
-  // ── Channels ──────────────────────────────────────────────────────────────
-  var chRows = c.channels.map(function(ch,ci){
+  var crewCard='<div class="det-sec" style="padding:8px 12px;margin-bottom:10px">'
+    +'<div style="display:flex;align-items:baseline;gap:10px;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border)">'
+      +'<div class="det-sec-lbl" style="margin:0;padding:0;border:none;font-size:12px">Crew Comms List</div>'
+      +'<span class="jd-card-ct">'+c.people.length+'</span>'
+      +'<button class="ibtn" style="font-size:11px;padding:3px 10px;margin-left:auto" onclick="commsAddPerson('+j.id+')">+ Add Person</button>'
+    +'</div>'
+    +'<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:980px">'
+      +'<thead><tr>'
+        +'<th style="'+th+';text-align:center;width:28px">#</th>'
+        +'<th style="'+th+'">Name</th>'
+        +'<th style="'+th+'">Role</th>'
+        +'<th style="'+th+'">Location</th>'
+        +'<th style="'+th+';text-align:center">Bolero</th>'
+        +'<th style="'+th+';text-align:center">Panel</th>'
+        +'<th style="'+th+';text-align:center">Walkie</th>'
+        +'<th style="'+th+'">Headset</th>'
+        +'<th style="'+th+';text-align:center">4-Wire</th>'
+        +'<th style="'+th+'">Notes</th>'
+        +'<th style="'+th+';width:24px"></th>'
+      +'</tr></thead>'
+      +'<tbody>'+(pRows||'<tr><td colspan="11" style="padding:14px 8px;color:var(--muted);font-size:13px;text-align:center">No crew yet. Click + Add Person to start.</td></tr>')+'</tbody>'
+    +'</table></div>'
+    +'</div>';
+
+  // ── Walkie Channels (kept, still optional toggle) ──
+  var chRows=c.channels.map(function(ch,ci){
     return '<tr style="border-bottom:1px solid rgba(255,255,255,.05)">'
-      +'<td style="padding:5px 8px;font-family:var(--cond);font-size:12px;font-weight:700;color:var(--accent);width:32px;text-align:center">'+(ci+1)+'</td>'
-      +'<td style="padding:3px 5px"><input class="fi" style="font-size:13px;padding:2px 6px;width:100%" value="'+(ch.name||'')+'" placeholder="Channel name..." onchange="commsSetCh('+j.id+','+ci+',\'name\',this.value)"/></td>'
-      +'<td style="padding:3px 5px"><input class="fi" style="font-size:12px;padding:2px 5px;width:100%" value="'+(ch.notes||'')+'" placeholder="Details..." onchange="commsSetCh('+j.id+','+ci+',\'notes\',this.value)"/></td>'
-      +'<td style="padding:3px 3px"><button class="rm-btn" style="font-size:11px" onclick="commsRmCh('+j.id+','+ci+')">×</button></td>'
+      +'<td style="padding:4px 6px;font-family:var(--cond);font-size:11px;font-weight:700;color:#2a6cb8;width:28px;text-align:center">'+(ci+1)+'</td>'
+      +'<td style="padding:3px 4px"><input class="fi" style="font-size:12px;padding:3px 7px;width:100%" value="'+((ch.name||'').replace(/"/g,'&quot;'))+'" placeholder="Channel name..." onchange="commsSetCh('+j.id+','+ci+',\'name\',this.value)"/></td>'
+      +'<td style="padding:3px 4px"><input class="fi" style="font-size:12px;padding:3px 7px;width:100%" value="'+((ch.notes||'').replace(/"/g,'&quot;'))+'" placeholder="Details..." onchange="commsSetCh('+j.id+','+ci+',\'notes\',this.value)"/></td>'
+      +'<td style="padding:3px 3px;text-align:center"><button class="rm-btn" style="font-size:11px;padding:0;width:22px;height:22px" onclick="commsRmCh('+j.id+','+ci+')">×</button></td>'
       +'</tr>';
   }).join('');
 
-  // ── Bolero list (auto, sorted by bolero number) ───────────────────────────
-  var sortedBolero = boleroList2.slice().sort(function(a,b){return (a.boleroNum||999)-(b.boleroNum||999);});
-  var boleroRows2 = sortedBolero.length
-    ? sortedBolero.map(function(p){
-        var num = p.boleroNum?'<span style="font-family:var(--cond);font-size:11px;font-weight:800;background:rgba(60,180,100,.15);border:1px solid rgba(60,180,100,.3);border-radius:3px;padding:1px 6px;color:#3dbf7a;min-width:28px;text-align:center;display:inline-block">'+p.boleroNum+'</span>':'<span style="font-size:11px;color:var(--muted)">—</span>';
-        return '<div style="display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.05)">'
-          +num
-          +'<div style="font-size:13px;color:var(--white);font-weight:600">'+p.name+'</div>'
-          +'<div style="font-size:12px;color:var(--muted)">'+p.role+'</div>'
-          +'</div>';
-      }).join('')
-    : '<div style="color:var(--muted);font-size:13px;padding:4px 0">No Bolero users assigned.</div>';
-
-  // ── Panel list ────────────────────────────────────────────────────────────
-  var panelRows = panelList.length
-    ? panelList.map(function(p,i){
-        return '<div style="display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.05)">'
-          +'<div style="font-family:var(--cond);font-size:11px;font-weight:800;color:#a855f7;min-width:22px;text-align:center">'+(i+1)+'</div>'
-          +'<div style="font-size:13px;color:var(--white);font-weight:600">'+p.name+'</div>'
-          +'<div style="font-size:12px;color:var(--muted)">'+p.role+'</div>'
-          +(p.panelPos?'<div style="font-size:11px;background:rgba(168,85,247,.12);border:1px solid rgba(168,85,247,.3);border-radius:3px;padding:1px 7px;color:#a855f7">'+p.panelPos+'</div>':'')
-          +'</div>';
-      }).join('')
-    : '<div style="color:var(--muted);font-size:13px;padding:4px 0">No Panel users assigned.</div>';
-
-  // ── Walkies list ──────────────────────────────────────────────────────────
-  var walkieRows = walkieList.length
-    ? walkieList.map(function(p,i){
-        return '<div style="display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.05)">'
-          +'<div style="font-family:var(--cond);font-size:11px;font-weight:800;color:#2a6cb8;min-width:22px;text-align:center">'+(i+1)+'</div>'
-          +'<div style="font-size:13px;color:var(--white);font-weight:600">'+p.name+'</div>'
-          +'<div style="font-size:12px;color:var(--muted)">'+p.role+'</div>'
-          +'</div>';
-      }).join('')
-    : '<div style="color:var(--muted);font-size:13px;padding:4px 0">No Walkie users assigned.</div>';
-
-  var th='padding:6px 8px;font-size:10px;font-family:var(--cond);font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left';
-
-  return '<div class="det-sec">'
-    // ── Supervisor + Supplier ────────────────────────────────────────────────
-    +'<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px">'
-    +'<div><div class="dfl">Comms Supervisor</div><input class="fi" style="font-size:14px;padding:5px 8px;width:100%" value="'+(c.supervisor||'')+'" placeholder="Supervisor name..." onchange="commsSetField('+j.id+',\'supervisor\',this.value)"/></div>'
-    +'<div><div class="dfl">Comms Supplier</div><select class="fi" style="font-size:14px;padding:5px 8px;width:100%" onchange="commsHandleSupplier('+j.id+',this.value)">'+suppOpts+'</select></div>'
-    +'</div>'
-    // ── Totals bar ────────────────────────────────────────────────────────────
-    +'<div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap">'
-    +'<div style="background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:5px;padding:8px 16px;text-align:center">'
-    +'<div style="font-size:22px;font-weight:900;font-family:var(--cond);color:#2a6cb8">'+walkieList.length+'</div>'
-    +'<div style="font-size:11px;color:var(--muted);font-family:var(--cond);font-weight:700;letter-spacing:.06em;text-transform:uppercase">Walkies</div></div>'
-    +'<div style="background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:5px;padding:8px 16px;text-align:center">'
-    +'<div style="font-size:22px;font-weight:900;font-family:var(--cond);color:#3dbf7a">'+boleroList2.length+'</div>'
-    +'<div style="font-size:11px;color:var(--muted);font-family:var(--cond);font-weight:700;letter-spacing:.06em;text-transform:uppercase">Boleros</div></div>'
-    +'<div style="background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:5px;padding:8px 16px;text-align:center">'
-    +'<div style="font-size:22px;font-weight:900;font-family:var(--cond);color:#a855f7">'+panelList.length+'</div>'
-    +'<div style="font-size:11px;color:var(--muted);font-family:var(--cond);font-weight:700;letter-spacing:.06em;text-transform:uppercase">Panels</div></div>'
-    +'</div>'
-    // ── Crew List ─────────────────────────────────────────────────────────────
-    +'<div style="margin-bottom:20px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">'
-    +'<div class="det-sec-lbl" style="font-size:12px;margin-bottom:0">Crew Comms List</div>'
-    +'<button class="ibtn" style="font-size:12px" onclick="commsAddPerson('+j.id+')">+ Add Person</button>'
-    +'</div>'
-    +'<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:600px">'
-    +'<thead><tr style="background:rgba(255,255,255,.04)">'
-    +'<th style="'+th+';width:28px;text-align:center">#</th>'
-    +'<th style="'+th+'">Name</th>'
-    +'<th style="'+th+'">Role</th>'
-    +'<th style="'+th+'">Comms</th>'
-    +'<th style="'+th+'">Panel Position</th>'
-    +'<th style="'+th+'">Bolero #</th>'
-    +'<th style="'+th+'">Notes</th>'
-    +'<th></th></tr></thead>'
-    +'<tbody>'+(pRows||'<tr><td colspan="8" style="padding:12px 8px;color:var(--muted);font-size:13px">No crew added yet.</td></tr>')+'</tbody>'
-    +'</table></div></div>'
-    // ── Walkie Channels ───────────────────────────────────────────────────────
-    +'<div style="margin-bottom:20px">'
-    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">'
-    +'<div style="display:flex;align-items:center;gap:10px">'
-    +'<div class="det-sec-lbl" style="font-size:12px;margin-bottom:0">Walkie Channels</div>'
-    +'<div onclick="commsToggleChannels('+j.id+')" style="cursor:pointer;display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted)">'
-    +'<div style="width:32px;height:17px;border-radius:9px;background:'+(c.showChannels?'#4a9eff':'rgba(255,255,255,.1)')+';position:relative;transition:background .2s">'
-    +'<div style="position:absolute;width:13px;height:13px;border-radius:50%;background:#fff;top:2px;left:'+(c.showChannels?'17px':'2px')+';transition:left .2s"></div></div>'
-    +(c.showChannels?'On':'Off')+'</div>'
-    +'</div>'
-    +(c.showChannels?'<button class="ibtn" style="font-size:12px" onclick="commsAddCh('+j.id+')">+ Add Channel</button>':'')
+  var channelsCard='<div class="det-sec" style="padding:8px 12px;margin-bottom:0;flex:1 1 380px;min-width:0;max-width:540px">'
+    +'<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border)">'
+      +'<div class="det-sec-lbl" style="margin:0;padding:0;border:none;font-size:12px;color:#2a6cb8">Walkie Channels</div>'
+      +'<span class="jd-card-ct">'+c.channels.length+'</span>'
+      +'<div onclick="commsToggleChannels('+j.id+')" style="cursor:pointer;display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)" title="Toggle channels section">'
+        +'<div style="width:28px;height:15px;border-radius:8px;background:'+(c.showChannels?'#2a6cb8':'rgba(255,255,255,.1)')+';position:relative;transition:background .2s">'
+          +'<div style="position:absolute;width:11px;height:11px;border-radius:50%;background:#fff;top:2px;left:'+(c.showChannels?'15px':'2px')+';transition:left .2s"></div></div>'
+        +(c.showChannels?'On':'Off')+'</div>'
+      +(c.showChannels?'<button class="ibtn" style="font-size:11px;padding:3px 10px;margin-left:auto" onclick="commsAddCh('+j.id+')">+ Add</button>':'')
     +'</div>'
     +(c.showChannels
       ? ('<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse">'
-        +'<thead><tr style="background:rgba(255,255,255,.04)">'
-        +'<th style="'+th+';text-align:center;width:32px">#</th>'
-        +'<th style="'+th+'">Channel Name</th>'
-        +'<th style="'+th+'">Details</th>'
-        +'<th></th></tr></thead>'
-        +'<tbody>'+(chRows||'<tr><td colspan="4" style="padding:10px 8px;color:var(--muted);font-size:13px">No channels added.</td></tr>')+'</tbody>'
+          +'<thead><tr>'
+            +'<th style="'+th+';text-align:center;width:28px">#</th>'
+            +'<th style="'+th+'">Channel</th>'
+            +'<th style="'+th+'">Details</th>'
+            +'<th style="'+th+';width:24px"></th>'
+          +'</tr></thead>'
+          +'<tbody>'+(chRows||'<tr><td colspan="4" style="padding:10px 8px;color:var(--muted);font-size:12px;text-align:center">No channels added.</td></tr>')+'</tbody>'
         +'</table></div>')
-      : '<div style="color:var(--muted);font-size:13px;padding:4px 0">Channels hidden.</div>'
-    )
-    +'</div>'
-    // ── Bolero List ───────────────────────────────────────────────────────────
-    +'<div style="margin-bottom:16px"><div class="det-sec-lbl" style="font-size:12px;margin-bottom:8px">Bolero List <span style="font-weight:400;font-size:11px;color:var(--muted)">(auto from crew · sorted by unit #)</span></div>'
-    +boleroRows2+'</div>'
-    // ── Panel List ────────────────────────────────────────────────────────────
-    +'<div style="margin-bottom:16px"><div class="det-sec-lbl" style="font-size:12px;margin-bottom:8px">Panel List</div>'
-    +panelRows+'</div>'
-    // ── Walkie List ───────────────────────────────────────────────────────────
-    +'<div style="margin-bottom:16px"><div class="det-sec-lbl" style="font-size:12px;margin-bottom:8px">Walkies List</div>'
-    +walkieRows+'</div>'
-    // ── Notes ─────────────────────────────────────────────────────────────────
-    +'<div><div class="dfl">Notes</div>'
-    +'<textarea class="fta" style="min-height:60px;font-size:14px" placeholder="Comms notes..." onchange="commsSetField('+j.id+',\'notes\',this.value)">'+(c.notes||'')+'</textarea></div>'
+      : '')
     +'</div>';
+
+  // ── Bolero Channels (mirror of walkie pattern) ──
+  var bchRows=c.boleroChannels.map(function(ch,ci){
+    return '<tr style="border-bottom:1px solid rgba(255,255,255,.05)">'
+      +'<td style="padding:4px 6px;font-family:var(--cond);font-size:11px;font-weight:700;color:#3dbf7a;width:28px;text-align:center">'+(ci+1)+'</td>'
+      +'<td style="padding:3px 4px"><input class="fi" style="font-size:12px;padding:3px 7px;width:100%" value="'+((ch.name||'').replace(/"/g,'&quot;'))+'" placeholder="Channel name..." onchange="commsSetBch('+j.id+','+ci+',\'name\',this.value)"/></td>'
+      +'<td style="padding:3px 4px"><input class="fi" style="font-size:12px;padding:3px 7px;width:100%" value="'+((ch.notes||'').replace(/"/g,'&quot;'))+'" placeholder="Details..." onchange="commsSetBch('+j.id+','+ci+',\'notes\',this.value)"/></td>'
+      +'<td style="padding:3px 3px;text-align:center"><button class="rm-btn" style="font-size:11px;padding:0;width:22px;height:22px" onclick="commsRmBch('+j.id+','+ci+')">×</button></td>'
+      +'</tr>';
+  }).join('');
+
+  var boleroChannelsCard='<div class="det-sec" style="padding:8px 12px;margin-bottom:0;flex:1 1 380px;min-width:0;max-width:540px">'
+    +'<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border)">'
+      +'<div class="det-sec-lbl" style="margin:0;padding:0;border:none;font-size:12px;color:#3dbf7a">Bolero Channels</div>'
+      +'<span class="jd-card-ct">'+c.boleroChannels.length+'</span>'
+      +'<div onclick="commsToggleBchannels('+j.id+')" style="cursor:pointer;display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)" title="Toggle channels section">'
+        +'<div style="width:28px;height:15px;border-radius:8px;background:'+(c.showBoleroChannels?'#3dbf7a':'rgba(255,255,255,.1)')+';position:relative;transition:background .2s">'
+          +'<div style="position:absolute;width:11px;height:11px;border-radius:50%;background:#fff;top:2px;left:'+(c.showBoleroChannels?'15px':'2px')+';transition:left .2s"></div></div>'
+        +(c.showBoleroChannels?'On':'Off')+'</div>'
+      +(c.showBoleroChannels?'<button class="ibtn" style="font-size:11px;padding:3px 10px;margin-left:auto" onclick="commsAddBch('+j.id+')">+ Add</button>':'')
+    +'</div>'
+    +(c.showBoleroChannels
+      ? ('<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse">'
+          +'<thead><tr>'
+            +'<th style="'+th+';text-align:center;width:28px">#</th>'
+            +'<th style="'+th+'">Channel</th>'
+            +'<th style="'+th+'">Details</th>'
+            +'<th style="'+th+';width:24px"></th>'
+          +'</tr></thead>'
+          +'<tbody>'+(bchRows||'<tr><td colspan="4" style="padding:10px 8px;color:var(--muted);font-size:12px;text-align:center">No channels added.</td></tr>')+'</tbody>'
+        +'</table></div>')
+      : '')
+    +'</div>';
+
+  // ── Notes card (full-width, sits below both channel cards) ──
+  var notesCard='<div class="det-sec" style="padding:8px 12px;margin-bottom:0;margin-top:10px">'
+    +'<div class="det-sec-lbl" style="font-size:12px;margin-bottom:6px;padding-bottom:4px">Notes</div>'
+    +'<textarea class="fta" style="width:100%;min-height:60px;font-size:13px;padding:6px 10px" placeholder="Comms notes..." onchange="commsSetField('+j.id+',\'notes\',this.value)">'+(c.notes||'').replace(/</g,'&lt;')+'</textarea>'
+    +'</div>';
+
+  return topBar + crewCard
+    + '<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start">'+channelsCard+boleroChannelsCard+'</div>'
+    + notesCard;
 }
+
 function commsHandleSupplier(jid,sel){
   var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.comms)return;
   if(sel.value==='__add__'){
     var v=prompt('Supplier name:');if(!v||!v.trim()){sel.value=j.comms.supplier||'';return;}
-    v=v.trim();if(!j.commsSupplierExtra)j.commsSupplierExtra=[];
-    if(!j.commsSupplierExtra.includes(v))j.commsSupplierExtra.push(v);
-    j.comms.supplier=v;renderJobDet(j);
-  } else { j.comms.supplier=sel.value; }
+    v=v.trim();if(!j._commsSuppliersCustom)j._commsSuppliersCustom=[];
+    if(!j._commsSuppliersCustom.includes(v))j._commsSuppliersCustom.push(v);
+    j.comms.supplier=v;saveData();renderJobDet(j);
+  } else { j.comms.supplier=sel.value;saveData(); }
 }
 function commsToggleChannels(jid){
   var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.comms)return;
-  j.comms.showChannels=!j.comms.showChannels;renderJobDet(j);
+  j.comms.showChannels=!j.comms.showChannels;saveData();renderJobDet(j);
+}
+function commsToggleBchannels(jid){
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.comms)return;
+  j.comms.showBoleroChannels=!j.comms.showBoleroChannels;saveData();renderJobDet(j);
 }
 function commsAddCh(jid){
   var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
-  if(!j.comms)j.comms={people:[],channels:[],notes:'',showChannels:true};
+  if(!j.comms)j.comms={people:[],channels:[],boleroChannels:[],notes:'',showChannels:true};
   if(!j.comms.channels)j.comms.channels=[];
   j.comms.channels.push({name:'',notes:''});
-  renderJobDet(j);
+  saveData();renderJobDet(j);
+}
+function commsAddBch(jid){
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
+  if(!j.comms)j.comms={people:[],channels:[],boleroChannels:[],notes:'',showBoleroChannels:true};
+  if(!j.comms.boleroChannels)j.comms.boleroChannels=[];
+  j.comms.boleroChannels.push({name:'',notes:''});
+  saveData();renderJobDet(j);
 }
 function commsRmCh(jid,ci){
   var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.comms||!j.comms.channels)return;
-  j.comms.channels.splice(ci,1);renderJobDet(j);
+  j.comms.channels.splice(ci,1);saveData();renderJobDet(j);
+}
+function commsRmBch(jid,ci){
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.comms||!j.comms.boleroChannels)return;
+  j.comms.boleroChannels.splice(ci,1);saveData();renderJobDet(j);
 }
 function commsSetField(jid,field,val){
   var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
-  if(!j.comms)j.comms={people:[],channels:[],walkie:0,bolero:0,panels:0,notes:''};
-  j.comms[field]=val;
+  if(!j.comms)j.comms={people:[],channels:[],boleroChannels:[],notes:''};
+  j.comms[field]=val;saveData();
 }
 function commsSetCh(jid,ci,field,val){
   var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.comms||!j.comms.channels[ci])return;
-  j.comms.channels[ci][field]=val;
+  j.comms.channels[ci][field]=val;saveData();
+}
+function commsSetBch(jid,ci,field,val){
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.comms||!j.comms.boleroChannels||!j.comms.boleroChannels[ci])return;
+  j.comms.boleroChannels[ci][field]=val;saveData();
 }
 function commsAddPerson(jid){
   var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   if(!j.comms)j.comms={people:[],channels:[],notes:'',showChannels:true};
   if(!j.comms.people)j.comms.people=[];
-  j.comms.people.push({name:'',role:'',commType:'',panelPos:'',notes:''});
-  renderJobDet(j);
+  j.comms.people.push({name:'',role:'',location:'',bolero:false,panel:false,walkie:false,wire4:false,headset:'',notes:''});
+  saveData();renderJobDet(j);
 }
 function commsRmPerson(jid,pi){
   var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.comms||!j.comms.people)return;
-  j.comms.people.splice(pi,1);renderJobDet(j);
+  j.comms.people.splice(pi,1);saveData();renderJobDet(j);
 }
 function commsSetPerson(jid,pi,field,val){
   var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.comms||!j.comms.people||!j.comms.people[pi])return;
-  j.comms.people[pi][field]=val;
+  j.comms.people[pi][field]=val;saveData();
+}
+// Toggle device checkbox (bolero / panel / walkie / wire4) for a person — re-renders to update auto IDs
+function commsToggleDev(jid,pi,field){
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.comms||!j.comms.people||!j.comms.people[pi])return;
+  j.comms.people[pi][field]=!j.comms.people[pi][field];
+  saveData();renderJobDet(j);
 }
 function commsToggleRig(jid,pi){
   var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.comms||!j.comms.people||!j.comms.people[pi])return;
@@ -13307,7 +14121,7 @@ function prevImport() {
     +'<div style="font-size:17px;color:var(--white)">'+importRows.slice(0,3).map(r=>r.name).join(', ')+(importRows.length>3?'...':'')+'</div>';
   document.getElementById('importBtn').style.display=importRows.length?'':'none';
 }
-function doImport(){if(!importRows.length)return;importRows.forEach(r=>{r.id=nextKid++;kit.push(r);});toast('Imported '+importRows.length+' items');cm('mImport');renderKit();renderDash();}
+function doImport(){if(!importRows.length)return;importRows.forEach(r=>{r.id=nextKid++;kit.push(r);});saveData();toast('Imported '+importRows.length+' items');cm('mImport');renderKit();renderDash();}
 
 // ── SIGN-IN ───────────────────────────────────────────────────────────────────
 function pwStr(){
@@ -14891,41 +15705,234 @@ function erGetActiveShowName(){
 }
 
 // ── ShopOn TV Form ────────────────────────────────────────────────────────
-function soPick(code){
-  var names={PK:'Paul Keetley',KB:'Kieron Bateman'};
-  document.getElementById('soDirector').value=names[code]||code;
-  ['PK','KB'].forEach(function(c){
-    var b=document.getElementById('soBtn'+c);
-    if(b)b.classList.toggle('active',c===code);
-  });
+// ── ShopOn TV Form (enhanced) ─────────────────────────────────────────────
+var _soDateMode='today';
+var _soSelectedDate='';
+var _soTemp='OK';
+var _soStat='str';  // 'ntr' | 'str' — default STR (director submitting = has something to say)
+var _soKitEnabled=false;
+var _soTaggedIds=[];
+
+function _soFmtISO(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function _soFmtNice(iso){try{var d=new Date(iso+'T12:00:00');return d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});}catch(e){return iso;}}
+
+function soSetDate(mode){
+  _soDateMode=mode;
+  var today=new Date();
+  var yest=new Date();yest.setDate(yest.getDate()-1);
+  ['Today','Yest','Other'].forEach(function(id){var b=document.getElementById('soBtn'+id);if(b)b.classList.remove('active');});
+  var di=document.getElementById('soDate'),dd=document.getElementById('soDateDisplay');
+  if(mode==='today'){
+    var bt=document.getElementById('soBtnToday');if(bt)bt.classList.add('active');
+    _soSelectedDate=_soFmtISO(today);
+    if(di)di.style.display='none';
+    if(dd)dd.textContent=_soFmtNice(_soSelectedDate);
+  } else if(mode==='yesterday'){
+    var by=document.getElementById('soBtnYest');if(by)by.classList.add('active');
+    _soSelectedDate=_soFmtISO(yest);
+    if(di)di.style.display='none';
+    if(dd)dd.textContent=_soFmtNice(_soSelectedDate);
+  } else {
+    var bo=document.getElementById('soBtnOther');if(bo)bo.classList.add('active');
+    if(di){di.style.display='block';if(!di.value)di.value=_soFmtISO(today);_soSelectedDate=di.value;}
+    if(dd)dd.textContent=_soSelectedDate?_soFmtNice(_soSelectedDate):'Pick a date below';
+  }
   soUpdateStatus();
 }
+function soOtherDatePicked(){
+  var di=document.getElementById('soDate');
+  _soSelectedDate=di?di.value:'';
+  var dd=document.getElementById('soDateDisplay');if(dd)dd.textContent=_soSelectedDate?_soFmtNice(_soSelectedDate):'Pick a date below';
+  soUpdateStatus();
+}
+
+function soPick(code){
+  var names={PK:'Paul Keetley',KB:'Kieron Bateman'};
+  var otherInp=document.getElementById('soDirOther');
+  if(code==='OT'){
+    document.getElementById('soDirector').value=otherInp.value.trim()||'';
+    otherInp.style.display='block';otherInp.focus();
+  } else {
+    document.getElementById('soDirector').value=names[code]||code;
+    otherInp.style.display='none';otherInp.value='';
+  }
+  ['PK','KB','OT'].forEach(function(c){var b=document.getElementById('soBtn'+c);if(b)b.classList.toggle('active',c===code);});
+  soUpdateStatus();
+}
+function soDirOtherTyped(){
+  document.getElementById('soDirector').value=document.getElementById('soDirOther').value.trim();
+  soUpdateStatus();
+}
+function soPickTemp(btn){
+  _soTemp=btn.getAttribute('data-temp')||'OK';
+  document.querySelectorAll('#soTempRow .so-temp').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  var wrap=document.getElementById('soTempDetailWrap');
+  if(wrap)wrap.style.display=_soTemp==='Not OK'?'block':'none';
+}
+function soPickStat(btn){
+  _soStat=btn.getAttribute('data-stat')||'str';
+  document.querySelectorAll('#soStatRow .so-stat').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  var wrap=document.getElementById('soInfoWrap');
+  if(wrap)wrap.style.display=_soStat==='str'?'':'none';
+  soUpdateStatus();
+}
+
+// Kit tagging
+function soToggleKit(){
+  _soKitEnabled=!_soKitEnabled;
+  var lbl=document.getElementById('soKitTogLbl'),track=document.getElementById('soKitTogTrack'),thumb=document.getElementById('soKitTogThumb'),sec=document.getElementById('soKitSection');
+  if(lbl)lbl.textContent=_soKitEnabled?'ON':'OFF';
+  if(track)track.style.background=_soKitEnabled?'#ff7800':'#d8d8d8';
+  if(thumb)thumb.style.left=_soKitEnabled?'20px':'2px';
+  if(sec)sec.style.display=_soKitEnabled?'block':'none';
+  if(_soKitEnabled){soRenderKitList();soRenderKitChips();soUpdateKitLabel();}
+}
+function soToggleKitDrop(){
+  var drop=document.getElementById('soKitDrop'),arrow=document.getElementById('soKitDropArrow');
+  var open=drop.style.display!=='block';
+  drop.style.display=open?'block':'none';
+  arrow.style.transform=open?'rotate(180deg)':'';
+  if(open){var s=document.getElementById('soKitSearch');if(s){s.value='';s.focus();}soRenderKitList();}
+}
+function soUpdateKitLabel(){
+  var el=document.getElementById('soKitDropLbl');if(!el)return;
+  if(_soTaggedIds.length){el.textContent=_soTaggedIds.length+' item'+(_soTaggedIds.length>1?'s':'')+' tagged';el.style.color='#302f2c';}
+  else{el.textContent='Select equipment...';el.style.color='var(--muted)';}
+}
+function soRenderKitList(){
+  var q=((document.getElementById('soKitSearch')||{}).value||'').toLowerCase();
+  var items=(typeof kit!=='undefined'&&kit?kit.slice():[]).filter(function(k){if(k.status==='Bin')return false;if(!q)return true;return (k.name||'').toLowerCase().indexOf(q)>=0||(k.tag||'').toLowerCase().indexOf(q)>=0||(k.cat||'').toLowerCase().indexOf(q)>=0;}).sort(function(a,b){return (a.name||'').localeCompare(b.name||'');});
+  var el=document.getElementById('soKitList');if(!el)return;
+  if(!items.length){el.innerHTML='<div style="padding:12px 14px;font-size:13px;color:var(--muted)">No items found</div>';return;}
+  el.innerHTML=items.slice(0,200).map(function(k){
+    var sel=_soTaggedIds.indexOf(k.id)>=0;
+    return '<div onclick="soToggleKitTag('+k.id+')" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid #ececec;cursor:pointer;background:'+(sel?'#fff8f2':'transparent')+'">'
+      +'<div style="width:15px;height:15px;border:1.5px solid '+(sel?'#ff7800':'#d8d8d8')+';border-radius:3px;background:'+(sel?'#ff7800':'transparent')+';flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:900">'+(sel?'✓':'')+'</div>'
+      +'<div style="flex:1;font-size:13px;color:#302f2c">'+(k.name||'').replace(/</g,'&lt;')+'</div>'
+      +'<div style="font-family:var(--cond);font-size:10px;color:var(--muted);letter-spacing:.05em">'+((k.tag||'')+'').replace(/</g,'&lt;')+'</div>'
+      +'</div>';
+  }).join('');
+}
+function soToggleKitTag(id){
+  var idx=_soTaggedIds.indexOf(id);
+  if(idx>=0)_soTaggedIds.splice(idx,1);else _soTaggedIds.push(id);
+  soRenderKitList();soRenderKitChips();soUpdateKitLabel();
+}
+function soRenderKitChips(){
+  var el=document.getElementById('soKitChips');if(!el)return;
+  if(!_soTaggedIds.length){el.innerHTML='';return;}
+  el.innerHTML=_soTaggedIds.map(function(id){
+    var k=(typeof kit!=='undefined'&&kit?kit:[]).find(function(x){return x.id===id;});if(!k)return '';
+    return '<span style="display:inline-flex;align-items:center;gap:5px;padding:4px 9px;background:#fff8f2;color:#e06500;border:1px solid #ffb673;border-radius:5px;font-size:12px">'+(k.name||'').replace(/</g,'&lt;')+' <button type="button" onclick="event.stopPropagation();soToggleKitTag('+id+')" style="background:none;border:none;cursor:pointer;color:#e06500;font-size:14px;line-height:1;padding:0">×</button></span>';
+  }).join('');
+}
+
 function soUpdateStatus(){
-  var ok=!!(document.getElementById('soDate').value&&document.getElementById('soInfo').value.trim());
-  var st=document.getElementById('soStatus');var btn=document.getElementById('soSubmitBtn');
-  if(st)st.textContent=ok?'Ready to submit':'Complete all fields to submit';
+  var info=((document.getElementById('soInfo')||{}).value||'').trim();
+  var dir=((document.getElementById('soDirector')||{}).value||'').trim();
+  // NTR mode: only date + director required. STR: also needs info.
+  var ok=!!(_soSelectedDate&&dir&&(_soStat==='ntr'||info));
+  var st=document.getElementById('soStatus'),btn=document.getElementById('soSubmitBtn');
+  if(st){
+    if(_soStat==='ntr')st.textContent=ok?'Ready to submit (Nothing to Report)':'Select date and director to submit';
+    else st.textContent=ok?'Ready to submit':'Complete date, director and technical info to submit';
+  }
   if(btn)btn.disabled=!ok;
 }
+
 async function soSubmit(){
-  var date=document.getElementById('soDate').value,dir=document.getElementById('soDirector').value,info=document.getElementById('soInfo').value.trim();
-  if(!date||!info)return;
+  var date=_soSelectedDate;
+  var dir=document.getElementById('soDirector').value.trim();
+  var info=document.getElementById('soInfo').value.trim();
+  var delay=document.getElementById('soDelay').value||'';
+  var tempDetail=(document.getElementById('soTempDetail')||{}).value||'';
+  tempDetail=tempDetail.trim();
+  // NTR allowed without info, STR requires info
+  if(!date||!dir||(_soStat==='str'&&!info))return;
+
+  // Build temperature string with detail if Not OK
+  var tempStr=_soTemp;
+  if(_soTemp==='Not OK' && tempDetail) tempStr='Not OK — '+tempDetail;
+
+  // Build summary: NTR is just the extras tags; STR prepends extras to info
+  var summary;
+  var extras=[];
+  if(tempStr)extras.push('Temperature: '+tempStr);
+  if(delay)extras.push('Delay: '+delay+'s');
+  if(_soStat==='ntr'){
+    summary='Nothing to Report'+(extras.length?' — ['+extras.join(' | ')+']':'');
+  } else {
+    summary=info;
+    if(extras.length)summary='['+extras.join(' | ')+'] '+summary;
+  }
+
+  var taggedNames=_soKitEnabled?_soTaggedIds.map(function(id){var k=(typeof kit!=='undefined'&&kit?kit:[]).find(function(x){return x.id===id;});return k?(k.name||'')+(k.tag?' ('+k.tag+')':''):'';}).filter(Boolean):[];
+
   var btn=document.getElementById('soSubmitBtn');btn.disabled=true;btn.textContent='Submitting…';
   try{
     var r=await fetch('https://dttwgmoyxthczlzxjgag.supabase.co/rest/v1/engineering_reports',{method:'POST',
       headers:{'Content-Type':'application/json','apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ','Prefer':'return=minimal'},
-      body:JSON.stringify({versa_tech_manager:dir,bbc_tech_manager:'',show_date:date,show_name:'ShopOn TV',summary_mode:'str',summary_text:info,tagged_kit:[],tagged_kit_names:[],urgent_action:'No',urgent_details:'',submitted_at:new Date().toISOString()})});
-    if(r.ok){document.getElementById('soFormView').style.display='none';var sd=document.getElementById('soSuccess');if(sd)sd.style.display='block';var det=document.getElementById('soSuccessDetail');if(det)det.textContent=dir+' · '+date;}
-    else toast('Submit failed');
+      body:JSON.stringify({versa_tech_manager:dir,bbc_tech_manager:'',show_date:date,show_name:'ShopOn TV',summary_mode:_soStat,summary_text:summary,tagged_kit:_soKitEnabled?_soTaggedIds:[],tagged_kit_names:taggedNames,urgent_action:'No',urgent_details:'',submitted_at:new Date().toISOString()})});
+    if(r.ok){
+      // Send email to Andrew + Ian — same EmailJS template as Morning Live
+      try{
+        if(!window.emailjs){
+          await new Promise(function(resolve){var s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';s.onload=resolve;s.onerror=resolve;document.head.appendChild(s);});
+        }
+        if(window.emailjs){
+          emailjs.init({publicKey:'-WB5uUr8yu-oIKc5v'});
+          await emailjs.send('service_883826m','template_q4jlxp4',{
+            show_date:_soFmtNice(date),
+            versa_tech:dir,
+            bbc_tech:'ShopOn TV — '+dir,
+            summary:summary,
+            urgent:_soTemp==='Not OK'?'Yes':'No',
+            urgent_details:_soTemp==='Not OK'?('Studio temperature flagged Not OK'+(tempDetail?' — '+tempDetail:'')):'--',
+            tagged_kit:taggedNames.join(', ')||'None',
+            submitted_at:new Date().toLocaleString('en-GB'),
+            to_email:'andrew.rowell@versastudios.com, ian.curry@versastudios.com',
+            show_name:'ShopOn TV'
+          });
+        }
+      }catch(em){ /* email best-effort, don't block */ }
+
+      document.getElementById('soFormView').style.display='none';
+      var sd=document.getElementById('soSuccess');if(sd)sd.style.display='block';
+      var det=document.getElementById('soSuccessDetail');
+      if(det)det.textContent=dir+' · '+_soFmtNice(date)+' · '+(_soStat==='ntr'?'NTR':'STR')+' · Temp '+_soTemp+(delay?' · '+delay+'s delay':'');
+    } else { toast('Submit failed'); }
   }catch(e){toast('Error: '+e.message);}
   btn.disabled=false;btn.textContent='Submit Report';
 }
+
 function soReset(){
   document.getElementById('soFormView').style.display='';
   var sd=document.getElementById('soSuccess');if(sd)sd.style.display='none';
-  document.getElementById('soDate').value='';document.getElementById('soInfo').value='';
-  soPick('PK');soUpdateStatus();
+  document.getElementById('soInfo').value='';
+  document.getElementById('soDelay').value='';
+  document.getElementById('soDirOther').style.display='none';
+  document.getElementById('soDirOther').value='';
+  var td=document.getElementById('soTempDetail');if(td)td.value='';
+  var tdw=document.getElementById('soTempDetailWrap');if(tdw)tdw.style.display='none';
+  _soTemp='OK';_soTaggedIds=[];_soStat='str';
+  if(_soKitEnabled){soRenderKitList();soRenderKitChips();soUpdateKitLabel();}
+  var ks=document.getElementById('soKitSearch');if(ks)ks.value='';
+  var kd=document.getElementById('soKitDrop');if(kd)kd.style.display='none';
+  var ka=document.getElementById('soKitDropArrow');if(ka)ka.style.transform='';
+  document.querySelectorAll('#soTempRow .so-temp').forEach(function(b){b.classList.remove('active');if(b.getAttribute('data-temp')==='OK')b.classList.add('active');});
+  document.querySelectorAll('#soStatRow .so-stat').forEach(function(b){b.classList.remove('active');if(b.getAttribute('data-stat')==='str')b.classList.add('active');});
+  var iw=document.getElementById('soInfoWrap');if(iw)iw.style.display='';
+  soPick('PK');soSetDate('today');soUpdateStatus();
 }
-window.soPick=soPick;window.soSubmit=soSubmit;window.soReset=soReset;
+window.soSetDate=soSetDate;window.soOtherDatePicked=soOtherDatePicked;
+window.soPick=soPick;window.soDirOtherTyped=soDirOtherTyped;window.soPickTemp=soPickTemp;window.soPickStat=soPickStat;
+window.soToggleKit=soToggleKit;window.soToggleKitDrop=soToggleKitDrop;window.soToggleKitTag=soToggleKitTag;
+window.soRenderKitList=soRenderKitList;window.soUpdateStatus=soUpdateStatus;
+window.soSubmit=soSubmit;window.soReset=soReset;
+// Auto-init on first view (init today's date immediately)
+setTimeout(function(){try{if(document.getElementById('soDate')){soSetDate('today');}}catch(e){}},200);
 
 // ── Cooking with the Stars Form ───────────────────────────────────────────
 function cwPick(code){
