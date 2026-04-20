@@ -25,11 +25,13 @@ body{background:#efede3;color:#302f2c;font-family:'Barlow',sans-serif;min-height
 .btn-row{display:flex;gap:8px;flex-wrap:wrap}
 .pick-btn{padding:14px 16px;border-radius:10px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;border:2px solid #ddd8cf;background:#f8f6f1;color:#999;transition:all .15s;flex:1;min-width:90px;text-align:center}
 .pick-btn.active{background:rgba(244,162,88,.08);border-color:#F4A258;color:#F4A258}
-.pick-btn.temp-cold.active{background:rgba(59,130,246,.06);border-color:#3b82f6;color:#3b82f6}
-.pick-btn.temp-cool.active{background:rgba(96,165,250,.06);border-color:#60a5fa;color:#60a5fa}
-.pick-btn.temp-ok.active{background:rgba(34,197,94,.06);border-color:#22c55e;color:#22c55e}
-.pick-btn.temp-warm.active{background:rgba(251,146,60,.06);border-color:#fb923c;color:#fb923c}
-.pick-btn.temp-hot.active{background:rgba(239,68,68,.06);border-color:#ef4444;color:#ef4444}
+.pick-btn.temp-ok.active{background:rgba(34,197,94,.08);border-color:#22c55e;color:#16a34a}
+.pick-btn.temp-nok.active{background:rgba(239,68,68,.08);border-color:#ef4444;color:#dc2626}
+.pick-btn.stat-ntr.active{background:rgba(34,197,94,.08);border-color:#22c55e;color:#16a34a}
+.pick-btn.stat-str.active{background:rgba(244,162,88,.08);border-color:#F4A258;color:#F4A258}
+.temp-detail{width:100%;background:#f5f3ee;border:1.5px solid #e0ddd5;border-radius:10px;color:#302f2c;padding:12px 14px;font-size:14px;font-family:'Barlow',sans-serif;outline:none;margin-top:10px;transition:border-color .15s;min-height:72px;resize:vertical;display:none}
+.temp-detail:focus{border-color:#ef4444}
+.temp-detail::placeholder{color:#b5b0a6}
 .other-inp{width:100%;background:#f5f3ee;border:1.5px solid #e0ddd5;border-radius:10px;color:#302f2c;padding:11px 14px;font-size:14px;font-family:'Barlow',sans-serif;outline:none;margin-top:8px;display:none;transition:border-color .15s}
 .other-inp:focus{border-color:#F4A258}
 .other-inp::placeholder{color:#b5b0a6}
@@ -103,12 +105,10 @@ body{background:#efede3;color:#302f2c;font-family:'Barlow',sans-serif;min-height
       <div class="sec">
         <div class="lbl">Studio Temperature</div>
         <div class="btn-row">
-          <button class="pick-btn temp-cold" onclick="pickTemp(this,'Too Cold')">Too Cold</button>
-          <button class="pick-btn temp-cool" onclick="pickTemp(this,'A Bit Cold')">A Bit Cold</button>
           <button class="pick-btn temp-ok active" onclick="pickTemp(this,'OK')">OK</button>
-          <button class="pick-btn temp-warm" onclick="pickTemp(this,'A Bit Warm')">A Bit Warm</button>
-          <button class="pick-btn temp-hot" onclick="pickTemp(this,'Too Warm')">Too Warm</button>
+          <button class="pick-btn temp-nok" onclick="pickTemp(this,'Not OK')">Not OK</button>
         </div>
+        <textarea class="temp-detail" id="tempDetail" placeholder="What's the issue? (e.g. too cold in gallery, too warm on floor...)"></textarea>
       </div>
 
       <div class="sec">
@@ -120,6 +120,20 @@ body{background:#efede3;color:#302f2c;font-family:'Barlow',sans-serif;min-height
       </div>
 
       <div class="sec">
+        <div class="lbl">Report Status</div>
+        <div class="btn-row">
+          <button class="pick-btn stat-ntr" onclick="pickStat(this,'ntr')" style="display:flex;flex-direction:column;gap:3px;align-items:center">
+            <span style="font-size:14px;font-weight:900;letter-spacing:.04em">NTR</span>
+            <span style="font-size:9px;font-weight:700;opacity:.7;letter-spacing:.06em">Nothing to Report</span>
+          </button>
+          <button class="pick-btn stat-str active" onclick="pickStat(this,'str')" style="display:flex;flex-direction:column;gap:3px;align-items:center">
+            <span style="font-size:14px;font-weight:900;letter-spacing:.04em">STR</span>
+            <span style="font-size:9px;font-weight:700;opacity:.7;letter-spacing:.06em">Something to Report</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="sec" id="techInfoWrap">
         <div class="lbl">Technical Information</div>
         <textarea class="inp" id="techInfo" style="min-height:140px;resize:vertical" placeholder="Describe technical activity, issues or observations…" oninput="checkReady()"></textarea>
       </div>
@@ -166,10 +180,11 @@ body{background:#efede3;color:#302f2c;font-family:'Barlow',sans-serif;min-height
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
 var SB_URL='https://dttwgmoyxthczlzxjgag.supabase.co',SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ';
-var EJS_SERVICE='service_883826m',EJS_TEMPLATE='template_hhvnzss',EJS_KEY='-WB5uUr8yu-oIKc5v';
+var EJS_SERVICE='service_883826m',EJS_TEMPLATE='template_q4jlxp4',EJS_KEY='-WB5uUr8yu-oIKc5v';
 
 var _dir='Paul Keetley';
 var _temp='OK';
+var _stat='str';  // 'ntr' | 'str' — default STR
 var _dateMode='today';
 var _selectedDate='';
 var _allKit=[];
@@ -332,14 +347,31 @@ function pickTemp(btn,val){
   _temp=val;
   btn.closest('.btn-row').querySelectorAll('.pick-btn').forEach(function(b){b.classList.remove('active');});
   btn.classList.add('active');
+  var det=document.getElementById('tempDetail');
+  if(det)det.style.display=(val==='Not OK')?'block':'none';
+}
+
+// ── REPORT STATUS (NTR / STR) ──
+function pickStat(btn,val){
+  _stat=val;
+  btn.closest('.btn-row').querySelectorAll('.pick-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  var wrap=document.getElementById('techInfoWrap');
+  if(wrap)wrap.style.display=(val==='str')?'':'none';
+  checkReady();
 }
 
 // ── READY CHECK ──
 function checkReady(){
   var info=document.getElementById('techInfo').value.trim();
-  var ok=!!(_selectedDate && _dir && info);
+  // NTR: just date + director. STR: also info.
+  var ok=!!(_selectedDate && _dir && (_stat==='ntr' || info));
   document.getElementById('submitBtn').disabled=!ok;
-  document.getElementById('statusTxt').textContent=ok?'Ready to submit':'Complete date, director and technical info to submit';
+  var st=document.getElementById('statusTxt');
+  if(st){
+    if(_stat==='ntr')st.textContent=ok?'Ready to submit (Nothing to Report)':'Complete date and director to submit';
+    else st.textContent=ok?'Ready to submit':'Complete date, director and technical info to submit';
+  }
 }
 
 // ── SUBMIT ──
@@ -347,41 +379,54 @@ async function doSubmit(){
   var date=_selectedDate;
   var info=document.getElementById('techInfo').value.trim();
   var delay=document.getElementById('soDelay').value||'';
-  if(!date||!_dir||!info)return;
+  var tempDetail=((document.getElementById('tempDetail')||{}).value||'').trim();
+  // NTR allowed without info
+  if(!date||!_dir||(_stat==='str'&&!info))return;
 
-  var summary=info;
+  // Build temperature string with detail when Not OK
+  var tempStr=_temp;
+  if(_temp==='Not OK' && tempDetail) tempStr='Not OK — '+tempDetail;
+
+  var summary;
   var extras=[];
-  if(_temp) extras.push('Temperature: '+_temp);
+  if(tempStr) extras.push('Temperature: '+tempStr);
   if(delay) extras.push('Delay: '+delay+'s');
-  if(extras.length) summary='['+extras.join(' | ')+'] '+summary;
+  if(_stat==='ntr'){
+    summary='Nothing to Report'+(extras.length?' — ['+extras.join(' | ')+']':'');
+  } else {
+    summary=info;
+    if(extras.length) summary='['+extras.join(' | ')+'] '+summary;
+  }
 
   var taggedNames=_kitEnabled?_taggedIds.map(function(id){var k=_allKit.find(function(x){return x.id===id;});return k?k.name+(k.tag?' ('+k.tag+')':''):'';}).filter(Boolean):[];
 
   var btn=document.getElementById('submitBtn');btn.disabled=true;btn.textContent='Submitting…';
   try{
-    var payload={versa_tech_manager:_dir,bbc_tech_manager:'',show_date:date,show_name:'ShopOn TV',summary_mode:'str',summary_text:summary,tagged_kit:_kitEnabled?_taggedIds:[],tagged_kit_names:taggedNames,urgent_action:'No',urgent_details:'',submitted_at:new Date().toISOString()};
+    var payload={versa_tech_manager:_dir,bbc_tech_manager:'',show_date:date,show_name:'ShopOn TV',summary_mode:_stat,summary_text:summary,tagged_kit:_kitEnabled?_taggedIds:[],tagged_kit_names:taggedNames,urgent_action:'No',urgent_details:'',submitted_at:new Date().toISOString()};
     var r=await fetch(SB_URL+'/rest/v1/engineering_reports',{method:'POST',
       headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Prefer':'return=minimal'},
       body:JSON.stringify(payload)});
     if(r.ok){
-      // Send email
+      // Send email to Andrew + Ian — same EmailJS template as Morning Live
       try{
         if(window.emailjs){
           await emailjs.send(EJS_SERVICE,EJS_TEMPLATE,{
             show_date:fmtNice(date),
             versa_tech:_dir,
-            bbc_tech:'ShopOn TV Director',
+            bbc_tech:'ShopOn TV — '+_dir,
             summary:summary,
-            urgent:'No',
-            urgent_details:'--',
+            urgent:_temp==='Not OK'?'Yes':'No',
+            urgent_details:_temp==='Not OK'?('Studio temperature flagged Not OK'+(tempDetail?' — '+tempDetail:'')):'--',
             tagged_kit:taggedNames.join(', ')||'None',
-            submitted_at:new Date().toLocaleString('en-GB')
+            submitted_at:new Date().toLocaleString('en-GB'),
+            to_email:'andrew.rowell@versastudios.com, ian.curry@versastudios.com',
+            show_name:'ShopOn TV'
           });
         }
       }catch(em){}
       document.getElementById('formView').style.display='none';
       document.getElementById('successView').style.display='block';
-      document.getElementById('successDetail').textContent=_dir+' · '+fmtNice(date)+(_temp?' · '+_temp:'')+(delay?' · '+delay+'s delay':'');
+      document.getElementById('successDetail').textContent=_dir+' · '+fmtNice(date)+' · '+(_stat==='ntr'?'NTR':'STR')+' · Temp '+_temp+(delay?' · '+delay+'s delay':'');
     }else alert('Submit failed — please try again');
   }catch(e){alert('Error: '+e.message);}
   btn.disabled=false;btn.textContent='Submit Report';
@@ -395,14 +440,19 @@ function doReset(){
   document.getElementById('soDelay').value='';
   document.getElementById('dirOther').style.display='none';
   document.getElementById('dirOther').value='';
+  var td=document.getElementById('tempDetail');if(td){td.value='';td.style.display='none';}
   _temp='OK';
+  _stat='str';
   _taggedIds=[];
   if(_kitEnabled){renderKitList();renderKitChips();updateKitLabel();}
   var ks=document.getElementById('kitSearch');if(ks)ks.value='';
   var kd=document.getElementById('kitDrop');if(kd)kd.style.display='none';
   var ka=document.getElementById('kitDropArrow');if(ka)ka.style.transform='';
-  document.querySelectorAll('.temp-cold,.temp-cool,.temp-ok,.temp-warm,.temp-hot').forEach(function(b){b.classList.remove('active');});
+  document.querySelectorAll('.temp-ok,.temp-nok').forEach(function(b){b.classList.remove('active');});
   document.querySelector('.temp-ok').classList.add('active');
+  document.querySelectorAll('.stat-ntr,.stat-str').forEach(function(b){b.classList.remove('active');});
+  document.querySelector('.stat-str').classList.add('active');
+  var iw=document.getElementById('techInfoWrap');if(iw)iw.style.display='';
   pickDir('PK');
   setDate('today');
 }
