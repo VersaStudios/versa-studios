@@ -180,11 +180,11 @@ body{background:#efede3;color:#302f2c;font-family:'Barlow',sans-serif;min-height
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
 var SB_URL='https://dttwgmoyxthczlzxjgag.supabase.co',SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ';
-var EJS_SERVICE='service_883826m',EJS_TEMPLATE='template_q4jlxp4',EJS_KEY='-WB5uUr8yu-oIKc5v';
+var EJS_SERVICE='service_883826m',EJS_TEMPLATE='template_q4jlxp4',EJS_KEY='WB5uUr8yu-oIKc5v';
 
 var _dir='Paul Keetley';
 var _temp='OK';
-var _stat='str';  // 'ntr' | 'str' — default STR
+var _stat='str';
 var _dateMode='today';
 var _selectedDate='';
 var _allKit=[];
@@ -202,7 +202,6 @@ document.addEventListener('DOMContentLoaded',function(){
   if(window.emailjs) emailjs.init({publicKey:EJS_KEY});
 });
 
-// ── DATE ──
 function setDate(mode){
   _dateMode=mode;
   var today=new Date();
@@ -235,7 +234,6 @@ function otherDatePicked(){
   checkReady();
 }
 
-// ── KIT TOGGLE ──
 function toggleKitEnabled(){
   _kitEnabled=!_kitEnabled;
   var track=document.getElementById('kitTogTrack');
@@ -263,7 +261,6 @@ function toggleKitEnabled(){
   }
 }
 
-// ── KIT LOADING ──
 async function loadKitForShopOn(){
   try{
     var kr=await fetch(SB_URL+'/rest/v1/app_data?key=eq.kit&select=value',{headers:_sbHdr});
@@ -331,7 +328,6 @@ function renderKitChips(){
   }).join('');
 }
 
-// ── DIRECTOR ──
 function pickDir(code){
   var names={PK:'Paul Keetley',KB:'Kieron Bateman'};
   var otherInp=document.getElementById('dirOther');
@@ -342,7 +338,6 @@ function pickDir(code){
 }
 function dirOtherTyped(){_dir=document.getElementById('dirOther').value.trim();checkReady();}
 
-// ── TEMPERATURE ──
 function pickTemp(btn,val){
   _temp=val;
   btn.closest('.btn-row').querySelectorAll('.pick-btn').forEach(function(b){b.classList.remove('active');});
@@ -351,7 +346,6 @@ function pickTemp(btn,val){
   if(det)det.style.display=(val==='Not OK')?'block':'none';
 }
 
-// ── REPORT STATUS (NTR / STR) ──
 function pickStat(btn,val){
   _stat=val;
   btn.closest('.btn-row').querySelectorAll('.pick-btn').forEach(function(b){b.classList.remove('active');});
@@ -361,10 +355,8 @@ function pickStat(btn,val){
   checkReady();
 }
 
-// ── READY CHECK ──
 function checkReady(){
   var info=document.getElementById('techInfo').value.trim();
-  // NTR: just date + director. STR: also info.
   var ok=!!(_selectedDate && _dir && (_stat==='ntr' || info));
   document.getElementById('submitBtn').disabled=!ok;
   var st=document.getElementById('statusTxt');
@@ -374,16 +366,13 @@ function checkReady(){
   }
 }
 
-// ── SUBMIT ──
 async function doSubmit(){
   var date=_selectedDate;
   var info=document.getElementById('techInfo').value.trim();
   var delay=document.getElementById('soDelay').value||'';
   var tempDetail=((document.getElementById('tempDetail')||{}).value||'').trim();
-  // NTR allowed without info
   if(!date||!_dir||(_stat==='str'&&!info))return;
 
-  // Build temperature string with detail when Not OK
   var tempStr=_temp;
   if(_temp==='Not OK' && tempDetail) tempStr='Not OK — '+tempDetail;
 
@@ -407,23 +396,23 @@ async function doSubmit(){
       headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Prefer':'return=minimal'},
       body:JSON.stringify(payload)});
     if(r.ok){
-      // Send email to Andrew + Ian — same EmailJS template as Morning Live
       try{
         if(window.emailjs){
           await emailjs.send(EJS_SERVICE,EJS_TEMPLATE,{
             show_date:fmtNice(date),
-            versa_tech:_dir,
-            bbc_tech:'ShopOn TV — '+_dir,
+            director:_dir,
+            temperature:tempStr,
+            delay:delay?delay+' seconds':'Not specified',
+            status:_stat==='ntr'?'Nothing to Report (NTR)':'Something to Report (STR)',
             summary:summary,
-            urgent:_temp==='Not OK'?'Yes':'No',
-            urgent_details:_temp==='Not OK'?('Studio temperature flagged Not OK'+(tempDetail?' — '+tempDetail:'')):'--',
             tagged_kit:taggedNames.join(', ')||'None',
-            submitted_at:new Date().toLocaleString('en-GB'),
-            to_email:'andrew.rowell@versastudios.com, ian.curry@versastudios.com',
-            show_name:'ShopOn TV'
+            submitted_at:new Date().toLocaleString('en-GB')
           });
         }
-      }catch(em){}
+      }catch(em){
+        console.error('EmailJS failed:',em);
+        alert('Saved to database, but email failed: '+(em.text||em.message||JSON.stringify(em)));
+      }
       document.getElementById('formView').style.display='none';
       document.getElementById('successView').style.display='block';
       document.getElementById('successDetail').textContent=_dir+' · '+fmtNice(date)+' · '+(_stat==='ntr'?'NTR':'STR')+' · Temp '+_temp+(delay?' · '+delay+'s delay':'');
@@ -432,7 +421,6 @@ async function doSubmit(){
   btn.disabled=false;btn.textContent='Submit Report';
 }
 
-// ── RESET ──
 function doReset(){
   document.getElementById('formView').style.display='';
   document.getElementById('successView').style.display='none';
@@ -456,6 +444,6 @@ function doReset(){
   pickDir('PK');
   setDate('today');
 }
-</script>
+</script><
 </body>
 </html>
