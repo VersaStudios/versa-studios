@@ -1211,6 +1211,7 @@ html[data-theme="light"] .drw-more-menu{background:#f4f2ec;border-color:rgba(48,
       <div class="nav-lbl" data-lbl="reference">Reference</div>
       <div class="nav-item" data-pg="info" onclick="nav('info',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 7v5M8 5v.5"/></svg>Studio Info</div>
       <div class="nav-item" data-pg="vault" onclick="nav('vault',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="7" width="12" height="8" rx="1"/><path d="M5 7V5a3 3 0 016 0v2"/><circle cx="8" cy="11" r="1"/></svg>Vault</div>
+      <div class="nav-item" data-pg="live" onclick="nav('live',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="12" height="9" rx="1"/><circle cx="8" cy="7.5" r="1.5" fill="currentColor" stroke="none"/><path d="M6 14h4"/></svg>Versa Live</div>
     </nav>
     <div class="sb-foot" style="position:relative">
       <div style="display:flex;align-items:center;gap:9px;padding-bottom:8px;border-bottom:1px solid var(--border);margin-bottom:8px">
@@ -1276,6 +1277,7 @@ html[data-theme="light"] .drw-more-menu{background:#f4f2ec;border-color:rgba(48,
             <button id="kitTabInv" onclick="showKitTab('inv')" style="padding:7px 18px;font-size:12px;font-family:var(--cond);font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:none;border:none;border-bottom:2px solid var(--accent);color:var(--accent);cursor:pointer">Inventory</button>
             <button id="kitTabHired" onclick="showKitTab('hired')" style="padding:7px 18px;font-size:12px;font-family:var(--cond);font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer">Hired Catalogue</button>
             <button id="kitTabLogistics" onclick="showKitTab('logistics')" style="padding:7px 18px;font-size:12px;font-family:var(--cond);font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer">Logistics</button>
+            <button id="kitTabLth" onclick="showKitTab('lth')" style="padding:7px 18px;font-size:12px;font-family:var(--cond);font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer">Long Term Hired</button>
           </div>
           <div id="kitTabPanelInv">
           <div style="position:relative;margin-bottom:22px">
@@ -1299,6 +1301,9 @@ html[data-theme="light"] .drw-more-menu{background:#f4f2ec;border-color:rgba(48,
           </div>
           <div id="kitTabPanelLogistics" style="display:none">
             <div id="kitLogisticsView"></div>
+          </div>
+          <div id="kitTabPanelLth" style="display:none">
+            <div id="kitLthView"></div>
           </div>
         </div>
       <!-- List view (sibling of kitLanding, not child) -->
@@ -2252,6 +2257,7 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
           <div class="jd-tab" id="admTab-suppliers" onclick="admSwitch('suppliers')" style="color:#302f2c;opacity:.5">Suppliers</div>
           <div class="jd-tab" id="admTab-pat" onclick="admSwitch('pat')" style="color:#302f2c;opacity:.5">PAT Emails</div>
           <div class="jd-tab" id="admTab-access" onclick="admSwitch('access')" style="color:#302f2c;opacity:.5">Job Access</div>
+          <div class="jd-tab" id="admTab-reminders" onclick="admSwitch('reminders')" style="color:#302f2c;opacity:.5">Daily Reminders</div>
           <div class="jd-tab" id="admTab-notes" onclick="admSwitch('notes')" style="color:#302f2c;opacity:.5">My Notes</div>
         </div>
         <div id="admContent-users">
@@ -2341,6 +2347,11 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
       <div class="page" id="page-vault" style="position:fixed;inset:0;z-index:500;background:var(--bg)">
         <div style="position:absolute;top:8px;right:12px;z-index:501"><button class="ibtn" style="font-family:var(--cond);font-size:13px;font-weight:800;padding:6px 14px;background:rgba(0,0,0,.5);color:#fff;border:none;backdrop-filter:blur(4px)" onclick="nav('dashboard',document.querySelector('[data-pg=dashboard]'))">✕ CLOSE</button></div>
         <iframe id="vaultFrame" src="" style="width:100%;height:100%;border:none" allow="clipboard-write"></iframe>
+      </div>
+
+      <div class="page" id="page-live" style="position:fixed;inset:0;z-index:500;background:var(--bg)">
+        <div style="position:absolute;top:8px;right:12px;z-index:501"><button class="ibtn" style="font-family:var(--cond);font-size:13px;font-weight:800;padding:6px 14px;background:rgba(0,0,0,.5);color:#fff;border:none;backdrop-filter:blur(4px)" onclick="nav('dashboard',document.querySelector('[data-pg=dashboard]'))">✕ CLOSE</button></div>
+        <iframe id="liveFrame" src="" style="width:100%;height:100%;border:none" allow="autoplay; fullscreen"></iframe>
       </div>
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js">
 function notesPickType(btn,type){
@@ -2760,7 +2771,7 @@ function _getDataMap() {
     opsPlanner: Object.assign({}, _opsD), opsBrk: _opsBrk.slice(), job_access: _jobAccessGrants.slice(),
     patTesters: patTesters, suppliers: suppliers, freelanceCrew: VERSA_FREELANCE, kitPreppers: KIT_PREPPERS, kitTransports: KIT_TRANSPORTS,
     kitSubcats: JSON.parse(JSON.stringify(KIT_SUBCATS)), catColors: Object.assign({}, CAT_COLORS),
-    jobTemplates: jobTemplates
+    jobTemplates: jobTemplates, longTermHired: longTermHired
   };
 }
 
@@ -2817,6 +2828,7 @@ async function loadData() {
             if(_dupeRepair>0){ console.warn('Repaired '+_dupeRepair+' duplicate kit IDs'); setTimeout(function(){saveData();},200); }
           }
           else if(row.key==='hiredCatalogue'&&Array.isArray(v)){hiredCatalogue.length=0;v.forEach(x=>hiredCatalogue.push(x));}
+          else if(row.key==='longTermHired'&&Array.isArray(v)){longTermHired.length=0;v.forEach(x=>longTermHired.push(x));}
           else if(row.key==='users'&&Array.isArray(v)){users.length=0;v.forEach(x=>users.push(x));}
           else if(row.key==='maintenance'&&Array.isArray(v)){maintenance.length=0;v.forEach(x=>maintenance.push(x));}
           else if(row.key==='faults'&&Array.isArray(v)){faults.length=0;v.forEach(x=>faults.push(x));}
@@ -4794,18 +4806,175 @@ function showKitTab(tab){
   document.getElementById('kitTabPanelInv').style.display=tab==='inv'?'':'none';
   document.getElementById('kitTabPanelHired').style.display=tab==='hired'?'':'none';
   var lp=document.getElementById('kitTabPanelLogistics');if(lp)lp.style.display=tab==='logistics'?'':'none';
+  var lt=document.getElementById('kitTabPanelLth');if(lt)lt.style.display=tab==='lth'?'':'none';
   var ti=document.getElementById('kitTabInv');
   var th=document.getElementById('kitTabHired');
   var tl=document.getElementById('kitTabLogistics');
+  var tlth=document.getElementById('kitTabLth');
   if(ti){ti.style.borderBottomColor=tab==='inv'?'var(--accent)':'transparent';ti.style.color=tab==='inv'?'var(--accent)':'var(--muted)';}
   if(th){th.style.borderBottomColor=tab==='hired'?'var(--accent)':'transparent';th.style.color=tab==='hired'?'var(--accent)':'var(--muted)';}
   if(tl){tl.style.borderBottomColor=tab==='logistics'?'var(--accent)':'transparent';tl.style.color=tab==='logistics'?'var(--accent)':'var(--muted)';}
+  if(tlth){tlth.style.borderBottomColor=tab==='lth'?'var(--accent)':'transparent';tlth.style.color=tab==='lth'?'var(--accent)':'var(--muted)';}
   var invBtns=document.getElementById('kitInvBtns');
   var hiredBtns=document.getElementById('kitHiredBtns');
   if(invBtns)invBtns.style.display=tab==='inv'?'flex':'none';
   if(hiredBtns)hiredBtns.style.display=tab==='hired'?'flex':'none';
   if(tab==='hired')renderHiredCatalogue();
   if(tab==='logistics')renderKitLogistics();
+  if(tab==='lth')renderLthList();
+}
+
+// ── Long Term Hired (kit we don't own but treat as inventory) ───────────
+if(typeof longTermHired==='undefined') var longTermHired=[];
+var _lthSearch='';
+var _lthFilterCat='';
+var _lthFilterSupplier='';
+
+function renderLthList(){
+  var el=document.getElementById('kitLthView');if(!el)return;
+  var q=_lthSearch.trim().toLowerCase();
+  var items=longTermHired.slice().sort(function(a,b){return (a.name||'').localeCompare(b.name||'');});
+  if(q)items=items.filter(function(x){return (x.name||'').toLowerCase().indexOf(q)>=0||(x.tag||'').toLowerCase().indexOf(q)>=0||(x.supplier||'').toLowerCase().indexOf(q)>=0||(x.serial||'').toLowerCase().indexOf(q)>=0;});
+  if(_lthFilterCat)items=items.filter(function(x){return (x.cat||'')===_lthFilterCat;});
+  if(_lthFilterSupplier)items=items.filter(function(x){return (x.supplier||'')===_lthFilterSupplier;});
+
+  var supList=(typeof suppliers!=='undefined'&&suppliers?suppliers.slice():[]).sort(function(a,b){return (a.name||'').localeCompare(b.name||'');});
+  var supOpts='<option value="">All Suppliers</option>'+supList.map(function(s){return '<option'+(s.name===_lthFilterSupplier?' selected':'')+'>'+(s.name||'').replace(/</g,'&lt;')+'</option>';}).join('');
+  var catOpts='<option value="">All Categories</option>'+(cats||[]).map(function(c){return '<option'+(c===_lthFilterCat?' selected':'')+'>'+c+'</option>';}).join('');
+
+  // Stats: total + by supplier
+  var bySup={};items.forEach(function(x){var s=x.supplier||'(no supplier)';bySup[s]=(bySup[s]||0)+1;});
+  var supChips=Object.keys(bySup).sort().map(function(s){return '<span style="display:inline-flex;align-items:center;gap:5px;padding:3px 9px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:4px;font-size:11px;font-family:var(--cond);font-weight:700;color:var(--muted);letter-spacing:.04em"><span style="color:var(--accent);font-weight:900">'+bySup[s]+'</span> '+s.replace(/</g,'&lt;')+'</span>';}).join('');
+
+  var head='<div style="background:var(--near-black);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:12px">'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:10px">'
+      +'<div style="display:flex;align-items:baseline;gap:10px"><div style="font-family:var(--cond);font-size:18px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;color:var(--white)">Long Term Hired</div>'
+      +'<span style="font-family:var(--cond);font-size:13px;font-weight:700;color:var(--muted)">'+items.length+' item'+(items.length===1?'':'s')+'</span></div>'
+      +'<button class="ibtn" style="font-size:12px;padding:6px 14px;background:var(--accent);color:#fff;border:none" onclick="lthOpenAdd()">+ Add Long Term Hired</button>'
+    +'</div>'
+    +'<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">'
+      +'<input class="fi" style="flex:1 1 220px;font-size:13px;padding:6px 10px;min-width:180px" placeholder="Search by name, tag, serial, supplier..." value="'+(_lthSearch||'').replace(/"/g,'&quot;')+'" oninput="_lthSearch=this.value;renderLthList()"/>'
+      +'<select class="fi" style="font-size:13px;padding:6px 10px" onchange="_lthFilterCat=this.value;renderLthList()">'+catOpts+'</select>'
+      +'<select class="fi" style="font-size:13px;padding:6px 10px" onchange="_lthFilterSupplier=this.value;renderLthList()">'+supOpts+'</select>'
+    +'</div>'
+    +(supChips?'<div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:10px">'+supChips+'</div>':'')
+    +'</div>';
+
+  if(!items.length){
+    el.innerHTML=head+'<div style="padding:30px 20px;text-align:center;color:var(--muted);font-size:14px;background:var(--near-black);border:1px dashed var(--border);border-radius:8px">No long-term hired items'+(q||_lthFilterCat||_lthFilterSupplier?' match the filters.':' yet. Click + Add to start.')+'</div>';
+    return;
+  }
+
+  var th='padding:7px 10px;font-size:10px;font-family:var(--cond);font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left;background:rgba(255,255,255,.04);border-bottom:1.5px solid var(--border)';
+  var rows=items.map(function(x){
+    var hireDates='';
+    if(x.hireStart||x.hireEnd){
+      var start=x.hireStart?new Date(x.hireStart+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'?';
+      var end=x.hireEnd?new Date(x.hireEnd+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'ongoing';
+      hireDates=start+' → '+end;
+    }
+    return '<tr style="border-bottom:1px solid rgba(255,255,255,.05)" onclick="lthOpenEdit(\''+x.id+'\')" onmouseover="this.style.background=\'rgba(255,255,255,.03)\'" onmouseout="this.style.background=\'\'">'
+      +'<td style="padding:8px 10px;cursor:pointer">'
+        +'<div style="font-size:14px;font-weight:600;color:var(--pure)">'+(x.name||'').replace(/</g,'&lt;')+'</div>'
+        +(x.tag?'<div style="font-family:var(--cond);font-size:11px;color:var(--muted);letter-spacing:.04em">'+(x.tag||'').replace(/</g,'&lt;')+'</div>':'')
+      +'</td>'
+      +'<td style="padding:8px 10px;font-size:13px;color:var(--muted);cursor:pointer">'+(x.cat||'').replace(/</g,'&lt;')+(x.subcat?' · '+x.subcat.replace(/</g,'&lt;'):'')+'</td>'
+      +'<td style="padding:8px 10px;font-size:13px;color:var(--white);cursor:pointer">'+(x.supplier||'').replace(/</g,'&lt;')+'</td>'
+      +'<td style="padding:8px 10px;font-size:12px;color:var(--muted);font-family:var(--cond);cursor:pointer">'+hireDates+'</td>'
+      +'<td style="padding:8px 10px;font-size:13px;color:var(--muted);cursor:pointer">'+(x.location||'').replace(/</g,'&lt;')+'</td>'
+      +'<td style="padding:8px 6px;text-align:center"><button class="rm-btn" style="font-size:12px;padding:0;width:24px;height:24px" onclick="event.stopPropagation();lthRemove(\''+x.id+'\')">×</button></td>'
+      +'</tr>';
+  }).join('');
+
+  el.innerHTML=head+'<div style="background:var(--near-black);border:1px solid var(--border);border-radius:10px;overflow:hidden"><div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:800px">'
+    +'<thead><tr><th style="'+th+'">Item</th><th style="'+th+'">Category</th><th style="'+th+'">Supplier</th><th style="'+th+'">Hire Period</th><th style="'+th+'">Location</th><th style="'+th+';width:32px"></th></tr></thead>'
+    +'<tbody>'+rows+'</tbody></table></div></div>';
+}
+
+function lthOpenAdd(){_lthEditId=null;lthOpenModal({});}
+function lthOpenEdit(id){var x=longTermHired.find(function(i){return i.id===id;});if(!x)return;_lthEditId=id;lthOpenModal(x);}
+var _lthEditId=null;
+
+function lthOpenModal(x){
+  var supList=(typeof suppliers!=='undefined'&&suppliers?suppliers.slice():[]).sort(function(a,b){return (a.name||'').localeCompare(b.name||'');});
+  var supOpts='<option value="">— Select —</option>'+supList.map(function(s){return '<option'+(s.name===x.supplier?' selected':'')+'>'+(s.name||'').replace(/</g,'&lt;')+'</option>';}).join('');
+  var catOpts='<option value="">— Select —</option>'+(cats||[]).map(function(c){return '<option'+(c===x.cat?' selected':'')+'>'+c+'</option>';}).join('');
+  var locOpts='<option value="">— Select —</option>'+(typeof locations!=='undefined'&&locations?locations:[]).map(function(l){return '<option'+(l===x.location?' selected':'')+'>'+l+'</option>';}).join('');
+
+  var ex=document.getElementById('mLth');if(ex)ex.remove();
+  var inputCSS='width:100%;background:var(--near-black);border:1.5px solid var(--border);color:var(--white);font-family:var(--font);font-size:14px;padding:8px 10px;border-radius:6px;outline:none;box-sizing:border-box';
+  var lblCSS='font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px';
+  var html='<div class="modal-ov open" id="mLth" onclick="if(event.target===this)cm(\'mLth\')"><div class="modal" style="width:520px;max-width:94vw">'
+    +'<div class="modal-hdr"><div class="modal-title">'+(_lthEditId?'Edit':'Add')+' Long Term Hired</div><button class="x-btn" onclick="cm(\'mLth\')">×</button></div>'
+    +'<div class="modal-body" style="display:flex;flex-direction:column;gap:10px">'
+      +'<div><div style="'+lblCSS+'">Item Name *</div><input id="lthName" style="'+inputCSS+'" value="'+(x.name||'').replace(/"/g,'&quot;')+'" placeholder="e.g. Sony FX9 Camera"/></div>'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'
+        +'<div><div style="'+lblCSS+'">Category *</div><select id="lthCat" style="'+inputCSS+'">'+catOpts+'</select></div>'
+        +'<div><div style="'+lblCSS+'">Subcategory</div><input id="lthSubcat" style="'+inputCSS+'" value="'+(x.subcat||'').replace(/"/g,'&quot;')+'" placeholder="e.g. Studio Camera"/></div>'
+      +'</div>'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'
+        +'<div><div style="'+lblCSS+'">Tag</div><input id="lthTag" style="'+inputCSS+'" value="'+(x.tag||'').replace(/"/g,'&quot;')+'" placeholder="e.g. CAM-LT-01"/></div>'
+        +'<div><div style="'+lblCSS+'">Serial #</div><input id="lthSerial" style="'+inputCSS+'" value="'+(x.serial||'').replace(/"/g,'&quot;')+'"/></div>'
+      +'</div>'
+      +'<div><div style="'+lblCSS+'">Supplier *</div><select id="lthSupplier" style="'+inputCSS+'">'+supOpts+'</select></div>'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'
+        +'<div><div style="'+lblCSS+'">Hire Start</div><input type="date" id="lthHireStart" style="'+inputCSS+'" value="'+(x.hireStart||'')+'"/></div>'
+        +'<div><div style="'+lblCSS+'">Hire End</div><input type="date" id="lthHireEnd" style="'+inputCSS+'" value="'+(x.hireEnd||'')+'" placeholder="Leave blank if ongoing"/></div>'
+      +'</div>'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'
+        +'<div><div style="'+lblCSS+'">Location</div><select id="lthLocation" style="'+inputCSS+'">'+locOpts+'</select></div>'
+        +'<div><div style="'+lblCSS+'">Weekly Cost (£)</div><input type="number" step="0.01" id="lthCost" style="'+inputCSS+'" value="'+(x.cost||'')+'" placeholder="0.00"/></div>'
+      +'</div>'
+      +'<div><div style="'+lblCSS+'">Notes</div><textarea id="lthNotes" style="'+inputCSS+';min-height:60px;resize:vertical">'+(x.notes||'').replace(/</g,'&lt;')+'</textarea></div>'
+    +'</div>'
+    +'<div class="modal-foot"><button class="ibtn" onclick="cm(\'mLth\')">Cancel</button><button class="ibtn" style="background:var(--accent);color:#fff;border:none" onclick="lthSave()">Save</button></div>'
+    +'</div></div>';
+  document.body.insertAdjacentHTML('beforeend',html);
+  setTimeout(function(){var n=document.getElementById('lthName');if(n)n.focus();},50);
+}
+
+function lthSave(){
+  var name=document.getElementById('lthName').value.trim();
+  var cat=document.getElementById('lthCat').value;
+  var supplier=document.getElementById('lthSupplier').value;
+  if(!name){toast('Item name required');return;}
+  if(!cat){toast('Category required');return;}
+  if(!supplier){toast('Supplier required');return;}
+  var data={
+    id:_lthEditId||('lth_'+Date.now()+'_'+Math.random().toString(36).slice(2,7)),
+    name:name,
+    cat:cat,
+    subcat:document.getElementById('lthSubcat').value.trim(),
+    tag:document.getElementById('lthTag').value.trim(),
+    serial:document.getElementById('lthSerial').value.trim(),
+    supplier:supplier,
+    hireStart:document.getElementById('lthHireStart').value,
+    hireEnd:document.getElementById('lthHireEnd').value,
+    location:document.getElementById('lthLocation').value,
+    cost:parseFloat(document.getElementById('lthCost').value)||0,
+    notes:document.getElementById('lthNotes').value.trim(),
+    updated_at:new Date().toISOString()
+  };
+  if(_lthEditId){
+    var idx=longTermHired.findIndex(function(i){return i.id===_lthEditId;});
+    if(idx>=0)longTermHired[idx]=Object.assign({},longTermHired[idx],data);
+  } else {
+    data.created_at=new Date().toISOString();
+    longTermHired.push(data);
+  }
+  saveData();
+  cm('mLth');
+  renderLthList();
+  toast(_lthEditId?'Updated':'Added');
+  _lthEditId=null;
+}
+
+function lthRemove(id){
+  if(!confirm('Remove this long-term hired item?'))return;
+  longTermHired=longTermHired.filter(function(i){return i.id!==id;});
+  saveData();
+  renderLthList();
+  toast('Removed');
 }
 
 function openPickFromCatalogue(){
@@ -5890,8 +6059,9 @@ function nav(page, el) {
   if(page==='holidays') { initHolSelectors(); renderHolidays(); }
   if(page==='ops') opsInit();
   if(page==='info') renderInfoPage();
-  if(page==='notes') { var nf=document.getElementById('notesFrame'); if(nf&&!nf.src.includes('versa-notes')) nf.src='versa-notes.html'; }
-  if(page==='vault') { var vf=document.getElementById('vaultFrame'); if(vf&&!vf.src.includes('versa-vault')) vf.src='versa-vault.html'; }
+  if(page==='notes') { var nf=document.getElementById('notesFrame'); if(nf&&!nf.src.includes('versa-notes')) nf.src='versa-notes.html?v='+Date.now(); }
+  if(page==='vault') { var vf=document.getElementById('vaultFrame'); if(vf&&!vf.src.includes('versa-vault')) vf.src='versa-vault.html?v='+Date.now(); }
+  if(page==='live') { var lf=document.getElementById('liveFrame'); if(lf&&!lf.src.includes('versa-live')) lf.src='versa-live.html?v='+Date.now(); }
 }
 // ── STUDIO INFO PAGE ─────────────────────────────────────────────────────────
 function renderInfoPage(){
@@ -13857,7 +14027,7 @@ function revokeAccess(idx) {
 var _admTab = 'users';
 function admSwitch(tab) {
   _admTab = tab;
-  ['users','cats','dv','suppliers','pat','access','notes'].forEach(function(t) {
+  ['users','cats','dv','suppliers','pat','access','reminders','notes'].forEach(function(t) {
     var c = document.getElementById('admContent-'+t);
     var b = document.getElementById('admTab-'+t);
     if(c) c.style.display = t===tab ? '' : 'none';
@@ -13868,7 +14038,97 @@ function admSwitch(tab) {
   if(tab==='cats') renderCats();
   if(tab==='pat') renderPatEmails();
   if(tab==='access') renderAccessList();
+  if(tab==='reminders') remLoadAndRender();
   if(tab==='notes'){ notesLoad().then(function(){notesInit('notesWrap');}); }
+}
+
+// ── Daily Reminders (emailed at 08:30 via cron) ─────────────────────────
+var _dailyReminders = [];
+var _remLoaded = false;
+var REM_SB_URL = 'https://dttwgmoyxthczlzxjgag.supabase.co';
+var REM_SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ';
+
+async function remLoadAndRender(){
+  if(!_remLoaded){
+    try{
+      var r=await fetch(REM_SB_URL+'/rest/v1/daily_reminders?select=*&order=sort_order.asc',{headers:{'apikey':REM_SB_KEY,'Authorization':'Bearer '+REM_SB_KEY}});
+      if(r.ok)_dailyReminders=await r.json();
+      _remLoaded=true;
+    }catch(e){console.warn('reminders load failed',e);}
+  }
+  remRender();
+}
+function remRender(){
+  var el=document.getElementById('remList');if(!el)return;
+  if(!_dailyReminders.length){
+    el.innerHTML='<div style="padding:30px 20px;text-align:center;color:rgba(48,47,44,.45);font-size:14px;background:rgba(48,47,44,.03);border:1.5px dashed rgba(48,47,44,.15);border-radius:8px">No reminders yet. Click + Add Reminder to start.</div>';
+    return;
+  }
+  el.innerHTML=_dailyReminders.map(function(r,i){
+    return '<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:#fff;border:1px solid rgba(48,47,44,.12);border-radius:7px;box-shadow:0 1px 2px rgba(48,47,44,.04)">'
+      +'<label style="display:flex;align-items:center;gap:8px;cursor:pointer;flex-shrink:0" title="Enable/disable this reminder">'
+      +'<input type="checkbox"'+(r.enabled!==false?' checked':'')+' onchange="remToggle(\''+r.id+'\',this.checked)" style="cursor:pointer;width:16px;height:16px"/>'
+      +'</label>'
+      +'<div style="flex:1;min-width:0">'
+      +'<input type="text" value="'+(r.text||'').replace(/"/g,'&quot;')+'" onchange="remEditText(\''+r.id+'\',this.value)" style="width:100%;background:transparent;border:none;outline:none;font-family:\'Barlow\',sans-serif;font-size:14px;color:#302f2c;font-weight:500"/>'
+      +'</div>'
+      +'<button onclick="remRemove(\''+r.id+'\')" title="Remove" style="background:none;border:none;cursor:pointer;color:rgba(48,47,44,.4);font-size:18px;line-height:1;padding:0 4px">×</button>'
+      +'</div>';
+  }).join('');
+}
+async function remAddPrompt(){
+  var txt=prompt('Reminder text (e.g. "Ask directors for call sheets"):');
+  if(!txt||!txt.trim())return;
+  var newRem={id:'r_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),text:txt.trim(),enabled:true,sort_order:(_dailyReminders.length),created_at:new Date().toISOString()};
+  _dailyReminders.push(newRem);remRender();
+  try{
+    await fetch(REM_SB_URL+'/rest/v1/daily_reminders',{method:'POST',headers:{'Content-Type':'application/json','apikey':REM_SB_KEY,'Authorization':'Bearer '+REM_SB_KEY,'Prefer':'return=minimal'},body:JSON.stringify(newRem)});
+  }catch(e){toast('Save failed — check Supabase');}
+}
+async function remEditText(id,val){
+  var r=_dailyReminders.find(function(x){return x.id===id;});if(!r)return;
+  r.text=val.trim();
+  try{ await fetch(REM_SB_URL+'/rest/v1/daily_reminders?id=eq.'+encodeURIComponent(id),{method:'PATCH',headers:{'Content-Type':'application/json','apikey':REM_SB_KEY,'Authorization':'Bearer '+REM_SB_KEY,'Prefer':'return=minimal'},body:JSON.stringify({text:r.text})});
+  }catch(e){toast('Save failed');}
+}
+async function remToggle(id,enabled){
+  var r=_dailyReminders.find(function(x){return x.id===id;});if(!r)return;
+  r.enabled=enabled;
+  try{ await fetch(REM_SB_URL+'/rest/v1/daily_reminders?id=eq.'+encodeURIComponent(id),{method:'PATCH',headers:{'Content-Type':'application/json','apikey':REM_SB_KEY,'Authorization':'Bearer '+REM_SB_KEY,'Prefer':'return=minimal'},body:JSON.stringify({enabled:enabled})});
+  }catch(e){toast('Save failed');}
+}
+async function remRemove(id){
+  if(!confirm('Remove this reminder?'))return;
+  _dailyReminders=_dailyReminders.filter(function(x){return x.id!==id;});remRender();
+  try{ await fetch(REM_SB_URL+'/rest/v1/daily_reminders?id=eq.'+encodeURIComponent(id),{method:'DELETE',headers:{'apikey':REM_SB_KEY,'Authorization':'Bearer '+REM_SB_KEY}});
+  }catch(e){toast('Delete failed');}
+}
+async function remSendTest(){
+  var active=_dailyReminders.filter(function(r){return r.enabled!==false && (r.text||'').trim();});
+  if(!active.length){toast('No active reminders to send');return;}
+  try{
+    if(!window.emailjs){
+      await new Promise(function(resolve){var s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';s.onload=resolve;s.onerror=resolve;document.head.appendChild(s);});
+    }
+    if(window.emailjs){
+      emailjs.init({publicKey:'-WB5uUr8yu-oIKc5v'});
+      var today=new Date();var dateStr=today.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+      var listHtml=active.map(function(r,i){return (i+1)+'. '+r.text;}).join('\n');
+      await emailjs.send('service_883826m','template_q4jlxp4',{
+        show_date:dateStr,
+        versa_tech:'Andrew Rowell',
+        bbc_tech:'Daily Reminders',
+        summary:'Daily reminders for '+dateStr+':\n\n'+listHtml,
+        urgent:'No',
+        urgent_details:'--',
+        tagged_kit:'None',
+        submitted_at:new Date().toLocaleString('en-GB'),
+        to_email:'andrew.rowell@versastudios.com',
+        show_name:'Daily Reminders'
+      });
+      toast('Test email sent — check inbox');
+    } else { toast('EmailJS failed to load'); }
+  }catch(e){toast('Send failed: '+(e.text||e.message||e));}
 }
 function renderUsers() {
   const el=document.getElementById('userList');
@@ -16387,6 +16647,25 @@ document.addEventListener('DOMContentLoaded', function() {
       </div>
     </div>
   </div>
+
+        <div id="admContent-reminders" style="display:none">
+          <div style="background:#efede3;color:#302f2c;border-radius:10px;padding:20px;font-family:'Barlow',sans-serif">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(48,47,44,.12)">
+              <div>
+                <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;letter-spacing:.04em;text-transform:uppercase">Daily Reminders</div>
+                <div style="font-size:13px;color:rgba(48,47,44,.7);margin-top:4px">Emailed to <strong>andrew.rowell@versastudios.com</strong> every morning at 08:30</div>
+              </div>
+              <div style="display:flex;gap:8px">
+                <button onclick="remSendTest()" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:transparent;border:1.5px solid rgba(48,47,44,.2);border-radius:6px;padding:6px 14px;color:rgba(48,47,44,.7);cursor:pointer">✉ Send Test Now</button>
+                <button onclick="remAddPrompt()" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:#302f2c;border:none;border-radius:6px;padding:7px 14px;color:#efede3;cursor:pointer">+ Add Reminder</button>
+              </div>
+            </div>
+            <div id="remList" style="display:flex;flex-direction:column;gap:8px"></div>
+            <div style="margin-top:18px;padding:12px 14px;background:rgba(244,162,88,.08);border:1px solid rgba(244,162,88,.3);border-radius:8px;font-size:12px;color:rgba(48,47,44,.75);line-height:1.5">
+              <strong style="color:#b87400">Setup note:</strong> Reminders save to Supabase. To actually send the 08:30 email, you need to set up a scheduled cron job (Supabase Edge Function or Railway cron). Until that's configured, only the "Send Test Now" button works.
+            </div>
+          </div>
+        </div>
 
         <div id="admContent-notes" style="display:none">
           <div id="notesWrap" style="background:#efede3;color:#302f2c;border-radius:10px;transition:background .2s,color .2s;font-family:'Barlow',sans-serif">
