@@ -18,27 +18,27 @@ body{background:#efede3;color:#302f2c;font-family:'Barlow',sans-serif;min-height
 .hd-right{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#999;text-align:right;line-height:1.4}
 .sec{padding:20px 28px;border-bottom:1px solid #eae7df}
 .sec:last-child{border-bottom:none}
-.lbl{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#555;margin-bottom:12px}
+.lbl{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#302f2c;margin-bottom:14px}
 .inp{width:100%;background:#f5f3ee;border:1.5px solid #e0ddd5;border-radius:10px;color:#302f2c;padding:14px 16px;font-size:15px;font-family:'Barlow',sans-serif;outline:none;transition:border-color .15s}
 .inp:focus{border-color:#2850a0}
 .inp::placeholder{color:#b5b0a6}
 .btn-row{display:flex;gap:8px;flex-wrap:wrap}
-.pick-btn{padding:14px 16px;border-radius:10px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;border:2px solid #ddd8cf;background:#f8f6f1;color:#999;transition:all .15s;flex:1;min-width:90px;text-align:center}
+.pick-btn{padding:18px 16px;border-radius:10px;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border:2px solid #ddd8cf;background:#f8f6f1;color:#999;transition:all .15s;flex:1;min-width:90px;text-align:center}
 .pick-btn.active{background:rgba(40,80,160,.08);border-color:#2850a0;color:#2850a0}
 .pick-btn.temp-ok.active{background:rgba(34,197,94,.08);border-color:#22c55e;color:#16a34a}
 .pick-btn.temp-nok.active{background:rgba(239,68,68,.08);border-color:#ef4444;color:#dc2626}
 .pick-btn.stat-ntr.active{background:rgba(34,197,94,.08);border-color:#22c55e;color:#16a34a}
 .pick-btn.stat-str.active{background:rgba(40,80,160,.08);border-color:#2850a0;color:#2850a0}
-.temp-detail{width:100%;background:#f5f3ee;border:1.5px solid #e0ddd5;border-radius:10px;color:#302f2c;padding:12px 14px;font-size:14px;font-family:'Barlow',sans-serif;outline:none;margin-top:10px;transition:border-color .15s;min-height:72px;resize:vertical;display:none}
+.temp-detail{width:100%;background:#f5f3ee;border:1.5px solid #e0ddd5;border-radius:10px;color:#302f2c;padding:10px 12px;font-size:13px;font-family:'Barlow',sans-serif;outline:none;margin-top:10px;transition:border-color .15s;min-height:48px;resize:vertical;display:none}
 .temp-detail:focus{border-color:#ef4444}
 .temp-detail::placeholder{color:#b5b0a6}
 .other-inp{width:100%;background:#f5f3ee;border:1.5px solid #e0ddd5;border-radius:10px;color:#302f2c;padding:11px 14px;font-size:14px;font-family:'Barlow',sans-serif;outline:none;margin-top:8px;display:none;transition:border-color .15s}
 .other-inp:focus{border-color:#2850a0}
 .other-inp::placeholder{color:#b5b0a6}
 .delay-row{display:flex;align-items:center;gap:10px}
-.delay-inp{width:120px;background:#f5f3ee;border:1.5px solid #e0ddd5;border-radius:10px;color:#302f2c;padding:14px 16px;font-size:15px;font-family:'Barlow',sans-serif;outline:none;text-align:center;transition:border-color .15s}
+.delay-inp{width:120px;background:#f5f3ee;border:1.5px solid #e0ddd5;border-radius:10px;color:#302f2c;padding:18px 16px;font-size:20px;font-weight:700;font-family:'Barlow',sans-serif;outline:none;text-align:center;transition:border-color .15s}
 .delay-inp:focus{border-color:#2850a0}
-.delay-unit{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.06em;color:#999;text-transform:uppercase}
+.delay-unit{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;letter-spacing:.08em;color:#555;text-transform:uppercase}
 .status-txt{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:#b5b0a6;margin-bottom:10px}
 .submit-btn{width:100%;padding:16px;background:linear-gradient(135deg,#f0a0c0 0%,#c0a0f0 50%,#90c0f0 100%);border:none;border-radius:10px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#fff;cursor:pointer;transition:opacity .15s}
 .submit-btn:disabled{opacity:.35;cursor:not-allowed}
@@ -102,33 +102,37 @@ body{background:#efede3;color:#302f2c;font-family:'Barlow',sans-serif;min-height
         <input type="text" class="other-inp" id="dirOther" placeholder="Enter director name..." oninput="dirOtherTyped()"/>
       </div>
 
-      <div class="sec">
-        <div class="lbl">Studio Temperature</div>
-        <div class="btn-row">
-          <button class="pick-btn temp-ok active" onclick="pickTemp(this,'OK')">OK</button>
-          <button class="pick-btn temp-nok" onclick="pickTemp(this,'Not OK')">Not OK</button>
+      <div class="sec sec-row" style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start">
+        <div style="flex:1 1 280px;min-width:240px">
+          <div class="lbl">Studio Temperature</div>
+          <div class="btn-row">
+            <button class="pick-btn temp-ok active" onclick="pickTemp(this,'OK')">OK</button>
+            <button class="pick-btn temp-nok" onclick="pickTemp(this,'Not OK')">Not OK</button>
+          </div>
+          <div id="tempDetailWrap" style="display:none">
+            <textarea class="temp-detail" id="tempDetail" placeholder="What's the issue? (e.g. too cold in gallery, too warm on floor...)"></textarea>
+          </div>
         </div>
-        <textarea class="temp-detail" id="tempDetail" placeholder="What's the issue? (e.g. too cold in gallery, too warm on floor...)"></textarea>
-      </div>
 
-      <div class="sec">
-        <div class="lbl">Transmission Delay</div>
-        <div class="delay-row">
-          <input type="number" class="delay-inp" id="soDelay" min="0" step="1" placeholder="0" oninput="checkReady()"/>
-          <span class="delay-unit">Seconds</span>
+        <div style="flex:1 1 200px;min-width:180px">
+          <div class="lbl">Transmission Delay</div>
+          <div class="delay-row">
+            <input type="number" class="delay-inp" id="soDelay" min="0" step="1" placeholder="0" oninput="checkReady()"/>
+            <span class="delay-unit">Seconds</span>
+          </div>
         </div>
       </div>
 
       <div class="sec">
         <div class="lbl">Report Status</div>
         <div class="btn-row">
-          <button class="pick-btn stat-ntr" onclick="pickStat(this,'ntr')" style="display:flex;flex-direction:column;gap:3px;align-items:center">
-            <span style="font-size:14px;font-weight:900;letter-spacing:.04em">NTR</span>
-            <span style="font-size:9px;font-weight:700;opacity:.7;letter-spacing:.06em">Nothing to Report</span>
+          <button class="pick-btn stat-ntr" onclick="pickStat(this,'ntr')" style="display:flex;flex-direction:column;gap:4px;align-items:center">
+            <span style="font-size:22px;font-weight:900;letter-spacing:.06em">NTR</span>
+            <span style="font-size:12px;font-weight:700;opacity:.7;letter-spacing:.06em">Nothing to Report</span>
           </button>
-          <button class="pick-btn stat-str active" onclick="pickStat(this,'str')" style="display:flex;flex-direction:column;gap:3px;align-items:center">
-            <span style="font-size:14px;font-weight:900;letter-spacing:.04em">STR</span>
-            <span style="font-size:9px;font-weight:700;opacity:.7;letter-spacing:.06em">Something to Report</span>
+          <button class="pick-btn stat-str active" onclick="pickStat(this,'str')" style="display:flex;flex-direction:column;gap:4px;align-items:center">
+            <span style="font-size:22px;font-weight:900;letter-spacing:.06em">STR</span>
+            <span style="font-size:12px;font-weight:700;opacity:.7;letter-spacing:.06em">Something to Report</span>
           </button>
         </div>
       </div>
@@ -346,7 +350,9 @@ function pickTemp(btn,val){
   _temp=val;
   btn.closest('.btn-row').querySelectorAll('.pick-btn').forEach(function(b){b.classList.remove('active');});
   btn.classList.add('active');
+  var wrap=document.getElementById('tempDetailWrap');
   var det=document.getElementById('tempDetail');
+  if(wrap)wrap.style.display=(val==='Not OK')?'block':'none';
   if(det)det.style.display=(val==='Not OK')?'block':'none';
 }
 
@@ -433,6 +439,7 @@ function doReset(){
   document.getElementById('dirOther').style.display='none';
   document.getElementById('dirOther').value='';
   var td=document.getElementById('tempDetail');if(td){td.value='';td.style.display='none';}
+  var tdw=document.getElementById('tempDetailWrap');if(tdw)tdw.style.display='none';
   _temp='OK';
   _stat='str';
   _taggedIds=[];
