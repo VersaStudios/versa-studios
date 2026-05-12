@@ -1091,37 +1091,44 @@ function opsCk(td){
   _opsEd={mi,day,row,id:td.id,month};
   const cur=og(month,day,row);
   const mkO=(val,col,single)=>{const sel=cur.includes(val);return'<div class="ops-co'+(sel?' sel':'')+'" data-v="'+val.replace(/"/g,'&quot;')+'" data-s="'+(single?1:0)+'" onclick="opsOpt(this)"><div class="ops-cd" style="background:'+col+'"></div>'+val.replace(/&/g,'&amp;')+(sel?'<span class="ops-ck">✓</span>':'')+'</div>';};
-  // Show current entries FIRST (at the top) — click chip text to edit inline, × to delete
+  // Show current entries FIRST (at the top) — click chip text to edit inline,
+  // ◀/▶ to shrink/extend the span across days, × to delete.
   let html='';
   if(cur.length&&row!=='ml'){
     html+='<div class="ops-cs" style="margin-top:8px">Current</div>';
     cur.forEach(function(v,idx){
       var dispText=(typeof v==='string')?v:(v&&v.text?v.text:'(unknown)');
       var safeV=dispText.replace(/"/g,'&quot;').replace(/&/g,'&amp;');
-      // Per-entry color override (cls field) or auto-detected chip class
       var chipClass=(v&&typeof v==='object'&&v.cls)?v.cls:((typeof opsChip==='function')?opsChip(dispText):'ops-note');
       var chipStyle=(v&&typeof v==='object'&&v.color)?' style="flex:1;margin-bottom:0;cursor:text;font-size:13px;background:'+v.color+'"':' style="flex:1;margin-bottom:0;cursor:text;font-size:13px"';
-      // Span badge for multi-day entries
+      // Span size for the merge controls
+      var curSpan=(v&&typeof v==='object'&&v.span&&v.span>1)?v.span:1;
       var spanBadge='';
-      if(typeof v==='object'&&v&&v.span&&v.span>1){
-        spanBadge=' <span style="font-size:10px;background:rgba(255,255,255,.5);color:#302f2c;padding:1px 5px;border-radius:3px;margin-left:4px;font-weight:700">'+v.span+'d</span>';
+      if(curSpan>1){
+        spanBadge=' <span style="font-size:10px;background:rgba(255,255,255,.5);color:#302f2c;padding:1px 5px;border-radius:3px;margin-left:4px;font-weight:700">'+curSpan+'d</span>';
       }
-      html+='<div style="display:flex;align-items:center;gap:8px;padding:4px 12px"><div class="ops-chip '+chipClass+'" onclick="event.stopPropagation();opsStartEdit('+idx+',this)"'+chipStyle+' title="Click to edit">'+safeV+spanBadge+'</div><button onclick="event.stopPropagation();opsRemoveItem('+idx+')" title="Remove this entry" style="background:rgba(216,90,97,.12);border:none;width:22px;height:22px;border-radius:4px;color:#a03040;cursor:pointer;font-weight:900;line-height:1;padding:0;font-size:14px;flex-shrink:0">&times;</button></div>';
+      // Merge controls — ◀ shrinks, ▶ extends. Only show ◀ when span > 1.
+      var btnStyle='background:rgba(58,90,170,.12);border:none;width:22px;height:22px;border-radius:4px;color:#1a3a78;cursor:pointer;font-weight:900;line-height:1;padding:0;font-size:13px;flex-shrink:0';
+      var shrinkBtn=curSpan>1
+        ? '<button onclick="event.stopPropagation();opsAdjustSpan('+idx+',-1)" title="Shrink by 1 day" style="'+btnStyle+'">&#9664;</button>'
+        : '';
+      var extendBtn='<button onclick="event.stopPropagation();opsAdjustSpan('+idx+',1)" title="Extend by 1 day (merge next cell)" style="'+btnStyle+'">&#9654;</button>';
+      html+='<div style="display:flex;align-items:center;gap:5px;padding:4px 12px"><div class="ops-chip '+chipClass+'" onclick="event.stopPropagation();opsStartEdit('+idx+',this)"'+chipStyle+' title="Click to edit">'+safeV+spanBadge+'</div>'+shrinkBtn+extendBtn+'<button onclick="event.stopPropagation();opsRemoveItem('+idx+')" title="Remove this entry" style="background:rgba(216,90,97,.12);border:none;width:22px;height:22px;border-radius:4px;color:#a03040;cursor:pointer;font-weight:900;line-height:1;padding:0;font-size:14px;flex-shrink:0">&times;</button></div>';
     });
     html+='<div class="ops-div"></div>';
   }
   // Custom input + colour palette
   html+='<input class="ops-ci" id="opsCiTxt" placeholder="Custom..." onkeydown="if(event.keyCode===13)opsCiAdd()"/>';
   if(row!=='ml'){
-    html+='<div style="display:flex;gap:3px;align-items:center;padding:4px 12px 0;flex-wrap:wrap;font-size:10px;color:#888"><span style="margin-right:2px">Color:</span>'+
-      '<span class="ops-ci-sw" data-cls="" style="display:inline-block;width:18px;height:18px;border-radius:3px;background:rgba(255,200,200,.4);cursor:pointer;border:2px solid #302f2c" title="Auto" onclick="opsCiPick(this,\'\')"></span>'+
-      '<span class="ops-ci-sw" data-cls="ops-andrew" style="display:inline-block;width:18px;height:18px;border-radius:3px;background:rgba(58,138,85,.55);cursor:pointer;border:2px solid transparent" title="Green" onclick="opsCiPick(this,\'ops-andrew\')"></span>'+
-      '<span class="ops-ci-sw" data-cls="ops-ian" style="display:inline-block;width:18px;height:18px;border-radius:3px;background:rgba(58,90,170,.55);cursor:pointer;border:2px solid transparent" title="Blue" onclick="opsCiPick(this,\'ops-ian\')"></span>'+
-      '<span class="ops-ci-sw" data-cls="ops-chris" style="display:inline-block;width:18px;height:18px;border-radius:3px;background:rgba(192,148,32,.55);cursor:pointer;border:2px solid transparent" title="Gold" onclick="opsCiPick(this,\'ops-chris\')"></span>'+
-      '<span class="ops-ci-sw" data-cls="ops-show" style="display:inline-block;width:18px;height:18px;border-radius:3px;background:rgba(120,72,168,.55);cursor:pointer;border:2px solid transparent" title="Purple" onclick="opsCiPick(this,\'ops-show\')"></span>'+
-      '<span class="ops-ci-sw" data-cls="ops-prod" style="display:inline-block;width:18px;height:18px;border-radius:3px;background:rgba(200,118,38,.55);cursor:pointer;border:2px solid transparent" title="Orange" onclick="opsCiPick(this,\'ops-prod\')"></span>'+
-      '<span class="ops-ci-sw" data-cls="ops-event" style="display:inline-block;width:18px;height:18px;border-radius:3px;background:rgba(38,150,140,.55);cursor:pointer;border:2px solid transparent" title="Teal" onclick="opsCiPick(this,\'ops-event\')"></span>'+
-      '<span class="ops-ci-sw" data-cls="ops-note" style="display:inline-block;width:18px;height:18px;border-radius:3px;background:rgba(216,90,97,.45);cursor:pointer;border:2px solid transparent" title="Pink" onclick="opsCiPick(this,\'ops-note\')"></span>'+
+    html+='<div style="display:flex;gap:3px;align-items:center;padding:4px 12px 0;flex-wrap:wrap;font-size:10px;color:#888">'+
+      '<span class="ops-ci-sw" data-cls="" style="display:inline-block;width:16px;height:16px;border-radius:3px;background:rgba(255,200,200,.4);cursor:pointer;border:2px solid #302f2c" title="Auto" onclick="opsCiPick(this,\'\')"></span>'+
+      '<span class="ops-ci-sw" data-cls="ops-andrew" style="display:inline-block;width:16px;height:16px;border-radius:3px;background:rgba(58,138,85,.55);cursor:pointer;border:2px solid transparent" title="Green" onclick="opsCiPick(this,\'ops-andrew\')"></span>'+
+      '<span class="ops-ci-sw" data-cls="ops-ian" style="display:inline-block;width:16px;height:16px;border-radius:3px;background:rgba(58,90,170,.55);cursor:pointer;border:2px solid transparent" title="Blue" onclick="opsCiPick(this,\'ops-ian\')"></span>'+
+      '<span class="ops-ci-sw" data-cls="ops-chris" style="display:inline-block;width:16px;height:16px;border-radius:3px;background:rgba(192,148,32,.55);cursor:pointer;border:2px solid transparent" title="Gold" onclick="opsCiPick(this,\'ops-chris\')"></span>'+
+      '<span class="ops-ci-sw" data-cls="ops-show" style="display:inline-block;width:16px;height:16px;border-radius:3px;background:rgba(120,72,168,.55);cursor:pointer;border:2px solid transparent" title="Purple" onclick="opsCiPick(this,\'ops-show\')"></span>'+
+      '<span class="ops-ci-sw" data-cls="ops-prod" style="display:inline-block;width:16px;height:16px;border-radius:3px;background:rgba(200,118,38,.55);cursor:pointer;border:2px solid transparent" title="Orange" onclick="opsCiPick(this,\'ops-prod\')"></span>'+
+      '<span class="ops-ci-sw" data-cls="ops-event" style="display:inline-block;width:16px;height:16px;border-radius:3px;background:rgba(38,150,140,.55);cursor:pointer;border:2px solid transparent" title="Teal" onclick="opsCiPick(this,\'ops-event\')"></span>'+
+      '<span class="ops-ci-sw" data-cls="ops-note" style="display:inline-block;width:16px;height:16px;border-radius:3px;background:rgba(216,90,97,.45);cursor:pointer;border:2px solid transparent" title="Pink" onclick="opsCiPick(this,\'ops-note\')"></span>'+
       '<input type="hidden" id="opsCiCls" value=""/>'+
     '</div>';
   }
@@ -1320,6 +1327,49 @@ function opsStartEdit(idx,chipEl){
 }
 function opsClear(){if(!_opsEd)return;const{month,day,row,id}=_opsEd;os(month,day,row,[]);opsRefCell(id,month,day,row);opsCloseCed();}
 function opsRemoveItem(idx){if(!_opsEd)return;const{month,day,row,id}=_opsEd;const cur=og(month,day,row).slice();if(idx<0||idx>=cur.length)return;cur.splice(idx,1);os(month,day,row,cur);opsRefCell(id,month,day,row);opsCk(document.getElementById(id));}
+// Adjust the span of an entry — extending merges with the next cell(s) by
+// clearing them and increasing the span. Shrinking reduces the span; if it
+// drops to 1, the entry becomes a plain single-day entry.
+function opsAdjustSpan(idx,delta){
+  if(!_opsEd)return;
+  const{month,day,row,id}=_opsEd;
+  const m=OPS_CAL.find(function(x){return x.month===month;});
+  if(!m)return;
+  const dayIdx=m.days.findIndex(function(d){return d.day===day;});
+  if(dayIdx<0)return;
+  const cur=og(month,day,row).slice();
+  if(idx<0||idx>=cur.length)return;
+  const v=cur[idx];
+  const curSpan=(v&&typeof v==='object'&&v.span&&v.span>1)?v.span:1;
+  const maxSpan=m.days.length-dayIdx;
+  const newSpan=Math.max(1,Math.min(curSpan+delta,maxSpan));
+  if(newSpan===curSpan)return;
+  // Update the entry
+  if(newSpan===1){
+    // Span shrinks to 1 — convert object span back to plain (drop span field)
+    if(typeof v==='object'&&v){
+      const stripped=Object.assign({},v);delete stripped.span;
+      // If the only remaining field is text, simplify to a string
+      const keys=Object.keys(stripped);
+      if(keys.length===1&&keys[0]==='text')cur[idx]=stripped.text;
+      else cur[idx]=stripped;
+    }
+  } else {
+    const text=(typeof v==='string')?v:(v&&v.text?v.text:'');
+    if(typeof v==='string')cur[idx]={text:text,span:newSpan};
+    else cur[idx]=Object.assign({},v,{text:text,span:newSpan});
+  }
+  // If extending, clear the newly-absorbed cells so they don't render their own chips
+  if(newSpan>curSpan){
+    for(var k=curSpan;k<newSpan;k++){
+      var absorbedDay=m.days[dayIdx+k].day;
+      _opsD[month+'|'+absorbedDay+'|'+row]=[];
+    }
+  }
+  os(month,day,row,cur);
+  if(typeof opsReRender==='function')opsReRender();
+  opsCk(document.getElementById(id));
+}
 
 // ── DRAG-TO-MERGE ────────────────────────────────────────────────────────────
 // Click-and-drag across cells in the same row to merge them into a single
