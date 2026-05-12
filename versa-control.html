@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Versa Studios — Control Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --bg:#efede3;
+  --panel:#fafaf6;
+  --text:#302f2c;
+  --muted:rgba(48,47,44,.55);
+  --muted-2:rgba(48,47,44,.35);
+  --border:rgba(48,47,44,.15);
+  --border-s:rgba(48,47,44,.08);
+  --accent:#F4A258;
+  --kyoto:#5B5F8D;
+  --matcha:#7A9A80;
+  --terracotta:#DA6B51;
+  --green:#5a8a3a;
+  --red:#a82020;
+  --font:'Barlow',-apple-system,BlinkMacSystemFont,sans-serif;
+  --cond:'Barlow Condensed',-apple-system,BlinkMacSystemFont,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;-webkit-font-smoothing:antialiased}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+a{color:inherit;text-decoration:none}
+
+/* ── LOGIN VIEW ────────────────────────────────────────────────── */
+/* ── LOGIN PAGE (distinct dark aesthetic) ── */
+.login-wrap{min-height:100vh;display:flex;align-items:stretch;justify-content:center;background:#1a1816;color:var(--bg);position:relative;overflow:hidden}
+.login-wrap::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at top right,rgba(244,162,88,.07),transparent 60%),radial-gradient(ellipse at bottom left,rgba(91,95,141,.06),transparent 60%);pointer-events:none}
+.login-card{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;max-width:440px;padding:40px 32px;margin:auto}
+.login-hero{text-align:center;margin-bottom:32px;width:100%}
+.login-logo{display:block;height:46px;width:auto;margin:0 auto 28px;color:var(--bg)}
+.login-eyebrow{font-family:var(--cond);font-size:14px;font-weight:800;letter-spacing:.36em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+.login-title{font-family:var(--cond);font-size:38px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;color:var(--bg);line-height:.95;margin:0}
+.login-tagline{margin-top:14px;font-family:var(--cond);font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:rgba(239,237,227,.4)}
+.login-rule{width:48px;height:2px;background:var(--accent);margin:0 auto 28px}
+.login-form{width:100%;display:flex;flex-direction:column;gap:14px}
+.login-fld{margin-bottom:0}
+.login-fld label{display:block;font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:rgba(239,237,227,.5);margin-bottom:6px}
+.login-fld input{width:100%;padding:13px 16px;border:1px solid rgba(239,237,227,.14);border-radius:4px;background:rgba(239,237,227,.04);color:var(--bg);font-size:15px;font-family:var(--cond);font-weight:500;letter-spacing:.02em;outline:none;transition:border-color .15s,background .15s}
+.login-fld input:focus{border-color:var(--accent);background:rgba(239,237,227,.07)}
+.login-fld input::placeholder{color:rgba(239,237,227,.25)}
+.login-btn{width:100%;padding:15px;background:var(--accent);color:#1a1816;border:none;border-radius:4px;font-family:var(--cond);font-size:13px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;margin-top:8px;transition:background .15s,transform .1s;cursor:pointer}
+.login-btn:hover{background:#FFB36F}
+.login-btn:active{transform:translateY(1px)}
+.login-btn:disabled{opacity:.45;cursor:not-allowed;background:rgba(244,162,88,.4)}
+.login-msg{margin-top:14px;font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;text-align:center;min-height:16px;color:#e8a594}
+.login-foot{position:absolute;bottom:18px;left:0;right:0;text-align:center;font-family:var(--cond);font-size:9px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:rgba(239,237,227,.18);z-index:1}
+
+/* OR divider + monitor link */
+.login-divider{display:flex;align-items:center;gap:10px;margin:20px 0 4px;color:rgba(239,237,227,.3)}
+.login-divider::before,.login-divider::after{content:"";flex:1;height:1px;background:rgba(239,237,227,.12)}
+.login-divider span{font-family:var(--cond);font-size:10px;font-weight:700;letter-spacing:.24em;text-transform:uppercase}
+.login-monitor-link{width:100%;padding:11px;background:transparent;border:1px solid rgba(239,237,227,.16);border-radius:4px;color:rgba(239,237,227,.7);font-family:var(--cond);font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:all .15s}
+.login-monitor-link:hover{border-color:rgba(239,237,227,.4);color:var(--bg);background:rgba(239,237,227,.04)}
+
+/* Monitor-only view (no auth) */
+.mo-bar{background:#111;border-bottom:1px solid #2a2724;padding:10px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;z-index:10}
+.mo-bar-left{display:flex;align-items:center;gap:12px;min-width:0}
+.mo-bar-logo{height:22px;width:auto;color:var(--bg);opacity:.9;display:block;flex-shrink:0}
+.mo-bar-divider{width:1px;height:18px;background:rgba(239,237,227,.18);flex-shrink:0}
+.mo-bar-title{font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--bg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mo-pulse{width:7px;height:7px;border-radius:50%;background:#5a8a3a;box-shadow:0 0 0 0 rgba(90,138,58,.6);animation:pulse 2s infinite;flex-shrink:0;margin-left:4px}
+.mo-bar-back{padding:6px 12px;border:1px solid rgba(239,237,227,.22);border-radius:4px;color:var(--bg);background:transparent;font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .15s;flex-shrink:0}
+.mo-bar-back:hover{background:rgba(239,237,227,.06);border-color:rgba(239,237,227,.4)}
+.mo-frame{width:100%;height:calc(100vh - 50px);border:none;display:block;background:#fff}
+@media(max-width:480px){.mo-bar-title{font-size:11px}.mo-bar-back{padding:5px 9px;font-size:10px}}
+@media(max-width:480px){
+  .login-card{padding:32px 22px}
+  .login-title{font-size:30px}
+  .login-logo{height:40px}
+}
+
+/* ── HEADER ────────────────────────────────────────────────────── */
+.hdr{background:var(--text);color:var(--bg);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.hdr-left{display:flex;align-items:center;gap:14px;cursor:pointer}
+.hdr-logo{height:26px;width:auto;color:var(--bg);display:block;opacity:.95}
+.hdr-divider{width:1px;height:22px;background:rgba(239,237,227,.18)}
+.hdr-brand{font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:rgba(239,237,227,.55)}
+.hdr-title{font-family:var(--cond);font-size:18px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:var(--bg);line-height:1}
+.hdr-right{display:flex;align-items:center;gap:14px}
+.hdr-user{font-family:var(--cond);font-size:12px;font-weight:700;letter-spacing:.08em;color:rgba(239,237,227,.7);text-transform:uppercase}
+.hdr-btn{padding:6px 12px;border:1.5px solid rgba(239,237,227,.3);border-radius:5px;color:var(--bg);font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;transition:background .15s,border-color .15s}
+.hdr-btn:hover{border-color:var(--bg);background:rgba(239,237,227,.08)}
+
+/* Sub-header (when inside a section) */
+.sub-hdr{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:18px 24px 14px;border-bottom:1px solid var(--border);background:var(--panel)}
+.sub-hdr-left{display:flex;align-items:center;gap:14px;flex:1;min-width:0}
+.back-btn{padding:7px 12px;border-radius:5px;border:1.5px solid var(--border);font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--text);transition:background .15s,border-color .15s}
+.back-btn:hover{background:rgba(48,47,44,.05);border-color:var(--text)}
+.sub-hdr-title{font-family:var(--cond);font-size:22px;font-weight:900;letter-spacing:.02em;text-transform:uppercase;color:var(--text);line-height:1}
+.sub-hdr-right{display:flex;align-items:center;gap:8px}
+
+/* ── HOME (TILES) ──────────────────────────────────────────────── */
+.home-wrap{padding:36px 24px;max-width:1100px;margin:0 auto}
+.home-greet{font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.home-heading{font-family:var(--cond);font-size:34px;font-weight:900;letter-spacing:.01em;text-transform:uppercase;color:var(--text);margin-bottom:30px;line-height:1}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
+.tile{padding:32px 28px;border-radius:10px;color:#fff;cursor:pointer;transition:transform .15s,box-shadow .15s;display:flex;flex-direction:column;justify-content:space-between;min-height:180px;border:none;text-align:left;font:inherit}
+.tile:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(48,47,44,.18)}
+.tile-icon{font-size:42px;margin-bottom:14px;line-height:1}
+.tile-num{font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.24em;color:rgba(255,255,255,.55);margin-bottom:14px;text-transform:uppercase}
+
+/* ── LIVE MONITOR WIDGET ────────────────────────────────────── */
+.monitor-widget{background:var(--panel);border:1px solid var(--border);border-radius:10px;margin-bottom:32px;overflow:hidden}
+.monitor-hdr{padding:13px 20px;background:rgba(48,47,44,.04);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.monitor-hdr-left{display:flex;align-items:center;gap:10px}
+.monitor-pulse{width:8px;height:8px;border-radius:50%;background:#5a8a3a;box-shadow:0 0 0 0 rgba(90,138,58,.6);animation:pulse 2s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(90,138,58,.6)}70%{box-shadow:0 0 0 8px rgba(90,138,58,0)}100%{box-shadow:0 0 0 0 rgba(90,138,58,0)}}
+.monitor-title{font-family:var(--cond);font-size:13px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--text)}
+.monitor-pin-hint{font-family:var(--cond);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-left:6px}
+.monitor-link{font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:5px 10px;border:1.5px solid var(--border);border-radius:4px;transition:color .15s,border-color .15s}
+.monitor-link:hover{color:var(--text);border-color:var(--text)}
+.monitor-frame{width:100%;height:460px;border:none;display:block;background:#fff}
+.home-subheading{font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+@media(max-width:760px){.monitor-frame{height:380px}}
+
+/* ── STUDIOS WEEK GRID ──────────────────────────────────────── */
+.studios-week-body{overflow-x:auto;background:#fff;padding:4px}
+.studios-week{width:100%;border-collapse:separate;border-spacing:4px;font-family:var(--cond);min-width:780px}
+.studios-week th,.studios-week td{padding:0;vertical-align:middle;border-radius:5px}
+.studios-week thead th{background:transparent;padding:0;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text);font-size:11px}
+.studios-week thead .studio-name-h{width:120px;background:transparent}
+.studios-week thead .day-h{text-align:center;background:rgba(48,47,44,.04);padding:9px 4px;position:relative;transition:background .15s}
+.studios-week thead .day-h-day{font-size:10px;color:var(--muted);letter-spacing:.16em;line-height:1;font-weight:700}
+.studios-week thead .day-h-date{font-size:18px;color:var(--text);font-weight:900;margin-top:3px;line-height:1;letter-spacing:-.01em}
+.studios-week thead .day-h.weekend{background:rgba(48,47,44,.07)}
+.studios-week thead .day-h.weekend .day-h-day,.studios-week thead .day-h.weekend .day-h-date{color:var(--muted-2)}
+.studios-week thead .day-h.today{background:var(--accent);color:#fff}
+.studios-week thead .day-h.today .day-h-day{color:rgba(255,255,255,.85)}
+.studios-week thead .day-h.today .day-h-date{color:#fff}
+.studios-week thead .day-h.today::after{content:"";position:absolute;left:50%;bottom:-7px;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--accent);width:0;height:0}
+.studios-week .studio-name{width:120px;background:rgba(91,95,141,.08);padding:0 14px;font-weight:800;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--kyoto);text-align:left;border-left:3px solid var(--kyoto);height:54px}
+.studios-week .sw-cell{padding:6px 5px;height:54px;background:rgba(48,47,44,.025);transition:background .15s}
+.studios-week .sw-cell.weekend{background:rgba(48,47,44,.05)}
+.studios-week .sw-cell.today{background:rgba(244,162,88,.10)}
+.studios-week .sw-pill{display:flex;align-items:center;padding:5px 9px;border-radius:4px;font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;line-height:1.2;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:0 1px 0 rgba(0,0,0,.06),inset 0 1px 0 rgba(255,255,255,.18);position:relative}
+.studios-week .sw-pill::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:rgba(0,0,0,.18)}
+.studios-week .sw-pill:last-child{margin-bottom:0}
+.studios-week-empty{padding:50px 20px;text-align:center;color:var(--muted);font-family:var(--cond);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.tile-name{font-family:var(--cond);font-size:24px;font-weight:900;letter-spacing:.02em;text-transform:uppercase;color:#fff;line-height:1.05;margin-bottom:6px}
+.tile-desc{font-family:var(--font);font-size:13px;font-weight:500;letter-spacing:.02em;color:rgba(255,255,255,.85);line-height:1.4}
+
+/* ── MINUTES ───────────────────────────────────────────────────── */
+.min-wrap{padding:24px 24px 80px;max-width:1100px;margin:0 auto}
+
+/* Minutes tabs */
+.min-tabs{display:flex;gap:0;border-bottom:2px solid rgba(91,95,141,.2);margin-bottom:22px}
+.min-tab{padding:10px 20px;font-family:var(--cond);font-size:13px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .15s}
+.min-tab.active{color:var(--kyoto);border-bottom-color:var(--kyoto)}
+
+/* Meetings list */
+.mtg-grid{display:grid;gap:10px}
+.mtg-row{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:16px 20px;cursor:pointer;display:flex;align-items:center;gap:16px;transition:border-color .15s,background .15s}
+.mtg-row:hover{border-color:var(--text);background:#fff}
+.mtg-date{font-family:var(--cond);font-size:13px;font-weight:900;letter-spacing:.04em;color:var(--muted);text-transform:uppercase;width:120px;flex-shrink:0}
+.mtg-title{font-family:var(--cond);font-size:18px;font-weight:900;letter-spacing:.02em;text-transform:uppercase;color:var(--text);flex:1;line-height:1.1}
+.mtg-meta{display:flex;gap:8px;flex-wrap:wrap;flex-shrink:0}
+.mtg-chip{font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:3px;background:rgba(48,47,44,.07);color:var(--muted)}
+.mtg-chip.has{background:rgba(91,95,141,.12);color:var(--kyoto)}
+.mtg-chip.action-open{background:rgba(244,162,88,.18);color:#a05818}
+
+.empty-state{padding:60px 20px;text-align:center;color:var(--muted);background:var(--panel);border:1px dashed var(--border);border-radius:10px}
+.empty-state-icon{font-size:42px;margin-bottom:10px;opacity:.4}
+.empty-state-txt{font-family:var(--cond);font-size:14px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;margin-bottom:14px}
+
+/* Meeting detail */
+.det-wrap{display:grid;gap:18px}
+.det-sec{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:18px 20px}
+.det-sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.det-sec-title{font-family:var(--cond);font-size:14px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--text)}
+.det-fld{margin-bottom:14px}
+.det-fld:last-child{margin-bottom:0}
+.det-fld label{display:block;font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.det-fld input,.det-fld textarea,.det-fld select{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:5px;background:#fff;color:var(--text);font-size:14px;outline:none;transition:border-color .15s}
+.det-fld input:focus,.det-fld textarea:focus,.det-fld select:focus{border-color:var(--text)}
+.det-fld textarea{min-height:60px;resize:vertical;line-height:1.5}
+.det-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:600px){.det-grid-2{grid-template-columns:1fr}}
+
+/* Attendees / decisions / agenda chips & rows */
+.chip-input-row{display:flex;gap:6px;margin-bottom:8px}
+.chip-input-row input{flex:1}
+.chip-list{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;background:rgba(91,95,141,.1);color:var(--kyoto);border-radius:4px;font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+.chip button{font-size:16px;line-height:1;color:var(--kyoto);opacity:.55;padding:0 0 0 4px}
+.chip button:hover{opacity:1}
+
+.agenda-row,.decision-row,.action-row{background:#fff;border:1px solid var(--border);border-radius:6px;padding:12px 14px;margin-bottom:8px}
+.agenda-row:last-child,.decision-row:last-child,.action-row:last-child{margin-bottom:0}
+.agenda-row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:start}
+.agenda-row textarea{min-height:38px;resize:vertical;border:none;background:rgba(48,47,44,.03);padding:8px 10px;border-radius:4px;width:100%;font-family:inherit;font-size:14px}
+.agenda-row textarea:focus{outline:1.5px solid var(--text)}
+.agenda-row .topic{font-family:var(--cond);font-size:14px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;border:none;background:none;padding:0;margin-bottom:6px;color:var(--text);width:100%}
+.agenda-row .topic:focus{outline:none;border-bottom:1.5px solid var(--text)}
+
+.decision-row{display:flex;align-items:center;gap:10px}
+.decision-row input{flex:1;border:none;background:rgba(48,47,44,.03);padding:8px 10px;border-radius:4px}
+.decision-row input:focus{outline:1.5px solid var(--text)}
+
+.action-row{display:grid;grid-template-columns:2fr 1fr 1fr 90px auto;gap:8px;align-items:center}
+@media(max-width:760px){.action-row{grid-template-columns:1fr 1fr;gap:6px}}
+.action-row input[type=text],.action-row input[type=date],.action-row select{border:none;background:rgba(48,47,44,.03);padding:8px 10px;border-radius:4px}
+.action-row input:focus,.action-row select:focus{outline:1.5px solid var(--text)}
+.action-row select{font-family:var(--cond);font-weight:800;letter-spacing:.04em;text-transform:uppercase;font-size:12px}
+.status-pill{display:inline-block;padding:3px 8px;border-radius:3px;font-family:var(--cond);font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+.status-open{background:rgba(244,162,88,.18);color:#a05818}
+.status-done{background:rgba(90,138,58,.18);color:var(--green)}
+.status-blocked{background:rgba(168,32,32,.15);color:var(--red)}
+
+.rm-btn{width:30px;height:30px;border-radius:50%;background:rgba(168,32,32,.08);color:var(--red);font-size:16px;line-height:1;transition:background .15s}
+.rm-btn:hover{background:rgba(168,32,32,.18)}
+
+.add-btn{padding:8px 14px;background:transparent;border:1.5px dashed var(--border);border-radius:5px;font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:6px;transition:border-color .15s,color .15s}
+.add-btn:hover{border-color:var(--text);color:var(--text)}
+
+.btn-primary{padding:10px 18px;background:var(--text);color:var(--bg);border-radius:5px;font-family:var(--cond);font-size:12px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;transition:background .15s}
+.btn-primary:hover{background:#000}
+.btn-secondary{padding:9px 16px;border:1.5px solid var(--border);border-radius:5px;font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--text);transition:border-color .15s,background .15s}
+.btn-secondary:hover{border-color:var(--text);background:rgba(48,47,44,.04)}
+.btn-danger{padding:9px 16px;background:rgba(168,32,32,.08);border:1.5px solid rgba(168,32,32,.25);border-radius:5px;font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--red);transition:background .15s}
+.btn-danger:hover{background:rgba(168,32,32,.15)}
+
+/* ── STAFF PICKER MODAL ──────────────────────────────────────── */
+.modal-ov{position:fixed;inset:0;background:rgba(48,47,44,.55);display:none;align-items:center;justify-content:center;z-index:500;padding:20px}
+.modal-ov.open{display:flex}
+.modal-card{background:var(--panel);border-radius:10px;max-width:480px;width:100%;max-height:80vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(48,47,44,.35)}
+.modal-hdr{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-family:var(--cond);font-size:18px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;color:var(--text)}
+.modal-x{font-size:24px;color:var(--muted);width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.modal-x:hover{background:rgba(48,47,44,.08);color:var(--text)}
+.modal-body{padding:14px 22px;overflow-y:auto;flex:1}
+.modal-foot{padding:14px 22px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end}
+.staff-search{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:5px;margin-bottom:10px;background:#fff;font-size:14px;outline:none}
+.staff-search:focus{border-color:var(--text)}
+.staff-row{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:5px;cursor:pointer;transition:background .12s}
+.staff-row:hover{background:rgba(48,47,44,.04)}
+.staff-row.selected{background:rgba(91,95,141,.1)}
+.staff-cb{width:18px;height:18px;border:1.5px solid var(--border);border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:#fff}
+.staff-row.selected .staff-cb{background:var(--kyoto);border-color:var(--kyoto)}
+.staff-row.selected .staff-cb::after{content:'';display:block;width:5px;height:9px;border:2px solid #fff;border-top:0;border-left:0;transform:rotate(45deg);margin-top:-2px}
+.staff-name{font-family:var(--font);font-size:14px;font-weight:600;color:var(--text);flex:1}
+.staff-role{font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.staff-empty{padding:30px 10px;text-align:center;color:var(--muted);font-family:var(--cond);font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.staff-custom{padding:10px;border-top:1px dashed var(--border);margin-top:8px;display:flex;gap:6px}
+.staff-custom input{flex:1;padding:8px 10px;border:1.5px solid var(--border);border-radius:5px;background:#fff;font-size:13px;outline:none}
+
+/* ── ACCOUNT MODAL ── */
+.acc-row{padding:10px 0}
+.acc-row-label{font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.acc-row-value{font-family:var(--font);font-size:14px;font-weight:600;color:var(--text);word-break:break-all}
+.acc-divider{height:1px;background:var(--border);margin:8px 0 16px}
+.acc-section-title{font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--kyoto);margin-bottom:10px}
+.acc-form{display:flex;flex-direction:column;gap:8px}
+.acc-form input{padding:10px 12px;border:1.5px solid var(--border);border-radius:5px;background:#fff;font-size:14px;color:var(--text);outline:none;transition:border-color .15s;font-family:var(--font)}
+.acc-form input:focus{border-color:var(--kyoto)}
+.acc-form input::placeholder{color:var(--muted-2)}
+.acc-msg{font-family:var(--cond);font-size:11px;font-weight:700;letter-spacing:.06em;min-height:14px;padding:2px 0;text-transform:uppercase}
+.acc-msg.error{color:#a82020}
+.acc-msg.success{color:#2a7a3a}
+.acc-msg.info{color:var(--muted)}
+.acc-form button{margin-top:4px}
+.staff-custom input:focus{border-color:var(--text)}
+
+/* ── BULLET NOTES ────────────────────────────────────────────── */
+.bullet-list{display:flex;flex-direction:column;gap:6px}
+.bullet-row{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;background:#fff;border:1px solid var(--border);border-radius:6px;padding:10px 12px;transition:border-color .15s}
+.bullet-row:focus-within{border-color:var(--text)}
+.bullet-dot{width:6px;height:6px;border-radius:50%;background:var(--kyoto);flex-shrink:0;margin-top:1px}
+.bullet-row input{border:none;background:transparent;font-size:14px;outline:none;color:var(--text);padding:2px 0;font-family:inherit;line-height:1.5}
+.bullet-row input::placeholder{color:var(--muted-2)}
+.bullet-row .rm-btn{width:26px;height:26px;font-size:13px;background:transparent;color:var(--muted-2)}
+.bullet-row .rm-btn:hover{background:rgba(168,32,32,.1);color:var(--red)}
+.bullet-empty{padding:20px;text-align:center;color:var(--muted);font-family:var(--cond);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+
+/* Attendee chips on meeting list */
+.mtg-attendees{font-family:var(--font);font-size:12px;font-weight:500;color:var(--muted);margin-top:4px}
+
+/* ── ONE-LINE MEETING HEADER ─────────────────────────────────── */
+.meeting-headline{padding-bottom:12px;margin-bottom:16px;border-bottom:2px solid rgba(91,95,141,.15)}
+.meeting-name{font-family:var(--cond);font-size:24px;font-weight:900;letter-spacing:.03em;text-transform:uppercase;color:var(--kyoto);line-height:1}
+.meeting-row{display:grid;grid-template-columns:240px 1fr;gap:18px;align-items:flex-start}
+@media(max-width:640px){.meeting-row{grid-template-columns:1fr}}
+.meeting-att-fld label{display:block;font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.meeting-att-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:8px}
+.meeting-att-hdr label{margin-bottom:0}
+.btn-sm{padding:5px 11px;font-size:11px;letter-spacing:.08em}
+
+/* Date card — clickable, opens native picker */
+.date-card{position:relative;background:rgba(91,95,141,.07);border:1.5px solid rgba(91,95,141,.22);border-radius:7px;padding:10px 14px;cursor:pointer;transition:background .15s,border-color .15s;user-select:none}
+.date-card:hover{background:rgba(91,95,141,.13);border-color:var(--kyoto)}
+.date-card-label{font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--kyoto);margin-bottom:3px}
+.date-card-value{font-family:var(--cond);font-size:20px;font-weight:900;letter-spacing:.02em;color:var(--text);text-transform:uppercase;line-height:1.1}
+.date-card .hidden-date{position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;cursor:pointer;border:none;background:none;font:inherit;color:transparent}
+.date-card .hidden-date::-webkit-calendar-picker-indicator{cursor:pointer}
+
+/* Action row at the bottom of detail view */
+.detail-actions{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-top:6px}
+.detail-actions-right{display:flex;gap:8px;flex-wrap:wrap}
+
+.saved-flash{position:fixed;bottom:24px;right:24px;background:var(--text);color:var(--bg);padding:10px 18px;border-radius:6px;font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;opacity:0;transition:opacity .3s;pointer-events:none;z-index:1000}
+.saved-flash.show{opacity:.92}
+
+/* ── OPEN ACTIONS ─────────────────────────────────────────────── */
+.oa-row{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:14px 18px;margin-bottom:8px;display:grid;grid-template-columns:1fr 140px 110px 90px;gap:12px;align-items:center}
+@media(max-width:760px){.oa-row{grid-template-columns:1fr 1fr}}
+.oa-what{font-family:var(--font);font-size:14px;color:var(--text);line-height:1.4}
+.oa-meeting{font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+.oa-who{font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--kyoto)}
+.oa-due{font-family:var(--cond);font-size:12px;font-weight:700;color:var(--muted)}
+.oa-due.overdue{color:var(--red);font-weight:900}
+
+/* ── IFRAME VIEWS ─────────────────────────────────────────────── */
+.iframe-wrap{padding:0;height:calc(100vh - 120px);background:var(--panel)}
+.iframe-wrap iframe{width:100%;height:100%;border:none;background:#fff;display:block}
+.iframe-fallback{padding:16px 24px;font-family:var(--cond);font-size:12px;font-weight:700;color:var(--muted);text-align:center}
+.iframe-fallback a{color:var(--accent);font-weight:900;text-transform:uppercase;letter-spacing:.06em;text-decoration:underline}
+
+/* ── LOADING ──────────────────────────────────────────────────── */
+.loading{padding:80px 20px;text-align:center;color:var(--muted)}
+.loading-spin{display:inline-block;width:28px;height:28px;border:2.5px solid var(--border);border-top-color:var(--text);border-radius:50%;animation:spin .8s linear infinite;margin-bottom:14px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-txt{font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+</style>
+</head>
+<body>
+
+<!-- ── LOGIN VIEW ─────────────────────────────────────────────── -->
+<div id="loginView" class="login-wrap">
+  <div class="login-card">
+    <div class="login-hero">
+      <svg class="login-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1366 515.64" aria-label="Versa Studios" fill="currentColor"><path d="M194.16,507.33v-14.7c9.09,4.45,23.4,9.67,38.67,9.67,18.17,0,32.09-8.12,32.09-22.23s-7.54-21.65-32.09-30.35c-27.64-9.86-39.05-21.66-39.05-41.76,0-23,19.72-36.15,44.66-36.15A86.6,86.6,0,0,1,272.27,379v14.31c-7.54-3.87-20.88-8.13-33.25-8.13-17.79,0-30.74,8.71-30.74,22.24,0,12.57,6.77,21.26,31.7,30.35,27.84,9.86,39.44,21.07,39.44,41.37,0,23-18.56,36.54-45.82,36.54A99.2,99.2,0,0,1,194.16,507.33Z"/><path d="M371.83,386.5V513.32H357.14V386.5H314.42V374.13H414.75V386.5Z"/><path d="M565.75,465.38c0,31.51-19.53,50.26-52.2,50.26-32.48,0-52-18.75-52-50.26V374.13h14.69V464.6c0,23.4,13.92,37.32,37.32,37.32s37.5-13.92,37.5-37.32V374.13h14.7Z"/><path d="M628.58,513.32V374.13h38.47c41.56,0,73.46,26.68,73.46,69.6S709,513.32,667.82,513.32ZM643.27,386.5V501h24.55c32.68,0,57.61-22.23,57.61-57.22S700.3,386.5,666.86,386.5Z"/><path d="M795.23,513.32V374.13h14.69V513.32Z"/><path d="M938.1,371.81c40,0,70.76,31.7,70.76,71.92,0,40.4-30.36,71.91-70.76,71.91-40.21,0-70.76-31.51-70.76-71.91C867.34,403.9,897.89,371.81,938.1,371.81Zm0,130.11c32.48,0,55.68-25.14,55.68-58.19s-23.2-58.2-55.68-58.2c-32.29,0-55.87,25.14-55.87,58.2S905.81,501.92,938.1,501.92Z"/><path d="M1055.25,507.33v-14.7c9.09,4.45,23.4,9.67,38.67,9.67,18.17,0,32.09-8.12,32.09-22.23s-7.54-21.65-32.09-30.35c-27.64-9.86-39.05-21.66-39.05-41.76,0-23,19.72-36.15,44.66-36.15a86.6,86.6,0,0,1,33.83,7.15v14.31c-7.54-3.87-20.88-8.13-33.25-8.13-17.79,0-30.74,8.71-30.74,22.24,0,12.57,6.77,21.26,31.7,30.35,27.84,9.86,39.44,21.07,39.44,41.37,0,23-18.56,36.54-45.82,36.54A99.2,99.2,0,0,1,1055.25,507.33Z"/><path d="M131.23,270.82h-2.18L0,5.09H61.07L95.24,80.7c13.45,30.17,25.44,56,34.53,81.43C137.4,143.58,153.4,106.51,165,80.7L199.2,5.09h60.71Z"/><path d="M334.77,266.82V5.09H503.08V52H390.75V111.6H486v45.07H390.75v63.25H508.53v46.9Z"/><path d="M691.36,5.09c60.71,0,101,30.17,101,86.15,0,38.17-21.44,63.25-49.8,74.52L797.5,266.82H738.25l-46.16-91.61H654.28v91.61H599.39V5.09ZM654.28,52v78.16h40c24.72,0,41.8-12.36,41.8-38.9,0-26.17-17.81-39.26-43.26-39.26Z"/><path d="M875.64,257V203.2c18.18,9.45,42.17,17.45,65.8,18.91a95.08,95.08,0,0,0,23.26-1.46c20-2.91,31.63-10.54,31.63-23.26,0-17.45-15.63-26.54-51.62-39.63-45.8-16.72-72.7-36-72.7-81.42C872,29.81,910.54,0,966.88,0c26.18,0,52,5.82,68.34,13.09V64.71c-15.26-9.09-40-16-64-16-26.9,0-44.35,10.54-44.35,27.27,0,15.26,14.17,25.8,49.8,39.25,45.8,17.81,74.15,37.08,74.15,81.07,0,47.25-35.62,75.61-97.42,75.61C923.63,271.91,894.54,265.36,875.64,257Z"/><path d="M1238.77,1.09h-2.18L1109.73,266.82h58.52l12-27.22c11-24.81,50.17-117.84,57.79-136,8,22.9,48.81,117.06,60.81,144.32h0l8.62,18.9H1366Z"/></svg>
+      <div class="login-eyebrow">Staff Access</div>
+      <div class="login-title">Control Dashboard</div>
+      <div class="login-tagline">Manchester</div>
+    </div>
+    <div class="login-rule"></div>
+    <div class="login-form">
+      <div class="login-fld">
+        <label for="loginEmail">Email</label>
+        <input type="email" id="loginEmail" autocomplete="email" autofocus placeholder="you@versastudios.com"/>
+      </div>
+      <div class="login-fld">
+        <label for="loginPwd">Password</label>
+        <input type="password" id="loginPwd" autocomplete="current-password" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"/>
+      </div>
+      <button id="loginBtn" class="login-btn" onclick="doLogin()">Sign In</button>
+      <div id="loginMsg" class="login-msg"></div>
+      <div class="login-divider"><span>OR</span></div>
+      <button class="login-monitor-link" onclick="showMonitorOnly()">View Live Sign-In Monitor &rarr;</button>
+    </div>
+  </div>
+  <div class="login-foot">Versa Studios &middot; Broadcast Operations</div>
+</div>
+
+<!-- MONITOR-ONLY VIEW (no login required) -->
+<div id="monitorOnlyView" style="display:none;background:#1a1816;min-height:100vh;color:var(--bg)">
+  <div class="mo-bar">
+    <div class="mo-bar-left">
+      <svg class="mo-bar-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1366 515.64" aria-label="Versa Studios" fill="currentColor"><path d="M194.16,507.33v-14.7c9.09,4.45,23.4,9.67,38.67,9.67,18.17,0,32.09-8.12,32.09-22.23s-7.54-21.65-32.09-30.35c-27.64-9.86-39.05-21.66-39.05-41.76,0-23,19.72-36.15,44.66-36.15A86.6,86.6,0,0,1,272.27,379v14.31c-7.54-3.87-20.88-8.13-33.25-8.13-17.79,0-30.74,8.71-30.74,22.24,0,12.57,6.77,21.26,31.7,30.35,27.84,9.86,39.44,21.07,39.44,41.37,0,23-18.56,36.54-45.82,36.54A99.2,99.2,0,0,1,194.16,507.33Z"/><path d="M371.83,386.5V513.32H357.14V386.5H314.42V374.13H414.75V386.5Z"/><path d="M565.75,465.38c0,31.51-19.53,50.26-52.2,50.26-32.48,0-52-18.75-52-50.26V374.13h14.69V464.6c0,23.4,13.92,37.32,37.32,37.32s37.5-13.92,37.5-37.32V374.13h14.7Z"/><path d="M628.58,513.32V374.13h38.47c41.56,0,73.46,26.68,73.46,69.6S709,513.32,667.82,513.32ZM643.27,386.5V501h24.55c32.68,0,57.61-22.23,57.61-57.22S700.3,386.5,666.86,386.5Z"/><path d="M795.23,513.32V374.13h14.69V513.32Z"/><path d="M938.1,371.81c40,0,70.76,31.7,70.76,71.92,0,40.4-30.36,71.91-70.76,71.91-40.21,0-70.76-31.51-70.76-71.91C867.34,403.9,897.89,371.81,938.1,371.81Zm0,130.11c32.48,0,55.68-25.14,55.68-58.19s-23.2-58.2-55.68-58.2c-32.29,0-55.87,25.14-55.87,58.2S905.81,501.92,938.1,501.92Z"/><path d="M1055.25,507.33v-14.7c9.09,4.45,23.4,9.67,38.67,9.67,18.17,0,32.09-8.12,32.09-22.23s-7.54-21.65-32.09-30.35c-27.64-9.86-39.05-21.66-39.05-41.76,0-23,19.72-36.15,44.66-36.15a86.6,86.6,0,0,1,33.83,7.15v14.31c-7.54-3.87-20.88-8.13-33.25-8.13-17.79,0-30.74,8.71-30.74,22.24,0,12.57,6.77,21.26,31.7,30.35,27.84,9.86,39.44,21.07,39.44,41.37,0,23-18.56,36.54-45.82,36.54A99.2,99.2,0,0,1,1055.25,507.33Z"/><path d="M131.23,270.82h-2.18L0,5.09H61.07L95.24,80.7c13.45,30.17,25.44,56,34.53,81.43C137.4,143.58,153.4,106.51,165,80.7L199.2,5.09h60.71Z"/><path d="M334.77,266.82V5.09H503.08V52H390.75V111.6H486v45.07H390.75v63.25H508.53v46.9Z"/><path d="M691.36,5.09c60.71,0,101,30.17,101,86.15,0,38.17-21.44,63.25-49.8,74.52L797.5,266.82H738.25l-46.16-91.61H654.28v91.61H599.39V5.09ZM654.28,52v78.16h40c24.72,0,41.8-12.36,41.8-38.9,0-26.17-17.81-39.26-43.26-39.26Z"/><path d="M875.64,257V203.2c18.18,9.45,42.17,17.45,65.8,18.91a95.08,95.08,0,0,0,23.26-1.46c20-2.91,31.63-10.54,31.63-23.26,0-17.45-15.63-26.54-51.62-39.63-45.8-16.72-72.7-36-72.7-81.42C872,29.81,910.54,0,966.88,0c26.18,0,52,5.82,68.34,13.09V64.71c-15.26-9.09-40-16-64-16-26.9,0-44.35,10.54-44.35,27.27,0,15.26,14.17,25.8,49.8,39.25,45.8,17.81,74.15,37.08,74.15,81.07,0,47.25-35.62,75.61-97.42,75.61C923.63,271.91,894.54,265.36,875.64,257Z"/><path d="M1238.77,1.09h-2.18L1109.73,266.82h58.52l12-27.22c11-24.81,50.17-117.84,57.79-136,8,22.9,48.81,117.06,60.81,144.32h0l8.62,18.9H1366Z"/></svg>
+      <div class="mo-bar-divider"></div>
+      <div class="mo-bar-title">Live Sign-In Monitor</div>
+      <div class="mo-pulse"></div>
+    </div>
+    <button class="mo-bar-back" onclick="returnToLogin()">&larr; Back to Sign In</button>
+  </div>
+  <iframe id="monitorOnlyFrame" class="mo-frame" src="" allow="clipboard-write"></iframe>
+</div>
+
+<!-- ── APP SHELL ──────────────────────────────────────────────── -->
+<div id="appShell" style="display:none">
+  <div class="hdr">
+    <div class="hdr-left" onclick="navHome()">
+      <svg class="hdr-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1366 515.64" aria-label="Versa Studios" fill="currentColor"><path d="M194.16,507.33v-14.7c9.09,4.45,23.4,9.67,38.67,9.67,18.17,0,32.09-8.12,32.09-22.23s-7.54-21.65-32.09-30.35c-27.64-9.86-39.05-21.66-39.05-41.76,0-23,19.72-36.15,44.66-36.15A86.6,86.6,0,0,1,272.27,379v14.31c-7.54-3.87-20.88-8.13-33.25-8.13-17.79,0-30.74,8.71-30.74,22.24,0,12.57,6.77,21.26,31.7,30.35,27.84,9.86,39.44,21.07,39.44,41.37,0,23-18.56,36.54-45.82,36.54A99.2,99.2,0,0,1,194.16,507.33Z"/><path d="M371.83,386.5V513.32H357.14V386.5H314.42V374.13H414.75V386.5Z"/><path d="M565.75,465.38c0,31.51-19.53,50.26-52.2,50.26-32.48,0-52-18.75-52-50.26V374.13h14.69V464.6c0,23.4,13.92,37.32,37.32,37.32s37.5-13.92,37.5-37.32V374.13h14.7Z"/><path d="M628.58,513.32V374.13h38.47c41.56,0,73.46,26.68,73.46,69.6S709,513.32,667.82,513.32ZM643.27,386.5V501h24.55c32.68,0,57.61-22.23,57.61-57.22S700.3,386.5,666.86,386.5Z"/><path d="M795.23,513.32V374.13h14.69V513.32Z"/><path d="M938.1,371.81c40,0,70.76,31.7,70.76,71.92,0,40.4-30.36,71.91-70.76,71.91-40.21,0-70.76-31.51-70.76-71.91C867.34,403.9,897.89,371.81,938.1,371.81Zm0,130.11c32.48,0,55.68-25.14,55.68-58.19s-23.2-58.2-55.68-58.2c-32.29,0-55.87,25.14-55.87,58.2S905.81,501.92,938.1,501.92Z"/><path d="M1055.25,507.33v-14.7c9.09,4.45,23.4,9.67,38.67,9.67,18.17,0,32.09-8.12,32.09-22.23s-7.54-21.65-32.09-30.35c-27.64-9.86-39.05-21.66-39.05-41.76,0-23,19.72-36.15,44.66-36.15a86.6,86.6,0,0,1,33.83,7.15v14.31c-7.54-3.87-20.88-8.13-33.25-8.13-17.79,0-30.74,8.71-30.74,22.24,0,12.57,6.77,21.26,31.7,30.35,27.84,9.86,39.44,21.07,39.44,41.37,0,23-18.56,36.54-45.82,36.54A99.2,99.2,0,0,1,1055.25,507.33Z"/><path d="M131.23,270.82h-2.18L0,5.09H61.07L95.24,80.7c13.45,30.17,25.44,56,34.53,81.43C137.4,143.58,153.4,106.51,165,80.7L199.2,5.09h60.71Z"/><path d="M334.77,266.82V5.09H503.08V52H390.75V111.6H486v45.07H390.75v63.25H508.53v46.9Z"/><path d="M691.36,5.09c60.71,0,101,30.17,101,86.15,0,38.17-21.44,63.25-49.8,74.52L797.5,266.82H738.25l-46.16-91.61H654.28v91.61H599.39V5.09ZM654.28,52v78.16h40c24.72,0,41.8-12.36,41.8-38.9,0-26.17-17.81-39.26-43.26-39.26Z"/><path d="M875.64,257V203.2c18.18,9.45,42.17,17.45,65.8,18.91a95.08,95.08,0,0,0,23.26-1.46c20-2.91,31.63-10.54,31.63-23.26,0-17.45-15.63-26.54-51.62-39.63-45.8-16.72-72.7-36-72.7-81.42C872,29.81,910.54,0,966.88,0c26.18,0,52,5.82,68.34,13.09V64.71c-15.26-9.09-40-16-64-16-26.9,0-44.35,10.54-44.35,27.27,0,15.26,14.17,25.8,49.8,39.25,45.8,17.81,74.15,37.08,74.15,81.07,0,47.25-35.62,75.61-97.42,75.61C923.63,271.91,894.54,265.36,875.64,257Z"/><path d="M1238.77,1.09h-2.18L1109.73,266.82h58.52l12-27.22c11-24.81,50.17-117.84,57.79-136,8,22.9,48.81,117.06,60.81,144.32h0l8.62,18.9H1366Z"/></svg>
+      <div class="hdr-divider"></div>
+      <div class="hdr-title">Control Dashboard</div>
+    </div>
+    <div class="hdr-right">
+      <span class="hdr-user" id="hdrUser"></span>
+      <button class="hdr-btn" onclick="openAccountModal()">Account</button>
+      <button class="hdr-btn" onclick="doSignOut()">Sign Out</button>
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <div id="homeView">
+    <div class="home-wrap">
+      <div class="home-greet" id="homeGreet">Welcome back</div>
+
+      <div class="monitor-widget">
+        <div class="monitor-hdr">
+          <div class="monitor-hdr-left">
+            <div class="monitor-pulse"></div>
+            <div class="monitor-title">Manchester Sign-In · Live Monitor</div>
+          </div>
+          <a class="monitor-link" id="monitorOpenFull" href="#" target="_blank" rel="noopener">Open Full &nearr;</a>
+        </div>
+        <iframe class="monitor-frame" id="monitorHomeFrame" src="" allow="clipboard-write"></iframe>
+      </div>
+
+      <div class="monitor-widget" id="studiosWeekWidget">
+        <div class="monitor-hdr">
+          <div class="monitor-hdr-left">
+            <div class="monitor-title" id="studiosWeekTitle">Studios &middot; This Week</div>
+          </div>
+          <div style="display:flex;gap:6px">
+            <button class="monitor-link" onclick="studiosWeekShift(-7)">&larr; Prev</button>
+            <button class="monitor-link" onclick="studiosWeekShift(0)">This Week</button>
+            <button class="monitor-link" onclick="studiosWeekShift(7)">Next &rarr;</button>
+          </div>
+        </div>
+        <div id="studiosWeekBody" class="studios-week-body"></div>
+      </div>
+
+      <div class="home-subheading">Sections</div>
+      <div class="tiles">
+        <button class="tile" style="background:linear-gradient(135deg,#5B5F8D 0%,#454870 100%)" onclick="navMinutes()">
+          <div>
+            <div class="tile-num">01</div>
+            <div class="tile-name">Minutes</div>
+            <div class="tile-desc">Capture meeting notes, decisions, and action items.</div>
+          </div>
+        </button>
+        <button class="tile" style="background:linear-gradient(135deg,#7A9A80 0%,#5e7d62 100%)" onclick="navSignIn()">
+          <div>
+            <div class="tile-num">02</div>
+            <div class="tile-name">Sign-In Sheet</div>
+            <div class="tile-desc">Manage the studio sign-in kiosk: notices, people, projects.</div>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MINUTES (list + detail) -->
+  <div id="minutesView" style="display:none">
+    <div class="sub-hdr">
+      <div class="sub-hdr-left">
+        <button class="back-btn" onclick="navHome()">&larr; Back</button>
+        <div class="sub-hdr-title">Minutes</div>
+      </div>
+      <div class="sub-hdr-right" id="minActions">
+        <button class="btn-primary" onclick="newMeeting()">+ New Meeting</button>
+      </div>
+    </div>
+    <div class="min-wrap">
+      <div id="minPanelList"></div>
+      <div id="minPanelDetail" style="display:none"></div>
+    </div>
+  </div>
+
+  <!-- STAFF PICKER MODAL -->
+  <div id="staffModal" class="modal-ov" onclick="if(event.target===this)closeStaffModal()">
+    <div class="modal-card">
+      <div class="modal-hdr">
+        <div class="modal-title">Add Attendees</div>
+        <button class="modal-x" onclick="closeStaffModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="staffList"></div>
+        <div class="staff-custom">
+          <input type="text" id="staffCustomInput" placeholder="Add someone not on the list…" onkeydown="if(event.key==='Enter'){addCustomAttendee();event.preventDefault();}"/>
+          <button class="btn-secondary" onclick="addCustomAttendee()">Add</button>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn-primary" onclick="closeStaffModal()">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="accountModal" class="modal-ov" onclick="if(event.target===this)closeAccountModal()">
+    <div class="modal-card">
+      <div class="modal-hdr">
+        <div class="modal-title">Account</div>
+        <button class="modal-x" onclick="closeAccountModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="acc-row">
+          <div class="acc-row-label">Signed in as</div>
+          <div class="acc-row-value" id="accEmail">&mdash;</div>
+        </div>
+        <div class="acc-divider"></div>
+        <div class="acc-section-title">Change Password</div>
+        <div class="acc-form">
+          <input type="password" id="newPwd" placeholder="New password (min 6 characters)" autocomplete="new-password" onkeydown="if(event.key==='Enter')updatePassword()"/>
+          <input type="password" id="confPwd" placeholder="Confirm new password" autocomplete="new-password" onkeydown="if(event.key==='Enter')updatePassword()"/>
+          <div class="acc-msg" id="accMsg"></div>
+          <button class="btn-primary" id="accUpdateBtn" onclick="updatePassword()">Update Password</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIGN-IN (iframe) -->
+  <div id="signinView" style="display:none">
+    <div class="sub-hdr">
+      <div class="sub-hdr-left">
+        <button class="back-btn" onclick="navHome()">&larr; Back</button>
+        <div class="sub-hdr-title">Sign-In Sheet</div>
+      </div>
+      <div class="sub-hdr-right">
+        <a class="btn-secondary" id="signinOpenTab" href="#" target="_blank" rel="noopener">Open in New Tab &nearr;</a>
+      </div>
+    </div>
+    <div class="iframe-wrap">
+      <iframe id="signinFrame" src="" allow="clipboard-write"></iframe>
+    </div>
+  </div>
+
+</div>
+
+<div id="savedFlash" class="saved-flash">Saved</div>
+
+<script>
+// ── SUPABASE ────────────────────────────────────────────────────
+const SB_URL='https://dttwgmoyxthczlzxjgag.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ';
+const sb=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true}});
+
+// ── STATE ───────────────────────────────────────────────────────
+const STAFF_NAMES=['Andrew Rowell','Chris Warden','Lily Britten','Esther Brazil','Ed Harvey','Ian Curry','Zoe Evans','Sam Pickford','Nik Qerimi'];
+const STUDIOS=['Studio 12','Studio 8','Studio 7','Studio 5','Studio 4','ABC','London S1','Titan'];
+// Kiosk PIN-gate bypass — must match BYPASS_TOKEN in manage.html / monitor.html on Railway
+const KIOSK_BYPASS='vctrl_8f3a91d2c47b6e05a1f9d2c8b4e7a3f1';
+const KIOSK_MONITOR_URL='https://versa-manchester-production.up.railway.app/monitor.html?bypass='+KIOSK_BYPASS;
+const KIOSK_MANAGE_URL='https://versa-manage-production.up.railway.app/?bypass='+KIOSK_BYPASS;
+let MEETINGS=[];
+let STAFF=[]; // crew_contacts loaded from app_data — used purely to enrich emails for hardcoded names
+let JOBS=[];  // jobs[] loaded from app_data for the Studios week grid
+let CURRENT_MEETING_ID=null;
+let SAVE_TIMER=null;
+let CURRENT_USER=null;
+let WEEK_START=null; // Monday of the currently-displayed week (Date object)
+let DATA_READY=false; // becomes true once loadMeetings/Staff/Jobs all complete — gate to prevent an early save overwriting DB
+
+// ── UTIL ────────────────────────────────────────────────────────
+const $=id=>document.getElementById(id);
+const esc=s=>(s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const fmtDate=iso=>{if(!iso)return'';try{const d=new Date(iso+'T00:00:00');return d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});}catch(e){return iso;}};
+const todayIso=()=>new Date().toISOString().split('T')[0];
+function flashSaved(){const el=$('savedFlash');el.classList.add('show');setTimeout(()=>el.classList.remove('show'),1100);}
+
+// ── AUTH ────────────────────────────────────────────────────────
+async function checkSession(){
+  // Public monitor route — no auth required
+  if(location.hash==='#monitor'){showMonitorOnly();return true;}
+  try{
+    const {data:{session}}=await sb.auth.getSession();
+    if(session&&session.user){showApp(session.user);return true;}
+  }catch(e){console.warn('session check failed',e);}
+  showLogin();
+  return false;
+}
+async function doLogin(){
+  const email=$('loginEmail').value.trim();
+  const password=$('loginPwd').value;
+  if(!email||!password){$('loginMsg').textContent='Enter email and password';return;}
+  $('loginBtn').disabled=true;
+  $('loginBtn').textContent='Signing in…';
+  $('loginMsg').textContent='';
+  try{
+    const {data,error}=await sb.auth.signInWithPassword({email,password});
+    if(error)throw error;
+    showApp(data.user);
+  }catch(e){
+    $('loginMsg').textContent=e.message||'Login failed';
+    $('loginBtn').disabled=false;
+    $('loginBtn').textContent='Sign In';
+  }
+}
+async function doSignOut(){
+  flushSave();
+  await sb.auth.signOut();
+  CURRENT_USER=null;
+  MEETINGS=[];
+  showLogin();
+}
+function showLogin(){
+  $('loginView').style.display='';
+  $('appShell').style.display='none';
+  const mv=$('monitorOnlyView');if(mv)mv.style.display='none';
+  const mf=$('monitorOnlyFrame');if(mf)mf.src='';
+  $('loginPwd').value='';
+  $('loginBtn').disabled=false;
+  $('loginBtn').textContent='Sign In';
+}
+function showMonitorOnly(){
+  // Public, no auth required — used by the "View Live Monitor" link on the login page
+  $('loginView').style.display='none';
+  $('appShell').style.display='none';
+  const mv=$('monitorOnlyView');mv.style.display='';
+  $('monitorOnlyFrame').src=KIOSK_MONITOR_URL;
+  // Bookmarkable: change hash so refreshing or sharing the URL returns to the monitor
+  try{if(location.hash!=='#monitor')history.replaceState(null,'',location.pathname+location.search+'#monitor');}catch(e){}
+}
+function returnToLogin(){
+  try{if(location.hash==='#monitor')history.replaceState(null,'',location.pathname+location.search);}catch(e){}
+  showLogin();
+}
+async function showApp(user){
+  CURRENT_USER=user;
+  $('loginView').style.display='none';
+  $('appShell').style.display='';
+  $('hdrUser').textContent=user.email||'';
+  const greet=$('homeGreet');
+  if(greet){
+    const local=(user.email||'').split('@')[0];
+    const nice=local.replace(/[._-]+/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+    greet.textContent='Welcome back, '+nice;
+  }
+  // Wire kiosk iframe + open-out links with bypass token
+  const mhf=$('monitorHomeFrame'); if(mhf) mhf.src=KIOSK_MONITOR_URL;
+  const mof=$('monitorOpenFull'); if(mof) mof.href=KIOSK_MONITOR_URL;
+  const sot=$('signinOpenTab');   if(sot) sot.href=KIOSK_MANAGE_URL;
+  navHome();
+  await Promise.all([loadMeetings(),loadStaff(),loadJobs()]);
+  DATA_READY=true; // safe to save from here onward — prevents an early write overwriting DB with [] before load completed
+}
+
+// ── DATA LOAD/SAVE ──────────────────────────────────────────────
+async function loadMeetings(){
+  try{
+    const r=await fetch(SB_URL+'/rest/v1/app_data?key=eq.control_minutes&select=value',{
+      headers:{apikey:SB_KEY,Authorization:'Bearer '+SB_KEY}
+    });
+    if(r.ok){
+      const rows=await r.json();
+      if(rows&&rows[0]&&Array.isArray(rows[0].value))MEETINGS=rows[0].value;
+      else MEETINGS=[];
+    }
+  }catch(e){console.warn('load failed',e);MEETINGS=[];}
+  renderMeetingsList();
+}
+async function loadStaff(){
+  try{
+    const r=await fetch(SB_URL+'/rest/v1/app_data?key=eq.crew_contacts&select=value',{
+      headers:{apikey:SB_KEY,Authorization:'Bearer '+SB_KEY}
+    });
+    if(r.ok){
+      const rows=await r.json();
+      if(rows&&rows[0]&&Array.isArray(rows[0].value))STAFF=rows[0].value;
+    }
+  }catch(e){console.warn('staff load failed',e);}
+}
+async function loadJobs(){
+  try{
+    const r=await fetch(SB_URL+'/rest/v1/app_data?key=eq.jobs&select=value',{
+      headers:{apikey:SB_KEY,Authorization:'Bearer '+SB_KEY}
+    });
+    if(r.ok){
+      const rows=await r.json();
+      if(rows&&rows[0]&&Array.isArray(rows[0].value))JOBS=rows[0].value;
+    }
+  }catch(e){console.warn('jobs load failed',e);}
+  renderStudiosWeek();
+}
+function saveMeetingsDebounced(){
+  clearTimeout(SAVE_TIMER);
+  SAVE_TIMER=setTimeout(saveMeetings,600);
+}
+async function saveMeetings(){
+  if(!DATA_READY){console.warn('Save skipped — data not loaded yet');return;}
+  try{
+    const r=await fetch(SB_URL+'/rest/v1/app_data',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        apikey:SB_KEY,
+        Authorization:'Bearer '+SB_KEY,
+        Prefer:'resolution=merge-duplicates'
+      },
+      body:JSON.stringify([{key:'control_minutes',value:MEETINGS,updated_at:new Date().toISOString()}])
+    });
+    if(r.ok){
+      flashSaved();
+    } else {
+      const txt=await r.text().catch(()=>'');
+      console.error('Save failed:',r.status,txt);
+      const fl=$('savedFlash');
+      if(fl){fl.textContent='Save failed ('+r.status+')';fl.style.background='#a82020';fl.classList.add('show');setTimeout(()=>{fl.classList.remove('show');setTimeout(()=>{fl.textContent='Saved';fl.style.background='';},400);},3500);}
+    }
+  }catch(e){
+    console.error('Save error:',e);
+    const fl=$('savedFlash');
+    if(fl){fl.textContent='Save error — check console';fl.style.background='#a82020';fl.classList.add('show');setTimeout(()=>{fl.classList.remove('show');setTimeout(()=>{fl.textContent='Saved';fl.style.background='';},400);},3500);}
+  }
+}
+function flushSave(){
+  if(SAVE_TIMER){clearTimeout(SAVE_TIMER);SAVE_TIMER=null;saveMeetings();}
+}
+
+// ── NAVIGATION ──────────────────────────────────────────────────
+function hideAll(){
+  flushSave();
+  ['homeView','minutesView','signinView'].forEach(id=>{const el=$(id);if(el)el.style.display='none';});
+}
+function navHome(){
+  hideAll();$('homeView').style.display='';
+  // Unload iframes to stop their JS / save bandwidth
+  const sf=$('signinFrame');if(sf)sf.src='';
+}
+function navMinutes(){
+  hideAll();$('minutesView').style.display='';
+  CURRENT_MEETING_ID=null;
+  $('minPanelList').style.display='none';
+  $('minPanelDetail').style.display='';
+  setSubHdrTitle('Minutes');
+  // Find or create today's meeting and open it directly
+  const td=todayIso();
+  let m=MEETINGS.find(x=>x.date===td);
+  if(!m){
+    m={
+      id:uid(),
+      title:'Versa Manchester Team Meeting',
+      date:td,
+      attendees:[],
+      notes:[''],
+      createdBy:CURRENT_USER?CURRENT_USER.email:'',
+      createdAt:new Date().toISOString(),
+      updatedAt:new Date().toISOString()
+    };
+    MEETINGS.push(m);
+    saveMeetingsDebounced();
+  }
+  CURRENT_MEETING_ID=m.id;
+  $('minActions').innerHTML='<button class="btn-secondary" onclick="navArchive()">Archive ('+(MEETINGS.filter(x=>x.date!==td).length)+')</button>';
+  renderMeetingDetail();
+}
+function navArchive(){
+  hideAll();$('minutesView').style.display='';
+  CURRENT_MEETING_ID=null;
+  $('minPanelList').style.display='';
+  $('minPanelDetail').style.display='none';
+  setSubHdrTitle('Archived Meetings');
+  $('minActions').innerHTML='<button class="btn-primary" onclick="navMinutes()">Today\u2019s Meeting</button>';
+  renderArchiveList();
+}
+function setSubHdrTitle(t){
+  const el=document.querySelector('#minutesView .sub-hdr-title');
+  if(el)el.textContent=t;
+}
+function navSignIn(){
+  hideAll();$('signinView').style.display='';
+  $('signinFrame').src=KIOSK_MANAGE_URL;
+}
+
+// ── MINUTES: ARCHIVE LIST ───────────────────────────────────────
+function renderArchiveList(){
+  const wrap=$('minPanelList');
+  const td=todayIso();
+  const past=MEETINGS.filter(m=>m.date!==td).slice().sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  if(!past.length){
+    wrap.innerHTML='<div class="empty-state"><div class="empty-state-txt">No archived meetings yet</div><button class="btn-secondary" onclick="navMinutes()">Back to Today\u2019s Meeting</button></div>';
+    return;
+  }
+  wrap.innerHTML='<div class="mtg-grid">'+past.map(m=>{
+    const attCount=(m.attendees||[]).length;
+    const noteCount=(m.notes||[]).filter(n=>n&&n.trim()).length;
+    const names=(m.attendees||[]).map(a=>a.name||a).slice(0,5).join(', ');
+    const more=attCount>5?` +${attCount-5} more`:'';
+    return `<div class="mtg-row" onclick="openMeeting('${esc(m.id)}')">
+      <div class="mtg-date">${esc(fmtDate(m.date))||'no date'}</div>
+      <div style="flex:1;min-width:0">
+        ${attCount?`<div class="mtg-attendees">${esc(names)}${esc(more)}</div>`:'<div class="mtg-attendees" style="color:var(--muted-2);font-style:italic">No attendees added</div>'}
+      </div>
+      <div class="mtg-meta">
+        ${attCount?`<span class="mtg-chip has">${attCount} att</span>`:''}
+        ${noteCount?`<span class="mtg-chip has">${noteCount} note${noteCount===1?'':'s'}</span>`:''}
+      </div>
+    </div>`;
+  }).join('')+'</div>';
+}
+function newMeeting(){
+  // Manual "new meeting" — used from empty state. Same as navMinutes (creates today's if missing).
+  navMinutes();
+}
+function openMeeting(id){
+  CURRENT_MEETING_ID=id;
+  $('minPanelList').style.display='none';
+  $('minPanelDetail').style.display='';
+  const m=getCurrentMeeting();
+  const isToday=m&&m.date===todayIso();
+  if(isToday){
+    setSubHdrTitle('Minutes');
+    $('minActions').innerHTML='<button class="btn-secondary" onclick="navArchive()">Archive ('+(MEETINGS.filter(x=>x.date!==todayIso()).length)+')</button>';
+  } else {
+    setSubHdrTitle('Archived Meeting');
+    $('minActions').innerHTML='<button class="btn-danger" onclick="deleteCurrentMeeting()">Delete</button> <button class="btn-secondary" onclick="navArchive()">&larr; Archive</button>';
+  }
+  renderMeetingDetail();
+}
+function deleteCurrentMeeting(){
+  if(!CURRENT_MEETING_ID)return;
+  if(!confirm('Permanently delete this meeting?'))return;
+  MEETINGS=MEETINGS.filter(m=>m.id!==CURRENT_MEETING_ID);
+  saveMeetingsDebounced();
+  CURRENT_MEETING_ID=null;
+  navArchive();
+}
+
+// ── MINUTES: DETAIL VIEW ────────────────────────────────────────
+function getCurrentMeeting(){return MEETINGS.find(m=>m.id===CURRENT_MEETING_ID);}
+function formatDateNice(iso){
+  if(!iso)return 'Select a date';
+  try{
+    const d=new Date(iso+'T00:00:00');
+    if(isNaN(d.getTime()))return iso;
+    return d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+  }catch(e){return iso;}
+}
+function renderMeetingDetail(){
+  const m=getCurrentMeeting();if(!m)return;
+  // Normalise: attendees might be old free-text strings (legacy) — convert to {name}
+  m.attendees=(m.attendees||[]).map(a=>typeof a==='string'?{name:a,email:''}:a);
+  if(!Array.isArray(m.notes))m.notes=[''];
+  if(!m.notes.length)m.notes=[''];
+  if(!m.title)m.title='Versa Manchester Team Meeting';
+
+  const wrap=$('minPanelDetail');
+  wrap.innerHTML=`
+    <div class="det-wrap">
+      <div class="det-sec">
+        <div class="meeting-headline">
+          <div class="meeting-name">${esc(m.title||'Versa Manchester Team Meeting')}</div>
+        </div>
+        <div class="meeting-row">
+          <div class="date-card" onclick="openDatePicker()">
+            <div class="date-card-label">Date</div>
+            <div class="date-card-value" id="dateDisplay">${esc(formatDateNice(m.date))}</div>
+            <input class="hidden-date" type="date" id="mDate" value="${esc(m.date||'')}" oninput="onDateChange(this.value)"/>
+          </div>
+          <div class="meeting-att-fld">
+            <div class="meeting-att-hdr">
+              <label>Attendees</label>
+              <button class="btn-secondary btn-sm" onclick="openStaffModal()">+ Add</button>
+            </div>
+            <div class="chip-list" id="attChipList">${renderAttendeeChips(m)}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="det-sec">
+        <div class="det-sec-hdr"><div class="det-sec-title">Notes</div></div>
+        <div class="bullet-list" id="noteBullets">${renderNoteBullets(m)}</div>
+        <button class="add-btn" onclick="addNote()">+ Add Bullet</button>
+      </div>
+
+      <div class="detail-actions">
+        <button class="btn-secondary" onclick="navHome()">&larr; Home</button>
+        <div class="detail-actions-right">
+          <button class="btn-primary" onclick="saveNow()">Save</button>
+          <button class="btn-primary" onclick="emailMinutes()">Email Minutes</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+function openDatePicker(){
+  const i=document.getElementById('mDate');if(!i)return;
+  if(typeof i.showPicker==='function'){try{i.showPicker();return;}catch(e){}}
+  i.focus();i.click();
+}
+function onDateChange(val){
+  const m=getCurrentMeeting();if(!m)return;
+  m.date=val;
+  m.updatedAt=new Date().toISOString();
+  saveMeetingsDebounced();
+  const disp=$('dateDisplay');if(disp)disp.textContent=formatDateNice(val);
+}
+function saveNow(){
+  clearTimeout(SAVE_TIMER);
+  saveMeetings();
+}
+function renderAttendeeChips(m){
+  if(!m.attendees||!m.attendees.length){
+    return '<div style="font-family:var(--cond);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted-2);padding:6px 0">None yet — tap "+ Add Attendees"</div>';
+  }
+  return m.attendees.map((a,i)=>`<span class="chip">${esc(a.name||'')}<button onclick="removeAttendee(${i})" title="Remove">&times;</button></span>`).join('');
+}
+function renderNoteBullets(m){
+  return (m.notes||[]).map((n,i)=>`<div class="bullet-row">
+    <div class="bullet-dot"></div>
+    <input type="text" value="${esc(n||'')}" placeholder="Type a note…" data-idx="${i}" oninput="updNote(${i},this.value)" onkeydown="bulletKey(event,${i})"/>
+    <button class="rm-btn" onclick="removeNote(${i})" title="Remove bullet">&times;</button>
+  </div>`).join('');
+}
+function updMeeting(field,val){const m=getCurrentMeeting();if(!m)return;m[field]=val;m.updatedAt=new Date().toISOString();saveMeetingsDebounced();}
+
+// Attendees
+function removeAttendee(i){const m=getCurrentMeeting();if(!m||!m.attendees)return;m.attendees.splice(i,1);saveMeetingsDebounced();$('attChipList').innerHTML=renderAttendeeChips(m);}
+
+// Notes
+function addNote(){
+  const m=getCurrentMeeting();if(!m)return;
+  if(!Array.isArray(m.notes))m.notes=[];
+  m.notes.push('');
+  saveMeetingsDebounced();
+  $('noteBullets').innerHTML=renderNoteBullets(m);
+  // Focus the newly-added bullet
+  setTimeout(()=>{const inputs=$('noteBullets').querySelectorAll('input');if(inputs.length)inputs[inputs.length-1].focus();},10);
+}
+function updNote(i,val){const m=getCurrentMeeting();if(!m||!m.notes)return;m.notes[i]=val;saveMeetingsDebounced();}
+function removeNote(i){
+  const m=getCurrentMeeting();if(!m||!m.notes)return;
+  m.notes.splice(i,1);
+  if(!m.notes.length)m.notes=[''];
+  saveMeetingsDebounced();
+  $('noteBullets').innerHTML=renderNoteBullets(m);
+}
+function bulletKey(ev,i){
+  if(ev.key==='Enter'){ev.preventDefault();addNote();}
+  else if(ev.key==='Backspace'){
+    const m=getCurrentMeeting();
+    if(m&&m.notes&&m.notes.length>1&&!m.notes[i]){ev.preventDefault();removeNote(i);
+      // focus previous bullet
+      setTimeout(()=>{const inputs=$('noteBullets').querySelectorAll('input');const target=inputs[Math.max(0,i-1)];if(target){target.focus();target.setSelectionRange(target.value.length,target.value.length);}},10);
+    }
+  }
+}
+
+// ── STAFF PICKER MODAL ─────────────────────────────────────────
+function openStaffModal(){
+  $('staffCustomInput').value='';
+  renderStaffList();
+  $('staffModal').classList.add('open');
+}
+function closeStaffModal(){$('staffModal').classList.remove('open');}
+
+// ── ACCOUNT MODAL ──
+function openAccountModal(){
+  $('accEmail').textContent=CURRENT_USER?CURRENT_USER.email:'—';
+  $('newPwd').value='';
+  $('confPwd').value='';
+  const msg=$('accMsg');msg.textContent='';msg.className='acc-msg';
+  $('accUpdateBtn').disabled=false;
+  $('accountModal').classList.add('open');
+  setTimeout(()=>{const i=$('newPwd');if(i)i.focus();},80);
+}
+function closeAccountModal(){$('accountModal').classList.remove('open');}
+async function updatePassword(){
+  const newPwd=$('newPwd').value;
+  const confPwd=$('confPwd').value;
+  const msg=$('accMsg');
+  const btn=$('accUpdateBtn');
+  msg.className='acc-msg';
+  if(!newPwd||newPwd.length<6){msg.textContent='Password must be at least 6 characters';msg.className='acc-msg error';return;}
+  if(newPwd!==confPwd){msg.textContent='Passwords do not match';msg.className='acc-msg error';return;}
+  msg.textContent='Updating…';msg.className='acc-msg info';
+  btn.disabled=true;
+  try{
+    const {data,error}=await sb.auth.updateUser({password:newPwd});
+    if(error){
+      msg.textContent='Failed — '+error.message;
+      msg.className='acc-msg error';
+      btn.disabled=false;
+      return;
+    }
+    msg.textContent='Password updated successfully';
+    msg.className='acc-msg success';
+    $('newPwd').value='';
+    $('confPwd').value='';
+    setTimeout(()=>{closeAccountModal();},1500);
+  }catch(e){
+    msg.textContent='Error — '+(e.message||'Unknown error');
+    msg.className='acc-msg error';
+    btn.disabled=false;
+  }
+}
+function renderStaffList(){
+  const wrap=$('staffList');
+  const m=getCurrentMeeting();if(!m)return;
+  const selectedNames=new Set((m.attendees||[]).map(a=>(a.name||'').toLowerCase()));
+  // Build the list from the hardcoded staff names, enriching with email from crew_contacts when present
+  const list=STAFF_NAMES.slice().sort().map(name=>{
+    const match=STAFF.find(s=>(s.name||'').toLowerCase()===name.toLowerCase());
+    return {name:name,email:match?(match.email||''):'',role:match?(match.role||''):''};
+  });
+  wrap.innerHTML=list.map(s=>{
+    const sel=selectedNames.has(s.name.toLowerCase());
+    return `<div class="staff-row${sel?' selected':''}" onclick="toggleStaff('${esc(s.name)}')">
+      <div class="staff-cb"></div>
+      <div class="staff-name">${esc(s.name)}</div>
+      ${s.role?`<div class="staff-role">${esc(s.role)}</div>`:''}
+    </div>`;
+  }).join('');
+}
+function toggleStaff(name){
+  const m=getCurrentMeeting();if(!m)return;
+  if(!m.attendees)m.attendees=[];
+  const idx=m.attendees.findIndex(a=>(a.name||'').toLowerCase()===name.toLowerCase());
+  if(idx>=0){
+    m.attendees.splice(idx,1);
+  } else {
+    const match=STAFF.find(s=>(s.name||'').toLowerCase()===name.toLowerCase());
+    m.attendees.push({name:name,email:match?(match.email||''):''});
+  }
+  saveMeetingsDebounced();
+  renderStaffList();
+  $('attChipList').innerHTML=renderAttendeeChips(m);
+}
+function addCustomAttendee(){
+  const inp=$('staffCustomInput');
+  const v=(inp.value||'').trim();
+  if(!v)return;
+  const m=getCurrentMeeting();if(!m)return;
+  if(!m.attendees)m.attendees=[];
+  // Allow "Name <email>" parsing
+  const emailMatch=v.match(/<([^>]+)>/);
+  const email=emailMatch?emailMatch[1].trim():'';
+  const name=email?v.replace(/<[^>]+>/,'').trim():v;
+  m.attendees.push({name:name,email:email});
+  inp.value='';
+  saveMeetingsDebounced();
+  renderStaffList();
+  $('attChipList').innerHTML=renderAttendeeChips(m);
+  inp.focus();
+}
+
+// ── EMAIL MINUTES ──────────────────────────────────────────────
+function emailMinutes(){
+  const m=getCurrentMeeting();if(!m)return;
+  const recipients=(m.attendees||[]).filter(a=>a.email).map(a=>a.email);
+  const subject='Meeting Minutes — '+(m.title||'Untitled')+' — '+fmtDate(m.date);
+  let body='Meeting: '+(m.title||'Untitled')+'\n';
+  body+='Date: '+fmtDate(m.date)+'\n\n';
+  if((m.attendees||[]).length){
+    body+='Attendees:\n';
+    m.attendees.forEach(a=>{body+='- '+(a.name||'')+(a.email?' <'+a.email+'>':'')+'\n';});
+    body+='\n';
+  }
+  const notes=(m.notes||[]).filter(n=>n&&n.trim());
+  if(notes.length){
+    body+='Notes:\n';
+    notes.forEach(n=>{body+='- '+n+'\n';});
+  }
+  if(!recipients.length){
+    // No emails on record — open a mail client with body only, user fills recipients
+    const url='mailto:?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+    window.location.href=url;
+    setTimeout(()=>alert('Heads up: none of the attendees have email addresses on file. Add them to Crew Contacts in the main app, or enter them manually as "Name <email@example.com>" via Add Attendees.'),300);
+    return;
+  }
+  const url='mailto:'+recipients.join(',')+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+  window.location.href=url;
+}
+
+
+// ── STUDIOS WEEK GRID ──────────────────────────────────────────
+function mondayOf(d){
+  const dow=d.getDay();
+  const diff=dow===0?-6:1-dow;
+  const m=new Date(d);
+  m.setDate(d.getDate()+diff);
+  m.setHours(0,0,0,0);
+  return m;
+}
+function isoOf(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function pickFg(bg){
+  if(!bg)return '#302f2c';
+  let h=bg.replace('#','');
+  if(h.length===3)h=h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
+  const r=parseInt(h.slice(0,2),16),g=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16);
+  return (0.299*r+0.587*g+0.114*b)>165?'#302f2c':'#fff';
+}
+function showColorFromName(name){
+  const n=(name||'').toLowerCase();
+  if(n.indexOf('morning live')>=0)return '#5B5F8D';
+  if(n.indexOf('shopon')>=0||n.indexOf('shop on')>=0)return '#DA6B51';
+  if(n.indexOf('cooking')>=0)return '#7A9A80';
+  if(n.indexOf('celeb')>=0)return '#C8923A';
+  if(n.indexOf('dragon')>=0)return '#D44720';
+  if(n.indexOf('chef')>=0)return '#a87838';
+  if(n.indexOf('hungry bear')>=0||n.indexOf('sing when')>=0)return '#7a8a6e';
+  return '#6e6862';
+}
+function jobEntriesByDate(j){
+  // Mirror of versa-schedule.html / index.html _jdSchedEntriesByDate but simplified
+  const map={};
+  (j.rigDates||[]).forEach(r=>{if(r&&r.date){(map[r.date]=map[r.date]||[]).push({label:r.note||'Rig'});}});
+  (j.txDates||[]).forEach(t=>{if(t&&t.date){(map[t.date]=map[t.date]||[]).push({label:t.label||j.name});}});
+  if(j.drigDate)(map[j.drigDate]=map[j.drigDate]||[]).push({label:'Derig'});
+  if(Array.isArray(j.drigDates))j.drigDates.forEach(d=>{
+    const iso=typeof d==='string'?d:(d&&d.date);
+    const lbl=typeof d==='object'?(d.label||'Derig'):'Derig';
+    if(iso&&iso!==j.drigDate)(map[iso]=map[iso]||[]).push({label:lbl});
+  });
+  if(Array.isArray(j.scheduleCustom))j.scheduleCustom.forEach(c=>{
+    if(c&&c.date){(map[c.date]=map[c.date]||[]).push({label:c.label||'Event'});}
+  });
+  return map;
+}
+function studiosWeekShift(deltaOrZero){
+  if(deltaOrZero===0){WEEK_START=mondayOf(new Date());}
+  else{const d=new Date(WEEK_START);d.setDate(d.getDate()+deltaOrZero);WEEK_START=d;}
+  renderStudiosWeek();
+}
+function renderStudiosWeek(){
+  const body=$('studiosWeekBody');if(!body)return;
+  if(!WEEK_START)WEEK_START=mondayOf(new Date());
+  // Compute week dates
+  const days=[];
+  for(let i=0;i<7;i++){const d=new Date(WEEK_START);d.setDate(d.getDate()+i);days.push(d);}
+  const isos=days.map(isoOf);
+  const todayIsoStr=isoOf(new Date());
+  // Title with week range
+  const monShort=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const t=$('studiosWeekTitle');
+  if(t){
+    const a=days[0],b=days[6];
+    const sameYear=a.getFullYear()===b.getFullYear();
+    const sameMonth=sameYear&&a.getMonth()===b.getMonth();
+    const range=sameMonth
+      ? `${a.getDate()}\u2013${b.getDate()} ${monShort[a.getMonth()]} ${a.getFullYear()}`
+      : sameYear
+        ? `${a.getDate()} ${monShort[a.getMonth()]} \u2013 ${b.getDate()} ${monShort[b.getMonth()]} ${a.getFullYear()}`
+        : `${a.getDate()} ${monShort[a.getMonth()]} ${a.getFullYear()} \u2013 ${b.getDate()} ${monShort[b.getMonth()]} ${b.getFullYear()}`;
+    t.innerHTML='Studios &middot; <span style="color:var(--muted);font-weight:700">'+range+'</span>';
+  }
+  // Build matrix studio → iso → entries[]
+  const matrix={};
+  STUDIOS.forEach(s=>{matrix[s]={};isos.forEach(iso=>matrix[s][iso]=[]);});
+  (JOBS||[]).forEach(j=>{
+    if(!j||j.archived)return;
+    const jobStudios=Array.isArray(j.studios)&&j.studios.length?j.studios:(j.studio?[j.studio]:[]);
+    if(!jobStudios.length)return;
+    const matchingStudios=jobStudios.filter(s=>STUDIOS.indexOf(s)>=0);
+    if(!matchingStudios.length)return;
+    const byDate=jobEntriesByDate(j);
+    const color=(j.color&&j.color.bg)||showColorFromName(j.name);
+    Object.keys(byDate).forEach(iso=>{
+      if(isos.indexOf(iso)<0)return;
+      matchingStudios.forEach(s=>{
+        byDate[iso].forEach(e=>{
+          matrix[s][iso].push({jobName:j.name,label:e.label,color:color});
+        });
+      });
+    });
+  });
+  // Render
+  const dayShort=['MON','TUE','WED','THU','FRI','SAT','SUN'];
+  // Only show studios that have at least one entry somewhere in the displayed week
+  const activeStudios=STUDIOS.filter(s=>isos.some(iso=>(matrix[s][iso]||[]).length>0));
+  if(!activeStudios.length){
+    body.innerHTML='<div class="studios-week-empty">No studio bookings for this week</div>';
+    return;
+  }
+  let html='<table class="studios-week"><thead><tr><th class="studio-name-h"></th>';
+  days.forEach((d,i)=>{
+    const dow=d.getDay();
+    const isWeekend=dow===0||dow===6;
+    const isToday=isos[i]===todayIsoStr;
+    html+=`<th class="day-h${isWeekend?' weekend':''}${isToday?' today':''}">`
+      +`<div class="day-h-day">${dayShort[i]}</div>`
+      +`<div class="day-h-date">${d.getDate()}</div>`
+      +`</th>`;
+  });
+  html+='</tr></thead><tbody>';
+  activeStudios.forEach(s=>{
+    html+='<tr><td class="studio-name">'+esc(s)+'</td>';
+    isos.forEach((iso,i)=>{
+      const entries=matrix[s][iso]||[];
+      const dow=days[i].getDay();
+      const isWeekend=dow===0||dow===6;
+      const isToday=iso===todayIsoStr;
+      // De-dupe by job name (collapse rig/tx/derig of same job to one pill)
+      const seen={};
+      const unique=[];
+      entries.forEach(e=>{if(!seen[e.jobName]){seen[e.jobName]=true;unique.push(e);}});
+      const cellHtml=unique.map(e=>`<div class="sw-pill" style="background:${e.color};color:${pickFg(e.color)}" title="${esc(e.jobName)}${e.label&&e.label!==e.jobName?' — '+esc(e.label):''}">${esc(e.jobName)}</div>`).join('');
+      html+=`<td class="sw-cell${isWeekend?' weekend':''}${isToday?' today':''}">${cellHtml}</td>`;
+    });
+    html+='</tr>';
+  });
+  html+='</tbody></table>';
+  body.innerHTML=html;
+}
+// Allow Enter in login pwd field to submit
+document.addEventListener('DOMContentLoaded',()=>{
+  $('loginPwd').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+  $('loginEmail').addEventListener('keydown',e=>{if(e.key==='Enter')$('loginPwd').focus();});
+  window.addEventListener('beforeunload',()=>{flushSave();});
+  checkSession();
+});
+</script>
+</body>
+</html>
