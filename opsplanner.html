@@ -48,17 +48,18 @@ body{margin:0;padding:0;min-height:100vh}
 
 /* Sticky left column — row labels stay visible when scrolling horizontally.
    Forced opaque cream so cells scrolling underneath don't bleed through.
-   Strong red right border separates the label column from the date data. */
-.ops-tbl td.ops-rlbl{position:sticky !important;left:0 !important;background:#efede3 !important;z-index:2 !important;border-right:3px solid #d85a61 !important;box-shadow:2px 0 4px -2px rgba(0,0,0,.08)}
+   Red separator uses inset box-shadow (not border-right) because the table
+   has border-collapse:collapse which would attach the border to the seam
+   between sticky and non-sticky cells and make it drift. inset puts the
+   red strip INSIDE the sticky cell, fixed to its right edge. */
+.ops-tbl td.ops-rlbl{position:sticky !important;left:0 !important;background:#efede3 !important;z-index:2 !important;border-right:none !important;box-shadow:inset -3px 0 0 0 #d85a61, 4px 0 8px -2px rgba(0,0,0,.1) !important}
 /* Month/year header — pin its content to the left edge while the cell scrolls.
    Add left padding so the MAY text has breathing room from the cell edge. */
 .ops-tbl tr.ops-mhdr > td{position:sticky;left:0;z-index:3}
 .ops-tbl tr.ops-mhdr > td > div{position:sticky;left:0;width:max-content;padding-left:24px}
 /* Day header row's leftmost (empty) cell — sticky at BOTH top and left so it
-   stays in the top-left corner no matter how you scroll. High z-index keeps
-   it above the day-header row (z-index 10) and the row labels below.
-   Same red separator line on its right edge. */
-.ops-tbl tr.ops-dhdr > td:first-child{position:sticky !important;left:0 !important;top:0 !important;z-index:12 !important;background:#efede3 !important;border-right:3px solid #d85a61 !important;box-shadow:2px 0 4px -2px rgba(0,0,0,.08)}
+   stays in the top-left corner no matter how you scroll. Same inset red strip. */
+.ops-tbl tr.ops-dhdr > td:first-child{position:sticky !important;left:0 !important;top:0 !important;z-index:12 !important;background:#efede3 !important;border-right:none !important;box-shadow:inset -3px 0 0 0 #d85a61, 4px 0 8px -2px rgba(0,0,0,.1) !important}
 /* Section rows (ops-srow) and gap rows span all columns — sticky their first cell */
 .ops-tbl tr.ops-srow > td,.ops-tbl tr.ops-gap > td,.ops-tbl tr.ops-bigbreak > td{position:sticky;left:0;z-index:1}
 
@@ -169,8 +170,9 @@ body{margin:0;padding:0;min-height:100vh}
 .ops-dh.wk{background:rgba(216,90,97,.06);color:rgba(216,90,97,.55)}
 .ops-dh.td .dn-wrap{background:#d85a61;color:#fff;border-radius:50%;width:26px;height:26px;line-height:26px;margin:auto;box-shadow:0 4px 10px rgba(216,90,97,.3)}
 .ops-dh.td{color:#fff}
-.ops-rlbl{font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;padding:5px 12px;white-space:nowrap;border-right:2px solid rgba(216,90,97,.2);border-bottom:1px solid rgba(216,90,97,.12);vertical-align:middle;width:106px;min-width:106px;color:rgba(184,79,85,.8);background:rgba(255,251,246,.9)}
+.ops-rlbl{font-size:13px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;padding:6px 14px;white-space:nowrap;border-right:2px solid rgba(216,90,97,.2);border-bottom:1px solid rgba(216,90,97,.12);vertical-align:middle;width:120px;min-width:120px;color:rgba(184,79,85,.95);background:rgba(255,251,246,.9)}
 .ops-cell{border-right:1px solid rgba(216,90,97,.1);border-bottom:1px solid rgba(216,90,97,.1);vertical-align:top;padding:3px;width:44px;min-width:44px;cursor:pointer;background:rgba(255,253,248,.85);transition:background .12s}
+.ops-cell.ops-drag-sel{background:rgba(216,90,97,.18)!important;outline:2px dashed #d85a61;outline-offset:-2px}
 /* Drag-to-extend visuals */
 .ops-cell.ops-drag-source{outline:2px solid var(--accent,#d85a61);outline-offset:-2px;background:rgba(216,90,97,.06)!important}
 .ops-cell.ops-drag-target{background:rgba(216,90,97,.16)!important;outline:1.5px dashed rgba(216,90,97,.55);outline-offset:-2px}
@@ -219,7 +221,6 @@ body{margin:0;padding:0;min-height:100vh}
 #ops-standalone-bar{display:none;flex;align-items:center;gap:10px;padding:10px 16px;background:#0d0d0f;border-bottom:1px solid rgba(216,90,97,.2);}
 body.ops-sa #ops-standalone-bar{display:flex!important;}
 body.ops-sa .app-shell{display:none!important;}
-body.ops-sa .main-content{margin-left:0!important;}
 
 /* Add-date helpers we need */
 .fi{background:#fff;border:1.5px solid rgba(216,90,97,.25);color:#302f2c;padding:7px 10px;border-radius:6px;font-family:var(--font);font-size:13px;font-weight:600;outline:none}
@@ -386,14 +387,14 @@ function opsSeedFromJobs(){
     });
   });
 }
-// Seed-junk cleanup: date stubs, DD entries, weekend ML, [MCR]/[LDN] strip,
+// Seed-junk cleanup: date stubs, weekend ML, [MCR]/[LDN] strip,
 // "ML Ep##" → "Morning Live Ep##" in studio rows, "Morning Live ML X" → "Morning Live X",
-// and dedupe. Returns true if anything changed.
+// and dedupe. "DD" entries intentionally NOT filtered (Andrew uses DD = Dragons Den).
+// Returns true if anything changed.
 function _opsCleanSeedJunk(){
   if(!_opsD)return false;
   var changed=false;
   var JUNK_DATE_RX=/^[A-Z][a-z]{2}-\d{2}$/;
-  var DD_JUNK_RX=/^DD(\s|$)/i;
   var LOC_PREFIX_RX=/^\[(MCR|LDN)\]\s*/;
   var ML_EP_RX=/^ML\s+(Ep\d|Episode)/i;
   var WKND={};
@@ -414,7 +415,6 @@ function _opsCleanSeedJunk(){
       var txt=(typeof v==='string')?v:(v&&typeof v.text==='string'?v.text:'');
       if(!txt)return true;
       if(JUNK_DATE_RX.test(txt))return false;
-      if(DD_JUNK_RX.test(txt))return false;
       if(rowKey==='ml'&&isWeekend&&/MORNING LIVE/i.test(txt))return false;
       return true;
     });
@@ -432,6 +432,54 @@ function _opsCleanSeedJunk(){
     });
     if(deduped.length!==arr.length||deduped.some(function(v,i){return JSON.stringify(v)!==JSON.stringify(arr[i]);})){_opsD[k]=deduped;changed=true;}
   });
+  // Auto-merge consecutive identical entries in the same row into a single span entry.
+  try{
+    OPS_CAL.forEach(function(m){
+      var rowsInMonth={};
+      Object.keys(_opsD).forEach(function(k){
+        var p=k.split('|');
+        if(p[0]===m.month&&p.length===3)rowsInMonth[p[2]]=true;
+      });
+      Object.keys(rowsInMonth).forEach(function(row){
+        if(row==='ml')return;
+        var i=0;
+        while(i<m.days.length){
+          var dayI=m.days[i].day;
+          var valsI=_opsD[m.month+'|'+dayI+'|'+row]||[];
+          if(valsI.length!==1){i++;continue;}
+          var v0=valsI[0];
+          if(v0&&typeof v0==='object'&&v0.span&&v0.span>1){i+=v0.span;continue;}
+          var textI=(typeof v0==='string')?v0:(v0&&v0.text?v0.text:'');
+          if(!textI){i++;continue;}
+          var j=i+1;
+          while(j<m.days.length){
+            var dayJ=m.days[j].day;
+            var valsJ=_opsD[m.month+'|'+dayJ+'|'+row]||[];
+            if(valsJ.length!==1)break;
+            var vJ=valsJ[0];
+            if(vJ&&typeof vJ==='object'&&vJ.span&&vJ.span>1)break;
+            var textJ=(typeof vJ==='string')?vJ:(vJ&&vJ.text?vJ.text:'');
+            if(textJ!==textI)break;
+            j++;
+          }
+          var len=j-i;
+          if(len>1){
+            var spanEntry={text:textI,span:len};
+            if(v0&&typeof v0==='object'){
+              if(v0.cls)spanEntry.cls=v0.cls;
+              if(v0.color)spanEntry.color=v0.color;
+            }
+            _opsD[m.month+'|'+dayI+'|'+row]=[spanEntry];
+            for(var kk=i+1;kk<j;kk++){
+              _opsD[m.month+'|'+m.days[kk].day+'|'+row]=[];
+            }
+            changed=true;
+          }
+          i=j;
+        }
+      });
+    });
+  }catch(e){}
   return changed;
 }
 // Aggressive cleanup: remove studio-row labels that match job-sync patterns
@@ -719,7 +767,19 @@ function opsMlColor(name){
 }
 function opsInBrk(ds){return _opsBrk.find(b=>ds>=b.start&&ds<=b.end)||null;}
 function opsChip(t){var u=t.toUpperCase();if(/^\[MCR\]/.test(u))return'ops-mcr';if(/^\[LDN\]/.test(u))return'ops-ldn';/* Job-specific colours — match the responsible-staff row's chip styling so a job is visually consistent everywhere it appears. */if(/DRAGON/.test(u))return'ops-andrew';if(/MORNING LIVE|\bML\b/.test(u))return'ops-ian';if(/SHOP.?ON|DRAG.RACE|RUPAUL/.test(u))return'ops-show';if(/RIG|DERIG|REHEAR|CAMERA RIG/.test(u))return'ops-prod';if(/\bRX\s*\d|\bDARK\b/.test(u))return'ops-prod';if(/MEET|RECCE|EVENT/.test(u))return'ops-event';return'ops-note';}
-function opsRChips(vals,fc){if(!vals.length)return'<div class="ops-mt"></div>';return vals.map(v=>{const cls=fc||opsChip(v);const s=v.length>17?v.slice(0,16)+'\u2026':v;return'<div class="ops-chip '+cls+'" title="'+v.replace(/"/g,'&quot;')+'">'+s+'</div>';}).join('');}
+function opsRChips(vals,fc){
+  if(!vals.length)return'<div class="ops-mt"></div>';
+  return vals.map(function(v){
+    // Normalise: handle string OR object {text, cls?, color?, ...}
+    var text=(typeof v==='string')?v:(v&&typeof v.text==='string'?v.text:'');
+    if(!text)return'';
+    // Per-entry color override: v.cls (preferred) or v.color
+    var cls=fc||(v&&typeof v==='object'&&v.cls?v.cls:opsChip(text));
+    var style=(v&&typeof v==='object'&&v.color)?' style="background:'+v.color+'"':'';
+    var s=text.length>17?text.slice(0,16)+'\u2026':text;
+    return'<div class="ops-chip '+cls+'"'+style+' title="'+text.replace(/"/g,'&quot;')+'">'+s+'</div>';
+  }).join('');
+}
 
 // ── ONE-TIME SEED LOOP (runs over OPS_CAL) ───────────────────────────────────
 OPS_CAL.forEach(m=>{
@@ -806,7 +866,8 @@ function opsRenderMonth(m,mi){
     h+='<td><div class="ops-dh'+(wk?' wk':'')+(td?' td':'')+(hol?' hol':'')+'"><span style="font-size:13px;display:block;margin-bottom:4px;letter-spacing:.06em;font-weight:900;">'+d.dow.slice(0,3)+'</span><div class="dn-wrap" style="width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto;font-size:16px;font-weight:900;background:'+(td?'#d85a61':'rgba(216,90,97,.12)')+';color:'+(td?'#fff':'#d85a61')+';'+(td?'box-shadow:0 4px 10px rgba(216,90,97,.28);':'')+'">'+d.day+'</div>'+holHTML+'</div></td>';
   });
   h+='</tr>';
-  const cell=(idx,row,fc)=>{
+  const cell=(idx,row,fc,rowCov)=>{
+    if(rowCov&&rowCov.has(idx))return null;
     const d=days[idx];const wk=opsIsWk(d.dow);const td=opsDStr(m.month,d.day)===OPS_TODAY;
     const vals=og(m.month,d.day,row);
     const rid=('oc_'+mi+'_'+d.day+'_'+row).replace(/[^a-zA-Z0-9_]/g,'_');
@@ -814,20 +875,49 @@ function opsRenderMonth(m,mi){
     if(row==='ml'){
       if(cov.has(idx))return null;
       const sp=spMap[idx];const cs=sp?(sp.ei-sp.si+1):1;
-      const person=vals.length?vals[0]:'';
+      // Extract person safely from string OR object ({person, text, ...} from OPS_CAL seed)
+      var rawPerson=vals.length?vals[0]:'';
+      var person='';
+      if(typeof rawPerson==='string')person=rawPerson;
+      else if(rawPerson&&typeof rawPerson==='object')person=rawPerson.person||rawPerson.text||'';
       let chip;
       if(sp&&sp.isBreak)chip='<div class="ops-chip ops-brk">'+sp.label+'</div>';
       else if(!person)chip='<div class="ops-mt"></div>';
       else if(person==='Break / Off Air')chip='<div class="ops-chip ops-brk">Break</div>';
-      else chip='<div class="ops-chip ops-ml" style="background:'+opsMlColor(person)+'">'+person.split(' ')[0]+'</div>';
+      else chip='<div class="ops-chip ops-ml" style="background:'+opsMlColor(person)+'">'+String(person).split(' ')[0]+'</div>';
       return'<td class="'+cls+'" colspan="'+cs+'" id="'+rid+'" data-mi="'+mi+'" data-day="'+d.day+'" data-row="ml" onclick="opsCk(this)">'+chip+'</td>';
+    }
+    // Non-ml: detect span entries (objects with span > 1) and render with colspan
+    if(rowCov&&vals.length){
+      var spanEntry=null;
+      for(var si=0;si<vals.length;si++){
+        var sv=vals[si];
+        if(sv&&typeof sv==='object'&&sv.span&&sv.span>1){spanEntry=sv;break;}
+      }
+      if(spanEntry){
+        var spanLen=Math.min(spanEntry.span,days.length-idx);
+        for(var sj=1;sj<spanLen;sj++)rowCov.add(idx+sj);
+        var spText=spanEntry.text||'';
+        var spCls=spanEntry.cls||opsChip(spText);
+        var spStyle=spanEntry.color?' style="background:'+spanEntry.color+'"':'';
+        // Render the span chip plus any other (non-span) entries in this cell
+        var others=vals.filter(function(v){return v!==spanEntry;});
+        var otherHtml=others.length?opsRChips(others,fc):'';
+        return'<td class="'+cls+'" colspan="'+spanLen+'" id="'+rid+'" data-mi="'+mi+'" data-day="'+d.day+'" data-row="'+row+'" onclick="opsCk(this)"><div class="ops-chip '+spCls+'"'+spStyle+'>'+spText+'</div>'+otherHtml+'</td>';
+      }
     }
     return'<td class="'+cls+'" id="'+rid+'" data-mi="'+mi+'" data-day="'+d.day+'" data-row="'+row+'" onclick="opsCk(this)">'+opsRChips(vals,fc)+'</td>';
   };
   const srow=lbl=>'<tr class="ops-srow"><td colspan="'+(n+1)+'">'+lbl+'</td></tr>';
   const gap='<tr class="ops-gap"><td colspan="'+(n+1)+'"></td></tr>';
   const bigbreak='<tr class="ops-bigbreak"><td colspan="'+(n+1)+'"></td></tr>';
-  const brow=(lbl,row,color,fc)=>{let r='<tr><td class="ops-rlbl" style="color:'+color+'">'+lbl+'</td>';days.forEach((_,i)=>{const c=cell(i,row,fc);if(c)r+=c;});return r+'</tr>';};
+  const brow=(lbl,row,color,fc)=>{
+    // Track which cells are covered by an earlier span entry in THIS row
+    const rowCov=(row!=='ml')?new Set():null;
+    let r='<tr><td class="ops-rlbl" style="color:'+color+'">'+lbl+'</td>';
+    days.forEach((_,i)=>{const c=cell(i,row,fc,rowCov);if(c)r+=c;});
+    return r+'</tr>';
+  };
   // Notes — free-text row at the top of the planner
   h+=brow('Notes','notes','#5a5a5a',null);
   // Morning Live (no extra header — the row label says it all)
@@ -1001,20 +1091,41 @@ function opsCk(td){
   _opsEd={mi,day,row,id:td.id,month};
   const cur=og(month,day,row);
   const mkO=(val,col,single)=>{const sel=cur.includes(val);return'<div class="ops-co'+(sel?' sel':'')+'" data-v="'+val.replace(/"/g,'&quot;')+'" data-s="'+(single?1:0)+'" onclick="opsOpt(this)"><div class="ops-cd" style="background:'+col+'"></div>'+val.replace(/&/g,'&amp;')+(sel?'<span class="ops-ck">✓</span>':'')+'</div>';};
-  // Custom input always at the top of the popup
-  let html='<input class="ops-ci" id="opsCiTxt" placeholder="Custom..." onkeydown="if(event.keyCode===13)opsCiAdd()"/><button class="ops-ca" onclick="opsCiAdd()">+ Add Custom</button>';
-  // Show current entries with per-item delete (only for multi-entry rows — ml is single-select)
+  // Show current entries FIRST (at the top) — click chip text to edit inline, × to delete
+  let html='';
   if(cur.length&&row!=='ml'){
-    html+='<div class="ops-div"></div><div class="ops-cs">Current</div>';
+    html+='<div class="ops-cs" style="margin-top:8px">Current</div>';
     cur.forEach(function(v,idx){
-      // Display text — handles both strings and object entries from OPS_CAL seed data
       var dispText=(typeof v==='string')?v:(v&&v.text?v.text:'(unknown)');
       var safeV=dispText.replace(/"/g,'&quot;').replace(/&/g,'&amp;');
-      // Use the same chip-class logic as the planner so colors match
-      var chipClass=(typeof opsChip==='function')?opsChip(dispText):'ops-note';
-      html+='<div style="display:flex;align-items:center;gap:8px;padding:4px 12px"><div class="ops-chip '+chipClass+'" style="flex:1;margin-bottom:0;cursor:default;font-size:13px" title="'+safeV+'">'+safeV+'</div><button onclick="event.stopPropagation();opsRemoveItem('+idx+')" title="Remove this entry" style="background:rgba(216,90,97,.12);border:none;width:22px;height:22px;border-radius:4px;color:#a03040;cursor:pointer;font-weight:900;line-height:1;padding:0;font-size:14px;flex-shrink:0">&times;</button></div>';
+      // Per-entry color override (cls field) or auto-detected chip class
+      var chipClass=(v&&typeof v==='object'&&v.cls)?v.cls:((typeof opsChip==='function')?opsChip(dispText):'ops-note');
+      var chipStyle=(v&&typeof v==='object'&&v.color)?' style="flex:1;margin-bottom:0;cursor:text;font-size:13px;background:'+v.color+'"':' style="flex:1;margin-bottom:0;cursor:text;font-size:13px"';
+      // Span badge for multi-day entries
+      var spanBadge='';
+      if(typeof v==='object'&&v&&v.span&&v.span>1){
+        spanBadge=' <span style="font-size:10px;background:rgba(255,255,255,.5);color:#302f2c;padding:1px 5px;border-radius:3px;margin-left:4px;font-weight:700">'+v.span+'d</span>';
+      }
+      html+='<div style="display:flex;align-items:center;gap:8px;padding:4px 12px"><div class="ops-chip '+chipClass+'" onclick="event.stopPropagation();opsStartEdit('+idx+',this)"'+chipStyle+' title="Click to edit">'+safeV+spanBadge+'</div><button onclick="event.stopPropagation();opsRemoveItem('+idx+')" title="Remove this entry" style="background:rgba(216,90,97,.12);border:none;width:22px;height:22px;border-radius:4px;color:#a03040;cursor:pointer;font-weight:900;line-height:1;padding:0;font-size:14px;flex-shrink:0">&times;</button></div>';
     });
+    html+='<div class="ops-div"></div>';
   }
+  // Custom input + colour palette
+  html+='<input class="ops-ci" id="opsCiTxt" placeholder="Custom..." onkeydown="if(event.keyCode===13)opsCiAdd()"/>';
+  if(row!=='ml'){
+    html+='<div style="display:flex;gap:3px;align-items:center;padding:4px 12px 0;flex-wrap:wrap;font-size:10px;color:#888"><span style="margin-right:2px">Color:</span>'+
+      '<span class="ops-ci-sw" data-cls="" style="display:inline-block;width:18px;height:18px;border-radius:3px;background:rgba(255,200,200,.4);cursor:pointer;border:2px solid #302f2c" title="Auto" onclick="opsCiPick(this,\'\')"></span>'+
+      '<span class="ops-ci-sw" data-cls="ops-andrew" style="display:inline-block;width:18px;height:18px;border-radius:3px;background:rgba(58,138,85,.55);cursor:pointer;border:2px solid transparent" title="Green" onclick="opsCiPick(this,\'ops-andrew\')"></span>'+
+      '<span class="ops-ci-sw" data-cls="ops-ian" style="display:inline-block;width:18px;height:18px;border-radius:3px;background:rgba(58,90,170,.55);cursor:pointer;border:2px solid transparent" title="Blue" onclick="opsCiPick(this,\'ops-ian\')"></span>'+
+      '<span class="ops-ci-sw" data-cls="ops-chris" style="display:inline-block;width:18px;height:18px;border-radius:3px;background:rgba(192,148,32,.55);cursor:pointer;border:2px solid transparent" title="Gold" onclick="opsCiPick(this,\'ops-chris\')"></span>'+
+      '<span class="ops-ci-sw" data-cls="ops-show" style="display:inline-block;width:18px;height:18px;border-radius:3px;background:rgba(120,72,168,.55);cursor:pointer;border:2px solid transparent" title="Purple" onclick="opsCiPick(this,\'ops-show\')"></span>'+
+      '<span class="ops-ci-sw" data-cls="ops-prod" style="display:inline-block;width:18px;height:18px;border-radius:3px;background:rgba(200,118,38,.55);cursor:pointer;border:2px solid transparent" title="Orange" onclick="opsCiPick(this,\'ops-prod\')"></span>'+
+      '<span class="ops-ci-sw" data-cls="ops-event" style="display:inline-block;width:18px;height:18px;border-radius:3px;background:rgba(38,150,140,.55);cursor:pointer;border:2px solid transparent" title="Teal" onclick="opsCiPick(this,\'ops-event\')"></span>'+
+      '<span class="ops-ci-sw" data-cls="ops-note" style="display:inline-block;width:18px;height:18px;border-radius:3px;background:rgba(216,90,97,.45);cursor:pointer;border:2px solid transparent" title="Pink" onclick="opsCiPick(this,\'ops-note\')"></span>'+
+      '<input type="hidden" id="opsCiCls" value=""/>'+
+    '</div>';
+  }
+  html+='<button class="ops-ca" onclick="opsCiAdd()">+ Add Custom</button>';
   html+='<div class="ops-div"></div>';
   if(row==='ml'){
     html+='<div class="ops-cs">Tech Manager</div>';
@@ -1088,9 +1199,242 @@ function _opsRepositionOpenCed(){
   _opsPositionCed(td);
 }
 function opsOpt(el){if(!_opsEd)return;const val=el.dataset.v;const single=el.dataset.s==='1';const{month,day,row,id}=_opsEd;let cur=og(month,day,row).slice();if(single)cur=cur.includes(val)?[]:[val];else{if(cur.includes(val))cur=cur.filter(x=>x!==val);else cur.push(val);}os(month,day,row,cur);if(row==='ml'){opsReRender();}else{opsRefCell(id,month,day,row);opsCk(document.getElementById(id));}}
-function opsCiAdd(){const inp=document.getElementById('opsCiTxt');if(!inp||!inp.value.trim())return;const val=inp.value.trim();const{month,day,row,id}=_opsEd;const cur=og(month,day,row).slice();if(!cur.includes(val)){cur.push(val);os(month,day,row,cur);}inp.value='';opsRefCell(id,month,day,row);opsCk(document.getElementById(id));}
+function opsCiAdd(){
+  const inp=document.getElementById('opsCiTxt');
+  if(!inp||!inp.value.trim())return;
+  const val=inp.value.trim();
+  const clsInp=document.getElementById('opsCiCls');
+  const cls=clsInp?clsInp.value:'';
+  const{month,day,row,id}=_opsEd;
+  const cur=og(month,day,row).slice();
+  // Build entry: string if no custom colour, object {text,cls} if user picked one
+  if(cls){
+    cur.push({text:val,cls:cls});
+  } else if(!cur.includes(val)){
+    cur.push(val);
+  }
+  os(month,day,row,cur);
+  inp.value='';
+  if(clsInp)clsInp.value='';
+  opsRefCell(id,month,day,row);
+  opsCk(document.getElementById(id));
+}
+// Swatch click handler for the Add Custom colour palette
+function opsCiPick(el,cls){
+  // Update visual selection
+  var row=el.parentNode;
+  row.querySelectorAll('.ops-ci-sw').forEach(function(s){s.style.borderColor='transparent';});
+  el.style.borderColor='#302f2c';
+  // Store chosen class for opsCiAdd to read
+  var clsInp=document.getElementById('opsCiCls');
+  if(clsInp)clsInp.value=cls;
+}
+// Inline-edit a chip in the cell editor's "Current" list. Replaces the chip
+// with an input element + colour swatch row. Click a swatch to change the
+// chip's colour. Saves on blur/Enter, cancels on Escape.
+function opsStartEdit(idx,chipEl){
+  if(!_opsEd)return;
+  const{month,day,row,id}=_opsEd;
+  const cur=og(month,day,row).slice();
+  if(idx<0||idx>=cur.length)return;
+  const v=cur[idx];
+  const oldText=(typeof v==='string')?v:(v&&v.text?v.text:'');
+  const oldCls=(v&&typeof v==='object'&&v.cls)?v.cls:'';
+  // Build a wrapper with the text input + colour swatches
+  const wrap=document.createElement('div');
+  wrap.style.cssText='flex:1;display:flex;flex-direction:column;gap:4px;min-width:0';
+  const inp=document.createElement('input');
+  inp.type='text';
+  inp.value=oldText;
+  inp.style.cssText='width:100%;font-size:13px;font-weight:900;padding:5px 9px;border:2px solid #d85a61;border-radius:4px;background:#fff;color:#302f2c;outline:none;font-family:inherit;box-sizing:border-box;min-width:0';
+  // Colour swatches — each click sets the chip's cls field (auto, then 7 presets)
+  const swatchData=[
+    {cls:'',label:'Auto',bg:'rgba(255,200,200,.4)'},
+    {cls:'ops-andrew',label:'Green',bg:'rgba(58,138,85,.55)'},
+    {cls:'ops-ian',label:'Blue',bg:'rgba(58,90,170,.55)'},
+    {cls:'ops-chris',label:'Gold',bg:'rgba(192,148,32,.55)'},
+    {cls:'ops-show',label:'Purple',bg:'rgba(120,72,168,.55)'},
+    {cls:'ops-prod',label:'Orange',bg:'rgba(200,118,38,.55)'},
+    {cls:'ops-event',label:'Teal',bg:'rgba(38,150,140,.55)'},
+    {cls:'ops-note',label:'Pink',bg:'rgba(216,90,97,.45)'}
+  ];
+  let chosenCls=oldCls;
+  const swatchRow=document.createElement('div');
+  swatchRow.style.cssText='display:flex;gap:3px;align-items:center;flex-wrap:wrap';
+  swatchData.forEach(function(sw){
+    const b=document.createElement('span');
+    b.title=sw.label;
+    b.dataset.cls=sw.cls;
+    b.style.cssText='display:inline-block;width:18px;height:18px;border-radius:3px;background:'+sw.bg+';cursor:pointer;border:2px solid '+(sw.cls===chosenCls?'#302f2c':'transparent')+';transition:border .12s';
+    b.addEventListener('mousedown',function(ev){
+      ev.preventDefault(); // don't let the input lose focus
+      chosenCls=sw.cls;
+      swatchRow.querySelectorAll('span').forEach(function(el){el.style.borderColor='transparent';});
+      b.style.borderColor='#302f2c';
+    });
+    swatchRow.appendChild(b);
+  });
+  wrap.appendChild(inp);
+  wrap.appendChild(swatchRow);
+  const parent=chipEl.parentNode;
+  parent.replaceChild(wrap,chipEl);
+  inp.focus();
+  inp.select();
+  let saved=false;
+  const finish=function(commit){
+    if(saved)return;saved=true;
+    const newText=inp.value.trim();
+    if(!commit||newText===''){
+      opsCk(document.getElementById(id));
+      return;
+    }
+    // No change at all → just re-render
+    if(newText===oldText&&chosenCls===oldCls){
+      opsCk(document.getElementById(id));
+      return;
+    }
+    const cur2=og(month,day,row).slice();
+    if(idx>=cur2.length){opsCk(document.getElementById(id));return;}
+    const v2=cur2[idx];
+    // If we need to attach a cls or the entry was already an object, build/update an object entry
+    if(chosenCls||(v2&&typeof v2==='object')){
+      const base=(v2&&typeof v2==='object')?Object.assign({},v2):{};
+      base.text=newText;
+      if(chosenCls)base.cls=chosenCls;else delete base.cls;
+      cur2[idx]=base;
+    } else {
+      cur2[idx]=newText;
+    }
+    os(month,day,row,cur2);
+    opsRefCell(id,month,day,row);
+    opsCk(document.getElementById(id));
+  };
+  inp.addEventListener('blur',function(){
+    // Delay so a swatch click registers before blur commits
+    setTimeout(function(){finish(true);},80);
+  });
+  inp.addEventListener('keydown',function(e){
+    if(e.key==='Enter'){e.preventDefault();finish(true);}
+    else if(e.key==='Escape'){e.preventDefault();finish(false);}
+  });
+}
 function opsClear(){if(!_opsEd)return;const{month,day,row,id}=_opsEd;os(month,day,row,[]);opsRefCell(id,month,day,row);opsCloseCed();}
 function opsRemoveItem(idx){if(!_opsEd)return;const{month,day,row,id}=_opsEd;const cur=og(month,day,row).slice();if(idx<0||idx>=cur.length)return;cur.splice(idx,1);os(month,day,row,cur);opsRefCell(id,month,day,row);opsCk(document.getElementById(id));}
+
+// ── DRAG-TO-MERGE ────────────────────────────────────────────────────────────
+// Click-and-drag across cells in the same row to merge them into a single
+// multi-day chip. Mouse down + move + up across multiple cells creates a
+// {text, span} entry in the leftmost cell that renders with colspan.
+var _opsDrag=null;       // {mi, row, startDay, endDay, startX, startY, moved}
+var _opsBlockClick=false; // Suppress the click that fires after a drag mouseup
+function _opsDragMouseDown(ev){
+  if(ev.button!==0&&ev.button!==undefined)return; // primary button only
+  var cell=ev.target.closest&&ev.target.closest('.ops-cell');
+  if(!cell)return;
+  if(cell.dataset.row==='ml')return;          // ML has its own span logic
+  if(ev.target.closest('button'))return;      // ignore × and other buttons
+  if(ev.target.closest('input,select,textarea'))return;
+  _opsDrag={
+    mi:+cell.dataset.mi,
+    row:cell.dataset.row,
+    startDay:+cell.dataset.day,
+    endDay:+cell.dataset.day,
+    startX:ev.clientX,
+    startY:ev.clientY,
+    moved:false
+  };
+}
+function _opsDragMouseMove(ev){
+  if(!_opsDrag)return;
+  var dx=Math.abs(ev.clientX-_opsDrag.startX);
+  var dy=Math.abs(ev.clientY-_opsDrag.startY);
+  if(!_opsDrag.moved&&dx<6&&dy<6)return;       // threshold so taps don't trigger
+  _opsDrag.moved=true;
+  var el=document.elementFromPoint(ev.clientX,ev.clientY);
+  var cell=el?(el.closest&&el.closest('.ops-cell')):null;
+  if(!cell)return;
+  if(cell.dataset.row!==_opsDrag.row)return;   // must stay in same row
+  if((+cell.dataset.mi)!==_opsDrag.mi)return;  // and same month
+  var day=+cell.dataset.day;
+  if(day===_opsDrag.endDay)return;
+  _opsDrag.endDay=day;
+  _opsDragHighlight();
+}
+function _opsDragMouseUp(ev){
+  if(!_opsDrag){return;}
+  var drag=_opsDrag;_opsDrag=null;
+  _opsDragClearHighlight();
+  if(!drag.moved||drag.startDay===drag.endDay){return;}
+  // Block the click that fires after mouseup so we don't open the cell editor.
+  // Keep the guard up for ~120ms — enough for opsReRender + queued click to flush.
+  _opsBlockClick=true;
+  setTimeout(function(){_opsBlockClick=false;},120);
+  _opsDragMerge(drag);
+}
+function _opsDragHighlight(){
+  if(!_opsDrag)return;
+  _opsDragClearHighlight();
+  var lo=Math.min(_opsDrag.startDay,_opsDrag.endDay);
+  var hi=Math.max(_opsDrag.startDay,_opsDrag.endDay);
+  var sel='.ops-cell[data-row="'+_opsDrag.row+'"][data-mi="'+_opsDrag.mi+'"]';
+  document.querySelectorAll(sel).forEach(function(c){
+    var day=+c.dataset.day;
+    if(day>=lo&&day<=hi)c.classList.add('ops-drag-sel');
+  });
+}
+function _opsDragClearHighlight(){
+  document.querySelectorAll('.ops-drag-sel').forEach(function(c){c.classList.remove('ops-drag-sel');});
+}
+// Instant merge — no prompt. Takes the text from the START cell (where the user
+// pressed mousedown), spans it across the dragged range. If the start cell is
+// empty, do nothing silently — user has nothing to merge.
+function _opsDragMerge(drag){
+  if(!drag||!OPS_CAL[drag.mi])return;
+  var lo=Math.min(drag.startDay,drag.endDay);
+  var hi=Math.max(drag.startDay,drag.endDay);
+  var span=hi-lo+1;
+  if(span<2)return;
+  var month=OPS_CAL[drag.mi].month;
+  // Pull text from the START cell where the user pressed mousedown
+  var startVals=og(month,drag.startDay,drag.row);
+  if(!startVals.length)return;
+  var v0=startVals[0];
+  var text=(typeof v0==='string')?v0:(v0&&v0.text?v0.text:'');
+  if(!text)return;
+  // Clear every cell in the range, then place the span entry in the leftmost cell
+  for(var d=lo;d<=hi;d++){
+    if(d===lo)continue;
+    os(month,d,drag.row,[]);
+  }
+  os(month,lo,drag.row,[{text:text,span:span}]);
+  // Re-render the visible months to show the colspan
+  if(typeof opsReRender==='function')opsReRender();
+  else if(typeof opsReRenderAll==='function')opsReRenderAll();
+}
+// Block the cell-click that fires immediately after a drag-merge mouseup
+function _opsDragClickGuard(ev){
+  if(_opsBlockClick){ev.preventDefault();ev.stopImmediatePropagation();}
+}
+// Attach drag listeners once (delegated on document, so dynamically rendered cells work)
+if(!window._opsDragInstalled){
+  window._opsDragInstalled=true;
+  document.addEventListener('mousedown',_opsDragMouseDown,true);
+  document.addEventListener('mousemove',_opsDragMouseMove,true);
+  document.addEventListener('mouseup',_opsDragMouseUp,true);
+  document.addEventListener('click',_opsDragClickGuard,true);
+  // Touch support — map to mouse handlers
+  document.addEventListener('touchstart',function(ev){
+    if(ev.touches.length!==1)return;
+    var t=ev.touches[0];
+    _opsDragMouseDown({target:t.target,clientX:t.clientX,clientY:t.clientY,button:0});
+  },{passive:true,capture:true});
+  document.addEventListener('touchmove',function(ev){
+    if(ev.touches.length!==1)return;
+    var t=ev.touches[0];
+    _opsDragMouseMove({clientX:t.clientX,clientY:t.clientY});
+  },{passive:true,capture:true});
+  document.addEventListener('touchend',function(ev){_opsDragMouseUp({});},{passive:true,capture:true});
+}
 function opsCloseCed(){document.getElementById('opsCed').style.display='none';_opsEd=null;}
 
 
