@@ -47,16 +47,18 @@ body{margin:0;padding:0;min-height:100vh}
 .ops-mhdr-txt{font-family:'Barlow Condensed',Impact,sans-serif !important;letter-spacing:0.03em !important}
 
 /* Sticky left column — row labels stay visible when scrolling horizontally.
-   Forced opaque cream so cells scrolling underneath don't bleed through. */
-.ops-tbl td.ops-rlbl{position:sticky !important;left:0 !important;background:#efede3 !important;z-index:2 !important;box-shadow:2px 0 4px -2px rgba(0,0,0,.08)}
+   Forced opaque cream so cells scrolling underneath don't bleed through.
+   Strong red right border separates the label column from the date data. */
+.ops-tbl td.ops-rlbl{position:sticky !important;left:0 !important;background:#efede3 !important;z-index:2 !important;border-right:3px solid #d85a61 !important;box-shadow:2px 0 4px -2px rgba(0,0,0,.08)}
 /* Month/year header — pin its content to the left edge while the cell scrolls.
    Add left padding so the MAY text has breathing room from the cell edge. */
 .ops-tbl tr.ops-mhdr > td{position:sticky;left:0;z-index:3}
 .ops-tbl tr.ops-mhdr > td > div{position:sticky;left:0;width:max-content;padding-left:24px}
 /* Day header row's leftmost (empty) cell — sticky at BOTH top and left so it
    stays in the top-left corner no matter how you scroll. High z-index keeps
-   it above the day-header row (z-index 10) and the row labels below. */
-.ops-tbl tr.ops-dhdr > td:first-child{position:sticky !important;left:0 !important;top:0 !important;z-index:12 !important;background:#efede3 !important;box-shadow:2px 0 4px -2px rgba(0,0,0,.08)}
+   it above the day-header row (z-index 10) and the row labels below.
+   Same red separator line on its right edge. */
+.ops-tbl tr.ops-dhdr > td:first-child{position:sticky !important;left:0 !important;top:0 !important;z-index:12 !important;background:#efede3 !important;border-right:3px solid #d85a61 !important;box-shadow:2px 0 4px -2px rgba(0,0,0,.08)}
 /* Section rows (ops-srow) and gap rows span all columns — sticky their first cell */
 .ops-tbl tr.ops-srow > td,.ops-tbl tr.ops-gap > td,.ops-tbl tr.ops-bigbreak > td{position:sticky;left:0;z-index:1}
 
@@ -384,13 +386,16 @@ function opsSeedFromJobs(){
     });
   });
 }
-// Seed-junk cleanup: date stubs, DD entries, weekend ML, "Morning Live ML"
-// normalisation, and dedupe. Returns true if anything changed.
+// Seed-junk cleanup: date stubs, DD entries, weekend ML, [MCR]/[LDN] strip,
+// "ML Ep##" → "Morning Live Ep##" in studio rows, "Morning Live ML X" → "Morning Live X",
+// and dedupe. Returns true if anything changed.
 function _opsCleanSeedJunk(){
   if(!_opsD)return false;
   var changed=false;
   var JUNK_DATE_RX=/^[A-Z][a-z]{2}-\d{2}$/;
   var DD_JUNK_RX=/^DD(\s|$)/i;
+  var LOC_PREFIX_RX=/^\[(MCR|LDN)\]\s*/;
+  var ML_EP_RX=/^ML\s+(Ep\d|Episode)/i;
   var WKND={};
   try{
     OPS_CAL.forEach(function(m){
@@ -404,6 +409,7 @@ function _opsCleanSeedJunk(){
     var parts=k.split('|');
     var rowKey=parts.length===3?parts[2]:'';
     var isWeekend=parts.length>=2?(WKND[parts[0]+'|'+parts[1]]||false):false;
+    var isStudioRow=rowKey.indexOf('st_')===0;
     var filtered=arr.filter(function(v){
       var txt=(typeof v==='string')?v:(v&&typeof v.text==='string'?v.text:'');
       if(!txt)return true;
@@ -414,7 +420,10 @@ function _opsCleanSeedJunk(){
     });
     var normalized=filtered.map(function(v){
       if(typeof v!=='string')return v;
-      return v.replace(/^Morning Live\s+ML\s+/i,'Morning Live ');
+      var out=v.replace(LOC_PREFIX_RX,'');
+      out=out.replace(/^Morning Live\s+ML\s+/i,'Morning Live ');
+      if(isStudioRow)out=out.replace(ML_EP_RX,'Morning Live $1');
+      return out;
     });
     var seen={};var deduped=[];
     normalized.forEach(function(v){
