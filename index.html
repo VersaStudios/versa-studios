@@ -7550,7 +7550,7 @@ function kitInlineSet(id, field, val) {
   const k = kit.find(x=>x.id==id); if(!k) return;
   const picker = document.getElementById('kitInlinePicker');
   if(picker) picker.remove();
-  if(field==='loc') { k.loc=val; toast('Location updated'); }
+  if(field==='loc') { k.loc=val; if(typeof maybeAutoAllocateToML==='function')maybeAutoAllocateToML(k); toast('Location updated'); }
   else if(field==='status') { k.status=val; toast('Status updated'); }
   else if(field==='job') {
     // Remove from all current job prep lists
@@ -8053,7 +8053,16 @@ function openAllocModal() {
   const k=kit.find(x=>x.id==currentKid); if(!k) return;
   document.getElementById('allocKitName').textContent=k.name+' ('+k.tag+')';
   const el=document.getElementById('allocJobList');
-  el.innerHTML=jobs.map(j=>{
+  // Only show current jobs — hide archived, finished, cancelled, past-end-date
+  var _today=(typeof today==='function')?today():new Date().toISOString().slice(0,10);
+  var activeJobs=jobs.filter(function(j){
+    if(j.archived)return false;
+    if(j.end && j.end < _today)return false;
+    var st=(j.status||'').toLowerCase();
+    if(st==='finished'||st==='archived'||st==='complete'||st==='completed'||st==='past'||st==='cancelled')return false;
+    return true;
+  });
+  el.innerHTML=activeJobs.map(j=>{
     const already=(j.prep||[]).some(p=>p.kid===k.id);
     return '<div style="display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--border)">'
       +'<div style="flex:1"><div style="font-family:var(--cond);font-size:17px;font-weight:800;color:var(--pure)">'+j.name+'</div>'
@@ -8064,7 +8073,7 @@ function openAllocModal() {
         :'<button class="ibtn" onclick="allocKitToJob('+j.id+','+k.id+')">Add to Prep</button>')
       +'</div>';
   }).join('');
-  if(!jobs.length) el.innerHTML='<div style="color:var(--muted);font-size:17px;padding:10px 0">No jobs exist yet.</div>';
+  if(!activeJobs.length) el.innerHTML='<div style="color:var(--muted);font-size:17px;padding:10px 0">No current jobs to allocate to.</div>';
   om('mAlloc');
 }
 function allocKitToJob(jid,kid) {
@@ -8197,6 +8206,22 @@ function kitSubcatBadge(subcat){
   if(!subcat) return '';
   return '<span style="font-size:10px;font-family:var(--cond);font-weight:700;letter-spacing:.05em;color:var(--muted);background:rgba(255,255,255,.06);border-radius:3px;padding:1px 5px;margin-left:5px">'+subcat+'</span>';
 }
+// Helper: if a kit item lives at ABC it is, by rule, used on Morning Live.
+// Push a prep entry onto Morning Live (id+loc match), idempotent so re-saving
+// or re-importing doesn't create duplicates. Writes a history entry too.
+function maybeAutoAllocateToML(k){
+  if(!k||k.loc!=='ABC')return false;
+  if(typeof jobs==='undefined')return false;
+  var ml=jobs.find(function(j){return j.name==='Morning Live'&&j.loc==='ABC';});
+  if(!ml)return false;
+  if(!ml.prep)ml.prep=[];
+  if(ml.prep.some(function(p){return p.kid===k.id;}))return false;
+  ml.prep.push({kid:k.id,done:false,ks:'',ke:'',area:''});
+  if(!k.history)k.history=[];
+  k.history.unshift({date:(typeof today==='function'?today():new Date().toISOString().slice(0,10)),event:'Auto-allocated (ABC kit always on Morning Live)',job:ml.name,studio:ml.studio||ml.loc,area:'',by:(typeof uname==='function'?uname():'system')});
+  return true;
+}
+
 function addKit() {
   const name=document.getElementById('nkName').value.trim();
   if(!name){toast('Enter item name');return;}
@@ -8212,6 +8237,7 @@ function addKit() {
     hireCompany:(document.getElementById('nkHireCo').value||'').trim(),
     extAssetNo:(document.getElementById('nkExtAsset').value||'').trim()};
   kit.push(k);
+  maybeAutoAllocateToML(k);
   activity.unshift({icon:'➕',text:'Added: '+name,time:'Just now'});
   saveData();
   cm('mAddKit'); toast('Added: '+name); renderKit(); renderDash();
@@ -17731,7 +17757,7 @@ function prevImport() {
     +'<div style="font-size:17px;color:var(--white)">'+importRows.slice(0,3).map(r=>r.name).join(', ')+(importRows.length>3?'...':'')+'</div>';
   document.getElementById('importBtn').style.display=importRows.length?'':'none';
 }
-function doImport(){if(!importRows.length)return;importRows.forEach(r=>{r.id=nextKid++;kit.push(r);});saveData();toast('Imported '+importRows.length+' items');cm('mImport');renderKit();renderDash();}
+function doImport(){if(!importRows.length)return;importRows.forEach(r=>{r.id=nextKid++;kit.push(r);if(typeof maybeAutoAllocateToML==='function')maybeAutoAllocateToML(r);});saveData();toast('Imported '+importRows.length+' items');cm('mImport');renderKit();renderDash();}
 
 // ── SIGN-IN ───────────────────────────────────────────────────────────────────
 function pwStr(){
