@@ -1357,11 +1357,11 @@ html[data-theme="light"] .drw-more-menu{background:#f4f2ec;border-color:rgba(48,
             <div id="kitInvBtns" style="display:flex;gap:8px"><button class="btn-sec" onclick="om('mImport')">Import</button><button class="btn-add" onclick="openAddKit()">+ Add Item</button></div>
             <div id="kitHiredBtns" style="display:none;gap:8px"><button class="btn-sec" onclick="openHiredImport()">&#8593; Import CSV</button><button class="btn-add" onclick="openAddHiredItem()">+ Add to Catalogue</button></div>
           </div>
-          <div style="display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:16px">
-            <button id="kitTabInv" onclick="showKitTab('inv')" style="padding:7px 18px;font-size:12px;font-family:var(--cond);font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:none;border:none;border-bottom:2px solid var(--accent);color:var(--accent);cursor:pointer">Inventory</button>
-            <button id="kitTabHired" onclick="showKitTab('hired')" style="padding:7px 18px;font-size:12px;font-family:var(--cond);font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer">Hired Catalogue</button>
-            <button id="kitTabLogistics" onclick="showKitTab('logistics')" style="padding:7px 18px;font-size:12px;font-family:var(--cond);font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer">Logistics</button>
-            <button id="kitTabLth" onclick="showKitTab('lth')" style="padding:7px 18px;font-size:12px;font-family:var(--cond);font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer">Long Term Hired</button>
+          <div style="display:flex;gap:2px;border-bottom:1px solid var(--border);margin-bottom:18px;padding-bottom:0">
+            <button id="kitTabInv" onclick="showKitTab('inv')" style="padding:9px 18px;font-size:12px;font-family:var(--cond);font-weight:900;letter-spacing:.1em;text-transform:uppercase;background:none;border:none;border-bottom:2px solid var(--accent);color:var(--accent);cursor:pointer;margin-bottom:-1px;transition:color .12s">Inventory</button>
+            <button id="kitTabHired" onclick="showKitTab('hired')" style="padding:9px 18px;font-size:12px;font-family:var(--cond);font-weight:900;letter-spacing:.1em;text-transform:uppercase;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer;margin-bottom:-1px;transition:color .12s">Hired Catalogue</button>
+            <button id="kitTabLogistics" onclick="showKitTab('logistics')" style="padding:9px 18px;font-size:12px;font-family:var(--cond);font-weight:900;letter-spacing:.1em;text-transform:uppercase;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer;margin-bottom:-1px;transition:color .12s">Logistics</button>
+            <button id="kitTabLth" onclick="showKitTab('lth')" style="padding:9px 18px;font-size:12px;font-family:var(--cond);font-weight:900;letter-spacing:.1em;text-transform:uppercase;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer;margin-bottom:-1px;transition:color .12s">Long Term Hired</button>
           </div>
           <div id="kitTabPanelInv">
           <div style="position:relative;margin-bottom:22px">
@@ -3202,22 +3202,25 @@ function appPromptOK() {
 // ── DATA ──────────────────────────────────────────────────────────────────────
 const KIT_SUBCATS = {
   Camera:['Studio Camera','Lens','Pedestal','Head','Zoom Demand','Focus Demand','CCU','RCP','MCS','Grip','Specialist Camera','Mini Camera','PTZ Camera','Autocue','Viewfinder','Return Monitor'],
-  Audio:['Desks','Hydras','Mics','Radio Mics','Transmitters','Receivers','Playout','Monitoring','Speaker','Audio Panel'],
+  Audio:['Desks','Hydras','Microphones','Mics','Radio Mics','Radio TX','Transmitters','Receivers','Playout','Monitoring','Speaker','Audio Panel','AMU','Attachments','Audio DA','Beltpack','Connector','Modular I/O','Power','Preamp','Processor','Spoton','Stands','Other'],
   Comms:['Frame','Panels','Boleros','Headsets','Chargers'],
   'Grip & Support':['Tripods','Heads','Dollies','Jibs','Misc Grip'],
-  Vision:['RCPs','OLEDs','Switchers','Routers','Multiviewers','Signal Converters','Colour Corrector','Vision Mixer','Waveform Monitors'],
+  Vision:['RCPs','OLEDs','Switchers','Routers','Multiviewers','Signal Converters','Colour Corrector','Vision Mixer','Waveform Monitors','Attachments'],
   'Floor Monitors':[],
   Cables:['SMPTE'],
   Lighting:['Fixtures','Dimmers','Control','Rigging'],
   Monitors:['On-Camera','Confidence','Production','Rack','Rack mounted'],
   Engineering:['Router','Server','GPIO','Panels','Units'],
   Glue:[],
-  Convertors:['Detour','Scan Converter','RS422-IP','HDMI-SDI','Multiviewer','Embedders'],
+  Converters:['Detour','Scan Converter','RS422-IP','HDMI-SDI','Multiviewer','Embedders'],
   Systems:['Server','PC','KVM','Switch','Router'],
   'Record/Playback':[],
   Record:['Hyperdeck'],
   Connectivity:['Patchbay'],
   Offair:[],
+  Power:[],
+  Pods:[],
+  PC:[],
   Other:[],
 };
 let cats = Object.keys(KIT_SUBCATS);
@@ -3351,11 +3354,11 @@ let kit = [{"id":1,"name":"Focus Demand and Shot Box \u2014 FJP-D11","cat":"Came
   {id:189,name:"Harris DA-DHR6804+ DA 16",cat:"Glue",subcat:"",make:"Harris",model:"Harris DA-DHR6804+ DA",status:'In Use',loc:'ABC',notes:"",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
   {id:190,name:"Harris DA-DHR6804+ DA 17",cat:"Glue",subcat:"",make:"Harris",model:"Harris DA-DHR6804+ DA",status:'In Use',loc:'ABC',notes:"",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
   {id:191,name:"ProBel V1606 VALID Reader / Generator",cat:"Glue",subcat:"",make:"ProBel",model:"ProBel V1606 VALID Reader / Generator",status:'In Use',loc:'ABC',notes:"",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
-  {id:192,name:"Ross Detour 2 x 1 Relay Bypass / Detour Switch 1",cat:"Convertors",subcat:"Detour",make:"Ross",model:"Ross Detour 2 x 1 Relay Bypass / Detour Switch",status:'In Use',loc:'ABC',notes:"",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
-  {id:193,name:"Ross Detour 2 x 1 Relay Bypass / Detour Switch 2",cat:"Convertors",subcat:"Detour",make:"Ross",model:"Ross Detour 2 x 1 Relay Bypass / Detour Switch",status:'In Use',loc:'ABC',notes:"",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
+  {id:192,name:"Ross Detour 2 x 1 Relay Bypass / Detour Switch 1",cat:"Converters",subcat:"Detour",make:"Ross",model:"Ross Detour 2 x 1 Relay Bypass / Detour Switch",status:'In Use',loc:'ABC',notes:"",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
+  {id:193,name:"Ross Detour 2 x 1 Relay Bypass / Detour Switch 2",cat:"Converters",subcat:"Detour",make:"Ross",model:"Ross Detour 2 x 1 Relay Bypass / Detour Switch",status:'In Use',loc:'ABC',notes:"",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
   {id:194,name:"Sonifex RBDDA 6 Way Word Clock DA",cat:"Glue",subcat:"",make:"Sonifex",model:"Sonifex RBDDA 6 Way Word Clock DA",status:'In Use',loc:'ABC',notes:"",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
-  {id:195,name:"Barco PDS-902 - Scan Converter",cat:"Convertors",subcat:"Scan Converter",make:"Barco",model:"Barco PDS-902 - Scan Converter",status:'In Use',loc:'ABC',notes:"Barco PDS-902 3G Professional Scaler / Seamless Switcher 4 x VGA, 4 x DVI-I, 1 x 3G-SDI inputs; 1 x VGA, 1 x DVI-I, 1 x HD-SDI and preview outputs",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
-  {id:196,name:"MOXA 5650-8 RS422 <> IP",cat:"Convertors",subcat:"RS422-IP",make:"Moxa",model:"MOXA 5650-8 RS422 <> IP",status:'In Use',loc:'ABC',notes:"",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
+  {id:195,name:"Barco PDS-902 - Scan Converter",cat:"Converters",subcat:"Scan Converter",make:"Barco",model:"Barco PDS-902 - Scan Converter",status:'In Use',loc:'ABC',notes:"Barco PDS-902 3G Professional Scaler / Seamless Switcher 4 x VGA, 4 x DVI-I, 1 x 3G-SDI inputs; 1 x VGA, 1 x DVI-I, 1 x HD-SDI and preview outputs",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
+  {id:196,name:"MOXA 5650-8 RS422 <> IP",cat:"Converters",subcat:"RS422-IP",make:"Moxa",model:"MOXA 5650-8 RS422 <> IP",status:'In Use',loc:'ABC',notes:"",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
   {id:197,name:"FORA FA-9520 Colour Corrector 1",cat:"Vision",subcat:"Colour Corrector",make:"Fora",model:"FORA FA-9520 Colour Corrector",status:'In Use',loc:'ABC',notes:"",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
   {id:198,name:"FORA FA-9520 Colour Corrector 2",cat:"Vision",subcat:"Colour Corrector",make:"Fora",model:"FORA FA-9520 Colour Corrector",status:'In Use',loc:'ABC',notes:"",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
   {id:199,name:"FORA FA-9520 Colour Corrector 3",cat:"Vision",subcat:"Colour Corrector",make:"Fora",model:"FORA FA-9520 Colour Corrector",status:'In Use',loc:'ABC',notes:"",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
@@ -3377,20 +3380,20 @@ let kit = [{"id":1,"name":"Focus Demand and Shot Box \u2014 FJP-D11","cat":"Came
   {id:215,name:"Dell Optiplex 7010 SFF Video Control PC",cat:"Systems",subcat:"PC",make:"Dell",model:"Dell Optiplex 7010 SFF Video Control PC",status:'In Use',loc:'ABC',notes:"",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
   {id:216,name:"HP Z230 SFF Info Screen PC",cat:"Systems",subcat:"PC",make:"HP",model:"HP Z230 SFF Info Screen PC",status:'In Use',loc:'ABC',notes:"",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
   {id:217,name:"Adderview DDX-30 KVM Matrix",cat:"Systems",subcat:"KVM",make:"Adderview",model:"Adderview DDX-30 KVM Matrix",status:'In Use',loc:'ABC',notes:"",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
-  {id:218,name:"HDMI > SDI 1",cat:"Convertors",subcat:"HDMI-SDI",make:"N/A",model:"HDMI > SDI",status:'In Use',loc:'ABC',notes:"",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
-  {id:219,name:"HDMI > SDI 2",cat:"Convertors",subcat:"HDMI-SDI",make:"N/A",model:"HDMI > SDI",status:'In Use',loc:'ABC',notes:"",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
+  {id:218,name:"HDMI > SDI 1",cat:"Converters",subcat:"HDMI-SDI",make:"N/A",model:"HDMI > SDI",status:'In Use',loc:'ABC',notes:"",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
+  {id:219,name:"HDMI > SDI 2",cat:"Converters",subcat:"HDMI-SDI",make:"N/A",model:"HDMI > SDI",status:'In Use',loc:'ABC',notes:"",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
   {id:220,name:"DTT Receivers - Off air 1",cat:"Offair",subcat:"",make:"Freeview",model:"DTT Receivers - Off air",status:'In Use',loc:'ABC',notes:"",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
   {id:221,name:"DTT Receivers - Off air 2",cat:"Offair",subcat:"",make:"Freeview",model:"DTT Receivers - Off air",status:'In Use',loc:'ABC',notes:"",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
   {id:222,name:"DTT Receivers - Off air 3",cat:"Offair",subcat:"",make:"Freeview",model:"DTT Receivers - Off air",status:'In Use',loc:'ABC',notes:"",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
   {id:223,name:"DTT Receivers - Off air 4",cat:"Offair",subcat:"",make:"Freeview",model:"DTT Receivers - Off air",status:'In Use',loc:'ABC',notes:"",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
-  {id:224,name:"Yellobrik CHD1812 HDMI > SDI 1",cat:"Convertors",subcat:"HDMI-SDI",make:"Yellobrik",model:"Yellobrik CHD1812 HDMI > SDI",status:'In Use',loc:'ABC',notes:"DTT Receivers",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
-  {id:225,name:"Yellobrik CHD1812 HDMI > SDI 2",cat:"Convertors",subcat:"HDMI-SDI",make:"Yellobrik",model:"Yellobrik CHD1812 HDMI > SDI",status:'In Use',loc:'ABC',notes:"DTT Receivers",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
-  {id:226,name:"Yellobrik CHD1812 HDMI > SDI 3",cat:"Convertors",subcat:"HDMI-SDI",make:"Yellobrik",model:"Yellobrik CHD1812 HDMI > SDI",status:'In Use',loc:'ABC',notes:"DTT Receivers",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
-  {id:227,name:"Yellobrik CHD1812 HDMI > SDI 4",cat:"Convertors",subcat:"HDMI-SDI",make:"Yellobrik",model:"Yellobrik CHD1812 HDMI > SDI",status:'In Use',loc:'ABC',notes:"DTT Receivers",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
-  {id:228,name:"Yellobrik CDH 1813 SDI de-embedder 1",cat:"Convertors",subcat:"Embedders",make:"Yellobrik",model:"Yellobrik CDH 1813 SDI de-embedder",status:'In Use',loc:'ABC',notes:"BBC One & BBC Two Off Air Audio",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
-  {id:229,name:"Yellobrik CDH 1813 SDI de-embedder 2",cat:"Convertors",subcat:"Embedders",make:"Yellobrik",model:"Yellobrik CDH 1813 SDI de-embedder",status:'In Use',loc:'ABC',notes:"BBC One & BBC Two Off Air Audio",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
+  {id:224,name:"Yellobrik CHD1812 HDMI > SDI 1",cat:"Converters",subcat:"HDMI-SDI",make:"Yellobrik",model:"Yellobrik CHD1812 HDMI > SDI",status:'In Use',loc:'ABC',notes:"DTT Receivers",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
+  {id:225,name:"Yellobrik CHD1812 HDMI > SDI 2",cat:"Converters",subcat:"HDMI-SDI",make:"Yellobrik",model:"Yellobrik CHD1812 HDMI > SDI",status:'In Use',loc:'ABC',notes:"DTT Receivers",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
+  {id:226,name:"Yellobrik CHD1812 HDMI > SDI 3",cat:"Converters",subcat:"HDMI-SDI",make:"Yellobrik",model:"Yellobrik CHD1812 HDMI > SDI",status:'In Use',loc:'ABC',notes:"DTT Receivers",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
+  {id:227,name:"Yellobrik CHD1812 HDMI > SDI 4",cat:"Converters",subcat:"HDMI-SDI",make:"Yellobrik",model:"Yellobrik CHD1812 HDMI > SDI",status:'In Use',loc:'ABC',notes:"DTT Receivers",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
+  {id:228,name:"Yellobrik CDH 1813 SDI de-embedder 1",cat:"Converters",subcat:"Embedders",make:"Yellobrik",model:"Yellobrik CDH 1813 SDI de-embedder",status:'In Use',loc:'ABC',notes:"BBC One & BBC Two Off Air Audio",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
+  {id:229,name:"Yellobrik CDH 1813 SDI de-embedder 2",cat:"Converters",subcat:"Embedders",make:"Yellobrik",model:"Yellobrik CDH 1813 SDI de-embedder",status:'In Use',loc:'ABC',notes:"BBC One & BBC Two Off Air Audio",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
   {id:230,name:"CTP CTDM08P Camera Talkback Mixer",cat:"Audio",subcat:"Audio Panel",make:"CTP",model:"CTP CTDM08P Camera Talkback Mixer",status:'In Use',loc:'ABC',notes:"",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
-  {id:231,name:"Decimator DMON-6S Camera Multiviewer",cat:"Convertors",subcat:"Multiviewer",make:"Decimator",model:"Decimator DMON-6S Camera Multiviewer",status:'In Use',loc:'ABC',notes:"",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
+  {id:231,name:"Decimator DMON-6S Camera Multiviewer",cat:"Converters",subcat:"Multiviewer",make:"Decimator",model:"Decimator DMON-6S Camera Multiviewer",status:'In Use',loc:'ABC',notes:"",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
   {id:232,name:"Internet Switch 28-port - TP Link TP-SL2428P",cat:"Systems",subcat:"Switch",make:"TP Link",model:"Internet Switch 28-port - TP Link TP-SL2428P",status:'In Use',loc:'ABC',notes:"",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
   {id:233,name:"Internet Router 16-port - Telcom",cat:"Systems",subcat:"Router",make:"Telcom",model:"Internet Router 16-port - Telcom",status:'In Use',loc:'ABC',notes:"",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
   {id:234,name:"POST Network switch 12-port - Netgear M4300 - 12x12",cat:"Systems",subcat:"Switch",make:"Netgear",model:"POST Network switch 12-port - Netgear M4300 - 12x12",status:'In Use',loc:'ABC',notes:"",serial:'',tag:'',cond:'Good',hired:false,inUse:true,subsubcat:''},
@@ -4940,42 +4943,100 @@ var _lthSearch='';
 var _lthFilterCat='';
 var _lthFilterSupplier='';
 
+// Deterministic colour from supplier name so each supplier gets its own tile
+// colour without us having to maintain a SUPPLIER_COLORS map. Same approach
+// as the ML chip colour hash in the ops planner.
+function lthHashColor(name){
+  if(!name)return'#6b7280';
+  var palette=['#3a7a55','#3a5aaa','#7a4aaa','#1a8a8a','#aa6a2a','#c0524a','#5a8a3a','#aa3a7a','#3a6aaa','#8a5a3a','#6a8aaa','#aa8a3a','#4a7a8a','#8a4a6a'];
+  var sum=0;for(var i=0;i<name.length;i++)sum=(sum*31+name.charCodeAt(i))>>>0;
+  return palette[sum%palette.length];
+}
+
 function renderLthList(){
   var el=document.getElementById('kitLthView');if(!el)return;
   var q=_lthSearch.trim().toLowerCase();
-  var items=longTermHired.slice().sort(function(a,b){return (a.name||'').localeCompare(b.name||'');});
+  var allItems=longTermHired.slice().sort(function(a,b){return (a.name||'').localeCompare(b.name||'');});
+
+  // Apply filters → working set
+  var items=allItems;
   if(q)items=items.filter(function(x){return (x.name||'').toLowerCase().indexOf(q)>=0||(x.tag||'').toLowerCase().indexOf(q)>=0||(x.supplier||'').toLowerCase().indexOf(q)>=0||(x.serial||'').toLowerCase().indexOf(q)>=0;});
   if(_lthFilterCat)items=items.filter(function(x){return (x.cat||'')===_lthFilterCat;});
   if(_lthFilterSupplier)items=items.filter(function(x){return (x.supplier||'')===_lthFilterSupplier;});
+  var hasFilter=q||_lthFilterCat||_lthFilterSupplier;
 
-  var supList=(typeof suppliers!=='undefined'&&suppliers?suppliers.slice():[]).sort(function(a,b){return (a.name||'').localeCompare(b.name||'');});
-  var supOpts='<option value="">All Suppliers</option>'+supList.map(function(s){return '<option'+(s.name===_lthFilterSupplier?' selected':'')+'>'+(s.name||'').replace(/</g,'&lt;')+'</option>';}).join('');
-  var catOpts='<option value="">All Categories</option>'+(cats||[]).map(function(c){return '<option'+(c===_lthFilterCat?' selected':'')+'>'+c+'</option>';}).join('');
+  // Counts built from the unfiltered set so the tiles always reflect the full
+  // picture, not a recursive filtered subset
+  var supCounts={},catCounts={};
+  allItems.forEach(function(x){
+    var s=x.supplier||'(no supplier)';supCounts[s]=(supCounts[s]||0)+1;
+    var c=x.cat||'(uncategorised)';catCounts[c]=(catCounts[c]||0)+1;
+  });
 
-  // Stats: total + by supplier
-  var bySup={};items.forEach(function(x){var s=x.supplier||'(no supplier)';bySup[s]=(bySup[s]||0)+1;});
-  var supChips=Object.keys(bySup).sort().map(function(s){return '<span style="display:inline-flex;align-items:center;gap:5px;padding:3px 9px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:4px;font-size:11px;font-family:var(--cond);font-weight:700;color:var(--muted);letter-spacing:.04em"><span style="color:var(--accent);font-weight:900">'+bySup[s]+'</span> '+s.replace(/</g,'&lt;')+'</span>';}).join('');
-
-  var head='<div style="background:var(--near-black);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:12px">'
-    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:10px">'
-      +'<div style="display:flex;align-items:baseline;gap:10px"><div style="font-family:var(--cond);font-size:18px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;color:var(--white)">Long Term Hired</div>'
-      +'<span style="font-family:var(--cond);font-size:13px;font-weight:700;color:var(--muted)">'+items.length+' item'+(items.length===1?'':'s')+'</span></div>'
-      +'<button class="ibtn" style="font-size:12px;padding:6px 14px;background:var(--accent);color:#fff;border:none" onclick="lthOpenAdd()">+ Add Long Term Hired</button>'
+  // ── HEADER + SEARCH ──
+  var html='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px">'
+    +'<div style="display:flex;align-items:baseline;gap:10px">'
+      +'<div style="font-family:var(--cond);font-size:18px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;color:var(--white)">Long Term Hired</div>'
+      +'<span style="font-family:var(--cond);font-size:13px;font-weight:700;color:var(--muted)">'+allItems.length+' item'+(allItems.length===1?'':'s')+'</span>'
     +'</div>'
-    +'<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">'
-      +'<input class="fi" style="flex:1 1 220px;font-size:13px;padding:6px 10px;min-width:180px" placeholder="Search by name, tag, serial, supplier..." value="'+(_lthSearch||'').replace(/"/g,'&quot;')+'" oninput="_lthSearch=this.value;renderLthList()"/>'
-      +'<select class="fi" style="font-size:13px;padding:6px 10px" onchange="_lthFilterCat=this.value;renderLthList()">'+catOpts+'</select>'
-      +'<select class="fi" style="font-size:13px;padding:6px 10px" onchange="_lthFilterSupplier=this.value;renderLthList()">'+supOpts+'</select>'
-    +'</div>'
-    +(supChips?'<div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:10px">'+supChips+'</div>':'')
-    +'</div>';
+    +'<button class="btn-add" onclick="lthOpenAdd()">+ Add Long Term Hired</button>'
+  +'</div>'
+  +'<div style="position:relative;margin-bottom:22px">'
+    +'<svg style="position:absolute;left:11px;top:50%;transform:translateY(-50%);opacity:.35;pointer-events:none" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>'
+    +'<input id="lthSearchInput" class="fi" style="width:100%;padding:10px 14px 10px 34px;font-size:15px;border-radius:6px;box-sizing:border-box" placeholder="Search by name, tag, serial or supplier..." value="'+(q||'').replace(/"/g,'&quot;')+'" oninput="_lthSearch=this.value;renderLthList();var i=document.getElementById(\'lthSearchInput\');if(i){i.focus();i.setSelectionRange(i.value.length,i.value.length);}"/>'
+  +'</div>';
 
-  if(!items.length){
-    el.innerHTML=head+'<div style="padding:30px 20px;text-align:center;color:var(--muted);font-size:14px;background:var(--near-black);border:1px dashed var(--border);border-radius:8px">No long-term hired items'+(q||_lthFilterCat||_lthFilterSupplier?' match the filters.':' yet. Click + Add to start.')+'</div>';
-    return;
+  // ── LANDING (no filter): suppliers tiles + categories tiles ──
+  if(!hasFilter){
+    // No data yet → empty-state message, but still render the category tiles
+    // below so the layout matches the main Inventory page from day one
+    if(!allItems.length){
+      html+='<div style="padding:24px 20px;text-align:center;color:var(--muted);font-size:14px;background:var(--near-black);border:1px dashed var(--border);border-radius:8px;margin-bottom:24px">No long-term hired items yet. Click + Add to start, or click a category below.</div>';
+    } else {
+
+    html+='<div style="font-family:var(--cond);font-size:13px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--white);margin-bottom:10px">Suppliers <span style="color:var(--muted);font-weight:700;letter-spacing:.04em;text-transform:none">&middot; who owns the kit</span></div>'
+      +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:10px;margin-bottom:24px">';
+    Object.keys(supCounts).sort().forEach(function(s){
+      var col=lthHashColor(s);var safe=s.replace(/'/g,"\\'").replace(/"/g,'&quot;');
+      html+='<div onclick="_lthFilterSupplier=\''+safe+'\';renderLthList()" style="background:'+col+';border-radius:12px;padding:16px 18px;cursor:pointer;min-height:90px;display:flex;flex-direction:column;justify-content:space-between">'
+        +'<div style="font-size:16px;font-weight:900;color:#fff;font-family:var(--cond);line-height:1.15;letter-spacing:-.01em;text-transform:uppercase;overflow-wrap:anywhere">'+s.replace(/</g,'&lt;')+'</div>'
+        +'<div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px"><span style="font-size:12px;color:rgba(255,255,255,.75)">'+supCounts[s]+' item'+(supCounts[s]===1?'':'s')+'</span></div>'
+      +'</div>';
+    });
+    html+='</div>';
+    }
+
+    html+='<div style="font-family:var(--cond);font-size:13px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--white);margin-bottom:10px">Categories</div>'
+      +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:10px;margin-bottom:24px">';
+    // Show ALL kit categories (not just ones with LTH items) so the tile grid
+    // is identical to the main Inventory page. Empty categories render with 0.
+    var allCats=(typeof KIT_SUBCATS!=='undefined')?Object.keys(KIT_SUBCATS):Object.keys(catCounts);
+    allCats.forEach(function(c){
+      var col=(typeof CAT_COLORS!=='undefined'&&CAT_COLORS[c])||'#6b7280';var safe=c.replace(/'/g,"\\'").replace(/"/g,'&quot;');
+      var n=catCounts[c]||0;
+      html+='<div onclick="_lthFilterCat=\''+safe+'\';renderLthList()" style="background:'+col+';border-radius:12px;padding:16px 18px;cursor:pointer;min-height:90px;display:flex;flex-direction:column;justify-content:space-between'+(n===0?';opacity:.55':'')+'">'
+        +'<div style="font-size:16px;font-weight:900;color:#fff;font-family:var(--cond);line-height:1.15;letter-spacing:-.01em;text-transform:uppercase;overflow-wrap:anywhere">'+c.replace(/</g,'&lt;')+'</div>'
+        +'<div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px"><span style="font-size:12px;color:rgba(255,255,255,.75)">'+n+' item'+(n===1?'':'s')+'</span></div>'
+      +'</div>';
+    });
+    html+='</div>';
+    el.innerHTML=html;return;
   }
 
-  // Card-row layout matching the main Kit Inventory view
+  // ── FILTERED VIEW: breadcrumbs + item list ──
+  var crumbs=[];
+  if(_lthFilterSupplier)crumbs.push('<span onclick="_lthFilterSupplier=\'\';renderLthList()" style="cursor:pointer;background:rgba(255,255,255,.08);border:1px solid var(--border);padding:4px 11px;border-radius:4px;font-family:var(--cond);font-size:12px;font-weight:700;color:var(--white)">Supplier: '+_lthFilterSupplier.replace(/</g,'&lt;')+' &times;</span>');
+  if(_lthFilterCat)crumbs.push('<span onclick="_lthFilterCat=\'\';renderLthList()" style="cursor:pointer;background:rgba(255,255,255,.08);border:1px solid var(--border);padding:4px 11px;border-radius:4px;font-family:var(--cond);font-size:12px;font-weight:700;color:var(--white)">Category: '+_lthFilterCat.replace(/</g,'&lt;')+' &times;</span>');
+  if(q)crumbs.push('<span style="background:rgba(255,255,255,.08);border:1px solid var(--border);padding:4px 11px;border-radius:4px;font-family:var(--cond);font-size:12px;font-weight:700;color:var(--white)">Search: &ldquo;'+q.replace(/</g,'&lt;')+'&rdquo;</span>');
+  crumbs.push('<button onclick="_lthSearch=\'\';_lthFilterCat=\'\';_lthFilterSupplier=\'\';renderLthList()" class="ibtn" style="font-size:11px;padding:4px 10px">&larr; Back to all</button>');
+  html+='<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px">'+crumbs.join('')+'</div>';
+
+  if(!items.length){
+    html+='<div style="padding:30px 20px;text-align:center;color:var(--muted);font-size:14px;background:var(--near-black);border:1px dashed var(--border);border-radius:8px">No items match the filters.</div>';
+    el.innerHTML=html;return;
+  }
+
+  // Item rows (kept from previous layout — kit-style card rows)
   var rows=items.map(function(x,idx){
     var col=(typeof CAT_COLORS!=='undefined'&&CAT_COLORS[x.cat])||'#6b7280';
     var hireDates='';
@@ -4984,27 +5045,27 @@ function renderLthList(){
       var end=x.hireEnd?new Date(x.hireEnd+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'ongoing';
       hireDates=start+' \u2192 '+end;
     }
-    var tagDisp=x.tag?(x.tag+' \u00b7 '):'';
     var metaParts=[];
-    if(tagDisp)metaParts.push(tagDisp.replace(/\s\u00b7\s$/,''));
+    if(x.tag)metaParts.push(x.tag);
     if(x.cat)metaParts.push(x.cat+(x.subcat?' / '+x.subcat:''));
     if(x.location)metaParts.push(x.location);
     var metaStr=metaParts.join(' \u00b7 ').replace(/</g,'&lt;');
-    var supplierBadge=x.supplier?'<span style="font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.1em;background:rgba(250,160,0,.18);color:#b87400;border:1px solid rgba(250,160,0,.35);border-radius:3px;padding:2px 7px;white-space:nowrap;flex-shrink:0">'+(x.supplier||'').replace(/</g,'&lt;')+'</span>':'';
+    var supplierBadge=x.supplier?'<span style="font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.1em;background:'+lthHashColor(x.supplier)+';color:#fff;border-radius:3px;padding:2px 7px;white-space:nowrap;flex-shrink:0">'+(x.supplier||'').replace(/</g,'&lt;')+'</span>':'';
     return '<div onclick="lthOpenEdit(\''+x.id+'\')" style="background:var(--near-black);border:1px solid var(--border);border-left:4px solid '+col+';border-radius:6px;padding:10px 16px;margin-bottom:5px;cursor:pointer;display:flex;align-items:center;gap:14px">'
       +'<div style="font-family:var(--cond);font-size:18px;font-weight:900;color:var(--border-l);min-width:32px;text-align:center;line-height:1">'+(idx+1)+'</div>'
       +'<div style="flex:1;min-width:0;display:flex;align-items:center;gap:12px;overflow:hidden">'
-        +'<span style="font-family:var(--cond);font-size:26px;font-weight:900;color:var(--pure);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-transform:uppercase;letter-spacing:-.01em;flex-shrink:1;min-width:0;line-height:1">'+(x.name||'').replace(/</g,'&lt;')+'</span>'
+        +'<span style="font-family:var(--cond);font-size:22px;font-weight:900;color:var(--pure);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-transform:uppercase;letter-spacing:-.01em;flex-shrink:1;min-width:0;line-height:1">'+(x.name||'').replace(/</g,'&lt;')+'</span>'
         +supplierBadge
-        +(metaStr?'<span style="font-family:var(--cond);font-size:16px;color:var(--muted);font-weight:700;white-space:nowrap;flex-shrink:0">'+metaStr+'</span>':'')
-        +(hireDates?'<span style="font-family:var(--cond);font-size:14px;color:var(--accent);font-weight:800;white-space:nowrap;flex-shrink:0">'+hireDates+'</span>':'')
+        +(metaStr?'<span style="font-family:var(--cond);font-size:14px;color:var(--muted);font-weight:700;white-space:nowrap;flex-shrink:0">'+metaStr+'</span>':'')
+        +(hireDates?'<span style="font-family:var(--cond);font-size:13px;color:var(--accent);font-weight:800;white-space:nowrap;flex-shrink:0">'+hireDates+'</span>':'')
       +'</div>'
       +'<div style="flex-shrink:0" onclick="event.stopPropagation()">'
         +'<button class="rm-btn" style="font-size:12px;padding:0;width:28px;height:28px" onclick="lthRemove(\''+x.id+'\')" title="Remove">\u00d7</button>'
       +'</div>'
-      +'</div>';
+    +'</div>';
   }).join('');
-  el.innerHTML=head+rows;
+  html+=rows;
+  el.innerHTML=html;
 }
 
 function lthOpenAdd(){_lthEditId=null;lthOpenModal({});}
@@ -6913,7 +6974,7 @@ function setKV(v) {
 }
 
 // ── KIT LANDING ───────────────────────────────────────────────────────────────
-var CAT_COLORS={'Camera':'#B5472A','Audio':'#1B6B8A','Vision':'#00356B','Monitors':'#4A849C','Lighting':'#C9A227','Grip & Support':'#4A5E1A','Power':'#7A4B28','Comms':'#5B2182','Cables':'#8A7A32','Other':'#E0601A','Hardware Spares':'#8B5E3C','Floor Monitors':'#002B5C','Engineering':'#1A3A5C','Glue':'#3A3A5C','Convertors':'#1A4A3A','Systems':'#2A2A2A','Record':'#5C1A1A','Record/Playback':'#5C1A1A','Connectivity':'#1A4A5C','Offair':'#3A4A1A'};
+var CAT_COLORS={'Camera':'#B5472A','Audio':'#1B6B8A','Vision':'#00356B','Monitors':'#4A849C','Lighting':'#C9A227','Grip & Support':'#4A5E1A','Power':'#7A4B28','Comms':'#5B2182','Cables':'#8A7A32','Other':'#E0601A','Hardware Spares':'#8B5E3C','Floor Monitors':'#002B5C','Engineering':'#1A3A5C','Glue':'#3A3A5C','Converters':'#1A4A3A','Systems':'#2A2A2A','Record':'#5C1A1A','Record/Playback':'#5C1A1A','Connectivity':'#1A4A5C','Offair':'#3A4A1A','Pods':'#5C3A6B','PC':'#2A3F5C'};
 var LOC_COLORS={'Manchester':'#2d7dd2','London':'#e63946','ABC':'#2d7dd2'};
 var CARD_COLS={Confirmed:{bg:'#1a6b3a',bg2:'#0f4526'},Likely:{bg:'#9a7010',bg2:'#6b4d08'},Possible:{bg:'#8b2020',bg2:'#5c1414'},Ongoing:{bg:'#1a5a9a',bg2:'#0f3d6b'},Cancelled:{bg:'#444',bg2:'#2a2a2a'}};
 var DEF={bg:'#2a2a2a',bg2:'#1a1a1a'};
