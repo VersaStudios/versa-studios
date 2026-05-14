@@ -59,6 +59,7 @@ html[data-theme="light"] .theme-btn::before{-webkit-mask-image:url("data:image/s
 .panel-title{font-family:var(--cond);font-size:17px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--white)}
 .panel-act{font-family:var(--cond);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);cursor:pointer;background:none;border:none;transition:color .13s}
 .panel-act:hover{color:var(--white)}
+
 .filters{display:flex;align-items:center;gap:8px;margin-bottom:15px;flex-wrap:wrap}
 .fsel{background:var(--near-black);border:1px solid var(--border);color:var(--white);font-family:var(--cond);font-size:17px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:8px 26px 8px 10px;border-radius:4px;outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23aaa'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;background-color:var(--near-black)}
 .jfchip{background:var(--near-black);border:1px solid var(--border);color:var(--muted);font-family:var(--cond);font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:8px 12px;border-radius:4px;cursor:pointer;transition:all .13s;display:inline-flex;align-items:center;gap:6px}
@@ -508,9 +509,9 @@ textarea.det-edit{resize:vertical;line-height:1.4;font-weight:600;font-size:14px
 .ops-ldiv{width:1px;height:12px;background:var(--border)}
 .ops-scroll{overflow:auto;flex:1}
 
-.ops-mhdr td{padding:9px 14px;background:#0d0d0f;border-bottom:2px solid var(--border);white-space:nowrap}
+.ops-mhdr td{padding:16px 20px 12px;background:rgba(255,253,248,.98);border-bottom:2px solid rgba(216,90,97,.2);white-space:nowrap}
 
-.ops-dhdr td{border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:0;width:36px;min-width:36px}
+.ops-dhdr td{border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:0;width:38px;min-width:38px}
 .ops-dhdr td:first-child{border-right:2px solid var(--border);width:110px;min-width:90px}
 
 
@@ -519,7 +520,7 @@ textarea.det-edit{resize:vertical;line-height:1.4;font-weight:600;font-size:14px
 .ops-dh.td .dn{color:var(--white)}
 
 .ops-srow td{background:rgba(255,255,255,.015);border-top:2px solid var(--border);border-bottom:1px solid var(--border);padding:3px 10px;font-family:var(--cond);font-size:9px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#3a3a3a}
-.ops-drag-src{outline:2px solid #4a9eff!important;z-index:2;position:relative;}.ops-drag-over{background:rgba(74,158,255,.2)!important;}
+/* (obsolete drag styles removed — see .ops-cell.ops-drag-src/-dest below) */
 
 
 
@@ -595,14 +596,17 @@ textarea.det-edit{resize:vertical;line-height:1.4;font-weight:600;font-size:14px
 .yr-dot.b-lon{background:#a07878}
 .yr-dot.b-abc{background:#c4956a}
 /* Ops planner light */
-.ops-tbl{border-collapse:collapse;table-layout:fixed;background:rgba(255,253,248,.94)}
+.ops-tbl{border-collapse:collapse;table-layout:auto;background:rgba(255,253,248,.94)}
 .ops-mhdr-txt{font-size:clamp(36px,5vw,64px);font-weight:900;letter-spacing:-0.05em;line-height:.88;color:#d85a61}
-.ops-dh{padding:6px 2px 5px;text-align:center;font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:rgba(184,79,85,.7)}
-.ops-dh.wk{background:rgba(216,90,97,.06);color:rgba(184,79,85,.5)}
+.ops-dh{padding:6px 2px 5px;text-align:center;font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#d85a61}
+.ops-dh.wk{background:rgba(216,90,97,.06);color:rgba(216,90,97,.55)}
 .ops-dh.td .dn-wrap{background:#d85a61;color:#fff;border-radius:50%;width:26px;height:26px;line-height:26px;margin:auto;box-shadow:0 4px 10px rgba(216,90,97,.3)}
 .ops-dh.td{color:#fff}
-.ops-rlbl{font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;padding:5px 12px;white-space:nowrap;border-right:2px solid rgba(216,90,97,.2);border-bottom:1px solid rgba(216,90,97,.12);vertical-align:middle;width:106px;min-width:106px;color:rgba(184,79,85,.8);background:rgba(255,251,246,.9)}
-.ops-cell{border-right:1px solid rgba(216,90,97,.1);border-bottom:1px solid rgba(216,90,97,.1);vertical-align:top;padding:3px;width:44px;min-width:44px;cursor:pointer;background:rgba(255,253,248,.85);transition:background .12s}
+.ops-rlbl{font-size:13px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;padding:6px 14px;white-space:nowrap;border-right:2px solid rgba(216,90,97,.2);border-bottom:1px solid rgba(216,90,97,.12);vertical-align:middle;width:120px;min-width:120px;color:rgba(184,79,85,.95);background:rgba(255,251,246,.9)}
+.ops-cell{border-right:1px solid rgba(216,90,97,.1);border-bottom:1px solid rgba(216,90,97,.1);vertical-align:top;padding:3px;min-width:70px;cursor:pointer;background:rgba(255,253,248,.85);transition:background .12s;user-select:none;-webkit-user-select:none;touch-action:pan-y}
+.ops-cell.ops-drag-sel{background:rgba(216,90,97,.18)!important;outline:2px dashed #d85a61;outline-offset:-2px}
+.ops-cell.ops-drag-src{opacity:.4}
+.ops-cell.ops-drag-dest{background:rgba(58,90,170,.18)!important;outline:2px dashed #3a5aaa;outline-offset:-2px}
 /* Drag-to-extend visuals */
 .ops-cell.ops-drag-source{outline:2px solid var(--accent,#d85a61);outline-offset:-2px;background:rgba(216,90,97,.06)!important}
 .ops-cell.ops-drag-target{background:rgba(216,90,97,.16)!important;outline:1.5px dashed rgba(216,90,97,.55);outline-offset:-2px}
@@ -624,20 +628,34 @@ textarea.det-edit{resize:vertical;line-height:1.4;font-weight:600;font-size:14px
 .ops-cell.wk{background:rgba(216,90,97,.04)}
 .ops-cell.td{background:rgba(216,90,97,.1)}
 .ops-cell:hover{background:rgba(216,90,97,.08)}
-.ops-chip{display:block;font-size:13px;font-weight:900;letter-spacing:.02em;padding:5px 9px;border-radius:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px;line-height:1.25;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.ops-chip{display:block;position:relative;font-size:15px;font-weight:900;letter-spacing:.05em;padding:6px 14px;border-radius:4px;white-space:nowrap;margin-bottom:3px;line-height:1.35;box-shadow:0 1px 3px rgba(0,0,0,.12);cursor:grab;-webkit-text-stroke:.35px currentColor}
+.ops-chip:active{cursor:grabbing}
+.ops-chip::before,.ops-chip::after{content:'';position:absolute;top:3px;bottom:3px;width:5px;cursor:ew-resize;background:rgba(0,0,0,.12);transition:background .12s,width .12s,left .12s,right .12s}
+.ops-chip::before{left:3px;border-radius:2px}
+.ops-chip::after{right:3px;border-radius:2px}
+.ops-chip:hover::before,.ops-chip:hover::after{background:rgba(0,0,0,.32);width:8px}
+.ops-chip:hover::before{left:2px}
+.ops-chip:hover::after{right:2px}
+body.ops-drag-active .ops-chip::before,body.ops-drag-active .ops-chip::after{pointer-events:none}
 .ops-brk{background:rgba(216,90,97,.08);color:rgba(184,79,85,.6);border:1px solid rgba(216,90,97,.2);text-align:center;font-size:11px;border-radius:4px}
 .ops-ml{color:#fff}
-.ops-event{background:rgba(32,160,160,.18);color:#0a6a6a;border:1px solid rgba(32,160,160,.3)}
-.ops-prod{background:rgba(200,160,32,.2);color:#7a5c08;border:1px solid rgba(200,160,32,.35)}
-.ops-show{background:rgba(192,48,48,.18);color:#8b2020;border:1px solid rgba(192,48,48,.3)}
-.ops-note{background:rgba(216,90,97,.08);color:#7a3a40;border:1px solid rgba(216,90,97,.2)}
-.ops-mcr{background:rgba(42,110,58,.18);color:#1a4e28;border:1px solid rgba(42,110,58,.35)}
-.ops-ldn{background:rgba(26,78,138,.18);color:#0f3468;border:1px solid rgba(26,78,138,.35)}
-.ops-andrew{background:rgba(42,122,79,.2);color:#1a5c38;border:1px solid rgba(42,122,79,.35)}
-.ops-chris{background:rgba(176,138,16,.2);color:#7a5c08;border:1px solid rgba(176,138,16,.35)}
-.ops-ian{background:rgba(32,96,176,.2);color:#18407a;border:1px solid rgba(32,96,176,.35)}
+.ops-event{background:rgba(32,160,160,.18);color:#054040;border:1px solid rgba(32,160,160,.3)}
+.ops-prod{background:rgba(200,160,32,.2);color:#3a2c00;border:1px solid rgba(200,160,32,.4)}
+.ops-show{background:rgba(192,48,48,.18);color:#5a1010;border:1px solid rgba(192,48,48,.3)}
+.ops-note{background:rgba(216,90,97,.2);color:#4a1820;border:1px solid rgba(216,90,97,.35)}
+.ops-mcr{background:rgba(42,110,58,.18);color:#0e3018;border:1px solid rgba(42,110,58,.35)}
+.ops-ldn{background:rgba(26,78,138,.18);color:#082040;border:1px solid rgba(26,78,138,.35)}
+.ops-andrew{background:rgba(42,122,79,.2);color:#0e3a20;border:1px solid rgba(42,122,79,.35)}
+.ops-chris{background:rgba(176,138,16,.2);color:#3a2c00;border:1px solid rgba(176,138,16,.4)}
+.ops-ian{background:rgba(32,96,176,.2);color:#0c2854;border:1px solid rgba(32,96,176,.35)}
+.ops-mint{background:rgba(120,200,150,.22);color:#143a22;border:1px solid rgba(120,200,150,.4)}
+.ops-sky{background:rgba(120,180,225,.22);color:#102c52;border:1px solid rgba(120,180,225,.4)}
+.ops-lav{background:rgba(165,140,210,.22);color:#2a1848;border:1px solid rgba(165,140,210,.4)}
+.ops-rose{background:rgba(220,120,150,.22);color:#4a1428;border:1px solid rgba(220,120,150,.4)}
+.ops-sand{background:rgba(210,180,130,.3);color:#3a2800;border:1px solid rgba(210,180,130,.5)}
+.ops-slate{background:rgba(140,160,180,.22);color:#1e2a3a;border:1px solid rgba(140,160,180,.4)}
 .ops-srow td{font-size:10px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:rgba(184,79,85,.6);background:rgba(216,90,97,.06);padding:5px 14px;border-bottom:1px solid rgba(216,90,97,.15);border-top:2px solid rgba(216,90,97,.18)}
-.ops-gap td{height:4px;background:rgba(216,90,97,.05);border-bottom:1px solid rgba(216,90,97,.1)}
+.ops-gap td{height:2px;background:transparent;border:none !important;padding:0}
 .ops-bigbreak td{height:8px;background:#e9b8bc;border:none !important;padding:0}
 .ops-dhdr td{background:rgba(255,251,246,.98);position:sticky;top:0;z-index:10}
 .ops-dhdr td:first-child{z-index:11}
@@ -1263,8 +1281,7 @@ html[data-theme="light"] .drw-more-menu{background:#f4f2ec;border-color:rgba(48,
       <!-- Bin hidden from nav, accessible via admin -->
       <div class="nav-lbl" data-lbl="studio-log">Studio Log</div>
       <div class="nav-item" data-pg="studios" onclick="nav('studios',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="2" width="14" height="12" rx="1"/><path d="M1 6h14M5 9h6M5 12h4"/></svg>Tech Log</div>
-      <div class="nav-item" data-pg="engreport" onclick="nav('engreport',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 2h10a1 1 0 011 1v10a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1z"/><path d="M5 5h6M5 8h6M5 11h3"/><circle cx="11.5" cy="11" r="2" fill="none"/><path d="M13 12.5l1.5 1.5"/></svg>Eng Report</div>
-<div class="nav-item" data-pg="allcal" onclick="nav('allcal',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="1"/><path d="M2 6h12M6 2v12M10 2v12"/></svg>All Reports</div>
+      <div class="nav-item" data-pg="engreport" onclick="nav('engreport',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 2h10a1 1 0 011 1v10a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1z"/><path d="M5 5h6M5 8h6M5 11h3"/><circle cx="11.5" cy="11" r="2" fill="none"/><path d="M13 12.5l1.5 1.5"/></svg>Eng Reports</div>
       <div class="nav-lbl" data-lbl="jobs">Jobs</div>
       <div class="nav-item" data-pg="jobs" onclick="nav('jobs',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="12" height="11" rx="1"/><path d="M5 3V2M11 3V2M2 7h12"/></svg>Jobs<span class="nav-badge" id="nbJob">0</span></div>
       <div class="nav-item" data-pg="crew" onclick="nav('crew',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="6" r="2.5"/><path d="M2 13c0-2.2 1.8-4 4-4s4 1.8 4 4"/><circle cx="11.5" cy="7.5" r="2"/><path d="M9.5 13c0-1.7 1.3-3 3-3s3 1.3 3 3"/></svg>Crew</div>
@@ -1273,6 +1290,7 @@ html[data-theme="light"] .drw-more-menu{background:#f4f2ec;border-color:rgba(48,
             
       <div class="nav-lbl" data-lbl="admin">Admin</div>
       <div class="nav-item" data-pg="admin" onclick="nav('admin',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg>Admin</div>
+      <div class="nav-item" data-pg="signin" onclick="nav('signin',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 2h3a1 1 0 011 1v10a1 1 0 01-1 1h-3"/><path d="M7 5l3 3-3 3"/><path d="M10 8H2"/></svg>Sign In</div>
       <div class="nav-item" data-pg="tools" onclick="nav('tools',this)" style="display:none"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 14l3-3 1.5 1.5L10 9l1 3 3-8-8 3 3 1-3.5 3.5L4 12z"/><circle cx="11" cy="5" r="1.5"/></svg>Tools</div>
       <div class="nav-lbl" data-lbl="reference">Reference</div>
       <div class="nav-item" data-pg="info" onclick="nav('info',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 7v5M8 5v.5"/></svg>Studio Info</div>
@@ -1613,13 +1631,28 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
 
 <!-- Job selector tabs -->
 <div id="erJobTabs" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border)"></div>
-<!-- Sub-tabs -->
-<div style="display:flex;align-items:center;gap:0;margin-bottom:16px;border-bottom:2px solid rgba(216,90,97,.2)">
-  <div id="erNavLabel" style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(216,90,97,.7);padding:0 16px 10px 0;flex-shrink:0">Morning Live</div>
-  <button id="erSubTabReport" onclick="erSubTab('report')" style="padding:8px 18px;font-size:12px;font-family:var(--cond);font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:none;border:none;border-bottom:3px solid var(--accent);color:var(--accent);cursor:pointer;margin-bottom:-2px">&#128196; Report</button>
-  <button id="erSubTabCal" onclick="erSubTab('cal')" style="padding:8px 18px;font-size:12px;font-family:var(--cond);font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:none;border:none;border-bottom:3px solid transparent;color:var(--muted);cursor:pointer;margin-bottom:-2px">&#128197; Calendar &amp; History</button>
+<!-- View toggle: Archive opens by default; Submit Report is a button. The
+     archive itself is the standalone versa-morninglivearchive.html embedded as
+     a full-height iframe. Clicking "Submit Report" hides the iframe and shows
+     the form; a "Back to Archive" button on the form returns. State sits on
+     window._erView (string: 'archive' | 'form'). -->
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;border-bottom:2px solid rgba(216,90,97,.2);padding-bottom:12px">
+  <div id="erNavLabel" style="display:none"></div>
+  <div id="erViewLbl" style="font-family:var(--cond);font-size:14px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)">Archive</div>
+  <button id="erViewToggle" onclick="erToggleView()" style="margin-left:auto;padding:8px 18px;font-size:13px;font-family:var(--cond);font-weight:900;letter-spacing:.08em;text-transform:uppercase;background:var(--accent);border:none;border-radius:4px;color:#fff;cursor:pointer">Submit Report</button>
 </div>
-<div id="erSubPanelReport">
+
+<!-- Archive iframe — default view -->
+<div id="erArchiveFrame" style="margin-bottom:8px">
+  <iframe id="erArchiveIframe" src="https://versastudios.github.io/versa-studios/versa-morninglivearchive.html" style="width:100%;height:calc(100vh - 220px);min-height:600px;border:1px solid var(--border);border-radius:8px;background:#0a0a0a" loading="lazy"></iframe>
+</div>
+
+<!-- All Reports panel — shown when the All Reports tab is active. The
+     #allCalWrap and #allCalList divs were moved here from the old page-allcal;
+     allCalInit() finds them via getElementById regardless of location. -->
+<div id="erAllReportsPanel" style="display:none;padding:0 0 60px"><div id="allCalWrap"></div><div id="allCalList" style="margin-top:16px"></div></div>
+
+<div id="erSubPanelReport" style="display:none">
 <div class="er-device">
 
   <!-- FORM VIEW -->
@@ -1877,21 +1910,13 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
 </div>
 
 
-<!-- ShopOn TV report panel — with internal Submit / Archive sub-tabs -->
+<!-- ShopOn TV: Submit iframe (default) — switching to "Archive" sub-tab swaps to erShopOnCalPanel -->
 <div id="erShopOnPanel" style="display:none;width:100%;margin:0">
-  <div id="erShopOnTabs" style="display:flex;gap:6px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border)">
-    <button id="erShopOnTabSubmit" onclick="erShopOnSubTab('submit')" style="padding:7px 16px;font-family:var(--cond);font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;border-radius:5px;cursor:pointer;border:2px solid #DA6B51;background:#DA6B51;color:#fff">&#128221; Submit Report</button>
-    <button id="erShopOnTabArchive" onclick="erShopOnSubTab('archive')" style="padding:7px 16px;font-family:var(--cond);font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;border-radius:5px;cursor:pointer;border:2px solid rgba(218,107,81,.4);background:transparent;color:#DA6B51">&#128194; Archive</button>
-  </div>
-  <div id="erShopOnSubmitWrap" style="width:100%">
-    <iframe id="erShopOnSubmitFrame" src="" style="width:100%;height:calc(100vh - 280px);min-height:760px;border:none;background:transparent;display:block" allow="clipboard-write"></iframe>
-  </div>
-  <div id="erShopOnArchiveWrap" style="display:none;width:100%">
-    <iframe id="erShopOnArchiveFrame" src="" style="width:100%;height:calc(100vh - 280px);min-height:760px;border:none;background:transparent;display:block" allow="clipboard-write"></iframe>
-  </div>
+  <iframe id="erShopOnSubmitFrame" src="" style="width:100%;height:calc(100vh - 220px);min-height:800px;border:none;background:transparent;display:block" allow="clipboard-write"></iframe>
 </div>
-<!-- Legacy panel kept for any code paths still referencing it -->
-<div id="erShopOnCalPanel" style="display:none;width:100%;margin:0"></div>
+<div id="erShopOnCalPanel" style="display:none;width:100%;margin:0">
+  <iframe id="erShopOnArchiveFrame" src="" style="width:100%;height:calc(100vh - 220px);min-height:800px;border:none;background:transparent;display:block" allow="clipboard-write"></iframe>
+</div>
 
 <!-- Cooking with the Stars report panel -->
 <div id="erCwtsPanel" style="display:none;max-width:640px;margin:0 auto">
@@ -2039,8 +2064,27 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
 </div>
 </div>
 
+<!-- ── SIGN IN ─────────────────────────────────────────────────────────────
+     Embeds the kiosk monitor and manage apps (deployed on Railway). Tab
+     switcher between Monitor (default) and Manage. Password 1956 prompted by
+     each embedded page itself; we don't try to auto-fill it (kiosk login is
+     intentionally on the kiosk's side).
+     Heights use 100vh - chrome offset; min-height for very small screens. -->
+<div class="page" id="page-signin">
+  <div style="display:flex;align-items:center;gap:6px;margin-bottom:12px;padding-bottom:0">
+    <button id="signinTabMonitor" onclick="signinTab('monitor')" style="padding:7px 16px;font-size:12px;font-family:var(--cond);font-weight:800;letter-spacing:.1em;text-transform:uppercase;background:var(--accent);border:1px solid var(--accent);border-radius:4px;color:#fff;cursor:pointer;transition:all .12s">Monitor</button>
+    <button id="signinTabManage" onclick="signinTab('manage')" style="padding:7px 16px;font-size:12px;font-family:var(--cond);font-weight:800;letter-spacing:.1em;text-transform:uppercase;background:transparent;border:1px solid var(--border);border-radius:4px;color:var(--muted);cursor:pointer;transition:all .12s">Manage</button>
+    <span style="margin-left:auto;font-family:var(--cond);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">Password: 1956</span>
+  </div>
+  <div id="signinFrames" style="position:relative">
+    <iframe id="signinIframeMonitor" src="https://versa-manchester-production.up.railway.app/monitor.html" style="display:block;width:100%;height:calc(100vh - 160px);min-height:600px;border:1px solid var(--border);border-radius:8px;background:#0a0a0a" loading="lazy"></iframe>
+    <iframe id="signinIframeManage" src="https://versa-manage-production.up.railway.app/" style="display:none;width:100%;height:calc(100vh - 160px);min-height:600px;border:1px solid var(--border);border-radius:8px;background:#0a0a0a" loading="lazy"></iframe>
+  </div>
+</div>
+
 <div class="page" id="page-allcal">
-  <div style="padding:0 16px 60px"><div id="allCalWrap"></div><div id="allCalList" style="margin-top:16px"></div></div>
+  <!-- Content moved to page-engreport. This wrapper is kept so nav('allcal')
+       still resolves; the nav() handler redirects to engreport + All Reports tab. -->
 </div>
 <div class="page" id="page-jobs">
         <div style="display:flex;align-items:center;gap:9px;margin-bottom:0;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid var(--border)">
@@ -5074,27 +5118,16 @@ var _erActiveJob='ml'; // 'ml' or job id
 
 function erRenderJobTabs() {
   var wrap = document.getElementById('erJobTabs'); if(!wrap) return;
+  // Only continuous-running shows get an engineering report job tab. Per-job
+  // reports for one-off productions (Dragons Den, Cooking with the Stars, etc.)
+  // are no longer surfaced here. The reports themselves stay in the DB; they
+  // just aren't reachable from this tab strip. Add more entries to this array
+  // when another continuous job comes online.
   var tabs = [
     {id:'ml',label:'Morning Live'},
     {id:'shopon',label:'ShopOn TV'},
-    {id:'cwts',label:'Cooking with the Stars'},
-    {id:'celeb',label:"I'm a Celebrity"}
+    {id:'all',label:'All Reports'}
   ];
-  // Add other jobs from job planner
-  if(typeof jobs !== 'undefined') {
-    var _today=(typeof today==='function')?today():new Date().toISOString().slice(0,10);
-    jobs.forEach(function(j) {
-      var reserved=['Morning Live','ShopOn TV','ShopOn','Cooking with the Stars'];
-      var isCelebJob=function(n){var l=n.toLowerCase();return l.indexOf('celeb')>=0||l.indexOf('celebrity')>=0;};
-      if(j.archived) return;
-      if(j.end && j.end < _today) return;
-      var st=(j.status||'').toLowerCase();
-      if(st==='finished'||st==='archived'||st==='complete'||st==='completed'||st==='past') return;
-      if(j.name && !reserved.includes(j.name) && !isCelebJob(j.name)) {
-        tabs.push({id:'j'+j.id, label:j.name, jid:j.id, jobObj:j});
-      }
-    });
-  }
   // Try to attach the jobs[] record to each reserved tab so we can pull loc/studio
   function findJobByName(name){
     var n=(name||'').toLowerCase();
@@ -5134,6 +5167,8 @@ function erRenderJobTabs() {
 
 function erSwitchJob(jobId, _passedName) {
   _erActiveJob = jobId;
+  // If currently on archive view, refresh iframe to the new job's archive URL
+  if(window._erView!=='form')erSetView('archive');
 
   erRenderJobTabs();
   var isDD=false,isSO=false,isCW=false,isCL=false,jobName='';
@@ -5154,10 +5189,18 @@ function erSwitchJob(jobId, _passedName) {
   var isGJ=(!isDD&&!isSO&&!isCW&&!isCL&&jobId!=='ml'&&jobId!=='celeb'&&jobId!=='celebsa');
 var panelMap={erSubPanelReport:(!isDD&&!isSO&&!isCW&&!isCL&&!isGJ),erDDPanel:isDD,erShopOnPanel:isSO,erCwtsPanel:isCW,erCelebPanel:isCL,erGenPanel:isGJ};
   Object.keys(panelMap).forEach(function(id){var el=document.getElementById(id);if(el&&panelMap[id])el.style.display='block';});
-  // Lazy-load ShopOn submit iframe when SO panel becomes visible
-  if(isSO){var sof=document.getElementById('erShopOnSubmitFrame');if(sof&&!sof.src)sof.src='versa-shopon-report.html?v='+Date.now();
-    // Default to Submit sub-tab whenever the ShopOn TV tab is opened
-    if(typeof erShopOnSubTab==='function')erShopOnSubTab('submit');
+  // Lazy-load ShopOn submit iframe when SO panel becomes visible. Always (re)set src
+  // so the frame reloads even if it was previously set on a stale path.
+  if(isSO){
+    var sof=document.getElementById('erShopOnSubmitFrame');
+    if(sof)sof.src='https://versastudios.github.io/versa-studios/versa-shopon-report.html?v='+Date.now();
+  }
+  // Sub-tab buttons: ShopOn uses Submit Report; everyone else uses Report. Archive is universal.
+  var rbtn=document.getElementById('erSubTabReport');
+  var cbtn=document.getElementById('erSubTabCal');
+  if(rbtn&&cbtn){
+    rbtn.innerHTML=isSO?'Submit Report':'Report';
+    cbtn.innerHTML='Archive';
   }
   var calPanel=document.getElementById('erSubPanelCal');
   if(calPanel)calPanel.style.display='none';
@@ -5185,29 +5228,78 @@ var panelMap={erSubPanelReport:(!isDD&&!isSO&&!isCW&&!isCL&&!isGJ),erDDPanel:isD
 
 }
 
-// Switch between Submit Report and Archive iframes inside the ShopOn panel
-function erShopOnSubTab(which){
-  var subWrap=document.getElementById('erShopOnSubmitWrap');
-  var arcWrap=document.getElementById('erShopOnArchiveWrap');
-  var subBtn=document.getElementById('erShopOnTabSubmit');
-  var arcBtn=document.getElementById('erShopOnTabArchive');
-  var SO='#DA6B51';
-  if(which==='archive'){
-    if(subWrap)subWrap.style.display='none';
-    if(arcWrap)arcWrap.style.display='block';
-    if(subBtn){subBtn.style.background='transparent';subBtn.style.color=SO;subBtn.style.borderColor='rgba(218,107,81,.4)';}
-    if(arcBtn){arcBtn.style.background=SO;arcBtn.style.color='#fff';arcBtn.style.borderColor=SO;}
-    // Lazy-load archive iframe
-    var af=document.getElementById('erShopOnArchiveFrame');
-    if(af&&!af.src)af.src='versa-shopon-reports.html?v='+Date.now();
-  } else {
-    if(subWrap)subWrap.style.display='block';
-    if(arcWrap)arcWrap.style.display='none';
-    if(subBtn){subBtn.style.background=SO;subBtn.style.color='#fff';subBtn.style.borderColor=SO;}
-    if(arcBtn){arcBtn.style.background='transparent';arcBtn.style.color=SO;arcBtn.style.borderColor='rgba(218,107,81,.4)';}
-    var sf=document.getElementById('erShopOnSubmitFrame');
-    if(sf&&!sf.src)sf.src='versa-shopon-report.html?v='+Date.now();
+// Toggle between Archive (iframe) and Submit Report (form) views.
+// Default state is 'archive'. Called from the Submit Report button and from
+// the in-form Back-to-Archive button. Also called by erRenderJobTabs/erChooseJob
+// to refresh the iframe src when the active job changes.
+function erSetView(v){
+  window._erView=v;
+  var ifr=document.getElementById('erArchiveFrame');
+  var form=document.getElementById('erSubPanelReport');
+  var allrp=document.getElementById('erAllReportsPanel');
+  var lbl=document.getElementById('erViewLbl');
+  var btn=document.getElementById('erViewToggle');
+
+  // Special case: All Reports tab has no Submit/Archive split — it's just a
+  // single index view. Hide the toggle button entirely.
+  if(_erActiveJob==='all'){
+    if(ifr)ifr.style.display='none';
+    if(form)form.style.display='none';
+    if(allrp)allrp.style.display='';
+    if(lbl)lbl.textContent='All Reports';
+    if(btn)btn.style.display='none';
+    if(typeof allCalInit==='function')setTimeout(allCalInit,30);
+    return;
   }
+  // Restore Submit/Archive toggle button visibility for ML/ShopOn
+  if(btn)btn.style.display='';
+  if(allrp)allrp.style.display='none';
+
+  if(v==='form'){
+    if(ifr)ifr.style.display='none';
+    if(form)form.style.display='';
+    if(lbl)lbl.textContent='Submit Report';
+    if(btn)btn.textContent='Back to Archive';
+    // Switch the inner panels to whichever job is active. erSubTab handles
+    // the per-job panel show/hide based on _erActiveJob.
+    if(typeof erSubTab==='function')erSubTab('report');
+  }else{
+    if(ifr)ifr.style.display='';
+    if(form)form.style.display='none';
+    if(lbl)lbl.textContent='Archive';
+    if(btn)btn.textContent='Submit Report';
+    // Refresh iframe src to the current job's archive URL
+    var ifrEl=document.getElementById('erArchiveIframe');
+    if(ifrEl){
+      var url=_erActiveJob==='shopon'
+        ? 'https://versastudios.github.io/versa-studios/versa-shopon-reports.html'
+        : 'https://versastudios.github.io/versa-studios/versa-morninglivearchive.html';
+      if(ifrEl.getAttribute('data-current')!==url){
+        ifrEl.src=url;
+        ifrEl.setAttribute('data-current',url);
+      }
+    }
+  }
+}
+function erToggleView(){erSetView(window._erView==='form'?'archive':'form');}
+
+// Sign-in page tab switcher. Toggles between Monitor and Manage iframes,
+// updates the tab button styling. Iframe srcs are set in the HTML and only
+// loaded when the page is first visited (loading="lazy"); we don't reset src
+// on tab switch so any logged-in state in the iframe is preserved.
+function signinTab(which){
+  var mon=document.getElementById('signinIframeMonitor');
+  var man=document.getElementById('signinIframeManage');
+  var bMon=document.getElementById('signinTabMonitor');
+  var bMan=document.getElementById('signinTabManage');
+  var isMon=which==='monitor';
+  if(mon)mon.style.display=isMon?'block':'none';
+  if(man)man.style.display=isMon?'none':'block';
+  // Pill style: active = filled accent, inactive = ghosted with border
+  function activate(b){b.style.background='var(--accent)';b.style.borderColor='var(--accent)';b.style.color='#fff';}
+  function deactivate(b){b.style.background='transparent';b.style.borderColor='var(--border)';b.style.color='var(--muted)';}
+  if(bMon){isMon?activate(bMon):deactivate(bMon);}
+  if(bMan){isMon?deactivate(bMan):activate(bMan);}
 }
 
 function erSubTab(tab){
@@ -5242,7 +5334,7 @@ function erSubTab(tab){
     if(isSO&&soEl){
       soEl.style.display='block';
       var sof=document.getElementById('erShopOnSubmitFrame');
-      if(sof&&!sof.src)sof.src='versa-shopon-report.html?v='+Date.now();
+      if(sof)sof.src='https://versastudios.github.io/versa-studios/versa-shopon-report.html?v='+Date.now();
     }
     if(isCW&&cwEl) cwEl.style.display='block';
     if(isCL&&clEl) clEl.style.display='block';
@@ -5253,7 +5345,7 @@ function erSubTab(tab){
     if(soCalEl){
       soCalEl.style.display='block';
       var soaf=document.getElementById('erShopOnArchiveFrame');
-      if(soaf&&!soaf.src)soaf.src='versa-shopon-reports.html?v='+Date.now();
+      if(soaf)soaf.src='https://versastudios.github.io/versa-studios/versa-shopon-reports.html?v='+Date.now();
     }
     if(cp)cp.style.display='none';
   } else if(cp){
@@ -6432,8 +6524,14 @@ const titles = {dashboard:'Dashboard',kit:'Kit List',maintenance:'Maintenance',h
   engreport:'Eng Report',allcal:'All Reports',notes:'Notes',vault:'Vault'};
 function nav(page, el) {
   closeDrawer();
+  // All Reports moved into Eng Reports as a third tab. Redirect any legacy
+  // nav('allcal') call (dashboard quick links, etc) so it lands on engreport
+  // with the All Reports tab active.
+  if(page==='allcal'){
+    page='engreport';
+    setTimeout(function(){if(typeof erSwitchJob==='function')erSwitchJob('all');},80);
+  }
   if(page==='engreport') setTimeout(erInitPage, 50);
-  if(page==='allcal') setTimeout(allCalInit, 50);
   if(page==='studios') setTimeout(renderAbcLastReport, 200);
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
@@ -9107,9 +9205,9 @@ function renderJobDet(j) {
           +'<div style="margin-top:10px">'+_lbl('Technical Notes')+'<textarea class="fta" style="width:100%;min-height:56px;font-size:14px;padding:8px 10px;border-radius:6px;border:1.5px solid var(--border);background:var(--near-black);color:var(--pure)" placeholder="Overall technical notes for this production..." onchange="jdSetField('+j.id+',\'techNotes\',this.value)">'+(j.techNotes||'').replace(/</g,'&lt;')+'</textarea></div>'
           +'</div>';
       }())
-      +'<div class="det-sec"><div class="det-sec-lbl" style="font-size:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px"><span>Filming Schedule</span><span style="display:flex;gap:8px"><button class="ibtn" style="font-size:11px;padding:5px 11px;font-weight:700" onclick="jdScheduleAddDate('+j.id+')">+ Add Date</button><button class="ibtn" style="font-size:11px;padding:5px 11px;font-weight:700" onclick="jdScheduleEmail('+j.id+')">&#9993; Email Schedule</button></span></div>'
+      +(j.name==='Morning Live'?'':('<div class="det-sec"><div class="det-sec-lbl" style="font-size:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px"><span>Filming Schedule</span><span style="display:flex;gap:8px"><button class="ibtn" style="font-size:11px;padding:5px 11px;font-weight:700" onclick="jdScheduleAddDate('+j.id+')">+ Add Date</button><button class="ibtn" style="font-size:11px;padding:5px 11px;font-weight:700" onclick="jdScheduleEmail('+j.id+')">&#9993; Email Schedule</button></span></div>'
           +renderProdScheduleCal(j)
-          +'</div>'
+          +'</div>'))
     // ── Split section: HODs (left) + Meeting Notes (right) ──
     +'<div class="jd-split" style="margin-top:10px">'
       +hodSection(j)
@@ -10943,7 +11041,12 @@ function jdSetRigDate(jid,di,field,val){
 }
 function jdRmRigDate(jid,di){
   var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.rigDates)return;
-  j.rigDates.splice(di,1);saveData();renderJobDet(j);
+  var entry=j.rigDates[di];
+  var iso=entry&&entry.date;
+  var oldLabel=entry?_jdJobPrefixedLabel(j, entry.note||'Rig Day'):'';
+  j.rigDates.splice(di,1);
+  if(iso&&oldLabel)try{jdSyncCellToOps(j,iso,[oldLabel],[]);}catch(e){}
+  saveData();renderJobDet(j);
 }
 function jdAddTxDate(jid){
   var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
@@ -10955,10 +11058,122 @@ function jdAddTxDate(jid){
 
 // ── Production Schedule: click-to-edit + ops-planner sync + email ────────
 function jdScheduleAddDate(jid){
-  var iso=prompt('Date (YYYY-MM-DD):',new Date().toISOString().split('T')[0]);
-  if(!iso)return;
-  if(!/^\d{4}-\d{2}-\d{2}$/.test(iso)){alert('Invalid date format. Use YYYY-MM-DD.');return;}
-  jdOpenDayEditor(jid,iso);
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
+  document.getElementById('schedBulkJid').value=jid;
+  document.getElementById('schedBulkTitle').textContent='Add Dates — '+(j.name||'Production');
+  // Defaults
+  var today=new Date().toISOString().split('T')[0];
+  document.getElementById('schedBulkMode').value='single';
+  document.getElementById('schedBulkDate').value=today;
+  document.getElementById('schedBulkStart').value=today;
+  // End default to +7 days
+  var e=new Date();e.setDate(e.getDate()+7);
+  document.getElementById('schedBulkEnd').value=e.toISOString().split('T')[0];
+  document.getElementById('schedBulkType').value='tx';
+  document.getElementById('schedBulkLabel').value='TX';
+  document.getElementById('schedBulkAutonum').checked=true;
+  document.getElementById('schedBulkSkipWk').checked=false;
+  schedBulkModeChange();
+  om('schedBulkModal');
+}
+function schedBulkModeChange(){
+  var mode=document.getElementById('schedBulkMode').value;
+  document.getElementById('schedBulkSingleWrap').style.display=mode==='single'?'':'none';
+  document.getElementById('schedBulkRangeWrap').style.display=mode==='range'?'':'none';
+  schedBulkPreview();
+}
+function schedBulkPreview(){
+  var mode=document.getElementById('schedBulkMode').value;
+  var btn=document.getElementById('schedBulkApply');
+  var info=document.getElementById('schedBulkInfo');
+  if(mode==='single'){
+    btn.textContent='Open Day Editor';
+    info.textContent='';
+    return;
+  }
+  var s=document.getElementById('schedBulkStart').value;
+  var e=document.getElementById('schedBulkEnd').value;
+  var skipWk=document.getElementById('schedBulkSkipWk').checked;
+  if(!s||!e||s>e){btn.textContent='Apply';info.textContent='Pick a valid date range';info.style.color='#c80000';return;}
+  // Count dates
+  var d=new Date(s+'T00:00:00');var end=new Date(e+'T00:00:00');var n=0;
+  while(d<=end){
+    var dow=d.getDay();
+    if(!skipWk||(dow!==0&&dow!==6))n++;
+    d.setDate(d.getDate()+1);
+  }
+  btn.textContent='Apply ('+n+' date'+(n===1?'':'s')+')';
+  info.textContent=n?'':'No dates in range';
+  info.style.color='rgba(48,47,44,.55)';
+}
+function schedBulkApply(){
+  var jid=parseInt(document.getElementById('schedBulkJid').value);
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
+  var mode=document.getElementById('schedBulkMode').value;
+  if(mode==='single'){
+    var iso=document.getElementById('schedBulkDate').value;
+    if(!iso){alert('Pick a date');return;}
+    cm('schedBulkModal');
+    jdOpenDayEditor(jid,iso);
+    return;
+  }
+  // Range mode
+  var s=document.getElementById('schedBulkStart').value;
+  var e=document.getElementById('schedBulkEnd').value;
+  if(!s||!e||s>e){alert('Pick a valid date range');return;}
+  var type=document.getElementById('schedBulkType').value;
+  var labelRaw=(document.getElementById('schedBulkLabel').value||'').trim();
+  var autonum=document.getElementById('schedBulkAutonum').checked;
+  var skipWk=document.getElementById('schedBulkSkipWk').checked;
+  // Ensure arrays
+  if(!j.rigDates)j.rigDates=[];
+  if(!j.txDates)j.txDates=[];
+  if(!Array.isArray(j.drigDates))j.drigDates=[];
+  if(!Array.isArray(j.scheduleCustom))j.scheduleCustom=[];
+  // Compute starting number for autonum: scan existing labels in the matching bucket for the highest "<prefix> N"
+  var startN=1;
+  if(autonum&&labelRaw){
+    var bucket=type==='rig'?j.rigDates:type==='tx'?j.txDates:type==='derig'?j.drigDates:j.scheduleCustom;
+    var rx=new RegExp('^'+labelRaw.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\s*(\\d+)$','i');
+    bucket.forEach(function(item){
+      var lab=type==='rig'?(item.note||''):type==='tx'?(item.label||''):type==='derig'?(item.label||''):(item.label||'');
+      var m=lab&&lab.match(rx);
+      if(m){var n=parseInt(m[1]);if(n>=startN)startN=n+1;}
+    });
+  }
+  // Iterate
+  var d=new Date(s+'T00:00:00');var end=new Date(e+'T00:00:00');
+  var added=0,skipped=0,counter=startN;
+  while(d<=end){
+    var dow=d.getDay();
+    var skip=skipWk&&(dow===0||dow===6);
+    if(!skip){
+      var iso=d.toISOString().split('T')[0];
+      var label=autonum&&labelRaw?(labelRaw+' '+counter):labelRaw;
+      if(type==='rig'){
+        j.rigDates.push({date:iso,note:label,color:null});
+      } else if(type==='tx'){
+        j.txDates.push({date:iso,label:label,color:null});
+      } else if(type==='derig'){
+        j.drigDates.push({date:iso,label:label||'Derig',color:null});
+      } else if(type==='custom'){
+        j.scheduleCustom.push({date:iso,label:label||'Event',color:null});
+      } else {
+        // 'dark' or '' → nothing to add
+      }
+      if(type)added++;
+      if(autonum&&labelRaw)counter++;
+      // Sync to Ops Planner studio rows for this day
+      try{jdSyncCellToOps(j,iso,[],[_jdJobPrefixedLabel(j, label)]);}catch(err){}
+    } else skipped++;
+    d.setDate(d.getDate()+1);
+  }
+  saveData();
+  cm('schedBulkModal');
+  renderJobDet(j);
+  var msg='Added '+added+' '+(type||'date')+(added===1?'':'s')+'.';
+  if(skipped)msg+=' Skipped '+skipped+' weekend day'+(skipped===1?'':'s')+'.';
+  if(typeof toast==='function')toast(msg);else alert(msg);
 }
 function jdOpenDayEditor(jid,iso){
   var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
@@ -11007,7 +11222,7 @@ function schedDayRenderRows(){
         +'<select class="fi" data-idx="'+idx+'" data-fld="type" onchange="schedDayFieldChange(this)" style="flex:0 0 auto;min-width:170px;font-weight:700">'
           +'<option value="">— Dark —</option>'
           +'<option value="rig"'+(row.type==='rig'?' selected':'')+'>Rig Day</option>'
-          +'<option value="tx"'+(row.type==='tx'?' selected':'')+'>Filming / RX Day</option>'
+          +'<option value="tx"'+(row.type==='tx'?' selected':'')+'>TX / RX Day</option>'
           +'<option value="derig"'+(row.type==='derig'?' selected':'')+'>De-Rig Day</option>'
           +'<option value="custom"'+(row.type==='custom'?' selected':'')+'>Custom Event</option>'
         +'</select>'
@@ -11065,14 +11280,14 @@ function schedDaySave(){
   if(!Array.isArray(j.scheduleCustom))j.scheduleCustom=[];
   // Capture old labels on this date so we can strip them from the planner
   var oldLabels=[];
-  (j.rigDates||[]).forEach(function(r){if(r&&r.date===iso)oldLabels.push(r.note||'Rig Day');});
-  (j.txDates||[]).forEach(function(t){if(t&&t.date===iso)oldLabels.push(t.label||'Filming Day');});
-  if(j.drigDate===iso)oldLabels.push('Derig');
+  (j.rigDates||[]).forEach(function(r){if(r&&r.date===iso)oldLabels.push(_jdJobPrefixedLabel(j, r.note||'Rig Day'));});
+  (j.txDates||[]).forEach(function(t){if(t&&t.date===iso)oldLabels.push(_jdJobPrefixedLabel(j, t.label||'TX'));});
+  if(j.drigDate===iso)oldLabels.push(_jdJobPrefixedLabel(j, 'Derig'));
   (j.drigDates||[]).forEach(function(d){
     var di=(typeof d==='string')?d:(d&&d.date);
-    if(di===iso)oldLabels.push((typeof d==='object'&&d&&d.label)||'Derig');
+    if(di===iso)oldLabels.push(_jdJobPrefixedLabel(j, (typeof d==='object'&&d&&d.label)||'Derig'));
   });
-  (j.scheduleCustom||[]).forEach(function(c){if(c&&c.date===iso&&c.label)oldLabels.push(c.label);});
+  (j.scheduleCustom||[]).forEach(function(c){if(c&&c.date===iso&&c.label)oldLabels.push(_jdJobPrefixedLabel(j, c.label));});
   // Wipe existing entries on this date
   j.rigDates=j.rigDates.filter(function(r){return !r||r.date!==iso;});
   j.txDates=j.txDates.filter(function(t){return !t||t.date!==iso;});
@@ -11093,18 +11308,18 @@ function schedDaySave(){
     if(!type)return; // Dark / no activity → skip
     if(type==='rig'){
       j.rigDates.push({date:iso,note:label,color:color});
-      newLabels.push(label||'Rig Day');
+      newLabels.push(_jdJobPrefixedLabel(j, label||'Rig Day'));
     } else if(type==='tx'){
       var entry={date:iso,label:label,color:color};
       j.txDates.push(entry);
-      newLabels.push(label||'Filming Day');
+      newLabels.push(_jdJobPrefixedLabel(j, label||'TX'));
       if(label)newTxEntries.push(entry);
     } else if(type==='derig'){
       j.drigDates.push({date:iso,label:label||'Derig',color:color});
-      newLabels.push(label||'Derig');
+      newLabels.push(_jdJobPrefixedLabel(j, label||'Derig'));
     } else if(type==='custom'){
       j.scheduleCustom.push({date:iso,label:label||'Event',color:color});
-      newLabels.push(label||'Event');
+      newLabels.push(_jdJobPrefixedLabel(j, label||'Event'));
     }
   });
   // Auto-renumber any subsequent same-prefix numbered tx labels
@@ -11117,10 +11332,30 @@ function schedDaySave(){
   cm('schedDayModal');
   renderJobDet(j);
 }
+// Prefix a label with the job name (so ops planner chips read "ShopOn TX 30"
+// instead of just "TX 30"). Avoids double-prefixing if the user already typed
+// the job name into the label. For Morning Live specifically, strips the "ML"
+// abbreviation since it's redundant with the "Morning Live" prefix.
+function _jdJobPrefixedLabel(j, rawLabel){
+  if(!j||!j.name)return (rawLabel||'').toString();
+  var base=((rawLabel==null?'':rawLabel)+'').trim();
+  if(!base)return j.name;
+  // Strip Morning Live's "ML" abbreviation from anywhere in the label
+  if(j.name==='Morning Live'){
+    base=base.replace(/^ML\s+/i,'');                 // "ML Ep20" → "Ep20"
+    // Strip "ML" between "Morning Live" and the rest, preserving the separator
+    base=base.replace(/^(Morning Live)([\s\u2014\u2013-]+)ML\s+/i,'$1$2');
+  }
+  if(!base)return j.name;
+  if(base.toLowerCase().indexOf(j.name.toLowerCase())===0)return base;
+  return j.name+' '+base;
+}
+
 function jdSyncCellToOps(j,iso,oldLabels,newLabels){
   if(typeof _opsFindDate!=='function')return;
   var found=_opsFindDate(iso);if(!found)return;
   var stuList=(Array.isArray(j.studios)&&j.studios.length)?j.studios.slice():[(j.loc==='London'?'London':j.studio)];
+  var jname=(j&&j.name)?j.name:'';
   stuList.forEach(function(sk){
     if(!sk)return;
     var row='st_'+sk;
@@ -11131,7 +11366,17 @@ function jdSyncCellToOps(j,iso,oldLabels,newLabels){
       if(idx>=0)cur.splice(idx,1);
     });
     newLabels.forEach(function(nl){
-      if(nl&&!cur.includes(nl))cur.push(nl);
+      if(!nl)return;
+      // Also strip the un-prefixed raw form (legacy stale entry from before the
+      // prefix was added). e.g. when adding "ShopOn TX1", also remove "TX1".
+      if(jname && nl.toLowerCase().indexOf(jname.toLowerCase())===0 && nl.length>jname.length){
+        var rawForm=nl.slice(jname.length).trim();
+        if(rawForm){
+          var rawIdx=cur.indexOf(rawForm);
+          if(rawIdx>=0)cur.splice(rawIdx,1);
+        }
+      }
+      if(!cur.includes(nl))cur.push(nl);
     });
     os(found.month,found.day,row,cur);
   });
@@ -11223,7 +11468,7 @@ function jdScheduleEmail(jid){
 function _jdScheduleEntries(j){
   var entries={};
   (j.rigDates||[]).forEach(function(r){if(r&&r.date)entries[r.date]={type:'rig',label:r.note||'Rig Day'};});
-  (j.txDates||[]).forEach(function(t){if(t&&t.date)entries[t.date]={type:'tx',label:t.label||'Filming Day'};});
+  (j.txDates||[]).forEach(function(t){if(t&&t.date)entries[t.date]={type:'tx',label:t.label||'TX'};});
   if(j.drigDate)entries[j.drigDate]={type:'derig',label:'Derig'};
   return entries;
 }
@@ -11289,7 +11534,7 @@ function _jdSchedEntriesByDate(j){
     if(!t||!t.date)return;
     if(!map[t.date])map[t.date]=[];
     var tm=(isML&&t.crew&&t.crew['Tech Manager'])?t.crew['Tech Manager']:null;
-    map[t.date].push({src:'tx',ref:t,type:'tx',label:t.label||'Filming Day',color:t.color||null,tm:tm});
+    map[t.date].push({src:'tx',ref:t,type:'tx',label:t.label||'TX',color:t.color||null,tm:tm});
   });
   // Legacy single drigDate + new array drigDates
   if(j.drigDate){
@@ -11513,7 +11758,11 @@ function jdSetTxDate(jid,di,val){
 }
 function jdRmTxDate(jid,di){
   var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.txDates)return;
+  var entry=j.txDates[di];
+  var iso=entry&&entry.date;
+  var oldLabel=entry?_jdJobPrefixedLabel(j, entry.label||'TX'):'';
   j.txDates.splice(di,1);
+  if(iso&&oldLabel)try{jdSyncCellToOps(j,iso,[oldLabel],[]);}catch(e){}
   saveData();
   renderJobDet(j);
 }
@@ -14079,11 +14328,32 @@ function opsSeedFromJobs(){
         var px=OPS_MPX[OPS_CAL[mi].month];if(!px)continue;
         var parts=px.split('-').map(Number);
         if(parts[0]===yr&&parts[1]===mo){
-          var label=(td.label||(j.name+' RX '+(di+1)));
+          // Raw label (legacy) vs new prefixed label
+          var rawLabel=(td.label||('RX '+(di+1)));
+          var label=(typeof _jdJobPrefixedLabel==='function')?_jdJobPrefixedLabel(j, rawLabel):(j.name+' '+rawLabel);
           stuKeys.forEach(function(sk){
             var row='st_'+sk;
             var cur=og(OPS_CAL[mi].month,day,row).slice();
-            if(!cur.includes(label)){cur.push(label);os(OPS_CAL[mi].month,day,row,cur);}
+            var changed=false;
+            // Migrate: strip un-prefixed raw, old-style auto-gen, AND old
+            // "Morning Live ML <X>" form (since ML is now stripped from the prefix).
+            if(rawLabel!==label){
+              var rawIdx=cur.indexOf(rawLabel);
+              if(rawIdx>=0){cur.splice(rawIdx,1);changed=true;}
+              var oldAuto=j.name+' RX '+(di+1);
+              if(oldAuto!==label){
+                var oai=cur.indexOf(oldAuto);
+                if(oai>=0){cur.splice(oai,1);changed=true;}
+              }
+              // Old fully-prefixed form (before ML-strip was added)
+              var oldFullPrefix=j.name+' '+rawLabel;
+              if(oldFullPrefix!==label){
+                var ofpi=cur.indexOf(oldFullPrefix);
+                if(ofpi>=0){cur.splice(ofpi,1);changed=true;}
+              }
+            }
+            if(!cur.includes(label)){cur.push(label);changed=true;}
+            if(changed)os(OPS_CAL[mi].month,day,row,cur);
             if(!_opsStu.has(sk))_opsStu.add(sk);
           });
           // Morning Live: write tech manager name to ml row as plain string
@@ -14096,6 +14366,82 @@ function opsSeedFromJobs(){
         }
       }
     });
+  });
+  // Cleanup pass: remove studio-row labels that look job-derived but no longer
+  // correspond to any job's current date entries.
+  try{_opsCleanStaleStudioEntries();}catch(e){console.warn('Stale-entry cleanup failed:',e);}
+  // Also: scrub seed-junk entries (Apr-01 stubs, DD entries, weekend ML, dupes).
+  // Persist to Supabase if anything was actually changed.
+  try{
+    var seedChanged=_opsCleanSeedJunk();
+    if(seedChanged&&typeof saveData==='function')saveData();
+  }catch(e){console.warn('Seed-junk cleanup failed:',e);}
+}
+
+// Remove studio-row labels that look like job-sync output but no longer
+// correspond to any current job's date entry. Two cases:
+//   (a) Label is prefixed with a current job name ("ShopOn TX 30") — easy match.
+//   (b) Label is a legacy un-prefixed auto pattern ("TX", "Filming Day",
+//       "RX 30", "Rig Day", "Derig") from before the prefix change — these
+//       are no longer generated, so they're definitely stale leftovers
+//       unless a current job entry still validates them.
+// Manual entries (free-text notes that don't match either case) are untouched.
+function _opsCleanStaleStudioEntries(){
+  if(!Array.isArray(jobs)||!jobs.length)return;
+  var jobNames=jobs.map(function(j){return (j&&j.name)?j.name.toLowerCase():'';}).filter(Boolean);
+  if(!jobNames.length)return;
+  // Build a set of valid {monthName|day|st_X|label} keys using ONLY the
+  // job-prefixed form. Raw un-prefixed labels are intentionally NOT added —
+  // they're considered legacy stale entries and will be removed.
+  var validKeys={};
+  function _addEntry(j, stuKeys, date, rawLabel){
+    if(!date||!rawLabel)return;
+    var ds=date.split('-');if(ds.length!==3)return;
+    var yr=parseInt(ds[0]),mo=parseInt(ds[1]),day=parseInt(ds[2]);
+    var monthName=null;
+    Object.keys(OPS_MPX).forEach(function(mn){
+      var p=OPS_MPX[mn].split('-').map(Number);
+      if(p[0]===yr&&p[1]===mo)monthName=mn;
+    });
+    if(!monthName)return;
+    var labelPrefixed=(typeof _jdJobPrefixedLabel==='function')?_jdJobPrefixedLabel(j, rawLabel):(j.name+' '+rawLabel);
+    stuKeys.forEach(function(sk){
+      if(!sk)return;
+      validKeys[monthName+'|'+day+'|st_'+sk+'|'+labelPrefixed]=true;
+    });
+  }
+  jobs.forEach(function(j){
+    if(!j||!j.name)return;
+    var stuKeys=j.studios?j.studios:[(j.loc==='London'?'London':j.studio)];
+    (j.txDates||[]).forEach(function(t,i){
+      if(!t)return;
+      _addEntry(j,stuKeys,t.date,t.label||'TX');
+      _addEntry(j,stuKeys,t.date,'RX '+(i+1));        // legacy auto-gen
+      _addEntry(j,stuKeys,t.date,'Filming Day');      // legacy default
+    });
+    (j.rigDates||[]).forEach(function(r){if(r)_addEntry(j,stuKeys,r.date,r.note||'Rig Day');});
+    (j.drigDates||[]).forEach(function(d){
+      var di=(typeof d==='string')?d:(d&&d.date);
+      var dl=(typeof d==='object'&&d&&d.label)||'Derig';
+      if(di)_addEntry(j,stuKeys,di,dl);
+    });
+    (j.scheduleCustom||[]).forEach(function(c){if(c)_addEntry(j,stuKeys,c.date,c.label||'Event');});
+  });
+  // Patterns that match labels generated by job-sync (any era)
+  var AUTO_PATTERN=/^(tx(\s*\d+)?|rx[\s-]?\d+|filming\s*day|rig(\s*day)?(\s*\d+)?|de[-\s]?rig|event)$/i;
+  Object.keys(_opsD).forEach(function(k){
+    var parts=k.split('|');
+    if(parts.length!==3||parts[2].indexOf('st_')!==0)return;
+    var arr=_opsD[k];if(!Array.isArray(arr)||!arr.length)return;
+    var kept=arr.filter(function(lbl){
+      if(typeof lbl!=='string')return true;
+      var lc=lbl.toLowerCase().trim();
+      var matchedJobPrefix=jobNames.some(function(jn){return jn&&lc.indexOf(jn)===0;});
+      var looksJobAuto=AUTO_PATTERN.test(lbl.trim());
+      if(!matchedJobPrefix&&!looksJobAuto)return true; // manual entry — keep
+      return !!validKeys[k+'|'+lbl];
+    });
+    if(kept.length!==arr.length)_opsD[k]=kept;
   });
 }
 function opsSeedFromCal(){
@@ -14113,6 +14459,176 @@ function opsSeedFromCal(){
       });
     });
   });
+}
+
+// Remove seed-junk from _opsD. Targets:
+//  - date-stub entries: "Apr-01", "May-12" (CSV import artefacts)
+//  - MORNING LIVE entries on weekend rows in the ml row (ML doesn't air Sat/Sun)
+//  - [MCR]/[LDN] location-prefixed entries (the studio row already conveys location)
+//  - "Morning Live ML X" normalised to "Morning Live X" (ML = Morning Live)
+//  - Bare "ML EpNN" in studio rows normalised to "Morning Live EpNN"
+//  - Duplicates within the same cell
+// Note: "DD"-prefixed entries are intentionally NOT filtered — Andrew uses "DD"
+// as shorthand for Dragons Den in his own data (e.g. "DD Antechamber RX4"),
+// so any blanket DD filter would delete his real entries.
+// Safe to run on every render — idempotent. Returns true if anything changed.
+function _opsCleanSeedJunk(){
+  if(!_opsD)return false;
+  var changed=false;
+  var JUNK_DATE_RX=/^[A-Z][a-z]{2}-\d{2}$/;       // "Apr-01", "Dec-31"
+  var LOC_PREFIX_RX=/^\[(MCR|LDN)\]\s*/;           // "[MCR] RX4" → strip
+  var ML_EP_RX=/^ML\s+(Ep\d|Episode)/i;            // "ML Ep17" → "Morning Live Ep17"
+  // Build a weekend-day lookup from OPS_CAL
+  var WKND={};
+  try{
+    OPS_CAL.forEach(function(m){
+      m.days.forEach(function(d){
+        if(/^SATURDAY|^SUNDAY/i.test(d.dow))WKND[m.month+'|'+d.day]=true;
+      });
+    });
+  }catch(e){}
+  Object.keys(_opsD).forEach(function(k){
+    var arr=_opsD[k];if(!Array.isArray(arr)||!arr.length)return;
+    var parts=k.split('|');
+    var rowKey=parts.length===3?parts[2]:'';
+    var isWeekend=parts.length>=2?(WKND[parts[0]+'|'+parts[1]]||false):false;
+    var isStudioRow=rowKey.indexOf('st_')===0;
+    // 1. Remove junk entries
+    var filtered=arr.filter(function(v){
+      var txt=(typeof v==='string')?v:(v&&typeof v.text==='string'?v.text:'');
+      if(!txt)return true;
+      if(JUNK_DATE_RX.test(txt))return false;
+      // ML row entries on weekends — Morning Live doesn't air Sat/Sun
+      if(rowKey==='ml'&&isWeekend&&/MORNING LIVE/i.test(txt))return false;
+      return true;
+    });
+    // 2. Normalise variants
+    var normalized=filtered.map(function(v){
+      if(typeof v!=='string')return v;
+      // Strip [MCR]/[LDN] prefix — location is conveyed by the row label
+      var out=v.replace(LOC_PREFIX_RX,'');
+      // Strip "ML" between "Morning Live" and the rest, preserving the separator
+      // (handles "Morning Live ML X", "Morning Live — ML X", "Morning Live - ML X").
+      out=out.replace(/^(Morning Live)([\s\u2014\u2013-]+)ML\s+/i,'$1$2');
+      // Bare "ML Ep##" → "Morning Live Ep##" (only in studio rows where it's clearly Morning Live)
+      if(isStudioRow)out=out.replace(ML_EP_RX,'Morning Live $1');
+      return out;
+    });
+    // 3. Dedupe (compares string/object by serialised form)
+    var seen={};var deduped=[];
+    normalized.forEach(function(v){
+      var key=(typeof v==='string')?('s:'+v):JSON.stringify(v);
+      if(!seen[key]){seen[key]=true;deduped.push(v);}
+    });
+    if(deduped.length!==arr.length||deduped.some(function(v,i){return JSON.stringify(v)!==JSON.stringify(arr[i]);})){
+      _opsD[k]=deduped;
+      changed=true;
+    }
+  });
+  // 4. Auto-merge consecutive identical entries in the same row into a single
+  // span entry. e.g. "Dragons Dark Week" in 5 adjacent cells becomes one
+  // {text:"Dragons Dark Week", span:5} entry at the leftmost cell.
+  // Only merges cells with EXACTLY ONE entry that have identical text — doesn't
+  // touch cells with multiple entries or with pre-existing spans.
+  try{
+    OPS_CAL.forEach(function(m){
+      // Collect the set of rows that have data this month
+      var rowsInMonth={};
+      Object.keys(_opsD).forEach(function(k){
+        var p=k.split('|');
+        if(p[0]===m.month&&p.length===3)rowsInMonth[p[2]]=true;
+      });
+      Object.keys(rowsInMonth).forEach(function(row){
+        if(row==='ml')return; // ML has its own span logic
+        var i=0;
+        while(i<m.days.length){
+          var dayI=m.days[i].day;
+          var valsI=_opsD[m.month+'|'+dayI+'|'+row]||[];
+          if(valsI.length!==1){i++;continue;}
+          var v0=valsI[0];
+          // Skip cells that ALREADY have a span entry — don't re-merge
+          if(v0&&typeof v0==='object'&&v0.span&&v0.span>1){i+=v0.span;continue;}
+          var textI=(typeof v0==='string')?v0:(v0&&v0.text?v0.text:'');
+          if(!textI){i++;continue;}
+          // Look forward for consecutive cells with the same single-entry text
+          var j=i+1;
+          while(j<m.days.length){
+            var dayJ=m.days[j].day;
+            var valsJ=_opsD[m.month+'|'+dayJ+'|'+row]||[];
+            if(valsJ.length!==1)break;
+            var vJ=valsJ[0];
+            if(vJ&&typeof vJ==='object'&&vJ.span&&vJ.span>1)break;
+            var textJ=(typeof vJ==='string')?vJ:(vJ&&vJ.text?vJ.text:'');
+            if(textJ!==textI)break;
+            j++;
+          }
+          var len=j-i;
+          if(len>1){
+            // Build span entry, preserving cls/color from the leftmost entry if any
+            var spanEntry={text:textI,span:len};
+            if(v0&&typeof v0==='object'){
+              if(v0.cls)spanEntry.cls=v0.cls;
+              if(v0.color)spanEntry.color=v0.color;
+            }
+            _opsD[m.month+'|'+dayI+'|'+row]=[spanEntry];
+            for(var kk=i+1;kk<j;kk++){
+              _opsD[m.month+'|'+m.days[kk].day+'|'+row]=[];
+            }
+            changed=true;
+          }
+          i=j;
+        }
+      });
+    });
+  }catch(e){/* don't let auto-merge break cleanup */}
+  // Strip corrupt/dead entries:
+  //   - Object span entries with no/empty text  (the "phantom merge" bug)
+  //   - null/undefined entries
+  //   - empty or whitespace-only string entries
+  //   - Span attribute on entries where absorbed cells aren't empty (inconsistent state)
+  try{
+    Object.keys(_opsD).forEach(function(k){
+      var arr=_opsD[k];if(!Array.isArray(arr)||!arr.length)return;
+      var cleaned=arr.map(function(v){
+        if(v==null)return null;
+        if(typeof v==='string')return v.trim()?v:null;
+        if(typeof v==='object'){
+          var t=(typeof v.text==='string')?v.text.trim():'';
+          if(v.span&&v.span>1&&!t)return null;
+          if(!t&&!v.person&&!v.cls&&!v.color)return null;
+          return v;
+        }
+        return v;
+      }).filter(function(v){return v!==null;});
+      if(cleaned.length!==arr.length){_opsD[k]=cleaned;changed=true;}
+    });
+    OPS_CAL.forEach(function(m){
+      Object.keys(_opsD).forEach(function(k){
+        var p=k.split('|');if(p.length!==3||p[0]!==m.month)return;
+        var arr=_opsD[k];if(!Array.isArray(arr)||!arr.length)return;
+        var d=parseInt(p[1]),row=p[2];
+        var dayIdx=m.days.findIndex(function(x){return x.day===d;});
+        if(dayIdx<0)return;
+        arr.forEach(function(v,i){
+          if(!v||typeof v!=='object'||!v.span||v.span<=1)return;
+          var bad=false;
+          for(var off=1;off<v.span;off++){
+            if(dayIdx+off>=m.days.length){bad=true;break;}
+            var nd=m.days[dayIdx+off].day;
+            var nv=_opsD[m.month+'|'+nd+'|'+row];
+            if(Array.isArray(nv)&&nv.length){bad=true;break;}
+          }
+          if(bad){
+            var copy=Object.assign({},v);delete copy.span;
+            var ks=Object.keys(copy);
+            arr[i]=(ks.length===1&&ks[0]==='text')?copy.text:copy;
+            changed=true;
+          }
+        });
+      });
+    });
+  }catch(e){}
+  return changed;
 }
 
 // One-time cleanup: remove [MCR] / [LDN] prefixed entries when the unprefixed
@@ -14318,16 +14834,38 @@ function opsIsWk(dow){const d=(dow||'').toUpperCase();return d==='SATURDAY'||d==
 function opsDStr(month,day){return(OPS_MPX[month]||'2026-03')+'-'+String(day).padStart(2,'0');}
 function opsMlColor(name){
   if(!name)return'#2d7dd2';
-  const k=Object.keys(OPS_ML_COLORS).find(k=>name.toLowerCase().startsWith(k.split(' ')[0].toLowerCase()));
+  // Exact full-name match against the known TM colours (e.g. "James Laishley")
+  const k=Object.keys(OPS_ML_COLORS).find(k=>name.toLowerCase()===k.toLowerCase());
   if(k)return OPS_ML_COLORS[k];
-  // Deterministic colour from name hash for unknown TMs
+  // Deterministic colour from name hash for unknown TMs. Use a stronger mix
+  // (char-code * position) so e.g. "James Forshaw" and "James Laishley" differ.
   var palette=['#3a8a55','#3a5aaa','#7a4aaa','#1a8a8a','#aa6a2a','#c0524a','#5a8a3a','#aa3a7a','#3a6aaa','#8a5a3a'];
-  var sum=0;for(var i=0;i<name.length;i++)sum+=name.charCodeAt(i);
+  var sum=0;for(var i=0;i<name.length;i++)sum=(sum*31+name.charCodeAt(i))>>>0;
   return palette[sum%palette.length];
 }
+// Short display name for ML chips — "James Laishley" → "James L", "James Forshaw" →
+// "James F". Falls back to just the single token if there's no surname.
+function opsMlShortName(name){
+  var parts=String(name||'').trim().split(/\s+/);
+  if(parts.length<2)return parts[0]||'';
+  return parts[0]+' '+parts[1].charAt(0).toUpperCase();
+}
 function opsInBrk(ds){return _opsBrk.find(b=>ds>=b.start&&ds<=b.end)||null;}
-function opsChip(t){var u=t.toUpperCase();if(/^\[MCR\]/.test(u))return'ops-mcr';if(/^\[LDN\]/.test(u))return'ops-ldn';if(/SHOP.?ON|DRAG.RACE|RUPAUL|DRAGON/.test(u))return'ops-show';if(/RIG|DERIG|REHEAR|CAMERA RIG/.test(u))return'ops-prod';if(/\bRX\s*\d|\bDARK\b/.test(u))return'ops-prod';if(/MEET|RECCE|EVENT/.test(u))return'ops-event';return'ops-note';}
-function opsRChips(vals,fc){if(!vals.length)return'<div class="ops-mt"></div>';return vals.map(v=>{const cls=fc||opsChip(v);const s=v.length>17?v.slice(0,16)+'\u2026':v;return'<div class="ops-chip '+cls+'" title="'+v.replace(/"/g,'&quot;')+'">'+s+'</div>';}).join('');}
+function opsChip(t){var u=t.toUpperCase();if(/^\[MCR\]/.test(u))return'ops-mcr';if(/^\[LDN\]/.test(u))return'ops-ldn';/* Job-specific colours — match the responsible-staff row's chip styling so a job is visually consistent everywhere it appears. */if(/DRAGON/.test(u))return'ops-andrew';if(/MORNING LIVE|\bML\b/.test(u))return'ops-ian';if(/SHOP.?ON|DRAG.RACE|RUPAUL/.test(u))return'ops-show';if(/RIG|DERIG|REHEAR|CAMERA RIG/.test(u))return'ops-prod';if(/\bRX\s*\d|\bDARK\b/.test(u))return'ops-prod';if(/MEET|RECCE|EVENT/.test(u))return'ops-event';return'ops-note';}
+function opsRChips(vals,fc){
+  if(!vals.length)return'<div class="ops-mt"></div>';
+  return vals.map(function(v){
+    // Normalise: handle string OR object {text, cls?, color?, ...}
+    var text=(typeof v==='string')?v:(v&&typeof v.text==='string'?v.text:'');
+    if(!text)return'';
+    // Per-entry color override: v.cls (user's explicit pick) takes priority over
+    // fc (row's default color), so picking Pink on an Andrew-row chip actually
+    // makes it pink. Fallback chain: v.cls → fc → opsChip auto-detect.
+    var cls=(v&&typeof v==='object'&&v.cls)?v.cls:(fc||opsChip(text));
+    var style=(v&&typeof v==='object'&&v.color)?' style="background:'+v.color+'"':'';
+    return'<div class="ops-chip '+cls+'"'+style+' title="'+text.replace(/"/g,'&quot;')+'">'+text+'</div>';
+  }).join('');
+}
 
 OPS_CAL.forEach(m=>{
   m.days.forEach(d=>{
@@ -14409,10 +14947,19 @@ function opsRenderMonth(m,mi){
       var safeName=(hol.name||'').replace(/"/g,'&quot;');
       holHTML='<div title="'+safeName+'" style="font-size:8px;font-weight:800;letter-spacing:.04em;color:#a06628;background:rgba(160,102,40,.12);margin:3px 4px 0;padding:2px 4px;border-radius:3px;text-transform:uppercase;line-height:1.1;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Bank Hol</div>';
     }
-    h+='<td><div class="ops-dh'+(wk?' wk':'')+(td?' td':'')+(hol?' hol':'')+'"><span style="font-size:10px;display:block;margin-bottom:3px;letter-spacing:.04em;">'+d.dow.slice(0,3)+'</span><div class="dn-wrap" style="width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto;font-size:13px;font-weight:900;background:'+(td?'#d85a61':'rgba(216,90,97,.1)')+';color:'+(td?'#fff':'rgba(184,79,85,.8)')+';'+(td?'box-shadow:0 4px 10px rgba(216,90,97,.28);':'')+'">'+d.day+'</div>'+holHTML+'</div></td>';
+    // Today gets a beefier circle (44px vs 30, 22px font vs 16) with a soft
+    // accent ring and stronger drop shadow, and the day-of-week label flips
+    // to the accent red so the whole column reads as "today" at a glance.
+    var dowColor=td?'#d85a61':'inherit';
+    var dowSize=td?'15px':'13px';
+    var circW=td?'44px':'30px';
+    var circF=td?'22px':'16px';
+    var circShadow=td?'box-shadow:0 0 0 3px rgba(216,90,97,.18),0 6px 14px rgba(216,90,97,.4);':'';
+    h+='<td><div class="ops-dh'+(wk?' wk':'')+(td?' td':'')+(hol?' hol':'')+'"><span style="font-size:'+dowSize+';display:block;margin-bottom:4px;letter-spacing:.06em;font-weight:900;color:'+dowColor+';">'+d.dow.slice(0,3)+'</span><div class="dn-wrap" style="width:'+circW+';height:'+circW+';border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto;font-size:'+circF+';font-weight:900;background:'+(td?'#d85a61':'rgba(216,90,97,.12)')+';color:'+(td?'#fff':'#d85a61')+';'+circShadow+'">'+d.day+'</div>'+holHTML+'</div></td>';
   });
   h+='</tr>';
-  const cell=(idx,row,fc)=>{
+  const cell=(idx,row,fc,rowCov)=>{
+    if(rowCov&&rowCov.has(idx))return null;
     const d=days[idx];const wk=opsIsWk(d.dow);const td=opsDStr(m.month,d.day)===OPS_TODAY;
     const vals=og(m.month,d.day,row);
     const rid=('oc_'+mi+'_'+d.day+'_'+row).replace(/[^a-zA-Z0-9_]/g,'_');
@@ -14420,22 +14967,55 @@ function opsRenderMonth(m,mi){
     if(row==='ml'){
       if(cov.has(idx))return null;
       const sp=spMap[idx];const cs=sp?(sp.ei-sp.si+1):1;
-      const person=vals.length?vals[0]:'';
+      // Extract person safely from string OR object ({person, text, ...} from OPS_CAL seed)
+      var rawPerson=vals.length?vals[0]:'';
+      var person='';
+      if(typeof rawPerson==='string')person=rawPerson;
+      else if(rawPerson&&typeof rawPerson==='object')person=rawPerson.person||rawPerson.text||'';
       let chip;
       if(sp&&sp.isBreak)chip='<div class="ops-chip ops-brk">'+sp.label+'</div>';
       else if(!person)chip='<div class="ops-mt"></div>';
       else if(person==='Break / Off Air')chip='<div class="ops-chip ops-brk">Break</div>';
-      else chip='<div class="ops-chip ops-ml" style="background:'+opsMlColor(person)+'">'+person.split(' ')[0]+'</div>';
+      else chip='<div class="ops-chip ops-ml" style="background:'+opsMlColor(person)+'">'+String(person)+'</div>';
       return'<td class="'+cls+'" colspan="'+cs+'" id="'+rid+'" data-mi="'+mi+'" data-day="'+d.day+'" data-row="ml" onclick="opsCk(this)">'+chip+'</td>';
+    }
+    // Non-ml: detect span entries (objects with span > 1) and render with colspan
+    if(rowCov&&vals.length){
+      var spanEntry=null;
+      for(var si=0;si<vals.length;si++){
+        var sv=vals[si];
+        if(sv&&typeof sv==='object'&&sv.span&&sv.span>1&&(sv.text||'').trim()){spanEntry=sv;break;}
+      }
+      if(spanEntry){
+        var spanLen=Math.min(spanEntry.span,days.length-idx);
+        for(var sj=1;sj<spanLen;sj++)rowCov.add(idx+sj);
+        var spText=spanEntry.text||'';
+        var spCls=spanEntry.cls||opsChip(spText);
+        var spStyle=spanEntry.color?' style="background:'+spanEntry.color+'"':'';
+        // Render the span chip plus any other (non-span) entries in this cell
+        var others=vals.filter(function(v){return v!==spanEntry;});
+        var otherHtml=others.length?opsRChips(others,fc):'';
+        return'<td class="'+cls+'" colspan="'+spanLen+'" id="'+rid+'" data-mi="'+mi+'" data-day="'+d.day+'" data-row="'+row+'" onclick="opsCk(this)"><div class="ops-chip '+spCls+'"'+spStyle+'>'+spText+'</div>'+otherHtml+'</td>';
+      }
+      // AUTO-FIT removed — chips render at data span. To extend a chip across days,
+      // drag its right-edge handle.
     }
     return'<td class="'+cls+'" id="'+rid+'" data-mi="'+mi+'" data-day="'+d.day+'" data-row="'+row+'" onclick="opsCk(this)">'+opsRChips(vals,fc)+'</td>';
   };
   const srow=lbl=>'<tr class="ops-srow"><td colspan="'+(n+1)+'">'+lbl+'</td></tr>';
   const gap='<tr class="ops-gap"><td colspan="'+(n+1)+'"></td></tr>';
   const bigbreak='<tr class="ops-bigbreak"><td colspan="'+(n+1)+'"></td></tr>';
-  const brow=(lbl,row,color,fc)=>{let r='<tr><td class="ops-rlbl" style="color:'+color+'">'+lbl+'</td>';days.forEach((_,i)=>{const c=cell(i,row,fc);if(c)r+=c;});return r+'</tr>';};
+  const brow=(lbl,row,color,fc)=>{
+    // Track which cells are covered by an earlier span entry in THIS row
+    const rowCov=(row!=='ml')?new Set():null;
+    let r='<tr><td class="ops-rlbl" style="color:'+color+'">'+lbl+'</td>';
+    days.forEach((_,i)=>{const c=cell(i,row,fc,rowCov);if(c)r+=c;});
+    return r+'</tr>';
+  };
+  // Notes — free-text row at the top of the planner
+  h+=brow('Notes','notes','#5a5a5a',null);
   // Morning Live (no extra header — the row label says it all)
-  h+=brow('Morning Live','ml','#2d7dd2',null);
+  h+=brow('Morning Live TM','ml','#2d7dd2',null);
   // Studio location map — hardcoded base + job overrides
   var stuLocMap=Object.assign({},OPS_STU_LOC);
   jobs.forEach(function(jj){
@@ -14454,11 +15034,32 @@ function opsRenderMonth(m,mi){
     var lBg=loc==='Manchester'?'rgba(42,110,58,.08)':loc==='London'?'rgba(26,78,138,.08)':'rgba(255,251,246,.9)';
     var locBadge='';
     let r='<tr><td class="ops-rlbl" style="color:'+lCol+';background:'+lBg+'">'+st+locBadge+'<span class="ops-rlbl-x" onclick="event.stopPropagation();opsToggleStu(\''+st.replace(/'/g,"\\'")+'\')" title="Hide '+st+'">&times;</span></td>';
+    // Span tracking — see versa-opsplanner.html for explanation
+    var stRowCov=new Set();
     days.forEach(function(d,idx){
+      if(stRowCov.has(idx))return;
       const row='st_'+st;const wk=opsIsWk(d.dow);const td=opsDStr(m.month,d.day)===OPS_TODAY;
       const vals=og(m.month,d.day,row);
       const rid=('oc_'+mi+'_'+d.day+'_'+row).replace(/[^a-zA-Z0-9_]/g,'_');
-      r+='<td class="ops-cell'+(wk?' wk':'')+(td?' td':'')+'" id="'+rid+'" data-mi="'+mi+'" data-day="'+d.day+'" data-row="'+row+'" onclick="opsCk(this)">'+opsRChips(vals,null)+'</td>';
+      const cls='ops-cell'+(wk?' wk':'')+(td?' td':'');
+      var spanEntry=null;
+      for(var si=0;si<vals.length;si++){
+        var sv=vals[si];
+        if(sv&&typeof sv==='object'&&sv.span&&sv.span>1&&(sv.text||'').trim()){spanEntry=sv;break;}
+      }
+      if(spanEntry){
+        var spanLen=Math.min(spanEntry.span,days.length-idx);
+        for(var sj=1;sj<spanLen;sj++)stRowCov.add(idx+sj);
+        var spText=spanEntry.text||'';
+        var spCls=spanEntry.cls||opsChip(spText);
+        var spStyle=spanEntry.color?' style="background:'+spanEntry.color+'"':'';
+        var others=vals.filter(function(v){return v!==spanEntry;});
+        var otherHtml=others.length?opsRChips(others,null):'';
+        r+='<td class="'+cls+'" colspan="'+spanLen+'" id="'+rid+'" data-mi="'+mi+'" data-day="'+d.day+'" data-row="'+row+'" onclick="opsCk(this)"><div class="ops-chip '+spCls+'"'+spStyle+'>'+spText+'</div>'+otherHtml+'</td>';
+      } else {
+        // AUTO-FIT removed.
+        r+='<td class="'+cls+'" id="'+rid+'" data-mi="'+mi+'" data-day="'+d.day+'" data-row="'+row+'" onclick="opsCk(this)">'+opsRChips(vals,null)+'</td>';
+      }
     });
     r+='</tr>';h+=r;
   });
@@ -14566,11 +15167,62 @@ function renderGanttStuToggle(){
     bar.appendChild(btn);
   });
 }
+// Auto-fit text in any element that uses text-overflow:ellipsis. Shrinks font-size
+// (down to a floor of 8px) until the text fits. Re-runs after every render, on
+// window resize, and via a MutationObserver as a catch-all for DOM changes.
+function versaFitText(el){
+  if(!el||!el.style)return;
+  var cs=window.getComputedStyle(el);
+  if(cs.textOverflow!=='ellipsis')return;
+  el.style.fontSize='';
+  if(el.scrollWidth<=el.clientWidth+0.5)return;
+  var fs=parseFloat(cs.fontSize)||12;
+  for(var i=0;i<16;i++){
+    fs-=0.5;
+    if(fs<8)break;
+    el.style.fontSize=fs+'px';
+    if(el.scrollWidth<=el.clientWidth+0.5)return;
+  }
+}
+// Selectors covering every chip/box type in the app that truncates with ellipsis.
+// Add new ones here to opt them into auto-fit; harmless if a selector matches
+// nothing on a given page.
+var VERSA_FIT_SEL='.ops-chip,.cal-bar,.drw-title,.td';
+function versaFitAll(){
+  document.querySelectorAll(VERSA_FIT_SEL).forEach(versaFitText);
+}
+// Back-compat aliases — keep old call sites working.
+function opsFitChip(el){versaFitText(el);}
+function opsFitAllChips(){versaFitAll();}
+(function(){
+  var t=null;
+  window.addEventListener('resize',function(){
+    if(t)clearTimeout(t);
+    t=setTimeout(versaFitAll,120);
+  });
+})();
+// Catch any DOM mutation we don't explicitly hook into. childList:true watches
+// node additions/removals only — setting style.fontSize from this function
+// doesn't fire it back, avoiding loops. Debounced at 180ms.
+(function(){
+  if(!('MutationObserver' in window))return;
+  var t=null;
+  var schedule=function(){
+    if(t)clearTimeout(t);
+    t=setTimeout(versaFitAll,180);
+  };
+  var go=function(){
+    if(!document.body)return;
+    try{new MutationObserver(schedule).observe(document.body,{childList:true,subtree:true});}catch(e){}
+  };
+  if(document.body)go();else document.addEventListener('DOMContentLoaded',go);
+})();
 function opsReRender(){
   var secs=document.querySelectorAll('#opsBody2 .ops-ms2');
   secs.forEach(function(sec,i){
     if(sec.style.display!=='none') sec.innerHTML=opsRenderMonth(OPS_CAL[i],i);
   });
+  requestAnimationFrame(versaFitAll);
 }
 function opsReRenderAll(){
   if(plannerView==='week'){opsRenderWeek();return;}
@@ -14580,6 +15232,7 @@ function opsReRenderAll(){
   secs.forEach(function(sec,i){
     if(sec.style.display!=='none') sec.innerHTML=opsRenderMonth(OPS_CAL[i],i);
   });
+  requestAnimationFrame(opsFitAllChips);
 }
 
 let _opsEd=null;
@@ -14599,8 +15252,57 @@ function opsCk(td){
   _opsEd={mi,day,row,id:td.id,month};
   const cur=og(month,day,row);
   const mkO=(val,col,single)=>{const sel=cur.includes(val);return'<div class="ops-co'+(sel?' sel':'')+'" data-v="'+val.replace(/"/g,'&quot;')+'" data-s="'+(single?1:0)+'" onclick="opsOpt(this)"><div class="ops-cd" style="background:'+col+'"></div>'+val.replace(/&/g,'&amp;')+(sel?'<span class="ops-ck">✓</span>':'')+'</div>';};
-  // Custom input always at the top of the popup
-  let html='<input class="ops-ci" id="opsCiTxt" placeholder="Custom..." onkeydown="if(event.keyCode===13)opsCiAdd()"/><button class="ops-ca" onclick="opsCiAdd()">+ Add Custom</button><div class="ops-div"></div>';
+  // Show current entries FIRST (at the top) — click chip text to edit inline,
+  // type a number in the days input to span across days, × to delete.
+  let html='';
+  // Pending-span banner: if a drag-on-empty primed this cell with a planned
+  // span, tell the user that typing here will create a merged entry.
+  var _pending=window._opsPendingSpan;
+  if(_pending&&_pending.month===month&&_pending.row===row&&_pending.lo===day){
+    html+='<div style="background:rgba(216,90,97,.12);color:#a03040;padding:8px 12px;margin:8px 8px 4px;border-radius:6px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;line-height:1.3;border:1px dashed #d85a61;">Drag range: '+_pending.span+' days<br><span style="text-transform:none;letter-spacing:0;font-weight:500;font-size:11px;color:#666">Type below to fill this merged range</span></div>';
+  }
+  if(cur.length&&row!=='ml'){
+    html+='<div class="ops-cs" style="margin-top:8px">Current</div>';
+    cur.forEach(function(v,idx){
+      var dispText=(typeof v==='string')?v:(v&&v.text?v.text:'(unknown)');
+      var safeV=dispText.replace(/"/g,'&quot;').replace(/&/g,'&amp;');
+      var chipClass=(v&&typeof v==='object'&&v.cls)?v.cls:((typeof opsChip==='function')?opsChip(dispText):'ops-note');
+      var chipStyle=(v&&typeof v==='object'&&v.color)?' style="flex:1;margin-bottom:0;cursor:text;font-size:13px;background:'+v.color+'"':' style="flex:1;margin-bottom:0;cursor:text;font-size:13px"';
+      var curSpan=(v&&typeof v==='object'&&v.span&&v.span>1)?v.span:1;
+      // Days input replaces ◀/▶ buttons — change the number to extend/shrink the span
+      var daysInput='<input type="number" min="1" max="31" value="'+curSpan+'" '+
+        'onchange="opsSetSpan('+idx+',this.value)" '+
+        'onkeydown="if(event.keyCode===13){this.blur();event.preventDefault();}" '+
+        'title="Number of days to span — change to extend/shrink" '+
+        'style="width:42px;font-size:13px;padding:3px 4px;border:1.5px solid #d85a61;border-radius:4px;text-align:center;font-weight:700;color:#302f2c;background:#fff;outline:none;flex-shrink:0;font-family:inherit"/>'+
+        '<span style="font-size:10px;color:#888;font-weight:700;margin-left:-2px;flex-shrink:0">d</span>';
+      html+='<div style="display:flex;align-items:center;gap:6px;padding:4px 12px"><div class="ops-chip '+chipClass+'" onclick="event.stopPropagation();opsStartEdit('+idx+',this)"'+chipStyle+' title="Click to edit">'+safeV+'</div>'+daysInput+'<button onclick="event.stopPropagation();opsRemoveItem('+idx+')" title="Remove this entry" style="background:rgba(216,90,97,.12);border:none;width:22px;height:22px;border-radius:4px;color:#a03040;cursor:pointer;font-weight:900;line-height:1;padding:0;font-size:14px;flex-shrink:0">&times;</button></div>';
+    });
+    html+='<div class="ops-div"></div>';
+  }
+  // Custom input + colour palette
+  html+='<input class="ops-ci" id="opsCiTxt" placeholder="Custom..." onkeydown="if(event.keyCode===13)opsCiAdd()"/>';
+  if(row!=='ml'){
+    html+='<div style="display:flex;gap:3px;align-items:center;padding:4px 12px 0;flex-wrap:wrap;font-size:10px;color:#888">'+
+      '<span class="ops-ci-sw" data-cls="" style="display:inline-block;width:16px;height:16px;border-radius:3px;background:rgba(255,200,200,.4);cursor:pointer;border:2px solid #302f2c" title="Auto" onclick="opsCiPick(this,\'\')"></span>'+
+      '<span class="ops-ci-sw" data-cls="ops-andrew" style="display:inline-block;width:16px;height:16px;border-radius:3px;background:rgba(58,138,85,.55);cursor:pointer;border:2px solid transparent" title="Green" onclick="opsCiPick(this,\'ops-andrew\')"></span>'+
+      '<span class="ops-ci-sw" data-cls="ops-ian" style="display:inline-block;width:16px;height:16px;border-radius:3px;background:rgba(58,90,170,.55);cursor:pointer;border:2px solid transparent" title="Blue" onclick="opsCiPick(this,\'ops-ian\')"></span>'+
+      '<span class="ops-ci-sw" data-cls="ops-chris" style="display:inline-block;width:16px;height:16px;border-radius:3px;background:rgba(192,148,32,.55);cursor:pointer;border:2px solid transparent" title="Gold" onclick="opsCiPick(this,\'ops-chris\')"></span>'+
+      '<span class="ops-ci-sw" data-cls="ops-show" style="display:inline-block;width:16px;height:16px;border-radius:3px;background:rgba(120,72,168,.55);cursor:pointer;border:2px solid transparent" title="Purple" onclick="opsCiPick(this,\'ops-show\')"></span>'+
+      '<span class="ops-ci-sw" data-cls="ops-prod" style="display:inline-block;width:16px;height:16px;border-radius:3px;background:rgba(200,118,38,.55);cursor:pointer;border:2px solid transparent" title="Orange" onclick="opsCiPick(this,\'ops-prod\')"></span>'+
+      '<span class="ops-ci-sw" data-cls="ops-event" style="display:inline-block;width:16px;height:16px;border-radius:3px;background:rgba(38,150,140,.55);cursor:pointer;border:2px solid transparent" title="Teal" onclick="opsCiPick(this,\'ops-event\')"></span>'+
+      '<span class="ops-ci-sw" data-cls="ops-note" style="display:inline-block;width:16px;height:16px;border-radius:3px;background:rgba(216,90,97,.45);cursor:pointer;border:2px solid transparent" title="Pink" onclick="opsCiPick(this,\'ops-note\')"></span>'+
+      '<span class="ops-ci-sw" data-cls="ops-mint" style="display:inline-block;width:16px;height:16px;border-radius:3px;background:rgba(120,200,150,.55);cursor:pointer;border:2px solid transparent" title="Mint" onclick="opsCiPick(this,\'ops-mint\')"></span>'+
+      '<span class="ops-ci-sw" data-cls="ops-sky" style="display:inline-block;width:16px;height:16px;border-radius:3px;background:rgba(120,180,225,.55);cursor:pointer;border:2px solid transparent" title="Sky" onclick="opsCiPick(this,\'ops-sky\')"></span>'+
+      '<span class="ops-ci-sw" data-cls="ops-lav" style="display:inline-block;width:16px;height:16px;border-radius:3px;background:rgba(165,140,210,.55);cursor:pointer;border:2px solid transparent" title="Lavender" onclick="opsCiPick(this,\'ops-lav\')"></span>'+
+      '<span class="ops-ci-sw" data-cls="ops-rose" style="display:inline-block;width:16px;height:16px;border-radius:3px;background:rgba(220,120,150,.55);cursor:pointer;border:2px solid transparent" title="Rose" onclick="opsCiPick(this,\'ops-rose\')"></span>'+
+      '<span class="ops-ci-sw" data-cls="ops-sand" style="display:inline-block;width:16px;height:16px;border-radius:3px;background:rgba(210,180,130,.65);cursor:pointer;border:2px solid transparent" title="Sand" onclick="opsCiPick(this,\'ops-sand\')"></span>'+
+      '<span class="ops-ci-sw" data-cls="ops-slate" style="display:inline-block;width:16px;height:16px;border-radius:3px;background:rgba(140,160,180,.55);cursor:pointer;border:2px solid transparent" title="Slate" onclick="opsCiPick(this,\'ops-slate\')"></span>'+
+      '<input type="hidden" id="opsCiCls" value=""/>'+
+    '</div>';
+  }
+  html+='<button class="ops-ca" onclick="opsCiAdd()">+ Add Custom</button>';
+  html+='<div class="ops-div"></div>';
   if(row==='ml'){
     html+='<div class="ops-cs">Tech Manager</div>';
     getOpsTMs().forEach(function(tm){
@@ -14616,7 +15318,7 @@ function opsCk(td){
   }
   else if(row==='events'){html+='<div class="ops-cs">Events</div>';}
   else if(row.startsWith('st_')){const stName=row.slice(3);html+='<div class="ops-cs">'+stName+'</div>';}
-  else{const colMap={andrew:'#3a8a55',chris:'#907010',ian:'#3a5aaa'};const col=colMap[row]||'#555';html+='<div class="ops-cs">'+row.charAt(0).toUpperCase()+row.slice(1)+'</div>';html+=mkO('Day Off',col,false);if(row!=='chris'){html+='<div class="ops-div"></div><div class="ops-cs">Jobs</div>';var _todayIso=new Date().toISOString().split('T')[0];jobs.filter(function(j){if(j.status==='Cancelled')return false;if(j.end&&j.end<_todayIso)return false;return true;}).forEach(function(j){html+=mkO(j.name,col,false);});}}
+  else{const colMap={andrew:'#3a8a55',chris:'#907010',ian:'#3a5aaa'};const col=colMap[row]||'#555';html+='<div class="ops-cs">'+row.charAt(0).toUpperCase()+row.slice(1)+'</div>';html+=mkO('Day Off',col,false);if(row!=='chris'){html+='<div class="ops-div"></div><div class="ops-cs">Jobs</div>';var _todayIso=new Date().toISOString().split('T')[0];var _clsToCol={'ops-andrew':'#3a8a55','ops-ian':'#3a5aaa','ops-chris':'#907010','ops-show':'#a83838','ops-prod':'#c89020','ops-event':'#20a0a0','ops-note':'#d85a61','ops-mint':'#5aaa78','ops-sky':'#5a90c8','ops-lav':'#8870b8','ops-rose':'#c87080','ops-sand':'#a08850','ops-slate':'#6a7888'};jobs.filter(function(j){if(j.status==='Cancelled')return false;if(j.end&&j.end<_todayIso)return false;return true;}).forEach(function(j){var _jc=(typeof opsChip==='function')?opsChip(j.name):'ops-note';html+=mkO(j.name,_clsToCol[_jc]||col,false);});}}
   if(cur.length)html+='<div class="ops-div"></div><div class="ops-co" onclick="opsClear()" style="color:#c06060"><div class="ops-cd" style="background:#c06060"></div>Clear cell</div>';
   const ced=document.getElementById('opsCed');
   document.getElementById('opsCedIn').innerHTML=html;
@@ -14673,9 +15375,564 @@ function _opsRepositionOpenCed(){
   _opsPositionCed(td);
 }
 function opsOpt(el){if(!_opsEd)return;const val=el.dataset.v;const single=el.dataset.s==='1';const{month,day,row,id}=_opsEd;let cur=og(month,day,row).slice();if(single)cur=cur.includes(val)?[]:[val];else{if(cur.includes(val))cur=cur.filter(x=>x!==val);else cur.push(val);}os(month,day,row,cur);if(row==='ml'){opsReRender();}else{opsRefCell(id,month,day,row);opsCk(document.getElementById(id));}}
-function opsCiAdd(){const inp=document.getElementById('opsCiTxt');if(!inp||!inp.value.trim())return;const val=inp.value.trim();const{month,day,row,id}=_opsEd;const cur=og(month,day,row).slice();if(!cur.includes(val)){cur.push(val);os(month,day,row,cur);}inp.value='';opsRefCell(id,month,day,row);opsCk(document.getElementById(id));}
+function opsCiAdd(){
+  const inp=document.getElementById('opsCiTxt');
+  if(!inp||!inp.value.trim())return;
+  const val=inp.value.trim();
+  const clsInp=document.getElementById('opsCiCls');
+  const cls=clsInp?clsInp.value:'';
+  const{month,day,row,id}=_opsEd;
+  const cur=og(month,day,row).slice();
+  // Pending span from a drag-across-empty-cells gesture
+  const pending=window._opsPendingSpan;
+  if(pending&&pending.month===month&&pending.row===row&&pending.lo===day){
+    // Build span entry covering the dragged range
+    const entry={text:val,span:pending.span};
+    if(cls)entry.cls=cls;
+    // Clear cells lo+1..hi so they don't conflict with the colspan
+    for(var d=pending.lo+1;d<=pending.hi;d++){
+      os(month,d,row,[]);
+    }
+    cur.push(entry);
+    os(month,day,row,cur);
+    window._opsPendingSpan=null;
+    inp.value='';
+    if(clsInp)clsInp.value='';
+    if(typeof opsReRender==='function')opsReRender();
+    else if(typeof opsReRenderAll==='function')opsReRenderAll();
+    opsCloseCed();
+    return;
+  }
+  // Normal add: string OR {text,cls} object if colour was picked
+  if(cls){
+    cur.push({text:val,cls:cls});
+  } else if(!cur.includes(val)){
+    cur.push(val);
+  }
+  os(month,day,row,cur);
+  inp.value='';
+  if(clsInp)clsInp.value='';
+  opsRefCell(id,month,day,row);
+  opsCk(document.getElementById(id));
+}
+// Swatch click handler for the Add Custom colour palette
+function opsCiPick(el,cls){
+  // Update visual selection
+  var row=el.parentNode;
+  row.querySelectorAll('.ops-ci-sw').forEach(function(s){s.style.borderColor='transparent';});
+  el.style.borderColor='#302f2c';
+  // Store chosen class for opsCiAdd to read
+  var clsInp=document.getElementById('opsCiCls');
+  if(clsInp)clsInp.value=cls;
+}
+// Inline-edit a chip in the cell editor's "Current" list. Replaces the chip
+// with an input element + colour swatch row. Click a swatch to change the
+// chip's colour. Saves on blur/Enter, cancels on Escape.
+function opsStartEdit(idx,chipEl){
+  if(!_opsEd)return;
+  const{month,day,row,id}=_opsEd;
+  const cur=og(month,day,row).slice();
+  if(idx<0||idx>=cur.length)return;
+  const v=cur[idx];
+  const oldText=(typeof v==='string')?v:(v&&v.text?v.text:'');
+  const oldCls=(v&&typeof v==='object'&&v.cls)?v.cls:'';
+  // Build a wrapper with the text input + colour swatches
+  const wrap=document.createElement('div');
+  wrap.style.cssText='flex:1;display:flex;flex-direction:column;gap:4px;min-width:0';
+  const inp=document.createElement('input');
+  inp.type='text';
+  inp.value=oldText;
+  inp.style.cssText='width:100%;font-size:13px;font-weight:900;padding:5px 9px;border:2px solid #d85a61;border-radius:4px;background:#fff;color:#302f2c;outline:none;font-family:inherit;box-sizing:border-box;min-width:0';
+  // Colour swatches — each click sets the chip's cls field (auto, then 7 presets)
+  const swatchData=[
+    {cls:'',label:'Auto',bg:'rgba(255,200,200,.4)'},
+    {cls:'ops-andrew',label:'Green',bg:'rgba(58,138,85,.55)'},
+    {cls:'ops-ian',label:'Blue',bg:'rgba(58,90,170,.55)'},
+    {cls:'ops-chris',label:'Gold',bg:'rgba(192,148,32,.55)'},
+    {cls:'ops-show',label:'Purple',bg:'rgba(120,72,168,.55)'},
+    {cls:'ops-prod',label:'Orange',bg:'rgba(200,118,38,.55)'},
+    {cls:'ops-event',label:'Teal',bg:'rgba(38,150,140,.55)'},
+    {cls:'ops-note',label:'Pink',bg:'rgba(216,90,97,.45)'},
+    {cls:'ops-mint',label:'Mint',bg:'rgba(120,200,150,.55)'},
+    {cls:'ops-sky',label:'Sky',bg:'rgba(120,180,225,.55)'},
+    {cls:'ops-lav',label:'Lavender',bg:'rgba(165,140,210,.55)'},
+    {cls:'ops-rose',label:'Rose',bg:'rgba(220,120,150,.55)'},
+    {cls:'ops-sand',label:'Sand',bg:'rgba(210,180,130,.65)'},
+    {cls:'ops-slate',label:'Slate',bg:'rgba(140,160,180,.55)'}
+  ];
+  let chosenCls=oldCls;
+  const swatchRow=document.createElement('div');
+  swatchRow.style.cssText='display:flex;gap:3px;align-items:center;flex-wrap:wrap';
+  swatchData.forEach(function(sw){
+    const b=document.createElement('span');
+    b.title=sw.label;
+    b.dataset.cls=sw.cls;
+    b.style.cssText='display:inline-block;width:18px;height:18px;border-radius:3px;background:'+sw.bg+';cursor:pointer;border:2px solid '+(sw.cls===chosenCls?'#302f2c':'transparent')+';transition:border .12s';
+    b.addEventListener('mousedown',function(ev){
+      ev.preventDefault(); // don't let the input lose focus
+      chosenCls=sw.cls;
+      swatchRow.querySelectorAll('span').forEach(function(el){el.style.borderColor='transparent';});
+      b.style.borderColor='#302f2c';
+    });
+    swatchRow.appendChild(b);
+  });
+  wrap.appendChild(inp);
+  wrap.appendChild(swatchRow);
+  const parent=chipEl.parentNode;
+  parent.replaceChild(wrap,chipEl);
+  inp.focus();
+  inp.select();
+  let saved=false;
+  const finish=function(commit){
+    if(saved)return;saved=true;
+    const newText=inp.value.trim();
+    if(!commit||newText===''){
+      opsCk(document.getElementById(id));
+      return;
+    }
+    // No change at all → just re-render
+    if(newText===oldText&&chosenCls===oldCls){
+      opsCk(document.getElementById(id));
+      return;
+    }
+    const cur2=og(month,day,row).slice();
+    if(idx>=cur2.length){opsCk(document.getElementById(id));return;}
+    const v2=cur2[idx];
+    // If we need to attach a cls or the entry was already an object, build/update an object entry
+    if(chosenCls||(v2&&typeof v2==='object')){
+      const base=(v2&&typeof v2==='object')?Object.assign({},v2):{};
+      base.text=newText;
+      if(chosenCls)base.cls=chosenCls;else delete base.cls;
+      cur2[idx]=base;
+    } else {
+      cur2[idx]=newText;
+    }
+    os(month,day,row,cur2);
+    opsRefCell(id,month,day,row);
+    opsCk(document.getElementById(id));
+  };
+  inp.addEventListener('blur',function(){
+    // Delay so a swatch click registers before blur commits
+    setTimeout(function(){finish(true);},80);
+  });
+  inp.addEventListener('keydown',function(e){
+    if(e.key==='Enter'){e.preventDefault();finish(true);}
+    else if(e.key==='Escape'){e.preventDefault();finish(false);}
+  });
+}
 function opsClear(){if(!_opsEd)return;const{month,day,row,id}=_opsEd;os(month,day,row,[]);opsRefCell(id,month,day,row);opsCloseCed();}
-function opsCloseCed(){document.getElementById('opsCed').style.display='none';_opsEd=null;}
+function opsRemoveItem(idx){if(!_opsEd)return;const{month,day,row,id}=_opsEd;const cur=og(month,day,row).slice();if(idx<0||idx>=cur.length)return;cur.splice(idx,1);os(month,day,row,cur);opsRefCell(id,month,day,row);opsCk(document.getElementById(id));}
+// Set an entry's span to an absolute number of days. Called from the days
+// input field next to each chip in the cell editor. Toast confirms the change
+// so the user can see something happened even if their attention's elsewhere.
+function opsSetSpan(idx,newSpanRaw){
+  if(!_opsEd)return;
+  var newSpan=parseInt(newSpanRaw,10);
+  if(isNaN(newSpan)||newSpan<1)return;
+  var info=_opsEd;
+  var month=info.month,day=info.day,row=info.row,id=info.id;
+  var m=OPS_CAL.find(function(x){return x.month===month;});
+  if(!m){if(typeof toast==='function')toast('Month not found');return;}
+  var dayIdx=m.days.findIndex(function(d){return d.day===day;});
+  if(dayIdx<0){if(typeof toast==='function')toast('Day not found');return;}
+  var cur=og(month,day,row).slice();
+  if(idx<0||idx>=cur.length){if(typeof toast==='function')toast('Entry not found — try reopening the cell');return;}
+  var v=cur[idx];
+  var curSpan=(v&&typeof v==='object'&&v.span&&v.span>1)?v.span:1;
+  var maxSpan=m.days.length-dayIdx;
+  newSpan=Math.min(newSpan,maxSpan);
+  if(newSpan===curSpan)return; // no change
+  // Update the entry
+  if(newSpan===1){
+    // Drop span: object → object without span, or plain string if nothing else left
+    if(typeof v==='object'&&v){
+      var stripped=Object.assign({},v);delete stripped.span;
+      var keys=Object.keys(stripped);
+      if(keys.length===1&&keys[0]==='text')cur[idx]=stripped.text;
+      else cur[idx]=stripped;
+    }
+  } else {
+    var text=(typeof v==='string')?v:(v&&v.text?v.text:'');
+    if(typeof v==='string')cur[idx]={text:text,span:newSpan};
+    else cur[idx]=Object.assign({},v,{text:text,span:newSpan});
+  }
+  // If extending, clear absorbed cells so they don't render their own chips
+  if(newSpan>curSpan){
+    for(var k=curSpan;k<newSpan;k++){
+      var absorbedDay=m.days[dayIdx+k].day;
+      _opsD[month+'|'+absorbedDay+'|'+row]=[];
+    }
+  }
+  os(month,day,row,cur);
+  if(typeof opsReRender==='function')opsReRender();
+  if(typeof toast==='function')toast('Span set to '+newSpan+' day'+(newSpan===1?'':'s'));
+  // Reopen the editor so the user can keep adjusting
+  var el=document.getElementById(id);
+  if(el)opsCk(el);
+}
+// Kept for backwards compatibility — converts delta to absolute and delegates
+function opsAdjustSpan(idx,delta){
+  if(!_opsEd)return;
+  var cur=og(_opsEd.month,_opsEd.day,_opsEd.row);
+  if(idx<0||idx>=cur.length)return;
+  var v=cur[idx];
+  var curSpan=(v&&typeof v==='object'&&v.span&&v.span>1)?v.span:1;
+  opsSetSpan(idx,curSpan+delta);
+}
+
+// ── DRAG INTERACTIONS ────────────────────────────────────────────────────────
+// Two modes, selected automatically by where the drag ends:
+//   • SAME row, same month → RESIZE. Span = endDay − startDay + 1.
+//       Drag right past current end → extend. Drag left / inside merged cell
+//       → shrink. Shrink to 1 removes the merge.
+//   • DIFFERENT row OR month → MOVE. First entry from source is appended to
+//       the destination cell. Span attribute is dropped on move.
+// startDay always anchors to the source cell's data-day (the entry's true start
+// for merged TDs). endDay uses a "virtual day" — X-position math inside wide
+// cells — so you can drag to a position within a merged cell to shrink it.
+var _opsDrag=null;
+var _opsBlockClick=false;
+// Map an in-cell mouse X to the day under the cursor, accounting for colspan.
+function _opsVirtualDayAt(cell,clientX){
+  var dataDay=+cell.dataset.day;
+  var colspan=parseInt(cell.getAttribute('colspan')||'1',10);
+  if(colspan<=1)return dataDay;
+  var rect=cell.getBoundingClientRect();
+  if(rect.width<=0)return dataDay;
+  var perDay=rect.width/colspan;
+  var offIdx=Math.max(0,Math.min(colspan-1,Math.floor((clientX-rect.left)/perDay)));
+  return dataDay+offIdx;
+}
+function _opsDragMouseDown(ev){
+  if(ev.button!==0&&ev.button!==undefined)return;
+  var cell=ev.target&&ev.target.closest&&ev.target.closest('.ops-cell');
+  if(!cell)return;
+  if(ev.target.closest&&(ev.target.closest('button')||ev.target.closest('input,select,textarea')))return;
+  var mi=+cell.dataset.mi;
+  var row=cell.dataset.row;
+  var dataDay=+cell.dataset.day;
+  var month=OPS_CAL[mi]&&OPS_CAL[mi].month;
+  if(!month)return;
+  // Handle detection: chip ::before / ::after pseudo-elements occupy the left/right
+  // ~9px with cursor:ew-resize. Pseudo-elements aren't event targets, so detect by
+  // checking which edge of the chip the click landed near.
+  var chipEl=ev.target&&ev.target.closest&&ev.target.closest('.ops-chip');
+  var isHandle=false;
+  var handleSide=null;
+  if(chipEl){
+    var cr=chipEl.getBoundingClientRect();
+    var fromRight=cr.right-ev.clientX;
+    var fromLeft=ev.clientX-cr.left;
+    // Detection zone: 18px or 30% of chip width, whichever is smaller. On wide chips this
+    // stays a narrow band at each edge; on narrow single-cell chips it expands so the handle
+    // is hittable without trackpad-precision.
+    var hz=Math.min(18,Math.max(10,cr.width*0.3));
+    if(ev.clientY>=cr.top&&ev.clientY<=cr.bottom){
+      if(fromRight>=0&&fromRight<hz){isHandle=true;handleSide='right';}
+      else if(fromLeft>=0&&fromLeft<hz){isHandle=true;handleSide='left';}
+    }
+  }
+  var clickVDay=(typeof _opsVirtualDayAt==='function')?_opsVirtualDayAt(cell,ev.clientX):dataDay;
+  _opsDrag={
+    mi:mi,row:row,month:month,
+    startDay:dataDay,
+    clickVDay:clickVDay,
+    endDay:dataDay,
+    startVals:og(month,dataDay,row).slice(),
+    startX:ev.clientX,startY:ev.clientY,
+    moved:false,
+    mode:'span',
+    handleMode:isHandle,
+    handleSide:handleSide,
+    targetCell:cell
+  };
+  console.log('[opsDrag] mousedown',{row:row,mi:mi,day:dataDay,hasContent:_opsDrag.startVals.length>0,handle:isHandle,side:handleSide});
+  document.body.classList.add('ops-drag-active');
+  if(isHandle){ev.preventDefault&&ev.preventDefault();}
+}
+function _opsDragMouseMove(ev){
+  if(!_opsDrag)return;
+  var dx=Math.abs(ev.clientX-_opsDrag.startX);
+  var dy=Math.abs(ev.clientY-_opsDrag.startY);
+  if(!_opsDrag.moved&&dx<4&&dy<4)return;
+  _opsDrag.moved=true;
+  var el=document.elementFromPoint(ev.clientX,ev.clientY);
+  var cell=el?(el.closest&&el.closest('.ops-cell')):null;
+  if(!cell)return;
+  // Handle-drag (resize): pure cursor-position tracking, no thresholds
+  if(_opsDrag.handleMode){
+    if(cell.dataset.row!==_opsDrag.row||(+cell.dataset.mi)!==_opsDrag.mi)return;
+    var virtualDay=_opsVirtualDayAt(cell,ev.clientX);
+    var m=OPS_CAL[_opsDrag.mi];
+    if(m)virtualDay=Math.max(m.days[0].day,Math.min(m.days[m.days.length-1].day,virtualDay));
+    if(virtualDay===_opsDrag.endDay)return;
+    _opsDrag.endDay=virtualDay;
+    _opsDrag.targetCell=cell;
+    _opsDrag.mode='span';
+    _opsDragHighlight();
+    return;
+  }
+  // Body-drag: MOVE to whichever cell the cursor ends up over. Same row OR different
+  // row both work. Drag to source cell = no-op.
+  var srcIsML=_opsDrag.row==='ml';
+  var tgtIsML=cell.dataset.row==='ml';
+  if(srcIsML!==tgtIsML)return;
+  var hasContent=_opsDrag.startVals.length>0;
+  if(!hasContent)return;
+  if((+cell.dataset.mi)===_opsDrag.mi&&cell.dataset.row===_opsDrag.row&&(+cell.dataset.day)===_opsDrag.startDay)return;
+  if(_opsDrag.targetCell===cell&&_opsDrag.mode==='move')return;
+  _opsDrag.targetCell=cell;
+  _opsDrag.mode='move';
+  _opsDragHighlight();
+}
+function _opsDragMouseUp(ev){
+  if(!_opsDrag)return;
+  var drag=_opsDrag;_opsDrag=null;
+  _opsDragClearHighlight();
+  document.body.classList.remove('ops-drag-active');
+  console.log('[opsDrag] mouseup',{moved:drag.moved,mode:drag.mode,handle:drag.handleMode,startDay:drag.startDay,endDay:drag.endDay});
+  if(drag.moved||drag.handleMode){
+    _opsBlockClick=true;
+    setTimeout(function(){_opsBlockClick=false;},120);
+  }
+  if(!drag.moved)return;
+  if(drag.mode==='move')_opsDragMove(drag);
+  else if(drag.row==='ml')_opsDragSpanAdjustML(drag);
+  else _opsDragSpanAdjust(drag);
+}
+function _opsDragHighlight(){
+  if(!_opsDrag)return;
+  _opsDragClearHighlight();
+  if(_opsDrag.mode==='span'){
+    // Predicted new chip range matches the actual clamping in _opsDragSpanAdjust:
+    // right handle can't shrink below startDay or extend past maxDay; left handle
+    // can't shrink past curHi or extend before day 1.
+    var lo,hi;
+    var v0=_opsDrag.startVals&&_opsDrag.startVals[0];
+    var curSpan=(v0&&typeof v0==='object'&&v0.span&&v0.span>1)?v0.span:1;
+    var curHi=_opsDrag.startDay+curSpan-1;
+    var maxDay=(typeof OPS_CAL!=='undefined'&&OPS_CAL[_opsDrag.mi])?OPS_CAL[_opsDrag.mi].days.length:31;
+    if(_opsDrag.handleSide==='left'){
+      lo=Math.max(1,Math.min(curHi,_opsDrag.endDay));
+      hi=curHi;
+    } else {
+      lo=_opsDrag.startDay;
+      hi=Math.max(_opsDrag.startDay,Math.min(maxDay,_opsDrag.endDay));
+    }
+    var sel='.ops-cell[data-row="'+_opsDrag.row+'"][data-mi="'+_opsDrag.mi+'"]';
+    document.querySelectorAll(sel).forEach(function(c){
+      var day=+c.dataset.day;
+      var colspan=parseInt(c.getAttribute('colspan')||'1',10);
+      var inRange=false;
+      for(var i=0;i<colspan;i++){if(day+i>=lo&&day+i<=hi){inRange=true;break;}}
+      if(inRange)c.classList.add('ops-drag-sel');
+    });
+  } else if(_opsDrag.mode==='move'){
+    var srcSel='.ops-cell[data-row="'+_opsDrag.row+'"][data-mi="'+_opsDrag.mi+'"][data-day="'+_opsDrag.startDay+'"]';
+    var srcCell=document.querySelector(srcSel);
+    if(srcCell)srcCell.classList.add('ops-drag-src');
+    if(_opsDrag.targetCell)_opsDrag.targetCell.classList.add('ops-drag-dest');
+  }
+}
+function _opsDragClearHighlight(){
+  document.querySelectorAll('.ops-drag-sel,.ops-drag-src,.ops-drag-dest').forEach(function(c){
+    c.classList.remove('ops-drag-sel');c.classList.remove('ops-drag-src');c.classList.remove('ops-drag-dest');
+  });
+}
+// SAME-ROW (non-ML): adjust the chip's span based on where the drag ended.
+// Anchor = source cell's leftmost day. Drag forward extends right; drag back
+// past the anchor extends LEFTWARD (moves the data leftward and grows the
+// span to cover endDay..curHi). Drag within the current span shrinks it.
+function _opsDragSpanAdjust(drag){
+  var m=OPS_CAL[drag.mi];if(!m)return;
+  var month=drag.month,leftmost=drag.startDay,row=drag.row;
+  var endDay=drag.endDay;
+  var dayIdx=m.days.findIndex(function(d){return d.day===leftmost;});
+  if(dayIdx<0)return;
+  var minDay=m.days[0].day,maxDay=m.days[m.days.length-1].day;
+  var cur=og(month,leftmost,row).slice();
+  if(!cur.length){
+    // Empty start → pending-span flow (works in either direction)
+    var pendLo=Math.min(leftmost,endDay),pendHi=Math.max(leftmost,endDay);
+    if(pendHi===pendLo)return;
+    if(pendLo<minDay)pendLo=minDay;
+    if(pendHi>maxDay)pendHi=maxDay;
+    window._opsPendingSpan={month:month,row:row,lo:pendLo,hi:pendHi,span:pendHi-pendLo+1};
+    var lc=document.querySelector('.ops-cell[data-mi="'+drag.mi+'"][data-day="'+pendLo+'"][data-row="'+row+'"]');
+    console.log('[opsDrag] empty start primed',pendLo,'..',pendHi);
+    if(lc)opsCk(lc);
+    return;
+  }
+  var v0=cur[0];
+  var curSpan=(v0&&typeof v0==='object'&&v0.span&&v0.span>1)?v0.span:1;
+  var curHi=leftmost+curSpan-1;
+  // RIGHT handle: anchor stays, newRight = endDay.
+  // LEFT handle: anchor moves to endDay (clamped), newRight stays at curHi.
+  var newLeft,newRight;
+  if(drag.handleSide==='left'){
+    newLeft=Math.max(minDay,Math.min(curHi,endDay));
+    newRight=curHi;
+  } else {
+    newLeft=leftmost;
+    newRight=Math.max(leftmost,Math.min(maxDay,endDay));
+  }
+  var newSpan=newRight-newLeft+1;
+  if(newLeft===leftmost&&newSpan===curSpan){console.log('[opsDrag] no change');return;}
+  var text=(typeof v0==='string')?v0:(v0&&v0.text?v0.text:'');
+  if(!text)return;
+  var newEntry;
+  if(newSpan===1){
+    if(typeof v0==='object'&&v0){
+      var stripped=Object.assign({},v0);delete stripped.span;
+      var ks=Object.keys(stripped);
+      newEntry=(ks.length===1&&ks[0]==='text')?stripped.text:stripped;
+    } else newEntry=v0;
+  } else {
+    newEntry=(typeof v0==='string')?{text:text,span:newSpan}:Object.assign({},v0,{text:text,span:newSpan});
+  }
+  // Clear union of old range and new range, then write new entry at newLeft.
+  var clearLo=Math.min(leftmost,newLeft),clearHi=Math.max(curHi,newRight);
+  for(var d=clearLo;d<=clearHi;d++)_opsD[month+'|'+d+'|'+row]=[];
+  os(month,newLeft,row,[newEntry]);
+  console.log('[opsDrag] resized',leftmost,'..',curHi,'→',newLeft,'..',newRight);
+  if(typeof opsReRender==='function')opsReRender();
+}
+// SAME-ROW (ML): breaks/person-names span via repeated identical strings in
+// consecutive cells. Drag-to-extend replicates the text; shrink clears extras.
+function _opsDragSpanAdjustML(drag){
+  var m=OPS_CAL[drag.mi];if(!m)return;
+  var month=drag.month,anchor=drag.startDay,row=drag.row;
+  var endDay=drag.endDay;
+  var dayIdx=m.days.findIndex(function(d){return d.day===anchor;});
+  if(dayIdx<0)return;
+  var minDay=m.days[0].day,maxDay=m.days[m.days.length-1].day;
+  var cur=og(month,anchor,row);
+  if(!cur.length)return;
+  var v0=cur[0];
+  var text=(typeof v0==='string')?v0:(v0&&(v0.person||v0.text)?(v0.person||v0.text):'');
+  if(!text)return;
+  // Find current run of consecutive identical-text cells around the anchor
+  var runStart=anchor,runEnd=anchor;
+  for(var k=1;dayIdx+k<m.days.length;k++){
+    var nd=m.days[dayIdx+k].day;
+    var nv=og(month,nd,row);
+    if(!nv.length)break;
+    var nt=(typeof nv[0]==='string')?nv[0]:(nv[0].person||nv[0].text||'');
+    if(nt===text)runEnd=nd;else break;
+  }
+  for(var k=1;dayIdx-k>=0;k++){
+    var pd=m.days[dayIdx-k].day;
+    var pv=og(month,pd,row);
+    if(!pv.length)break;
+    var pt=(typeof pv[0]==='string')?pv[0]:(pv[0].person||pv[0].text||'');
+    if(pt===text)runStart=pd;else break;
+  }
+  var newLeft,newRight;
+  if(drag.handleSide==='left'){
+    newLeft=Math.max(minDay,Math.min(runEnd,endDay));
+    newRight=runEnd;
+  } else {
+    newLeft=runStart;
+    newRight=Math.max(runStart,Math.min(maxDay,endDay));
+  }
+  if(newLeft===runStart&&newRight===runEnd){console.log('[opsDrag-ml] no change');return;}
+  var clearLo=Math.min(runStart,newLeft),clearHi=Math.max(runEnd,newRight);
+  for(var d=clearLo;d<=clearHi;d++)_opsD[month+'|'+d+'|'+row]=[];
+  for(var d=newLeft;d<=newRight;d++)os(month,d,row,[text]);
+  console.log('[opsDrag-ml] adjusted',runStart,'..',runEnd,'→',newLeft,'..',newRight,'text=',text);
+  if(typeof opsReRender==='function')opsReRender();
+}
+// CROSS-ROW / CROSS-MONTH: move the source cell's entries to the destination.
+// Span attribute is stripped — destination just gets plain entries appended.
+function _opsDragMove(drag){
+  if(!drag.startVals||!drag.startVals.length)return;
+  if(!drag.targetCell)return;
+  var destMi=+drag.targetCell.dataset.mi;
+  var destRow=drag.targetCell.dataset.row;
+  if(destRow==='ml')return;
+  var destMonth=OPS_CAL[destMi]&&OPS_CAL[destMi].month;
+  if(!destMonth)return;
+  var destDay=+drag.targetCell.dataset.day;
+  if(destMonth===drag.month&&destDay===drag.startDay&&destRow===drag.row)return;
+  // Strip span from each entry so the destination doesn't inherit a multi-day span
+  var moveVals=drag.startVals.map(function(v){
+    if(typeof v==='string')return v;
+    if(v&&typeof v==='object'){
+      var copy=Object.assign({},v);delete copy.span;
+      var ks=Object.keys(copy);
+      if(ks.length===1&&ks[0]==='text')return copy.text;
+      return copy;
+    }
+    return v;
+  });
+  os(drag.month,drag.startDay,drag.row,[]);
+  // REPLACE the destination cell's contents (not append). Avoids stacking chips
+  // on occupied cells.
+  os(destMonth,destDay,destRow,moveVals);
+  // Clear any cells the source span was absorbing, so they don't linger.
+  var srcSpan=(drag.startVals[0]&&typeof drag.startVals[0]==='object'&&drag.startVals[0].span>1)?drag.startVals[0].span:1;
+  if(srcSpan>1){
+    var srcM=OPS_CAL[drag.mi];
+    if(srcM){
+      var srcIdx=srcM.days.findIndex(function(d){return d.day===drag.startDay;});
+      if(srcIdx>=0){
+        for(var off=1;off<srcSpan;off++){
+          if(srcIdx+off>=srcM.days.length)break;
+          var sd=srcM.days[srcIdx+off].day;
+          _opsD[drag.month+'|'+sd+'|'+drag.row]=[];
+        }
+      }
+    }
+  }
+  console.log('[opsDrag] moved',moveVals.length,'entries',drag.row,drag.startDay,'→',destRow,destDay,'(replaced)');
+  if(typeof opsReRender==='function')opsReRender();
+}
+// Block the cell-click that fires immediately after a drag-merge mouseup.
+// Important: must NOT block clicks on actual buttons (×, ◀, ▶, swatches).
+function _opsDragClickGuard(ev){
+  if(!_opsBlockClick)return;
+  if(ev.target&&ev.target.closest&&(ev.target.closest('button')||ev.target.closest('input')||ev.target.closest('select')))return;
+  if(!ev.target||!ev.target.closest||!ev.target.closest('.ops-cell'))return;
+  ev.preventDefault();ev.stopImmediatePropagation();
+}
+// Attach drag listeners once (delegated on document, so dynamically rendered cells work)
+if(!window._opsDragInstalled){
+  window._opsDragInstalled=true;
+  document.addEventListener('mousedown',_opsDragMouseDown,true);
+  document.addEventListener('mousemove',_opsDragMouseMove,true);
+  document.addEventListener('mouseup',_opsDragMouseUp,true);
+  document.addEventListener('click',_opsDragClickGuard,true);
+  // Touch support — map to mouse handlers
+  document.addEventListener('touchstart',function(ev){
+    if(ev.touches.length!==1)return;
+    var t=ev.touches[0];
+    _opsDragMouseDown({target:t.target,clientX:t.clientX,clientY:t.clientY,button:0});
+  },{passive:true,capture:true});
+  document.addEventListener('touchmove',function(ev){
+    if(ev.touches.length!==1)return;
+    var t=ev.touches[0];
+    _opsDragMouseMove({clientX:t.clientX,clientY:t.clientY});
+  },{passive:true,capture:true});
+  document.addEventListener('touchend',function(ev){_opsDragMouseUp({});},{passive:true,capture:true});
+}
+function opsCloseCed(){document.getElementById('opsCed').style.display='none';_opsEd=null;window._opsPendingSpan=null;}
+
+// Console-callable cleanup. Run `opsCleanupNow()` to scrub corrupt entries
+// (phantom merges, dead refs, broken spans) and re-render. Returns true if
+// anything changed.
+window.opsCleanupNow=function(){
+  var changed=false;
+  try{changed=_opsCleanSeedJunk()||changed;}catch(e){console.warn('cleanup error',e);}
+  try{if(typeof _opsCleanStaleStudioEntries==='function')_opsCleanStaleStudioEntries();}catch(e){}
+  if(changed){
+    try{saveData();}catch(e){}
+    try{opsReRender();}catch(e){}
+    console.log('[opsCleanup] data cleaned & re-rendered');
+  } else {
+    console.log('[opsCleanup] nothing to clean');
+  }
+  return changed;
+};
 
 // ── ADD TO CALENDAR (bulk add over multiple dates) ─────────────────────────
 var _opsAddDates=[]; // array of ISO date strings, sorted ascending
@@ -14802,7 +16059,7 @@ function opsAddBulk(){
   if(outOfRange)msg+='\n'+outOfRange+' day'+(outOfRange===1?'':'s')+' out of calendar range.';
   setTimeout(function(){alert(msg);},50);
 }
-function opsRefCell(id,month,day,row){const el=document.getElementById(id);if(!el)return;const vals=og(month,day,row);const fc={andrew:'ops-andrew',chris:'ops-chris',ian:'ops-ian'}[row]||null;if(row==='ml'){if(!vals.length)el.innerHTML='<div class="ops-mt"></div>';else if(vals[0]==='Break / Off Air')el.innerHTML='<div class="ops-chip ops-brk">Break</div>';else el.innerHTML='<div class="ops-chip ops-ml" style="background:'+opsMlColor(vals[0])+'">'+vals[0].split(' ')[0]+'</div>';}else el.innerHTML=opsRChips(vals,fc);}
+function opsRefCell(id,month,day,row){const el=document.getElementById(id);if(!el)return;const vals=og(month,day,row);const fc={andrew:'ops-andrew',chris:'ops-chris',ian:'ops-ian'}[row]||null;if(row==='ml'){if(!vals.length)el.innerHTML='<div class="ops-mt"></div>';else if(vals[0]==='Break / Off Air')el.innerHTML='<div class="ops-chip ops-brk">Break</div>';else el.innerHTML='<div class="ops-chip ops-ml" style="background:'+opsMlColor(vals[0])+'">'+String(vals[0])+'</div>';}else el.innerHTML=opsRChips(vals,fc);}
 function opsRxNum(mi,currentDay,row){const m=OPS_CAL[mi];if(!m)return 1;let n=0;m.days.forEach(d=>{if(d.day<currentDay)og(m.month,d.day,row).forEach(v=>{if(/^RX\s*\d+$/i.test(v.trim()))n++;});});return n+1;}
 document.addEventListener('click',e=>{const ced=document.getElementById('opsCed');if(ced&&ced.style.display==='block'&&!ced.contains(e.target)&&!e.target.closest('.ops-cell'))opsCloseCed();});
 // Keep the cell-editor popup tracking its anchor cell when the planner scrolls
@@ -15237,7 +16494,7 @@ function opsRenderWeek(){
     h+='</td>';
   });
   h+='</tr>';
-  h+=wbrow('Morning Live','ml','#2d7dd2','');
+  h+=wbrow('Morning Live TM','ml','#2d7dd2','');
   // Studio toggle bar handled by persistent #opsStuToggle2 div
   OPS_STUDIOS.forEach(function(st){
     if(_opsHidStu.has(st))return;
@@ -17339,14 +18596,9 @@ function printQR(kitId){
 
 
 // ── Ops drag-to-fill ─────────────────────────────────────────────────────────
-let _opsDrag={active:false,val:null,row:null,month:null,mi:null,cells:[]};
-function opsMouseDown(td,e){/* drag disabled on touch */}
-function opsMouseEnter(td){}
-document.addEventListener('mouseup',function(){
-  if(!_opsDrag.active)return;
-  document.querySelectorAll('.ops-drag-src,.ops-drag-over').forEach(function(el){el.classList.remove('ops-drag-src','ops-drag-over');});
-  _opsDrag={active:false,val:null,row:null,month:null,mi:null,cells:[]};
-});
+// (Legacy stubs — the actual drag-to-merge implementation is earlier in this file)
+function opsMouseDown(td,e){/* no-op: drag handled by _opsDragMouseDown delegated listener */}
+function opsMouseEnter(td){/* no-op */}
 
 // ─── ENG REPORT PAGE ──────────────────────────────────────────────────────────
 var _erSummaryMode=null,_erSelectedDate=null,_erUseTodayDate=true,_erTags=[];
@@ -18585,6 +19837,60 @@ document.addEventListener('DOMContentLoaded', function() {
         <button class="btn-sec" onclick="cm('schedDayModal')">Cancel</button>
         <button class="btn-sec" id="schedDayDel" onclick="schedDayClearAll()" style="display:none;color:#c80000">Clear All</button>
         <button class="btn-p" onclick="schedDaySave()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILMING SCHEDULE: Add date(s) — single or range with auto-numbering -->
+  <div class="modal-ov" id="schedBulkModal">
+    <div class="modal" style="max-width:500px">
+      <div class="modal-hdr"><div class="modal-title" id="schedBulkTitle">Add Dates</div><button class="x-btn" onclick="cm('schedBulkModal')">&#215;</button></div>
+      <div class="modal-body">
+        <input type="hidden" id="schedBulkJid"/>
+        <div style="margin-bottom:14px">
+          <div class="flbl" style="margin-bottom:6px">Mode</div>
+          <select class="fi" id="schedBulkMode" onchange="schedBulkModeChange()" style="width:100%;font-weight:700">
+            <option value="single">Single Day</option>
+            <option value="range">Date Range (bulk add)</option>
+          </select>
+        </div>
+        <div id="schedBulkSingleWrap">
+          <div class="flbl" style="margin-bottom:6px">Date</div>
+          <input type="date" class="fi" id="schedBulkDate" style="width:100%"/>
+          <div style="font-size:12px;color:rgba(48,47,44,.55);margin-top:8px">Opens the day editor where you can add Rig / TX / De-Rig / Custom entries with colours and labels.</div>
+        </div>
+        <div id="schedBulkRangeWrap" style="display:none">
+          <div style="display:flex;gap:10px;margin-bottom:12px">
+            <div style="flex:1"><div class="flbl" style="margin-bottom:3px">Start</div><input type="date" class="fi" id="schedBulkStart" onchange="schedBulkPreview()" style="width:100%"/></div>
+            <div style="flex:1"><div class="flbl" style="margin-bottom:3px">End</div><input type="date" class="fi" id="schedBulkEnd" onchange="schedBulkPreview()" style="width:100%"/></div>
+          </div>
+          <div style="margin-bottom:10px">
+            <div class="flbl" style="margin-bottom:3px">Type</div>
+            <select class="fi" id="schedBulkType" style="width:100%;font-weight:700">
+              <option value="tx" selected>TX / RX Day</option>
+              <option value="rig">Rig Day</option>
+              <option value="derig">De-Rig Day</option>
+              <option value="custom">Custom Event</option>
+            </select>
+          </div>
+          <div style="margin-bottom:10px">
+            <div class="flbl" style="margin-bottom:3px">Label</div>
+            <input type="text" class="fi" id="schedBulkLabel" placeholder="e.g. TX, RX, Rehearsal" style="width:100%"/>
+          </div>
+          <label style="display:flex;align-items:center;gap:8px;margin-bottom:8px;cursor:pointer;font-size:14px;font-weight:600;color:#302f2c">
+            <input type="checkbox" id="schedBulkAutonum" onchange="schedBulkPreview()" style="width:16px;height:16px;cursor:pointer"/>
+            Auto-number (e.g. TX 1, TX 2, TX 3…)
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;margin-bottom:8px;cursor:pointer;font-size:14px;font-weight:600;color:#302f2c">
+            <input type="checkbox" id="schedBulkSkipWk" onchange="schedBulkPreview()" style="width:16px;height:16px;cursor:pointer"/>
+            Skip weekends (Sat/Sun)
+          </label>
+          <div id="schedBulkInfo" style="font-size:12px;color:rgba(48,47,44,.55);margin-top:6px;min-height:16px"></div>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn-sec" onclick="cm('schedBulkModal')">Cancel</button>
+        <button class="btn-p" id="schedBulkApply" onclick="schedBulkApply()">Open Day Editor</button>
       </div>
     </div>
   </div>
