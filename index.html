@@ -785,6 +785,65 @@ html[data-theme="light"] .topbar{border-bottom:1.5px solid rgba(48,47,44,.12)}
 html[data-theme="light"] ::-webkit-scrollbar-track{background:#efede3}
 html[data-theme="light"] ::-webkit-scrollbar-thumb{background:rgba(48,47,44,.2);border-radius:4px}
 
+/* ── NETWORKING PAGE ── */
+.net-wrap{padding:18px 26px 60px;max-width:1700px;margin:0 auto;font-family:var(--font)}
+.net-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;padding:4px 0 14px;border-bottom:1.5px solid rgba(48,47,44,.12)}
+.net-h1{font-family:var(--cond);font-size:34px;font-weight:900;letter-spacing:.04em;color:#302f2c;line-height:1;text-transform:uppercase;margin:0}
+.net-h1-sub{font-family:var(--cond);font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(48,47,44,.5);margin-top:4px}
+.net-logo-img{height:34px;width:auto;opacity:.85;filter:brightness(0)}
+.net-site-tabs{display:flex;gap:4px;margin-bottom:0;border-bottom:1.5px solid rgba(48,47,44,.18)}
+.net-site-tab{padding:11px 26px;background:transparent;border:none;font-family:var(--cond);font-size:14px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(48,47,44,.5);cursor:pointer;transition:all .14s;border-bottom:3px solid transparent;margin-bottom:-1.5px}
+.net-site-tab:hover{color:#302f2c}
+.net-site-tab.active{color:#302f2c;border-bottom-color:#F4A258}
+.net-nets-bar{display:flex;gap:6px;flex-wrap:wrap;padding:14px 0 10px;align-items:center;margin-bottom:18px;border-bottom:1px dashed rgba(48,47,44,.15)}
+.net-net-pill{padding:7px 16px;border:1px solid rgba(48,47,44,.2);background:#fff;font-family:var(--cond);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(48,47,44,.7);cursor:pointer;border-radius:16px;transition:all .14s}
+.net-net-pill:hover{border-color:#F4A258;color:#302f2c}
+.net-net-pill.active{background:#F4A258;border-color:#F4A258;color:#1a1916;font-weight:900}
+.net-net-pill.add-pill{background:transparent;color:rgba(48,47,44,.5);border-style:dashed}
+.net-net-pill.add-pill:hover{background:rgba(244,162,88,.1);border-style:solid}
+.net-net-pill.del-pill{margin-left:auto;border-color:rgba(200,60,60,.25);color:rgba(200,60,60,.65)}
+.net-net-pill.del-pill:hover{background:rgba(200,60,60,.08);border-color:rgba(200,60,60,.5);color:#a83838}
+.net-meta{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:16px;align-items:flex-end;padding:14px 18px;background:rgba(48,47,44,.03);border-radius:8px;border:1px solid rgba(48,47,44,.08)}
+.net-meta-field{display:flex;flex-direction:column;gap:5px;flex:0 0 auto}
+.net-meta-field.title-field{flex:1;min-width:240px}
+.net-meta-field label{font-family:var(--cond);font-size:9px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:rgba(48,47,44,.55)}
+.net-meta-field input{padding:8px 11px;border:1px solid rgba(48,47,44,.18);border-radius:5px;background:#fff;font-family:var(--font);font-size:13px;color:#302f2c;outline:none;min-width:110px;transition:border-color .12s}
+.net-meta-field input:focus{border-color:#F4A258}
+.net-meta-field.title-field input{font-family:var(--cond);font-size:22px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;padding:8px 12px;min-width:0;width:100%}
+.net-table-wrap{background:#fff;border:1px solid rgba(48,47,44,.18);border-radius:8px;padding:0;overflow:hidden;margin-bottom:0}
+.net-table{width:100%;border-collapse:collapse;font-family:var(--font);font-size:13px;table-layout:auto}
+.net-table thead{background:rgba(48,47,44,.04)}
+.net-table th{font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:10px 8px;text-align:center;border:1px solid rgba(48,47,44,.18);color:#302f2c;background:rgba(48,47,44,.04);white-space:nowrap}
+.net-table th.col-room{text-align:left;padding-left:14px;min-width:160px}
+.net-table th.col-online{width:48px}
+.net-table th.col-del{width:32px;background:transparent;border:1px solid transparent}
+.net-table th.col-phone-group,.net-table th.col-printer-group{font-size:9px;letter-spacing:.18em;color:rgba(48,47,44,.5);padding:5px 4px;background:transparent;border:none;border-bottom:1px solid rgba(48,47,44,.1)}
+.net-table td{padding:0;border:1px solid rgba(48,47,44,.12);background:#fff;vertical-align:middle;height:38px}
+.net-table tr:hover td{background:rgba(244,162,88,.03)}
+.net-table td input.net-cell{width:100%;border:none;background:transparent;padding:8px 10px;font-family:var(--font);font-size:13px;color:#302f2c;outline:none;text-align:center;box-sizing:border-box}
+.net-table td input.net-cell:focus{background:rgba(244,162,88,.1);box-shadow:inset 0 0 0 2px #F4A258}
+.net-table td.room-cell{background:rgba(48,47,44,.025);font-weight:600}
+.net-table td.room-cell input.net-cell{text-align:left;padding-left:14px;font-weight:700;color:#302f2c}
+.net-table td.online-cell{padding:0;background:rgba(155,178,158,.12);width:48px;text-align:center}
+.net-table td.online-cell.off{background:rgba(48,47,44,.025)}
+.net-online{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid rgba(48,47,44,.3);border-radius:3px;cursor:pointer;background:#fff;transition:all .12s;position:relative;top:1px}
+.net-online:hover{border-color:#5b9b6e}
+.net-online.on{background:#5b9b6e;border-color:#3d7a4e}
+.net-online.on::after{content:'';width:5px;height:10px;border:2px solid #fff;border-top:none;border-left:none;transform:rotate(45deg);display:block;margin-top:-2px}
+.net-table td.del-cell{border:none;background:transparent;width:32px;text-align:center;padding:0}
+.net-row-del{width:22px;height:22px;border:none;background:transparent;color:rgba(48,47,44,.3);font-size:16px;cursor:pointer;border-radius:50%;line-height:1;display:inline-flex;align-items:center;justify-content:center;opacity:0;transition:all .12s}
+.net-table tr:hover .net-row-del{opacity:1}
+.net-row-del:hover{background:rgba(200,60,60,.12);color:#c44}
+.net-table-actions{display:flex;gap:8px;padding:12px 16px;border-top:1px solid rgba(48,47,44,.08);background:rgba(48,47,44,.02)}
+.net-add-row{padding:7px 14px;background:transparent;border:1.5px dashed rgba(48,47,44,.25);font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:rgba(48,47,44,.6);cursor:pointer;border-radius:4px;transition:all .12s}
+.net-add-row:hover{border-color:#F4A258;color:#302f2c;background:rgba(244,162,88,.08);border-style:solid}
+.net-footer-wrap{margin-top:22px;background:rgba(244,162,88,.06);border-left:3px solid #F4A258;padding:14px 16px;border-radius:0 6px 6px 0}
+.net-footer-lbl{font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(48,47,44,.6);margin-bottom:8px}
+.net-footer-txt{width:100%;background:#fff;border:1px solid rgba(48,47,44,.15);border-radius:4px;font-family:var(--font);font-size:13px;color:#302f2c;outline:none;resize:vertical;min-height:60px;padding:8px 10px;line-height:1.5}
+.net-footer-txt:focus{border-color:#F4A258}
+.net-empty{padding:60px 30px;text-align:center;color:rgba(48,47,44,.5);font-family:var(--cond);font-size:14px;letter-spacing:.08em;text-transform:uppercase;background:rgba(48,47,44,.025);border-radius:8px;border:1.5px dashed rgba(48,47,44,.15)}
+html[data-theme="light"] .nav-lbl[data-lbl="network"]{background:#6F8FBF}
+
 /* Sidebar - cream with Notes colour palette */
 html[data-theme="light"] .sb{background:#efede3;border-right:1.5px solid rgba(48,47,44,.1)}
 html[data-theme="light"] .sb-logo{padding:22px 18px 18px;text-align:center;border-bottom:1.5px solid rgba(48,47,44,.1)}
@@ -1003,7 +1062,8 @@ html[data-theme="light"] .drw-more-menu{background:#f4f2ec;border-color:rgba(48,
       <div class="ff"><label class="flbl">Serial Number</label><input class="fi" id="nkSerial" placeholder="SN-0001"/></div>
       <div class="ff"><label class="flbl">Asset Tag</label><input class="fi" id="nkTag" placeholder="VS-CAM-001"/></div>
       <div class="ff"><label class="flbl">Status</label><select class="fi" id="nkStatus" style="width:100%"><option>Available</option><option>In Use</option><option>Maintenance</option><option>Fault</option></select></div>
-      <div class="ff"><label class="flbl">Condition</label><select class="fi" id="nkCond" style="width:100%"><option>Excellent</option><option>Good</option><option>Fair</option><option>Poor</option></select></div>
+      <div class="ff"><label class="flbl">Condition</label><select class="fi" id="nkCond" style="width:100%" onchange="if(this.value==='__custom__'){var v=prompt('Enter custom condition:');if(v){var o=document.createElement('option');o.value=v;o.textContent=v;o.selected=true;this.insertBefore(o,this.options[this.options.length-1]);}else{this.value='Good';}}"><option>Excellent</option><option>Like New</option><option>Good</option><option>Fair</option><option>Refurbished</option><option>Poor</option><option>Damaged</option><option value="__custom__">Custom…</option></select></div>
+      <div class="ff"><label class="flbl">Quantity</label><input class="fi" id="nkQty" type="number" min="1" max="50" value="1" style="width:100%" title="Create multiple identical items. Tag/serial will auto-increment if they end in a number."/></div>
       <div class="ff full" style="border:1.5px solid rgba(250,160,0,.25);background:rgba(250,160,0,.06);border-radius:8px;padding:12px 14px;margin-top:4px">
         <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-family:var(--cond);font-weight:800;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--white)">
           <input type="checkbox" id="nkHired" onchange="document.getElementById('nkHiredFields').style.display=this.checked?'grid':'none'"/> Long-Term Hired Kit
@@ -1294,6 +1354,7 @@ html[data-theme="light"] .drw-more-menu{background:#f4f2ec;border-color:rgba(48,
       <div class="nav-item" data-pg="tools" onclick="nav('tools',this)" style="display:none"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 14l3-3 1.5 1.5L10 9l1 3 3-8-8 3 3 1-3.5 3.5L4 12z"/><circle cx="11" cy="5" r="1.5"/></svg>Tools</div>
       <div class="nav-lbl" data-lbl="reference">Reference</div>
       <div class="nav-item" data-pg="info" onclick="nav('info',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 7v5M8 5v.5"/></svg>Studio Info</div>
+      <div class="nav-item" data-pg="networking" onclick="nav('networking',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="2" width="14" height="3.5" rx=".5"/><rect x="1" y="10.5" width="14" height="3.5" rx=".5"/><circle cx="3.5" cy="3.75" r=".7" fill="currentColor" stroke="none"/><circle cx="3.5" cy="12.25" r=".7" fill="currentColor" stroke="none"/><path d="M8 5.5v5M5 5.5v1.5h6v-1.5M5 10.5v-1.5h6v1.5"/></svg>Networking</div>
       <div class="nav-item" data-pg="vault" onclick="nav('vault',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="7" width="12" height="8" rx="1"/><path d="M5 7V5a3 3 0 016 0v2"/><circle cx="8" cy="11" r="1"/></svg>Vault</div>
       <div class="nav-item" data-pg="live" onclick="nav('live',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="12" height="9" rx="1"/><circle cx="8" cy="7.5" r="1.5" fill="currentColor" stroke="none"/><path d="M6 14h4"/></svg>Versa Live</div>
     </nav>
@@ -1360,8 +1421,8 @@ html[data-theme="light"] .drw-more-menu{background:#f4f2ec;border-color:rgba(48,
           <div style="display:flex;gap:2px;border-bottom:1px solid var(--border);margin-bottom:18px;padding-bottom:0">
             <button id="kitTabInv" onclick="showKitTab('inv')" style="padding:9px 18px;font-size:12px;font-family:var(--cond);font-weight:900;letter-spacing:.1em;text-transform:uppercase;background:none;border:none;border-bottom:2px solid var(--accent);color:var(--accent);cursor:pointer;margin-bottom:-1px;transition:color .12s">Inventory</button>
             <button id="kitTabHired" onclick="showKitTab('hired')" style="padding:9px 18px;font-size:12px;font-family:var(--cond);font-weight:900;letter-spacing:.1em;text-transform:uppercase;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer;margin-bottom:-1px;transition:color .12s">Hired Catalogue</button>
-            <button id="kitTabLogistics" onclick="showKitTab('logistics')" style="padding:9px 18px;font-size:12px;font-family:var(--cond);font-weight:900;letter-spacing:.1em;text-transform:uppercase;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer;margin-bottom:-1px;transition:color .12s">Logistics</button>
             <button id="kitTabLth" onclick="showKitTab('lth')" style="padding:9px 18px;font-size:12px;font-family:var(--cond);font-weight:900;letter-spacing:.1em;text-transform:uppercase;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer;margin-bottom:-1px;transition:color .12s">Long Term Hired</button>
+            <button id="kitTabLogistics" onclick="showKitTab('logistics')" style="padding:9px 18px;font-size:12px;font-family:var(--cond);font-weight:900;letter-spacing:.1em;text-transform:uppercase;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer;margin-bottom:-1px;transition:color .12s">Logistics</button>
           </div>
           <div id="kitTabPanelInv">
           <div style="position:relative;margin-bottom:22px">
@@ -2438,6 +2499,10 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
       <div class="page" id="page-vault" style="position:fixed;inset:0;z-index:500;background:var(--bg)">
         <div style="position:absolute;top:8px;right:12px;z-index:501"><button class="ibtn" style="font-family:var(--cond);font-size:13px;font-weight:800;padding:6px 14px;background:rgba(0,0,0,.5);color:#fff;border:none;backdrop-filter:blur(4px)" onclick="nav('dashboard',document.querySelector('[data-pg=dashboard]'))">✕ CLOSE</button></div>
         <iframe id="vaultFrame" src="" style="width:100%;height:100%;border:none" allow="clipboard-write"></iframe>
+      </div>
+
+      <div class="page" id="page-networking" style="overflow-y:auto;height:100%;padding-bottom:40px">
+        <div id="netPageBody"></div>
       </div>
 
       <div class="page" id="page-live" style="position:fixed;inset:0;z-index:500;background:var(--bg)">
@@ -5329,16 +5394,18 @@ function erSetView(v){
     if(form)form.style.display='none';
     if(lbl)lbl.textContent='Archive';
     if(btn)btn.textContent='Submit Report';
-    // Refresh iframe src to the current job's archive URL
+    // Refresh iframe src to the current job's archive URL. Always reload
+    // (no data-current guard) so switching tabs definitely re-fetches, and
+    // add a per-call timestamp param to defeat GitHub Pages / CDN caching.
     var ifrEl=document.getElementById('erArchiveIframe');
     if(ifrEl){
-      var url=_erActiveJob==='shopon'
+      var base=_erActiveJob==='shopon'
         ? 'https://versastudios.github.io/versa-studios/versa-shopon-reports.html'
         : 'https://versastudios.github.io/versa-studios/versa-morninglivearchive.html';
-      if(ifrEl.getAttribute('data-current')!==url){
-        ifrEl.src=url;
-        ifrEl.setAttribute('data-current',url);
-      }
+      var url=base+'?t='+Date.now();
+      ifrEl.setAttribute('src',url);
+      ifrEl.setAttribute('data-current',base);
+      console.log('[erSetView] loading iframe:',url,'(active job:'+_erActiveJob+')');
     }
   }
 }
@@ -6582,7 +6649,7 @@ function today() { return new Date().toISOString().split('T')[0]; }
 const titles = {dashboard:'Dashboard',kit:'Kit List',maintenance:'Maintenance',holidays:'Staff Holidays',
   faults:'Fault Log',bin:'Bin',studios:'Tech Log',jobs:'Jobs',crew:'Crew',
   jobdet:'Job Detail',calendar:'Planner',admin:'Admin',ops:'Ops Planner',tools:'Tools',
-  engreport:'Eng Report',allcal:'All Reports',notes:'Notes',vault:'Vault'};
+  engreport:'Eng Report',allcal:'All Reports',notes:'Notes',vault:'Vault',networking:'Networking'};
 function nav(page, el) {
   closeDrawer();
   // All Reports moved into Eng Reports as a third tab. Redirect any legacy
@@ -6615,6 +6682,7 @@ function nav(page, el) {
   if(page==='holidays') { initHolSelectors(); renderHolidays(); }
   if(page==='ops') opsInit();
   if(page==='info') renderInfoPage();
+  if(page==='networking') renderNetworking();
   if(page==='notes') { var nf=document.getElementById('notesFrame'); if(nf&&!nf.src.includes('versa-notes')) nf.src='versa-notes.html?v='+Date.now(); }
   if(page==='vault') { var vf=document.getElementById('vaultFrame'); if(vf&&!vf.src.includes('versa-vault')) vf.src='versa-vault.html?v='+Date.now(); }
   if(page==='live') { var lf=document.getElementById('liveFrame'); if(lf&&!lf.src.includes('versa-live')) lf.src='versa-live.html?v='+Date.now(); }
@@ -6815,6 +6883,241 @@ function infoToggleEdit(){
     if(typeof saveData==='function')saveData();
   }
   renderInfoPage();
+}
+
+// ── NETWORKING PAGE ──────────────────────────────────────────────────────────
+var _net = null;
+var _netLoaded = false;
+var _netSaveTimer = null;
+
+function _netDefault(){
+  return {
+    london:    { nets: [_netSeedTitan()], activeId: 'titan_prod' },
+    manchester:{ nets: [], activeId: null },
+    activeSite: 'london'
+  };
+}
+function _netSeedTitan(){
+  var blank = function(room, phoneIp){
+    return {room:room, phonePatch:'', phonePort:'', phoneIp:phoneIp||'', phoneOnline:false,
+            printerPatch:'', printerPort:'', printerIp:'', printerOnline:false};
+  };
+  var row = function(room, ph, pp, pi, po, prh, prp, pri, pro){
+    return {room:room, phonePatch:ph||'', phonePort:pp||'', phoneIp:pi||'', phoneOnline:!!po,
+            printerPatch:prh||'', printerPort:prp||'', printerIp:pri||'', printerOnline:!!pro};
+  };
+  return {
+    id:'titan_prod', name:'TITAN PROD NETWORK', vlan:'14', subnet:'', gateway:'', dns:'',
+    devices: [
+      blank('COMMS', '10.20.70.6'),
+      blank('EXEC',  '10.20.70.7'),
+      row('Director',         '1/2/0168',     '1',  'DHCP', true,  '042.01.007',  '8',  '10.20.70.11', true),
+      row('Reality Gallery',  '1/2/0175',     '2',  'DHCP', true,  '1/2/0206',    '7',  '10.20.70.13', true),
+      row('SNR PROD',         '1/2/159.',     '3',  'DHCP', true,  '042.01.005',  '18', '10.20.70.12', true),
+      row('Story Prod',       '1/2/0207',     '4',  'DHCP', true,  '1/2/137.',    '11', '10.20.70.14', true),
+      row('EVS Streaming',    '035.01.001',   '5',  'DHCP', true),
+      row('EVS Playout',      '038.01.001',   '6',  'DHCP', true),
+      row('Edit 1',           '033.01.001',   '7',  'DHCP', true),
+      row('Edit 2',           '1/2/093.',     '8',  'DHCP', true),
+      row('Edit 3',           '1/2/087.',     '9',  'DHCP', true),
+      row('Edit 4',           '1/2/089.',     '10', 'DHCP', true),
+      row('Edit 5',           '1/2/085.',     '11', 'DHCP', true),
+      row('Edit 6',           '029.01.01',    '12', 'DHCP', true),
+      row('Edit & VO',        '1/2/075.',     '13', 'DHCP', true),
+      row('Edit Office',      '1/2/080.',     '14', 'DHCP', true,  '1/2/070.',    '11', '10.20.70.18', true),
+      row('ITV Commissioner', '1/2/0273',     '15', 'DHCP', true,  '1/2/0279',    '',   '10.20.70.15', false),
+      row('Welfare',          '1/2/0269',     '16', 'DHCP', true,  '1/2/0266',    '',   '10.20.70.16', true),
+      row('Medic',            '',             '',   'DHCP', false),
+      row('Execs',            '',             '',   'DHCP', false, '17/2/0142',   '',   '10.20.70.17', true),
+      row('House & Task',     '1/2/0265',     '17', 'DHCP', false, '016.01.001',  '',   '10.20.70.19', true),
+      row('SNR Avid',         '1/2/0101',     '18', 'DHCP', true),
+      row('Accreditation',    'Studio Floor', '',   'DHCP', true,  'Studio Floor','',   '10.20.70.9',  true)
+    ],
+    footer: 'Reality / IT Room cable / 7 / DHCP / IT Comms Room / 8 / 10.20.70.15'
+  };
+}
+async function netLoad(){
+  try {
+    var r = await fetch(_SB_URL+'/rest/v1/app_data?key=eq.networking&select=value', {headers:_sbHeaders()});
+    var rows = await r.json();
+    if (rows && rows.length && rows[0].value) {
+      _net = rows[0].value;
+      if (!_net.london) _net.london = {nets:[], activeId:null};
+      if (!_net.manchester) _net.manchester = {nets:[], activeId:null};
+      if (!_net.activeSite) _net.activeSite = 'london';
+    } else {
+      _net = _netDefault();
+      netSave(true);
+    }
+  } catch(e) {
+    _net = _netDefault();
+  }
+  _netLoaded = true;
+}
+function netSave(immediate){
+  clearTimeout(_netSaveTimer);
+  var doIt = function(){
+    fetch(_SB_URL+'/rest/v1/app_data', {
+      method:'POST', headers:_sbHeaders(),
+      body: JSON.stringify({key:'networking', value:_net, updated_at:new Date().toISOString()})
+    }).catch(function(){});
+  };
+  if (immediate) doIt(); else _netSaveTimer = setTimeout(doIt, 700);
+}
+function _netCurrent(){
+  if(!_net) return null;
+  var s = _net[_net.activeSite];
+  if(!s) return null;
+  return s.nets.find(function(n){return n.id===s.activeId;}) || null;
+}
+function netSwitchSite(site){
+  _net.activeSite = site;
+  if (!_net[site].activeId && _net[site].nets.length) _net[site].activeId = _net[site].nets[0].id;
+  renderNetworking(); netSave();
+}
+function netSwitchNet(id){
+  _net[_net.activeSite].activeId = id;
+  renderNetworking(); netSave();
+}
+function netAddNetwork(){
+  var name = prompt('Network name:', 'NEW NETWORK');
+  if (!name) return;
+  var id = 'net_' + Date.now();
+  var s = _net[_net.activeSite];
+  s.nets.push({id:id, name:name.toUpperCase(), vlan:'', subnet:'', gateway:'', dns:'', devices:[], footer:''});
+  s.activeId = id;
+  renderNetworking(); netSave();
+}
+function netDeleteNetwork(){
+  var s = _net[_net.activeSite];
+  var idx = s.nets.findIndex(function(n){return n.id===s.activeId;});
+  if (idx<0) return;
+  if (!confirm('Delete "'+s.nets[idx].name+'" and all its devices?')) return;
+  s.nets.splice(idx,1);
+  s.activeId = s.nets.length ? s.nets[0].id : null;
+  renderNetworking(); netSave();
+}
+function netUpdateMeta(field, val){
+  var n = _netCurrent(); if(!n) return;
+  n[field] = val;
+  if (field==='name') {
+    var pill = document.querySelector('.net-net-pill.active');
+    if (pill) pill.textContent = val;
+  }
+  netSave();
+}
+function netUpdateCell(idx, field, val){
+  var n = _netCurrent(); if(!n||!n.devices[idx]) return;
+  n.devices[idx][field] = val;
+  netSave();
+}
+function netToggleOnline(idx, field){
+  var n = _netCurrent(); if(!n||!n.devices[idx]) return;
+  n.devices[idx][field] = !n.devices[idx][field];
+  var el = document.querySelector('[data-net-tog="'+idx+'-'+field+'"]');
+  if (el) {
+    el.classList.toggle('on', n.devices[idx][field]);
+    var td = el.closest('td');
+    if (td) td.classList.toggle('off', !n.devices[idx][field]);
+  }
+  netSave();
+}
+function netAddRow(){
+  var n = _netCurrent(); if(!n) return;
+  n.devices.push({room:'',phonePatch:'',phonePort:'',phoneIp:'',phoneOnline:false,
+                  printerPatch:'',printerPort:'',printerIp:'',printerOnline:false});
+  renderNetworking(); netSave();
+}
+function netDeleteRow(idx){
+  var n = _netCurrent(); if(!n||!n.devices[idx]) return;
+  if (!confirm('Delete this row?')) return;
+  n.devices.splice(idx,1);
+  renderNetworking(); netSave();
+}
+function netUpdateFooter(val){
+  var n = _netCurrent(); if(!n) return;
+  n.footer = val;
+  netSave();
+}
+async function renderNetworking(){
+  if (!_netLoaded) await netLoad();
+  var pg = document.getElementById('netPageBody');
+  if (!pg) return;
+  var esc = function(s){return (s==null?'':(s+'')).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');};
+  var site = _net.activeSite;
+  var s = _net[site];
+  var nets = s.nets || [];
+  var cur = _netCurrent();
+
+  var h = '<div class="net-wrap">';
+  h += '<div class="net-hdr"><div><h1 class="net-h1">Networking</h1><div class="net-h1-sub">Phone &amp; printer infrastructure · VLAN reference</div></div>';
+  h += '<img class="net-logo-img" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMzY2IDk2Mi45MiI+PHBhdGggZD0iTTE5NC4xNiw1MDcuMzN2LTE0LjdjOS4wOSw0LjQ1LDIzLjQsOS42NywzOC42Nyw5LjY3LDE4LjE3LDAsMzIuMDktOC4xMiwzMi4wOS0yMi4yM3MtNy41NC0yMS42NS0zMi4wOS0zMC4zNWMtMjcuNjQtOS44Ni0zOS4wNS0yMS42Ni0zOS4wNS00MS43NiwwLTIzLDE5LjcyLTM2LjE1LDQ0LjY2LTM2LjE1QTg2LjYsODYuNiwwLDAsMSwyNzIuMjcsMzc5djE0LjMxYy03LjU0LTMuODctMjAuODgtOC4xMy0zMy4yNS04LjEzLTE3Ljc5LDAtMzAuNzQsOC43MS0zMC43NCwyMi4yNCwwLDEyLjU3LDYuNzcsMjEuMjYsMzEuNywzMC4zNSwyNy44NCw5Ljg2LDM5LjQ0LDIxLjA3LDM5LjQ0LDQxLjM3LDAsMjMtMTguNTYsMzYuNTQtNDUuODIsMzYuNTRBOTkuMiw5OS4yLDAsMCwxLDE5NC4xNiw1MDcuMzNaIi8+PHBhdGggZD0iTTM3MS44MywzODYuNVY1MTMuMzJIMzU3LjE0VjM4Ni41SDMxNC40MlYzNzQuMTNINDE0Ljc1VjM4Ni41WiIvPjxwYXRoIGQ9Ik01NjUuNzUsNDY1LjM4YzAsMzEuNTEtMTkuNTMsNTAuMjYtNTIuMiw1MC4yNi0zMi40OCwwLTUyLTE4Ljc1LTUyLTUwLjI2VjM3NC4xM2gxNC42OVY0NjQuNmMwLDIzLjQsMTMuOTIsMzcuMzIsMzcuMzIsMzcuMzJzMzcuNS0xMy45MiwzNy41LTM3LjMyVjM3NC4xM2gxNC43WiIvPjxwYXRoIGQ9Ik02MjguNTgsNTEzLjMyVjM3NC4xM2gzOC40N2M0MS41NiwwLDczLjQ2LDI2LjY4LDczLjQ2LDY5LjZTNzA5LDUxMy4zMiw2NjcuODIsNTEzLjMyWk02NDMuMjcsMzg2LjVWNTAxaDI0LjU1YzMyLjY4LDAsNTcuNjEtMjIuMjMsNTcuNjEtNTcuMjJTNzAwLjMsMzg2LjUsNjY2Ljg2LDM4Ni41WiIvPjxwYXRoIGQ9Ik03OTUuMjMsNTEzLjMyVjM3NC4xM2gxNC42OVY1MTMuMzJaIi8+PHBhdGggZD0iTTkzOC4xLDM3MS44MWM0MCwwLDcwLjc2LDMxLjcsNzAuNzYsNzEuOTIsMCw0MC40LTMwLjM2LDcxLjkxLTcwLjc2LDcxLjkxLTQwLjIxLDAtNzAuNzYtMzEuNTEtNzAuNzYtNzEuOTFDODY3LjM0LDQwMy45LDg5Ny44OSwzNzEuODEsOTM4LjEsMzcxLjgxWm0wLDEzMC4xMWMzMi40OCwwLDU1LjY4LTI1LjE0LDU1LjY4LTU4LjE5cy0yMy4yLTU4LjItNTUuNjgtNTguMmMtMzIuMjksMC01NS44NywyNS4xNC01NS44Nyw1OC4yUzkwNS44MSw1MDEuOTIsOTM4LjEsNTAxLjkyWiIvPjxwYXRoIGQ9Ik0xMDU1LjI1LDUwNy4zM3YtMTQuN2M5LjA5LDQuNDUsMjMuNCw5LjY3LDM4LjY3LDkuNjcsMTguMTcsMCwzMi4wOS04LjEyLDMyLjA5LTIyLjIzcy03LjU0LTIxLjY1LTMyLjA5LTMwLjM1Yy0yNy42NC05Ljg2LTM5LjA1LTIxLjY2LTM5LjA1LTQxLjc2LDAtMjMsMTkuNzItMzYuMTUsNDQuNjYtMzYuMTVhODYuNiw4Ni42LDAsMCwxLDMzLjgzLDcuMTV2MTQuMzFjLTcuNTQtMy44Ny0yMC44OC04LjEzLTMzLjI1LTguMTMtMTcuNzksMC0zMC43NCw4LjcxLTMwLjc0LDIyLjI0LDAsMTIuNTcsNi43NywyMS4yNiwzMS43LDMwLjM1LDI3Ljg0LDkuODYsMzkuNDQsMjEuMDcsMzkuNDQsNDEuMzcsMCwyMy0xOC41NiwzNi41NC00NS44MiwzNi41NEE5OS4yLDk5LjIsMCwwLDEsMTA1NS4yNSw1MDcuMzNaIi8+PHBhdGggZD0iTTEzMS4yMywyNzAuODJoLTIuMThMMCw1LjA5SDYxLjA3TDk1LjI0LDgwLjdjMTMuNDUsMzAuMTcsMjUuNDQsNTYsMzQuNTMsODEuNDNDMTM3LjQsMTQzLjU4LDE1My40LDEwNi41MSwxNjUsODAuN0wxOTkuMiw1LjA5aDYwLjcxWiIvPjxwYXRoIGQ9Ik0zMzQuNzcsMjY2LjgyVjUuMDlINTAzLjA4VjUySDM5MC43NVYxMTEuNkg0ODZ2NDUuMDdIMzkwLjc1djYzLjI1SDUwOC41M3Y0Ni45WiIvPjxwYXRoIGQ9Ik02OTEuMzYsNS4wOWM2MC43MSwwLDEwMSwzMC4xNywxMDEsODYuMTUsMCwzOC4xNy0yMS40NCw2My4yNS00OS44LDc0LjUyTDc5Ny41LDI2Ni44Mkg3MzguMjVsLTQ2LjE2LTkxLjYxSDY1NC4yOHY5MS42MUg1OTkuMzlWNS4wOVpNNjU0LjI4LDUydjc4LjE2aDQwYzI0LjcyLDAsNDEuOC0xMi4zNiw0MS44LTM4LjksMC0yNi4xNy0xNy44MS0zOS4yNi00My4yNi0zOS4yNloiLz48cGF0aCBkPSJNODc1LjY0LDI1N1YyMDMuMmMxOC4xOCw5LjQ1LDQyLjE3LDE3LjQ1LDY1LjgsMTguOTFhOTUuMDgsOTUuMDgsMCwwLDAsMjMuMjYtMS40NmMyMC0yLjkxLDMxLjYzLTEwLjU0LDMxLjYzLTIzLjI2LDAtMTcuNDUtMTUuNjMtMjYuNTQtNTEuNjItMzkuNjMtNDUuOC0xNi43Mi03Mi43LTM2LTcyLjctODEuNDJDODcyLDI5LjgxLDkxMC41NCwwLDk2Ni44OCwwYzI2LjE4LDAsNTIsNS44Miw2OC4zNCwxMy4wOVY2NC43MWMtMTUuMjYtOS4wOS00MC0xNi02NC0xNi0yNi45LDAtNDQuMzUsMTAuNTQtNDQuMzUsMjcuMjcsMCwxNS4yNiwxNC4xNywyNS44LDQ5LjgsMzkuMjUsNDUuOCwxNy44MSw3NC4xNSwzNy4wOCw3NC4xNSw4MS4wNywwLDQ3LjI1LTM1LjYyLDc1LjYxLTk3LjQyLDc1LjYxQzkyMy42MywyNzEuOTEsODk0LjU0LDI2NS4zNiw4NzUuNjQsMjU3WiIvPjxwYXRoIGQ9Ik0xMjM4Ljc3LDEuMDloLTIuMThMMTEwOS43MywyNjYuODJoNTguNTJsMTItMjcuMjJjMTEtMjQuODEsNTAuMTctMTE3Ljg0LDU3Ljc5LTEzNiw4LDIyLjksNDguODEsMTE3LjA2LDYwLjgxLDE0NC4zMmgwbDguNjIsMTguOUgxMzY2WiIvPjxwYXRoIGQ9Ik03NzQuNDYsNzA2Ljc4bC0zMS44OS02NS42NWgtMi42NGwtODYuMjIsMTc4LTUuNCwxMS4xNmMtMTEtMzAuNTEtMjUuMzUtNjEuNDktNDEuNDctOTcuNjVsLTQxLjM4LTkxLjU2aC03NEw2MTUuOSw4OTcuMjdsMzEuODgsNjUuNjVoMi42NGw4Ni4yMi0xNzgsNS40MS0xMS4xNmMxMSwzMC41LDI1LjM1LDYxLjQ5LDQxLjQ2LDk3LjY1bDQxLjM4LDkxLjU2aDc0WiIvPjwvc3ZnPg==" alt="Versa"/></div>';
+
+  // Site tabs
+  h += '<div class="net-site-tabs">';
+  h += '<button class="net-site-tab '+(site==='london'?'active':'')+'" onclick="netSwitchSite(\'london\')">London</button>';
+  h += '<button class="net-site-tab '+(site==='manchester'?'active':'')+'" onclick="netSwitchSite(\'manchester\')">Manchester</button>';
+  h += '</div>';
+
+  // Network sub-tabs
+  h += '<div class="net-nets-bar">';
+  nets.forEach(function(n){
+    h += '<button class="net-net-pill '+(n.id===s.activeId?'active':'')+'" onclick="netSwitchNet(\''+n.id+'\')">'+esc(n.name||'Untitled')+'</button>';
+  });
+  h += '<button class="net-net-pill add-pill" onclick="netAddNetwork()">+ Add Network</button>';
+  if (cur) h += '<button class="net-net-pill del-pill" onclick="netDeleteNetwork()">Delete</button>';
+  h += '</div>';
+
+  if (!cur) {
+    h += '<div class="net-empty">No networks for '+site+' yet. Click <strong>+ Add Network</strong> to create one.</div>';
+    h += '</div>';
+    pg.innerHTML = h;
+    return;
+  }
+
+  // Meta strip
+  h += '<div class="net-meta">';
+  h += '<div class="net-meta-field title-field"><label>Network Name</label><input value="'+esc(cur.name)+'" oninput="netUpdateMeta(\'name\',this.value)"/></div>';
+  h += '<div class="net-meta-field"><label>VLAN</label><input value="'+esc(cur.vlan)+'" oninput="netUpdateMeta(\'vlan\',this.value)" style="width:90px"/></div>';
+  h += '<div class="net-meta-field"><label>Subnet</label><input value="'+esc(cur.subnet)+'" oninput="netUpdateMeta(\'subnet\',this.value)" placeholder="e.g. 10.20.70.0/24"/></div>';
+  h += '<div class="net-meta-field"><label>Gateway</label><input value="'+esc(cur.gateway)+'" oninput="netUpdateMeta(\'gateway\',this.value)" placeholder="e.g. 10.20.70.1"/></div>';
+  h += '<div class="net-meta-field"><label>DNS</label><input value="'+esc(cur.dns)+'" oninput="netUpdateMeta(\'dns\',this.value)" placeholder="e.g. 8.8.8.8"/></div>';
+  h += '</div>';
+
+  // Table
+  h += '<div class="net-table-wrap"><table class="net-table"><thead>';
+  h += '<tr><th class="col-room" rowspan="2">Room</th>';
+  h += '<th class="col-phone-group" colspan="4">📞 Phone</th>';
+  h += '<th class="col-printer-group" colspan="4">🖨 Printer</th>';
+  h += '<th class="col-del" rowspan="2"></th></tr>';
+  h += '<tr><th>Patch</th><th>Port</th><th>IP</th><th class="col-online">✓</th>';
+  h += '<th>Patch</th><th>Port</th><th>IP</th><th class="col-online">✓</th></tr>';
+  h += '</thead><tbody>';
+  cur.devices.forEach(function(d, i){
+    h += '<tr>';
+    h += '<td class="room-cell"><input class="net-cell" value="'+esc(d.room)+'" oninput="netUpdateCell('+i+',\'room\',this.value)" placeholder="Room name"/></td>';
+    h += '<td><input class="net-cell" value="'+esc(d.phonePatch)+'" oninput="netUpdateCell('+i+',\'phonePatch\',this.value)"/></td>';
+    h += '<td><input class="net-cell" value="'+esc(d.phonePort)+'" oninput="netUpdateCell('+i+',\'phonePort\',this.value)"/></td>';
+    h += '<td><input class="net-cell" value="'+esc(d.phoneIp)+'" oninput="netUpdateCell('+i+',\'phoneIp\',this.value)"/></td>';
+    h += '<td class="online-cell'+(d.phoneOnline?'':' off')+'"><span class="net-online'+(d.phoneOnline?' on':'')+'" data-net-tog="'+i+'-phoneOnline" onclick="netToggleOnline('+i+',\'phoneOnline\')"></span></td>';
+    h += '<td><input class="net-cell" value="'+esc(d.printerPatch)+'" oninput="netUpdateCell('+i+',\'printerPatch\',this.value)"/></td>';
+    h += '<td><input class="net-cell" value="'+esc(d.printerPort)+'" oninput="netUpdateCell('+i+',\'printerPort\',this.value)"/></td>';
+    h += '<td><input class="net-cell" value="'+esc(d.printerIp)+'" oninput="netUpdateCell('+i+',\'printerIp\',this.value)"/></td>';
+    h += '<td class="online-cell'+(d.printerOnline?'':' off')+'"><span class="net-online'+(d.printerOnline?' on':'')+'" data-net-tog="'+i+'-printerOnline" onclick="netToggleOnline('+i+',\'printerOnline\')"></span></td>';
+    h += '<td class="del-cell"><button class="net-row-del" onclick="netDeleteRow('+i+')" title="Delete row">×</button></td>';
+    h += '</tr>';
+  });
+  h += '</tbody></table>';
+  h += '<div class="net-table-actions"><button class="net-add-row" onclick="netAddRow()">+ Add Row</button></div>';
+  h += '</div>';
+
+  // Footer
+  h += '<div class="net-footer-wrap"><div class="net-footer-lbl">Notes / Patch References</div>';
+  h += '<textarea class="net-footer-txt" oninput="netUpdateFooter(this.value)" placeholder="Free-text notes — patch panel references, IT room cable info, etc.">'+esc(cur.footer||'')+'</textarea>';
+  h += '</div>';
+
+  h += '</div>';
+  pg.innerHTML = h;
 }
 
 // ── STANDALONE OPS PLANNER (hash-based) ─────────────────────────────────────
@@ -7295,6 +7598,23 @@ function kitShowListView(title, cat, loc) {
     var pts=title.split(' — '); actualCat=pts[0]; actualSub=pts[1]||'';
   }
   window._kitSubcatFilter=actualSub;
+  // Remember where BACK should return to. Stepping back one level is the
+  // expected behaviour; the old "always back to main landing" caused jumps.
+  // Possible targets: 'main', 'subcat:<cat>', 'subsubcat:<cat>:<sub>'.
+  if(!actualCat){
+    window._kitListBackTo='main';
+  } else if(actualSub){
+    // Drilled past subcat. If subsubcats exist for (cat, sub), the subsubcat
+    // landing was the parent view; otherwise the subcat landing was.
+    var _active=kit.filter(function(k){return k.status!=='Bin';});
+    var _hasSubsubs=_active.some(function(k){return k.cat===actualCat&&k.subcat===actualSub&&k.subsubcat;});
+    window._kitListBackTo=_hasSubsubs
+      ? ('subsubcat:'+actualCat+':'+actualSub)
+      : ('subcat:'+actualCat);
+  } else {
+    // "All [cat]" tile from subcat landing — back to that subcat landing.
+    window._kitListBackTo='subcat:'+actualCat;
+  }
   var fCat=document.getElementById('fCat'), fLoc=document.getElementById('fLoc');
   if(fCat){ fCat.value=''; if(actualCat){var o=Array.from(fCat.options).find(function(x){return x.value===actualCat;}); if(o)fCat.value=actualCat; else{var no=document.createElement('option');no.value=actualCat;no.textContent=actualCat;fCat.appendChild(no);fCat.value=actualCat;}} }
   if(fLoc){ fLoc.value=loc||''; }
@@ -7416,10 +7736,21 @@ function kitRemoveSubcat(cat,sub){
 function kitOpenByLoc(loc){ kitShowListView(loc,'',loc); }
 function kitBackToLanding(){
   showKitTab('inv');
-  document.getElementById('kitLanding').style.display='';
-  document.getElementById('kitListView').style.display='none';
   var s=document.getElementById('kitSearch'); if(s)s.value='';
   var sr=document.getElementById('kitSearchResults'); if(sr)sr.style.display='none';
+  var target=window._kitListBackTo||'main';
+  window._kitListBackTo=null; // consume; further BACKs from re-entry will reset it
+  if(target.indexOf('subsubcat:')===0){
+    var parts=target.split(':'); // ['subsubcat', cat, sub]
+    kitShowSubsubcatLanding(parts[1], parts[2]);
+    return;
+  }
+  if(target.indexOf('subcat:')===0){
+    kitShowSubcatLanding(target.substring('subcat:'.length));
+    return;
+  }
+  document.getElementById('kitLanding').style.display='';
+  document.getElementById('kitListView').style.display='none';
   kitRenderLanding();
 }
 function kitLandingSearch(q) {
@@ -7621,11 +7952,16 @@ function kitAvailInfo(k) {
 function renderKit() {
   const filtered = filterKit();
   const el = document.getElementById('kitBody');
-  var tblHdr=el.parentElement?el.parentElement.querySelector('.tbl-hdr'):null;
+  var tblParent=el.parentElement;
+  var tblHdr=tblParent?tblParent.querySelector('.tbl-hdr'):null;
+  // Reset parent chrome on every render so view-switches don't leak prior state
+  if(tblParent){tblParent.style.border='';tblParent.style.background='';tblParent.style.overflow='';}
   if(!filtered.length) { if(tblHdr)tblHdr.style.display='none'; el.innerHTML='<div class="empty"><div class="empty-icon">📦</div><div class="empty-txt">No items found</div></div>'; return; }
   if(_kitView==='icon'){if(tblHdr)tblHdr.style.display='none';kitRenderIcons(filtered);return;}
   if(_kitView==='group') { if(tblHdr)tblHdr.style.display='none'; renderGrouped(filtered, el); return; }
   if(tblHdr)tblHdr.style.display='none';
+  // Tile-list view: drop the outer .tbl frame so tiles read as standalone
+  if(tblParent){tblParent.style.border='none';tblParent.style.background='transparent';tblParent.style.overflow='visible';}
   // Update title based on current filter
   var fCatEl=document.getElementById('fCat');
   var fCatVal=fCatEl?fCatEl.value:'';
@@ -7634,27 +7970,33 @@ function renderKit() {
     var subF=window._kitSubcatFilter||'';
     titleEl.textContent=fCatVal+(subF?' — '+subF:'');
   }
-  el.style.display='block';el.style.gridTemplateColumns='';el.style.gap='';
+  el.style.display='grid';el.style.gridTemplateColumns='repeat(auto-fill,minmax(260px,1fr))';el.style.gap='10px';
   el.innerHTML=filtered.map(function(k,idx){
     const col=CAT_COLORS[k.cat]||'#6b7280';
     const av=kitAvailInfo(k);
-    var tagDisp=k.tag?(k.tag+' · '):(k.isHired&&k.extAssetNo?(k.extAssetNo+' · '):'');
-    var metaStr=tagDisp+(k.make?k.make+' · ':'')+k.cat+(k.subcat?' / '+k.subcat:'');
-    var hiredBadge=k.isHired?'<span style="font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.1em;background:rgba(250,160,0,.18);color:#b87400;border:1px solid rgba(250,160,0,.35);border-radius:3px;padding:2px 7px;white-space:nowrap;flex-shrink:0">'+(k.hireCompany||'HIRED')+'</span>':'';
-    return '<div onclick="openDrawer('+k.id+')" style="background:var(--near-black);border:1px solid var(--border);border-left:4px solid '+col+';border-radius:6px;padding:10px 16px;margin-bottom:5px;cursor:pointer;display:flex;align-items:center;gap:14px">'
-      +'<div style="font-family:var(--cond);font-size:18px;font-weight:900;color:var(--border-l);min-width:32px;text-align:center;line-height:1">'+(idx+1)+'</div>'
-      +'<div style="flex:1;min-width:0;display:flex;align-items:center;gap:12px;overflow:hidden">'
-      +'<span style="font-family:var(--cond);font-size:26px;font-weight:900;color:var(--pure);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-transform:uppercase;letter-spacing:-.01em;flex-shrink:1;min-width:0;line-height:1">'+k.name+'</span>'
-      +locBadge(k.loc)
-      +hiredBadge
-      +'<span style="font-family:var(--cond);font-size:16px;color:var(--muted);font-weight:700;white-space:nowrap;flex-shrink:0">'+metaStr+'</span>'
-      +(av.label?'<span style="font-family:var(--cond);font-size:16px;color:'+av.color+';font-weight:800;white-space:nowrap;flex-shrink:0">'+av.label+'</span>':'')
-      +'</div>'
-      +'<div style="flex-shrink:0">'+(av.label?'<span class="badge b-iu">On Job</span>':statBadge(k.status))+'</div>'
-      +'<div style="display:flex;gap:4px;margin-top:6px" onclick="event.stopPropagation()">'
-      +'<button class="ibtn" style="font-size:11px;flex:1" onclick="openKitAllocModal('+k.id+')">&#128196; Allocate</button>'
-      +'</div>'
-      +'</div>';
+    var subStr=(k.loc||'')+(k.loc&&(k.cat||k.subcat)?' · ':'')+k.cat+(k.subcat?' / '+k.subcat:'');
+    // Status line — green for available, white for on-job (with allocation), pale for other
+    var statusHtml='';
+    if(av.label){
+      statusHtml='<div style="pointer-events:none;font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#fff">On Job &middot; '+av.label+'</div>';
+    } else if(k.status==='Available'){
+      statusHtml='<div style="pointer-events:none;font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#3dbf7a">Available</div>';
+    } else if(k.status){
+      statusHtml='<div style="pointer-events:none;font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#f08080">'+k.status+'</div>';
+    }
+    var hireMark=k.isHired?'<span style="font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.1em;color:rgba(255,255,255,.85);background:rgba(0,0,0,.18);border-radius:3px;padding:2px 6px;margin-left:6px;vertical-align:middle">'+(k.hireCompany||'HIRED')+'</span>':'';
+    // Tag + serial line: combine whichever are present
+    var idParts=[];
+    if(k.tag)idParts.push(k.tag);
+    if(k.serial)idParts.push('SN '+k.serial);
+    var idLine=idParts.length?'<div style="pointer-events:none;font-family:var(--cond);font-size:10px;font-weight:700;letter-spacing:.08em;color:rgba(255,255,255,.55);margin-top:2px">'+idParts.join(' &middot; ')+'</div>':'';
+    return '<div onclick="openDrawer('+k.id+')" style="background:'+col+';border-radius:12px;padding:14px 16px;cursor:pointer;position:relative;min-height:92px;display:flex;flex-direction:column;justify-content:flex-end;transition:transform .1s,box-shadow .1s" onmouseenter="this.style.transform=\'translateY(-1px)\';this.style.boxShadow=\'0 4px 12px rgba(0,0,0,.18)\'" onmouseleave="this.style.transform=\'\';this.style.boxShadow=\'\'">'
+      +'<div style="pointer-events:none;position:absolute;top:8px;right:12px;font-family:var(--cond);font-size:16px;font-weight:900;letter-spacing:.04em;color:rgba(255,255,255,.6)">#'+(idx+1)+'</div>'
+      +'<div style="pointer-events:none;font-family:var(--cond);font-size:18px;font-weight:900;color:#fff;letter-spacing:-.01em;line-height:1.15;text-transform:uppercase;overflow-wrap:anywhere;margin-bottom:6px">'+k.name+hireMark+'</div>'
+      +(subStr?'<div style="pointer-events:none;font-family:var(--cond);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.72)">'+subStr+'</div>':'')
+      +idLine
+      +statusHtml
+    +'</div>';
   }).join('');
 }
 function renderGrouped(filtered, el) {
@@ -8007,7 +8349,77 @@ function renderKitJobs(k) {
   el.innerHTML=html;
 }
 function kitAllocate(kid){var sel=document.getElementById('kitAllocSel_'+kid);if(!sel)return;var jid=parseInt(sel.value);if(!jid)return;var j=jobs.find(function(x){return x.id==jid;});if(!j)return;if(!j.prep)j.prep=[];if(!j.prep.find(function(p){return p.kid===kid;}))j.prep.push({kid:kid,done:false,ks:j.start||'',ke:j.end||'',area:'',supplier:'Versa Inventory'});saveData();var k=kit.find(function(x){return x.id===kid;});if(k)renderKitJobs(k);}
-function kitDeallocate(kid,jid){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.prep)return;j.prep=j.prep.filter(function(p){return p.kid!==kid;});saveData();var k=kit.find(function(x){return x.id===kid;});if(k)renderKitJobs(k);}
+function kitDeallocate(kid,jid){
+  var j=jobs.find(function(x){return x.id==jid;});
+  if(!j)return;
+  // Remove every reference to this kit on this job — prep, per-camera kit/lens/fieldData, specCams, monitors.
+  // Without this the tile still shows "On Job" because kitAvailInfo looks at all four.
+  if(j.prep)j.prep=j.prep.filter(function(p){return p.kid!==kid;});
+  if(j.camDetails)j.camDetails.forEach(function(cd){
+    if(!cd)return;
+    if(cd.kitId===kid)cd.kitId='';
+    if(cd.lensData&&cd.lensData.kitId===kid)cd.lensData.kitId='';
+    if(cd.fieldData)Object.keys(cd.fieldData).forEach(function(fk){
+      var fd=cd.fieldData[fk]; if(fd&&fd.kitId===kid)fd.kitId='';
+    });
+  });
+  if(j.specCams)j.specCams.forEach(function(sc){if(sc&&sc.kitId===kid)sc.kitId='';});
+  if(j.monitors)j.monitors.forEach(function(mo){if(mo&&mo.kitId===kid)mo.kitId='';});
+  saveData();
+  if(typeof kitUpdateInUse==='function')kitUpdateInUse();
+  var k=kit.find(function(x){return x.id===kid;});
+  if(k)renderKitJobs(k);
+  if(k&&typeof currentKid!=='undefined'&&currentKid===kid){
+    var sub=document.getElementById('drwSubtitle');
+    if(sub){
+      var badge=sub.querySelector('.badge');
+      if(badge){
+        var tmp=document.createElement('div');
+        tmp.innerHTML=statBadge(k.status);
+        var nb=tmp.firstChild;
+        if(nb)badge.replaceWith(nb);
+      }
+    }
+  }
+  if(typeof renderKit==='function'&&document.getElementById('kitBody'))renderKit();
+}
+
+
+// Bulk: clear every kit allocation from a job in one go (Prep List "Clear All" action)
+function clearJobAllocations(jid){
+  var j=jobs.find(function(x){return x.id==jid;});
+  if(!j)return;
+  // Collect affected kit ids first so we can update their statuses afterwards
+  var affectedIds=new Set();
+  (j.prep||[]).forEach(function(p){if(p&&p.kid)affectedIds.add(p.kid);});
+  if(j.camDetails)j.camDetails.forEach(function(cd){
+    if(!cd)return;
+    if(cd.kitId)affectedIds.add(cd.kitId);
+    if(cd.lensData&&cd.lensData.kitId)affectedIds.add(cd.lensData.kitId);
+    if(cd.fieldData)Object.keys(cd.fieldData).forEach(function(fk){if(cd.fieldData[fk]&&cd.fieldData[fk].kitId)affectedIds.add(cd.fieldData[fk].kitId);});
+  });
+  if(j.specCams)j.specCams.forEach(function(sc){if(sc&&sc.kitId)affectedIds.add(sc.kitId);});
+  if(j.monitors)j.monitors.forEach(function(mo){if(mo&&mo.kitId)affectedIds.add(mo.kitId);});
+  var totalRefs=affectedIds.size;
+  if(!totalRefs){toast&&toast('Nothing to clear');return;}
+  if(!confirm('Clear all kit allocations from "'+j.name+'"?\n\nThis will deallocate '+totalRefs+' item'+(totalRefs===1?'':'s')+' from this job (prep list, camera assignments, spec cams, monitors). This cannot be undone.'))return;
+  // Wipe every allocation field
+  j.prep=[];
+  if(j.camDetails)j.camDetails.forEach(function(cd){
+    if(!cd)return;
+    cd.kitId='';
+    if(cd.lensData)cd.lensData.kitId='';
+    if(cd.fieldData)Object.keys(cd.fieldData).forEach(function(fk){if(cd.fieldData[fk])cd.fieldData[fk].kitId='';});
+  });
+  if(j.specCams)j.specCams.forEach(function(sc){if(sc)sc.kitId='';});
+  if(j.monitors)j.monitors.forEach(function(mo){if(mo)mo.kitId='';});
+  saveData();
+  if(typeof kitUpdateInUse==='function')kitUpdateInUse();
+  // Refresh views
+  if(typeof renderJobDet==='function')renderJobDet(j);
+  if(typeof renderKit==='function'&&document.getElementById('kitBody'))renderKit();
+  toast&&toast('Cleared '+totalRefs+' allocation'+(totalRefs===1?'':'s')+' from '+j.name);
+}
 
 
 // ── KIT HISTORY ──────────────────────────────────────────────────────────────
@@ -8053,27 +8465,55 @@ function openAllocModal() {
   const k=kit.find(x=>x.id==currentKid); if(!k) return;
   document.getElementById('allocKitName').textContent=k.name+' ('+k.tag+')';
   const el=document.getElementById('allocJobList');
-  // Only show current jobs — hide archived, finished, cancelled, past-end-date
+  // Helper: does this job currently reference this kit anywhere?
+  function hasKitAllocated(j){
+    if((j.prep||[]).some(function(p){return p.kid===k.id;}))return true;
+    if((j.camDetails||[]).some(function(cd){return cd&&(cd.kitId===k.id||(cd.lensData&&cd.lensData.kitId===k.id));}))return true;
+    if(j.camDetails)for(var i=0;i<j.camDetails.length;i++){
+      var cd=j.camDetails[i]; if(cd&&cd.fieldData)for(var fk in cd.fieldData)if(cd.fieldData[fk]&&cd.fieldData[fk].kitId===k.id)return true;
+    }
+    if((j.specCams||[]).some(function(sc){return sc&&sc.kitId===k.id;}))return true;
+    if((j.monitors||[]).some(function(mo){return mo&&mo.kitId===k.id;}))return true;
+    return false;
+  }
+  // Active jobs (for new allocations) — current operational filter
   var _today=(typeof today==='function')?today():new Date().toISOString().slice(0,10);
-  var activeJobs=jobs.filter(function(j){
+  var isActive=function(j){
     if(j.archived)return false;
     if(j.end && j.end < _today)return false;
     var st=(j.status||'').toLowerCase();
     if(st==='finished'||st==='archived'||st==='complete'||st==='completed'||st==='past'||st==='cancelled')return false;
     return true;
+  };
+  // Build the visible list: every active job, plus any inactive job that *currently* has this kit allocated
+  // (so the user can deallocate from archived/finished jobs too — that's where stale "On Job" tiles come from)
+  var visibleJobs=jobs.filter(function(j){return isActive(j)||hasKitAllocated(j);});
+  // Allocated jobs first
+  visibleJobs.sort(function(a,b){
+    var aAlloc=hasKitAllocated(a), bAlloc=hasKitAllocated(b);
+    if(aAlloc!==bAlloc)return aAlloc?-1:1;
+    return 0;
   });
-  el.innerHTML=activeJobs.map(j=>{
-    const already=(j.prep||[]).some(p=>p.kid===k.id);
-    return '<div style="display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--border)">'
-      +'<div style="flex:1"><div style="font-family:var(--cond);font-size:17px;font-weight:800;color:var(--pure)">'+j.name+'</div>'
-      +'<div style="display:flex;align-items:center;gap:6px;margin-top:4px">'+locBadge(j.loc)
-      +'<span style="font-size:17px;color:var(--muted);font-family:var(--cond)">'+studioBadge(j.studio||j.loc)+'</span></div></div>'
-      +(already
-        ?'<span style="font-family:var(--cond);font-size:17px;font-weight:700;color:#80d0a0;letter-spacing:.1em;text-transform:uppercase">Added</span>'
-        :'<button class="ibtn" onclick="allocKitToJob('+j.id+','+k.id+')">Add to Prep</button>')
+  el.innerHTML=visibleJobs.map(j=>{
+    const already=hasKitAllocated(j);
+    const inactive=!isActive(j);
+    var rowBg=already?(inactive?'background:rgba(180,140,80,.10);border:1px solid rgba(180,140,80,.25);':'background:rgba(61,191,122,.08);border:1px solid rgba(61,191,122,.18);'):'border:1px solid transparent;';
+    var inactivePill=inactive?'<span style="font-family:var(--cond);font-size:9px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#b87400;background:rgba(180,140,80,.15);border:1px solid rgba(180,140,80,.3);border-radius:3px;padding:2px 6px;flex-shrink:0">Archived</span>':'';
+    var actions=already
+      ? (inactive
+          ? '<button onclick="kitDeallocate('+k.id+','+j.id+');openAllocModal()" style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:transparent;border:1px solid rgba(220,80,80,.35);color:#d05050;border-radius:5px;padding:5px 10px;cursor:pointer;flex-shrink:0;transition:all .12s" onmouseenter="this.style.background=\'rgba(220,80,80,.1)\'" onmouseleave="this.style.background=\'transparent\'">Remove</button>'
+          : '<span style="font-family:var(--cond);font-size:11px;font-weight:800;color:#2c8f55;letter-spacing:.08em;text-transform:uppercase;flex-shrink:0">&#10003; Added</span>'
+            +'<button onclick="kitDeallocate('+k.id+','+j.id+');openAllocModal()" style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:transparent;border:1px solid rgba(220,80,80,.35);color:#d05050;border-radius:5px;padding:5px 10px;cursor:pointer;flex-shrink:0;transition:all .12s" onmouseenter="this.style.background=\'rgba(220,80,80,.1)\'" onmouseleave="this.style.background=\'transparent\'">Remove</button>')
+      : '<button class="ibtn" style="font-size:12px;padding:6px 12px;flex-shrink:0" onclick="allocKitToJob('+j.id+','+k.id+')">+ Add to Prep</button>';
+    return '<div style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:6px;margin-bottom:4px;'+rowBg+'">'
+      +'<div style="flex:1;min-width:0">'
+      +'<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><div style="font-family:var(--cond);font-size:16px;font-weight:800;color:var(--pure);line-height:1.2">'+j.name+'</div>'+inactivePill+'</div>'
+      +'<div style="display:flex;align-items:center;gap:5px;margin-top:4px">'+locBadge(j.loc)+studioBadge(j.studio||j.loc)+'</div>'
+      +'</div>'
+      +actions
       +'</div>';
   }).join('');
-  if(!activeJobs.length) el.innerHTML='<div style="color:var(--muted);font-size:17px;padding:10px 0">No current jobs to allocate to.</div>';
+  if(!visibleJobs.length) el.innerHTML='<div style="color:var(--muted);font-size:14px;padding:10px 0">No current jobs to allocate to.</div>';
   om('mAlloc');
 }
 function allocKitToJob(jid,kid) {
@@ -8226,21 +8666,39 @@ function addKit() {
   const name=document.getElementById('nkName').value.trim();
   if(!name){toast('Enter item name');return;}
   const subcatEl=document.getElementById('nkSubcat');
-  const k={id:nextKid++,name,cat:document.getElementById('nkCat').value,
-    subcat:(subcatEl && subcatEl.value)?subcatEl.value:'',
-    loc:document.getElementById('nkLoc').value,
-    make:document.getElementById('nkMake').value.trim(),serial:document.getElementById('nkSerial').value.trim(),tag:document.getElementById('nkTag').value.trim(),
-    status:document.getElementById('nkStatus').value,cond:document.getElementById('nkCond').value,
-    patDate:document.getElementById('nkPat').value,patTester:document.getElementById('nkPatTester').value.trim(),
-    notes:document.getElementById('nkNotes').value.trim(),history:[],tl:[],
-    isHired:document.getElementById('nkHired').checked,
-    hireCompany:(document.getElementById('nkHireCo').value||'').trim(),
-    extAssetNo:(document.getElementById('nkExtAsset').value||'').trim()};
-  kit.push(k);
-  maybeAutoAllocateToML(k);
-  activity.unshift({icon:'➕',text:'Added: '+name,time:'Just now'});
+  var qty=parseInt(document.getElementById('nkQty')?document.getElementById('nkQty').value:'1',10);
+  if(!qty||qty<1)qty=1; if(qty>50)qty=50;
+  var baseTag=document.getElementById('nkTag').value.trim();
+  var baseSerial=document.getElementById('nkSerial').value.trim();
+  // For multi-add, increment trailing number on tag and serial. e.g. VS-CAM-001 → VS-CAM-002, VS-CAM-003...
+  function incrementId(s,n){
+    if(!s||n===0)return s;
+    var m=s.match(/^(.*?)(\d+)(\D*)$/);
+    if(!m)return s+'-'+(n+1);
+    var prefix=m[1],num=m[2],suffix=m[3];
+    var newNum=String(parseInt(num,10)+n);
+    while(newNum.length<num.length)newNum='0'+newNum; // preserve zero-padding
+    return prefix+newNum+suffix;
+  }
+  for(var i=0;i<qty;i++){
+    const k={id:nextKid++,name,cat:document.getElementById('nkCat').value,
+      subcat:(subcatEl && subcatEl.value)?subcatEl.value:'',
+      loc:document.getElementById('nkLoc').value,
+      make:document.getElementById('nkMake').value.trim(),
+      serial:incrementId(baseSerial,i),
+      tag:incrementId(baseTag,i),
+      status:document.getElementById('nkStatus').value,cond:document.getElementById('nkCond').value,
+      patDate:document.getElementById('nkPat').value,patTester:document.getElementById('nkPatTester').value.trim(),
+      notes:document.getElementById('nkNotes').value.trim(),history:[],tl:[],
+      isHired:document.getElementById('nkHired').checked,
+      hireCompany:(document.getElementById('nkHireCo').value||'').trim(),
+      extAssetNo:(document.getElementById('nkExtAsset').value||'').trim()};
+    kit.push(k);
+    maybeAutoAllocateToML(k);
+  }
+  activity.unshift({icon:'➕',text:'Added: '+name+(qty>1?' ×'+qty:''),time:'Just now'});
   saveData();
-  cm('mAddKit'); toast('Added: '+name); renderKit(); renderDash();
+  cm('mAddKit'); toast('Added '+qty+' × '+name); renderKit(); renderDash();
 }
 function drawerFault() {
   const k=kit.find(x=>x.id==currentKid); if(!k) return;
@@ -11288,7 +11746,7 @@ function schedDayRenderRows(){
   var wrap=document.getElementById('schedDayEntries');if(!wrap)return;
   var st=window._schedDayState||[];
   // Default colours per type (matches the renderer's TYPE_COLORS)
-  var typeDef={rig:'#e8d8a8',tx:'#c5d8b4',derig:'#e8b8a0',custom:'#b8b8d8'};
+  var typeDef={rig:'#e8d8a8',tx:'#c5d8b4',derig:'#e8b8a0',reh:'#dcc2d8',custom:'#b8b8d8'};
   // Curated palette swatches user can pick from (plus "Auto" which clears the override)
   var SWATCHES=['#e8d8a8','#c5d8b4','#e8b8a0','#b8b8d8','#dcd8d0','#f4c98e','#d6a6c2','#b8c8e0','#c8a98a','#a8c8b0'];
   wrap.innerHTML='';
@@ -11309,6 +11767,7 @@ function schedDayRenderRows(){
         +'<select class="fi" data-idx="'+idx+'" data-fld="type" onchange="schedDayFieldChange(this)" style="flex:0 0 auto;min-width:170px;font-weight:700">'
           +'<option value="">— Dark —</option>'
           +'<option value="rig"'+(row.type==='rig'?' selected':'')+'>Rig Day</option>'
+          +'<option value="reh"'+(row.type==='reh'?' selected':'')+'>Rehearsal</option>'
           +'<option value="tx"'+(row.type==='tx'?' selected':'')+'>TX / RX Day</option>'
           +'<option value="derig"'+(row.type==='derig'?' selected':'')+'>De-Rig Day</option>'
           +'<option value="custom"'+(row.type==='custom'?' selected':'')+'>Custom Event</option>'
@@ -11362,12 +11821,14 @@ function schedDaySave(){
   var iso=document.getElementById('schedDayIso').value;
   var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   if(!j.rigDates)j.rigDates=[];
+  if(!j.rehDates)j.rehDates=[];
   if(!j.txDates)j.txDates=[];
   if(!Array.isArray(j.drigDates))j.drigDates=[];
   if(!Array.isArray(j.scheduleCustom))j.scheduleCustom=[];
   // Capture old labels on this date so we can strip them from the planner
   var oldLabels=[];
   (j.rigDates||[]).forEach(function(r){if(r&&r.date===iso)oldLabels.push(_jdJobPrefixedLabel(j, r.note||'Rig Day'));});
+  (j.rehDates||[]).forEach(function(r){if(r&&r.date===iso)oldLabels.push(_jdJobPrefixedLabel(j, r.label||r.note||'Rehearsal'));});
   (j.txDates||[]).forEach(function(t){if(t&&t.date===iso)oldLabels.push(_jdJobPrefixedLabel(j, t.label||'TX'));});
   if(j.drigDate===iso)oldLabels.push(_jdJobPrefixedLabel(j, 'Derig'));
   (j.drigDates||[]).forEach(function(d){
@@ -11377,6 +11838,7 @@ function schedDaySave(){
   (j.scheduleCustom||[]).forEach(function(c){if(c&&c.date===iso&&c.label)oldLabels.push(_jdJobPrefixedLabel(j, c.label));});
   // Wipe existing entries on this date
   j.rigDates=j.rigDates.filter(function(r){return !r||r.date!==iso;});
+  j.rehDates=j.rehDates.filter(function(r){return !r||r.date!==iso;});
   j.txDates=j.txDates.filter(function(t){return !t||t.date!==iso;});
   if(j.drigDate===iso)j.drigDate='';
   j.drigDates=j.drigDates.filter(function(d){
@@ -11396,6 +11858,9 @@ function schedDaySave(){
     if(type==='rig'){
       j.rigDates.push({date:iso,note:label,color:color});
       newLabels.push(_jdJobPrefixedLabel(j, label||'Rig Day'));
+    } else if(type==='reh'){
+      j.rehDates.push({date:iso,label:label||'Rehearsal',color:color});
+      newLabels.push(_jdJobPrefixedLabel(j, label||'Rehearsal'));
     } else if(type==='tx'){
       var entry={date:iso,label:label,color:color};
       j.txDates.push(entry);
@@ -11617,6 +12082,11 @@ function _jdSchedEntriesByDate(j){
     if(!map[r.date])map[r.date]=[];
     map[r.date].push({src:'rig',ref:r,type:'rig',label:r.note||'Rig Day',color:r.color||null});
   });
+  (j.rehDates||[]).forEach(function(r){
+    if(!r||!r.date)return;
+    if(!map[r.date])map[r.date]=[];
+    map[r.date].push({src:'reh',ref:r,type:'reh',label:r.label||r.note||'Rehearsal',color:r.color||null});
+  });
   (j.txDates||[]).forEach(function(t){
     if(!t||!t.date)return;
     if(!map[t.date])map[t.date]=[];
@@ -11708,6 +12178,7 @@ function renderProdScheduleCal(j){
   // Default palette per type (used when no per-entry color override)
   var TYPE_COLORS={
     rig:{bg:'#e8d8a8',fg:'#5a4818'},
+    reh:{bg:'#dcc2d8',fg:'#4a2a44'},
     tx:{bg:'#c5d8b4',fg:'#3a4f30'},
     derig:{bg:'#e8b8a0',fg:'#5a3018'},
     custom:{bg:'#b8b8d8',fg:'#2a2a55'}
@@ -13878,6 +14349,22 @@ function renderKitPrepTab(j) {
       +'</div>';
   }).join('');
 
+  // ── Bulk actions / Danger zone ────────────────────────────────
+  var allocCount=(j.prep||[]).length;
+  // Also count non-prep references so the user knows the full scope
+  var nonPrepCount=0;
+  if(j.camDetails)j.camDetails.forEach(function(cd){if(!cd)return;if(cd.kitId)nonPrepCount++;if(cd.lensData&&cd.lensData.kitId)nonPrepCount++;if(cd.fieldData)Object.keys(cd.fieldData).forEach(function(fk){if(cd.fieldData[fk]&&cd.fieldData[fk].kitId)nonPrepCount++;});});
+  if(j.specCams)j.specCams.forEach(function(sc){if(sc&&sc.kitId)nonPrepCount++;});
+  if(j.monitors)j.monitors.forEach(function(mo){if(mo&&mo.kitId)nonPrepCount++;});
+  var bulkSection='<div class="det-sec" style="margin-top:18px;border:1px solid rgba(220,80,80,.25);background:rgba(220,80,80,.04)">'
+    +'<div class="det-sec-lbl" style="color:#d05050">Bulk Actions</div>'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:4px 0 2px">'
+    +'<div style="font-size:13px;color:var(--muted);line-height:1.4">This job currently has <strong style="color:var(--pure)">'+allocCount+'</strong> kit '+(allocCount===1?'item':'items')+' on its prep list'
+    +(nonPrepCount?' and <strong style="color:var(--pure)">'+nonPrepCount+'</strong> '+(nonPrepCount===1?'reference':'references')+' in camera/spec/monitor assignments':'')
+    +'.<br/>Use this to deallocate everything in one go (e.g. when the job is wrapped).</div>'
+    +'<button onclick="clearJobAllocations('+j.id+')" '+((allocCount+nonPrepCount)?'':'disabled')+' style="font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:transparent;border:1px solid rgba(220,80,80,.45);color:#d05050;border-radius:6px;padding:9px 16px;cursor:'+((allocCount+nonPrepCount)?'pointer':'not-allowed')+';flex-shrink:0;transition:all .12s;opacity:'+((allocCount+nonPrepCount)?'1':'.4')+'" onmouseenter="if(!this.disabled)this.style.background=\'rgba(220,80,80,.1)\'" onmouseleave="this.style.background=\'transparent\'">Clear All Kit Allocations</button>'
+    +'</div></div>';
+
   return datesSection
     +transportHtml
     +'<div class="panel-hdr" style="margin-top:8px"><div class="panel-title">Prep List</div><button class="panel-act" onclick="openKitJob('+j.id+')">+ Add Kit</button></div>'
@@ -13897,7 +14384,8 @@ function renderKitPrepTab(j) {
     +renderCamRoles(j)
     +renderHireKit(j)
     +renderStageChecklist(j)
-    +_prepCostSummary(j);
+    +_prepCostSummary(j)
+    +bulkSection;
 }
 
 function _prepCostSummary(j){
