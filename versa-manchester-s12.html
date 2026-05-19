@@ -865,7 +865,7 @@ header.head{display:none}
 
 
 
-/* ============ PDF Export / Print View (single page) ============ */
+/* ============ PDF Export / Print View (2 pages) ============ */
 #printView{display:none}
 .export-pdf-btn{
   margin-left:auto;padding:7px 14px;background:var(--text);color:var(--paper);
@@ -880,86 +880,77 @@ header.head{display:none}
   html,body{background:#fff!important;color:#000!important;margin:0;padding:0}
   body > *{display:none!important}
   #printView{display:block!important;position:static;background:#fff;color:#000;
-    font-family:'Barlow',sans-serif;font-size:7.5pt;line-height:1.2}
-  @page{size:A4 landscape;margin:7mm}
+    font-family:'Barlow',sans-serif;font-size:8.5pt;line-height:1.25}
+  @page{size:A4 landscape;margin:9mm}
 
-  /* Header */
-  .pv-h{display:flex;align-items:baseline;justify-content:space-between;gap:6mm;
-    border-bottom:1.2pt solid #302f2c;padding-bottom:1.5mm;margin-bottom:2mm}
-  .pv-h h1{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:14pt;
+  .pv-page{page-break-after:always}
+  .pv-page:last-child{page-break-after:auto}
+
+  /* Header strip */
+  .pv-h{display:flex;align-items:baseline;justify-content:space-between;gap:8mm;
+    border-bottom:1.5pt solid #302f2c;padding-bottom:2mm;margin-bottom:3mm}
+  .pv-h h1{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:18pt;
     margin:0;text-transform:uppercase;letter-spacing:.01em;line-height:1}
-  .pv-h .pv-h-meta{font-size:7.5pt;color:#444;text-align:right;line-height:1.3}
+  .pv-h .pv-h-meta{font-size:9pt;color:#444;text-align:right;line-height:1.3}
   .pv-h .pv-h-meta b{color:#000}
-  .pv-supline{display:flex;gap:6mm;font-size:7.5pt;color:#444;margin-bottom:2mm}
+
+  .pv-supline{display:flex;gap:8mm;font-size:9pt;color:#444;margin-bottom:4mm}
   .pv-supline b{color:#000;margin-right:1mm}
 
-  /* Section titles */
-  .pv-section{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:8.5pt;
+  .pv-section{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:10pt;
     letter-spacing:.08em;text-transform:uppercase;color:#000;
-    border-bottom:0.6pt solid #302f2c;padding-bottom:0.8mm;margin:0 0 1mm 0}
+    border-bottom:0.8pt solid #302f2c;padding-bottom:1mm;margin:0 0 2mm 0}
   .pv-section.bol{color:#239658;border-bottom-color:#239658}
 
-  /* GRID: floor plan + positions on row 1, crew full width on row 2, channels split on row 3 */
-  .pv-grid{display:grid;
-    grid-template-columns:1.5fr 1fr;
-    grid-template-areas:
-      'fp pos'
-      'crew crew'
-      'walkie bolero';
-    column-gap:4mm;row-gap:3mm}
-  .pv-fp-cell{grid-area:fp}
-  .pv-pos-cell{grid-area:pos;min-width:0}
-  .pv-crew-cell{grid-area:crew}
-  .pv-walkie-cell{grid-area:walkie}
-  .pv-bolero-cell{grid-area:bolero}
-
-  /* Floor plan */
-  .pv-fp svg{width:100%;height:auto;display:block;max-height:100mm}
+  /* PAGE 1: floor plan + positions side by side */
+  .pv-row{display:flex;gap:5mm;align-items:flex-start}
+  .pv-fp-cell{flex:0 0 60%;max-width:60%}
+  .pv-pos-cell{flex:1 1 40%;min-width:0}
+  .pv-fp svg{width:100%;height:auto;display:block;max-height:170mm}
   .pv-fp .coord-log,.pv-fp #coordLog{display:none!important}
   .pv-fp .mk{cursor:default}
 
-  /* Positions list — multi-column compact */
-  .pv-pos-grid{column-count:2;column-gap:3mm}
-  .pv-zone{break-inside:avoid;margin-bottom:1.5mm}
-  .pv-zone-name{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:7.5pt;
+  .pv-pos-grid{column-count:1;column-gap:3mm}
+  .pv-zone{break-inside:avoid;margin-bottom:2mm}
+  .pv-zone-name{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:8.5pt;
     letter-spacing:.06em;text-transform:uppercase;background:#302f2c;color:#fff;
-    padding:0.4mm 1.5mm;margin:0}
-  .pv-zone table{width:100%;border-collapse:collapse;font-size:7pt;margin-top:0.3mm}
-  .pv-zone td{padding:0.3mm 1mm;border-bottom:0.4pt solid #f1f1f1;vertical-align:top}
-  .pv-zone td.n{width:4mm;font-weight:700;color:#c80000;text-align:right}
-  .pv-zone td.r{width:42%;color:#555}
+    padding:0.6mm 2mm;margin:0}
+  .pv-zone table{width:100%;border-collapse:collapse;font-size:8pt;margin-top:0.5mm}
+  .pv-zone td{padding:0.5mm 1.5mm;border-bottom:0.5pt solid #f1f1f1;vertical-align:top}
+  .pv-zone td.n{width:5mm;font-weight:700;color:#c80000;text-align:right}
+  .pv-zone td.r{width:46%;color:#555}
   .pv-zone td.nm{font-weight:600;color:#000}
   .pv-zone td.nm.e{color:#bbb;font-weight:400}
-  .pv-zone td.cp{width:4mm;text-align:center;color:#239658;font-weight:700;font-size:6.5pt}
+  .pv-zone td.cp{width:5mm;text-align:center;color:#239658;font-weight:700;font-size:7.5pt}
 
-  /* Crew comms table */
-  table.pv-crew{width:100%;border-collapse:collapse;font-size:7pt}
+  /* PAGE 2: crew comms + channels */
+  table.pv-crew{width:100%;border-collapse:collapse;font-size:8pt}
   table.pv-crew thead{background:#302f2c;color:#fff}
-  table.pv-crew th{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:6.5pt;
-    letter-spacing:.06em;text-transform:uppercase;padding:0.8mm 1.5mm;text-align:left}
+  table.pv-crew th{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:7.5pt;
+    letter-spacing:.06em;text-transform:uppercase;padding:1.2mm 2mm;text-align:left}
   table.pv-crew th.c{text-align:center}
-  table.pv-crew td{padding:0.6mm 1.5mm;border-bottom:0.4pt solid #f1f1f1;vertical-align:top}
-  table.pv-crew td.n{width:5mm;text-align:right;color:#777;font-weight:700}
-  table.pv-crew td.c{text-align:center;width:8mm}
+  table.pv-crew td{padding:0.8mm 2mm;border-bottom:0.5pt solid #f1f1f1;vertical-align:top}
+  table.pv-crew td.n{width:6mm;text-align:right;color:#777;font-weight:700}
+  table.pv-crew td.c{text-align:center;width:9mm}
   table.pv-crew td.dev{font-weight:700;color:#c80000}
   table.pv-crew td.dev.bol{color:#239658}
   table.pv-crew td.dev.off{color:#ccc;font-weight:400}
   table.pv-crew td.hs{width:16%;color:#444}
   table.pv-crew td.nm{font-weight:600;width:17%}
   table.pv-crew td.rl{width:17%;color:#555}
-  table.pv-crew td.nt{color:#666;font-size:6.5pt}
-  table.pv-crew tr.empty td{color:#bbb;text-align:center;padding:2mm}
+  table.pv-crew td.nt{color:#666;font-size:7.5pt}
+  table.pv-crew tr.empty td{color:#bbb;text-align:center;padding:3mm}
 
-  /* Channels */
-  .pv-chan table{width:100%;border-collapse:collapse;font-size:7pt}
-  .pv-chan td{padding:0.5mm 1.2mm;border-bottom:0.4pt solid #f1f1f1;vertical-align:top}
-  .pv-chan td.n{width:4mm;text-align:right;color:#777;font-weight:700}
+  .pv-chan-grid{display:grid;grid-template-columns:1fr 1fr;gap:6mm;margin-top:4mm}
+  .pv-chan table{width:100%;border-collapse:collapse;font-size:8pt}
+  .pv-chan td{padding:0.8mm 2mm;border-bottom:0.5pt solid #f1f1f1;vertical-align:top}
+  .pv-chan td.n{width:5mm;text-align:right;color:#777;font-weight:700}
   .pv-chan td.cname{width:34%;font-weight:600}
   .pv-chan td.cnotes{color:#555}
-  .pv-chan tr.empty td{color:#bbb;text-align:center;padding:1.5mm}
+  .pv-chan tr.empty td{color:#bbb;text-align:center;padding:2mm}
 
-  .pv-foot{font-size:6.5pt;color:#999;margin-top:2mm;
-    display:flex;justify-content:space-between;border-top:0.4pt solid #ccc;padding-top:0.8mm}
+  .pv-foot{font-size:7.5pt;color:#999;margin-top:4mm;
+    display:flex;justify-content:space-between;border-top:0.5pt solid #ccc;padding-top:1mm}
 }
 
 </style>
@@ -1031,36 +1022,40 @@ header.head{display:none}
 
 </div>
 
-<!-- ============ PDF Export / Print View (single page) ============ -->
+<!-- ============ PDF Export / Print View (2 pages) ============ -->
 <div id="printView" aria-hidden="true">
-  <header class="pv-h">
-    <h1 id="pvJobName">—</h1>
-    <div class="pv-h-meta" id="pvMeta">—</div>
-  </header>
-  <div class="pv-supline" id="pvSupline"></div>
-  <div class="pv-grid">
-    <div class="pv-fp-cell">
-      <div class="pv-section">Gallery Plan</div>
-      <div class="pv-fp" id="pvFloorplan"></div>
+  <!-- PAGE 1: Gallery Plan + Positions -->
+  <section class="pv-page">
+    <header class="pv-h">
+      <h1 id="pvJobName1">—</h1>
+      <div class="pv-h-meta" id="pvMeta1">—</div>
+    </header>
+    <div class="pv-supline" id="pvSupline1"></div>
+    <div class="pv-row">
+      <div class="pv-fp-cell">
+        <div class="pv-section">Gallery Plan</div>
+        <div class="pv-fp" id="pvFloorplan"></div>
+      </div>
+      <div class="pv-pos-cell">
+        <div class="pv-section">Positions</div>
+        <div class="pv-pos-grid" id="pvPositions"></div>
+      </div>
     </div>
-    <div class="pv-pos-cell">
-      <div class="pv-section">Positions</div>
-      <div class="pv-pos-grid" id="pvPositions"></div>
-    </div>
-    <div class="pv-crew-cell">
-      <div class="pv-section">Crew Comms</div>
-      <div id="pvCrew"></div>
-    </div>
-    <div class="pv-walkie-cell pv-chan">
-      <div class="pv-section">Walkie / Comms Channels</div>
-      <div id="pvWalkieChans"></div>
-    </div>
-    <div class="pv-bolero-cell pv-chan">
-      <div class="pv-section bol">Bolero Channels</div>
-      <div id="pvBoleroChans"></div>
-    </div>
-  </div>
-  <div class="pv-foot"><span>Versa Studios · Gallery Plan</span><span id="pvFoot"></span></div>
+    <div class="pv-foot"><span>Versa Studios · Gallery Plan</span><span id="pvFoot1"></span></div>
+  </section>
+
+  <!-- PAGE 2: Crew Comms + Channels -->
+  <section class="pv-page">
+    <header class="pv-h">
+      <h1 id="pvJobName2">—</h1>
+      <div class="pv-h-meta" id="pvMeta2">Crew Comms</div>
+    </header>
+    <div class="pv-supline" id="pvSupline2"></div>
+    <div class="pv-section">Crew Comms List</div>
+    <div id="pvCrew"></div>
+    <div class="pv-chan-grid" id="pvChannels"></div>
+    <div class="pv-foot"><span>Versa Studios · Crew Comms</span><span id="pvFoot2"></span></div>
+  </section>
 </div>
 
 <script>
@@ -1318,6 +1313,11 @@ async function loadAndRender(){
   syncGalleryToComms();
 
   setStatus('Saved', 'saved');
+  // Auto-unlock via URL ?p=<password> (used when embedded in main app iframe)
+  const pParam = getParam('p');
+  if(pParam && j.password && pParam === j.password){
+    try { sessionStorage.setItem(pwStorageKey(j.id), j.password); } catch(e){}
+  }
   if(!isUnlocked(j)){
     await showPasswordGate(j);
   }
@@ -2020,7 +2020,7 @@ function refreshMailLinks(){
 
 loadAndRender();
 
-// ============ PDF Export (single page, with comms) ============
+// ============ PDF Export (2 pages: plan + comms) ============
 function exportPDF(){
   try{
     const jobName = (typeof currentJob !== 'undefined' && currentJob && currentJob.name) || 'Preview';
@@ -2031,24 +2031,31 @@ function exportPDF(){
     const sup     = (c.supervisor || '').trim();
     const supl    = (c.supplier   || '').trim();
 
-    setText('pvJobName', jobName);
-    document.getElementById('pvMeta').innerHTML =
-      (studio ? '<b>'+escHtml(studio)+'</b> &middot; ' : '') + escHtml(today);
-    setText('pvFoot', jobName + ' \u00B7 ' + today);
+    setText('pvJobName1', jobName);
+    setText('pvJobName2', jobName);
+    const metaHtml = (studio ? '<b>'+escHtml(studio)+'</b> &middot; ' : '') + escHtml(today);
+    document.getElementById('pvMeta1').innerHTML = metaHtml;
+    document.getElementById('pvMeta2').innerHTML = 'Crew Comms · <span style="color:#888">' + escHtml(today) + '</span>';
+    setText('pvFoot1', jobName + ' · Page 1 of 2');
+    setText('pvFoot2', jobName + ' · Page 2 of 2');
 
-    const sl = document.getElementById('pvSupline');
+    // Supervisor + supplier on both pages
     const supParts = [];
     if(sup)  supParts.push('<span><b>Comms Supervisor:</b> ' + escHtml(sup)  + '</span>');
     if(supl) supParts.push('<span><b>Supplier:</b> '         + escHtml(supl) + '</span>');
-    sl.innerHTML = supParts.join('');
-    sl.style.display = supParts.length ? 'flex' : 'none';
+    const supHtml = supParts.join('');
+    ['pvSupline1','pvSupline2'].forEach(id => {
+      const el = document.getElementById(id);
+      el.innerHTML = supHtml;
+      el.style.display = supHtml ? 'flex' : 'none';
+    });
 
     // Floor plan
     let svgHtml = (typeof renderSVG === 'function') ? renderSVG() : '';
     svgHtml = svgHtml.replace(/<div class="coord-log"[\s\S]*?<\/div>/g, '');
     document.getElementById('pvFloorplan').innerHTML = svgHtml;
 
-    // Position list
+    // Position list grouped by zone
     let posHtml = '';
     const _zones  = (typeof ZONES !== 'undefined') ? ZONES : [];
     const _labels = (typeof ZONE_LABELS !== 'undefined') ? ZONE_LABELS : {};
@@ -2076,7 +2083,7 @@ function exportPDF(){
     });
     document.getElementById('pvPositions').innerHTML = posHtml;
 
-    // Crew comms list with device numbers
+    // Crew comms list
     const people = Array.isArray(c.people) ? c.people : [];
     let bC=0, pC=0, wC=0;
     const devIds = people.map(p => {
@@ -2118,21 +2125,27 @@ function exportPDF(){
         '<tbody>' + crewRows + '</tbody>' +
       '</table>';
 
-    // Channels (walkie + bolero)
-    const renderChans = (arr) => {
-      if(!Array.isArray(arr) || !arr.length) return '<table><tbody><tr class="empty"><td colspan="3">No channels.</td></tr></tbody></table>';
+    // Channels side-by-side
+    const renderChans = (arr, title, accent) => {
+      const titleClass = accent === 'bol' ? 'pv-section bol' : 'pv-section';
       let rows = '';
-      arr.forEach((ch, i) => {
-        rows += '<tr>';
-        rows += '<td class="n">' + (i+1) + '</td>';
-        rows += '<td class="cname">' + escHtml((ch.name||'').trim()  || '\u2014') + '</td>';
-        rows += '<td class="cnotes">' + escHtml((ch.notes||'').trim() || '') + '</td>';
-        rows += '</tr>';
-      });
-      return '<table><tbody>' + rows + '</tbody></table>';
+      if(Array.isArray(arr) && arr.length){
+        arr.forEach((ch, i) => {
+          rows += '<tr>';
+          rows += '<td class="n">' + (i+1) + '</td>';
+          rows += '<td class="cname">' + escHtml((ch.name||'').trim()  || '\u2014') + '</td>';
+          rows += '<td class="cnotes">' + escHtml((ch.notes||'').trim() || '') + '</td>';
+          rows += '</tr>';
+        });
+      } else {
+        rows = '<tr class="empty"><td colspan="3">No channels.</td></tr>';
+      }
+      return '<div class="pv-chan"><div class="' + titleClass + '">' + escHtml(title) + '</div>' +
+        '<table><tbody>' + rows + '</tbody></table></div>';
     };
-    document.getElementById('pvWalkieChans').innerHTML = renderChans(c.channels);
-    document.getElementById('pvBoleroChans').innerHTML = renderChans(c.boleroChannels);
+    document.getElementById('pvChannels').innerHTML =
+      renderChans(c.channels,       'Walkie / Comms Channels', '') +
+      renderChans(c.boleroChannels, 'Bolero Channels',         'bol');
 
     setTimeout(() => window.print(), 80);
   }catch(err){
@@ -2141,6 +2154,7 @@ function exportPDF(){
   }
 }
 function setText(id, txt){ const el = document.getElementById(id); if(el) el.textContent = txt; }
+
 
 </script>
 </body>
