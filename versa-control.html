@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Versa Studios — Control Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@400;500;600;700;800;900&family=Roboto:wdth,wght@75..100,100..900&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{
@@ -37,16 +37,26 @@ a{color:inherit;text-decoration:none}
 .login-card{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;max-width:440px;padding:40px 32px;margin:auto}
 .login-hero{text-align:center;margin-bottom:32px;width:100%}
 .login-logo{display:block;height:46px;width:auto;margin:0 auto 28px;color:var(--bg)}
-.login-eyebrow{font-family:var(--cond);font-size:14px;font-weight:800;letter-spacing:.36em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
-.login-title{font-family:var(--cond);font-size:38px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;color:var(--bg);line-height:.95;margin:0}
-.login-tagline{margin-top:14px;font-family:var(--cond);font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:rgba(239,237,227,.4)}
+.login-eyebrow{font-family:var(--cond);font-size:22px;font-weight:800;letter-spacing:.42em;text-transform:uppercase;color:var(--accent);margin-bottom:18px}
+.login-title{font-family:var(--cond);font-size:46px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;color:var(--bg);line-height:.95;margin:0}
+.login-tagline{margin-top:18px;font-family:var(--cond);font-size:18px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(239,237,227,.55)}
 .login-rule{width:48px;height:2px;background:var(--accent);margin:0 auto 28px}
-.login-form{width:100%;display:flex;flex-direction:column;gap:14px}
+.login-form{width:100%;display:flex;flex-direction:column;gap:18px}
 .login-fld{margin-bottom:0}
-.login-fld label{display:block;font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:rgba(239,237,227,.5);margin-bottom:6px}
-.login-fld input{width:100%;padding:13px 16px;border:1px solid rgba(239,237,227,.14);border-radius:4px;background:rgba(239,237,227,.04);color:var(--bg);font-size:15px;font-family:var(--cond);font-weight:500;letter-spacing:.02em;outline:none;transition:border-color .15s,background .15s}
+.login-fld label{display:block;font-family:var(--cond);font-size:16px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:rgba(239,237,227,.7);margin-bottom:10px}
+.login-fld input{width:100%;padding:15px 18px;border:1px solid rgba(239,237,227,.14);border-radius:4px;background:rgba(239,237,227,.04);color:var(--bg);font-size:17px;font-family:var(--font);font-weight:500;letter-spacing:.01em;outline:none;transition:border-color .15s,background .15s}
 .login-fld input:focus{border-color:var(--accent);background:rgba(239,237,227,.07)}
 .login-fld input::placeholder{color:rgba(239,237,227,.25)}
+/* Kill Chrome autofill yellow — keep our dark theme */
+.login-fld input:-webkit-autofill,
+.login-fld input:-webkit-autofill:hover,
+.login-fld input:-webkit-autofill:focus,
+.login-fld input:-webkit-autofill:active{
+  -webkit-box-shadow:0 0 0 1000px #2a2622 inset !important;
+  -webkit-text-fill-color:var(--bg) !important;
+  caret-color:var(--bg);
+  transition:background-color 5000s ease-in-out 0s;
+}
 .login-btn{width:100%;padding:15px;background:var(--accent);color:#1a1816;border:none;border-radius:4px;font-family:var(--cond);font-size:13px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;margin-top:8px;transition:background .15s,transform .1s;cursor:pointer}
 .login-btn:hover{background:#FFB36F}
 .login-btn:active{transform:translateY(1px)}
@@ -74,7 +84,9 @@ a{color:inherit;text-decoration:none}
 @media(max-width:480px){.mo-bar-title{font-size:11px}.mo-bar-back{padding:5px 9px;font-size:10px}}
 @media(max-width:480px){
   .login-card{padding:32px 22px}
-  .login-title{font-size:30px}
+  .login-title{font-size:36px}
+  .login-eyebrow{font-size:18px;letter-spacing:.36em}
+  .login-tagline{font-size:15px}
   .login-logo{height:40px}
 }
 
@@ -99,12 +111,26 @@ a{color:inherit;text-decoration:none}
 .sub-hdr-right{display:flex;align-items:center;gap:8px}
 
 /* ── HOME (TILES) ──────────────────────────────────────────────── */
-.home-wrap{padding:36px 24px;max-width:1100px;margin:0 auto}
+.home-wrap{padding:32px 32px 60px;max-width:1600px;margin:0 auto}
 .home-greet{font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
 .home-heading{font-family:var(--cond);font-size:34px;font-weight:900;letter-spacing:.01em;text-transform:uppercase;color:var(--text);margin-bottom:30px;line-height:1}
 .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
 .tile{padding:32px 28px;border-radius:10px;color:#fff;cursor:pointer;transition:transform .15s,box-shadow .15s;display:flex;flex-direction:column;justify-content:space-between;min-height:180px;border:none;text-align:left;font:inherit}
 .tile:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(48,47,44,.18)}
+/* ── HOME 2-COL LAYOUT ─────────────────────────────────────── */
+.home-grid{display:grid;grid-template-columns:200px 1fr;gap:24px;align-items:start}
+@media(max-width:900px){.home-grid{grid-template-columns:1fr;gap:18px}}
+.home-col-left{display:flex;flex-direction:column;gap:6px;position:sticky;top:18px}
+.home-col-right{min-width:0}
+@media(max-width:900px){.home-col-left{position:static}}
+
+/* ── SECTION NAV LIST (solid colour blocks) ──────────────── */
+.sec-list{display:flex;flex-direction:column;gap:6px}
+.sec-item{display:flex;align-items:center;padding:18px 16px;border-radius:6px;background:var(--panel);border:none;cursor:pointer;text-align:left;font:inherit;transition:transform .12s,filter .12s,box-shadow .12s;position:relative;width:100%;min-height:64px;color:#fff}
+.sec-item:hover{transform:translateX(2px);filter:brightness(1.08);box-shadow:0 4px 12px rgba(48,47,44,.18)}
+.sec-body{flex:1;min-width:0}
+.sec-name{font-family:'Roboto',sans-serif;font-optical-sizing:auto;font-weight:800;font-variation-settings:"wdth" 100;font-size:18px;letter-spacing:.02em;text-transform:uppercase;color:#fff;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
 .tile-icon{font-size:42px;margin-bottom:14px;line-height:1}
 .tile-num{font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.24em;color:rgba(255,255,255,.55);margin-bottom:14px;text-transform:uppercase}
 
@@ -118,7 +144,7 @@ a{color:inherit;text-decoration:none}
 .monitor-pin-hint{font-family:var(--cond);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-left:6px}
 .monitor-link{font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:5px 10px;border:1.5px solid var(--border);border-radius:4px;transition:color .15s,border-color .15s}
 .monitor-link:hover{color:var(--text);border-color:var(--text)}
-.monitor-frame{width:100%;height:460px;border:none;display:block;background:#fff}
+.monitor-frame{width:100%;height:520px;border:none;display:block;background:#fff}
 .home-subheading{font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border)}
 @media(max-width:760px){.monitor-frame{height:380px}}
 
@@ -246,11 +272,34 @@ a{color:inherit;text-decoration:none}
 .staff-cb{width:18px;height:18px;border:1.5px solid var(--border);border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:#fff}
 .staff-row.selected .staff-cb{background:var(--kyoto);border-color:var(--kyoto)}
 .staff-row.selected .staff-cb::after{content:'';display:block;width:5px;height:9px;border:2px solid #fff;border-top:0;border-left:0;transform:rotate(45deg);margin-top:-2px}
+.staff-row .staff-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.staff-row .staff-top-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .staff-name{font-family:var(--font);font-size:14px;font-weight:600;color:var(--text);flex:1}
+.staff-email-pill{display:inline-flex;align-items:center;gap:4px;font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:3px;cursor:pointer;border:1px solid transparent;line-height:1;flex-shrink:0}
+.staff-email-pill.has{color:#2a7a3a;background:rgba(42,122,58,.08);border-color:rgba(42,122,58,.2)}
+.staff-email-pill.has:hover{background:rgba(42,122,58,.16)}
+.staff-email-pill.missing{color:#a86420;background:rgba(168,100,32,.1);border-color:rgba(168,100,32,.25)}
+.staff-email-pill.missing:hover{background:rgba(168,100,32,.18);color:#7a4a18}
+.staff-email-form{display:flex;gap:6px;margin-top:4px;width:100%}
+.staff-email-form input{flex:1;padding:6px 9px;border:1.5px solid var(--kyoto);border-radius:4px;background:#fff;font-size:12px;outline:none;font-family:var(--font);min-width:0}
+.staff-email-form button{padding:6px 10px;font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border-radius:4px;border:none;cursor:pointer}
+.staff-email-form .save-btn{background:var(--kyoto);color:#fff}
+.staff-email-form .cancel-btn{background:transparent;color:var(--muted);border:1px solid var(--border)}
 .staff-role{font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .staff-empty{padding:30px 10px;text-align:center;color:var(--muted);font-family:var(--cond);font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
 .staff-custom{padding:10px;border-top:1px dashed var(--border);margin-top:8px;display:flex;gap:6px}
 .staff-custom input{flex:1;padding:8px 10px;border:1.5px solid var(--border);border-radius:5px;background:#fff;font-size:13px;outline:none}
+
+/* ── EMAIL CONFIRMATION MODAL ────────────────────────────────── */
+.email-confirm-list{display:flex;flex-direction:column;gap:6px;margin:10px 0}
+.email-confirm-row{display:flex;align-items:center;gap:10px;padding:9px 12px;background:#fff;border:1px solid var(--border);border-radius:5px}
+.email-confirm-row.has-email{border-left:3px solid #2a7a3a}
+.email-confirm-row.no-email{border-left:3px solid #a86420;background:rgba(168,100,32,.04)}
+.email-confirm-name{font-family:var(--font);font-size:13px;font-weight:600;color:var(--text);flex-shrink:0}
+.email-confirm-addr{font-family:var(--font);font-size:12px;color:var(--muted);flex:1;text-align:right;word-break:break-all}
+.email-confirm-addr.missing{color:#a86420;font-style:italic;font-weight:600}
+.email-confirm-summary{font-family:var(--cond);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:6px 0 10px;border-bottom:1px solid var(--border);margin-bottom:8px}
+.email-confirm-warn{padding:10px 12px;background:rgba(168,100,32,.08);border:1px solid rgba(168,100,32,.25);border-radius:5px;font-family:var(--font);font-size:12px;color:#7a4a18;margin-top:10px;line-height:1.45}
 
 /* ── ACCOUNT MODAL ── */
 .acc-row{padding:10px 0}
@@ -353,8 +402,6 @@ a{color:inherit;text-decoration:none}
       </div>
       <button id="loginBtn" class="login-btn" onclick="doLogin()">Sign In</button>
       <div id="loginMsg" class="login-msg"></div>
-      <div class="login-divider"><span>OR</span></div>
-      <button class="login-monitor-link" onclick="showMonitorOnly()">View Live Sign-In Monitor &rarr;</button>
     </div>
   </div>
   <div class="login-foot">Versa Studios &middot; Broadcast Operations</div>
@@ -392,49 +439,54 @@ a{color:inherit;text-decoration:none}
   <!-- HOME -->
   <div id="homeView">
     <div class="home-wrap">
-      <div class="home-greet" id="homeGreet">Welcome back</div>
 
-      <div class="monitor-widget">
-        <div class="monitor-hdr">
-          <div class="monitor-hdr-left">
-            <div class="monitor-pulse"></div>
-            <div class="monitor-title">Manchester Sign-In · Live Monitor</div>
-          </div>
-          <a class="monitor-link" id="monitorOpenFull" href="#" target="_blank" rel="noopener">Open Full &nearr;</a>
-        </div>
-        <iframe class="monitor-frame" id="monitorHomeFrame" src="" allow="clipboard-write"></iframe>
-      </div>
+      <div class="home-grid">
 
-      <div class="monitor-widget" id="studiosWeekWidget">
-        <div class="monitor-hdr">
-          <div class="monitor-hdr-left">
-            <div class="monitor-title" id="studiosWeekTitle">Studios &middot; This Week</div>
-          </div>
-          <div style="display:flex;gap:6px">
-            <button class="monitor-link" onclick="studiosWeekShift(-7)">&larr; Prev</button>
-            <button class="monitor-link" onclick="studiosWeekShift(0)">This Week</button>
-            <button class="monitor-link" onclick="studiosWeekShift(7)">Next &rarr;</button>
+        <!-- LEFT: section nav list -->
+        <div class="home-col-left">
+          <div class="sec-list">
+            <button class="sec-item" style="background:#5B5F8D" onclick="navMinutes()">
+              <div class="sec-body">
+                <div class="sec-name">Team Meetings</div>
+              </div>
+            </button>
+
+            <button class="sec-item" style="background:#7A9A80" onclick="navSignIn()">
+              <div class="sec-body">
+                <div class="sec-name">Manage Sign In</div>
+              </div>
+            </button>
           </div>
         </div>
-        <div id="studiosWeekBody" class="studios-week-body"></div>
-      </div>
 
-      <div class="home-subheading">Sections</div>
-      <div class="tiles">
-        <button class="tile" style="background:linear-gradient(135deg,#5B5F8D 0%,#454870 100%)" onclick="navMinutes()">
-          <div>
-            <div class="tile-num">01</div>
-            <div class="tile-name">Minutes</div>
-            <div class="tile-desc">Capture meeting notes, decisions, and action items.</div>
+        <!-- RIGHT: live widgets -->
+        <div class="home-col-right">
+          <div class="monitor-widget">
+            <div class="monitor-hdr">
+              <div class="monitor-hdr-left">
+                <div class="monitor-pulse"></div>
+                <div class="monitor-title">Manchester Sign-In · Live Monitor</div>
+              </div>
+              <a class="monitor-link" id="monitorOpenFull" href="#" target="_blank" rel="noopener">Open Full &nearr;</a>
+            </div>
+            <iframe class="monitor-frame" id="monitorHomeFrame" src="" allow="clipboard-write"></iframe>
           </div>
-        </button>
-        <button class="tile" style="background:linear-gradient(135deg,#7A9A80 0%,#5e7d62 100%)" onclick="navSignIn()">
-          <div>
-            <div class="tile-num">02</div>
-            <div class="tile-name">Sign-In Sheet</div>
-            <div class="tile-desc">Manage the studio sign-in kiosk: notices, people, projects.</div>
+
+          <div class="monitor-widget" id="studiosWeekWidget">
+            <div class="monitor-hdr">
+              <div class="monitor-hdr-left">
+                <div class="monitor-title" id="studiosWeekTitle">Studios &middot; This Week</div>
+              </div>
+              <div style="display:flex;gap:6px">
+                <button class="monitor-link" onclick="studiosWeekShift(-7)">&larr; Prev</button>
+                <button class="monitor-link" onclick="studiosWeekShift(0)">This Week</button>
+                <button class="monitor-link" onclick="studiosWeekShift(7)">Next &rarr;</button>
+              </div>
+            </div>
+            <div id="studiosWeekBody" class="studios-week-body"></div>
           </div>
-        </button>
+        </div>
+
       </div>
     </div>
   </div>
@@ -453,6 +505,26 @@ a{color:inherit;text-decoration:none}
     <div class="min-wrap">
       <div id="minPanelList"></div>
       <div id="minPanelDetail" style="display:none"></div>
+    </div>
+  </div>
+
+  <!-- EMAIL CONFIRMATION MODAL -->
+  <div id="emailConfirmModal" class="modal-ov" onclick="if(event.target===this)closeEmailConfirm()">
+    <div class="modal-card">
+      <div class="modal-hdr">
+        <div class="modal-title">Send Minutes</div>
+        <button class="modal-x" onclick="closeEmailConfirm()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="email-confirm-summary" id="emailConfirmSummary"></div>
+        <div class="email-confirm-list" id="emailConfirmList"></div>
+        <div class="email-confirm-warn" id="emailConfirmWarn" style="display:none"></div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn-secondary" onclick="closeEmailConfirm()">Cancel</button>
+        <button class="btn-secondary" id="emailConfirmFixBtn" onclick="fixMissingEmails()" style="display:none">Add Missing Emails</button>
+        <button class="btn-primary" id="emailConfirmSendBtn" onclick="doSendMinutes()">Send</button>
+      </div>
     </div>
   </div>
 
@@ -540,6 +612,8 @@ let SAVE_TIMER=null;
 let CURRENT_USER=null;
 let WEEK_START=null; // Monday of the currently-displayed week (Date object)
 let DATA_READY=false; // becomes true once loadMeetings/Staff/Jobs all complete — gate to prevent an early save overwriting DB
+let STAFF_EMAIL_EDITING=null; // name of staff member whose email is currently being edited in the picker
+let EMAIL_CONFIRM_STATE=null; // {recipients:[{name,email}], missing:[{name}], subject, body} for the confirm modal
 
 // ── UTIL ────────────────────────────────────────────────────────
 const $=id=>document.getElementById(id);
@@ -732,7 +806,7 @@ function navMinutes(){
     saveMeetingsDebounced();
   }
   CURRENT_MEETING_ID=m.id;
-  $('minActions').innerHTML='<button class="btn-secondary" onclick="navArchive()">Archive ('+(MEETINGS.filter(x=>x.date!==td).length)+')</button>';
+  $('minActions').innerHTML='<button class="btn-secondary" onclick="navArchive()">All Meetings ('+MEETINGS.length+')</button>';
   renderMeetingDetail();
 }
 function navArchive(){
@@ -740,7 +814,7 @@ function navArchive(){
   CURRENT_MEETING_ID=null;
   $('minPanelList').style.display='';
   $('minPanelDetail').style.display='none';
-  setSubHdrTitle('Archived Meetings');
+  setSubHdrTitle('All Meetings');
   $('minActions').innerHTML='<button class="btn-primary" onclick="navMinutes()">Today\u2019s Meeting</button>';
   renderArchiveList();
 }
@@ -753,26 +827,29 @@ function navSignIn(){
   $('signinFrame').src=KIOSK_MANAGE_URL;
 }
 
-// ── MINUTES: ARCHIVE LIST ───────────────────────────────────────
+// ── MINUTES: ALL MEETINGS LIST ──────────────────────────────────
 function renderArchiveList(){
   const wrap=$('minPanelList');
   const td=todayIso();
-  const past=MEETINGS.filter(m=>m.date!==td).slice().sort((a,b)=>(b.date||'').localeCompare(a.date||''));
-  if(!past.length){
-    wrap.innerHTML='<div class="empty-state"><div class="empty-state-txt">No archived meetings yet</div><button class="btn-secondary" onclick="navMinutes()">Back to Today\u2019s Meeting</button></div>';
+  const all=MEETINGS.slice().sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  if(!all.length){
+    wrap.innerHTML='<div class="empty-state"><div class="empty-state-txt">No meetings yet</div><button class="btn-secondary" onclick="navMinutes()">Start Today\u2019s Meeting</button></div>';
     return;
   }
-  wrap.innerHTML='<div class="mtg-grid">'+past.map(m=>{
+  wrap.innerHTML='<div class="mtg-grid">'+all.map(m=>{
+    const isToday=m.date===td;
     const attCount=(m.attendees||[]).length;
     const noteCount=(m.notes||[]).filter(n=>n&&n.trim()).length;
     const names=(m.attendees||[]).map(a=>a.name||a).slice(0,5).join(', ');
     const more=attCount>5?` +${attCount-5} more`:'';
+    const todayBadge=isToday?'<span class="mtg-chip has" style="background:var(--kyoto);color:#fff;border-color:var(--kyoto)">Today</span>':'';
     return `<div class="mtg-row" onclick="openMeeting('${esc(m.id)}')">
       <div class="mtg-date">${esc(fmtDate(m.date))||'no date'}</div>
       <div style="flex:1;min-width:0">
         ${attCount?`<div class="mtg-attendees">${esc(names)}${esc(more)}</div>`:'<div class="mtg-attendees" style="color:var(--muted-2);font-style:italic">No attendees added</div>'}
       </div>
       <div class="mtg-meta">
+        ${todayBadge}
         ${attCount?`<span class="mtg-chip has">${attCount} att</span>`:''}
         ${noteCount?`<span class="mtg-chip has">${noteCount} note${noteCount===1?'':'s'}</span>`:''}
       </div>
@@ -791,10 +868,10 @@ function openMeeting(id){
   const isToday=m&&m.date===todayIso();
   if(isToday){
     setSubHdrTitle('Minutes');
-    $('minActions').innerHTML='<button class="btn-secondary" onclick="navArchive()">Archive ('+(MEETINGS.filter(x=>x.date!==todayIso()).length)+')</button>';
+    $('minActions').innerHTML='<button class="btn-secondary" onclick="navArchive()">All Meetings ('+MEETINGS.length+')</button>';
   } else {
     setSubHdrTitle('Archived Meeting');
-    $('minActions').innerHTML='<button class="btn-danger" onclick="deleteCurrentMeeting()">Delete</button> <button class="btn-secondary" onclick="navArchive()">&larr; Archive</button>';
+    $('minActions').innerHTML='<button class="btn-danger" onclick="deleteCurrentMeeting()">Delete</button> <button class="btn-secondary" onclick="navArchive()">&larr; All Meetings</button>';
   }
   renderMeetingDetail();
 }
@@ -824,6 +901,7 @@ function renderMeetingDetail(){
   if(!Array.isArray(m.notes))m.notes=[''];
   if(!m.notes.length)m.notes=[''];
   if(!m.title)m.title='Versa Manchester Team Meeting';
+  const isArchived=m.date!==todayIso();
 
   const wrap=$('minPanelDetail');
   wrap.innerHTML=`
@@ -855,9 +933,11 @@ function renderMeetingDetail(){
       </div>
 
       <div class="detail-actions">
-        <button class="btn-secondary" onclick="navHome()">&larr; Home</button>
+        ${isArchived
+          ? '<button class="btn-secondary" onclick="navArchive()">&larr; All Meetings</button>'
+          : '<button class="btn-secondary" onclick="navHome()">&larr; Home</button>'}
         <div class="detail-actions-right">
-          <button class="btn-primary" onclick="saveNow()">Save</button>
+          <button class="btn-primary" onclick="saveNow(event)">Save</button>
           <button class="btn-primary" onclick="emailMinutes()">Email Minutes</button>
         </div>
       </div>
@@ -876,15 +956,49 @@ function onDateChange(val){
   saveMeetingsDebounced();
   const disp=$('dateDisplay');if(disp)disp.textContent=formatDateNice(val);
 }
-function saveNow(){
+async function saveNow(ev){
   clearTimeout(SAVE_TIMER);
-  saveMeetings();
+  const btn=ev&&ev.currentTarget;
+  if(!DATA_READY){
+    // Data not yet loaded — save would silently fail. Tell the user.
+    if(btn){
+      const orig=btn.textContent;
+      btn.textContent='Loading…';
+      btn.disabled=true;
+      // Wait briefly then retry
+      setTimeout(()=>{btn.textContent=orig;btn.disabled=false;},1200);
+    }
+    return;
+  }
+  if(btn){
+    btn.dataset.origLabel=btn.dataset.origLabel||btn.textContent;
+    btn.textContent='Saving…';
+    btn.disabled=true;
+    try{
+      await saveMeetings();
+      btn.textContent='Saved \u2713';
+    }catch(e){
+      btn.textContent='Save failed';
+    }
+    setTimeout(()=>{
+      if(btn.dataset.origLabel){btn.textContent=btn.dataset.origLabel;}
+      btn.disabled=false;
+    },1400);
+  } else {
+    saveMeetings();
+  }
 }
 function renderAttendeeChips(m){
   if(!m.attendees||!m.attendees.length){
     return '<div style="font-family:var(--cond);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted-2);padding:6px 0">None yet — tap "+ Add Attendees"</div>';
   }
-  return m.attendees.map((a,i)=>`<span class="chip">${esc(a.name||'')}<button onclick="removeAttendee(${i})" title="Remove">&times;</button></span>`).join('');
+  return m.attendees.map((a,i)=>{
+    // Check both attendee-stored email and the live STAFF lookup (in case email was added later)
+    const fromStaff=STAFF.find(s=>(s.name||'').toLowerCase()===(a.name||'').toLowerCase());
+    const hasEmail=!!(a.email||(fromStaff&&fromStaff.email));
+    const warn=hasEmail?'':'<span title="No email on file — won\u2019t receive minutes" style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#a86420;margin-right:5px;vertical-align:middle"></span>';
+    return `<span class="chip">${warn}${esc(a.name||'')}<button onclick="removeAttendee(${i})" title="Remove">&times;</button></span>`;
+  }).join('');
 }
 function renderNoteBullets(m){
   return (m.notes||[]).map((n,i)=>`<div class="bullet-row">
@@ -930,10 +1044,11 @@ function bulletKey(ev,i){
 // ── STAFF PICKER MODAL ─────────────────────────────────────────
 function openStaffModal(){
   $('staffCustomInput').value='';
+  STAFF_EMAIL_EDITING=null;
   renderStaffList();
   $('staffModal').classList.add('open');
 }
-function closeStaffModal(){$('staffModal').classList.remove('open');}
+function closeStaffModal(){STAFF_EMAIL_EDITING=null;$('staffModal').classList.remove('open');}
 
 // ── ACCOUNT MODAL ──
 function openAccountModal(){
@@ -986,12 +1101,86 @@ function renderStaffList(){
   });
   wrap.innerHTML=list.map(s=>{
     const sel=selectedNames.has(s.name.toLowerCase());
+    const editingThis=STAFF_EMAIL_EDITING===s.name;
+    const pill=s.email
+      ? `<button class="staff-email-pill has" onclick="event.stopPropagation();editStaffEmail('${esc(s.name)}')" title="Edit email">&check; Email</button>`
+      : `<button class="staff-email-pill missing" onclick="event.stopPropagation();editStaffEmail('${esc(s.name)}')" title="Add email">+ Add email</button>`;
+    const editor=editingThis
+      ? `<div class="staff-email-form" onclick="event.stopPropagation()">
+           <input type="email" id="staffEmailInput_${esc(s.name).replace(/[^a-zA-Z0-9]/g,'_')}" value="${esc(s.email||'')}" placeholder="name@example.com" onkeydown="staffEmailKey(event,'${esc(s.name)}')" autocomplete="off"/>
+           <button class="save-btn" onclick="saveStaffEmail('${esc(s.name)}')">Save</button>
+           <button class="cancel-btn" onclick="cancelStaffEmail()">Cancel</button>
+         </div>`
+      : '';
     return `<div class="staff-row${sel?' selected':''}" onclick="toggleStaff('${esc(s.name)}')">
       <div class="staff-cb"></div>
-      <div class="staff-name">${esc(s.name)}</div>
-      ${s.role?`<div class="staff-role">${esc(s.role)}</div>`:''}
+      <div class="staff-body">
+        <div class="staff-top-row">
+          <div class="staff-name">${esc(s.name)}</div>
+          ${s.role?`<div class="staff-role">${esc(s.role)}</div>`:''}
+          ${editingThis?'':pill}
+        </div>
+        ${editor}
+      </div>
     </div>`;
   }).join('');
+  // Focus the edit input if we just opened one
+  if(STAFF_EMAIL_EDITING){
+    setTimeout(()=>{
+      const id='staffEmailInput_'+STAFF_EMAIL_EDITING.replace(/[^a-zA-Z0-9]/g,'_');
+      const inp=document.getElementById(id);
+      if(inp){inp.focus();inp.setSelectionRange(inp.value.length,inp.value.length);}
+    },10);
+  }
+}
+function editStaffEmail(name){STAFF_EMAIL_EDITING=name;renderStaffList();}
+function cancelStaffEmail(){STAFF_EMAIL_EDITING=null;renderStaffList();}
+function staffEmailKey(ev,name){
+  if(ev.key==='Enter'){ev.preventDefault();saveStaffEmail(name);}
+  else if(ev.key==='Escape'){ev.preventDefault();cancelStaffEmail();}
+}
+async function saveStaffEmail(name){
+  const id='staffEmailInput_'+name.replace(/[^a-zA-Z0-9]/g,'_');
+  const inp=document.getElementById(id);if(!inp)return;
+  const email=(inp.value||'').trim();
+  // Basic email validation — empty is allowed (clears the email)
+  if(email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    inp.style.borderColor='#a82020';
+    inp.focus();
+    return;
+  }
+  // Update local STAFF cache (or insert)
+  let entry=STAFF.find(s=>(s.name||'').toLowerCase()===name.toLowerCase());
+  if(entry){
+    entry.email=email;
+  } else {
+    entry={id:Date.now(),name:name,role:'',email:email,tel:'',notes:''};
+    STAFF.push(entry);
+  }
+  // Update any attendees on the current meeting with this name so their email refreshes immediately
+  const m=getCurrentMeeting();
+  if(m&&Array.isArray(m.attendees)){
+    m.attendees.forEach(a=>{if((a.name||'').toLowerCase()===name.toLowerCase()){a.email=email;}});
+    saveMeetingsDebounced();
+    const chips=$('attChipList');if(chips)chips.innerHTML=renderAttendeeChips(m);
+  }
+  STAFF_EMAIL_EDITING=null;
+  renderStaffList();
+  // Persist to Supabase — push the whole crew_contacts array back
+  try{
+    const r=await fetch(SB_URL+'/rest/v1/app_data',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        apikey:SB_KEY,
+        Authorization:'Bearer '+SB_KEY,
+        Prefer:'resolution=merge-duplicates'
+      },
+      body:JSON.stringify([{key:'crew_contacts',value:STAFF,updated_at:new Date().toISOString()}])
+    });
+    if(r.ok){flashSaved();}
+    else{console.error('crew_contacts save failed',r.status);}
+  }catch(e){console.error('crew_contacts save error',e);}
 }
 function toggleStaff(name){
   const m=getCurrentMeeting();if(!m)return;
@@ -1028,13 +1217,34 @@ function addCustomAttendee(){
 // ── EMAIL MINUTES ──────────────────────────────────────────────
 function emailMinutes(){
   const m=getCurrentMeeting();if(!m)return;
-  const recipients=(m.attendees||[]).filter(a=>a.email).map(a=>a.email);
+  if(!m.attendees||!m.attendees.length){
+    alert('Add at least one attendee before sending minutes.');
+    return;
+  }
+  // Refresh each attendee's email from STAFF (crew_contacts) — handles the case where
+  // an attendee was added before their email was set, or the email has since changed.
+  // Custom-added attendees (with "<email>" syntax) keep their original email.
+  const refreshed=m.attendees.map(a=>{
+    const fromStaff=STAFF.find(s=>(s.name||'').toLowerCase()===(a.name||'').toLowerCase());
+    const latestEmail=(fromStaff&&fromStaff.email)?fromStaff.email:(a.email||'');
+    return {name:a.name||'',email:latestEmail};
+  });
+  // Persist any newly-resolved emails back onto the meeting attendees so they stay in sync
+  let attendeesChanged=false;
+  m.attendees.forEach((a,i)=>{
+    if(!a.email&&refreshed[i].email){a.email=refreshed[i].email;attendeesChanged=true;}
+  });
+  if(attendeesChanged)saveMeetingsDebounced();
+
+  const withEmail=refreshed.filter(a=>a.email);
+  const missing=refreshed.filter(a=>!a.email);
+
   const subject='Meeting Minutes — '+(m.title||'Untitled')+' — '+fmtDate(m.date);
   let body='Meeting: '+(m.title||'Untitled')+'\n';
   body+='Date: '+fmtDate(m.date)+'\n\n';
-  if((m.attendees||[]).length){
+  if(refreshed.length){
     body+='Attendees:\n';
-    m.attendees.forEach(a=>{body+='- '+(a.name||'')+(a.email?' <'+a.email+'>':'')+'\n';});
+    refreshed.forEach(a=>{body+='- '+a.name+'\n';});
     body+='\n';
   }
   const notes=(m.notes||[]).filter(n=>n&&n.trim());
@@ -1042,15 +1252,67 @@ function emailMinutes(){
     body+='Notes:\n';
     notes.forEach(n=>{body+='- '+n+'\n';});
   }
-  if(!recipients.length){
-    // No emails on record — open a mail client with body only, user fills recipients
-    const url='mailto:?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
-    window.location.href=url;
-    setTimeout(()=>alert('Heads up: none of the attendees have email addresses on file. Add them to Crew Contacts in the main app, or enter them manually as "Name <email@example.com>" via Add Attendees.'),300);
-    return;
+
+  EMAIL_CONFIRM_STATE={recipients:withEmail,missing:missing,subject:subject,body:body};
+  openEmailConfirm();
+}
+function openEmailConfirm(){
+  const st=EMAIL_CONFIRM_STATE;if(!st)return;
+  const sum=$('emailConfirmSummary');
+  const list=$('emailConfirmList');
+  const warn=$('emailConfirmWarn');
+  const sendBtn=$('emailConfirmSendBtn');
+  const fixBtn=$('emailConfirmFixBtn');
+
+  const total=st.recipients.length+st.missing.length;
+  const recipCount=st.recipients.length;
+  sum.textContent=recipCount+' of '+total+' attendees will receive the minutes';
+
+  const rows=[];
+  st.recipients.forEach(r=>rows.push(`<div class="email-confirm-row has-email">
+    <div class="email-confirm-name">${esc(r.name)}</div>
+    <div class="email-confirm-addr">${esc(r.email)}</div>
+  </div>`));
+  st.missing.forEach(r=>rows.push(`<div class="email-confirm-row no-email">
+    <div class="email-confirm-name">${esc(r.name)}</div>
+    <div class="email-confirm-addr missing">no email on file</div>
+  </div>`));
+  list.innerHTML=rows.join('');
+
+  if(st.missing.length){
+    warn.style.display='';
+    warn.textContent=st.missing.length+' attendee'+(st.missing.length===1?'':'s')+' won\u2019t receive the minutes. Add email'+(st.missing.length===1?'':'s')+' first, or send anyway and follow up separately.';
+    fixBtn.style.display='';
+  } else {
+    warn.style.display='none';
+    fixBtn.style.display='none';
   }
-  const url='mailto:'+recipients.join(',')+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+
+  if(!st.recipients.length){
+    sendBtn.disabled=true;
+    sendBtn.textContent='No recipients';
+    sendBtn.style.opacity='.5';
+  } else {
+    sendBtn.disabled=false;
+    sendBtn.textContent='Send to '+recipCount+' recipient'+(recipCount===1?'':'s');
+    sendBtn.style.opacity='';
+  }
+  $('emailConfirmModal').classList.add('open');
+}
+function closeEmailConfirm(){
+  $('emailConfirmModal').classList.remove('open');
+  EMAIL_CONFIRM_STATE=null;
+}
+function fixMissingEmails(){
+  closeEmailConfirm();
+  openStaffModal();
+}
+function doSendMinutes(){
+  const st=EMAIL_CONFIRM_STATE;if(!st||!st.recipients.length)return;
+  const to=st.recipients.map(r=>r.email).join(',');
+  const url='mailto:'+to+'?subject='+encodeURIComponent(st.subject)+'&body='+encodeURIComponent(st.body);
   window.location.href=url;
+  closeEmailConfirm();
 }
 
 
