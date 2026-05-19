@@ -953,6 +953,11 @@ header.head{display:none}
     display:flex;justify-content:space-between;border-top:0.5pt solid #ccc;padding-top:1mm}
 }
 
+
+/* Embed mode (used by parent app iframe) — hide tab nav so only the gallery shows */
+body.embed-mode .tab-bar{display:none!important}
+body.embed-mode .preview-banner{display:none!important}
+
 </style>
 </head>
 <body>
@@ -1313,12 +1318,18 @@ async function loadAndRender(){
   syncGalleryToComms();
 
   setStatus('Saved', 'saved');
-  // Auto-unlock via URL ?p=<password> (used when embedded in main app iframe)
+  // Embed mode (?embed=1 + actually inside an iframe) — bypass password gate AND hide tab nav.
+  // The iframe check prevents anyone from using ?embed=1 outside the parent app.
+  const isEmbed = (getParam('embed') === '1') && (window.self !== window.top);
+  if(isEmbed){
+    document.body.classList.add('embed-mode');
+  }
+  // Legacy: ?p=<password> still works for direct unlock links (not used by the main-app iframe).
   const pParam = getParam('p');
   if(pParam && j.password && pParam === j.password){
     try { sessionStorage.setItem(pwStorageKey(j.id), j.password); } catch(e){}
   }
-  if(!isUnlocked(j)){
+  if(!isEmbed && !isUnlocked(j)){
     await showPasswordGate(j);
   }
   renderGallery();
