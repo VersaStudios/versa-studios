@@ -1215,46 +1215,98 @@ function addCustomAttendee(){
 }
 
 // ── EMAIL MINUTES ──────────────────────────────────────────────
-function emailMinutes(){
+// Builds the full staff+attendees recipient list, then fires off via EmailJS
+async function emailMinutes(){
   const m=getCurrentMeeting();if(!m)return;
-  if(!m.attendees||!m.attendees.length){
-    alert('Add at least one attendee before sending minutes.');
-    return;
-  }
-  // Refresh each attendee's email from STAFF (crew_contacts) — handles the case where
-  // an attendee was added before their email was set, or the email has since changed.
-  // Custom-added attendees (with "<email>" syntax) keep their original email.
-  const refreshed=m.attendees.map(a=>{
-    const fromStaff=STAFF.find(s=>(s.name||'').toLowerCase()===(a.name||'').toLowerCase());
-    const latestEmail=(fromStaff&&fromStaff.email)?fromStaff.email:(a.email||'');
-    return {name:a.name||'',email:latestEmail};
-  });
-  // Persist any newly-resolved emails back onto the meeting attendees so they stay in sync
+
   let attendeesChanged=false;
-  m.attendees.forEach((a,i)=>{
-    if(!a.email&&refreshed[i].email){a.email=refreshed[i].email;attendeesChanged=true;}
+  (m.attendees||[]).forEach(a=>{
+    if(!a.email){
+      const fromStaff=STAFF.find(s=>(s.name||'').toLowerCase()===(a.name||'').toLowerCase());
+      if(fromStaff&&fromStaff.email){a.email=fromStaff.email;attendeesChanged=true;}
+    }
   });
   if(attendeesChanged)saveMeetingsDebounced();
 
-  const withEmail=refreshed.filter(a=>a.email);
-  const missing=refreshed.filter(a=>!a.email);
+  const recipientMap=new Map();
+  STAFF.forEach(s=>{
+    if(s.email && s.email.trim()) recipientMap.set(s.email.toLowerCase().trim(), s.name||s.email);
+  });
+  (m.attendees||[]).forEach(a=>{
+    if(a.email && a.email.trim()) recipientMap.set(a.email.toLowerCase().trim(), a.name||a.email);
+  });
 
-  const subject='Meeting Minutes — '+(m.title||'Untitled')+' — '+fmtDate(m.date);
-  let body='Meeting: '+(m.title||'Untitled')+'\n';
-  body+='Date: '+fmtDate(m.date)+'\n\n';
-  if(refreshed.length){
-    body+='Attendees:\n';
-    refreshed.forEach(a=>{body+='- '+a.name+'\n';});
-    body+='\n';
-  }
-  const notes=(m.notes||[]).filter(n=>n&&n.trim());
-  if(notes.length){
-    body+='Notes:\n';
-    notes.forEach(n=>{body+='- '+n+'\n';});
+  if(recipientMap.size===0){
+    alert('No staff with email addresses on file. Set staff emails first.');
+    return;
   }
 
-  EMAIL_CONFIRM_STATE={recipients:withEmail,missing:missing,subject:subject,body:body};
-  openEmailConfirm();
+  const total=recipientMap.size;
+  if(!confirm('Send meeting minutes to '+total+' recipient'+(total===1?'':'s')+'?\n\nThis broadcasts to all staff with emails on file.')) return;
+
+  await _sendMinutesTo(m, Array.from(recipientMap.keys()), 'button[onclick="emailMinutes()"]');
+}
+
+// Shared sender — recipients is an array of email strings.
+async function _sendMinutesTo(m, recipients, btnSelector){
+  const subject='Meeting Minutes \u2014 '+(m.title||'Untitled')+' \u2014 '+fmtDate(m.date);
+  const attendeesHtml=(m.attendees||[]).map(a=>esc(a.name||'')).filter(Boolean).join('<br>');
+  const notesHtml=(m.notes||[]).filter(n=>n&&n.trim()).map(n=>esc(n)).join('<br>');
+
+  const btn=btnSelector?document.querySelector(btnSelector):null;
+  const origText=btn?btn.textContent:'';
+
+  if(!window.emailjs){
+    if(btn){btn.textContent='Loading...';btn.disabled=true;}
+    await new Promise(function(resolve){
+      var s=document.createElement('script');
+      s.src='https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
+      s.onload=resolve;s.onerror=resolve;
+      document.head.appendChild(s);
+    });
+  }
+  if(!window.emailjs){
+    if(btn){btn.textContent=origText;btn.disabled=false;}
+    alert('Email service failed to load. Check your connection and try again.');
+    return;
+  }
+
+  emailjs.init({publicKey:'-WB5uUr8yu-oIKc5v'});
+
+  let sent=0, failed=0;
+  const failedList=[];
+
+  for(let i=0;i<recipients.length;i++){
+    const email=recipients[i];
+    if(btn){
+      btn.textContent=recipients.length>1?('Sending '+(i+1)+' / '+recipients.length+'...'):'Sending...';
+      btn.disabled=true;
+    }
+    try{
+      await emailjs.send('service_883826m','template_yn4qn2g',{
+        to_email:email,
+        subject:subject,
+        meeting_title:m.title||'Untitled',
+        meeting_date:fmtDate(m.date),
+        attendees:attendeesHtml||'(none)',
+        notes:notesHtml||'(no notes)',
+        reply_to:'andrew.rowell@versastudios.com'
+      });
+      sent++;
+    }catch(e){
+      failed++;
+      failedList.push(email+' - '+(e.text||e.message||'unknown error'));
+      console.error('Failed to send to '+email+':',e);
+    }
+  }
+
+  if(btn){btn.textContent=origText;btn.disabled=false;}
+
+  if(failed===0){
+    alert(recipients.length===1?('Test sent to '+recipients[0]):('Minutes sent to '+sent+' recipient'+(sent===1?'':'s')+'.'));
+  }else{
+    alert('Sent: '+sent+'  \u00b7  Failed: '+failed+'\n\nFailures:\n'+failedList.join('\n'));
+  }
 }
 function openEmailConfirm(){
   const st=EMAIL_CONFIRM_STATE;if(!st)return;
