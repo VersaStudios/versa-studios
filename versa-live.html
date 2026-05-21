@@ -14,38 +14,41 @@
 
 <style>
   :root {
-    /* multiviewer uses a darker, near-black chrome */
-    --bg: #0e0d0c;
-    --chrome: #1a1918;
-    --chrome-2: #23211f;
-    --chrome-3: #2d2a27;
-    --text: #efede3;
-    --text-dim: #a8a39a;
-    --text-faint: #6b6660;
+    /* Dark mode — gallery/daytime */
+    --bg: #0a0a0a;
+    --chrome: #141414;
+    --chrome-2: #1c1c1c;
+    --chrome-3: #242424;
+    --text: #ffffff;
+    --text-dim: #a8a8a8;
+    --text-faint: #6e6e6e;
     --marigold: #F4A258;
-    --border: #2a2825;
-    --border-hl: #3a3733;
+    --accent: #ffffff;
+    --border: #232323;
+    --border-hl: #333333;
     --live: #d1382a;
-    --onair: #d1382a;           /* warm broadcast red — matches on-air signs */
-    --onair-hot: #ef4a37;        /* highlight/glow edge */
+    --onair: #d1382a;
+    --onair-hot: #ef4a37;
     --onair-glow: rgba(209,56,42,0.55);
     --onair-deep: rgba(209,56,42,0.10);
     --amber: #e8a84a;
   }
 
   [data-theme="light"] {
-    --bg: #e4e1d4;
-    --chrome: #efede3;
-    --chrome-2: #e6e3d7;
-    --chrome-3: #dcd8ca;
-    --text: #302f2c;
-    --text-dim: #5c5852;
-    --text-faint: #8a857d;
+    /* Light mode — office screens, matches versastudios.com */
+    --bg: #ffffff;
+    --chrome: #ffffff;
+    --chrome-2: #fafafa;
+    --chrome-3: #f2f2f2;
+    --text: #111111;
+    --text-dim: #555555;
+    --text-faint: #999999;
     --marigold: #c78445;
-    --border: #cfcabc;
-    --border-hl: #b8b2a2;
-    --onair-glow: rgba(209,56,42,0.35);
-    --onair-deep: rgba(209,56,42,0.06);
+    --accent: #111111;
+    --border: #e8e8e8;
+    --border-hl: #d4d4d4;
+    --onair-glow: rgba(209,56,42,0.30);
+    --onair-deep: rgba(209,56,42,0.05);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -70,14 +73,23 @@
     position: relative;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     gap: 20px;
-    padding: 12px 22px;
-    background: var(--chrome);
-    border-bottom: 1px solid var(--border);
+    padding: 46px 40px 34px;
+    background: var(--bg);
     flex-shrink: 0;
-    min-height: 76px;
   }
+  /* Utility controls live in a side bar that only appears in admin view */
+  .topbar-util {
+    position: absolute;
+    right: 28px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: none;
+    align-items: center;
+    gap: 12px;
+  }
+  header.topbar.show-util .topbar-util { display: flex; }
 
   .brand {
     display: flex;
@@ -88,30 +100,20 @@
   }
   .brand-svg {
     display: block;
-    height: 44px;
+    height: 56px;
     width: auto;
     flex-shrink: 0;
     color: var(--text);
   }
   .brand-img {
     display: none;
-    height: 44px;
+    height: 56px;
     width: auto;
   }
   .brand-img.shown { display: block; }
   .brand-img.shown ~ .brand-svg { display: none; }
 
-  .brand-live {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 800;
-    font-size: 11px;
-    letter-spacing: 0.32em;
-    color: var(--marigold);
-    padding: 3px 8px;
-    border: 1px solid var(--marigold);
-    border-radius: 2px;
-    line-height: 1;
-  }
+  .brand-live { display: none; }
 
   .topbar-centre {
     position: absolute;
@@ -119,53 +121,48 @@
     top: 50%;
     transform: translate(-50%, -50%);
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: 4px;
+    gap: 14px;
     pointer-events: none;
     z-index: 1;
   }
   .topbar-centre .master-onair { pointer-events: auto; }
   .topbar-label {
     font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 900;
-    letter-spacing: 0.42em;
-    font-size: 44px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    font-size: 32px;
     color: var(--text);
     text-transform: uppercase;
-    padding-left: 0.42em;   /* letter-spacing adds phantom trailing space; compensate leading */
-    line-height: 0.95;
-    text-shadow: 0 0 30px rgba(244,162,88,0.15);
+    padding-left: 0.22em;
+    line-height: 1;
   }
 
   /* Master ON AIR indicator under the MULTIVIEWER title — only visible when something's live */
   .master-onair {
     display: none;
     align-items: center;
-    gap: 8px;
-    padding: 3px 12px;
+    gap: 7px;
+    padding: 4px 10px 3px;
     border-radius: 2px;
     font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 800;
+    font-weight: 700;
     font-size: 11px;
-    letter-spacing: 0.28em;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
     line-height: 1;
     color: #fff;
-    background: linear-gradient(to bottom, var(--onair-hot), var(--onair));
-    border: 1px solid var(--onair-hot);
-    box-shadow: 0 0 18px var(--onair-glow), inset 0 1px 0 rgba(255,255,255,0.25);
-    text-shadow: 0 0 6px rgba(255,255,255,0.3);
+    background: var(--onair);
   }
   .master-onair.live { display: inline-flex; }
   .master-onair .dot {
-    width: 7px;
-    height: 7px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
     background: #fff;
-    box-shadow: 0 0 8px rgba(255,255,255,0.8);
-    animation: pulse-dot 1.6s infinite;
+    animation: pulse-dot 1.8s infinite;
   }
   @keyframes pulse-dot {
     0%, 100% { opacity: 1; }
@@ -178,63 +175,56 @@
     gap: 12px;
   }
 
-  /* Big broadcast-style clock */
+  /* Clean clock — typography only, no boxes or glow */
   .clock {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 14px;
-    background: #000;
-    border: 1px solid var(--border-hl);
-    border-radius: 3px;
     font-family: 'JetBrains Mono', monospace;
-    font-weight: 600;
-    font-size: 20px;
-    letter-spacing: 0.05em;
-    color: var(--marigold);
-    text-shadow: 0 0 10px rgba(244,162,88,0.35);
-    min-width: 140px;
-    justify-content: center;
-  }
-  [data-theme="light"] .clock {
-    background: #fff;
-    color: #c78445;
-    text-shadow: none;
+    font-weight: 500;
+    font-size: 18px;
+    letter-spacing: 0.04em;
+    color: var(--text);
+    min-width: 110px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
   }
 
   .icon-btn {
     background: transparent;
-    border: 1px solid var(--border-hl);
+    border: none;
     color: var(--text-dim);
-    padding: 8px 12px;
+    padding: 8px 6px;
     cursor: pointer;
-    border-radius: 3px;
     font-family: 'Barlow Condensed', sans-serif;
     font-size: 12px;
     font-weight: 700;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
-    transition: all 120ms;
+    transition: color 120ms;
   }
-  .icon-btn:hover { color: var(--text); border-color: var(--marigold); }
-  .icon-btn.primary {
-    background: var(--marigold);
-    color: #1a1918;
-    border-color: var(--marigold);
+  .icon-btn:hover { color: var(--text); }
+  .icon-btn::before {
+    content: ">";
+    color: var(--text-faint);
+    margin-right: 0.5em;
+    font-weight: 400;
+    letter-spacing: 0;
   }
-  .icon-btn.primary:hover { background: #ffb366; }
+  .icon-btn:hover::before { color: var(--text); }
+  .icon-btn.primary { color: var(--text); }
+  .icon-btn.primary::before { color: var(--text); }
+  .focus-close-btn::before { content: "×"; font-size: 1.4em; line-height: 0.7; }
 
   @media (max-width: 720px) {
     header.topbar { padding: 8px 12px; gap: 8px; min-height: 56px; }
-    .brand-svg, .brand-img { height: 32px; }
+    .brand-svg, .brand-img { height: 28px; }
     .brand-live { display: none; }
     .topbar-centre { display: none; }
-    .clock { font-size: 16px; min-width: 110px; padding: 4px 10px; }
-    .icon-btn { padding: 6px 8px; font-size: 11px; }
+    .clock { font-size: 14px; min-width: 90px; }
+    .icon-btn { padding: 6px 4px; font-size: 11px; letter-spacing: 0.14em; }
+    .icon-btn::before { display: none; }
   }
   @media (min-width: 721px) and (max-width: 1100px) {
-    .topbar-label { font-size: 32px; letter-spacing: 0.32em; padding-left: 0.32em; }
-    .master-onair { font-size: 10px; letter-spacing: 0.24em; padding: 2px 10px; }
+    .topbar-label { font-size: 24px; letter-spacing: 0.2em; padding-left: 0.2em; }
+    .master-onair { font-size: 10px; letter-spacing: 0.2em; }
   }
 
   /* ═════════ MULTIVIEWER ═════════ */
@@ -242,7 +232,7 @@
     flex: 1;
     min-height: 0;
     display: flex;
-    padding: 8px;
+    padding: 6px 52px 54px;
     background: var(--bg);
   }
 
@@ -252,7 +242,7 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-auto-rows: 1fr;
-    gap: 8px;
+    gap: 44px 48px;
   }
 
   /* If 1 feed: full. 2: row. 3-4: 2x2. 5-6: 3x2. */
@@ -262,76 +252,86 @@
   .mv.cnt-5, .mv.cnt-6 { grid-template-columns: repeat(3, 1fr); }
 
   @media (max-width: 720px) {
-    main { padding: 4px; }
-    .mv { gap: 4px; grid-template-columns: 1fr !important; grid-auto-rows: auto; }
-    .mv .tile { aspect-ratio: 16 / 9; }
+    main { padding: 8px; display: block; }
+    .mv {
+      gap: 8px;
+      grid-template-columns: 1fr !important;
+      grid-auto-rows: auto;
+      display: block;
+    }
+    .mv .tile {
+      aspect-ratio: auto;
+      height: auto;
+      display: block;
+      margin-bottom: 8px;
+    }
+    .mv .tile-video {
+      flex: none;
+      width: 100%;
+      padding-bottom: 56.25%; /* explicit 16:9 — works in Instagram WebView */
+      height: 0;
+      position: relative;
+    }
+    .mv .tile-video > video,
+    .mv .tile-video > .no-signal {
+      position: absolute;
+      inset: 0;
+    }
+    .mv .umd {
+      display: flex !important;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+    }
+    .mv .umd-label {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+    .mv .umd-label .studio { font-size: 22px; }
+    .mv .umd-label .show { font-size: 11px; }
   }
 
   /* ═════════ TILE ═════════ */
   .tile {
     background: #000;
     border: 1px solid var(--border);
-    border-radius: 2px;
     overflow: hidden;
     position: relative;
     cursor: pointer;
     display: flex;
     flex-direction: column;
-    transition: border-color 120ms, transform 120ms;
+    transition: border-color 160ms, box-shadow 160ms;
     min-height: 0;
   }
-  .tile:hover { border-color: var(--marigold); }
+  .tile:hover {
+    border-color: var(--text-faint);
+  }
+  [data-theme="light"] .tile:hover {
+    border-color: var(--text-dim);
+  }
   .tile.live {
     border-color: var(--onair);
-    box-shadow: 0 0 0 1px var(--onair), 0 0 24px var(--onair-deep);
   }
 
-  /* ON AIR badge — illuminated-sign look */
+  /* Flat ON AIR badge — minimal, just a solid pill */
   .tile-onair {
     position: absolute;
-    top: 10px;
-    left: 10px;
+    top: 12px;
+    left: 12px;
     z-index: 3;
-    padding: 5px 11px 4px;
-    background: linear-gradient(to bottom, var(--onair-hot), var(--onair));
+    padding: 5px 10px 4px;
+    background: var(--onair);
     color: #fff;
     font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 900;
-    font-size: 12px;
+    font-weight: 700;
+    font-size: 11px;
     letter-spacing: 0.22em;
     text-transform: uppercase;
-    border-radius: 2px;
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.35),
-      inset 0 -1px 0 rgba(0,0,0,0.18),
-      0 0 14px var(--onair-glow),
-      0 2px 4px rgba(0,0,0,0.4);
-    text-shadow: 0 0 6px rgba(255,255,255,0.4);
-    display: none;
     line-height: 1;
+    display: none;
     pointer-events: none;
   }
-  .tile.live .tile-onair {
-    display: block;
-    animation: onair-pulse 2.4s infinite ease-in-out;
-  }
-  @keyframes onair-pulse {
-    0%, 100% {
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.35),
-        inset 0 -1px 0 rgba(0,0,0,0.18),
-        0 0 14px var(--onair-glow),
-        0 2px 4px rgba(0,0,0,0.4);
-    }
-    50% {
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.5),
-        inset 0 -1px 0 rgba(0,0,0,0.18),
-        0 0 28px var(--onair-glow),
-        0 0 40px var(--onair-deep),
-        0 2px 4px rgba(0,0,0,0.4);
-    }
-  }
+  .tile.live .tile-onair { display: block; }
 
   .tile-video {
     flex: 1;
@@ -347,7 +347,7 @@
     background: #000;
   }
 
-  /* No-signal placeholder (with VERSA watermark) */
+  /* No-signal placeholder */
   .no-signal {
     position: absolute;
     inset: 0;
@@ -355,103 +355,87 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background:
-      repeating-linear-gradient(
-        135deg,
-        rgba(20,20,20,0.9),
-        rgba(20,20,20,0.9) 14px,
-        rgba(10,10,10,0.95) 14px,
-        rgba(10,10,10,0.95) 28px
-      );
+    background: #050505;
     pointer-events: none;
-    gap: 10px;
+    gap: 14px;
+  }
+  [data-theme="light"] .no-signal {
+    background: var(--chrome-3);
   }
   .no-signal.hidden { display: none; }
 
   .no-signal-mark {
-    width: 48%;
-    max-width: 280px;
+    width: 42%;
+    max-width: 240px;
     height: auto;
-    color: var(--marigold);
-    opacity: 0.14;
+    color: #fff;
+    opacity: 0.06;
     display: block;
   }
-  .no-signal-label {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700;
-    font-size: 12px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: rgba(244,162,88,0.45);
-    padding: 4px 10px;
-    border: 1px solid rgba(244,162,88,0.25);
-    border-radius: 2px;
+  [data-theme="light"] .no-signal-mark {
+    color: #000;
+    opacity: 0.08;
   }
 
   /* UMD (Under Monitor Display) bar */
   .umd {
     flex-shrink: 0;
     display: grid;
-    grid-template-columns: auto 1fr auto;
-    gap: 12px;
+    grid-template-columns: 1fr auto;
+    gap: 14px;
     align-items: center;
-    padding: 8px 12px;
-    background: var(--chrome-2);
+    padding: 14px 18px;
+    background: var(--chrome);
     border-top: 1px solid var(--border);
     font-family: 'Barlow Condensed', sans-serif;
-    min-height: 58px;
-  }
-  .umd-site {
-    font-weight: 800;
-    font-size: 14px;
-    letter-spacing: 0.12em;
-    color: var(--marigold);
-    padding: 4px 8px;
-    background: rgba(244,162,88,0.1);
-    border-radius: 2px;
-    line-height: 1;
+    min-height: 64px;
   }
   .umd-label {
     min-width: 0;
     display: flex;
-    flex-direction: column;
-    gap: 2px;
+    align-items: baseline;
+    gap: 16px;
+    flex-wrap: nowrap;
+    overflow: hidden;
   }
   .umd-label .studio {
-    font-size: 22px;
-    font-weight: 800;
-    letter-spacing: 0.02em;
-    line-height: 1.05;
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    line-height: 1;
     color: var(--text);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    text-transform: uppercase;
+    flex-shrink: 1;
   }
   .umd-label .show {
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 600;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--text-dim);
+    color: var(--text-faint);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    line-height: 1.2;
+    line-height: 1;
+    flex-shrink: 0;
   }
   .umd-label .show.off { display: none; }
   .umd-status {
     font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 0.18em;
+    font-weight: 700;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
     color: var(--text-faint);
   }
   .umd-dot {
-    width: 7px;
-    height: 7px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
     background: var(--text-faint);
   }
@@ -459,45 +443,61 @@
   .umd-status.live { color: var(--live); }
   .umd-status.live .umd-dot {
     background: var(--live);
-    box-shadow: 0 0 0 0 rgba(232,93,74,0.7);
-    animation: pulse 1.6s infinite;
+    animation: pulse 1.8s infinite;
   }
   @keyframes pulse {
-    0%   { box-shadow: 0 0 0 0 rgba(232,93,74,0.7); }
-    70%  { box-shadow: 0 0 0 7px rgba(232,93,74,0); }
-    100% { box-shadow: 0 0 0 0 rgba(232,93,74,0); }
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.45; }
   }
 
   /* Expand hint on hover */
-  .tile::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    box-shadow: inset 0 0 0 0 var(--marigold);
-    transition: box-shadow 160ms;
-  }
-  .tile:hover::after { box-shadow: inset 0 0 0 2px var(--marigold); }
-
   .expand-ico {
     position: absolute;
-    top: 8px;
-    right: 8px;
+    top: 12px;
+    right: 12px;
     width: 28px;
     height: 28px;
-    border-radius: 2px;
-    background: rgba(0,0,0,0.55);
-    backdrop-filter: blur(4px);
+    background: rgba(0,0,0,0.6);
+    border: none;
+    padding: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     opacity: 0;
-    transition: opacity 120ms;
-    pointer-events: none;
+    transition: opacity 160ms;
+    pointer-events: auto;
+    cursor: pointer;
     color: #fff;
+    z-index: 4;
   }
-  .tile:hover .expand-ico { opacity: 1; }
+  .tile:hover .expand-ico,
+  .expand-ico:focus { opacity: 1; }
   .expand-ico svg { width: 14px; height: 14px; }
+
+  /* Iframe embeds (WebRTC / vdo.ninja) fill the feed box */
+  .tile-embed {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+    background: #000;
+  }
+  /* Transparent catcher so clicking an embed tile still opens the full-page view */
+  .embed-catch {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    cursor: pointer;
+  }
+  .focus-embed {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+    background: #000;
+  }
 
   /* ═════════ FOCUSED OVERLAY ═════════ */
   .focus {
@@ -506,7 +506,7 @@
     z-index: 40;
     display: none;
     flex-direction: column;
-    background: #000;
+    background: var(--bg);
   }
   .focus.open { display: flex; }
 
@@ -515,42 +515,40 @@
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    padding: 10px 16px;
-    background: var(--chrome);
+    padding: 14px 20px;
+    background: var(--bg);
     border-bottom: 1px solid var(--border);
     flex-shrink: 0;
   }
   .focus-info {
     display: flex;
-    align-items: center;
-    gap: 14px;
+    align-items: baseline;
+    gap: 18px;
     min-width: 0;
+    overflow: hidden;
   }
-  .focus-site {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 800;
-    font-size: 14px;
-    letter-spacing: 0.12em;
-    color: var(--marigold);
-    padding: 3px 8px;
-    background: rgba(244,162,88,0.1);
-    border-radius: 2px;
-  }
+  .focus-site { display: none; }
   .focus-label {
     font-family: 'Barlow Condensed', sans-serif;
     font-weight: 700;
-    font-size: 20px;
-    letter-spacing: 0.02em;
+    font-size: 30px;
+    letter-spacing: 0.01em;
     color: var(--text);
+    text-transform: uppercase;
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    line-height: 1;
+    flex-shrink: 1;
   }
   .focus-label .show {
-    color: var(--text-dim);
-    font-weight: 500;
-    margin-left: 10px;
+    color: var(--text-faint);
+    font-weight: 600;
+    margin-left: 16px;
+    font-size: 13px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
   }
 
   .focus-body {
@@ -561,49 +559,53 @@
     justify-content: center;
     position: relative;
     overflow: hidden;
+    padding: 16px;
+    background: var(--bg);
   }
   #focusVideoSlot {
-    width: 100%;
-    height: 100%;
+    aspect-ratio: 16 / 9;
+    /* Fit within available width OR available height, whichever is smaller — letterbox neither */
+    width: min(100%, calc((100vh - 280px) * 16 / 9));
+    max-width: 100%;
+    max-height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     background: #000;
   }
   #focusVideoSlot video {
-    max-width: 100%;
-    max-height: 100%;
     width: 100%;
     height: 100%;
     object-fit: contain;
     background: #000;
+    display: block;
   }
 
   .focus-strip {
     flex-shrink: 0;
     display: grid;
     grid-auto-flow: column;
-    grid-auto-columns: minmax(160px, 1fr);
-    gap: 4px;
-    padding: 4px;
-    background: var(--chrome);
+    grid-auto-columns: minmax(180px, 1fr);
+    gap: 8px;
+    padding: 8px;
+    background: var(--bg);
     border-top: 1px solid var(--border);
     overflow-x: auto;
   }
   .strip-tile {
     position: relative;
     aspect-ratio: 16 / 9;
-    background: #000;
+    background: #050505;
     border: 1px solid var(--border);
-    border-radius: 2px;
     overflow: hidden;
     cursor: pointer;
     display: flex;
     flex-direction: column;
-    transition: border-color 120ms;
+    transition: border-color 160ms;
   }
-  .strip-tile:hover { border-color: var(--marigold); }
-  .strip-tile.live { border-left: 2px solid var(--onair); }
+  .strip-tile:hover { border-color: var(--text-faint); }
+  .strip-tile.live { border-color: var(--onair); }
+  [data-theme="light"] .strip-tile { background: var(--chrome-3); }
 
   .strip-bg {
     position: absolute;
@@ -611,64 +613,68 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background:
-      repeating-linear-gradient(135deg,
-        rgba(20,20,20,0.95),
-        rgba(20,20,20,0.95) 8px,
-        rgba(10,10,10,1) 8px,
-        rgba(10,10,10,1) 16px);
+    background: transparent;
   }
   .strip-bg svg {
-    width: 56%;
-    max-width: 140px;
+    width: 50%;
+    max-width: 120px;
     height: auto;
-    color: var(--marigold);
-    opacity: 0.18;
+    color: #fff;
+    opacity: 0.06;
+  }
+  [data-theme="light"] .strip-bg svg {
+    color: #000;
+    opacity: 0.08;
   }
 
   .strip-label {
     position: absolute;
     bottom: 0; left: 0; right: 0;
-    padding: 4px 8px;
-    background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0));
+    padding: 10px 12px;
+    background: linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0));
     font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700;
-    font-size: 11px;
-    letter-spacing: 0.08em;
+    text-transform: uppercase;
     display: flex;
-    align-items: center;
-    gap: 6px;
+    align-items: baseline;
+    gap: 10px;
+    overflow: hidden;
   }
-  .strip-label .site {
-    color: var(--marigold);
-    font-weight: 800;
+  [data-theme="light"] .strip-label {
+    background: linear-gradient(to top, rgba(0,0,0,0.75), rgba(0,0,0,0));
   }
   .strip-label .name {
     color: #fff;
+    font-weight: 700;
+    font-size: 17px;
+    letter-spacing: 0.02em;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    flex: 1;
+    flex-shrink: 1;
+  }
+  .strip-label .show {
+    color: rgba(255,255,255,0.55);
+    font-weight: 600;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    white-space: nowrap;
+    flex-shrink: 0;
   }
 
   /* ON AIR pill on the focus-strip thumbnail */
   .tick {
     position: absolute;
-    top: 6px;
-    left: 6px;
-    padding: 3px 7px 2px;
-    background: linear-gradient(to bottom, var(--onair-hot), var(--onair));
+    top: 8px;
+    left: 8px;
+    padding: 4px 7px 3px;
+    background: var(--onair);
     color: #fff;
     font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 900;
+    font-weight: 700;
     font-size: 9px;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
-    border-radius: 2px;
     line-height: 1;
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.35),
-      0 0 10px var(--onair-glow);
     display: none;
   }
   .tick.show { display: inline-block; }
@@ -847,6 +853,141 @@
     z-index: 200;
   }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ═════════ CINEMATIC SHOWCASE TILE (title floats above feed) ═════════ */
+  .tile {
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    min-height: 0;
+  }
+
+  /* Title block floats in the black gutter above the feed — no band, no divider */
+  .tile-head {
+    flex-shrink: 0;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 0 2px 18px;
+    background: transparent;
+    border: none;
+  }
+  .tile-id {
+    display: flex;
+    align-items: baseline;
+    gap: 22px;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .tile-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: clamp(30px, 3.8vw, 58px);
+    line-height: 0.85;
+    letter-spacing: 0.004em;
+    text-transform: uppercase;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .tile-loc {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 500;
+    font-size: clamp(12px, 1.05vw, 17px);
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .tile-meta {
+    display: flex;
+    align-items: baseline;
+    gap: 18px;
+    flex-shrink: 0;
+  }
+  .tile-show {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+    font-size: clamp(11px, 1vw, 15px);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 24vw;
+  }
+  .tile-show.off { display: none; }
+  .tile-status {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: clamp(9px, 0.85vw, 12px);
+    font-weight: 700;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+  .st-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-faint); flex-shrink: 0; }
+  .tile-status.connecting .st-dot { background: var(--amber); }
+  .tile-status.offline { color: var(--text-faint); }
+  .tile-status.live { color: var(--live); }
+  .tile-status.live .st-dot { background: var(--live); animation: pulse 1.8s infinite; }
+
+  /* The feed itself — large, framed only by the surrounding black */
+  .tile .tile-video {
+    position: relative;
+    background: #000;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.16);
+    transition: border-color 200ms, box-shadow 200ms;
+  }
+  [data-theme="light"] .tile .tile-video { border-color: rgba(0,0,0,0.18); }
+  .tile.live .tile-video { border-color: rgba(209,56,42,0.5); }
+  .tile:hover .tile-video { border-color: var(--text-faint); }
+  /* Cinematic vignette at the base of each feed (dark theme only) */
+  .tile .tile-video::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 30%;
+    background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);
+    pointer-events: none;
+    z-index: 1;
+  }
+  [data-theme="light"] .tile .tile-video::after { display: none; }
+
+  /* Focus header: hide the site eyebrow when a feed has no location */
+  .focus-site:empty { display: none; }
+
+  /* Desktop/tablet: each feed is a true 16:9 box, sized so two rows fit the viewport */
+  @media (min-width: 721px) {
+    .tile { justify-content: center; }
+    .tile .tile-video {
+      aspect-ratio: 16 / 9;
+      width: min(100%, calc((50vh - 195px) * 16 / 9));
+      max-height: calc(50vh - 195px);
+      margin: 0 auto;
+    }
+  }
+
+  @media (max-width: 1100px) {
+    main { padding: 6px 28px 32px; }
+    .mv { gap: 30px 30px; }
+  }
+  @media (max-width: 720px) {
+    .tile-head { padding: 0 2px 12px; gap: 14px; }
+    .tile-title { font-size: 30px; }
+    .tile-loc { font-size: 12px; letter-spacing: 0.26em; }
+    .tile-show { max-width: 40vw; }
+  }
 </style>
 </head>
 <body>
@@ -876,18 +1017,14 @@
     <svg class="brand-svg" id="brandSvg" viewBox="0 0 1366 515.64" aria-label="Versa Studios">
       <use href="#versa-logo"/>
     </svg>
-    <span class="brand-live">LIVE</span>
   </div>
 
-  <div class="topbar-centre">
-    <div class="topbar-label">Multiviewer</div>
+  <!-- Utility controls — kept for the streaming/admin engine; only revealed in admin view -->
+  <div class="topbar-util">
     <div class="master-onair" id="masterOnair">
       <span class="dot"></span>
       <span class="txt">On Air</span>
     </div>
-  </div>
-
-  <div class="topbar-right">
     <div id="clock" class="clock">--:--:--</div>
     <button class="icon-btn" id="themeBtn">Theme</button>
     <button class="icon-btn" id="adminBtn" style="display:none">Admin</button>
@@ -907,7 +1044,7 @@
       <div id="focusSite" class="focus-site">MCR</div>
       <div id="focusLabel" class="focus-label">—</div>
     </div>
-    <button class="icon-btn" id="focusClose">✕ Close</button>
+    <button class="icon-btn focus-close-btn" id="focusClose">Close</button>
   </div>
   <div class="focus-body">
     <div id="focusVideoSlot"></div>
@@ -1014,10 +1151,10 @@ const DEFAULT_CONFIG = {
   streamHost: 'https://stream.example.com',
   logoUrl: '',
   streams: [
-    { id: 'mcr-abc', site: 'MCR', label: 'Manchester ABC' },
-    { id: 'mcr-s12', site: 'MCR', label: 'Manchester Studio 12' },
-    { id: 'mcr-s8',  site: 'MCR', label: 'Manchester Studio 8' },
-    { id: 'ldn',     site: 'LDN', label: 'London' }
+    { id: 'mcr-s12', site: 'Manchester', label: 'Studio 12' },
+    { id: 'mcr-s8',  site: 'Manchester', label: 'Studio 8' },
+    { id: 'ldn',     site: '',           label: 'London' },
+    { id: 'mcr-abc', site: '',           label: 'ABC' }
   ],
   schedule: [
     { id: 'a1', stream: 'mcr-abc', show: 'Morning Live',           start: '06:30', end: '11:15', days: [1,2,3,4,5] },
@@ -1027,7 +1164,7 @@ const DEFAULT_CONFIG = {
   ]
 };
 
-const STORAGE_KEY = 'versaLive.config.v3';
+const STORAGE_KEY = 'versaLive.config.v4';
 const DAY_LETTERS = ['S','M','T','W','T','F','S'];
 const DAY_NAMES   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
@@ -1105,6 +1242,19 @@ function applyBrand() {
 }
 
 /* ─── Build multiviewer ─── */
+/* Per-stream iframe embeds (WebRTC / vdo.ninja etc.) — overrides the HLS player.
+   Editable here or via a stream's optional `embed` config field. */
+const STREAM_EMBEDS = {
+  'mcr-s12': 'https://vdo.ninja/?view=qJcSsbk&pw=Dragons24!'
+};
+function embedUrl(stream){ return (stream && (stream.embed || STREAM_EMBEDS[stream.id])) || ''; }
+/* Grid feeds must autoplay (no user gesture) → force muted; clean output hides the player UI.
+   The focused/fullscreen view keeps audio. */
+function gridEmbedSrc(url){
+  if(!url) return url;
+  return url + (url.indexOf('?') >= 0 ? '&' : '?') + 'cleanoutput&noaudio&autostart';
+}
+
 function buildMultiviewer() {
   const mv = document.getElementById('mv');
   mv.innerHTML = '';
@@ -1114,35 +1264,42 @@ function buildMultiviewer() {
     const tile = document.createElement('div');
     tile.className = 'tile';
     tile.dataset.streamId = stream.id;
-    tile.innerHTML = `
-      <div class="tile-onair">On Air</div>
-      <div class="tile-video">
-        <video playsinline muted></video>
+    const emb = embedUrl(stream);
+    const mediaHtml = emb
+      ? `<iframe class="tile-embed" src="${gridEmbedSrc(emb)}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen frameborder="0" scrolling="no"></iframe><div class="embed-catch"></div>`
+      : `<video playsinline muted></video>
         <div class="no-signal">
           <svg class="no-signal-mark" viewBox="0 0 1366 515.64" aria-hidden="true"><use href="#versa-logo"/></svg>
-          <div class="no-signal-label">No Signal · ${escapeHtml(stream.id)}</div>
+        </div>`;
+    const statusHtml = emb
+      ? `<span class="tile-status live"><span class="st-dot"></span><span class="st-text">Live</span></span>`
+      : `<span class="tile-status connecting"><span class="st-dot"></span><span class="st-text">Connecting</span></span>`;
+    tile.innerHTML = `
+      <div class="tile-head">
+        <div class="tile-id">
+          <span class="tile-title">${escapeHtml(stream.label)}</span>
+          ${stream.site ? `<span class="tile-loc">${escapeHtml(stream.site)}</span>` : ''}
+        </div>
+        <div class="tile-meta">
+          <span class="tile-show off"></span>
+          ${statusHtml}
         </div>
       </div>
-      <div class="umd">
-        <div class="umd-site">${escapeHtml(stream.site)}</div>
-        <div class="umd-label">
-          <div class="studio">${escapeHtml(stream.label)}</div>
-          <div class="show">—</div>
-        </div>
-        <div class="umd-status connecting">
-          <span class="umd-dot"></span><span class="umd-text">Connecting</span>
-        </div>
-      </div>
-      <div class="expand-ico">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
-          <path d="M4 10V4h6M20 14v6h-6M4 14v6h6M20 10V4h-6"/>
-        </svg>
+      <div class="tile-video">
+        ${mediaHtml}
+        <div class="tile-onair">On Air</div>
+        <button class="expand-ico" title="Full screen" onclick="event.stopPropagation();mvFullscreen(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+            <path d="M4 10V4h6M20 14v6h-6M4 14v6h6M20 10V4h-6"/>
+          </svg>
+        </button>
       </div>
     `;
     tile.addEventListener('click', () => openFocus(stream.id));
     mv.appendChild(tile);
 
-    mountPlayer(stream.id, tile);
+    if (emb) players[stream.id] = { tileEl: tile, embed: true, videoEl: null };
+    else mountPlayer(stream.id, tile);
   });
 
   tickUmd();
@@ -1153,7 +1310,7 @@ function updateUmdLabel(streamId) {
   const p = players[streamId];
   if (!p) return;
   const entry = getActiveForStream(streamId);
-  const showEl = p.tileEl.querySelector('.umd-label .show');
+  const showEl = p.tileEl.querySelector('.tile-show');
   if (entry) {
     showEl.textContent = entry.show;
     showEl.classList.remove('off');
@@ -1183,11 +1340,11 @@ function updateMasterOnair() {
 function mountPlayer(streamId, tileEl) {
   const video = tileEl.querySelector('video');
   const noSignal = tileEl.querySelector('.no-signal');
-  const statusEl = tileEl.querySelector('.umd-status');
+  const statusEl = tileEl.querySelector('.tile-status');
   const setStatus = (state, text) => {
     statusEl.classList.remove('connecting','live','offline');
     statusEl.classList.add(state);
-    statusEl.querySelector('.umd-text').textContent = text;
+    statusEl.querySelector('.st-text').textContent = text;
   };
 
   setStatus('connecting', 'Connecting');
@@ -1249,18 +1406,37 @@ function bindFocusOverlay() {
   });
 }
 
+function _focusEmbedHtml(url){
+  var src = url + (url.indexOf('?') >= 0 ? '&' : '?') + 'cleanoutput';
+  return `<iframe class="focus-embed" src="${src}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen frameborder="0" scrolling="no"></iframe>`;
+}
+function mvFullscreen(btn){
+  const tile = btn.closest('.tile'); if(!tile) return;
+  const box = tile.querySelector('.tile-video') || tile;
+  const video = box.querySelector('video');
+  const fs = box.requestFullscreen || box.webkitRequestFullscreen || box.msRequestFullscreen;
+  if (document.fullscreenEnabled && fs) { try { fs.call(box); return; } catch(e){} }
+  if (video && video.webkitEnterFullscreen) { try { video.webkitEnterFullscreen(); return; } catch(e){} }
+  if (fs) { try { fs.call(box); return; } catch(e){} }
+  openFocus(tile.dataset.streamId); // last resort: in-app full page
+}
+
 function openFocus(streamId) {
   const stream = config.streams.find(s => s.id === streamId);
   if (!stream) return;
   focusedId = streamId;
 
   const slot = document.getElementById('focusVideoSlot');
-  const p = players[streamId];
-  if (p) {
-    // Move the video element into the focus slot so stream keeps playing
-    slot.innerHTML = '';
-    slot.appendChild(p.videoEl);
-    p.videoEl.controls = true;
+  const emb = embedUrl(stream);
+  if (emb) {
+    slot.innerHTML = _focusEmbedHtml(emb);
+  } else {
+    const p = players[streamId];
+    if (p && p.videoEl) {
+      slot.innerHTML = '';
+      slot.appendChild(p.videoEl);
+      p.videoEl.controls = true;
+    }
   }
   updateFocusHeader();
   renderFocusStrip();
@@ -1271,11 +1447,14 @@ function openFocus(streamId) {
 function closeFocus() {
   if (focusedId === null) return;
   const p = players[focusedId];
-  // return the video element to its tile
-  if (p) {
+  const slot = document.getElementById('focusVideoSlot');
+  if (p && p.videoEl) {
+    // return the video element to its tile
     const tileVid = p.tileEl.querySelector('.tile-video');
     p.videoEl.controls = false;
     tileVid.insertBefore(p.videoEl, tileVid.querySelector('.no-signal'));
+  } else if (slot) {
+    slot.innerHTML = ''; // embed: drop the focus iframe (grid copy keeps playing)
   }
   document.getElementById('focus').classList.remove('open');
   focusedId = null;
@@ -1283,24 +1462,25 @@ function closeFocus() {
 
 function switchFocus(streamId) {
   if (streamId === focusedId) return;
-  const prev = focusedId;
-  // Return previous video to its tile
-  if (prev !== null) {
-    const pp = players[prev];
-    if (pp) {
+  const slot = document.getElementById('focusVideoSlot');
+  // Return previous video to its tile (if it was a video)
+  if (focusedId !== null) {
+    const pp = players[focusedId];
+    if (pp && pp.videoEl) {
       const tileVid = pp.tileEl.querySelector('.tile-video');
       pp.videoEl.controls = false;
       tileVid.insertBefore(pp.videoEl, tileVid.querySelector('.no-signal'));
     }
   }
-  // Move the new one in
+  slot.innerHTML = ''; // clear any previous embed iframe
   focusedId = streamId;
-  const slot = document.getElementById('focusVideoSlot');
-  const p = players[streamId];
-  if (p) {
-    slot.innerHTML = '';
-    slot.appendChild(p.videoEl);
-    p.videoEl.controls = true;
+  const stream = config.streams.find(s => s.id === streamId);
+  const emb = embedUrl(stream);
+  if (emb) {
+    slot.innerHTML = _focusEmbedHtml(emb);
+  } else {
+    const p = players[streamId];
+    if (p && p.videoEl) { slot.appendChild(p.videoEl); p.videoEl.controls = true; }
   }
   updateFocusHeader();
   renderFocusStrip();
@@ -1312,7 +1492,9 @@ function updateFocusHeader() {
   const entry = getActiveForStream(focusedId);
   document.getElementById('focusSite').textContent = stream.site;
   const label = document.getElementById('focusLabel');
-  label.innerHTML = `${escapeHtml(stream.label)}<span class="show">${entry ? ' · ' + escapeHtml(entry.show) : ' · Off schedule'}</span>`;
+  label.innerHTML = entry
+    ? `${escapeHtml(stream.label)}<span class="show">${escapeHtml(entry.show)}</span>`
+    : escapeHtml(stream.label);
 }
 
 function renderFocusStrip() {
@@ -1327,8 +1509,8 @@ function renderFocusStrip() {
       <div class="strip-bg"><svg viewBox="0 0 1366 515.64" aria-hidden="true"><use href="#versa-logo"/></svg></div>
       ${entry ? '<span class="tick show">● On Air</span>' : ''}
       <div class="strip-label">
-        <span class="site">${escapeHtml(stream.site)}</span>
-        <span class="name">${escapeHtml(stream.label)}${entry ? ' · ' + escapeHtml(entry.show) : ''}</span>
+        <span class="name">${escapeHtml(stream.label)}</span>
+        ${entry ? `<span class="show">${escapeHtml(entry.show)}</span>` : ''}
       </div>
     `;
     tile.addEventListener('click', () => switchFocus(stream.id));
@@ -1359,13 +1541,17 @@ function toggleTheme() {
   localStorage.setItem('versaLive.theme', next);
 }
 function restoreTheme() {
+  // Viewer is a cinematic wall → always dark; admin respects the saved theme.
+  const admin = location.hash === '#admin';
   const s = localStorage.getItem('versaLive.theme');
-  if (s) document.documentElement.setAttribute('data-theme', s);
+  document.documentElement.setAttribute('data-theme', admin ? (s || 'dark') : 'dark');
 }
 
 /* ─── Routing ─── */
 function routeByHash() {
   const admin = location.hash === '#admin';
+  document.querySelector('.topbar').classList.toggle('show-util', admin);
+  document.documentElement.setAttribute('data-theme', admin ? (localStorage.getItem('versaLive.theme') || 'dark') : 'dark');
   document.getElementById('viewerMain').style.display = admin ? 'none' : '';
   document.getElementById('adminMain').style.display  = admin ? '' : 'none';
   document.getElementById('adminBtn').style.display  = admin ? 'none' : '';
