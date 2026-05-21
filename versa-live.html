@@ -75,7 +75,7 @@
     align-items: center;
     justify-content: center;
     gap: 20px;
-    padding: 46px 40px 34px;
+    padding: 20px 40px 12px;
     background: var(--bg);
     flex-shrink: 0;
   }
@@ -100,17 +100,125 @@
   }
   .brand-svg {
     display: block;
-    height: 56px;
+    height: 44px;
     width: auto;
     flex-shrink: 0;
     color: var(--text);
   }
   .brand-img {
     display: none;
-    height: 56px;
+    height: 44px;
     width: auto;
   }
   .brand-img.shown { display: block; }
+
+  /* ═════════ WHOLE-PAGE FULLSCREEN BUTTON ═════════ */
+  .page-fs-btn {
+    position: absolute;
+    left: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-faint);
+    cursor: pointer;
+    opacity: 0.45;
+    -webkit-appearance: none;
+    transition: opacity 0.15s, color 0.15s, border-color 0.15s;
+  }
+  .page-fs-btn svg { width: 18px; height: 18px; }
+  .page-fs-btn:hover { opacity: 1; color: var(--text); border-color: var(--border-hl); }
+
+  /* ═════════ LOGIN GATE ═════════ */
+  .login-gate {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0a0a0a;
+    color: #fff;
+    font-family: 'Barlow', sans-serif;
+    padding: 24px;
+  }
+  .login-gate.hidden { display: none; }
+  .login-card {
+    width: min(90vw, 340px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .login-logo {
+    width: 200px;
+    max-width: 62vw;
+    height: auto;
+    color: #fff;
+    margin-bottom: 10px;
+  }
+  .login-sub {
+    font-family: 'Barlow Condensed', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.32em;
+    font-size: 13px;
+    color: #6e6e6e;
+    margin-bottom: 30px;
+  }
+  .login-input {
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 16px;
+    font-family: 'Barlow', sans-serif;
+    background: #141414;
+    border: 1px solid #2a2a2a;
+    border-radius: 10px;
+    color: #fff;
+    outline: none;
+    text-align: center;
+    letter-spacing: 0.04em;
+    transition: border-color 0.15s;
+  }
+  .login-input:focus { border-color: #555; }
+  .login-input::placeholder { color: #555; letter-spacing: 0; }
+  .login-btn {
+    width: 100%;
+    margin-top: 12px;
+    padding: 13px 16px;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: 'Barlow Condensed', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    background: #fff;
+    color: #0a0a0a;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .login-btn:hover { opacity: 0.85; }
+  .login-err {
+    margin-top: 16px;
+    font-size: 13px;
+    color: #ef4a37;
+    height: 16px;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .login-gate.error .login-err { opacity: 1; }
+  .login-gate.error .login-input { border-color: #ef4a37; }
+  @keyframes loginShake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-6px); }
+    40%, 80% { transform: translateX(6px); }
+  }
+  .login-gate.error .login-card { animation: loginShake 0.35s; }
   .brand-img.shown ~ .brand-svg { display: none; }
 
   .brand-live { display: none; }
@@ -232,7 +340,7 @@
     flex: 1;
     min-height: 0;
     display: flex;
-    padding: 6px 52px 54px;
+    padding: 8px 40px 16px;
     background: var(--bg);
   }
 
@@ -242,7 +350,7 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-auto-rows: 1fr;
-    gap: 44px 48px;
+    gap: 16px 26px;
   }
 
   /* If 1 feed: full. 2: row. 3-4: 2x2. 5-6: 3x2. */
@@ -564,10 +672,9 @@
   }
   #focusVideoSlot {
     aspect-ratio: 16 / 9;
-    /* Fit within available width OR available height, whichever is smaller — letterbox neither */
-    width: min(100%, calc((100vh - 280px) * 16 / 9));
+    /* Width-capped so height never exceeds the available area → always a true 16:9 box */
+    width: min(100%, calc((100vh - 190px) * 16 / 9));
     max-width: 100%;
-    max-height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -585,7 +692,8 @@
     flex-shrink: 0;
     display: grid;
     grid-auto-flow: column;
-    grid-auto-columns: minmax(180px, 1fr);
+    grid-auto-columns: 132px;
+    justify-content: center;
     gap: 8px;
     padding: 8px;
     background: var(--bg);
@@ -872,7 +980,7 @@
     align-items: baseline;
     justify-content: space-between;
     gap: 24px;
-    padding: 0 2px 18px;
+    padding: 0 2px 8px;
     background: transparent;
     border: none;
   }
@@ -886,8 +994,8 @@
   .tile-title {
     font-family: 'Barlow Condensed', sans-serif;
     font-weight: 800;
-    font-size: clamp(30px, 3.8vw, 58px);
-    line-height: 0.85;
+    font-size: clamp(18px, 2vw, 30px);
+    line-height: 0.95;
     letter-spacing: 0.004em;
     text-transform: uppercase;
     color: var(--text);
@@ -972,8 +1080,8 @@
     .tile { justify-content: center; }
     .tile .tile-video {
       aspect-ratio: 16 / 9;
-      width: min(100%, calc((50vh - 195px) * 16 / 9));
-      max-height: calc(50vh - 195px);
+      width: min(100%, calc((50vh - 90px) * 16 / 9));
+      max-height: calc(50vh - 90px);
       margin: 0 auto;
     }
   }
@@ -991,6 +1099,17 @@
 </style>
 </head>
 <body>
+
+<!-- ═════════ LOGIN GATE ═════════ -->
+<div class="login-gate" id="loginGate">
+  <div class="login-card">
+    <svg class="login-logo" viewBox="0 0 1366 515.64" aria-label="Versa Studios"><use href="#versa-logo"/></svg>
+    <div class="login-sub">Live Multiviewer</div>
+    <input class="login-input" id="loginPw" type="password" placeholder="Password" autocomplete="current-password" autocapitalize="off" autocorrect="off" spellcheck="false">
+    <button class="login-btn" id="loginBtn" type="button">Sign in</button>
+    <div class="login-err" id="loginErr">Incorrect password</div>
+  </div>
+</div>
 
 <!-- Shared SVG sprite — one definition, many uses -->
 <svg class="sprite" width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -1018,6 +1137,14 @@
       <use href="#versa-logo"/>
     </svg>
   </div>
+
+  <!-- Whole-page fullscreen toggle — always available -->
+  <button class="page-fs-btn" id="pageFsBtn" type="button" title="Full screen" aria-label="Full screen">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path class="fs-enter" d="M4 9V5a1 1 0 0 1 1-1h4M15 4h4a1 1 0 0 1 1 1v4M20 15v4a1 1 0 0 1-1 1h-4M9 20H5a1 1 0 0 1-1-1v-4"/>
+      <path class="fs-exit" d="M9 4v3a2 2 0 0 1-2 2H4M20 9h-3a2 2 0 0 1-2-2V4M4 15h3a2 2 0 0 1 2 2v3M15 20v-3a2 2 0 0 1 2-2h3" style="display:none"/>
+    </svg>
+  </button>
 
   <!-- Utility controls — kept for the streaming/admin engine; only revealed in admin view -->
   <div class="topbar-util">
@@ -1167,6 +1294,15 @@ const DEFAULT_CONFIG = {
 const STORAGE_KEY = 'versaLive.config.v4';
 const DAY_LETTERS = ['S','M','T','W','T','F','S'];
 const DAY_NAMES   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+/* ════════════════════════════════════════════════════════════
+   ACCESS PASSWORD  —  change this to set the login password.
+   This is a simple client-side gate (the password lives in this
+   file), in line with the other Versa apps. It keeps casual /
+   unauthorised viewers out; it is not bank-grade security.
+   ════════════════════════════════════════════════════════════ */
+const ACCESS_PASSWORD = 'versalive2026';
+const AUTH_KEY = 'versaLive.auth.v1';
 
 /* ─── State ─── */
 let config = null;
@@ -1728,7 +1864,71 @@ function toast(msg) {
   toast._h = setTimeout(() => t.classList.remove('show'), 1800);
 }
 
-boot();
+/* ─── Whole-page fullscreen ─── */
+function isFs() { return document.fullscreenElement || document.webkitFullscreenElement; }
+function togglePageFullscreen() {
+  try {
+    if (isFs()) {
+      (document.exitFullscreen || document.webkitExitFullscreen || function(){}).call(document);
+    } else {
+      const el = document.documentElement;
+      (el.requestFullscreen || el.webkitRequestFullscreen || function(){}).call(el);
+    }
+  } catch (e) {}
+}
+function syncFsIcon() {
+  const b = document.getElementById('pageFsBtn');
+  if (!b) return;
+  const on = !!isFs();
+  const enter = b.querySelector('.fs-enter');
+  const exit  = b.querySelector('.fs-exit');
+  if (enter) enter.style.display = on ? 'none' : '';
+  if (exit)  exit.style.display  = on ? '' : 'none';
+  b.title = on ? 'Exit full screen' : 'Full screen';
+}
+
+/* ─── Login gate ─── */
+function isAuthed() { try { return localStorage.getItem(AUTH_KEY) === '1'; } catch (e) { return false; } }
+function setAuthed() { try { localStorage.setItem(AUTH_KEY, '1'); } catch (e) {} }
+function attemptLogin() {
+  const g = document.getElementById('loginGate');
+  const inp = document.getElementById('loginPw');
+  const val = (inp && inp.value) || '';
+  if (val === ACCESS_PASSWORD) {
+    setAuthed();
+    if (g) g.classList.add('hidden');
+    boot();
+  } else {
+    if (g) { g.classList.remove('error'); void g.offsetWidth; g.classList.add('error'); }
+    if (inp) { inp.value = ''; inp.focus(); }
+  }
+}
+
+/* ─── App init — fullscreen always wired; feeds only load after login ─── */
+function initApp() {
+  const fsBtn = document.getElementById('pageFsBtn');
+  if (fsBtn) fsBtn.addEventListener('click', togglePageFullscreen);
+  document.addEventListener('fullscreenchange', syncFsIcon);
+  document.addEventListener('webkitfullscreenchange', syncFsIcon);
+  syncFsIcon();
+
+  if (isAuthed()) {
+    const g = document.getElementById('loginGate');
+    if (g) g.classList.add('hidden');
+    boot();
+    return;
+  }
+
+  const btn = document.getElementById('loginBtn');
+  const inp = document.getElementById('loginPw');
+  if (btn) btn.addEventListener('click', attemptLogin);
+  if (inp) {
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); attemptLogin(); } });
+    inp.addEventListener('input', () => { const g = document.getElementById('loginGate'); if (g) g.classList.remove('error'); });
+    setTimeout(() => inp.focus(), 60);
+  }
+}
+initApp();
 </script>
 </body>
 </html>
