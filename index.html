@@ -400,6 +400,28 @@ textarea.det-edit{resize:vertical;line-height:1.4;font-weight:600;font-size:14px
 .trello-list-body.drag-over{background:rgba(244,162,88,.08);outline:2px dashed #F4A258;outline-offset:-2px;border-radius:4px}
 .trello-card.drop-before{box-shadow:0 -3px 0 #F4A258, 0 1px 0 rgba(48,47,44,.12) !important}
 .trello-card.drop-after{box-shadow:0 3px 0 #F4A258, 0 1px 0 rgba(48,47,44,.12) !important}
+/* Mobile-friendly To Do List */
+@media (max-width: 720px){
+  #page-trello .trello-list-body { font-size:13px; }
+  #page-trello [data-list-id] { /* nothing — handled on parent col */ }
+}
+@media (max-width: 640px){
+  /* narrower kanban columns to fit more on screen, allow horizontal scroll */
+  #page-trello > #trelloRoot > #trelloBody > div > div { padding:10px !important; gap:8px !important; }
+}
+@media (max-width: 640px){
+  .trello-col { flex:0 0 240px !important; max-height:calc(100vh - 180px) !important; padding:8px !important; }
+  /* Compact top bar on mobile */
+  #page-trello > #trelloRoot > div:first-child { padding:10px 12px !important; gap:8px !important; }
+  #page-trello > #trelloRoot > div:first-child > div:first-child { font-size:18px !important; }
+  /* Setup form padding tighter on mobile */
+  #page-trello [style*="max-width:640px"] { margin:14px auto !important; padding:18px !important; }
+}
+@media (max-width: 480px){
+  .trello-col { flex:0 0 86vw !important; }
+  /* Stack the board switcher below the title on tight screens */
+  #page-trello > #trelloRoot > div:first-child { flex-wrap:wrap !important; }
+}
 @keyframes fi{from{opacity:0}to{opacity:1}}
 /* GREEN PILL PICKERS */
 .pill-group{display:flex;gap:7px;flex-wrap:wrap;margin-top:5px}
@@ -1340,7 +1362,7 @@ html[data-theme="light"] .drw-more-menu{background:#f4f2ec;border-color:rgba(48,
       <div class="nav-item active" data-pg="dashboard" onclick="nav('dashboard',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>Dashboard</div>
       <div class="nav-item" data-pg="notes" onclick="nav('notes',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 2h10v12H3z"/><path d="M6 5h4M6 8h4M6 11h2"/></svg>Notes</div>
       <div class="nav-item" data-pg="meetings" onclick="nav('meetings',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="6" r="2"/><circle cx="11" cy="6" r="2"/><path d="M1.5 13c0-2 1.5-3.5 3.5-3.5s3.5 1.5 3.5 3.5"/><path d="M7.5 13c0-2 1.5-3.5 3.5-3.5s3.5 1.5 3.5 3.5"/></svg>Meetings</div>
-      <div class="nav-item" id="navTrello" data-pg="trello" data-admin-only="1" onclick="nav('trello',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="1"/><path d="M5 5h2v6H5zM9 5h2v4H9z"/></svg>Todo List</div>
+      <div class="nav-item" id="navTrello" data-pg="trello" data-admin-only="1" onclick="nav('trello',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="1"/><path d="M5 5h2v6H5zM9 5h2v4H9z"/></svg>To Do List</div>
       <div class="nav-lbl" data-lbl="kit">Kit</div>
       <div class="nav-item" data-pg="kit" onclick="nav('kit',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12v9a1 1 0 01-1 1H3a1 1 0 01-1-1V4z"/><path d="M5 4V3a1 1 0 011-1h4a1 1 0 011 1v1"/></svg>Kit List<span class="nav-badge" id="nbKit">0</span></div>
       <div class="nav-item" data-pg="maintenance" onclick="nav('maintenance',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><path d="M11 11l3 3"/></svg>Maintenance</div>
@@ -3099,6 +3121,7 @@ async function loadData() {
     // exact role+name matches are skipped, empty default slots get filled before pushing new rows.
     try { if(typeof _ddHodsMigration==='function') _ddHodsMigration(); } catch(e){ console.warn('ddHods mig failed', e); }
     try { if(typeof _ddCommsMigration==='function') _ddCommsMigration(); } catch(e){ console.warn('ddComms mig failed', e); }
+    try { if(typeof _celebCommsMigration==='function') _celebCommsMigration(); } catch(e){ console.warn('celebComms mig failed', e); }
     dismissLoading();
   } catch(e) {
     console.error('loadData error:', e);
@@ -6750,7 +6773,7 @@ function nav(page, el) {
   if(page==='networking') (async function(){ try{ if(!_netLoaded) await netLoad(); renderNetworking(); }catch(e){console.warn('renderNetworking failed:',e);} })();
   if(page==='trello') trelloInit();
   if(page==='vault') { var vf=document.getElementById('vaultFrame'); if(vf&&!vf.src.includes('versa-vault')) vf.src='versa-vault.html?embed=1&v='+Date.now(); }
-  if(page==='live') { var lf=document.getElementById('liveFrame'); if(lf&&!lf.src.includes('versa-live')) lf.src='versa-live.html?v='+Date.now(); }
+  if(page==='live') { var lf=document.getElementById('liveFrame'); if(lf&&!lf.src.includes('versa-live')) lf.src='versa-live.html?embed=1&v='+Date.now(); }
 }
 // ── STUDIO INFO PAGE ─────────────────────────────────────────────────────────
 function renderInfoPage(){
@@ -6967,8 +6990,118 @@ var _trello = {
   configLoaded: false,
   cacheLoaded: false,
   syncing: false,
-  activeBoardView: 'all'  // which board to display in kanban: 'all' or boardId
+  activeBoardView: 'all',  // which board to display in kanban: 'all' or boardId
+  allBoardsLoaded: false,  // true once /members/me/boards has populated _trello.boards
+  _allBoardsFetching: false,
+  _jobBoardSyncing: null
 };
+
+// Re-render whichever Trello view is currently on screen (main page or a job's To Do tab)
+function _trelloReRenderActive(){
+  try{
+    if(typeof _jdCurrentJob !== 'undefined' && _jdCurrentJob && typeof _jdTab !== 'undefined' && _jdTab==='todo'){
+      renderJobDet(_jdCurrentJob);
+      return;
+    }
+  }catch(_e){}
+  trelloRenderPage();
+}
+
+// Resolve the board for a job: explicit override first, else auto-match by name
+function _trelloBoardForJob(j){
+  if(!j) return null;
+  if(j.trelloBoardId) return j.trelloBoardId;
+  var jobNameLC = (j.name||'').toLowerCase().trim();
+  if(!jobNameLC) return null;
+  var jobSlug = jobNameLC.replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+  if(!jobSlug) return null;
+  var pool = (_trello.boards||[]);
+  // 1. Exact name / slug match
+  var exact = pool.find(function(B){
+    var n=(B.name||'').toLowerCase().trim();
+    var ns=n.replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+    return n===jobNameLC || ns===jobSlug;
+  });
+  if(exact) return exact.id;
+  // 2. Contains match (job "ShopOn" \u2192 board "ShopOn TV", or vice-versa)
+  var contains = pool.find(function(B){
+    var ns=(B.name||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+    if(!ns) return false;
+    return ns.indexOf(jobSlug)===0 || jobSlug.indexOf(ns)===0;
+  });
+  return contains ? contains.id : null;
+}
+// Create a fresh Trello board (with default To Do/Doing/Done lists) for a job and link it
+async function jdTodoCreateBoard(jobId){
+  var j=jobs.find(function(x){return x.id==jobId;}); if(!j) return;
+  if(!confirm('Create a new Trello board named \u201c'+j.name+'\u201d with To Do / Doing / Done lists?')) return;
+  try{
+    var board = await trelloApiPost('/boards', {name:j.name, defaultLists:'false'});
+    if(!board || !board.id) throw new Error('No board returned');
+    // Create the three standard lists in order
+    await trelloApiPost('/lists', {name:'To Do',  idBoard:board.id, pos:1});
+    await trelloApiPost('/lists', {name:'Doing',  idBoard:board.id, pos:2});
+    await trelloApiPost('/lists', {name:'Done',   idBoard:board.id, pos:3});
+    // Register board metadata locally
+    if(!_trello.boards) _trello.boards=[];
+    _trello.boards.push({id:board.id, name:board.name||j.name, url:board.url||''});
+    // Link + sync
+    j.trelloBoardId = board.id;
+    saveData();
+    _trello._jobBoardSyncing = board.id;
+    await _trelloEnsureBoardSynced(board.id);
+    _trello._jobBoardSyncing = null;
+    renderJobDet(j);
+  }catch(e){ alert('Could not create board: ' + e.message); }
+}
+function _trelloBoardName(boardId){
+  var b=(_trello.boards||[]).find(function(B){return B.id===boardId;});
+  return (b && b.name) || 'Board';
+}
+// Add a board to the sync set and pull its lists/labels/cards (merge into cache)
+async function _trelloEnsureBoardSynced(boardId){
+  if(!boardId) return;
+  var added=false;
+  if(_trello.boardIds.indexOf(boardId)<0){ _trello.boardIds.push(boardId); added=true; }
+  var hasData=(_trello.lists||[]).some(function(L){return L.idBoard===boardId;});
+  if(added || !hasData){
+    try{
+      var res=await Promise.all([
+        trelloApiGet('/boards/'+boardId, {fields:'name,url,closed'}),
+        trelloApiGet('/boards/'+boardId+'/lists', {filter:'open', fields:'name,pos'}),
+        trelloApiGet('/boards/'+boardId+'/labels', {fields:'name,color'}),
+        trelloApiGet('/boards/'+boardId+'/cards', {fields:'name,desc,closed,idList,idLabels,due,dueComplete,idMembers,url,dateLastActivity,pos,shortUrl,idBoard', members:'true', member_fields:'fullName,username'})
+      ]);
+      var meta=res[0];
+      if(meta && meta.id){
+        var idx=(_trello.boards||[]).findIndex(function(B){return B.id===meta.id;});
+        if(idx>=0) _trello.boards[idx]=meta; else { if(!_trello.boards)_trello.boards=[]; _trello.boards.push(meta); }
+      }
+      _trello.lists  = (_trello.lists||[]).filter(function(L){return L.idBoard!==boardId;}).concat((res[1]||[]).map(function(L){L.idBoard=boardId;return L;}));
+      _trello.labels = (_trello.labels||[]).filter(function(L){return L.idBoard!==boardId;}).concat((res[2]||[]).map(function(L){L.idBoard=boardId;return L;}));
+      _trello.cards  = (_trello.cards||[]).filter(function(c){return c.idBoard!==boardId;}).concat(res[3]||[]);
+      _trello.lastSync=new Date().toISOString();
+      await trelloConfigSave();
+      await trelloCacheSave();
+    }catch(e){ console.warn('ensureBoardSynced failed', e); }
+  } else if(added){
+    await trelloConfigSave();
+  }
+}
+// Assign (or clear) a job's board override, then ensure it's synced and re-render
+async function jdTodoPickBoard(jobId, boardId){
+  var j=jobs.find(function(x){return x.id==jobId;}); if(!j) return;
+  if(boardId==='__auto__'){ delete j.trelloBoardId; }
+  else { j.trelloBoardId=boardId; }
+  saveData();
+  var resolved=_trelloBoardForJob(j);
+  if(resolved){
+    _trello._jobBoardSyncing=resolved;
+    await _trelloEnsureBoardSynced(resolved);
+    _trello._jobBoardSyncing=null;
+  }
+  renderJobDet(j);
+}
 
 async function trelloConfigLoad(){
   if(_trello.configLoaded) return;
@@ -7248,7 +7381,7 @@ function trelloRenderPage(){
   var html = '';
   // Top bar
   html += '<div style="padding:14px 18px;border-bottom:1px solid rgba(48,47,44,.12);display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:#efede3;flex-shrink:0">';
-  html += '<div style="font-family:var(--cond);font-size:22px;font-weight:900;letter-spacing:.04em;color:#302f2c;text-transform:uppercase">Todo List</div>';
+  html += '<div style="font-family:var(--cond);font-size:22px;font-weight:900;letter-spacing:.04em;color:#302f2c;text-transform:uppercase">To Do List</div>';
   if(connected){
     html += '<div style="font-family:var(--cond);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(48,47,44,.5)">Synced ' + _trelloFmtAgo(_trello.lastSync) + ' \u00b7 ' + (_trello.cards||[]).filter(function(c){return !c.closed;}).length + ' open cards</div>';
     // Board switcher \u2014 only shown if >1 board selected
@@ -7289,7 +7422,7 @@ function trelloRenderPage(){
 }
 function trelloRenderSetup(){
   var h = '<div style="max-width:640px;margin:40px auto;padding:30px;background:#fff;border:1px solid rgba(48,47,44,.12);border-radius:6px;font-family:var(--font);color:#302f2c">';
-  h += '<div style="font-family:var(--cond);font-size:22px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;margin-bottom:6px">Connect Todo List</div>';
+  h += '<div style="font-family:var(--cond);font-size:22px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;margin-bottom:6px">Connect To Do List</div>';
   h += '<div style="font-size:13px;color:rgba(48,47,44,.6);margin-bottom:24px;line-height:1.55">Paste your Trello API key and token, then pick which boards to sync (you can select multiple). Cards must be labelled with the show name (e.g. <code style="background:rgba(48,47,44,.06);padding:1px 6px;border-radius:3px">morning-live</code>) to appear on a job\u2019s To-Do tab.</div>';
   h += '<div style="display:grid;gap:14px">';
   h += '<div><div style="font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(48,47,44,.55);margin-bottom:5px">API Key</div><input id="trelloKeyInp" type="text" placeholder="32-char public key" value="' + _trelloEsc(_trello.apiKey||'') + '" style="width:100%;padding:9px 12px;border:1px solid rgba(48,47,44,.18);background:#fff;font-family:monospace;font-size:13px;color:#302f2c;outline:none;border-radius:4px;box-sizing:border-box"/></div>';
@@ -7357,7 +7490,7 @@ function trelloOpenSettings(){
   ov.onclick = function(e){ if(e.target===ov) ov.remove(); };
   var inner = document.createElement('div');
   inner.style.cssText = 'max-width:560px;width:100%;background:#fff;border-radius:8px;padding:0;overflow:hidden';
-  inner.innerHTML = '<div style="padding:14px 18px;border-bottom:1px solid rgba(48,47,44,.12);display:flex;justify-content:space-between;align-items:center;background:#efede3"><div style="font-family:var(--cond);font-size:16px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#302f2c">Todo List Settings</div><button onclick="document.getElementById(\'trelloSettingsOv\').remove()" style="background:transparent;border:none;font-size:22px;color:rgba(48,47,44,.5);cursor:pointer;line-height:1">&times;</button></div><div id="trelloSettingsBody" style="padding:18px"></div>';
+  inner.innerHTML = '<div style="padding:14px 18px;border-bottom:1px solid rgba(48,47,44,.12);display:flex;justify-content:space-between;align-items:center;background:#efede3"><div style="font-family:var(--cond);font-size:16px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#302f2c">To Do List Settings</div><button onclick="document.getElementById(\'trelloSettingsOv\').remove()" style="background:transparent;border:none;font-size:22px;color:rgba(48,47,44,.5);cursor:pointer;line-height:1">&times;</button></div><div id="trelloSettingsBody" style="padding:18px"></div>';
   ov.appendChild(inner);
   document.body.appendChild(ov);
   inner.querySelector('#trelloSettingsBody').innerHTML = trelloRenderSetup().replace('max-width:640px;margin:40px auto;padding:30px;background:#fff;border:1px solid rgba(48,47,44,.12);border-radius:6px;', 'padding:0;');
@@ -7396,21 +7529,24 @@ function trelloRenderKanban(){
     });
 
     if(showBoardHeaders){
-      h += '<div style="padding:18px 18px 4px;font-family:var(--cond);font-size:13px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:#302f2c;border-top:1px solid rgba(48,47,44,.1);margin-top:8px">'+_trelloEsc(boardName)+'</div>';
+      h += '<div style="display:flex;align-items:center;gap:9px;padding:20px 20px 6px;margin-top:6px;border-top:1px solid rgba(48,47,44,.1)">'
+         +   '<span style="width:4px;height:16px;background:var(--accent);border-radius:2px;display:inline-block"></span>'
+         +   '<span style="font-family:var(--cond);font-size:15px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:#302f2c">'+_trelloEsc(boardName)+'</span>'
+         + '</div>';
     }
-    h += '<div style="display:flex;gap:12px;padding:'+(showBoardHeaders?'10px':'18px')+' 18px;align-items:flex-start;overflow-x:auto">';
+    h += '<div style="display:flex;gap:14px;padding:'+(showBoardHeaders?'8px':'18px')+' 20px 18px;align-items:flex-start;overflow-x:auto">';
     listsForBoard.forEach(function(L){
       var cards = (cardsByList[L.id] || []).slice().sort(function(a,b){ return (a.pos||0)-(b.pos||0); });
-      h += '<div style="flex:0 0 280px;background:rgba(48,47,44,.05);border:1px solid rgba(48,47,44,.08);border-radius:6px;padding:10px;display:flex;flex-direction:column;max-height:calc(100vh - 220px)">';
-      h += '<div style="padding:4px 4px 10px;font-family:var(--cond);font-size:12px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#302f2c;display:flex;align-items:center;gap:8px">';
+      h += '<div class="trello-col" style="flex:0 0 280px;background:rgba(48,47,44,.04);border:1px solid rgba(48,47,44,.09);border-radius:10px;padding:11px;display:flex;flex-direction:column;max-height:calc(100vh - 220px);box-shadow:0 1px 3px rgba(48,47,44,.05)">';
+      h += '<div style="padding:3px 4px 11px;font-family:var(--cond);font-size:12px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#302f2c;display:flex;align-items:center;gap:8px">';
       h += '<span style="flex:1">'+_trelloEsc(L.name)+'</span>';
-      h += '<span style="background:rgba(48,47,44,.08);padding:2px 8px;border-radius:9px;font-size:10px;color:rgba(48,47,44,.55);font-weight:800">'+cards.length+'</span>';
+      h += '<span style="background:rgba(244,162,88,.22);padding:2px 9px;border-radius:9px;font-size:10px;color:#b07020;font-weight:800">'+cards.length+'</span>';
       h += '</div>';
-      h += '<div class="trello-list-body" data-list-id="'+_trelloEsc(L.id)+'" data-board-id="'+_trelloEsc(boardId)+'" ondragover="trelloDragOver(event)" ondragleave="trelloDragLeave(event)" ondrop="trelloDrop(event)" style="overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:6px;padding:0 2px 2px;min-height:40px">';
+      h += '<div class="trello-list-body" data-list-id="'+_trelloEsc(L.id)+'" data-board-id="'+_trelloEsc(boardId)+'" ondragover="trelloDragOver(event)" ondragleave="trelloDragLeave(event)" ondrop="trelloDrop(event)" style="overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:7px;padding:0 2px 2px;min-height:40px">';
       cards.forEach(function(c){
         h += _trelloRenderCardSmall(c, labById, labColor);
       });
-      h += '<button onclick="trelloAddCardPrompt(\''+_trelloEsc(L.id)+'\')" style="text-align:left;padding:8px 10px;background:transparent;border:none;color:rgba(48,47,44,.5);font-family:var(--font);font-size:13px;cursor:pointer;border-radius:4px;margin-top:4px" onmouseenter="this.style.background=\'rgba(244,162,88,.1)\';this.style.color=\'#302f2c\'" onmouseleave="this.style.background=\'transparent\';this.style.color=\'rgba(48,47,44,.5)\'">+ Add a card</button>';
+      h += '<button onclick="trelloAddCardPrompt(\''+_trelloEsc(L.id)+'\')" style="text-align:left;padding:8px 10px;background:transparent;border:none;color:rgba(48,47,44,.45);font-family:var(--font);font-size:13px;cursor:pointer;border-radius:6px;margin-top:4px;transition:background .12s" onmouseenter="this.style.background=\'rgba(244,162,88,.12)\';this.style.color=\'#302f2c\'" onmouseleave="this.style.background=\'transparent\';this.style.color=\'rgba(48,47,44,.45)\'">+ Add a card</button>';
       h += '</div></div>';
     });
     h += '</div>';
@@ -7418,20 +7554,20 @@ function trelloRenderKanban(){
   return h;
 }
 function _trelloRenderCardSmall(c, labById, labColor){
-  var h = '<div draggable="true" class="trello-card" data-card-id="'+_trelloEsc(c.id)+'" data-list-id="'+_trelloEsc(c.idList||'')+'" data-board-id="'+_trelloEsc(c.idBoard||'')+'" ondragstart="trelloDragStart(event)" ondragend="trelloDragEnd(event)" onclick="trelloOpenCard(\''+_trelloEsc(c.id)+'\')" style="background:#fff;border:1px solid rgba(48,47,44,.1);border-radius:4px;padding:8px 10px;box-shadow:0 1px 0 rgba(48,47,44,.12);cursor:grab;font-family:var(--font);font-size:14px;color:#302f2c;'+(c.dueComplete?'opacity:.5':'')+'">';
+  var h = '<div draggable="true" class="trello-card" data-card-id="'+_trelloEsc(c.id)+'" data-list-id="'+_trelloEsc(c.idList||'')+'" data-board-id="'+_trelloEsc(c.idBoard||'')+'" ondragstart="trelloDragStart(event)" ondragend="trelloDragEnd(event)" onclick="trelloOpenCard(\''+_trelloEsc(c.id)+'\')" style="background:#fff;border:1px solid rgba(48,47,44,.1);border-radius:7px;padding:9px 11px;box-shadow:0 1px 2px rgba(48,47,44,.07);cursor:grab;font-family:var(--font);font-size:14px;color:#302f2c;'+(c.dueComplete?'opacity:.5':'')+'">';
   if(c.idLabels && c.idLabels.length){
-    h += '<div style="display:flex;flex-wrap:wrap;gap:3px;margin-bottom:5px">';
+    h += '<div style="display:flex;flex-wrap:wrap;gap:3px;margin-bottom:6px">';
     c.idLabels.forEach(function(lid){
       var L = labById[lid];
       if(!L) return;
       var col = labColor[L.color] || 'rgba(48,47,44,.25)';
-      h += '<div title="'+_trelloEsc(L.name||'')+'" style="height:8px;min-width:40px;border-radius:4px;background:'+col+'"></div>';
+      h += '<div title="'+_trelloEsc(L.name||'')+'" style="height:7px;min-width:38px;border-radius:4px;background:'+col+'"></div>';
     });
     h += '</div>';
   }
-  h += '<div style="display:flex;align-items:flex-start;gap:8px">';
+  h += '<div style="display:flex;align-items:flex-start;gap:9px">';
   h += '<input type="checkbox" '+(c.dueComplete?'checked':'')+' onclick="event.stopPropagation();trelloToggleComplete(\''+_trelloEsc(c.id)+'\',this.checked)" style="margin-top:2px;cursor:pointer;flex-shrink:0;accent-color:#F4A258"/>';
-  h += '<div style="flex:1;line-height:1.35;'+(c.dueComplete?'text-decoration:line-through':'')+'">'+_trelloEsc(c.name)+'</div>';
+  h += '<div style="flex:1;line-height:1.4;'+(c.dueComplete?'text-decoration:line-through':'')+'">'+_trelloEsc(c.name)+'</div>';
   h += '</div>';
   if(c.due){
     var d = new Date(c.due);
@@ -7446,7 +7582,7 @@ function _trelloRenderCardSmall(c, labById, labColor){
   return h;
 }
 async function trelloToggleComplete(cardId, complete){
-  try{ await trelloCardComplete(cardId, complete); }
+  try{ await trelloCardComplete(cardId, complete); _trelloReRenderActive(); }
   catch(e){ alert('Could not update card: ' + e.message); }
 }
 // ── Drag & Drop for Trello kanban ───────────────────────────────────────
@@ -7575,7 +7711,7 @@ async function trelloDrop(e){
   card.pos = (newPos === 'top') ? (((listCards[0]||{}).pos || 100) / 2)
            : (newPos === 'bottom') ? (((listCards[listCards.length-1]||{}).pos || 0) + 65536)
            : newPos;
-  trelloRenderPage();
+  _trelloReRenderActive();
 
   // Push to Trello
   try{
@@ -7583,7 +7719,7 @@ async function trelloDrop(e){
   } catch(err){
     // Revert on failure
     card.idList = prevList; card.pos = prevPos;
-    trelloRenderPage();
+    _trelloReRenderActive();
     alert('Move failed: ' + err.message);
   }
 }
@@ -7640,8 +7776,8 @@ async function trelloSaveCardEdit(cardId){
     var ov = document.getElementById('trelloCardOv'); if(ov) ov.remove();
     trelloRenderPage();
     // Re-render any open To-Do tabs on jobs
-    if(typeof renderJobDet==='function' && typeof _currentJob !== 'undefined' && _currentJob && _jdTab==='todo'){
-      renderJobDet(_currentJob);
+    if(typeof renderJobDet==='function' && typeof _jdCurrentJob !== 'undefined' && _jdCurrentJob && _jdTab==='todo'){
+      renderJobDet(_jdCurrentJob);
     }
   } catch(e){ alert('Save failed: ' + e.message); }
 }
@@ -7651,8 +7787,8 @@ async function trelloArchiveCard(cardId){
     await trelloCardArchive(cardId);
     var ov = document.getElementById('trelloCardOv'); if(ov) ov.remove();
     trelloRenderPage();
-    if(typeof renderJobDet==='function' && typeof _currentJob !== 'undefined' && _currentJob && _jdTab==='todo'){
-      renderJobDet(_currentJob);
+    if(typeof renderJobDet==='function' && typeof _jdCurrentJob !== 'undefined' && _jdCurrentJob && _jdTab==='todo'){
+      renderJobDet(_jdCurrentJob);
     }
   } catch(e){ alert('Archive failed: ' + e.message); }
 }
@@ -7661,7 +7797,7 @@ async function trelloAddCardPrompt(listId){
   if(!name || !name.trim()) return;
   try{
     await trelloCardCreate({idList:listId, name:name.trim(), pos:'bottom'});
-    trelloRenderPage();
+    _trelloReRenderActive();
   } catch(e){ alert('Could not add card: ' + e.message); }
 }
 
@@ -7675,63 +7811,99 @@ function renderTodoTab(j){
   // Lazy-load config & cache, then re-render
   if(!_trello.configLoaded || !_trello.cacheLoaded){
     trelloInitForJob().then(function(){ if(typeof renderJobDet==='function' && j) renderJobDet(j); });
-    return '<div style="padding:30px;text-align:center;color:var(--muted);font-family:var(--cond);font-size:12px;letter-spacing:.08em;text-transform:uppercase">Loading\u2026</div>';
+    return '<div style="padding:20px;text-align:center;color:var(--muted);font-family:var(--cond);font-size:11px;letter-spacing:.08em;text-transform:uppercase">Loading\u2026</div>';
   }
-  if(!_trello.apiKey || !_trello.token || !_trello.boardIds || !_trello.boardIds.length){
-    return '<div style="padding:30px;text-align:center;font-family:var(--cond);font-size:13px;color:var(--muted)">Trello not connected yet. <a onclick="nav(\'trello\',null);" style="color:var(--accent);cursor:pointer;text-decoration:underline">Set it up &rarr;</a></div>';
+  if(!_trello.apiKey || !_trello.token){
+    return '<div style="padding:20px;text-align:center;font-family:var(--cond);font-size:12px;color:var(--muted)">Trello not connected yet. <a onclick="nav(\'trello\',null);" style="color:var(--accent);cursor:pointer;text-decoration:underline">Set it up &rarr;</a></div>';
   }
-  var cards = trelloCardsForJob(j);
-  var open = cards.filter(function(c){return !c.dueComplete;});
-  var done = cards.filter(function(c){return  c.dueComplete;});
-  var label = _trelloFindLabelByJob(j);
-  var hasLabel = !!label;
 
-  var h = '<div style="padding:18px 22px;font-family:var(--font);color:var(--white)">';
-  // Header row
-  h += '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px">';
-  h += '<div style="font-family:var(--cond);font-size:20px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;color:var(--pure)">To-Do</div>';
-  if(hasLabel){
-    h += '<div style="font-family:var(--cond);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)">Trello label \u00b7 ' + _trelloEsc(label.name) + ' \u00b7 ' + cards.length + ' card' + (cards.length===1?'':'s') + '</div>';
-  } else {
-    h += '<div style="font-family:var(--cond);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#DA6B51">No Trello label matching \u201c' + _trelloEsc(j.name) + '\u201d</div>';
+  // Ensure we have the full board list for the picker (one-time fetch)
+  if(!_trello.allBoardsLoaded && !_trello._allBoardsFetching){
+    _trello._allBoardsFetching = true;
+    trelloFetchBoards().then(function(bs){
+      _trello.allBoardsLoaded = true; _trello._allBoardsFetching = false;
+      if(typeof _jdCurrentJob!=='undefined' && _jdCurrentJob) renderJobDet(_jdCurrentJob);
+    }).catch(function(){ _trello._allBoardsFetching = false; });
+  }
+
+  var boardId = _trelloBoardForJob(j);
+  var isOverride = !!j.trelloBoardId;
+  var autoMatchId = (function(){ var t=j.trelloBoardId; delete j.trelloBoardId; var r=_trelloBoardForJob(j); if(t) j.trelloBoardId=t; return r; })();
+
+  // Header
+  var h = '<div style="padding:12px 16px;font-family:var(--font);color:var(--white)">';
+  h += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap">';
+  h += '<div style="font-family:var(--cond);font-size:15px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:var(--pure)">To Do</div>';
+  if(boardId){
+    var cardCount = (_trello.cards||[]).filter(function(c){return c.idBoard===boardId && !c.closed;}).length;
+    h += '<div style="font-family:var(--cond);font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)">'+_trelloEsc(_trelloBoardName(boardId))+' \u00b7 '+cardCount+' card'+(cardCount===1?'':'s')+(isOverride?' \u00b7 manual':'')+'</div>';
   }
   h += '<div style="flex:1"></div>';
-  h += '<button onclick="trelloRefreshFromJob('+j.id+')" style="padding:6px 12px;background:transparent;border:1px solid var(--border);color:var(--muted);font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;border-radius:3px">Refresh</button>';
+  // Board picker
+  h += '<select onchange="jdTodoPickBoard('+j.id+',this.value)" title="Which Trello board powers this job" style="padding:3px 6px;background:var(--near-black);border:1px solid var(--border);color:var(--muted);font-family:var(--cond);font-size:9px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border-radius:3px;max-width:160px">';
+  var autoLabel = autoMatchId ? ('Auto: '+_trelloBoardName(autoMatchId)) : 'Auto (no name match)';
+  h += '<option value="__auto__"'+(!isOverride?' selected':'')+'>'+_trelloEsc(autoLabel)+'</option>';
+  (_trello.boards||[]).slice().sort(function(a,b){return (a.name||'').localeCompare(b.name||'');}).forEach(function(B){
+    var sel = (isOverride && j.trelloBoardId===B.id) ? ' selected' : '';
+    h += '<option value="'+_trelloEsc(B.id)+'"'+sel+'>'+_trelloEsc(B.name||'Board')+'</option>';
+  });
+  h += '</select>';
+  h += '<button onclick="trelloRefreshFromJob('+j.id+')" style="padding:3px 9px;background:transparent;border:1px solid var(--border);color:var(--muted);font-family:var(--cond);font-size:9px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;border-radius:3px">Refresh</button>';
   h += '</div>';
-  // Setup label CTA if missing
-  if(!hasLabel){
-    h += '<div style="padding:14px 16px;background:rgba(218,107,81,.08);border-left:3px solid #DA6B51;font-size:13px;color:var(--white);margin-bottom:16px;line-height:1.6">In Trello, add a label named exactly <code style="background:rgba(244,162,88,.15);color:var(--accent);padding:1px 6px;border-radius:3px">'+_trelloEsc(j.name)+'</code> (or a slug like <code style="background:rgba(244,162,88,.15);color:var(--accent);padding:1px 6px;border-radius:3px">'+_trelloEsc((j.name||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''))+'</code>) on cards you want to appear here, then click Refresh.</div>';
+
+  // No board resolved
+  if(!boardId){
+    h += '<div style="padding:14px 16px;background:rgba(244,162,88,.08);border-left:3px solid var(--accent);font-size:13px;color:var(--white);line-height:1.6;border-radius:0 4px 4px 0;margin-bottom:10px">';
+    h += 'No Trello board matches <b>'+_trelloEsc(j.name)+'</b>. Create one in a click, pick an existing board above, or make a board named <code style="background:rgba(244,162,88,.15);color:var(--accent);padding:1px 6px;border-radius:3px">'+_trelloEsc(j.name)+'</code> in Trello and Refresh.';
+    h += '</div>';
+    h += '<button onclick="jdTodoCreateBoard('+j.id+')" style="padding:8px 18px;background:var(--accent);color:#1a1916;border:none;font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;border-radius:4px">+ Create To Do board for this job</button>';
+    h += '</div>';
+    return h;
   }
-  // Quick add
-  if(hasLabel){
-    // Find first list IN THE SAME BOARD AS THE LABEL (so the card lands sensibly)
-    var firstList = (_trello.lists || []).filter(function(L){ return L.idBoard === label.idBoard; })
-                                          .slice().sort(function(a,b){return (a.pos||0)-(b.pos||0);})[0];
-    var boardMeta = (_trello.boards||[]).find(function(B){return B.id===label.idBoard;});
-    var boardName = (boardMeta && boardMeta.name) || 'board';
-    if(firstList){
-      h += '<div style="display:flex;gap:8px;margin-bottom:14px">';
-      h += '<input id="todoAddInp_'+j.id+'" type="text" placeholder="Add a card to '+_trelloEsc(boardName)+' \u00b7 '+_trelloEsc(firstList.name)+' with label '+_trelloEsc(label.name)+'\u2026" style="flex:1;padding:9px 12px;border:1px solid var(--border);background:var(--near-black);color:var(--pure);font-family:var(--font);font-size:13px;outline:none;border-radius:4px" onkeydown="if(event.key===\'Enter\') trelloQuickAddForJob('+j.id+',\''+_trelloEsc(firstList.id)+'\',\''+_trelloEsc(label.id)+'\')"/>';
-      h += '<button onclick="trelloQuickAddForJob('+j.id+',\''+_trelloEsc(firstList.id)+'\',\''+_trelloEsc(label.id)+'\')" style="padding:9px 16px;background:var(--accent);color:#1a1916;border:none;font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;border-radius:4px">Add</button>';
-      h += '</div>';
+
+  // Board resolved but its data isn't loaded yet — sync then re-render
+  var hasData = (_trello.lists||[]).some(function(L){return L.idBoard===boardId;});
+  var inSync  = _trello.boardIds.indexOf(boardId) >= 0;
+  if(!hasData || !inSync){
+    if(_trello._jobBoardSyncing !== boardId){
+      _trello._jobBoardSyncing = boardId;
+      _trelloEnsureBoardSynced(boardId).then(function(){
+        _trello._jobBoardSyncing = null;
+        if(typeof _jdCurrentJob!=='undefined' && _jdCurrentJob) renderJobDet(_jdCurrentJob);
+      });
     }
-  }
-  // Open cards
-  h += '<div style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;margin-top:6px">Open \u00b7 ' + open.length + '</div>';
-  if(!open.length){
-    h += '<div style="padding:18px;text-align:center;color:rgba(255,255,255,.3);font-family:var(--cond);font-size:12px;letter-spacing:.06em;text-transform:uppercase;background:rgba(255,255,255,.03);border:1px dashed var(--border);border-radius:4px;margin-bottom:14px">Nothing open</div>';
-  } else {
-    h += '<div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px">';
-    open.forEach(function(c){ h += _renderTodoRow(c, j); });
+    h += '<div style="padding:30px;text-align:center;color:var(--muted);font-family:var(--cond);font-size:11px;letter-spacing:.08em;text-transform:uppercase">Loading '+_trelloEsc(_trelloBoardName(boardId))+'\u2026</div>';
     h += '</div>';
+    return h;
   }
-  // Done cards
-  if(done.length){
-    h += '<div style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Completed \u00b7 ' + done.length + '</div>';
-    h += '<div style="display:flex;flex-direction:column;gap:6px;opacity:.55">';
-    done.forEach(function(c){ h += _renderTodoRow(c, j); });
+
+  // Full kanban for the linked board
+  h += _renderJobBoardKanban(j, boardId);
+  h += '</div>';
+  return h;
+}
+// Render one board's lists as kanban columns (drag-drop enabled via shared handlers)
+function _renderJobBoardKanban(j, boardId){
+  var labById = {};
+  (_trello.labels||[]).forEach(function(L){ labById[L.id]=L; });
+  var labColor = {green:'#7AB55C',yellow:'#E5C642',orange:'#E58E3A',red:'#D66159',purple:'#B07ACC',blue:'#5B8BC9',sky:'#5BAFCC',lime:'#7DD49E',pink:'#E590B5',black:'#302f2c'};
+  var lists = (_trello.lists||[]).filter(function(L){return L.idBoard===boardId;}).slice().sort(function(a,b){return (a.pos||0)-(b.pos||0);});
+  if(!lists.length){
+    return '<div style="padding:20px;text-align:center;color:var(--muted);font-family:var(--cond);font-size:11px;letter-spacing:.08em;text-transform:uppercase">This board has no lists yet</div>';
+  }
+  var h = '<div style="display:flex;gap:10px;padding:2px 0 8px;overflow-x:auto;align-items:flex-start">';
+  lists.forEach(function(L){
+    var cards = (_trello.cards||[]).filter(function(c){return c.idList===L.id && !c.closed;}).slice().sort(function(a,b){return (a.pos||0)-(b.pos||0);});
+    h += '<div class="trello-col" style="flex:0 0 230px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:6px;padding:8px;display:flex;flex-direction:column;max-height:60vh">';
+    h += '<div style="padding:2px 4px 8px;font-family:var(--cond);font-size:11px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--pure);display:flex;align-items:center;gap:6px">';
+    h += '<span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+_trelloEsc(L.name)+'</span>';
+    h += '<span style="background:rgba(255,255,255,.08);padding:1px 7px;border-radius:9px;font-size:10px;color:var(--muted);font-weight:800">'+cards.length+'</span>';
     h += '</div>';
-  }
+    h += '<div class="trello-list-body" data-list-id="'+_trelloEsc(L.id)+'" data-board-id="'+_trelloEsc(boardId)+'" ondragover="trelloDragOver(event)" ondragleave="trelloDragLeave(event)" ondrop="trelloDrop(event)" style="overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:5px;min-height:30px">';
+    cards.forEach(function(c){ h += _trelloRenderCardSmall(c, labById, labColor); });
+    h += '<button onclick="trelloAddCardPrompt(\''+_trelloEsc(L.id)+'\')" style="text-align:left;padding:6px 8px;background:transparent;border:none;color:var(--muted);font-family:var(--font);font-size:12px;cursor:pointer;border-radius:4px;margin-top:2px">+ Add a card</button>';
+    h += '</div></div>';
+  });
   h += '</div>';
   return h;
 }
@@ -7739,23 +7911,24 @@ function _renderTodoRow(c, j){
   var listName = ((_trello.lists||[]).find(function(L){return L.id===c.idList;}) || {}).name || '';
   var d = c.due ? new Date(c.due) : null;
   var overdue = d && !c.dueComplete && d.getTime() < Date.now();
-  var h = '<div style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:var(--near-black);border:1px solid var(--border);border-radius:4px;cursor:pointer" onclick="trelloOpenCard(\''+_trelloEsc(c.id)+'\')">';
-  h += '<input type="checkbox" '+(c.dueComplete?'checked':'')+' onclick="event.stopPropagation();trelloToggleComplete(\''+_trelloEsc(c.id)+'\',this.checked).then(function(){renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}));})" style="margin-top:2px;cursor:pointer;flex-shrink:0"/>';
-  h += '<div style="flex:1;min-width:0">';
-  h += '<div style="font-family:var(--font);font-size:14px;color:var(--pure);line-height:1.35;'+(c.dueComplete?'text-decoration:line-through':'')+'">'+_trelloEsc(c.name||'')+'</div>';
   var boardName = '';
   if(c.idBoard){
     var bm = (_trello.boards||[]).find(function(B){return B.id===c.idBoard;});
     if(bm && bm.name) boardName = bm.name;
   }
+  // Build inline meta string
   var meta = [];
   if(boardName) meta.push('<span style="color:#F4A258">'+_trelloEsc(boardName)+'</span>');
-  if(listName) meta.push(_trelloEsc(listName));
-  if(d) meta.push('<span style="color:'+(overdue?'#DA6B51':'var(--muted)')+'">'+(overdue?'Overdue \u00b7 ':'')+d.toLocaleDateString('en-GB',{day:'numeric',month:'short'})+'</span>');
-  if(meta.length){
-    h += '<div style="font-family:var(--cond);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:3px">'+meta.join(' \u00b7 ')+'</div>';
-  }
-  h += '</div></div>';
+  if(listName)  meta.push(_trelloEsc(listName));
+  if(d)         meta.push('<span style="color:'+(overdue?'#DA6B51':'var(--muted)')+'">'+(overdue?'Overdue \u00b7 ':'')+d.toLocaleDateString('en-GB',{day:'numeric',month:'short'})+'</span>');
+  var metaHtml = meta.length
+    ? '<div style="font-family:var(--cond);font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap;flex-shrink:0">'+meta.join(' \u00b7 ')+'</div>'
+    : '';
+  var h = '<div style="display:flex;align-items:center;gap:8px;padding:5px 10px;background:var(--near-black);cursor:pointer;border-bottom:1px solid var(--border)" onclick="trelloOpenCard(\''+_trelloEsc(c.id)+'\')">';
+  h += '<input type="checkbox" '+(c.dueComplete?'checked':'')+' onclick="event.stopPropagation();trelloToggleComplete(\''+_trelloEsc(c.id)+'\',this.checked).then(function(){renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}));})" style="cursor:pointer;flex-shrink:0;accent-color:#F4A258"/>';
+  h += '<div style="flex:1;font-family:var(--font);font-size:13px;color:var(--pure);line-height:1.3;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;'+(c.dueComplete?'text-decoration:line-through':'')+'">'+_trelloEsc(c.name||'')+'</div>';
+  h += metaHtml;
+  h += '</div>';
   return h;
 }
 async function trelloQuickAddForJob(jobId, listId, labelId){
@@ -8569,6 +8742,49 @@ function filterKit() {
     if(q&&!(k.name.toLowerCase().includes(q)||(k.tag||'').toLowerCase().includes(q)||(k.serial||'').toLowerCase().includes(q))) return false;
     return true;
   }).sort(function(a,b){return a.name.localeCompare(b.name);});
+}
+// ── Date-aware kit availability ─────────────────────────────────────────────
+// A job's occupancy window: earliest of rig/start/tx → latest of derig/end/tx.
+function _jobOccupancy(j){
+  if(!j) return null;
+  var dates=[];
+  if(j.rigDate) dates.push(j.rigDate);
+  if(j.start) dates.push(j.start);
+  if(j.txDate) dates.push(j.txDate);
+  if(Array.isArray(j.txDates)) j.txDates.forEach(function(d){ if(d&&d.date) dates.push(d.date); });
+  if(j.drigDate) dates.push(j.drigDate);
+  if(j.end) dates.push(j.end);
+  dates=dates.filter(Boolean).sort();
+  if(!dates.length) return null;
+  return {start:dates[0], end:dates[dates.length-1]};
+}
+function _rangesOverlap(a,b){
+  // Unknown dates on either side → can't prove they're separate, so assume a clash (safer).
+  if(!a||!b) return true;
+  return a.start <= b.end && b.start <= a.end;
+}
+function _jobUsesKit(j, kitId){
+  return (j.prep&&j.prep.find(function(p){return p.kid===kitId;}))
+    ||(j.camDetails&&j.camDetails.find(function(cd){return cd&&(cd.kitId===kitId||(cd.lensData&&cd.lensData.kitId===kitId)||(cd.fieldData&&Object.keys(cd.fieldData).some(function(fk){return cd.fieldData[fk]&&cd.fieldData[fk].kitId===kitId;})));}))
+    ||(j.specCams&&j.specCams.find(function(sc){return sc&&sc.kitId===kitId;}))
+    ||(j.monitors&&j.monitors.find(function(mo){return mo&&mo.kitId===kitId;}));
+}
+// Returns {name, sub} of a DIFFERENT job that has this kit during an overlapping window, or null.
+function getKitConflictForJob(kitId, currentJob){
+  var curOcc=_jobOccupancy(currentJob);
+  var fmt=function(ds){try{return new Date(ds).toLocaleDateString('en-GB',{day:'numeric',month:'short'});}catch(e){return ds;}};
+  var hit=null;
+  jobs.forEach(function(j){
+    if(hit) return;
+    if(currentJob && j.id===currentJob.id) return;       // same job: fine
+    if(!_jobUsesKit(j, kitId)) return;
+    var jOcc=_jobOccupancy(j);
+    if(_rangesOverlap(curOcc, jOcc)){
+      var sub = jOcc ? (fmt(jOcc.start)+' – '+fmt(jOcc.end)) : 'dates TBC';
+      hit={name:(j.name||'Job'), sub:sub};
+    }
+  });
+  return hit;
 }
 function getAllocatedKitMap() {
   var m = new Map();
@@ -10259,6 +10475,10 @@ const STATUS_CFG = {
 };
 
 let _jdTab = 'info'; // current tab
+var _jdCurrentJob = null; // job object currently shown in the detail view
+var _mvSub = 'production'; // active Multiviewers sub-tab
+var _auSub = 'setup'; // active Audio sub-tab
+var _mvSrcSel = null; // currently-selected source chip in the MV designer
 
 function openJobDet(id, _name) {
   var j=_name?jobs.find(function(x){return x.id==id&&x.name==_name;}):null;
@@ -10283,6 +10503,7 @@ function openJobDet(id, _name) {
 }
 
 function renderJobDet(j) {
+  _jdCurrentJob = j; // track for async Trello re-renders
   const sc = STATUS_CFG[j.status||'Confirmed'];
   const statusBadge = '<span style="background:'+sc.bg+';color:'+sc.color+';border:1px solid '+sc.color+'40;font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:3px 10px;border-radius:3px">'+sc.label+'</span>';
   const locCls = {Manchester:'jc-man',London:'jc-lon',ABC:'jc-man'}[j.loc]||'';
@@ -10299,13 +10520,14 @@ function renderJobDet(j) {
     {id:'set',label:'Set'},
     {id:'lv',label:'Lighting / Vision'},
     {id:'gallery',label:'Gallery'},
+    {id:'mv',label:'Multiviewers'},
     {id:'crew',label:'Crew'},
     {id:'monitors',label:'Monitors'},
     {id:'ip',label:'IP Addresses'},
     {id:'kit',label:'Prep List'},
     {id:'englog',label:'Eng Log'},
     {id:'improve',label:'Improvements'},
-    {id:'todo',label:'To-Do'}
+    {id:'todo',label:'To Do'}
   ];
   // Morning Live: also show the Schedule tab pulled from the Ops Planner
   if(j.name==='Morning Live'){
@@ -10318,6 +10540,8 @@ function renderJobDet(j) {
     _vtSet = {};
     j.visibleTabs.forEach(function(id){_vtSet[id]=true;});
     _vtSet['info']=true; // info is required
+    _vtSet['todo']=true; // To Do always available (added after some jobs were configured)
+    _vtSet['mv']=true; // Multiviewers always available (added after some jobs were configured)
   }
   const tabs = _vtSet ? allTabs.filter(function(t){return t.required || _vtSet[t.id];}) : allTabs;
   // If the currently-active tab was just hidden, fall back to info
@@ -10460,7 +10684,6 @@ function renderJobDet(j) {
       {key:'codec',    label:'Codec',             type:'sel',   opts:'Codec'},
       {key:'sensorRes',label:'Sensor Res',        type:'sel',   opts:'SENSOR'},
       {key:'lut',      label:'Look / LUT',        type:'sel',   opts:'Look / LUT'},
-      {key:'notes',    label:'Notes',             type:'text',  ph:'Camera notes'},
     ];
 
     // Build a single camera column
@@ -10609,8 +10832,9 @@ function renderJobDet(j) {
         var isNA=ed.mode==='na';
         /* Check if we have a selected value */
         var eqKit=ed.kitId?kit.find(function(x){return x.id===ed.kitId;}):null;
-        var eqHasVal=!!(eqKit||(ed.mode==='hired'&&ed.hiredVal));
-        var eqValDisp=eqKit?eqKit.name:(ed.hiredVal||'');
+        var isPresent=ed.mode==='present';
+        var eqHasVal=!!(eqKit||(ed.mode==='hired'&&ed.hiredVal)||isPresent);
+        var eqValDisp=eqKit?eqKit.name:(isPresent?'\u2713 Present \u2014 TBC':(ed.hiredVal||''));
 
         if(isNA) return '<div style="display:flex;align-items:center;gap:6px;padding:2px 0;opacity:.35">'
           +'<div style="font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);min-width:70px">'+label+'</div>'
@@ -10618,7 +10842,7 @@ function renderJobDet(j) {
           +'<button class="ibtn" style="font-size:9px;padding:1px 6px" onclick="jdEquipMode('+jid2+','+ci2+',\''+dataKey+'\',\'inv\')">enable</button></div>';
 
         if(eqHasVal){
-          return '<div style="display:flex;align-items:baseline;gap:6px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer" onclick="jdEquipSetKit('+jid2+','+ci2+',\''+dataKey+'\',null);jdEquipHired('+jid2+','+ci2+',\''+dataKey+'\',\'\')">'
+          return '<div style="display:flex;align-items:baseline;gap:6px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer" onclick="jdEquipClear('+jid2+','+ci2+',\''+dataKey+'\')">'
             +'<div style="font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);min-width:50px;flex-shrink:0">'+label+'</div>'
             +'<div style="flex:1;font-family:var(--cond);font-size:14px;font-weight:700;color:var(--pure);line-height:1.2;text-transform:uppercase">'+eqValDisp+'</div>'
             +'</div>';
@@ -10626,9 +10850,9 @@ function renderJobDet(j) {
 
         /* Empty - show compact picker */
         var modeBar='<div style="display:flex;margin-bottom:3px">'
-          +[['inv','Inventory'],['hired','Hired'],['na','N/A']].map(function(opt,oi){
+          +[['inv','Inventory'],['hired','Hired'],['present','\u2713 Present'],['na','N/A']].map(function(opt,oi){
             var active=ed.mode===opt[0];
-            return '<button onclick="jdEquipMode('+jid2+','+ci2+',\''+dataKey+'\',\''+opt[0]+'\')" style="padding:3px 10px;font-size:11px;font-family:var(--cond);font-weight:800;border:1.5px solid var(--border);'+(oi<2?'border-right:none;':'')+'background:'+(active?(opt[0]==='na'?'rgba(128,128,128,.2)':'rgba(74,158,255,.3)'):'rgba(255,255,255,.04)')+';color:'+(active?(opt[0]==='na'?'var(--muted)':'#2a6cb8'):'var(--muted)')+';cursor:pointer">'+opt[1]+'</button>';
+            return '<button onclick="jdEquipMode('+jid2+','+ci2+',\''+dataKey+'\',\''+opt[0]+'\')" style="padding:3px 10px;font-size:11px;font-family:var(--cond);font-weight:800;border:1.5px solid var(--border);'+(oi<3?'border-right:none;':'')+'background:'+(active?(opt[0]==='na'?'rgba(128,128,128,.2)':opt[0]==='present'?'rgba(42,125,72,.25)':'rgba(74,158,255,.3)'):'rgba(255,255,255,.04)')+';color:'+(active?(opt[0]==='na'?'var(--muted)':opt[0]==='present'?'#2a7d48':'#2a6cb8'):'var(--muted)')+';cursor:pointer">'+opt[1]+'</button>';
           }).join('')+'</div>';
         var eqInput='';
         if(ed.mode==='hired'){
@@ -10675,6 +10899,8 @@ function renderJobDet(j) {
         :'<button class="ibtn" style="font-size:9px;padding:1px 6px;color:var(--muted)" onclick="this.style.display=\'none\';this.nextElementSibling.style.display=\'\'">+ label</button>'
          +'<input class="fi" style="display:none;font-size:12px;padding:2px 5px;flex:1;min-width:0;font-family:var(--cond);font-weight:700;letter-spacing:.04em;text-transform:uppercase" value="" placeholder="e.g. Jib" onchange="jdSetCamDetail('+jid+','+i+',\'camLabel\',this.value)" onclick="event.stopPropagation()"/>';
 
+      var _camNotesVal=(cd.notes||(cd.fieldData&&cd.fieldData.notes&&cd.fieldData.notes.val)||'').toString();
+      var notesRow='<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border-l)"><div class="dfl" style="font-size:10px;margin-bottom:3px">Notes</div><textarea class="fi" style="font-size:12px;padding:5px 7px;width:100%;min-height:48px;resize:vertical;line-height:1.4" placeholder="Camera notes\u2026" onchange="jdSetCamDetail('+jid+','+i+',\'notes\',this.value)">'+_camNotesVal.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</textarea></div>';
       return '<div style="min-width:240px;max-width:260px;background:rgba(255,255,255,.025);'+_camBorder+';border-radius:6px;padding:10px;flex-shrink:0">'
         +'<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px">'
         +'<div style="font-family:var(--cond);font-size:22px;font-weight:900;letter-spacing:-.01em;flex-shrink:0">'+_camNumHtml+'</div>'
@@ -10688,6 +10914,7 @@ function renderJobDet(j) {
         +autocueRow+retMonRow+vfRow
         +_camWallbox(jid,i,cd)
         +fieldRows
+        +notesRow
         +addBtn
         +camPhotos+camPhotoBtn
         +'</div>';
@@ -10701,6 +10928,7 @@ function renderJobDet(j) {
         +'</div>')
       :j.camDetails.map(function(cd,idx2){return mkCamCol(cd,idx2);}).join('');
     content='<div class="det-sec"><div class="det-sec-lbl">Camera Specification</div>'
+      +'<div style="margin-bottom:10px"><button class="ibtn" style="font-size:11px;padding:4px 12px;background:rgba(250,160,0,.12);color:#b87400;font-weight:800;letter-spacing:.03em" onclick="jdLoadBroadcastCard('+j.id+')">Load broadcast card &mdash; 10&times; HDC-3500 (hired)</button></div>'
       +'<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px">'
       +'<div><div class="dfl">Camera Supervisor</div><input class="fi" style="font-size:14px;padding:5px 8px;width:100%" value="'+(j.camSupervisor||'')+'" placeholder="Supervisor name" onchange="jdSetField('+j.id+',\'camSupervisor\',this.value)"/></div>'
       +'<div><div class="dfl">Camera Guarantee</div><input class="fi" style="font-size:14px;padding:5px 8px;width:100%" value="'+(j.camGuarantee||'')+'" placeholder="Guarantee name" onchange="jdSetField('+j.id+',\'camGuarantee\',this.value)"/></div>'
@@ -10965,7 +11193,20 @@ function renderJobDet(j) {
                   +'<button class="rm-btn" style="font-size:10px" onclick="lvRcpSet('+j.id+','+ci+',\'kitId\',null)">×</button>'
                   +'</div></div>'
                 :'<button class="ibtn" style="font-size:11px" onclick="lvPickRcp('+j.id+','+ci+')">Pick from Inventory</button>')
-              :'<input class="fi" style="font-size:12px;padding:3px 7px;max-width:200px;width:100%" value="'+(rcp.hiredVal||'')+'" placeholder="RCP model / supplier..." onchange="lvRcpSet('+j.id+','+ci+',\'hiredVal\',this.value)"/>';
+              :(function(){
+                 var rcpHired=(typeof hiredCatalogue!=='undefined'?hiredCatalogue:[]).filter(function(h){return h.subcat==='RCP';}).sort(function(a,b){return (a.name||'').localeCompare(b.name||'');});
+                 if(rcpHired.length){
+                   var cur=rcp.hiredVal||'';
+                   var inList=rcpHired.some(function(h){return (h.name||'')===cur;});
+                   return '<select class="fi" style="font-size:12px;padding:3px 7px;max-width:220px;width:100%" onchange="lvRcpHiredPick('+j.id+','+ci+',this)">'
+                     +'<option value="">&mdash; Pick hired RCP &mdash;</option>'
+                     +rcpHired.map(function(h){var nm=(h.name||'');return '<option'+(nm===cur?' selected':'')+' value="'+nm.replace(/"/g,'&quot;')+'">'+nm.replace(/</g,'&lt;')+'</option>';}).join('')
+                     +(cur&&!inList?'<option selected value="'+cur.replace(/"/g,'&quot;')+'">'+cur.replace(/</g,'&lt;')+' (custom)</option>':'')
+                     +'<option value="__custom__" style="font-style:italic">+ Type custom\u2026</option>'
+                     +'</select>';
+                 }
+                 return '<input class="fi" style="font-size:12px;padding:3px 7px;max-width:200px;width:100%" value="'+(rcp.hiredVal||'').replace(/"/g,'&quot;')+'" placeholder="RCP model / supplier..." onchange="lvRcpSet('+j.id+','+ci+',\'hiredVal\',this.value)"/>';
+               })();
 
             // ── Legacy / IP toggle (right side) ─────────────────
             function typeBtn(label,type,active){
@@ -10980,19 +11221,19 @@ function renderJobDet(j) {
 
             var ipFields='';
             if(rcpType==='ip'){
-              ipFields='<div style="display:flex;flex-direction:column;gap:5px;margin-top:2px">'
-                +'<div><div class="dfl" style="font-size:10px;margin-bottom:2px">CCU IP</div>'
-                +'<input class="fi" style="font-size:12px;padding:2px 7px;width:160px;font-family:monospace" value="'+(rcp.ccuIp||'')+'" placeholder="0.0.0.0" onchange="lvRcpSet('+j.id+','+ci+',\'ccuIp\',this.value)"/></div>'
-                +'<div><div class="dfl" style="font-size:10px;margin-bottom:2px">RCP Address</div>'
-                +'<input class="fi" style="font-size:12px;padding:2px 7px;width:160px;font-family:monospace" value="'+(rcp.rcpIp||'')+'" placeholder="0.0.0.0" onchange="lvRcpSet('+j.id+','+ci+',\'rcpIp\',this.value)"/></div>'
-                +'<div><div class="dfl" style="font-size:10px;margin-bottom:2px">Target IP</div>'
-                +'<input class="fi" style="font-size:12px;padding:2px 7px;width:160px;font-family:monospace" value="'+(rcp.targetIp||'')+'" placeholder="0.0.0.0" onchange="lvRcpSet('+j.id+','+ci+',\'targetIp\',this.value)"/></div>'
+              ipFields='<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:2px;align-items:flex-end">'
+                +'<div><div class="dfl" style="font-size:9px;margin-bottom:1px">CCU IP</div>'
+                +'<input class="fi" style="font-size:11px;padding:2px 5px;width:108px;font-family:monospace" value="'+(rcp.ccuIp||'')+'" placeholder="0.0.0.0" onchange="lvRcpSet('+j.id+','+ci+',\'ccuIp\',this.value)"/></div>'
+                +'<div><div class="dfl" style="font-size:9px;margin-bottom:1px">RCP Addr</div>'
+                +'<input class="fi" style="font-size:11px;padding:2px 5px;width:108px;font-family:monospace" value="'+(rcp.rcpIp||'')+'" placeholder="0.0.0.0" onchange="lvRcpSet('+j.id+','+ci+',\'rcpIp\',this.value)"/></div>'
+                +'<div><div class="dfl" style="font-size:9px;margin-bottom:1px">Target IP</div>'
+                +'<input class="fi" style="font-size:11px;padding:2px 5px;width:108px;font-family:monospace" value="'+(rcp.targetIp||'')+'" placeholder="0.0.0.0" onchange="lvRcpSet('+j.id+','+ci+',\'targetIp\',this.value)"/></div>'
                 +'</div>';
             }
 
             rcpSection='<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start">'
               +'<div>'+srcToggle+srcPick+'</div>'
-              +'<div>'+typeToggle+ipFields+'</div>'
+              +'<div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start">'+typeToggle+ipFields+'</div>'
               +'</div>';
           }
 
@@ -11035,6 +11276,7 @@ function renderJobDet(j) {
   }
 
   else if(_jdTab==='gallery'){content=renderGalleryTab(j);}
+  else if(_jdTab==='mv'){content=renderMVTab(j);}
   else if(_jdTab==='mlsched'){content=renderMLScheduleTab(j);}
 
   else if(_jdTab==='crew'){content=renderCrewTab(j);}
@@ -11043,8 +11285,27 @@ function renderJobDet(j) {
     var au=j.audio;
     // Initialise new fields lazily (preserves existing data)
     if(!au.hydras)au.hydras=[];
+    // MADI: 3 streams, each carrying 48 input channels
+    if(!Array.isArray(au.madi)) au.madi=[];
+    while(au.madi.length<3) au.madi.push({name:'',inputs:[],collapsed:true});
+    au.madi.forEach(function(s){ if(!Array.isArray(s.inputs)) s.inputs=[]; while(s.inputs.length<48) s.inputs.push(''); });
+    // Hydra: derive in/out counts + ensure I/O allocation arrays
+    au.hydras.forEach(function(h){
+      var nm = h.mode==='hired' ? (h.hiredVal||'') : (h.kitId?((kit.find(function(k){return k.id===h.kitId;})||{}).name||''):'');
+      var mm = nm.match(/(\d+)\s*\/\s*(\d+)/);
+      if(h.ins===undefined)  h.ins  = mm?parseInt(mm[1]):0;
+      if(h.outs===undefined) h.outs = mm?parseInt(mm[2]):0;
+      if(h.wallbox===undefined) h.wallbox='';
+      if(!Array.isArray(h.inputs)) h.inputs=[];
+      if(!Array.isArray(h.outputs)) h.outputs=[];
+      while(h.inputs.length<h.ins)  h.inputs.push({alloc:'',rx:'',freq:'',show:'',notes:''});
+      while(h.outputs.length<h.outs) h.outputs.push({use:'',freq:'',feed:'',show:'',notes:''});
+    });
     if(!au.floorCrew)au.floorCrew=[];
     if(!au.radioMics)au.radioMics=[];
+    au.radioMics.forEach(function(m){ if(m.mic===undefined)m.mic='DPA 6060'; if(m.notes===undefined)m.notes='Upside down/foam windshield'; });
+    if(au.radioMicSystem===undefined)au.radioMicSystem='';
+    if(au.radioMicNotes===undefined)au.radioMicNotes='9 x black DPA 6060 and 8 x white DPA 6060 heads available for show\u2014use as required\nSoftware control/monitoring of receivers on studio floor and in sound gallery';
     if(!au.otherMics)au.otherMics=[];
     if(!au.gramsDesk)au.gramsDesk={mode:'inv',kitId:null,hiredVal:''};
     if(!au.spotOn)au.spotOn={mode:'inv',kitId:null,hiredVal:''};
@@ -11193,20 +11454,84 @@ function renderJobDet(j) {
         else h.mode='inv';
         if(h.hiredVal===undefined) h.hiredVal='';
       }
-      return '<div style="display:grid;grid-template-columns:320px 1fr 1fr 22px;gap:10px;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.05)">'
+      var _q=function(s){return (s||'').toString().replace(/"/g,'&quot;');};
+      var ins=parseInt(h.ins)||0, outs=parseInt(h.outs)||0;
+      // Header row: unit picker, wallbox, in/out counts, expand, remove
+      var head='<div style="display:grid;grid-template-columns:300px 150px 78px 78px 1fr auto;gap:8px;align-items:center;padding:6px 0">'
         +_auIH(h,'auHydraSet','auPickHydra','Hired hydra model...',hi)
-        +'<input class="fi" style="font-size:13px;padding:3px 7px" value="'+((h.location||'').replace(/"/g,'&quot;'))+'" placeholder="Location / patch..." onchange="auHydraSet('+j.id+','+hi+',\'location\',this.value)"/>'
-        +'<input class="fi" style="font-size:13px;padding:3px 7px" value="'+((h.notes||'').replace(/"/g,'&quot;'))+'" placeholder="Notes..." onchange="auHydraSet('+j.id+','+hi+',\'notes\',this.value)"/>'
-        +'<button class="rm-btn" style="font-size:13px;padding:0;width:22px;height:22px" onclick="auHydraRm('+j.id+','+hi+')">×</button>'
+        +'<input class="fi" style="font-size:13px;padding:3px 7px" value="'+_q(h.wallbox)+'" placeholder="Wallbox..." onchange="auHydraSet('+j.id+','+hi+',\'wallbox\',this.value)"/>'
+        +'<div><div class="dfl" style="font-size:8px;margin-bottom:1px">Ins</div><input class="fi" type="number" min="0" max="96" style="font-size:13px;padding:3px 6px;width:100%;text-align:center" value="'+ins+'" onchange="auHydraSetCount('+j.id+','+hi+',\'ins\',this.value)"/></div>'
+        +'<div><div class="dfl" style="font-size:8px;margin-bottom:1px">Outs</div><input class="fi" type="number" min="0" max="48" style="font-size:13px;padding:3px 6px;width:100%;text-align:center" value="'+outs+'" onchange="auHydraSetCount('+j.id+','+hi+',\'outs\',this.value)"/></div>'
+        +'<input class="fi" style="font-size:13px;padding:3px 7px" value="'+_q(h.notes)+'" placeholder="Notes..." onchange="auHydraSet('+j.id+','+hi+',\'notes\',this.value)"/>'
+        +'<div style="display:flex;gap:4px"><button class="ibtn" style="font-size:11px;padding:3px 8px" onclick="auHydraToggle('+j.id+','+hi+')">'+(h.collapsed===false?'Hide I/O':'Edit I/O')+'</button>'
+        +'<button class="rm-btn" style="font-size:13px;padding:0;width:22px;height:22px" onclick="auHydraRm('+j.id+','+hi+')">×</button></div>'
         +'</div>';
+      var io='';
+      if(h.collapsed===false){
+        var inHdr=['#','Allocation','RX','Freq','Show Use','Notes'];
+        var inRows=(h.inputs||[]).map(function(r,ri){
+          return '<div style="display:grid;grid-template-columns:34px 1fr 90px 80px 1.2fr 1.2fr;gap:6px;align-items:center;padding:2px 0;border-bottom:1px solid rgba(255,255,255,.04)">'
+            +'<div style="font-family:var(--cond);font-weight:800;font-size:11px;color:var(--muted);text-align:center">'+(ri+1)+'</div>'
+            +'<input class="fi" style="font-size:12px;padding:2px 6px" value="'+_q(r.alloc)+'" placeholder="e.g. Bodypack 1" onchange="auHydraIO('+j.id+','+hi+',\'inputs\','+ri+',\'alloc\',this.value)"/>'
+            +'<input class="fi" style="font-size:12px;padding:2px 6px" value="'+_q(r.rx)+'" placeholder="RX" onchange="auHydraIO('+j.id+','+hi+',\'inputs\','+ri+',\'rx\',this.value)"/>'
+            +'<input class="fi" style="font-size:12px;padding:2px 6px;font-family:monospace" value="'+_q(r.freq)+'" placeholder="Freq" onchange="auHydraIO('+j.id+','+hi+',\'inputs\','+ri+',\'freq\',this.value)"/>'
+            +'<input class="fi" style="font-size:12px;padding:2px 6px" value="'+_q(r.show)+'" placeholder="Show use" onchange="auHydraIO('+j.id+','+hi+',\'inputs\','+ri+',\'show\',this.value)"/>'
+            +'<input class="fi" style="font-size:12px;padding:2px 6px" value="'+_q(r.notes)+'" placeholder="Notes" onchange="auHydraIO('+j.id+','+hi+',\'inputs\','+ri+',\'notes\',this.value)"/>'
+            +'</div>';
+        }).join('');
+        var outRows=(h.outputs||[]).map(function(r,ri){
+          return '<div style="display:grid;grid-template-columns:34px 1fr 80px 90px 1.2fr 1.2fr;gap:6px;align-items:center;padding:2px 0;border-bottom:1px solid rgba(255,255,255,.04)">'
+            +'<div style="font-family:var(--cond);font-weight:800;font-size:11px;color:var(--muted);text-align:center">'+(ri+1)+'</div>'
+            +'<input class="fi" style="font-size:12px;padding:2px 6px" value="'+_q(r.use)+'" placeholder="e.g. Foldback" onchange="auHydraIO('+j.id+','+hi+',\'outputs\','+ri+',\'use\',this.value)"/>'
+            +'<input class="fi" style="font-size:12px;padding:2px 6px;font-family:monospace" value="'+_q(r.freq)+'" placeholder="Freq" onchange="auHydraIO('+j.id+','+hi+',\'outputs\','+ri+',\'freq\',this.value)"/>'
+            +'<input class="fi" style="font-size:12px;padding:2px 6px" value="'+_q(r.feed)+'" placeholder="Feed (Aux)" onchange="auHydraIO('+j.id+','+hi+',\'outputs\','+ri+',\'feed\',this.value)"/>'
+            +'<input class="fi" style="font-size:12px;padding:2px 6px" value="'+_q(r.show)+'" placeholder="Show use" onchange="auHydraIO('+j.id+','+hi+',\'outputs\','+ri+',\'show\',this.value)"/>'
+            +'<input class="fi" style="font-size:12px;padding:2px 6px" value="'+_q(r.notes)+'" placeholder="Notes" onchange="auHydraIO('+j.id+','+hi+',\'outputs\','+ri+',\'notes\',this.value)"/>'
+            +'</div>';
+        }).join('');
+        io='<div style="padding:8px 4px 12px">'
+          +'<div style="font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:4px 0 4px">Inputs ('+ins+')</div>'
+          +'<div style="display:grid;grid-template-columns:34px 1fr 90px 80px 1.2fr 1.2fr;gap:6px;padding:2px 0">'+inHdr.map(function(x){return '<div style="font-size:9px;font-family:var(--cond);font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)">'+x+'</div>';}).join('')+'</div>'
+          +(inRows||'<div style="color:var(--muted);font-size:12px;padding:4px 0">Set an Ins count above to add input rows.</div>')
+          +'<div style="font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:14px 0 4px">Outputs ('+outs+')</div>'
+          +'<div style="display:grid;grid-template-columns:34px 1fr 80px 90px 1.2fr 1.2fr;gap:6px;padding:2px 0">'+['#','Use','Freq','Feed','Show Use','Notes'].map(function(x){return '<div style="font-size:9px;font-family:var(--cond);font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)">'+x+'</div>';}).join('')+'</div>'
+          +(outRows||'<div style="color:var(--muted);font-size:12px;padding:4px 0">Set an Outs count above to add output rows.</div>')
+          +'</div>';
+      }
+      return '<div style="border-bottom:1px solid rgba(255,255,255,.07);background:'+(h.collapsed===false?'rgba(255,255,255,.02)':'transparent')+';border-radius:6px;margin-bottom:2px">'+head+io+'</div>';
     }).join('');
     var hydraSection = '<div style="margin-top:10px;padding-top:8px;border-top:1px solid var(--border)">'
       +'<div style="display:flex;align-items:baseline;gap:10px;margin-bottom:6px"><div class="det-sec-lbl" style="margin:0;padding:0;border:none;font-size:12px">Hydras</div><span class="jd-card-ct">'+au.hydras.length+'</span><button class="ibtn" style="font-size:11px;padding:3px 8px;margin-left:auto" onclick="auHydraAdd('+j.id+')">+ Add Hydra</button></div>'
       +(au.hydras.length
-        ?'<div style="display:grid;grid-template-columns:320px 1fr 1fr 22px;gap:10px;padding:4px 0">'
-          +['Unit','Location / Patch','Notes',''].map(function(h){return '<div style="font-size:10px;font-family:var(--cond);font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">'+h+'</div>';}).join('')+'</div>'
+        ?'<div style="display:grid;grid-template-columns:300px 150px 78px 78px 1fr auto;gap:8px;padding:2px 0">'
+          +['Unit','Wallbox','Ins','Outs','Notes',''].map(function(h){return '<div style="font-size:10px;font-family:var(--cond);font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">'+h+'</div>';}).join('')+'</div>'
           +hydraRowsNew
         :'<div style="color:var(--muted);font-size:13px;padding:2px 0">No hydras yet.</div>')
+      +'</div>';
+    // ── MADI (3 streams × 48 inputs; named inputs feed the Ingest MADI dropdown) ──
+    var _qm=function(s){return (s||'').toString().replace(/"/g,'&quot;');};
+    var madiRows=(au.madi||[]).map(function(s,si){
+      var filled=(s.inputs||[]).filter(function(x){return x;}).length;
+      var head='<div style="display:flex;align-items:center;gap:8px;padding:6px 0;flex-wrap:wrap">'
+        +'<span style="font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.06em;color:var(--accent);min-width:62px">MADI '+(si+1)+'</span>'
+        +'<span style="font-size:11px;color:var(--muted)">'+filled+'/48 allocated</span>'
+        +'<button class="ibtn" style="font-size:11px;padding:3px 8px;margin-left:auto" onclick="auMadiToggle('+j.id+','+si+')">'+(s.collapsed===false?'Hide inputs':'Edit 48 inputs')+'</button>'
+        +'</div>';
+      var list='';
+      if(s.collapsed===false){
+        var cells=(s.inputs||[]).map(function(v,ci){
+          return '<div style="display:flex;align-items:center;gap:5px">'
+            +'<span style="font-family:var(--cond);font-size:10px;font-weight:800;color:var(--muted);width:22px;text-align:right">'+(ci+1)+'</span>'
+            +'<input class="fi" style="font-size:12px;padding:2px 5px;width:100%" value="'+_qm(v)+'" placeholder="Input '+(ci+1)+'" onchange="auMadiInput('+j.id+','+si+','+ci+',this.value)"/>'
+            +'</div>';
+        }).join('');
+        list='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:5px;padding:4px 0 10px">'+cells+'</div>';
+      }
+      return '<div style="border-bottom:1px solid rgba(255,255,255,.07)">'+head+list+'</div>';
+    }).join('');
+    var madiCard='<div class="det-sec" style="padding:8px 12px;width:100%;max-width:1100px;margin-bottom:0">'
+      +'<div style="display:flex;align-items:baseline;gap:10px;margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid var(--border)"><div class="det-sec-lbl" style="margin:0;padding:0;border:none;font-size:12px">MADI</div><span class="jd-card-ct">3</span><span style="font-size:11px;color:var(--muted);margin-left:6px">3 streams \u00b7 48 inputs each \u00b7 named inputs appear in the Ingest MADI dropdown</span></div>'
+      +madiRows
       +'</div>';
     var equipCard = '<div class="det-sec" style="padding:8px 12px;flex:1 1 560px;max-width:900px;margin-bottom:0">'
       +'<div style="display:flex;align-items:baseline;gap:10px;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border);flex-wrap:wrap">'
@@ -11217,15 +11542,27 @@ function renderJobDet(j) {
       +(equipBits.length
         ? '<div class="jd-auto-wide" style="align-items:flex-start">'+equipBits.join('')+'</div>'
         : '<div style="color:var(--muted);font-size:12px;padding:2px 0;font-style:italic">No Grams/SpotOn for this job.</div>')
-      +hydraSection
       +'</div>';
+    var hydraCard = '<div class="det-sec" style="padding:8px 12px;width:100%;max-width:1100px;margin-bottom:0">'+hydraSection+'</div>';
 
     // ── Mics (Radio + Other, in one card) ──
     var rmRows = au.radioMics.map(function(m,mi){
-      return '<div style="display:grid;grid-template-columns:64px 1fr 140px 22px;gap:8px;align-items:center;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.05);max-width:720px">'
+      var rmHired=(typeof hiredCatalogue!=='undefined'?hiredCatalogue:[]).filter(function(h){return h.subcat==='Radio Mics'||h.subcat==='Radio TX';}).sort(function(a,b){return (a.name||'').localeCompare(b.name||'');});
+      var curRm=m.radioMic||'';
+      var rmInList=rmHired.some(function(h){return (h.name||'')===curRm;});
+      var rmSel='<select class="fi" style="font-size:13px;padding:3px 6px;width:100%" onchange="auRadioMicPick('+j.id+','+mi+',this)">'
+        +'<option value="">&mdash; Radio mic &mdash;</option>'
+        +rmHired.map(function(h){var nm=(h.name||'');return '<option'+(nm===curRm?' selected':'')+' value="'+nm.replace(/"/g,'&quot;')+'">'+nm.replace(/</g,'&lt;')+'</option>';}).join('')
+        +(curRm&&!rmInList?'<option selected value="'+curRm.replace(/"/g,'&quot;')+'">'+curRm.replace(/</g,'&lt;')+' (custom)</option>':'')
+        +'<option value="__custom__">+ Type custom\u2026</option>'
+        +'</select>';
+      return '<div style="display:grid;grid-template-columns:48px 1fr 1fr 88px 116px 1.3fr 22px;gap:8px;align-items:center;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.05)">'
         +'<input class="fi" style="font-size:13px;padding:3px 6px;text-align:center" value="'+((m.num||'').toString().replace(/"/g,'&quot;'))+'" placeholder="#" onchange="auRadioSet('+j.id+','+mi+',\'num\',this.value)"/>'
         +'<input class="fi" style="font-size:13px;padding:3px 7px" value="'+((m.forWhom||'').replace(/"/g,'&quot;'))+'" placeholder="For... (e.g. Presenter, Guest 1)" onchange="auRadioSet('+j.id+','+mi+',\'forWhom\',this.value)"/>'
+        +rmSel
         +'<input class="fi" style="font-size:13px;padding:3px 7px;font-family:monospace" value="'+((m.freq||'').replace(/"/g,'&quot;'))+'" placeholder="MHz" onchange="auRadioSet('+j.id+','+mi+',\'freq\',this.value)"/>'
+        +'<input class="fi" style="font-size:13px;padding:3px 7px" value="'+((m.mic!==undefined?m.mic:'DPA 6060').replace(/"/g,'&quot;'))+'" placeholder="Microphone" onchange="auRadioSet('+j.id+','+mi+',\'mic\',this.value)"/>'
+        +'<input class="fi" style="font-size:13px;padding:3px 7px" value="'+((m.notes!==undefined?m.notes:'Upside down/foam windshield').replace(/"/g,'&quot;'))+'" placeholder="Notes" onchange="auRadioSet('+j.id+','+mi+',\'notes\',this.value)"/>'
         +'<button class="rm-btn" style="font-size:13px;padding:0;width:22px;height:22px" onclick="auRadioRm('+j.id+','+mi+')">×</button>'
         +'</div>';
     }).join('');
@@ -11237,13 +11574,15 @@ function renderJobDet(j) {
         +'<button class="rm-btn" style="font-size:13px;padding:0;width:22px;height:22px" onclick="auOtherRm('+j.id+','+mi+')">×</button>'
         +'</div>';
     }).join('');
-    var micsCard = '<div class="det-sec" style="padding:8px 12px;flex:1 1 560px;max-width:900px;margin-bottom:0">'
+    var micsCard = '<div class="det-sec" style="padding:8px 12px;width:100%;flex:1 1 100%;max-width:1100px;margin-bottom:0">'
       +'<div style="display:flex;align-items:baseline;gap:10px;margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid var(--border)"><div class="det-sec-lbl" style="margin:0;padding:0;border:none;font-size:12px">Radio Mics</div><span class="jd-card-ct">'+au.radioMics.length+'</span><button class="ibtn" style="font-size:11px;padding:3px 8px;margin-left:auto" onclick="auRadioAdd('+j.id+')">+ Add Radio Mic</button></div>'
       +(au.radioMics.length
-        ?'<div style="display:grid;grid-template-columns:64px 1fr 140px 22px;gap:8px;padding:4px 0;max-width:720px">'
-          +['#','For','Frequency',''].map(function(h){return '<div style="font-size:10px;font-family:var(--cond);font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">'+h+'</div>';}).join('')+'</div>'
+        ?'<div style="display:grid;grid-template-columns:48px 1fr 1fr 88px 116px 1.3fr 22px;gap:8px;padding:4px 0">'
+          +['#','For','Radio Mic','Frequency','Microphone','Notes',''].map(function(h){return '<div style="font-size:10px;font-family:var(--cond);font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">'+h+'</div>';}).join('')+'</div>'
           +rmRows
         :'<div style="color:var(--muted);font-size:13px;padding:2px 0">No radio mics yet.</div>')
+      +'<div style="margin:10px 0 2px"><div class="dfl" style="font-size:10px;margin-bottom:3px">Notes</div>'
+        +'<textarea class="fi" style="font-size:12px;padding:5px 8px;width:100%;min-height:54px;resize:vertical;font-family:inherit;line-height:1.4" placeholder="Notes..." onchange="auSetRadioNotes('+j.id+',this.value)">'+(au.radioMicNotes||'').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</textarea></div>'
       +'<div style="display:flex;align-items:baseline;gap:10px;margin:12px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--border)"><div class="det-sec-lbl" style="margin:0;padding:0;border:none;font-size:12px">Other Mics</div><span class="jd-card-ct">'+au.otherMics.length+'</span><button class="ibtn" style="font-size:11px;padding:3px 8px;margin-left:auto" onclick="auOtherAdd('+j.id+')">+ Add Mic</button></div>'
       +(au.otherMics.length
         ? omRows
@@ -11308,17 +11647,27 @@ function renderJobDet(j) {
       +'<textarea class="fta" style="width:100%;min-height:80px;font-size:14px;padding:6px 10px" placeholder="Audio notes..." onchange="jdSetAu('+j.id+',\'notes\',this.value)">'+(au.notes||'').replace(/</g,'&lt;')+'</textarea>'
       +'</div>';
 
-    content = legacySupHint + legacyGramsOpHint
-      + '<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start">'
-      + '<div style="display:flex;flex-direction:column;gap:10px;flex:1 1 380px;max-width:520px">'
-      +   setupCard
-      +   crewCard
-      + '</div>'
-      + equipCard
-      + micsCard
-      + multitrackCard
-      + notesCard
-      + '</div>';
+    var _auSubs=[['setup','Setup'],['hydra','Hydra'],['madi','MADI'],['radio','Radio Mics'],['multitrack','Multitrack Record']];
+    if(!_auSubs.some(function(s){return s[0]===_auSub;})) _auSub='setup';
+    var auSubBar='<div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap">'
+      +_auSubs.map(function(s){var on=s[0]===_auSub;return '<button onclick="auSetSub('+j.id+',\''+s[0]+'\')" style="padding:7px 16px;font-family:var(--cond);font-size:14px;font-weight:800;letter-spacing:.04em;border:1.5px solid '+(on?'var(--accent)':'var(--border)')+';border-radius:7px;cursor:pointer;background:'+(on?'rgba(244,162,88,.18)':'rgba(255,255,255,.03)')+';color:'+(on?'var(--accent)':'var(--muted)')+'">'+s[1]+'</button>';}).join('')
+      +'</div>';
+    var auBody='';
+    if(_auSub==='setup'){
+      auBody='<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start">'
+        + '<div style="display:flex;flex-direction:column;gap:10px;flex:1 1 380px;max-width:520px">'+setupCard+crewCard+'</div>'
+        + equipCard + '</div>'
+        + '<div style="margin-top:10px">'+notesCard+'</div>';
+    } else if(_auSub==='hydra'){
+      auBody=hydraCard;
+    } else if(_auSub==='madi'){
+      auBody=madiCard;
+    } else if(_auSub==='radio'){
+      auBody=micsCard;
+    } else if(_auSub==='multitrack'){
+      auBody=multitrackCard;
+    }
+    content = legacySupHint + legacyGramsOpHint + auSubBar + auBody;
   }
   else if(_jdTab==='post'){
     var postNA=j.postNA||false;
@@ -11456,6 +11805,7 @@ var _mtAllTabs = [
   {id:'set',label:'Set',col:'rgba(120,60,140,.85)'},
   {id:'lv',label:'Lighting / Vision',col:'rgba(30,115,125,.85)'},
   {id:'gallery',label:'Gallery',col:'rgba(150,65,65,.85)'},
+  {id:'mv',label:'Multiviewers',col:'rgba(90,90,170,.85)'},
   {id:'crew',label:'Crew',col:'rgba(50,105,80,.85)'},
   {id:'monitors',label:'Monitors',col:'rgba(35,95,145,.85)'},
   {id:'ip',label:'IP Addresses',col:'rgba(40,105,105,.85)'},
@@ -11784,6 +12134,24 @@ function _ddCommsMigration(){
     if(typeof localStorage!=='undefined') localStorage.setItem('_ddCommsMig_v2','done');
   } catch(e){ console.warn('_ddCommsMigration error:', e); }
 }
+function _celebCommsMigration(){
+  try {
+    if(!Array.isArray(jobs) || !jobs.length) return;
+    var jb=jobs.find(function(j){return (j.name||'').toLowerCase().indexOf('celeb')>=0;});
+    if(!jb) return;
+    if(!jb.comms) jb.comms={people:[],channels:[],boleroChannels:[],notes:'',showChannels:true,showBoleroChannels:true,supervisor:'',supplier:''};
+    if(!Array.isArray(jb.comms.people)) jb.comms.people=[];
+    if(jb.comms._celebSeeded) return; // run exactly once (persisted in Supabase)
+    var ROLES=['Floor Manager','AFM','AFM','Producer 1','Producer 2','Floor Sound 1','Floor Sound 2','Floor Sound 3','Writer','Plus4','LIVEFX','Camera Assist 1','Camera Assist 2','Camera Assist 3','Jib Op','Jib Assist','Lighting','Rigging'];
+    var added=0;
+    ROLES.forEach(function(role){
+      jb.comms.people.push({name:'',role:role,location:'',bolero:false,panel:false,walkie:false,wire4:false,headset:'',notes:''});
+      added++;
+    });
+    jb.comms._celebSeeded=true;
+    if(added>0){ saveData(); console.log("I'm a Celeb comms: added "+added+" role rows"); }
+  } catch(e){ console.warn('_celebCommsMigration error:', e); }
+}
 function techHandleCodecSel(jid,val){
   var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   if(val==='__add__'){
@@ -12097,6 +12465,17 @@ function lvRcpSet(jid,ci,field,val){
   j.lvSpec.camRcp[ci][field]=val;
   if(field==='kitId')renderJobDet(j);
 }
+function lvRcpHiredPick(jid,ci,sel){
+  var val=sel.value;
+  if(val==='__custom__'){
+    var custom=prompt('RCP model / supplier:','');
+    if(custom&&custom.trim()){ lvRcpSet(jid,ci,'hiredVal',custom.trim()); }
+    else { sel.value=''; return; }
+    var j=jobs.find(function(x){return x.id==jid;}); if(j) renderJobDet(j);
+    return;
+  }
+  lvRcpSet(jid,ci,'hiredVal',val);
+}
 function lvPickRcp(jid,ci){
   _openGenKitPicker('Pick RCP / Control Unit',function(k){if(k.status==='Bin')return false;var sc=(k.subcat||'').toLowerCase(),nm=(k.name||'').toLowerCase();return sc==='rcp'||sc==='control'||nm.indexOf('rcp')>=0||nm.indexOf('remote control panel')>=0||nm.indexOf('ccu remote')>=0;},function(kid){lvRcpSet(jid,ci,'kitId',kid);renderJobDet(jobs.find(function(x){return x.id==jid;}));});
 }
@@ -12153,7 +12532,29 @@ function lvVopSet(jid,vi,field,val){
 }
 function auHydraAdd(jid){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;if(!j.audio)j.audio={};if(!j.audio.hydras)j.audio.hydras=[];j.audio.hydras.push({mode:'inv',kitId:null,hiredVal:'',location:'',notes:''});saveData();renderJobDet(j);}
 function auHydraRm(jid,hi){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.audio||!j.audio.hydras)return;j.audio.hydras.splice(hi,1);saveData();renderJobDet(j);}
-function auHydraSet(jid,hi,field,val){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.audio||!j.audio.hydras||!j.audio.hydras[hi])return;j.audio.hydras[hi][field]=val;saveData();if(field==='mode'||field==='kitId')renderJobDet(j);}
+function auHydraSet(jid,hi,field,val){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.audio||!j.audio.hydras||!j.audio.hydras[hi])return;var h=j.audio.hydras[hi];h[field]=val;
+  if(field==='kitId'||field==='hiredVal'){
+    var nm=h.mode==='hired'?(h.hiredVal||''):(h.kitId?((kit.find(function(k){return k.id===h.kitId;})||{}).name||''):'');
+    var mm=nm.match(/(\d+)\s*\/\s*(\d+)/);
+    if(mm && ((parseInt(h.ins)||0)+(parseInt(h.outs)||0)===0)){
+      h.ins=parseInt(mm[1]); h.outs=parseInt(mm[2]);
+      if(!Array.isArray(h.inputs))h.inputs=[]; while(h.inputs.length<h.ins)h.inputs.push({alloc:'',rx:'',freq:'',show:'',notes:''});
+      if(!Array.isArray(h.outputs))h.outputs=[]; while(h.outputs.length<h.outs)h.outputs.push({use:'',freq:'',feed:'',show:'',notes:''});
+    }
+  }
+  saveData();if(field==='mode'||field==='kitId'||field==='hiredVal')renderJobDet(j);}
+function auHydraSetCount(jid,hi,field,val){
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.audio||!j.audio.hydras||!j.audio.hydras[hi])return;
+  var h=j.audio.hydras[hi]; var n=Math.max(0,Math.min(field==='ins'?96:48,parseInt(val)||0)); h[field]=n;
+  if(field==='ins'){ if(!Array.isArray(h.inputs))h.inputs=[]; while(h.inputs.length<n)h.inputs.push({alloc:'',rx:'',freq:'',show:'',notes:''}); if(h.inputs.length>n)h.inputs.length=n; }
+  else { if(!Array.isArray(h.outputs))h.outputs=[]; while(h.outputs.length<n)h.outputs.push({use:'',freq:'',feed:'',show:'',notes:''}); if(h.outputs.length>n)h.outputs.length=n; }
+  saveData();renderJobDet(j);
+}
+function auHydraToggle(jid,hi){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.audio||!j.audio.hydras||!j.audio.hydras[hi])return;var h=j.audio.hydras[hi];h.collapsed=(h.collapsed===false);renderJobDet(j);}
+function auHydraIO(jid,hi,io,idx,field,val){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.audio||!j.audio.hydras||!j.audio.hydras[hi])return;var arr=j.audio.hydras[hi][io];if(!arr||!arr[idx])return;arr[idx][field]=val;saveData();}
+function auMadiName(jid,si,val){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.audio||!j.audio.madi||!j.audio.madi[si])return;j.audio.madi[si].name=val;saveData();}
+function auMadiInput(jid,si,ci,val){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.audio||!j.audio.madi||!j.audio.madi[si])return;if(!Array.isArray(j.audio.madi[si].inputs))j.audio.madi[si].inputs=[];j.audio.madi[si].inputs[ci]=val;saveData();}
+function auMadiToggle(jid,si){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.audio||!j.audio.madi||!j.audio.madi[si])return;var s=j.audio.madi[si];s.collapsed=(s.collapsed===false);renderJobDet(j);}
 function auPickHydra(jid,hi){_openGenKitPicker('Pick Hydra',function(k){return k.status!=='Bin' && (k.cat||'').trim().toLowerCase()==='audio' && (k.subcat||'').trim().toLowerCase()==='hydras';},function(kid){auHydraSet(jid,hi,'kitId',kid);},{strict:true,fallbackFilter:function(k){return k.status!=='Bin' && (k.cat||'').trim().toLowerCase()==='audio';},fallbackLabel:'showing all Audio kit',emptyMsg:'No Hydras in inventory.<br><span style="font-size:11px;opacity:.7">Add kit with Category = Audio, Subcategory = Hydras.</span>'});}
 
 // ── Multitrack Record ───────────────────────────────────────────
@@ -12314,7 +12715,7 @@ function auPickGramsDesk(jid){_openGenKitPicker('Pick Grams Desk',function(k){re
 
 // ── SpotOn ──
 function auSpotOnSet(jid,field,val){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;if(!j.audio)j.audio={};if(!j.audio.spotOn)j.audio.spotOn={mode:'inv',kitId:null,hiredVal:''};j.audio.spotOn[field]=val;saveData();}
-function auPickSpotOn(jid){_openGenKitPicker('Pick SpotOn',function(k){return k.status!=='Bin' && (k.cat||'').trim().toLowerCase()==='audio' && (k.subcat||'').trim().toLowerCase()==='playout';},function(kid){auSpotOnSet(jid,'kitId',kid);renderJobDet(jobs.find(function(x){return x.id==jid;}));},{strict:true,fallbackFilter:function(k){return k.status!=='Bin' && (k.cat||'').trim().toLowerCase()==='audio';},fallbackLabel:'showing all Audio kit',emptyMsg:'No Playout kit in inventory.<br><span style="font-size:11px;opacity:.7">Add kit with Category = Audio, Subcategory = Playout.</span>'});}
+function auPickSpotOn(jid){_openGenKitPicker('Pick SpotOn',function(k){var sc=(k.subcat||'').trim().toLowerCase();return k.status!=='Bin' && (k.cat||'').trim().toLowerCase()==='audio' && (sc==='spoton'||sc==='playout');},function(kid){auSpotOnSet(jid,'kitId',kid);renderJobDet(jobs.find(function(x){return x.id==jid;}));},{strict:true,fallbackFilter:function(k){return k.status!=='Bin' && (k.cat||'').trim().toLowerCase()==='audio';},fallbackLabel:'showing all Audio kit',emptyMsg:'No SpotOn kit in inventory.<br><span style="font-size:11px;opacity:.7">Add kit with Category = Audio, Subcategory = Spoton.</span>'});}
 
 // ── Floor Sound Crew ──
 function auFloorAdd(jid){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;if(!j.audio)j.audio={};if(!j.audio.floorCrew)j.audio.floorCrew=[];j.audio.floorCrew.push({name:'',role:''});saveData();renderJobDet(j);}
@@ -12322,9 +12723,21 @@ function auFloorRm(jid,ci){var j=jobs.find(function(x){return x.id==jid;});if(!j
 function auFloorSet(jid,ci,field,val){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.audio||!j.audio.floorCrew||!j.audio.floorCrew[ci])return;j.audio.floorCrew[ci][field]=val;saveData();}
 
 // ── Radio Mics ──
-function auRadioAdd(jid){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;if(!j.audio)j.audio={};if(!j.audio.radioMics)j.audio.radioMics=[];j.audio.radioMics.push({num:j.audio.radioMics.length+1,forWhom:'',freq:''});saveData();renderJobDet(j);}
+function auRadioAdd(jid){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;if(!j.audio)j.audio={};if(!j.audio.radioMics)j.audio.radioMics=[];j.audio.radioMics.push({num:j.audio.radioMics.length+1,forWhom:'',freq:'',mic:'DPA 6060',notes:'Upside down/foam windshield'});saveData();renderJobDet(j);}
 function auRadioRm(jid,mi){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.audio||!j.audio.radioMics)return;j.audio.radioMics.splice(mi,1);saveData();renderJobDet(j);}
 function auRadioSet(jid,mi,field,val){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.audio||!j.audio.radioMics||!j.audio.radioMics[mi])return;j.audio.radioMics[mi][field]=val;saveData();}
+function auSetRadioSys(jid,val){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;if(!j.audio)j.audio={};j.audio.radioMicSystem=val;saveData();}
+function auRadioMicPick(jid,mi,sel){
+  var val=sel.value;
+  if(val==='__custom__'){
+    var c=prompt('Radio mic model:','');
+    if(c&&c.trim()){ auRadioSet(jid,mi,'radioMic',c.trim()); var j=jobs.find(function(x){return x.id==jid;}); if(j) renderJobDet(j); }
+    else { sel.value=''; }
+    return;
+  }
+  auRadioSet(jid,mi,'radioMic',val);
+}
+function auSetRadioNotes(jid,val){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;if(!j.audio)j.audio={};j.audio.radioMicNotes=val;saveData();}
 
 // ── Other Mics ──
 function auOtherAdd(jid){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;if(!j.audio)j.audio={};if(!j.audio.otherMics)j.audio.otherMics=[];j.audio.otherMics.push({model:'',forWhom:'',mode:'inv',kitId:null,hiredVal:''});saveData();renderJobDet(j);}
@@ -12335,7 +12748,7 @@ function auPickOther(jid,mi){_openGenKitPicker('Pick Mic',function(k){return k.s
 // ── Hired Catalogue pickers (orange) — each paired with its inventory picker above ──
 function auPickHydraHired(jid,hi){_openHiredCatPicker('Pick Hydra (Hired)',function(h){return (h.cat||'').trim().toLowerCase()==='audio' && (h.subcat||'').trim().toLowerCase()==='hydras';},function(h){auHydraSet(jid,hi,'hiredCatId',h.id);auHydraSet(jid,hi,'hiredVal',h.name||'');auHydraSet(jid,hi,'hiredKind','catalogue');renderJobDet(jobs.find(function(x){return x.id==jid;}));},{strict:true,fallbackFilter:function(h){return (h.cat||'').trim().toLowerCase()==='audio';},fallbackLabel:'showing all Audio catalogue',emptyMsg:'No Hydras in Hired Catalogue.'});}
 function auPickGramsDeskHired(jid){_openHiredCatPicker('Pick Grams Desk (Hired)',function(h){return (h.cat||'').trim().toLowerCase()==='audio' && (h.subcat||'').trim().toLowerCase()==='desks';},function(h){auGramsDeskSet(jid,'hiredCatId',h.id);auGramsDeskSet(jid,'hiredVal',h.name||'');auGramsDeskSet(jid,'hiredKind','catalogue');renderJobDet(jobs.find(function(x){return x.id==jid;}));},{strict:true,fallbackFilter:function(h){return (h.cat||'').trim().toLowerCase()==='audio';},fallbackLabel:'showing all Audio catalogue',emptyMsg:'No Grams Desks in Hired Catalogue.'});}
-function auPickSpotOnHired(jid){_openHiredCatPicker('Pick SpotOn (Hired)',function(h){return (h.cat||'').trim().toLowerCase()==='audio' && (h.subcat||'').trim().toLowerCase()==='playout';},function(h){auSpotOnSet(jid,'hiredCatId',h.id);auSpotOnSet(jid,'hiredVal',h.name||'');auSpotOnSet(jid,'hiredKind','catalogue');renderJobDet(jobs.find(function(x){return x.id==jid;}));},{strict:true,fallbackFilter:function(h){return (h.cat||'').trim().toLowerCase()==='audio';},fallbackLabel:'showing all Audio catalogue',emptyMsg:'No Playout kit in Hired Catalogue.'});}
+function auPickSpotOnHired(jid){_openHiredCatPicker('Pick SpotOn (Hired)',function(h){var sc=(h.subcat||'').trim().toLowerCase();return (h.cat||'').trim().toLowerCase()==='audio' && (sc==='spoton'||sc==='playout');},function(h){auSpotOnSet(jid,'hiredCatId',h.id);auSpotOnSet(jid,'hiredVal',h.name||'');auSpotOnSet(jid,'hiredKind','catalogue');renderJobDet(jobs.find(function(x){return x.id==jid;}));},{strict:true,fallbackFilter:function(h){return (h.cat||'').trim().toLowerCase()==='audio';},fallbackLabel:'showing all Audio catalogue',emptyMsg:'No SpotOn kit in Hired Catalogue.'});}
 function auPickOtherHired(jid,mi){_openHiredCatPicker('Pick Mic (Hired)',function(h){return (h.cat||'').trim().toLowerCase()==='audio' && (h.subcat||'').trim().toLowerCase()==='mics';},function(h){auOtherSet(jid,mi,'hiredCatId',h.id);auOtherSet(jid,mi,'hiredVal',h.name||'');auOtherSet(jid,mi,'hiredKind','catalogue');renderJobDet(jobs.find(function(x){return x.id==jid;}));},{strict:true,fallbackFilter:function(h){return (h.cat||'').trim().toLowerCase()==='audio';},fallbackLabel:'showing all Audio catalogue',emptyMsg:'No Mics in Hired Catalogue.'});}
 
 // ── Optional-section toggle (Grams Op, Grams Desk, SpotOn) ──
@@ -13411,6 +13824,366 @@ function jdCamPhotoRm(jid,ci,pi){
   var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.camDetails[ci])return;
   j.camDetails[ci].photos.splice(pi,1);saveData();renderJobDet(j);
 }
+// ── Multiviewers tab ────────────────────────────────────────────────────────
+var MV_VIEWS = [
+  {key:'production', label:'Production', big:8, small:0, count:8},
+  {key:'vision',     label:'Vision',     big:2, small:4, count:6},
+  {key:'sound',      label:'Sound',      big:1, small:2, count:3}
+];
+// Physical monitor wall per studio: rows of monitor types. 'big' = multiviewer-capable
+// (picture or designer layout); 'small' = single source only (CAM/PGM/PV/EVS/GFX/etc.)
+// Default = Studio 12 — also used for all London studios and any unlisted room.
+var MV_WALLS_DEFAULT = {
+  production: [['big','big','big','big'],['big','big','big','big']],
+  vision:     [['big','big'],['small','small','small','small']],
+  sound:      [['big'],['small','small']]
+};
+// Studio 8 (Manchester): Production & Vision are each 4 big in a 2x2; Sound = default.
+var MV_WALLS_STUDIO8 = {
+  production: [['big','big'],['big','big']],
+  vision:     [['big','big'],['big','big']],
+  sound:      [['big'],['small','small']]
+};
+// Map a job's studio to its wall layout. Keyed on j.studio (set at job creation).
+var MV_WALLS_BY_STUDIO = { 'Studio 8': MV_WALLS_STUDIO8 };
+function _mvWalls(j){
+  return (j && MV_WALLS_BY_STUDIO[((j.studio||'').trim())]) || MV_WALLS_DEFAULT;
+}
+function _mvEnsure(j){
+  if(!j.multiviewers) j.multiviewers={};
+  var walls=_mvWalls(j);
+  MV_VIEWS.forEach(function(v){
+    var n=0; (walls[v.key]||[]).forEach(function(row){n+=row.length;});
+    if(!Array.isArray(j.multiviewers[v.key])) j.multiviewers[v.key]=[];
+    while(j.multiviewers[v.key].length<n) j.multiviewers[v.key].push('');
+  });
+  return j.multiviewers;
+}
+function renderMVTab(j){
+  var mv=_mvDesEnsure(j);
+  var sub=_mvSub; if(!MV_VIEWS.find(function(v){return v.key===sub;})) sub='production';
+  var view=MV_VIEWS.find(function(v){return v.key===sub;});
+  var subBar='<div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap">'
+    +MV_VIEWS.map(function(v){
+      var active=v.key===sub;
+      var cnt=(mv.mons[v.key]||[]).length;
+      return '<button onclick="mvSetSub('+j.id+',\''+v.key+'\')" style="padding:7px 18px;font-family:var(--cond);font-size:14px;font-weight:800;letter-spacing:.04em;border:1.5px solid '+(active?'var(--accent)':'var(--border)')+';border-radius:7px;cursor:pointer;background:'+(active?'rgba(244,162,88,.18)':'rgba(255,255,255,.03)')+';color:'+(active?'var(--accent)':'var(--muted)')+'">'+v.label+' <span style="font-size:11px;opacity:.7">'+cnt+'</span></button>';
+    }).join('')
+    +'</div>';
+  return '<div style="max-width:1100px">'+subBar+_mvViewMonitors(j,view.key)+'</div>';
+}
+function mvSetSub(jid,sub){ _mvSub=sub; var j=jobs.find(function(x){return x.id==jid;}); if(j) renderJobDet(j); }
+function auSetSub(jid,sub){ _auSub=sub; var j=jobs.find(function(x){return x.id==jid;}); if(j) renderJobDet(j); }
+// ── Evertz NEXX multiviewer: the 43 layout presets (panes as [x,y,w,h] in 0..1,
+//    listed in window-number order; pure grids use grid:[rows,cols]). ──
+var MV_LAYOUTS = {
+  '1':  {grid:[2,2]},
+  '2':  {grid:[4,4]},
+  '3':  {panes:[[.25,.25,.5,.5],[0,0,.25,.25],[.25,0,.25,.25],[.5,0,.25,.25],[.75,0,.25,.25],[0,.25,.25,.25],[.75,.25,.25,.25],[0,.5,.25,.25],[.75,.5,.25,.25],[0,.75,.25,.25],[.25,.75,.25,.25],[.5,.75,.25,.25],[.75,.75,.25,.25]]},
+  '4':  {panes:[[.5,0,.5,.5],[0,.5,.5,.5],[.5,.5,.5,.5],[0,0,.25,.25],[.25,0,.25,.25],[0,.25,.25,.25],[.25,.25,.25,.25]]},
+  '5':  {panes:[[0,0,.5,.5],[0,.5,.5,.5],[.5,.5,.5,.5],[.5,0,.25,.25],[.75,0,.25,.25],[.5,.25,.25,.25],[.75,.25,.25,.25]]},
+  '6':  {panes:[[0,0,.5,.5],[.5,0,.5,.5],[.5,.5,.5,.5],[0,.5,.25,.25],[.25,.5,.25,.25],[0,.75,.25,.25],[.25,.75,.25,.25]]},
+  '7':  {panes:[[0,0,.5,.5],[.5,0,.5,.5],[0,.5,.5,.5],[.5,.5,.25,.25],[.75,.5,.25,.25],[.5,.75,.25,.25],[.75,.75,.25,.25]]},
+  '8':  {panes:[[.25,0,.5,.5],[0,.5,.5,.5],[.5,.5,.5,.5],[0,0,.25,.25],[.75,0,.25,.25],[0,.25,.25,.25],[.75,.25,.25,.25]]},
+  '9':  {panes:[[.5,0,.5,.5],[0,.17,.5,.66],[.5,.5,.5,.5],[0,0,.25,.17],[.25,0,.25,.17],[0,.83,.25,.17],[.25,.83,.25,.17]]},
+  '10': {panes:[[0,0,.5,.5],[.5,.17,.5,.66],[0,.5,.5,.5],[.5,0,.25,.17],[.75,0,.25,.17],[.5,.83,.25,.17],[.75,.83,.25,.17]]},
+  '11': {panes:[[0,0,.5,.5],[.5,0,.5,.5],[.25,.5,.5,.5],[0,.5,.25,.25],[.75,.5,.25,.25],[0,.75,.25,.25],[.75,.75,.25,.25]]},
+  '12': {panes:[[0,.5,.5,.5],[.5,.5,.5,.5],[0,0,.25,.25],[.25,0,.25,.25],[.5,0,.25,.25],[.75,0,.25,.25],[0,.25,.25,.25],[.25,.25,.25,.25],[.5,.25,.25,.25],[.75,.25,.25,.25]]},
+  '13': {panes:[[0,0,.5,.5],[.5,0,.5,.5],[0,.5,.25,.25],[.25,.5,.25,.25],[.5,.5,.25,.25],[.75,.5,.25,.25],[0,.75,.25,.25],[.25,.75,.25,.25],[.5,.75,.25,.25],[.75,.75,.25,.25]]},
+  '14': {panes:[[.5,0,.5,.5],[.5,.5,.5,.5],[0,0,.25,.25],[.25,0,.25,.25],[0,.25,.25,.25],[.25,.25,.25,.25],[0,.5,.25,.25],[.25,.5,.25,.25],[0,.75,.25,.25],[.25,.75,.25,.25]]},
+  '15': {panes:[[0,0,.5,.5],[0,.5,.5,.5],[.5,0,.25,.25],[.75,0,.25,.25],[.5,.25,.25,.25],[.75,.25,.25,.25],[.5,.5,.25,.25],[.75,.5,.25,.25],[.5,.75,.25,.25],[.75,.75,.25,.25]]},
+  '16': {panes:[[.5,0,.5,.5],[0,.5,.5,.5],[0,0,.25,.25],[.25,0,.25,.25],[0,.25,.25,.25],[.25,.25,.25,.25],[.5,.5,.25,.25],[.75,.5,.25,.25],[.5,.75,.25,.25],[.75,.75,.25,.25]]},
+  '17': {panes:[[0,0,.5,.5],[.5,.5,.5,.5],[.5,0,.25,.25],[.75,0,.25,.25],[.5,.25,.25,.25],[.75,.25,.25,.25],[0,.5,.25,.25],[.25,.5,.25,.25],[0,.75,.25,.25],[.25,.75,.25,.25]]},
+  '18': {panes:[[.25,0,.5,.5],[.25,.5,.5,.5],[0,0,.25,.25],[.75,0,.25,.25],[0,.25,.25,.25],[.75,.25,.25,.25],[0,.5,.25,.25],[.75,.5,.25,.25],[0,.75,.25,.25],[.75,.75,.25,.25]]},
+  '19': {panes:[[0,.25,.5,.5],[.5,.25,.5,.5],[0,0,.25,.25],[.25,0,.25,.25],[.5,0,.25,.25],[.75,0,.25,.25],[0,.75,.25,.25],[.25,.75,.25,.25],[.5,.75,.25,.25],[.75,.75,.25,.25]]},
+  '20': {panes:[[.25,0,.5,.5],[0,.5,.5,.5],[0,0,.25,.25],[.75,0,.25,.25],[0,.25,.25,.25],[.75,.25,.25,.25],[.5,.5,.25,.25],[.75,.5,.25,.25],[.5,.75,.25,.25],[.75,.75,.25,.25]]},
+  '21': {panes:[[0,0,.5,.5],[.25,.5,.5,.5],[.5,0,.25,.25],[.75,0,.25,.25],[.5,.25,.25,.25],[.75,.25,.25,.25],[0,.5,.25,.25],[.75,.5,.25,.25],[0,.75,.25,.25],[.75,.75,.25,.25]]},
+  '22': {panes:[[.5,0,.5,.5],[.25,.5,.5,.5],[0,0,.25,.25],[.25,0,.25,.25],[0,.25,.25,.25],[.25,.25,.25,.25],[0,.5,.25,.25],[.75,.5,.25,.25],[0,.75,.25,.25],[.75,.75,.25,.25]]},
+  '23': {panes:[[.25,0,.5,.5],[.5,.5,.5,.5],[0,0,.25,.25],[.75,0,.25,.25],[0,.25,.25,.25],[.75,.25,.25,.25],[0,.5,.25,.25],[.25,.5,.25,.25],[0,.75,.25,.25],[.25,.75,.25,.25]]},
+  '24': {panes:[[.5,0,.5,.5],[0,.25,.5,.5],[0,0,.25,.25],[.25,0,.25,.25],[.5,.5,.25,.25],[.75,.5,.25,.25],[0,.75,.25,.25],[.25,.75,.25,.25],[.5,.75,.25,.25],[.75,.75,.25,.25]]},
+  '25': {panes:[[0,0,.5,.5],[.5,.25,.5,.5],[.5,0,.25,.25],[.75,0,.25,.25],[0,.5,.25,.25],[.25,.5,.25,.25],[0,.75,.25,.25],[.25,.75,.25,.25],[.5,.75,.25,.25],[.75,.75,.25,.25]]},
+  '26': {panes:[[.5,.25,.5,.5],[0,.5,.5,.5],[0,0,.25,.25],[.25,0,.25,.25],[.5,0,.25,.25],[.75,0,.25,.25],[0,.25,.25,.25],[.25,.25,.25,.25],[.5,.75,.25,.25],[.75,.75,.25,.25]]},
+  '27': {panes:[[0,.25,.5,.5],[.5,.5,.5,.5],[0,0,.25,.25],[.25,0,.25,.25],[.5,0,.25,.25],[.75,0,.25,.25],[.5,.25,.25,.25],[.75,.25,.25,.25],[0,.75,.25,.25],[.25,.75,.25,.25]]},
+  '28': {panes:[[0,0,.5,.5],[.5,0,.25,.25],[.75,0,.25,.25],[.5,.25,.25,.25],[.75,.25,.25,.25],[0,.5,.25,.25],[.25,.5,.25,.25],[.5,.5,.25,.25],[.75,.5,.25,.25],[0,.75,.25,.25],[.25,.75,.25,.25],[.5,.75,.25,.25],[.75,.75,.25,.25]]},
+  '29': {panes:[[.5,0,.5,.5],[0,0,.25,.25],[.25,0,.25,.25],[0,.25,.25,.25],[.25,.25,.25,.25],[0,.5,.25,.25],[.25,.5,.25,.25],[.5,.5,.25,.25],[.75,.5,.25,.25],[0,.75,.25,.25],[.25,.75,.25,.25],[.5,.75,.25,.25],[.75,.75,.25,.25]]},
+  '30': {panes:[[.25,.25,.5,.5],[0,0,.25,.25],[.25,0,.25,.25],[.5,0,.25,.25],[.75,0,.25,.25],[0,.25,.25,.25],[.75,.25,.25,.25],[0,.5,.25,.25],[.75,.5,.25,.25],[0,.75,.25,.25],[.25,.75,.25,.25],[.5,.75,.25,.25],[.75,.75,.25,.25]]},
+  '31': {panes:[[.5,.5,.5,.5],[0,0,.25,.25],[.25,0,.25,.25],[.5,0,.25,.25],[.75,0,.25,.25],[0,.25,.25,.25],[.25,.25,.25,.25],[.5,.25,.25,.25],[.75,.25,.25,.25],[0,.5,.25,.25],[.25,.5,.25,.25],[0,.75,.25,.25],[.25,.75,.25,.25]]},
+  '32': {panes:[[.25,0,.5,.5],[0,0,.25,.25],[.75,0,.25,.25],[0,.25,.25,.25],[.75,.25,.25,.25],[0,.5,.25,.25],[.25,.5,.25,.25],[.5,.5,.25,.25],[.75,.5,.25,.25],[0,.75,.25,.25],[.25,.75,.25,.25],[.5,.75,.25,.25],[.75,.75,.25,.25]]},
+  '33': {panes:[[.5,.25,.5,.5],[0,0,.25,.25],[.25,0,.25,.25],[.5,0,.25,.25],[.75,0,.25,.25],[0,.25,.25,.25],[.25,.25,.25,.25],[0,.5,.25,.25],[.25,.5,.25,.25],[0,.75,.25,.25],[.25,.75,.25,.25],[.5,.75,.25,.25],[.75,.75,.25,.25]]},
+  '34': {panes:[[.25,.5,.5,.5],[0,0,.25,.25],[.25,0,.25,.25],[.5,0,.25,.25],[.75,0,.25,.25],[0,.25,.25,.25],[.25,.25,.25,.25],[.5,.25,.25,.25],[.75,.25,.25,.25],[0,.5,.25,.25],[.75,.5,.25,.25],[0,.75,.25,.25],[.75,.75,.25,.25]]},
+  '35': {panes:[[0,.25,.5,.5],[0,0,.25,.25],[.25,0,.25,.25],[.5,0,.25,.25],[.75,0,.25,.25],[.5,.25,.25,.25],[.75,.25,.25,.25],[.5,.5,.25,.25],[.75,.5,.25,.25],[0,.75,.25,.25],[.25,.75,.25,.25],[.5,.75,.25,.25],[.75,.75,.25,.25]]},
+  '36': {grid:[3,3]},
+  '37': {panes:[[0,0,.67,.67],[.67,0,.33,.33],[.67,.33,.33,.34],[0,.67,.33,.33],[.33,.67,.34,.33],[.67,.67,.33,.33]]},
+  '38': {panes:[[.33,0,.67,.67],[0,0,.33,.33],[0,.33,.33,.34],[0,.67,.33,.33],[.33,.67,.34,.33],[.67,.67,.33,.33]]},
+  '39': {panes:[[0,.33,.67,.67],[0,0,.33,.33],[.33,0,.33,.33],[.67,0,.33,.33],[.67,.33,.33,.34],[.67,.67,.33,.33]]},
+  '40': {panes:[[.33,.33,.67,.67],[0,0,.33,.33],[.33,0,.33,.33],[.67,0,.33,.33],[0,.33,.33,.34],[0,.67,.33,.33]]},
+  '41': {grid:[3,4]},
+  '42': {grid:[2,3]},
+  '43': {grid:[1,2]}
+};
+function _mvLayoutPanes(layoutId){
+  var L=MV_LAYOUTS[layoutId]||MV_LAYOUTS['1'];
+  if(L.grid) return _gridPanes(L.grid[0], L.grid[1]);
+  return L.panes.map(function(a){return {x:a[0],y:a[1],w:a[2],h:a[3]};});
+}
+function _gridPanes(rows,cols){
+  var out=[]; var gw=1/cols, gh=1/rows;
+  for(var rr=0;rr<rows;rr++) for(var cc=0;cc<cols;cc++) out.push({x:cc*gw,y:rr*gh,w:gw,h:gh});
+  return out;
+}
+// Per-view designer state ensure
+function _mvDesEnsure(j){
+  var mv=_mvEnsure(j);
+  if(!mv.mons) mv.mons={};
+  if(!mv.activeMon) mv.activeMon={};
+  MV_VIEWS.forEach(function(v){
+    var spec=[]; (_mvWalls(j)[v.key]||[]).forEach(function(row){row.forEach(function(t){spec.push(t);});});
+    var cur=mv.mons[v.key];
+    var needRebuild = !Array.isArray(cur) || cur.length!==spec.length || cur.some(function(m,i){return !m.type || m.type!==spec[i];});
+    if(needRebuild){
+      var old=Array.isArray(cur)?cur:[];
+      mv.mons[v.key]=spec.map(function(t,i){
+        var o=old[i]||{};
+        if(t==='big') return {name:o.name||('Monitor '+(i+1)), type:'big', mode:o.mode||'designer', layout:o.layout||'1', panes:o.panes||{}, img:o.img||''};
+        return {name:o.name||('Monitor '+(i+1)), type:'small', src:o.src||''};
+      });
+    }
+    if(typeof mv.activeMon[v.key]!=='number'||mv.activeMon[v.key]>=mv.mons[v.key].length) mv.activeMon[v.key]=0;
+  });
+  return mv;
+}
+function _mvSrcPalette(j){
+  var numCams=parseInt(j.cameras)||0;
+  var chip=function(label,val,col){
+    var sel=_mvSrcSel===val;
+    return '<button draggable="true" ondragstart="event.dataTransfer.setData(\'text/plain\',\''+(val.replace(/'/g,"\\'"))+'\')" onclick="mvdSelSrc('+j.id+',\''+(val.replace(/'/g,"\\'"))+'\')" '
+      +'style="padding:5px 11px;font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.03em;border:1.5px solid '+(sel?'var(--accent)':'var(--border)')+';border-radius:6px;cursor:grab;background:'+(sel?'rgba(244,162,88,.25)':(col||'rgba(255,255,255,.04)'))+';color:'+(sel?'var(--accent)':'var(--white)')+'">'+label+'</button>';
+  };
+  var cams=''; for(var i=1;i<=numCams;i++) cams+=chip('CAM '+i,'CAM '+i,'rgba(60,120,80,.15)');
+  return '<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px">'
+      +(numCams?cams:'<span style="font-size:12px;color:var(--muted)">No cameras set on Info tab.</span>')
+      +'</div>'
+    +'<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">'
+      +chip('PGM','PGM','rgba(180,60,60,.18)')+chip('PV','PV','rgba(180,120,40,.18)')
+      +chip('EVS…','EVS','rgba(70,110,170,.18)')+chip('GFX…','GFX','rgba(120,70,160,.18)')
+      +chip('AUTOCUE','AUTOCUE','rgba(80,80,80,.25)')+chip('CLOCK','CLOCK','rgba(80,80,80,.25)')
+      +chip('Custom…','Custom','rgba(80,80,80,.25)')
+      +chip('Blank','Blank','rgba(40,40,40,.4)')
+      +'</div>';
+}
+// Small thumbnail of a layout (for the preset picker)
+function _mvLayoutThumb(layoutId, selected){
+  var panes=_mvLayoutPanes(layoutId);
+  var cells=panes.map(function(p,i){
+    var fs=Math.max(6,Math.min(15,Math.round(p.h*46)));
+    return '<div style="position:absolute;left:'+(p.x*100)+'%;top:'+(p.y*100)+'%;width:'+(p.w*100)+'%;height:'+(p.h*100)+'%;box-sizing:border-box;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.05);display:flex;align-items:center;justify-content:center;overflow:hidden">'
+      +'<span style="font-family:var(--cond);font-weight:800;color:#fff;font-size:'+fs+'px;line-height:1">'+(i+1)+'</span></div>';
+  }).join('');
+  return '<div style="position:relative;width:124px;aspect-ratio:16/9;background:#0d0d0d;border:2px solid '+(selected?'var(--accent)':'transparent')+';border-radius:5px;overflow:hidden">'+cells+'</div>';
+}
+function _mvMonMini(m){
+  // small monitor: single source label
+  if(m.type==='small'){
+    return m.src
+      ? '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(244,162,88,.10)"><span style="font-family:var(--cond);font-weight:900;color:#fff;text-align:center;line-height:1;font-size:clamp(9px,26cqh,30px)">'+escHtmlSafe(m.src)+'</span></div>'
+      : '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:11px">— source —</div>';
+  }
+  // big, picture
+  if(m.mode==='picture'){
+    return m.img
+      ? '<img src="'+m.img+'" style="width:100%;height:100%;object-fit:contain;background:#000;display:block">'
+      : '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:20px">\uD83D\uDCFA</div>';
+  }
+  // big, designer
+  var panes=_mvLayoutPanes(m.layout||'1');
+  return panes.map(function(p,pi){
+    var src=(m.panes||{})[pi]||'';
+    var fs=Math.round(p.h*38*10)/10;
+    return '<div style="position:absolute;left:'+(p.x*100)+'%;top:'+(p.y*100)+'%;width:'+(p.w*100)+'%;height:'+(p.h*100)+'%;box-sizing:border-box;border:1px solid rgba(255,255,255,.22);background:'+(src?'rgba(244,162,88,.10)':'transparent')+';display:flex;align-items:center;justify-content:center;overflow:hidden">'
+      +(src?'<span style="font-family:var(--cond);font-weight:900;color:#fff;text-align:center;line-height:1;font-size:clamp(6px,'+fs+'cqh,22px)">'+escHtmlSafe(src)+'</span>':'')
+      +'</div>';
+  }).join('');
+}
+function _mvViewMonitors(j, viewKey){
+  var mv=_mvDesEnsure(j);
+  var mons=mv.mons[viewKey];
+  var act=mv.activeMon[viewKey]||0;
+  var mon=mons[act]||mons[0];
+  var vlabel=(MV_VIEWS.find(function(v){return v.key===viewKey;})||{}).label||'';
+  // ── Always-docked toolbar for the selected monitor ──
+  var nameRow='<span style="font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)">Editing</span>'
+    +'<input class="fi" style="font-size:15px;font-family:var(--cond);font-weight:800;letter-spacing:.03em;padding:4px 10px;flex:1;min-width:130px;max-width:280px" value="'+((mon.name||'').replace(/"/g,'&quot;'))+'" placeholder="Monitor name..." onchange="mvMonName('+j.id+',\''+viewKey+'\','+act+',this.value)"/>';
+  var toolbarInner;
+  if(mon.type==='small'){
+    var numCams=parseInt(j.cameras)||0;
+    var schip=function(label,val,col){return '<button onclick="mvSetSmallSrc('+j.id+',\''+viewKey+'\','+act+',\''+(val.replace(/'/g,"\\'"))+'\')" style="padding:6px 13px;font-family:var(--cond);font-size:14px;font-weight:800;letter-spacing:.03em;border:1.5px solid '+(mon.src===val?'var(--accent)':'var(--border)')+';border-radius:6px;cursor:pointer;background:'+(mon.src===val?'rgba(244,162,88,.25)':(col||'rgba(255,255,255,.04)'))+';color:'+(mon.src===val?'var(--accent)':'var(--white)')+'">'+label+'</button>';};
+    var cams=''; for(var i=1;i<=numCams;i++) cams+=schip('CAM '+i,'CAM '+i,'rgba(60,120,80,.15)');
+    var pal='<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px">'+(numCams?cams:'<span style="font-size:12px;color:var(--muted)">No cameras set on Info tab.</span>')+'</div>'
+      +'<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">'
+      +schip('PGM','PGM','rgba(180,60,60,.18)')+schip('PV','PV','rgba(180,120,40,.18)')
+      +schip('EVS…','EVS','rgba(70,110,170,.18)')+schip('GFX…','GFX','rgba(120,70,160,.18)')
+      +schip('AUTOCUE','AUTOCUE','rgba(80,80,80,.25)')+schip('CLOCK','CLOCK','rgba(80,80,80,.25)')+schip('Custom…','Custom','rgba(80,80,80,.25)')+schip('Blank','Blank','rgba(40,40,40,.4)')
+      +(mon.src?'<button onclick="mvSetSmallSrc('+j.id+',\''+viewKey+'\','+act+',\'Blank\')" style="padding:6px 13px;font-family:var(--cond);font-size:14px;font-weight:800;border:1.5px solid var(--border);border-radius:6px;cursor:pointer;background:none;color:var(--muted)">Clear</button>':'')
+      +'</div>';
+    toolbarInner='<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px">'+nameRow+'<span style="font-size:11px;color:var(--muted);font-family:var(--cond);letter-spacing:.06em;text-transform:uppercase">Small \u00b7 single source</span></div>'+pal;
+  } else {
+    var tagBtn=function(mm,lbl){var onm=mon.mode===mm;return '<button onclick="mvSetMonMode('+j.id+',\''+viewKey+'\','+act+',\''+mm+'\')" style="padding:6px 15px;font-family:var(--cond);font-size:14px;font-weight:800;letter-spacing:.04em;border:1.5px solid '+(onm?'var(--accent)':'var(--border)')+';'+(mm==='picture'?'border-right:none;border-radius:6px 0 0 6px':'border-radius:0 6px 6px 0')+';background:'+(onm?'rgba(244,162,88,.22)':'rgba(255,255,255,.03)')+';color:'+(onm?'var(--accent)':'var(--muted)')+';cursor:pointer">'+lbl+'</button>';};
+    var headRow='<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:'+(mon.mode==='designer'?'8px':'0')+'">'+nameRow+'<div style="display:inline-flex">'+tagBtn('picture','Picture')+tagBtn('designer','Designer')+'</div></div>';
+    toolbarInner=headRow;
+    if(mon.mode==='designer'){
+      var layoutId=mon.layout||'1';
+      var palette=_mvSrcPalette(j);
+      var selNote=_mvSrcSel?'<span style="font-size:12px;color:var(--accent);font-weight:700;margin-left:6px">Selected: '+escHtmlSafe(_mvSrcSel)+' \u2014 tap a pane (or drag)</span>':'<span style="font-size:12px;color:var(--muted);margin-left:6px">Tap a source, then tap a pane on the monitor \u2014 or drag onto it.</span>';
+      var picker=Object.keys(MV_LAYOUTS).map(function(k){
+        return '<button onclick="mvSetLayout('+j.id+',\''+viewKey+'\',\''+k+'\')" title="Preset '+k+'" style="background:none;border:none;padding:1px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px;flex:0 0 auto">'
+          +_mvLayoutThumb(k, k===layoutId)
+          +'<span style="font-size:10px;font-family:var(--cond);font-weight:800;letter-spacing:.04em;color:'+(k===layoutId?'var(--accent)':'var(--muted)')+'">'+k+'</span>'
+          +'</button>';
+      }).join('');
+      toolbarInner+='<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:5px"><div class="det-sec-lbl" style="margin:0;padding:0;border:none;font-size:12px">Sources</div>'+selNote+'</div>'+palette
+        +'<div style="margin-top:8px"><div style="display:flex;align-items:baseline;gap:8px;margin-bottom:4px"><span class="det-sec-lbl" style="font-size:12px;margin:0;padding:0;border:none">Layout</span><span style="color:var(--accent);font-family:var(--cond);font-weight:800;font-size:12px">preset '+layoutId+'</span></div>'
+        +'<div style="display:flex;gap:8px;overflow-x:auto;padding:4px 2px 8px;border:1px solid var(--border);border-radius:6px">'+picker+'</div></div>';
+    } else {
+      toolbarInner+='<div style="font-size:11px;color:var(--muted);margin-top:6px;font-style:italic">Picture mode \u2014 tap the monitor below to add a screenshot.</div>';
+    }
+  }
+  var toolbar='<div class="det-sec" style="padding:12px 16px;margin-bottom:0">'+toolbarInner+'</div>';
+  // ── WALL: the monitor boxes ARE the editor (bigger, editable in place) ──
+  var wallW={production:1120,vision:940,sound:640}[viewKey]||1120;
+  var flatIdx=0;
+  var rowsHtml=(_mvWalls(j)[viewKey]||[]).map(function(row){
+    var cells=row.map(function(t){
+      var mi=flatIdx++; var m=mons[mi]; if(!m) return '';
+      var on=mi===act;
+      var boxInner;
+      if(m.type==='small'){
+        boxInner=m.src
+          ? '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(244,162,88,.18);padding:0 4px"><span style="font-family:var(--cond);font-weight:900;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.85);text-align:center;line-height:1;font-size:clamp(13px,min(34cqh,'+Math.round((100/(Math.max(1,m.src.length)*0.62))*10)/10+'cqw),72px)">'+escHtmlSafe(m.src)+'</span></div>'
+          : '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.5);font-size:13px">tap to pick a source</div>';
+      } else if(m.mode==='picture'){
+        boxInner=m.img
+          ? '<img src="'+m.img+'" style="width:100%;height:100%;object-fit:contain;background:#000;display:block">'
+            +'<button onclick="event.stopPropagation();mvMonPhotoRm('+j.id+',\''+viewKey+'\','+mi+')" style="position:absolute;top:5px;right:5px;background:rgba(0,0,0,.7);color:#fff;border:none;border-radius:50%;width:22px;height:22px;font-size:13px;cursor:pointer;line-height:1">&times;</button>'
+          : '<label onclick="event.stopPropagation()" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;color:rgba(255,255,255,.55)"><span style="font-family:var(--cond);font-size:14px;font-weight:700;letter-spacing:.03em">Add screenshot</span><input type="file" accept="image/*" style="display:none" onchange="mvMonPhotoAdd('+j.id+',\''+viewKey+'\','+mi+',this)"/></label>';
+      } else {
+        // big designer: interactive panes (the editor)
+        var panes=_mvLayoutPanes(m.layout||'1');
+        var dpanes=m.panes||{};
+        boxInner=panes.map(function(p,pi){
+          var src=dpanes[pi]||'';
+          var chars=Math.max(1,(src||'').length);
+          var hT=Math.round(p.h*54*10)/10;
+          var wT=Math.round((p.w*100/(chars*0.62))*10)/10;
+          return '<div ondragover="event.preventDefault()" ondrop="event.preventDefault();event.stopPropagation();mvDrop('+j.id+',\''+viewKey+'\','+mi+','+pi+',event.dataTransfer.getData(\'text/plain\'))" onclick="event.stopPropagation();mvAssign('+j.id+',\''+viewKey+'\','+mi+','+pi+')" '
+            +'style="position:absolute;left:'+(p.x*100)+'%;top:'+(p.y*100)+'%;width:'+(p.w*100)+'%;height:'+(p.h*100)+'%;box-sizing:border-box;border:1px solid rgba(255,255,255,.25);background:'+(src?'rgba(244,162,88,.18)':'rgba(255,255,255,.03)')+';display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden">'
+            +(src
+              ? '<span style="font-family:var(--cond);font-weight:900;letter-spacing:.01em;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.85);text-align:center;padding:0 3px;line-height:1;font-size:clamp(11px,min('+hT+'cqh,'+wT+'cqw),120px)">'+escHtmlSafe(src)+'</span>'
+              : '<span style="font-size:13px;color:rgba(255,255,255,.4)">'+(pi+1)+'</span>')
+            +'</div>';
+        }).join('');
+      }
+      return '<div onclick="mvMonSel('+j.id+',\''+viewKey+'\','+mi+')" style="cursor:pointer">'
+        +'<div style="position:relative;aspect-ratio:16/9;background:#0d0d0d;border:'+(on?'3px solid var(--accent)':'2px solid var(--border)')+';border-radius:5px;overflow:hidden;container-type:size;box-shadow:'+(on?'0 0 0 3px rgba(244,162,88,.25)':'none')+'">'+boxInner+'</div>'
+        +'</div>';
+    }).join('');
+    return '<div style="display:grid;grid-template-columns:repeat('+row.length+',1fr);gap:4px;margin-bottom:4px">'+cells+'</div>';
+  }).join('');
+  var wall='<div style="max-width:'+wallW+'px;margin-bottom:16px">'
+    +'<div style="font-family:var(--cond);font-size:26px;font-weight:800;letter-spacing:.01em;color:var(--white);margin-bottom:2px">'+vlabel+' Stack</div>'
+    +'<div style="font-size:11px;color:var(--muted);margin-bottom:10px">Tap a monitor to edit it</div>'
+    +rowsHtml+'</div>';
+  return wall + toolbar;
+}
+function escHtmlSafe(s){return (s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function _mvActiveMon(j,view){var mv=_mvDesEnsure(j);return mv.mons[view][mv.activeMon[view]||0];}
+function mvSetMonMode(jid,view,idx,mode){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;var mv=_mvDesEnsure(j);if(mv.mons[view][idx])mv.mons[view][idx].mode=mode;saveData();renderJobDet(j);}
+function mvSetSmallSrc(jid,view,idx,src){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;var mv=_mvDesEnsure(j);var m=mv.mons[view][idx];if(!m)return;m.src=src?_mvResolveSrc(src):'';saveData();renderJobDet(j);}
+function mvMonPhotoAdd(jid,view,idx,input){
+  var file=input.files[0]; if(!file) return;
+  var j=jobs.find(function(x){return x.id==jid;}); if(!j) return; var mv=_mvDesEnsure(j); var m=mv.mons[view][idx]; if(!m) return;
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var im=new Image();
+    im.onload=function(){
+      try{
+        var maxW=1280; var sc=Math.min(1, maxW/im.width);
+        var cw=Math.round(im.width*sc), ch=Math.round(im.height*sc);
+        var cv=document.createElement('canvas'); cv.width=cw; cv.height=ch;
+        cv.getContext('2d').drawImage(im,0,0,cw,ch);
+        m.img=cv.toDataURL('image/jpeg',0.82);
+      }catch(err){ m.img=e.target.result; }
+      saveData(); renderJobDet(j);
+    };
+    im.onerror=function(){ m.img=e.target.result; saveData(); renderJobDet(j); };
+    im.src=e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+function mvMonPhotoRm(jid,view,idx){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;var mv=_mvDesEnsure(j);if(mv.mons[view][idx])mv.mons[view][idx].img='';saveData();renderJobDet(j);}
+function mvMonPopout(jid,view,idx){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;var mv=_mvDesEnsure(j);var m=mv.mons[view][idx];if(!m||!m.img)return;var w=window.open('');if(w)w.document.write('<img src="'+m.img+'" style="max-width:100%">');}
+function mvSetLayout(jid,view,layoutId){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;var m=_mvActiveMon(j,view);if(m){m.layout=layoutId;}saveData();renderJobDet(j);}
+function mvMonSel(jid,view,idx){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;var mv=_mvDesEnsure(j);mv.activeMon[view]=idx;renderJobDet(j);}
+function mvMonAdd(jid,view){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;var mv=_mvDesEnsure(j);mv.mons[view].push({name:'Monitor '+(mv.mons[view].length+1),mode:'designer',layout:'1',panes:{},img:''});mv.activeMon[view]=mv.mons[view].length-1;saveData();renderJobDet(j);}
+function mvMonRm(jid,view,idx){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;var mv=_mvDesEnsure(j);if(mv.mons[view].length<=1)return;mv.mons[view].splice(idx,1);if(mv.activeMon[view]>=mv.mons[view].length)mv.activeMon[view]=mv.mons[view].length-1;saveData();renderJobDet(j);}
+function mvMonName(jid,view,idx,val){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;var mv=_mvDesEnsure(j);if(mv.mons[view][idx])mv.mons[view][idx].name=val;saveData();}
+function mvdSelSrc(jid,src){ _mvSrcSel=(_mvSrcSel===src?null:src); var j=jobs.find(function(x){return x.id==jid;}); if(j) renderJobDet(j); }
+function _mvResolveSrc(src){
+  if(src==='Blank') return '';
+  if(src==='EVS'||src==='GFX'){ var L=prompt(src+' \u2014 letter/number after it (optional):',''); return L&&L.trim()?src+' '+L.trim():src; }
+  if(src==='Custom'){ var c=prompt('Custom source label:',''); return c&&c.trim()?c.trim():''; }
+  return src;
+}
+function mvAssign(jid,view,mi,pi){
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;var mv=_mvDesEnsure(j);mv.activeMon[view]=mi;var m=mv.mons[view][mi];if(!m){saveData();renderJobDet(j);return;}
+  if(_mvSrcSel){
+    if(_mvSrcSel==='Blank'){ if(m.panes) delete m.panes[pi]; }
+    else { var val=_mvResolveSrc(_mvSrcSel); if(val){ if(!m.panes)m.panes={}; m.panes[pi]=val; } }
+  }
+  saveData(); renderJobDet(j);
+}
+function mvDrop(jid,view,mi,pi,src){
+  if(!src) return;
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;var mv=_mvDesEnsure(j);mv.activeMon[view]=mi;var m=mv.mons[view][mi];if(!m)return;
+  if(src==='Blank'){ if(m.panes) delete m.panes[pi]; saveData(); renderJobDet(j); return; }
+  var val=_mvResolveSrc(src); if(!val){saveData();renderJobDet(j);return;}
+  if(!m.panes)m.panes={}; m.panes[pi]=val; saveData(); renderJobDet(j);
+}
+function mvClearPane(jid,view,mi,pi){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;var mv=_mvDesEnsure(j);var m=mv.mons[view][mi];if(!m||!m.panes)return;delete m.panes[pi];saveData();renderJobDet(j);}
+function mvPhotoAdd(jid,view,idx,input){
+  var file=input.files[0]; if(!file) return;
+  var j=jobs.find(function(x){return x.id==jid;}); if(!j) return;
+  _mvEnsure(j);
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var im=new Image();
+    im.onload=function(){
+      try{
+        var maxW=1280; var sc=Math.min(1, maxW/im.width);
+        var cw=Math.round(im.width*sc), ch=Math.round(im.height*sc);
+        var cv=document.createElement('canvas'); cv.width=cw; cv.height=ch;
+        cv.getContext('2d').drawImage(im,0,0,cw,ch);
+        j.multiviewers[view][idx]=cv.toDataURL('image/jpeg',0.82);
+      }catch(err){ j.multiviewers[view][idx]=e.target.result; }
+      saveData(); renderJobDet(j);
+    };
+    im.onerror=function(){ j.multiviewers[view][idx]=e.target.result; saveData(); renderJobDet(j); };
+    im.src=e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+function mvPhotoRm(jid,view,idx){
+  var j=jobs.find(function(x){return x.id==jid;}); if(!j||!j.multiviewers||!j.multiviewers[view]) return;
+  j.multiviewers[view][idx]=''; saveData(); renderJobDet(j);
+}
+function mvPopout(jid,view,idx){
+  var j=jobs.find(function(x){return x.id==jid;}); if(!j||!j.multiviewers||!j.multiviewers[view]) return;
+  var img=j.multiviewers[view][idx]; if(!img) return;
+  var ov=document.createElement('div');
+  ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:100000;display:flex;align-items:center;justify-content:center;cursor:zoom-out';
+  ov.onclick=function(){ov.remove();};
+  ov.innerHTML='<img src="'+img+'" style="max-width:96vw;max-height:96vh;object-fit:contain"/>';
+  document.body.appendChild(ov);
+}
 function _camWallbox(jid,ci,cd){
   var val=cd.wallbox||'';
   var opts=(CAM_PLAN_OPTS['Wallbox']||[]).map(function(w){return '<option'+(w===val?' selected':'')+'>'+w+'</option>';}).join('');
@@ -13513,11 +14286,12 @@ function jdPickSpecCamKit(jid,si){
   var specKit=kit.filter(function(k){return k.cat==='Camera'&&specCats.indexOf(k.subcat)>=0&&k.status!=='Bin';});
   if(!specKit.length) specKit=kit.filter(function(k){return k.cat==='Camera'&&k.status!=='Bin';});
   var rows=specKit.map(function(k){
-    var onJob=allocMap.has(k.id)&&allocMap.get(k.id)!==j.name;
+    var conflict=getKitConflictForJob(k.id, j);
+    var onJob=!!conflict;
     return '<div style="display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid var(--border);cursor:pointer'+(onJob?';opacity:.5':'')+'" onclick="jdAssignSpecCamKit('+jid+','+si+','+k.id+')">'
       +'<div style="flex:1"><div style="font-size:14px;font-weight:600;color:var(--white)">'+k.name+'</div>'
-      +'<div style="font-size:11px;color:var(--muted)">'+k.subcat+' · '+k.loc+'</div></div>'
-      +(onJob?'<span style="font-size:11px;color:#b87400">On Job</span>':'<span style="font-size:12px;color:#3dbf7a">'+k.status+'</span>')
+      +'<div style="font-size:11px;color:var(--muted)">'+k.subcat+' · '+k.loc+(onJob?' · '+conflict.sub:'')+'</div></div>'
+      +(onJob?'<span style="font-size:11px;color:#b87400">On '+_trelloEsc(conflict.name)+'</span>':'<span style="font-size:12px;color:#3dbf7a">'+k.status+'</span>')
       +'</div>';
   }).join('');
   document.getElementById('pickSpecCamRows').innerHTML=rows||'<div style="padding:14px;color:var(--muted)">No specialist camera kit in inventory.</div>';
@@ -13671,10 +14445,11 @@ function jdPickCamKit(jid,camIdx){
   var list=document.getElementById('camKitList');
   if(camKit.length){
     camKit.forEach(function(k){
-      var onJob=allocMap.has(k.id)&&allocMap.get(k.id)!==j.name;
+      var conflict=getKitConflictForJob(k.id, j);
+      var onJob=!!conflict;
       var el=document.createElement('div');
       el.style.cssText='padding:10px 14px;cursor:pointer;font-size:13px;color:'+(onJob?'#fa0':'#fff')+';border-bottom:1px solid rgba(255,255,255,.04);display:flex;justify-content:space-between;align-items:center';
-      el.innerHTML='<div><div style="font-weight:600">'+k.name+'</div><div style="font-size:11px;color:var(--muted);margin-top:1px">'+k.tag+' · '+k.loc+'</div></div>'+(onJob?'<span style="font-size:10px;background:rgba(250,160,0,.15);color:#b87400;padding:2px 6px;border-radius:3px">On Job</span>':'<span style="font-size:10px;color:#3dbf7a">'+k.status+'</span>');
+      el.innerHTML='<div><div style="font-weight:600">'+k.name+'</div><div style="font-size:11px;color:var(--muted);margin-top:1px">'+k.tag+' · '+k.loc+(onJob?' · '+conflict.sub:'')+'</div></div>'+(onJob?'<span style="font-size:10px;background:rgba(250,160,0,.15);color:#b87400;padding:2px 6px;border-radius:3px">On '+_trelloEsc(conflict.name)+'</span>':'<span style="font-size:10px;color:#3dbf7a">'+k.status+'</span>');
       el.setAttribute('data-n', k.name.toLowerCase());
       el.addEventListener('mouseover',function(){if(!onJob)el.style.background='rgba(255,255,255,.06)';});
       el.addEventListener('mouseout',function(){el.style.background='';});
@@ -13781,10 +14556,64 @@ function jdCamLensSetCustom(jid,i,val){
 }
 
 // ── Generic equipment field handlers (Pedestal, Head, Zoom, Focus) ──
+function _ensureHiredLens(name){
+  var hit=hiredCatalogue.find(function(h){return (h.name||'').toLowerCase()===name.toLowerCase()&&(h.subcat==='Lens'||h.subcat==='Lens Range');});
+  if(hit)return hit.id;
+  var newId=hiredCatalogue.reduce(function(m,h){return Math.max(m,h.id||0);},0)+1;
+  hiredCatalogue.push({id:newId,name:name,cat:'Camera',subcat:'Lens',compat:'',notes:'',suppliers:[]});
+  if(typeof _hiredCatNextId==='number'&&_hiredCatNextId<=newId)_hiredCatNextId=newId+1;
+  return newId;
+}
+function jdLoadBroadcastCard(jid){
+  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
+  if((j.camDetails&&j.camDetails.length)&&!confirm('Replace the current camera card with the 10\u00d7 HDC-3500 broadcast card?'))return;
+  var ua7=_ensureHiredLens('Fuji UA7');
+  var ua14=_ensureHiredLens('Fuji UA14');
+  function hv(v){return {mode:'hired',kitId:null,hiredVal:v};}        // hired free-text equip value
+  function present(){return {mode:'present',kitId:null,hiredVal:''};} // tick / on-order TBC
+  function none(){return {mode:'inv',kitId:null,hiredVal:''};}        // blank row
+  function lensCat(id){return {mode:'hired',kitId:null,hiredId:null,hiredCatId:id};}
+  var rows=[
+    {ped:'Quattro L', head:'Vinten 750', vf:'7" OLED', lens:ua7,  shot:'present',    acc:'Script Holder', mon:'24" Prompt'},
+    {ped:'Quattro L', head:'Vinten 750', vf:'7" OLED', lens:ua7,  shot:'present',    acc:'Script Holder', mon:''},
+    {ped:'Quattro L', head:'Vinten 750', vf:'7" OLED', lens:ua7,  shot:'present',    acc:'Script Holder', mon:'24" Prompt'},
+    {ped:'Quattro L', head:'Vinten 750', vf:'7" OLED', lens:ua7,  shot:'present',    acc:'Script Holder', mon:''},
+    {ped:'Quattro L', head:'Vinten 750', vf:'7" OLED', lens:ua7,  shot:'present',    acc:'Script Holder', mon:''},
+    {ped:'Quattro L', head:'Vinten 750', vf:'7" OLED', lens:ua7,  shot:'present',    acc:'Script Holder', mon:''},
+    {ped:'Quattro L', head:'Vinten 750', vf:'7" OLED', lens:ua7,  shot:'present',    acc:'Script Holder', mon:''},
+    {ped:'Jimmy Jib', head:'',          vf:'',          lens:ua14, shot:'Jib Remotes',acc:'Tally Light',   mon:''},
+    {ped:'LW PED',    head:'Vinten 250', vf:'',          lens:ua14, shot:'',           acc:'Lock Off',      mon:''},
+    {ped:'LW Tripod', head:'Vinten 250', vf:'',          lens:ua14, shot:'',           acc:'Lock Off',      mon:''}
+  ];
+  j.camDetails=rows.map(function(r,i){
+    var notesBits=[];
+    if(r.acc)notesBits.push('Accessories: '+r.acc);
+    if(r.mon)notesBits.push('Monitoring: '+r.mon);
+    return {
+      op:'',focusPuller:'',grip:'',body:'',support:'',lens:'',matteBox:'',filters:'',iris:'',focus:'',zoom:'',
+      remotePanel:'',power:'',videoConn:'',timecode:'',dataBridge:'',rcp:'',sensorFps:'',codec:'',sensorRes:'',lut:'',
+      kitId:null,hired:true,hiredType:'HDC-3500',notes:notesBits.join(' \u00b7 '),activeFields:[],camNum:i+1,
+      lensData:lensCat(r.lens),
+      pedestalData:r.ped?hv(r.ped):none(),
+      headData:r.head?hv(r.head):none(),
+      viewfinderData:r.vf?hv(r.vf):none(),
+      focusData:(r.shot==='present'?present():(r.shot?hv(r.shot):none()))
+    };
+  });
+  j.cameras=10;
+  saveData();renderJobDet(j);toast('Loaded 10\u00d7 HDC-3500 broadcast card');
+}
 function jdEquipMode(jid,ci,dataKey,mode){
   var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.camDetails||!j.camDetails[ci])return;
   if(!j.camDetails[ci][dataKey])j.camDetails[ci][dataKey]={mode:'inv',kitId:null,hiredVal:''};
   j.camDetails[ci][dataKey].mode=mode;
+  saveData();renderJobDet(j);
+}
+function jdEquipClear(jid,ci,dataKey){
+  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.camDetails||!j.camDetails[ci])return;
+  var ed=j.camDetails[ci][dataKey];
+  if(ed&&ed.kitId){if(!j.prep)j.prep=[];j.prep=j.prep.filter(function(p){return p.kid!==ed.kitId||p._camspec!==true;});}
+  j.camDetails[ci][dataKey]={mode:'inv',kitId:null,hiredVal:''};
   saveData();renderJobDet(j);
 }
 function jdEquipHired(jid,ci,dataKey,val){
@@ -13877,10 +14706,11 @@ function jdPickCamLens(jid,i){
   var list=document.getElementById('camLensList');
   if(lensKit.length){
     lensKit.forEach(function(k){
-      var onJob=allocMap.has(k.id)&&allocMap.get(k.id)!==j.name;
+      var conflict=getKitConflictForJob(k.id, j);
+      var onJob=!!conflict;
       var el=document.createElement('div');
       el.style.cssText='padding:10px 14px;cursor:pointer;font-size:13px;color:'+(onJob?'#fa0':'#fff')+';border-bottom:1px solid rgba(255,255,255,.04);display:flex;justify-content:space-between;align-items:center';
-      el.innerHTML='<div><div style="font-weight:600">'+k.name+'</div><div style="font-size:11px;color:var(--muted);margin-top:1px">'+k.tag+' · '+k.loc+'</div></div>'+(onJob?'<span style="font-size:10px;background:rgba(250,160,0,.15);color:#b87400;padding:2px 6px;border-radius:3px">On Job</span>':'<span style="font-size:10px;color:#3dbf7a">'+k.status+'</span>');
+      el.innerHTML='<div><div style="font-weight:600">'+k.name+'</div><div style="font-size:11px;color:var(--muted);margin-top:1px">'+k.tag+' · '+k.loc+(onJob?' · '+conflict.sub:'')+'</div></div>'+(onJob?'<span style="font-size:10px;background:rgba(250,160,0,.15);color:#b87400;padding:2px 6px;border-radius:3px">On '+_trelloEsc(conflict.name)+'</span>':'<span style="font-size:10px;color:#3dbf7a">'+k.status+'</span>');
       el.setAttribute('data-n', k.name.toLowerCase());
       el.addEventListener('mouseover',function(){if(!onJob)el.style.background='rgba(255,255,255,.06)';});
       el.addEventListener('mouseout',function(){el.style.background='';});
@@ -14505,131 +15335,231 @@ function renderIpTab(j) {
 
 function printJobPDF(jid){
   var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
-  var win=window.open('','_blank','width=900,height=700');
+  var win=window.open('','_blank','width=920,height=760');
   if(!win)return alert('Please allow popups for this page.');
   var lv=j.lvSpec||{};
   var au=j.audio||{};
   var numCams=parseInt(j.cameras)||0;
 
-  // ── Helpers ──
-  function sec(title,body){
-    return '<div class="p-sec"><div class="p-sec-hdr">'+title+'</div>'+body+'</div>';
-  }
-  function row(label,val){
-    if(!val&&val!==0)return '';
-    return '<div class="p-row"><span class="p-lbl">'+label+'</span><span class="p-val">'+val+'</span></div>';
-  }
-  function heading(txt){return '<div class="p-heading">'+txt+'</div>';}
+  // ── tiny helpers ──
+  function esc(s){return (s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  function row(label,val){if(val==null||val==='')return '';return '<div class="p-row"><span class="p-lbl">'+esc(label)+'</span><span class="p-val">'+val+'</span></div>';}
+  function heading(t){return '<div class="p-heading">'+esc(t)+'</div>';}
+  function sec(title,body,key){if(!body)return '';return '<div class="p-sec"'+(key?' data-sec="'+key+'"':'')+'><div class="p-sec-hdr">'+esc(title)+'</div>'+body+'</div>';}
+  function kitNm(id){if(id==null)return '';var k=kit.find(function(x){return x.id===id;});return k?k.name:'';}
+  function gear(o){if(!o)return '';if(o.mode==='hired')return o.hiredVal?('Hired — '+esc(o.hiredVal)):'';var n=kitNm(o.kitId);return n?esc(n):'';}
+  function has(o){return o&&((o.mode==='hired'&&o.hiredVal)||(o.kitId!=null&&kitNm(o.kitId)));}
+
+  var sc=(typeof STATUS_CFG!=='undefined'&&STATUS_CFG[j.status])||{color:'#7A766F',bg:'rgba(122,118,111,.15)',label:j.status||'TBC'};
+  var isTX=(j.txRx||'TX')==='TX';
+  var txStr=(isTX&&(j.txTime||j.txTimeEnd))?((j.txTime||'')+(j.txTimeEnd?' – '+j.txTimeEnd:'')):'';
+
+  // ── principals: Tech Manager prominent ──
+  var techMgr='';
+  (j.crew||[]).forEach(function(c){if(!techMgr&&/tech\s*manager/i.test(c.role||''))techMgr=c.name;});
+  if(!techMgr&&j.crew)((j.hods||[]).forEach(function(h){if(!techMgr&&/tech\s*manager/i.test(h.role||''))techMgr=h.name;}));
+  if(!techMgr)techMgr=j.lead||'';
+  var pm=j.versaPM||'';
+  var clientNm=j.prodCompany||j.client||'';
 
   // ── Job info ──
-  var sc=STATUS_CFG[j.status]||{color:'#888',bg:'rgba(128,128,128,.15)',label:j.status||'TBC'};
   var infoHTML=''
-    +row('Production Company',j.prodCompany||j.client||'')
-    +row('Director',j.director||'')
-    +row('Location',j.loc)
-    +row('Studio',j.studio)
-    +row('Start',fmtD(j.start))
-    +row('End',fmtD(j.end))
-    +row('Status',j.status)
-    +row('TX/RX',(j.txRx||'TX'));
+    +row('Production Company',esc(j.prodCompany||j.client||''))
+    +row('Director',esc(j.director||''))
+    +row('Location',esc(j.loc))
+    +row('Studio',esc(j.studio))
+    +row('Tech Manager',esc(techMgr))
+    +row('Project Manager',esc(pm))
+    +row('Start',esc(fmtD(j.start)))
+    +row('End',esc(fmtD(j.end)))
+    +row(isTX?'TX Window':'Mode',isTX?(txStr||'TX'):esc(j.txRx||''))
+    +row('Status',esc(j.status));
 
   // ── Key dates ──
   var datesHTML='';
-  (j.rigDates||[]).forEach(function(d,i){
-    datesHTML+=row('Rig Day '+(i+1),fmtD(d.date)+(d.note?' — '+d.note:''));
-  });
-  (j.txDates||[]).forEach(function(d,i){
-    datesHTML+=row('TX Date '+(i+1),fmtD(d.date));
-  });
-  if(j.drigDate)datesHTML+=row('De-Rig',fmtD(j.drigDate));
+  (j.rigDates||[]).forEach(function(d,i){datesHTML+=row('Rig Day '+(i+1),esc(fmtD(d.date))+(d.note?' — '+esc(d.note):''));});
+  (j.txDates||[]).forEach(function(d,i){datesHTML+=row((isTX?'TX':'RX')+' Date '+(i+1),esc(fmtD(d.date)));});
+  if(j.drigDate)datesHTML+=row('De-Rig',esc(fmtD(j.drigDate)));
 
   // ── Contacts ──
   var contHTML='';
   (j.contacts||[]).forEach(function(c){
-    contHTML+='<div class="p-contact"><strong>'+c.name+'</strong>'
-      +(c.company?' · '+c.company:'')
-      +(c.email?'<br>'+c.email:'')
-      +(c.tel?' · '+c.tel:'')
+    contHTML+='<div class="p-contact"><strong>'+esc(c.name)+'</strong>'
+      +(c.company?' · '+esc(c.company):'')
+      +(c.email?'<br>'+esc(c.email):'')
+      +(c.tel?(c.email?' · ':'<br>')+esc(c.tel):'')
       +'</div>';
   });
 
   // ── Tech spec ──
   var techHTML=''
-    +row('Resolution',j.techRes)
-    +row('Frame Rate',j.techFR)
-    +row('Scan Type',j.techScan)
-    +row('Codec',j.techCodec)
-    +row('Cameras',j.cameras);
+    +row('Resolution',esc(j.techRes))
+    +row('Frame Rate',esc(j.techFR))
+    +row('Scan Type',esc(j.techScan))
+    +row('Codec',esc(j.techCodec))
+    +row('Cameras',esc(j.cameras));
 
   // ── Camera spec ──
   var camHTML='';
   (j.camDetails||[]).forEach(function(cd,ci){
-    var rc=RESISTOR_COLORS[ci]||{name:'Cam '+(ci+1)};
-    var kitName=cd.kitId?(kit.find(function(k){return k.id===cd.kitId;})||{name:'TBC'}).name:(cd.hired?'Hired'+(cd.hiredType?' — '+cd.hiredType:''):'TBC');
+    var rc=(typeof RESISTOR_COLORS!=='undefined'&&RESISTOR_COLORS[ci])||{bg:'#162040',name:'Cam '+(ci+1)};
+    var kitName=cd.kitId?(kitNm(cd.kitId)||'TBC'):(cd.hired?'Hired'+(cd.hiredType?' — '+cd.hiredType:''):'TBC');
     camHTML+='<div class="p-cam" style="border-left:3px solid '+rc.bg+'">';
-    camHTML+='<div class="p-cam-hdr">CAM '+(ci+1)+(cd.camLabel?' — '+cd.camLabel:'')+'</div>';
-    camHTML+=row('Body',kitName);
-    camHTML+=row('Operator',cd.operator||'');
+    camHTML+='<div class="p-cam-hdr">CAM '+(ci+1)+(cd.camLabel?' — '+esc(cd.camLabel):'')+'</div>';
+    camHTML+=row('Body',esc(kitName));
+    camHTML+=row('Operator',esc(cd.operator||''));
     (cd.activeFields||[]).forEach(function(fkey){
-      var fd=ALL_CAM_FIELDS.find(function(f){return f.key===fkey;});
+      var fd=(typeof ALL_CAM_FIELDS!=='undefined')&&ALL_CAM_FIELDS.find(function(f){return f.key===fkey;});
       if(!fd)return;
       var fm=(cd.fieldData||{})[fkey];
-      var val=fm?(fm.mode==='inv'&&fm.kitId?(kit.find(function(k){return k.id===fm.kitId;})||{name:''}).name:fm.mode==='hired'?'Hired — '+(fm.hiredVal||''):fm.val):cd[fkey]||'';
-      if(val)camHTML+=row(fd.label,val);
+      var val=fm?(fm.mode==='inv'&&fm.kitId?(kitNm(fm.kitId)||''):fm.mode==='hired'?'Hired — '+(fm.hiredVal||''):fm.val):cd[fkey]||'';
+      if(val)camHTML+=row(fd.label,esc(val));
     });
     camHTML+='</div>';
   });
 
   // ── LV / Camera Control ──
   var lvHTML='';
-  if(lv.ld)lvHTML+=row('Lighting Director',lv.ld);
-  if(lv.galleryLayout)lvHTML+=row('Gallery Layout',lv.galleryLayout);
-  // MCS
+  if(lv.ld)lvHTML+=row('Lighting Director',esc(lv.ld));
+  if(lv.vm)lvHTML+=row('Vision Mixer',esc(lv.vm));
+  if(lv.galleryLayout)lvHTML+=row('Gallery Layout',esc(lv.galleryLayout));
   var mcsG=lv.mcsGlobal||{};
   if(mcsG.enabled){
-    var mcsName=mcsG.kitId?(kit.find(function(k){return k.id===mcsG.kitId;})||{name:'Inventory'}).name:'Hired — '+(mcsG.hiredVal||'');
-    lvHTML+=row('MCS',mcsName+(mcsG.ip?' (IP: '+mcsG.ip+')':''));
+    var mcsName=mcsG.kitId?(kitNm(mcsG.kitId)||'Inventory'):'Hired — '+(mcsG.hiredVal||'');
+    lvHTML+=row('MCS',esc(mcsName)+(mcsG.ip?' (IP: '+esc(mcsG.ip)+')':''));
   }
-  // Per-cam RCP
   (lv.camRcp||[]).forEach(function(rcp,ci){
     if(rcp.mode==='local')return;
-    var rc=RESISTOR_COLORS[ci]||{name:'Cam '+(ci+1)};
     var rcpName=rcp.mode==='rcp-ip'
-      ?'IP Control'+(rcp.ccuIp?' CCU:'+rcp.ccuIp:'')+(rcp.rcpIp?' RCP:'+rcp.rcpIp:'')
-      :(rcp.kitId?(kit.find(function(k){return k.id===rcp.kitId;})||{name:'Inventory'}).name:'Hired — '+(rcp.hiredVal||''));
-    lvHTML+=row('CAM '+(ci+1)+' RCP',rcpName);
+      ?'IP Control'+(rcp.ccuIp?' CCU:'+esc(rcp.ccuIp):'')+(rcp.rcpIp?' RCP:'+esc(rcp.rcpIp):'')
+      :(rcp.kitId?(kitNm(rcp.kitId)||'Inventory'):'Hired — '+(rcp.hiredVal||''));
+    lvHTML+=row('CAM '+(ci+1)+' RCP',esc(rcpName));
   });
-  // Vision engineers
   (lv.visionOps||[]).forEach(function(op,vi){
-    lvHTML+=row('Vision Engineer '+(vi+1),op.name+(op.monCount?' ('+op.monCount+' mon)':'')+(op.evs?' + EVS':''));
+    lvHTML+=row('Vision Engineer '+(vi+1),esc(op.name)+(op.monCount?' ('+op.monCount+' mon)':'')+(op.evs?' + EVS':''));
   });
+
+  // ── EVS ──
+  var evsHTML='';
+  if(!j.evsNA&&j.evs){
+    var e=j.evs;
+    evsHTML+=row('Supervisor',esc(e.supervisor));
+    if((e.operators||[]).filter(Boolean).length)evsHTML+=row('Operators',esc(e.operators.filter(Boolean).join(', ')));
+    evsHTML+=row('System',esc(e.system));
+    evsHTML+=row('Software',esc(e.software));
+    evsHTML+=row('Channels',esc(e.channels));
+    evsHTML+=row('Codec',esc(e.codec));
+    (e.extraKit||[]).forEach(function(k){if(k.type||k.model)evsHTML+=row(k.type||'Kit',esc(k.model||''));});
+    if(e.notes)evsHTML+=row('Notes',esc(e.notes));
+  }
+
+  // ── GFX ──
+  var gfxHTML='';
+  if(!j.gfxNA&&j.gfx){
+    var g=j.gfx;
+    gfxHTML+=row('Supervisor',esc(g.supervisor));
+    if((g.operators||[]).filter(Boolean).length)gfxHTML+=row('Operators',esc(g.operators.filter(Boolean).join(', ')));
+    gfxHTML+=row('System',esc(g.system));
+    gfxHTML+=row('Engine Version',esc(g.engineVersion));
+    gfxHTML+=row('Engines',esc(g.numEngines));
+    gfxHTML+=row('Template Pack',esc(g.templatePack));
+    gfxHTML+=row('Output Res',esc(g.outputRes));
+    if(g.notes)gfxHTML+=row('Notes',esc(g.notes));
+  }
+
+  // ── Audio ──
+  var audioHTML='';
+  (function(){
+    var bits='';
+    // Sound crew
+    var crewLines='';
+    if(au.supervisor)crewLines+=row('Sound Supervisor',esc(au.supervisor));
+    (au.floorCrew||[]).forEach(function(c){var nm=(typeof c==='string')?c:(c.name||'');var rl=(typeof c==='object'&&c.role)?c.role:'';if(nm)crewLines+=row(rl||'Sound Crew',esc(nm));});
+    if(crewLines)bits+=heading('Sound Team')+crewLines;
+    // Grams / SpotOn
+    var gsLines='';
+    if(au.hasGramsDesk!==false&&has(au.gramsDesk))gsLines+=row('Grams Desk',gear(au.gramsDesk));
+    if(au.hasSpotOn!==false&&has(au.spotOn))gsLines+=row('SpotOn',gear(au.spotOn));
+    if(gsLines)bits+=heading('Playout')+gsLines;
+    // Hydras
+    var hyLines='';
+    (au.hydras||[]).forEach(function(h,i){
+      var nm=gear(h)||esc(h.hiredVal||('Hydra '+(i+1)));
+      var io=(h.ins||0)+' in / '+(h.outs||0)+' out';
+      hyLines+=row(nm,io+(h.wallbox?' · WB: '+esc(h.wallbox):''));
+      var ins=(h.inputs||[]).map(function(p,k){return (p&&(p.alloc||p.show))?((k+1)+': '+esc(p.alloc||p.show)):null;}).filter(Boolean);
+      var outs=(h.outputs||[]).map(function(p,k){return (p&&(p.use||p.feed))?((k+1)+': '+esc(p.use||p.feed)):null;}).filter(Boolean);
+      if(ins.length)hyLines+=row('› Inputs',ins.join(' · '));
+      if(outs.length)hyLines+=row('› Outputs',outs.join(' · '));
+    });
+    if(hyLines)bits+=heading('Hydra')+hyLines;
+    // MADI
+    var madiLines='';
+    (au.madi||[]).forEach(function(s,i){
+      var used=(s.inputs||[]).map(function(v,k){return v?((k+1)+': '+esc(v)):null;}).filter(Boolean);
+      if(s.name||used.length){madiLines+=row(esc(s.name||('MADI '+(i+1))),used.length+' ch used');if(used.length)madiLines+=row('› Channels',used.join(' · '));}
+    });
+    if(madiLines)bits+=heading('MADI')+madiLines;
+    // Radio mics
+    var rmLines='';
+    if(au.radioMicSystem)rmLines+=row('System',esc(au.radioMicSystem));
+    var rmList=(au.radioMics||[]).filter(function(m){return m&&(m.mic||m.alloc||m.show||m.freq);});
+    if(rmList.length){rmLines+=row('Channels',String(rmList.length));rmList.forEach(function(m,k){rmLines+=row('› RM '+(k+1),esc([m.mic,m.alloc||m.show,m.freq].filter(Boolean).join(' · '))+(m.notes?' ('+esc(m.notes)+')':''));});}
+    if(au.radioMicNotes)rmLines+=row('Notes',esc(au.radioMicNotes).replace(/\n/g,'<br>'));
+    if(rmLines)bits+=heading('Radio Mics')+rmLines;
+    // Multitrack
+    var mt=au.multitrack||{};
+    var mtLines='';
+    if(mt.recorder)mtLines+=row('Recorder',esc(mt.recorder));
+    if(mt.samplingFreq||mt.bitDepth)mtLines+=row('Format',(mt.samplingFreq?esc(mt.samplingFreq)+' kHz':'')+(mt.bitDepth?' / '+esc(mt.bitDepth)+'-bit':'')+(mt.bwav?' / BWAV':''));
+    var mtTracks=(mt.tracks||[]).filter(function(t){return t&&t.name;});
+    if(mtTracks.length){mtLines+=row('Tracks',String(mtTracks.length));mtTracks.forEach(function(t,k){mtLines+=row('› Trk '+(k+1),esc(t.name)+(t.source?' ← '+esc(t.source):'')+(t.realtime?' [RT]':'')+(t.delay?' +'+esc(t.delay):''));});}
+    if(mt.otherNotes)mtLines+=row('Notes',esc(mt.otherNotes));
+    if(mtLines)bits+=heading('Multitrack Record')+mtLines;
+    audioHTML=bits;
+  })();
+
+  // ── Multiviewers ──
+  var mvHTML='';
+  (function(){
+    if(typeof _mvDesEnsure!=='function')return;
+    var mv=_mvDesEnsure(j);
+    var views=[['production','Production'],['vision','Vision'],['sound','Sound']];
+    var out='';
+    views.forEach(function(v){
+      var mons=(mv.mons&&mv.mons[v[0]])||[];
+      if(!mons.length)return;
+      var lines='';
+      mons.forEach(function(m,i){
+        var nm=esc(m.name||('Monitor '+(i+1)));
+        var val='';
+        if(m.type==='small'){val=m.src?esc(m.src):'<span style="color:#A8A39B">— blank —</span>';}
+        else if(m.mode==='picture'){val='Picture'+(m.img?' (screenshot)':'');}
+        else{var srcs=Object.keys(m.panes||{}).map(function(k){return m.panes[k];}).filter(Boolean);var uniq=srcs.filter(function(s,k){return srcs.indexOf(s)===k;});val='Designer · preset '+esc(m.layout||'1')+(uniq.length?' · '+esc(uniq.join(', ')):'');}
+        lines+=row(nm,val);
+      });
+      out+=heading(v[1]+' Wall')+lines;
+    });
+    mvHTML=out;
+  })();
 
   // ── Crew ──
   var crewHTML='';
   var versaCr=(j.crew||[]).filter(function(c){return c.type==='versa';});
   var flCr=(j.crew||[]).filter(function(c){return c.type==='freelance';});
   var prodCr=(j.crew||[]).filter(function(c){return c.type==='production';});
-  if(versaCr.length){
-    crewHTML+=heading('Versa Crew');
-    versaCr.forEach(function(c){crewHTML+=row(c.role,c.name+(c.dates&&c.dates.length?' ('+c.dates.length+' days)':''));});
-  }
-  if(flCr.length){
-    crewHTML+=heading('Versa Freelance');
-    flCr.forEach(function(c){crewHTML+=row(c.role,c.name+(c.dates&&c.dates.length?' ('+c.dates.length+' days)':''));});
-  }
-  if(prodCr.length){
-    crewHTML+=heading('Production Crew');
-    prodCr.forEach(function(c){crewHTML+=row(c.role,c.name);});
-  }
+  if(versaCr.length){crewHTML+=heading('Versa Crew');versaCr.forEach(function(c){crewHTML+=row(c.role||'Crew',esc(c.name)+(c.dates&&c.dates.length?' ('+c.dates.length+' days)':''));});}
+  if(flCr.length){crewHTML+=heading('Versa Freelance');flCr.forEach(function(c){crewHTML+=row(c.role||'Crew',esc(c.name)+(c.dates&&c.dates.length?' ('+c.dates.length+' days)':''));});}
+  if(prodCr.length){crewHTML+=heading('Production Crew');prodCr.forEach(function(c){crewHTML+=row(c.role||'Crew',esc(c.name));});}
 
   // ── Monitors ──
   var monHTML='';
   (j.monitors||[]).filter(function(m){return m.name||m.use;}).forEach(function(m){
-    monHTML+='<div class="p-row"><span class="p-lbl">'+(m.name||'—')+'</span><span class="p-val">'
-      +(m.use?m.use+' · ':'')+( m.type||'')
-      +(m.feed?' Feed: '+m.feed:'')
-      +(m.routerOut?' Out: '+m.routerOut:'')
-      +(m.wallBox?' WB: '+m.wallBox:'')
+    monHTML+='<div class="p-row"><span class="p-lbl">'+esc(m.name||'—')+'</span><span class="p-val">'
+      +(m.use?esc(m.use)+' · ':'')+esc(m.type||'')
+      +(m.feed?' Feed: '+esc(m.feed):'')
+      +(m.routerOut?' Out: '+esc(m.routerOut):'')
+      +(m.wallBox?' WB: '+esc(m.wallBox):'')
       +(m.rigged?' ✓ Rigged':'')
       +'</span></div>';
   });
@@ -14638,12 +15568,11 @@ function printJobPDF(jid){
   var prepHTML='';
   (j.prep||[]).forEach(function(p){
     var k=kit.find(function(x){return x.id===p.kid;});if(!k)return;
-    prepHTML+=row(k.name,(p.supplier&&p.supplier!=='Versa Inventory'?'Hired from '+p.supplier:'Inventory')+(p.arrivalDate?' · Arrives '+fmtD(p.arrivalDate):'')+(p.done?' ✓':''));
+    prepHTML+=row(k.name,(p.supplier&&p.supplier!=='Versa Inventory'?'Hired from '+esc(p.supplier):'Inventory')+(p.arrivalDate?' · Arrives '+esc(fmtD(p.arrivalDate)):'')+(p.done?' ✓':''));
   });
 
   // ── IP Addresses ──
-  var ipHTML='';
-  var autoIps=[];
+  var ipHTML='';var autoIps=[];
   (lv.camRcp||[]).forEach(function(rcp,ci){
     if(rcp.mode==='rcp-ip'){
       if(rcp.ccuIp)autoIps.push({l:'CAM '+(ci+1)+' CCU IP',v:rcp.ccuIp});
@@ -14652,99 +15581,161 @@ function printJobPDF(jid){
     }
   });
   if(mcsG.enabled&&mcsG.ip)autoIps.push({l:'MCS IP',v:mcsG.ip});
-  autoIps.concat(j.manualIps||[]).forEach(function(ip){ipHTML+=row(ip.l||ip.label,ip.v||ip.value);});
+  autoIps.concat(j.manualIps||[]).forEach(function(ip){ipHTML+=row(ip.l||ip.label,esc(ip.v||ip.value));});
 
-  // ══ CALL SHEET HTML ══════════════════════════════════════════
+  // ── logo ──
   var pdfLogo=window._VERSA_LOGO||window._versaLogoSrc||'';
-  if(!pdfLogo){
-    var pdfLogoEl=document.querySelector('img[src^="data:image/svg"]');
-    if(pdfLogoEl)pdfLogo=pdfLogoEl.src;
+  if(!pdfLogo){var el=document.querySelector('img[src^="data:image/svg"]');if(el)pdfLogo=el.src;}
+
+  // ── masthead + principals builder ──
+  function masthead(docTitle){
+    return '<div class="p-masthead">'
+      +'<div class="p-mh-left"><div class="p-mh-org">Versa Studios · Technical Operations</div>'
+      +'<div class="p-mh-title">'+esc(docTitle)+'</div>'
+      +'<div class="p-mh-sub">'+esc(j.name)+' — '+esc(j.studio||j.loc||'')+'</div></div>'
+      +'<div class="p-mh-right"><img class="p-mh-logo" src="'+pdfLogo+'" alt="Versa Studios">'
+      +'<div class="p-mh-ref">'+esc((j.loc||'').toUpperCase())+'</div></div></div>'
+      +'<div class="p-accent"></div>';
   }
-  var callSheet='<div class="p-page" id="page-callsheet">'
-    +'<div class="p-masthead"><div class="p-mh-left"><div class="p-mh-org">Technical Operations</div><div class="p-mh-title">Call Sheet</div><div class="p-mh-sub">'+j.name+' — '+(j.studio||j.loc)+'</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0"><img class="p-mh-logo" src="'+pdfLogo+'" alt="Versa"><div class="p-mh-ref">'+j.loc.toUpperCase()+'</div></div></div>'
-    +'<div class="p-accent"></div><div class="p-body">'
-    +'<div class="p-jobtitle">'+j.name+'</div>'
-    +'<div class="p-subtitle">'+(j.studio||j.loc||'')+' · '+(j.start?fmtD(j.start):'')+' – '+(j.end?fmtD(j.end):'')+' · <span class="p-status" style="background:'+sc.bg+';color:'+sc.color+'">'+j.status+'</span></div>'
+  function principals(){
+    function chip(lbl,val,strong){if(!val)return '';return '<div class="p-prin'+(strong?' p-prin-strong':'')+'"><span class="p-prin-l">'+esc(lbl)+'</span><span class="p-prin-v">'+esc(val)+'</span></div>';}
+    var inner=chip('Tech Manager',techMgr,true)+chip('Project Manager',pm)+chip('Client',clientNm);
+    if(!inner)return '';
+    return '<div class="p-prin-row">'+inner+'</div>';
+  }
+  function titleBlock(){
+    return '<div class="p-jobtitle">'+esc(j.name)+'</div>'
+      +'<div class="p-subtitle">'+esc(j.studio||j.loc||'')
+      +(j.start?' · '+esc(fmtD(j.start)):'')+(j.end?' – '+esc(fmtD(j.end)):'')
+      +(txStr?' · '+esc(txStr):'')
+      +' · <span class="p-status" style="background:'+sc.bg+';color:'+sc.color+'">'+esc(j.status||'TBC')+'</span></div>';
+  }
+
+  // ══ CLIENT SHEET ══
+  var clientDoc='<div class="p-doc" id="doc-client"><div class="p-page">'
+    +masthead('Production Summary')
+    +'<div class="p-body">'+titleBlock()+principals()
     +(contHTML?sec('Key Contacts',contHTML):'')
-    +(crewHTML?sec('Crew',crewHTML):'')
-    +'</div></div>';
-
-  // ══ FULL JOB SUMMARY ════════════════════════════════════════
-  var fullSummary='<div class="p-page" id="page-fullsummary">'
-    +'<div class="p-masthead"><div class="p-mh-left"><div class="p-mh-org">Technical Operations</div><div class="p-mh-title">Job Summary</div><div class="p-mh-sub">'+j.name+' — '+(j.studio||j.loc)+'</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0"><img class="p-mh-logo" src="'+pdfLogo+'" alt="Versa"><div class="p-mh-ref">'+j.loc.toUpperCase()+'</div></div></div>'
-    +'<div class="p-accent"></div><div class="p-body">'
-    +'<div class="p-jobtitle">'+j.name+'</div>'
-    +'<div class="p-subtitle">'+(j.studio||j.loc||'')+' · <span class="p-status" style="background:'+sc.bg+';color:'+sc.color+'">'+j.status+'</span></div>'
-    +sec('Job Details',infoHTML)
     +(datesHTML?sec('Key Dates',datesHTML):'')
-    +(contHTML?sec('Important Contacts',contHTML):'')
-    +sec('Tech Spec',techHTML)
-    +(camHTML?sec('Camera Spec','<div class="p-cam-grid">'+camHTML+'</div>'):'')
-    +(lvHTML?sec('Lighting / Vision',lvHTML):'')
     +(crewHTML?sec('Crew',crewHTML):'')
-    +(monHTML?sec('Monitors',monHTML):'')
-    +(prepHTML?sec('Kit / Prep List',prepHTML):'')
-    +(ipHTML?sec('IP Addresses',ipHTML):'')
-    +'</div></div>';
+    +'<div class="p-foot"><span>VERSA STUDIOS</span><span>'+esc(j.name)+' · Production Summary</span><span id="gen-c"></span></div>'
+    +'</div></div></div>';
 
-  var doc='<!DOCTYPE html><html><head><meta charset="utf-8"><title>'+j.name+' — Versa Studios</title>'
+  // ══ TECHNICAL PACK ══
+  var techDoc='<div class="p-doc" id="doc-technical"><div class="p-page">'
+    +masthead('Technical Pack')
+    +'<div class="p-body">'+titleBlock()+principals()
+    +sec('Job Details',infoHTML,'info')
+    +(datesHTML?sec('Key Dates',datesHTML,'dates'):'')
+    +(contHTML?sec('Contacts',contHTML,'contacts'):'')
+    +(techHTML?sec('Tech Spec',techHTML,'tech'):'')
+    +(camHTML?sec('Camera Spec','<div class="p-cam-grid">'+camHTML+'</div>','cameras'):'')
+    +(lvHTML?sec('Lighting / Vision & Control',lvHTML,'lv'):'')
+    +(evsHTML?sec('EVS / Replay',evsHTML,'evs'):'')
+    +(gfxHTML?sec('GFX',gfxHTML,'gfx'):'')
+    +(audioHTML?sec('Audio',audioHTML,'audio'):'')
+    +(mvHTML?sec('Multiviewers',mvHTML,'mv'):'')
+    +(monHTML?sec('Monitors',monHTML,'monitors'):'')
+    +(crewHTML?sec('Crew',crewHTML,'crew'):'')
+    +(prepHTML?sec('Kit / Prep List',prepHTML,'prep'):'')
+    +(ipHTML?sec('IP Addresses',ipHTML,'ip'):'')
+    +'<div class="p-foot"><span>VERSA STUDIOS</span><span>'+esc(j.name)+' · Technical Pack</span><span id="gen-t"></span></div>'
+    +'</div></div></div>';
+
+  // section toggle controls (technical only)
+  var secDefs=[['info','Job Details'],['dates','Key Dates'],['contacts','Contacts'],['tech','Tech Spec'],['cameras','Cameras'],['lv','Lighting/Vision'],['evs','EVS'],['gfx','GFX'],['audio','Audio'],['mv','Multiviewers'],['monitors','Monitors'],['crew','Crew'],['prep','Kit/Prep'],['ip','IP']];
+  var toggleHtml=secDefs.map(function(d){
+    if(techDoc.indexOf('data-sec="'+d[0]+'"')<0)return '';
+    return '<label class="p-tg"><input type="checkbox" checked onchange="togSec(\''+d[0]+'\',this.checked)"> '+d[1]+'</label>';
+  }).join('');
+
+  var doc='<!DOCTYPE html><html><head><meta charset="utf-8"><title>'+esc(j.name)+' — Versa Studios</title>'
     +'<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Source+Sans+3:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">'
     +'<style>'
-    +'*{box-sizing:border-box;margin:0;padding:0;}'
-    +'body{font-family:"Source Sans 3",sans-serif;font-size:14px;color:#1A1918;background:#E8E5DF;}'
-    +'.p-page{max-width:780px;margin:0 auto 32px;background:#FAFAF8;box-shadow:0 1px 3px rgba(0,0,0,.08),0 8px 32px rgba(0,0,0,.1);border-top:4px solid #162040;}'
-    +'.p-masthead{background:#162040;padding:24px 32px 20px;display:flex;align-items:flex-start;justify-content:space-between;gap:20px}'
-    +'.p-mh-left{}'
-    +'.p-mh-org{font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:6px}'
-    +'.p-mh-title{font-family:"Libre Baskerville",Georgia,serif;font-size:22px;font-weight:700;color:#fff;line-height:1.1}'
-    +'.p-mh-sub{font-size:12px;color:rgba(255,255,255,.45);margin-top:5px}'
-    +'.p-mh-logo{height:28px;filter:brightness(0) invert(1);opacity:.65}'
-    +'.p-mh-ref{font-family:"IBM Plex Mono",monospace;font-size:9px;color:rgba(255,255,255,.3);letter-spacing:.12em;margin-top:8px}'
+    +'*{box-sizing:border-box;margin:0;padding:0}'
+    +'body{font-family:"Source Sans 3",sans-serif;font-size:13.5px;color:#1A1918;background:#E8E5DF}'
+    +'.p-page{max-width:800px;margin:0 auto 28px;background:#FAFAF8;box-shadow:0 1px 3px rgba(0,0,0,.08),0 8px 32px rgba(0,0,0,.1);position:relative}'
+    +'.p-masthead{background:#162040;padding:22px 30px 18px;display:flex;align-items:center;justify-content:space-between;gap:20px}'
+    +'.p-mh-org{font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:6px}'
+    +'.p-mh-title{font-family:"Libre Baskerville",Georgia,serif;font-size:24px;font-weight:700;color:#fff;line-height:1.05}'
+    +'.p-mh-sub{font-size:12px;color:rgba(255,255,255,.5);margin-top:5px}'
+    +'.p-mh-right{display:flex;flex-direction:column;align-items:flex-end;gap:7px;flex-shrink:0}'
+    +'.p-mh-logo{height:38px;width:auto;filter:brightness(0) invert(1)}'
+    +'.p-mh-ref{font-family:"IBM Plex Mono",monospace;font-size:9px;color:rgba(255,255,255,.4);letter-spacing:.14em}'
     +'.p-accent{height:3px;background:linear-gradient(90deg,#C8A84B 0%,rgba(200,168,75,.3) 60%,transparent 100%)}'
-    +'.p-body{padding:24px 32px 32px}'
-    +'.p-jobtitle{font-family:"Libre Baskerville",Georgia,serif;font-size:28px;font-weight:700;color:#162040;margin-bottom:4px;line-height:1.1}'
-    +'.p-subtitle{font-size:13px;color:#7A766F;margin-bottom:20px;font-weight:500}'
-    +'.p-sec{margin-bottom:20px;}'
-    +'.p-sec-hdr{font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#7A766F;border-bottom:1px solid #D4CFC8;padding-bottom:6px;margin-bottom:10px;}'
-    +'.p-row{display:flex;gap:12px;padding:5px 0;border-bottom:1px solid #EDEAE4;}'
-    +'.p-lbl{font-family:"IBM Plex Mono",monospace;font-weight:600;min-width:160px;flex-shrink:0;color:#7A766F;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding-top:2px}'
-    +'.p-val{color:#1A1918;font-size:13px;font-weight:500}'
-    +'.p-heading{font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#C8A84B;margin:14px 0 6px;}'
-    +'.p-contact{padding:6px 0;border-bottom:1px solid #EDEAE4;font-size:13px;line-height:1.5}'
-    +'.p-cam-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}'
-    +'.p-cam{padding:10px 12px;border:1px solid #D4CFC8;border-radius:4px;background:#FAFAF8}'
-    +'.p-cam-hdr{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;padding-bottom:5px;border-bottom:1px solid #D4CFC8;color:#162040}'
-    +'.p-status{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border-radius:2px;}'
+    +'.p-body{padding:24px 30px 34px}'
+    +'.p-jobtitle{font-family:"Libre Baskerville",Georgia,serif;font-size:27px;font-weight:700;color:#162040;margin-bottom:4px;line-height:1.1}'
+    +'.p-subtitle{font-size:13px;color:#7A766F;margin-bottom:14px;font-weight:500}'
+    +'.p-prin-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}'
+    +'.p-prin{border:1px solid #D4CFC8;border-radius:5px;padding:7px 14px;background:#fff;min-width:130px}'
+    +'.p-prin-strong{border-color:#162040;background:#162040}'
+    +'.p-prin-strong .p-prin-l{color:rgba(255,255,255,.6)}'
+    +'.p-prin-strong .p-prin-v{color:#fff}'
+    +'.p-prin-l{display:block;font-family:"IBM Plex Mono",monospace;font-size:8.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#9A958D;margin-bottom:2px}'
+    +'.p-prin-v{display:block;font-size:15px;font-weight:600;color:#1A1918}'
+    +'.p-sec{margin-bottom:18px}'
+    +'.p-sec-hdr{font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#162040;border-bottom:1.5px solid #C8A84B;padding-bottom:5px;margin-bottom:9px}'
+    +'.p-row{display:flex;gap:12px;padding:4px 0;border-bottom:1px solid #EDEAE4}'
+    +'.p-lbl{font-family:"IBM Plex Mono",monospace;font-weight:600;min-width:150px;flex-shrink:0;color:#7A766F;font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;padding-top:2px}'
+    +'.p-val{color:#1A1918;font-size:12.5px;font-weight:500}'
+    +'.p-heading{font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#C8A84B;margin:13px 0 5px}'
+    +'.p-contact{padding:5px 0;border-bottom:1px solid #EDEAE4;font-size:12.5px;line-height:1.5}'
+    +'.p-cam-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}'
+    +'.p-cam{padding:9px 12px;border:1px solid #D4CFC8;border-radius:4px;background:#fff}'
+    +'.p-cam-hdr{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px;padding-bottom:4px;border-bottom:1px solid #D4CFC8;color:#162040}'
+    +'.p-status{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border-radius:2px}'
+    +'.p-foot{display:none;font-family:"IBM Plex Mono",monospace;font-size:8.5px;letter-spacing:.08em;color:#9A958D;text-transform:uppercase}'
+    +'.p-foot span:nth-child(2){flex:1;text-align:center}'
+    // toolbar
+    +'.p-bar{position:fixed;top:0;left:0;right:0;background:#162040;padding:9px 16px;display:flex;gap:10px;align-items:center;z-index:9999;flex-wrap:wrap;box-shadow:0 2px 12px rgba(0,0,0,.3)}'
+    +'.p-bar .brand{color:#C8A84B;font-weight:900;font-size:15px;font-family:"IBM Plex Mono",monospace;letter-spacing:.1em}'
+    +'.p-bar button{padding:6px 14px;background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.22);cursor:pointer;border-radius:4px;font-size:12.5px;font-family:"Source Sans 3",sans-serif}'
+    +'.p-bar button.active{background:#C8A84B;color:#162040;border-color:#C8A84B;font-weight:700}'
+    +'.p-bar button.print{background:#C8A84B;color:#162040;border-color:#C8A84B;font-weight:700;margin-left:auto}'
+    +'.p-tgs{display:none;width:100%;gap:10px 16px;flex-wrap:wrap;padding:8px 2px 2px;border-top:1px solid rgba(255,255,255,.12)}'
+    +'.p-tg{color:rgba(255,255,255,.8);font-size:11.5px;display:inline-flex;align-items:center;gap:5px;cursor:pointer}'
+    +'@page{size:A4;margin:13mm}'
     +'@media print{'
-    +'  body{background:#fff;font-size:12px}'
-    +'  .p-page{box-shadow:none;margin:0 auto;border-top:3px solid #162040}'
-    +'  .p-jobtitle{font-size:22px}'
+    +'  body{background:#fff;font-size:11px}'
     +'  .no-print{display:none !important}'
-    +'  .p-page{page-break-after:always}'
+    +'  .p-spacer{display:none !important}'
+    +'  .p-page{max-width:none;margin:0;box-shadow:none;background:#fff}'
+    +'  .p-masthead{padding:14px 0 12px}'
+    +'  .p-body{padding:16px 0 0}'
+    +'  .p-doc{break-after:page}'
+    +'  .p-doc:last-child{break-after:auto}'
+    +'  .p-sec,.p-cam,.p-contact,.p-row,.p-prin{break-inside:avoid}'
+    +'  .p-jobtitle{font-size:21px}'
+    +'  .p-foot{display:flex;position:fixed;bottom:4mm;left:0;right:0;justify-content:space-between;border-top:1px solid #D4CFC8;padding-top:3px}'
     +'}'
     +'</style></head><body>'
-    +'<div class="no-print" style="position:fixed;top:0;left:0;right:0;background:#162040;padding:10px 20px;display:flex;gap:12px;align-items:center;z-index:9999">'
-    +'<span style="color:#C8A84B;font-weight:900;font-size:16px;font-family:IBM Plex Mono,monospace;letter-spacing:.1em">VERSA STUDIOS</span>'
-    +'<span style="color:rgba(255,255,255,.5);font-size:13px">'+j.name+'</span>'
-    +'<div style="margin-left:auto;display:flex;gap:8px">'
-    +'<button onclick="document.getElementById(\'page-callsheet\').style.display=\'\';document.getElementById(\'page-fullsummary\').style.display=\'none\';" style="padding:6px 14px;background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2);cursor:pointer;border-radius:4px;font-size:13px;font-family:Source Sans 3,sans-serif">Call Sheet</button>'
-    +'<button onclick="document.getElementById(\'page-callsheet\').style.display=\'none\';document.getElementById(\'page-fullsummary\').style.display=\'\';" style="padding:6px 14px;background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2);cursor:pointer;border-radius:4px;font-size:13px;font-family:Source Sans 3,sans-serif">Full Summary</button>'
-    +'<button onclick="window.print()" style="padding:6px 14px;background:#C8A84B;color:#162040;border:none;cursor:pointer;border-radius:4px;font-size:13px;font-weight:700;font-family:Source Sans 3,sans-serif">&#128424; Print / Save PDF</button>'
-    +'</div></div>'
-    +'<div style="height:50px"></div>'
-    +callSheet+fullSummary
-    +'<scr'+'ipt>document.getElementById("page-fullsummary").style.display="none";<\/script>'
-
+    +'<div class="p-bar no-print">'
+    +'<span class="brand">VERSA STUDIOS</span>'
+    +'<button id="btn-client" class="active" onclick="showDoc(\'client\')">Production Summary</button>'
+    +'<button id="btn-technical" onclick="showDoc(\'technical\')">Technical Pack</button>'
+    +'<button class="print" onclick="window.print()">&#128424; Print / Save PDF</button>'
+    +'<div class="p-tgs" id="tgs">'+toggleHtml+'</div>'
+    +'</div>'
+    +'<div class="p-spacer" style="height:54px"></div>'
+    +clientDoc+techDoc
+    +'<scr'+'ipt>'
+    +'var GEN=new Date().toLocaleString("en-GB",{day:"numeric",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"});'
+    +'document.getElementById("gen-c").textContent="Generated "+GEN;'
+    +'document.getElementById("gen-t").textContent="Generated "+GEN;'
+    +'function showDoc(which){'
+    +'  document.getElementById("doc-client").style.display=which==="client"?"":"none";'
+    +'  document.getElementById("doc-technical").style.display=which==="technical"?"":"none";'
+    +'  document.getElementById("btn-client").classList.toggle("active",which==="client");'
+    +'  document.getElementById("btn-technical").classList.toggle("active",which==="technical");'
+    +'  document.getElementById("tgs").style.display=which==="technical"?"flex":"none";'
+    +'}'
+    +'function togSec(key,on){var els=document.querySelectorAll(\'#doc-technical [data-sec="\'+key+\'"]\');for(var i=0;i<els.length;i++)els[i].style.display=on?"":"none";}'
+    +'showDoc("client");'
+    +'<\/scr'+'ipt>'
     +'</body></html>';
 
-
-  try{
-    win.document.write(doc);
-    win.document.close();
-  }catch(e){
-    win.document.write('<html><body><h1>PDF Error</h1><p>'+e.message+'</p></body></html>');
-    win.document.close();
-  }
+  try{win.document.write(doc);win.document.close();}
+  catch(err){win.document.write('<html><body><h1>PDF Error</h1><p>'+(err&&err.message)+'</p></body></html>');win.document.close();}
 }
 
 function jdIpAdd(jid){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;if(!j.manualIps)j.manualIps=[];j.manualIps.push({label:'',value:'',notes:''});saveData();
@@ -14774,6 +15765,27 @@ function renderIngestTab(j) {
   if(!j.ingestAudio)j.ingestAudio={streams:[]};
   var streams=j.ingestAudio.streams;
   var numCams=parseInt(j.cameras)||0;
+  // MADI options from named inputs in the Audio tab (grouped by stream)
+  var _madiEsc=function(s){return (s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');};
+  var madiArr=(j.audio&&Array.isArray(j.audio.madi))?j.audio.madi:[];
+  var madiHasInputs=madiArr.some(function(s){return (s.inputs||[]).some(function(x){return x;});});
+  function madiOptsFor(cur){
+    var html='<option value="">— MADI —</option>';
+    var found=false;
+    madiArr.forEach(function(s,si){
+      var named=(s.inputs||[]).map(function(v,ci){return {v:v,ci:ci};}).filter(function(o){return o.v;});
+      if(!named.length) return;
+      html+='<optgroup label="MADI '+(si+1)+'">';
+      named.forEach(function(o){
+        var val='M'+(si+1)+'.'+(o.ci+1)+' '+o.v;
+        if(val===cur)found=true;
+        html+='<option value="'+_madiEsc(val)+'"'+(val===cur?' selected':'')+'>'+(o.ci+1)+'. '+_madiEsc(o.v)+'</option>';
+      });
+      html+='</optgroup>';
+    });
+    if(cur&&!found) html+='<option value="'+_madiEsc(cur)+'" selected>'+_madiEsc(cur)+'</option>';
+    return html;
+  }
   var techCodec=j.techCodec||'',techRes=j.techRes||'',techFR=j.techFR||'',techScan=j.techScan||'';
   var resNum={'720p':'720','1080i':'1080','1080p':'1080','2K':'2K','UHD':'2160','4K DCI':'4K','8K':'8K'}[techRes]||techRes;
   var scanLtr={'Progressive':'p','Interlaced':'i','PsF':'PsF'}[techScan]||'';
@@ -14792,7 +15804,7 @@ function renderIngestTab(j) {
           return '<tr style="border-bottom:1px solid rgba(255,255,255,.05)">'
             +'<td style="padding:4px 6px;width:26px;font-family:var(--cond);font-size:11px;font-weight:800;color:var(--muted);text-align:center">'+(ri+1)+'</td>'
             +'<td style="padding:4px 8px"><input class="fi" style="font-size:12px;padding:2px 5px;width:100%;background:transparent;border:none;color:var(--white)" value="'+(row.signal||'')+'" placeholder="Audio..." onchange="ingestSetRow('+j.id+','+si+','+ri+',\'signal\',this.value)"/></td>'
-            +'<td style="padding:4px 8px;width:80px"><input class="fi" style="font-size:12px;padding:2px 5px;width:100%;background:transparent;border:none;color:var(--accent)" value="'+(row.madi||'')+'" placeholder="MADI..." onchange="ingestSetRow('+j.id+','+si+','+ri+',\'madi\',this.value)"/></td>'
+            +'<td style="padding:4px 8px;width:150px"><select class="fi" style="font-size:12px;padding:2px 4px;width:100%;color:var(--accent)" onchange="ingestSetRow('+j.id+','+si+','+ri+',\'madi\',this.value)">'+madiOptsFor(row.madi||'')+'</select></td>'
             
             +'<td style="padding:4px 2px;width:22px"><button onclick="ingestRmRow('+j.id+','+si+','+ri+')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:12px;padding:0">×</button></td>'
             +'</tr>';
@@ -14856,6 +15868,25 @@ function renderIngestTab(j) {
         +(techCodec?'<span style="font-family:var(--cond);font-size:13px;font-weight:700;color:#2a6cb8">'+techCodec+'</span>':'')
         +'<span style="font-size:10px;color:var(--muted);font-family:var(--cond);letter-spacing:.08em;text-transform:uppercase">Set on Info</span></div>'
       :'')
+    // MADI summary (named-input counts per stream; full names appear in the row MADI dropdowns)
+    +(function(){
+       var md=(j.audio&&Array.isArray(j.audio.madi))?j.audio.madi:[];
+       if(!md.length) return '';
+       var totalNamed=md.reduce(function(a,s){return a+(s.inputs||[]).filter(function(x){return x;}).length;},0);
+       return '<div style="margin-bottom:16px;padding:8px 12px;background:rgba(90,90,170,.08);border:1px solid var(--border);border-radius:6px">'
+         +'<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px"><div class="det-sec-lbl" style="margin:0;padding:0;border:none;font-size:12px">MADI</div><span style="font-size:10px;color:var(--muted);font-family:var(--cond);letter-spacing:.06em;text-transform:uppercase">'+totalNamed+' inputs named \u00b7 pick them in the MADI column below</span></div>'
+         +'<div style="display:flex;flex-wrap:wrap;gap:8px">'
+         +md.map(function(s,i){
+            var filled=(s.inputs||[]).filter(function(x){return x;}).length;
+            return '<div style="display:flex;align-items:center;gap:8px;padding:5px 10px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:5px">'
+              +'<span style="font-family:var(--cond);font-size:12px;font-weight:800;color:var(--accent)">MADI '+(i+1)+'</span>'
+              +'<span style="font-size:11px;color:var(--muted)">'+filled+'/48 named</span>'
+              +'</div>';
+         }).join('')
+         +'</div>'
+         +(totalNamed?'':'<div style="font-size:10px;color:var(--muted);margin-top:6px;font-style:italic">Name MADI inputs on the Audio tab to make them selectable here.</div>')
+         +'</div>';
+     })()
     // Stream count + add controls
     +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">'
     +'<div style="display:flex;align-items:center;gap:12px">'
@@ -14880,8 +15911,7 @@ function ingestSetStreamCount(jid, n){
   if(n>cur){
     for(var i=cur;i<n;i++){
       j.ingestAudio.streams.push({name:'Stream '+(i+1),type:'Line Cut',camNum:null,routerIn:'',rows:[
-        {signal:'Guide mix L',madi:'Madi 1'},{signal:'Guide mix R',madi:'Madi 2'},
-        {signal:'Host 1 RX',madi:'Madi 3'},{signal:'Host 2 RX',madi:'Madi 4'}
+        {signal:'',madi:''},{signal:'',madi:''},{signal:'',madi:''},{signal:'',madi:''}
       ]});
     }
   } else if(n<cur){
@@ -14894,8 +15924,7 @@ function ingestAddStream(jid){
   if(!j.ingestAudio)j.ingestAudio={streams:[]};
   var n=j.ingestAudio.streams.length+1;
   j.ingestAudio.streams.push({name:'Stream '+n,rows:[
-    {signal:'Guide mix L',madi:'Madi 1'},{signal:'Guide mix R',madi:'Madi 2'},
-    {signal:'Host 1 RX',madi:'Madi 3'},{signal:'Host 2 RX',madi:'Madi 4'}
+    {signal:'',madi:''},{signal:'',madi:''},{signal:'',madi:''},{signal:'',madi:''}
   ]});
   renderJobDet(j);
 }
