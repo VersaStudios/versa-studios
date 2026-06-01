@@ -32,6 +32,7 @@
     --onair-glow: rgba(209,56,42,0.55);
     --onair-deep: rgba(209,56,42,0.10);
     --amber: #e8a84a;
+    --online: #5cba6f;
   }
 
   [data-theme="light"] {
@@ -49,6 +50,7 @@
     --border-hl: #d4d4d4;
     --onair-glow: rgba(209,56,42,0.30);
     --onair-deep: rgba(209,56,42,0.05);
+    --online: #3f8a58;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -61,6 +63,14 @@
     -webkit-font-smoothing: antialiased;
     overflow: hidden;
   }
+  /* Dark mode atmosphere — warm marigold halo at the top fading to deep black at edges.
+     Subtle enough to leave the feeds dominant; just enough to stop reading as flat-black. */
+  body {
+    background:
+      radial-gradient(ellipse 120% 55% at 50% 0%, rgba(244,162,88,0.055) 0%, transparent 55%),
+      radial-gradient(ellipse 95% 100% at 50% 50%, #0e0d0c 0%, #050505 100%);
+  }
+  [data-theme="light"] body { background: var(--bg); }
 
   body {
     display: flex;
@@ -75,10 +85,24 @@
     align-items: center;
     justify-content: center;
     gap: 20px;
-    padding: 20px 40px 12px;
-    background: var(--bg);
+    padding: 20px 40px 16px;
+    background: transparent;   /* let the body atmosphere show through */
     flex-shrink: 0;
   }
+  /* Hairline marigold rule centred below the brand — broadcast-control flourish */
+  header.topbar::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: min(420px, 60%);
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, var(--marigold) 50%, transparent 100%);
+    opacity: 0.45;
+    pointer-events: none;
+  }
+  [data-theme="light"] header.topbar::after { opacity: 0.35; }
   /* Utility controls live in a side bar that only appears in admin view */
   .topbar-util {
     position: absolute;
@@ -93,10 +117,20 @@
 
   .brand {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 14px;
+    gap: 8px;
     min-width: 0;
     color: var(--text);
+  }
+  .brand-sub {
+    font-family: 'Barlow Condensed', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.42em;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-faint);
+    padding-left: 0.42em;   /* compensates for the wide tracking so it visually centres */
   }
   .brand-svg {
     display: block;
@@ -135,6 +169,29 @@
   .page-fs-btn svg { width: 18px; height: 18px; }
   .page-fs-btn:hover { opacity: 1; color: var(--text); border-color: var(--border-hl); }
 
+  /* ═════════ MANAGE (ADMIN) BUTTON ═════════ */
+  .page-admin-btn {
+    position: absolute;
+    right: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-faint);
+    cursor: pointer;
+    opacity: 0.45;
+    -webkit-appearance: none;
+    transition: opacity 0.15s, color 0.15s, border-color 0.15s;
+  }
+  .page-admin-btn svg { width: 18px; height: 18px; }
+  .page-admin-btn:hover { opacity: 1; color: var(--marigold); border-color: var(--marigold); }
+
   /* ═════════ LOGIN GATE ═════════ */
   .login-gate {
     position: fixed;
@@ -143,7 +200,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #0a0a0a;
+    background:
+      radial-gradient(ellipse 80% 70% at 50% 35%, rgba(244,162,88,0.07) 0%, transparent 55%),
+      radial-gradient(ellipse 100% 100% at 50% 50%, #0e0d0c 0%, #050505 100%);
     color: #fff;
     font-family: 'Barlow', sans-serif;
     padding: 24px;
@@ -184,7 +243,7 @@
     letter-spacing: 0.04em;
     transition: border-color 0.15s;
   }
-  .login-input:focus { border-color: #555; }
+  .login-input:focus { border-color: var(--marigold); }
   .login-input::placeholder { color: #555; letter-spacing: 0; }
   .login-btn {
     width: 100%;
@@ -421,13 +480,13 @@
     border-color: var(--onair);
   }
 
-  /* Flat ON AIR badge — minimal, just a solid pill */
+  /* ON AIR badge — pulsing inner dot + soft outer glow for proper REC-indicator presence */
   .tile-onair {
     position: absolute;
     top: 12px;
     left: 12px;
     z-index: 3;
-    padding: 5px 10px 4px;
+    padding: 5px 11px 4px 24px;
     background: var(--onair);
     color: #fff;
     font-family: 'Barlow Condensed', sans-serif;
@@ -438,6 +497,24 @@
     line-height: 1;
     display: none;
     pointer-events: none;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.45), 0 6px 22px var(--onair-glow);
+  }
+  .tile-onair::before {
+    content: '';
+    position: absolute;
+    left: 9px;
+    top: 50%;
+    width: 7px;
+    height: 7px;
+    margin-top: -3.5px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 6px rgba(255,255,255,0.95);
+    animation: airpulse 1.4s ease-in-out infinite;
+  }
+  @keyframes airpulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: 0.4; transform: scale(0.78); }
   }
   .tile.live .tile-onair { display: block; }
 
@@ -962,6 +1039,23 @@
   }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
+  /* ═════════ TILE REVEAL ═════════ */
+  .mv .tile { animation: tileIn 480ms cubic-bezier(0.2, 0.7, 0.2, 1) backwards; }
+  .mv .tile:nth-child(1) { animation-delay:   0ms; }
+  .mv .tile:nth-child(2) { animation-delay:  70ms; }
+  .mv .tile:nth-child(3) { animation-delay: 140ms; }
+  .mv .tile:nth-child(4) { animation-delay: 210ms; }
+  .mv .tile:nth-child(5) { animation-delay: 280ms; }
+  .mv .tile:nth-child(6) { animation-delay: 350ms; }
+  @keyframes tileIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mv .tile { animation: none; }
+    .tile-onair::before { animation: none; }
+  }
+
   /* ═════════ CINEMATIC SHOWCASE TILE (title floats above feed) ═════════ */
   .tile {
     border: none;
@@ -1005,11 +1099,11 @@
   }
   .tile-loc {
     font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 500;
+    font-weight: 600;
     font-size: clamp(12px, 1.05vw, 17px);
     letter-spacing: 0.34em;
     text-transform: uppercase;
-    color: var(--text-faint);
+    color: var(--marigold);
     white-space: nowrap;
     flex-shrink: 0;
   }
@@ -1046,8 +1140,8 @@
   .st-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-faint); flex-shrink: 0; }
   .tile-status.connecting .st-dot { background: var(--amber); }
   .tile-status.offline { color: var(--text-faint); }
-  .tile-status.live { color: var(--live); }
-  .tile-status.live .st-dot { background: var(--live); animation: pulse 1.8s infinite; }
+  .tile-status.live { color: var(--online); }
+  .tile-status.live .st-dot { background: var(--online); animation: pulse 1.8s infinite; }
 
   /* The feed itself — large, framed only by the surrounding black */
   .tile .tile-video {
@@ -1058,8 +1152,23 @@
     transition: border-color 200ms, box-shadow 200ms;
   }
   [data-theme="light"] .tile .tile-video { border-color: rgba(0,0,0,0.18); }
-  .tile.live .tile-video { border-color: rgba(209,56,42,0.5); }
-  .tile:hover .tile-video { border-color: var(--text-faint); }
+  .tile.live .tile-video {
+    border-color: rgba(209,56,42,0.55);
+    box-shadow:
+      0 0 0 1px rgba(209,56,42,0.32),
+      0 0 28px rgba(209,56,42,0.16);
+  }
+  .tile:hover .tile-video {
+    border-color: rgba(244,162,88,0.5);
+    box-shadow: 0 0 26px rgba(244,162,88,0.10);
+  }
+  .tile.live:hover .tile-video {
+    /* keep the on-air glow dominant when hovering a live feed */
+    border-color: rgba(209,56,42,0.7);
+    box-shadow:
+      0 0 0 1px rgba(209,56,42,0.4),
+      0 0 32px rgba(209,56,42,0.22);
+  }
   /* Cinematic vignette at the base of each feed (dark theme only) */
   .tile .tile-video::after {
     content: '';
@@ -1136,6 +1245,7 @@
     <svg class="brand-svg" id="brandSvg" viewBox="0 0 1366 515.64" aria-label="Versa Studios">
       <use href="#versa-logo"/>
     </svg>
+    <div class="brand-sub">Live Multiviewer</div>
   </div>
 
   <!-- Whole-page fullscreen toggle — always available -->
@@ -1143,6 +1253,14 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <path class="fs-enter" d="M4 9V5a1 1 0 0 1 1-1h4M15 4h4a1 1 0 0 1 1 1v4M20 15v4a1 1 0 0 1-1 1h-4M9 20H5a1 1 0 0 1-1-1v-4"/>
       <path class="fs-exit" d="M9 4v3a2 2 0 0 1-2 2H4M20 9h-3a2 2 0 0 1-2-2V4M4 15h3a2 2 0 0 1 2 2v3M15 20v-3a2 2 0 0 1 2-2h3" style="display:none"/>
+    </svg>
+  </button>
+
+  <!-- Whole-page Manage button — opens the admin from any viewer -->
+  <button class="page-admin-btn" id="pageAdminBtn" type="button" title="Manage" aria-label="Manage">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
     </svg>
   </button>
 
@@ -1225,15 +1343,18 @@
 
   <div id="streamsTab" class="admin-panel">
     <div class="admin-hint">
-      One row per physical encoder. <code>Stream ID</code> must match the SRT publish
-      path on MediaMTX.
+      One row per feed. <code>Stream ID</code> matches the SRT publish path on MediaMTX
+      for hardware encoders. Paste a <code>vdo.ninja</code> URL into <code>VDO Ninja URL</code>
+      to use a WebRTC source instead — that overrides the SRT player for that tile.
+      <code>Show Title</code> is the label shown on the multiviewer tile.
     </div>
     <table class="admin-table">
       <thead>
         <tr>
-          <th style="width:22%">Stream ID</th>
-          <th style="width:14%">Site</th>
-          <th>Label</th>
+          <th style="width:18%">Stream ID</th>
+          <th style="width:12%">Site</th>
+          <th style="width:24%">Show Title</th>
+          <th>VDO Ninja URL</th>
           <th style="width:60px"></th>
         </tr>
       </thead>
@@ -1408,7 +1529,7 @@ function buildMultiviewer() {
           <svg class="no-signal-mark" viewBox="0 0 1366 515.64" aria-hidden="true"><use href="#versa-logo"/></svg>
         </div>`;
     const statusHtml = emb
-      ? `<span class="tile-status live"><span class="st-dot"></span><span class="st-text">Live</span></span>`
+      ? `<span class="tile-status live"><span class="st-dot"></span><span class="st-text">Online</span></span>`
       : `<span class="tile-status connecting"><span class="st-dot"></span><span class="st-text">Connecting</span></span>`;
     tile.innerHTML = `
       <div class="tile-head">
@@ -1423,7 +1544,6 @@ function buildMultiviewer() {
       </div>
       <div class="tile-video">
         ${mediaHtml}
-        <div class="tile-onair">On Air</div>
         <button class="expand-ico" title="Full screen" onclick="event.stopPropagation();mvFullscreen(this)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
             <path d="M4 10V4h6M20 14v6h-6M4 14v6h6M20 10V4h-6"/>
@@ -1489,7 +1609,7 @@ function mountPlayer(streamId, tileEl) {
   let hls = null;
   const onPlaying = () => {
     noSignal.classList.add('hidden');
-    setStatus('live', 'Live');
+    setStatus('live', 'Online');
   };
   const onStalled = () => {
     setStatus('offline', 'Offline');
@@ -1658,6 +1778,7 @@ function renderFocusStrip() {
 function bindTopbar() {
   document.getElementById('themeBtn').addEventListener('click', toggleTheme);
   document.getElementById('adminBtn').addEventListener('click', () => location.hash = '#admin');
+  document.getElementById('pageAdminBtn').addEventListener('click', () => location.hash = '#admin');
   document.getElementById('viewerBtn').addEventListener('click', () => location.hash = '');
 }
 function startClock() {
@@ -1692,6 +1813,7 @@ function routeByHash() {
   document.getElementById('adminMain').style.display  = admin ? '' : 'none';
   document.getElementById('adminBtn').style.display  = admin ? 'none' : '';
   document.getElementById('viewerBtn').style.display = admin ? '' : 'none';
+  document.getElementById('pageAdminBtn').style.display = admin ? 'none' : '';
   if (admin) {
     unmountAllPlayers();
     if (focusedId !== null) closeFocus();
@@ -1831,7 +1953,8 @@ function renderStreamRows() {
           <option ${!['MCR','LDN','LDS'].includes(s.site)?'selected':''}>${escapeAttr(s.site || 'OTHER')}</option>
         </select>
       </td>
-      <td><input type="text" class="s-label" value="${escapeAttr(s.label)}"></td>
+      <td><input type="text" class="s-label" value="${escapeAttr(s.label)}" placeholder="Show title"></td>
+      <td><input type="url"  class="s-embed" value="${escapeAttr(s.embed || '')}" placeholder="https://vdo.ninja/?view=…"></td>
       <td><button class="del-btn" data-del-stream="${i}">Del</button></td>
     </tr>
   `).join('');
@@ -1842,11 +1965,16 @@ function renderStreamRows() {
 
 function readStreamsFromRows() {
   const rows = document.querySelectorAll('#streamRows tr');
-  config.streams = Array.from(rows).map(r => ({
-    id:    r.querySelector('.s-id').value.trim(),
-    site:  r.querySelector('.s-site').value,
-    label: r.querySelector('.s-label').value.trim()
-  })).filter(s => s.id);
+  config.streams = Array.from(rows).map(r => {
+    const embed = r.querySelector('.s-embed').value.trim();
+    const out = {
+      id:    r.querySelector('.s-id').value.trim(),
+      site:  r.querySelector('.s-site').value,
+      label: r.querySelector('.s-label').value.trim()
+    };
+    if (embed) out.embed = embed;   // only attach when set, keeps the JSON clean
+    return out;
+  }).filter(s => s.id);
 }
 
 /* ─── Utils ─── */
@@ -1888,6 +2016,13 @@ function syncFsIcon() {
 }
 
 /* ─── Login gate ─── */
+// When embedded inside the main Versa app (?embed=1) the user is already
+// authenticated there, so skip the password screen and boot straight in.
+function isEmbedded() {
+  try {
+    return /(\?|&)embed=1\b/.test(location.search) || /\bembed\b/.test(location.hash);
+  } catch (e) { return false; }
+}
 function isAuthed() { try { return localStorage.getItem(AUTH_KEY) === '1'; } catch (e) { return false; } }
 function setAuthed() { try { localStorage.setItem(AUTH_KEY, '1'); } catch (e) {} }
 function attemptLogin() {
@@ -1912,7 +2047,7 @@ function initApp() {
   document.addEventListener('webkitfullscreenchange', syncFsIcon);
   syncFsIcon();
 
-  if (isAuthed()) {
+  if (isEmbedded() || isAuthed()) {
     const g = document.getElementById('loginGate');
     if (g) g.classList.add('hidden');
     boot();
