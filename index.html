@@ -87,10 +87,6 @@ html[data-theme="light"] .theme-btn::before{-webkit-mask-image:url("data:image/s
 .jd-hod-row select,.jd-hod-row input{font-family:var(--font);font-size:13px;font-weight:600;padding:5px 7px;border-radius:4px;border:1.5px solid var(--border);background:var(--near-black);color:var(--pure);width:100%}
 .jd-hod-row select{font-size:12px;padding:5px 5px}
 .jd-hod-row .rm-btn{font-size:14px;padding:0;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center}
-.jd-crew-row{display:grid;grid-template-columns:16px 130px minmax(0,300px) auto;gap:7px;align-items:center;padding:4px 0;justify-content:start}
-.jd-crew-row select,.jd-crew-row input{font-family:var(--font);font-size:13px;font-weight:600;padding:5px 7px;border-radius:4px;border:1.5px solid var(--border);background:var(--near-black);color:var(--pure);width:100%}
-.jd-crew-row select{font-size:12px;padding:5px 5px}
-.jd-crew-row .rm-btn{font-size:14px;padding:0;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center}
 .jd-card{background:var(--near-black);border:1.5px solid var(--border);border-radius:8px;padding:12px 14px}
 .jd-card-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border)}
 .jd-card-ti{font-family:var(--cond);font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--pure)}
@@ -540,7 +536,6 @@ textarea.det-edit{resize:vertical;line-height:1.4;font-weight:600;font-size:14px
 
 .ops-ldiv{width:1px;height:12px;background:var(--border)}
 .ops-scroll{overflow:auto;flex:1}
-.ops-ms2{overflow-x:auto;overflow-y:hidden}
 
 .ops-mhdr td{padding:16px 20px 12px;background:rgba(255,253,248,.98);border-bottom:2px solid rgba(216,90,97,.2);white-space:nowrap}
 
@@ -651,7 +646,7 @@ textarea.det-edit{resize:vertical;line-height:1.4;font-weight:600;font-size:14px
 .ops-show-prev.ops-back-current{background:#d85a61;color:#fff;border:1px solid #d85a61;box-shadow:0 2px 8px rgba(216,90,97,.25)}
 .ops-show-prev.ops-back-current:hover{background:#b04048;border-color:#b04048}
 /* Hide-studio × button on row labels */
-.ops-rlbl{position:sticky;left:0;z-index:6;background:#fdfaf4;box-shadow:inset -2px 0 0 rgba(216,90,97,.35)}
+.ops-rlbl{position:relative}
 .ops-rlbl-x{position:absolute;right:5px;top:50%;transform:translateY(-50%);width:18px;height:18px;border-radius:4px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;line-height:1;background:rgba(0,0,0,.05);color:rgba(0,0,0,.35);opacity:.45;transition:opacity .15s,background .15s,color .15s;font-weight:700;user-select:none}
 .ops-rlbl:hover .ops-rlbl-x{opacity:1}
 .ops-rlbl-x:hover{background:#d85a61!important;color:#fff!important;opacity:1!important}
@@ -2446,7 +2441,6 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
           <div class="jd-tab" id="admTab-reminders" onclick="admSwitch('reminders')" style="color:#302f2c;opacity:.5">Daily Reminders</div>
           <div class="jd-tab" id="admTab-holidays" onclick="admSwitch('holidays')" style="color:#302f2c;opacity:.5">Bank Holidays</div>
           <div class="jd-tab" id="admTab-notes" onclick="admSwitch('notes')" style="color:#302f2c;opacity:.5">My Notes</div>
-          <div class="jd-tab" id="admTab-backup" onclick="admSwitch('backup')" style="color:#302f2c;opacity:.5">Backup</div>
         </div>
         <div id="admContent-users">
           <div class="adm-grid">
@@ -2504,22 +2498,6 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
                 Give external contacts login access to a single job. They sign in with their email and the PIN you set — they can only see and edit their assigned job.
               </div>
               <div id="accessList"></div>
-            </div>
-          </div>
-        </div>
-        <div id="admContent-backup" style="display:none">
-          <div class="adm-grid">
-            <div class="adm-sec full" style="background:var(--panel);border-radius:6px;border:1px solid var(--border)">
-              <div class="adm-sec-hdr"><div class="adm-sec-title">Data Backup &amp; Restore</div></div>
-              <div style="padding:14px 18px 18px;font-size:13px;color:var(--muted);line-height:1.5">
-                <p style="margin:0 0 14px">Download a complete copy of everything in the app &mdash; jobs, kit, the ops planner, crew, notes &mdash; as a single file you keep on your device. If anything is ever lost, restore from that file to roll back to exactly how things were when you saved it.</p>
-                <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px">
-                  <button class="ibtn" onclick="versaExportData()" style="font-size:12px;padding:8px 16px;background:rgba(60,160,90,.14);color:#2a7d48;font-weight:800;letter-spacing:.04em">&#8595; Back up now &mdash; download JSON</button>
-                  <button class="ibtn" onclick="document.getElementById('versaRestoreFile').click()" style="font-size:12px;padding:8px 16px;background:rgba(250,160,0,.14);color:#b87400;font-weight:800;letter-spacing:.04em">&#8593; Restore from file</button>
-                </div>
-                <input type="file" id="versaRestoreFile" accept="application/json,.json" style="display:none" onchange="versaImportData(this)"/>
-                <p style="margin:0;font-size:12px;opacity:.8"><strong>Tip:</strong> take a backup at the end of any session where you&rsquo;ve added or changed a lot. Restoring <strong>replaces</strong> what&rsquo;s currently saved with the file&rsquo;s contents, then reloads.</p>
-              </div>
             </div>
           </div>
         </div>
@@ -3025,71 +3003,17 @@ function _getDataMap() {
 
 var _saveTimer = null;
 var _appReady = false; // prevents saveData firing before loadData completes
-var _loadOK = false;   // true ONLY after real data is confirmed loaded from the DB.
-                       // Gates ALL automatic saves so a failed/empty load can never
-                       // overwrite the live database with the file's seed data.
-async function _flushSave() {
-  if (!_loadOK) { console.warn('Save blocked — live data was not confirmed loaded; refusing to overwrite the database.'); return; }
-  try {
-    const map = _getDataMap();
-    const rows = Object.keys(map).map(k => ({ key: k, value: map[k], updated_at: new Date().toISOString() }));
-    await _sbSet(rows);
-  } catch(e) { console.warn('saveData error:', e); }
-}
 function saveData() {
   if (!_appReady) return; // not loaded yet — don't overwrite DB with defaults
   // Debounce — batch rapid consecutive saves into one request
   clearTimeout(_saveTimer);
-  _saveTimer = setTimeout(function(){ _saveTimer=null; _flushSave(); }, 800);
-}
-if(typeof document!=='undefined'){document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='hidden'&&_saveTimer){ clearTimeout(_saveTimer); _saveTimer=null; _flushSave(); } });}
-function _safeModeWarn(){
-  if(_loadOK)return;
-  setTimeout(function(){
-    alert('\u26A0 The app could not load your saved data from the server.\n\nIt is now in SAFE MODE: your changes will NOT be saved. This deliberately protects your database from being overwritten with default data.\n\nPlease refresh the page to try again. If it keeps failing, use Admin \u2192 Backup \u2192 Restore to recover from a backup file.');
-  },400);
-}
-
-// ── Backup / Restore ─────────────────────────────────────────────────────────
-// Export the entire data map to a JSON file the user keeps locally. Restore
-// pushes a backup file's contents back through the same Supabase save path the
-// app already uses, then reloads so loadData() hydrates from it.
-function versaExportData(){
-  try{
-    var map=_getDataMap();
-    var stamp=new Date().toISOString().slice(0,16).replace('T','_').replace(/:/g,'-');
-    var blob=new Blob([JSON.stringify(map,null,2)],{type:'application/json'});
-    var url=URL.createObjectURL(blob);
-    var a=document.createElement('a');
-    a.href=url;a.download='versa-backup-'+stamp+'.json';
-    document.body.appendChild(a);a.click();
-    setTimeout(function(){URL.revokeObjectURL(url);a.remove();},600);
-    if(typeof toast==='function')toast('Backup downloaded');
-  }catch(e){alert('Backup failed: '+(e&&e.message||e));}
-}
-function versaImportData(input){
-  var f=input&&input.files&&input.files[0];
-  if(!f)return;
-  var reader=new FileReader();
-  reader.onload=function(){
-    var map;
-    try{map=JSON.parse(reader.result);}catch(e){alert('That file is not valid backup JSON.');input.value='';return;}
-    if(!map||typeof map!=='object'||Array.isArray(map)){alert('That does not look like a Versa backup file.');input.value='';return;}
-    var keys=Object.keys(map);
-    if(!keys.length){alert('The backup file is empty.');input.value='';return;}
-    var summary=[];
-    if(Array.isArray(map.jobs))summary.push(map.jobs.length+' jobs');
-    if(Array.isArray(map.kit))summary.push(map.kit.length+' kit items');
-    if(map.opsPlanner&&typeof map.opsPlanner==='object')summary.push(Object.keys(map.opsPlanner).length+' ops-planner cells');
-    if(!confirm('Restore this backup?\n\nThis REPLACES what is currently saved with the contents of the file ('+(summary.join(', ')||(keys.length+' data sets'))+').\n\nThe app will reload afterwards. Continue?')){input.value='';return;}
-    var rows=keys.map(function(k){return {key:k,value:map[k],updated_at:new Date().toISOString()};});
-    _sbSet(rows).then(function(){
-      alert('Backup restored. The app will now reload.');
-      location.reload();
-    }).catch(function(e){alert('Restore failed: '+(e&&e.message||e));input.value='';});
-  };
-  reader.onerror=function(){alert('Could not read that file.');input.value='';};
-  reader.readAsText(f);
+  _saveTimer = setTimeout(async function() {
+    try {
+      const map = _getDataMap();
+      const rows = Object.keys(map).map(k => ({ key: k, value: map[k], updated_at: new Date().toISOString() }));
+      await _sbSet(rows);
+    } catch(e) { console.warn('saveData error:', e); }
+  }, 800);
 }
 
 async function loadData() {
@@ -3108,7 +3032,6 @@ async function loadData() {
         try {
           const v = row.value;
           if (row.key==='jobs'&&Array.isArray(v)){jobs.length=0;v.forEach(x=>jobs.push(x));
-            _loadOK=true; // real job data confirmed loaded — saving is now safe
             // Fix duplicate IDs
             var _seenIds={};var _dupFixed=false;
             jobs.forEach(function(j){
@@ -3187,9 +3110,7 @@ async function loadData() {
         } catch(e){ console.warn('Error loading key:', row.key, e); }
       });
     }
-    setBar(100); _appReady = true;
-    if(_loadOK){ setMsg('Ready'); }
-    else { setMsg('No saved data found — safe mode'); _safeModeWarn(); }
+    setBar(100); setMsg('Ready'); _appReady = true;
     // One-time cleanup: remove dummy maintenance/fault records
     if(maintenance.length&&maintenance[0].item==='Aputure 300D MkII'&&maintenance[0].id===1){
       maintenance.length=0;nextMid=1;
@@ -3204,7 +3125,7 @@ async function loadData() {
     dismissLoading();
   } catch(e) {
     console.error('loadData error:', e);
-    setMsg('Could not load data — safe mode (changes will not be saved)'); _appReady = true; dismissLoading(); _safeModeWarn();
+    setMsg('Could not connect — working offline'); _appReady = true; dismissLoading();
   }
 }
 
@@ -6547,8 +6468,25 @@ function openJobEngReport(jid) {
 }
 function renderImproveTab(j){
   if(!j.improvements) j.improvements=[];
+  window._impEditing = window._impEditing || {};
+  var editingIdx = (typeof window._impEditing[j.id]==='number') ? window._impEditing[j.id] : -1;
   var rows = j.improvements.length ? j.improvements.slice().reverse().map(function(imp,ri){
     var i = j.improvements.length-1-ri;
+    if(i === editingIdx){
+      // Edit mode for this card
+      return '<div style="background:var(--near-black);border:1px solid #f59e0b;border-left:3px solid #f59e0b;border-radius:6px;padding:12px 14px;margin-bottom:8px">'
+        +'<div style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.06em;color:#f59e0b;margin-bottom:8px;text-transform:uppercase">Editing Suggestion</div>'
+        +'<div style="margin-bottom:10px"><div class="dfl">Suggestion</div>'
+        +'<textarea class="fta" id="impEditNote_'+i+'" style="min-height:80px;font-size:14px">'+escHtml(imp.note||'')+'</textarea></div>'
+        +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">'
+        +'<div><div class="dfl">Suggested by</div><input class="fi" id="impEditWho_'+i+'" style="font-size:14px;padding:6px 8px;width:100%" value="'+escHtml(imp.who||'')+'"></div>'
+        +'<div><div class="dfl">Date</div><input type="date" class="fi" id="impEditDate_'+i+'" style="font-size:14px;padding:6px 8px;width:100%" value="'+escHtml(imp.date||'')+'"></div>'
+        +'</div>'
+        +'<div style="display:flex;justify-content:flex-end;gap:8px">'
+        +'<button class="ibtn" style="font-size:12px;padding:6px 14px" onclick="cancelImprovementEdit('+j.id+')">Cancel</button>'
+        +'<button class="btn-p" onclick="saveImprovementEdit('+j.id+','+i+')">Save</button>'
+        +'</div></div>';
+    }
     return '<div style="background:var(--near-black);border:1px solid var(--border);border-left:3px solid #f59e0b;border-radius:6px;padding:12px 14px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start">'
       +'<div style="flex:1;min-width:0">'
       +'<div style="font-size:14px;color:var(--white);line-height:1.5;margin-bottom:6px">'+escHtml(imp.note)+'</div>'
@@ -6557,7 +6495,10 @@ function renderImproveTab(j){
       +(imp.date?'<span style="font-size:11px;color:var(--muted)">'+fmtD(imp.date)+'</span>':'')
       +'</div>'
       +'</div>'
-      +'<button class="ibtn" style="font-size:11px;color:var(--danger);flex-shrink:0" onclick="deleteImprovement('+j.id+','+i+')">&#10005;</button>'
+      +'<div style="display:flex;gap:4px;flex-shrink:0">'
+      +'<button class="ibtn" style="font-size:12px;color:#f59e0b" title="Edit" onclick="editImprovement('+j.id+','+i+')">&#9998;</button>'
+      +'<button class="ibtn" style="font-size:11px;color:var(--danger)" title="Delete" onclick="deleteImprovement('+j.id+','+i+')">&#10005;</button>'
+      +'</div>'
       +'</div>';
   }).join('') : '<div style="color:var(--muted);font-size:14px;padding:8px 0">No suggestions yet.</div>';
 
@@ -6603,6 +6544,34 @@ function deleteImprovement(jid, idx){
   var j=jobs.find(function(x){return x.id==jid;});
   if(!j||!j.improvements) return;
   j.improvements.splice(idx,1);
+  // Clear any pending edit for this job (indices have shifted)
+  if(window._impEditing) delete window._impEditing[jid];
+  saveData();
+  renderJobDet(j);
+}
+function editImprovement(jid, idx){
+  window._impEditing = window._impEditing || {};
+  window._impEditing[jid] = idx;
+  var j=jobs.find(function(x){return x.id==jid;});
+  if(j) renderJobDet(j);
+}
+function cancelImprovementEdit(jid){
+  if(window._impEditing) delete window._impEditing[jid];
+  var j=jobs.find(function(x){return x.id==jid;});
+  if(j) renderJobDet(j);
+}
+function saveImprovementEdit(jid, idx){
+  var j=jobs.find(function(x){return x.id==jid;});
+  if(!j||!j.improvements||!j.improvements[idx]) return;
+  var noteEl=document.getElementById('impEditNote_'+idx);
+  var whoEl=document.getElementById('impEditWho_'+idx);
+  var dateEl=document.getElementById('impEditDate_'+idx);
+  var note = noteEl ? noteEl.value.trim() : '';
+  if(!note){ if(noteEl) noteEl.focus(); return; }
+  j.improvements[idx].note = note;
+  j.improvements[idx].who  = whoEl ? whoEl.value.trim() : '';
+  j.improvements[idx].date = dateEl ? dateEl.value : '';
+  if(window._impEditing) delete window._impEditing[jid];
   saveData();
   renderJobDet(j);
 }
@@ -6852,7 +6821,7 @@ function nav(page, el) {
   if(page==='networking') (async function(){ try{ if(!_netLoaded) await netLoad(); renderNetworking(); }catch(e){console.warn('renderNetworking failed:',e);} })();
   if(page==='trello') trelloInit();
   if(page==='vault') { var vf=document.getElementById('vaultFrame'); if(vf&&!vf.src.includes('versa-vault')) vf.src='versa-vault.html?embed=1&v='+Date.now(); }
-  if(page==='live') { var lf=document.getElementById('liveFrame'); if(lf&&!lf.src.includes('versa-live')) lf.src='versa-live.html?embed=1&v='+Date.now(); }
+  if(page==='live') { var lf=document.getElementById('liveFrame'); if(lf&&!lf.src.includes('versa-live')) lf.src='versa-live.html?v='+Date.now(); }
 }
 // ── STUDIO INFO PAGE ─────────────────────────────────────────────────────────
 function renderInfoPage(){
@@ -10214,7 +10183,6 @@ function addJob() {
     color:cc?{bg:cc.bg,bg2:cc.bg2}:null,
     cameras:parseInt(document.getElementById('njCameras').value)||0,
     txDate:document.getElementById('njTx').value,
-    txDates:(document.getElementById('njTx').value?[{date:document.getElementById('njTx').value,label:'TX',crew:{}}]:[]),
     notes:document.getElementById('njNotes').value.trim(),
     prep:[],camRoles:[],hireKit:[]});
   activity.unshift({icon:'🎬',text:'New job: '+name,time:'Just now'});
@@ -10318,47 +10286,15 @@ function flGetTotalDays(person){
   return total;
 }
 
-function flPersonJobDates(p){
-  var out=[];
-  Object.entries(p.bookings||{}).forEach(function(e){
-    var jid=parseInt(e[0]);var ds=(e[1]||[]).slice();
-    var j=jobs.find(function(x){return x.id==jid;});
-    if(!ds.length&&j&&j.start&&j.end){var cur=new Date(j.start+'T12:00:00'),end=new Date(j.end+'T12:00:00');while(cur<=end){ds.push(cur.toISOString().split('T')[0]);cur.setDate(cur.getDate()+1);}}
-    if(ds.length){ds.sort();out.push({jname:j?j.name:'Job '+jid,dates:ds});}
-  });
-  out.sort(function(a,b){return (a.dates[0]||'').localeCompare(b.dates[0]||'');});
-  return out;
-}
-function flEmailPerson(pid){
-  var p=FL_CREW_DB.find(function(x){return x.id===pid;});if(!p)return;
-  var groups=flPersonJobDates(p);
-  if(!groups.length){alert('No booked dates for '+p.name+' yet.');return;}
-  function fmt(ds){var d=new Date(ds+'T12:00:00');return d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'});}
-  var lines=['Hi '+((p.name||'').split(' ')[0]||p.name)+',','','Here are your current booking dates:',''];
-  groups.forEach(function(g){
-    lines.push(g.jname+' \u2014 '+g.dates.length+' day'+(g.dates.length>1?'s':''));
-    g.dates.forEach(function(ds){lines.push('  \u2022 '+fmt(ds));});
-    lines.push('');
-  });
-  lines.push('Please let me know as soon as possible if any of these clash with other commitments.','','Thanks,','Andrew');
-  var subject='Versa booking dates \u2014 '+p.name;
-  if(!p.email){
-    if(!confirm('No email saved for '+p.name+'. Open a blank email with the dates so you can add the address?'))return;
-  }
-  var href='mailto:'+encodeURIComponent(p.email||'')+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(lines.join('\n'));
-  window.location.href=href;
-}
-
 function renderFreelancePlanner(){
   var container=document.getElementById('flContainer');
   if(!container)return;
 
   // Sync from job crew assignments (j.crew)
   jobs.forEach(function(j){
-    (j.crew||[]).filter(function(c){return c.type==='versa'||c.type==='freelance';}).forEach(function(c){
+    (j.crew||[]).filter(function(c){return c.type==='freelance';}).forEach(function(c){
       var p=flGetOrCreate(c.name,c.role);
-      if(Array.isArray(c.dates)&&c.dates.length){p.bookings[j.id]=c.dates.slice();}
-      else if(!p.bookings[j.id])p.bookings[j.id]=c.dates||[];
+      if(!p.bookings[j.id])p.bookings[j.id]=c.dates||[];
     });
   });
   // Sync from txDates per-day crew (exclude staff members)
@@ -10475,8 +10411,8 @@ function renderFreelancePlanner(){
   var rowsHtml='';
   if(!sorted.length){
     rowsHtml='<div style="padding:32px;color:#9a8878;font-size:14px;text-align:center">'
-      +'No crew added yet.<br><br>'
-      +'<span style="font-size:12px">Add crew to jobs via the Crew tab on each job.</span>'
+      +'No freelance crew added yet.<br><br>'
+      +'<span style="font-size:12px">Add freelance crew to jobs via the Crew tab on each job.</span>'
       +'<br><br><button class="ibtn" onclick="flAddPerson()">+ Add Person Manually</button>'
       +'</div>';
   } else {
@@ -10517,7 +10453,6 @@ function renderFreelancePlanner(){
         +'<div style="font-size:16px;font-weight:900;color:#2a2218;font-family:var(--cond)">'+p.name+'</div>'
         +'<div style="font-size:12px;color:#9a8878;font-family:var(--cond);font-weight:700">'+p.role+'</div>'
         +'<div style="font-family:var(--cond);font-size:11px;font-weight:800;color:#c4956a;margin-top:2px">'+totalDays+' days</div>'
-        +'<button onclick="event.stopPropagation();flEmailPerson('+(typeof p.id==='string'?'\''+p.id+'\'':p.id)+')" title="Email '+(p.name||'').replace(/"/g,'')+' their booked dates" style="margin-top:5px;align-self:flex-start;background:#c4956a;color:#fff;border:none;border-radius:3px;font-family:var(--cond);font-weight:800;font-size:10px;letter-spacing:.04em;text-transform:uppercase;padding:3px 9px;cursor:pointer">\u2709 Email dates</button>'
         +'</div>'
         +cells
         +'</div>';
@@ -10797,6 +10732,7 @@ function renderJobDet(j) {
       {key:'codec',    label:'Codec',             type:'sel',   opts:'Codec'},
       {key:'sensorRes',label:'Sensor Res',        type:'sel',   opts:'SENSOR'},
       {key:'lut',      label:'Look / LUT',        type:'sel',   opts:'Look / LUT'},
+      {key:'notes',    label:'Notes',             type:'text',  ph:'Camera notes'},
     ];
 
     // Build a single camera column
@@ -10945,9 +10881,8 @@ function renderJobDet(j) {
         var isNA=ed.mode==='na';
         /* Check if we have a selected value */
         var eqKit=ed.kitId?kit.find(function(x){return x.id===ed.kitId;}):null;
-        var isPresent=ed.mode==='present';
-        var eqHasVal=!!(eqKit||(ed.mode==='hired'&&ed.hiredVal)||isPresent);
-        var eqValDisp=eqKit?eqKit.name:(isPresent?'\u2713 Present \u2014 TBC':(ed.hiredVal||''));
+        var eqHasVal=!!(eqKit||(ed.mode==='hired'&&ed.hiredVal));
+        var eqValDisp=eqKit?eqKit.name:(ed.hiredVal||'');
 
         if(isNA) return '<div style="display:flex;align-items:center;gap:6px;padding:2px 0;opacity:.35">'
           +'<div style="font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);min-width:70px">'+label+'</div>'
@@ -10955,7 +10890,7 @@ function renderJobDet(j) {
           +'<button class="ibtn" style="font-size:9px;padding:1px 6px" onclick="jdEquipMode('+jid2+','+ci2+',\''+dataKey+'\',\'inv\')">enable</button></div>';
 
         if(eqHasVal){
-          return '<div style="display:flex;align-items:baseline;gap:6px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer" onclick="jdEquipClear('+jid2+','+ci2+',\''+dataKey+'\')">'
+          return '<div style="display:flex;align-items:baseline;gap:6px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer" onclick="jdEquipSetKit('+jid2+','+ci2+',\''+dataKey+'\',null);jdEquipHired('+jid2+','+ci2+',\''+dataKey+'\',\'\')">'
             +'<div style="font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);min-width:50px;flex-shrink:0">'+label+'</div>'
             +'<div style="flex:1;font-family:var(--cond);font-size:14px;font-weight:700;color:var(--pure);line-height:1.2;text-transform:uppercase">'+eqValDisp+'</div>'
             +'</div>';
@@ -10963,9 +10898,9 @@ function renderJobDet(j) {
 
         /* Empty - show compact picker */
         var modeBar='<div style="display:flex;margin-bottom:3px">'
-          +[['inv','Inventory'],['hired','Hired'],['present','\u2713 Present'],['na','N/A']].map(function(opt,oi){
+          +[['inv','Inventory'],['hired','Hired'],['na','N/A']].map(function(opt,oi){
             var active=ed.mode===opt[0];
-            return '<button onclick="jdEquipMode('+jid2+','+ci2+',\''+dataKey+'\',\''+opt[0]+'\')" style="padding:3px 10px;font-size:11px;font-family:var(--cond);font-weight:800;border:1.5px solid var(--border);'+(oi<3?'border-right:none;':'')+'background:'+(active?(opt[0]==='na'?'rgba(128,128,128,.2)':opt[0]==='present'?'rgba(42,125,72,.25)':'rgba(74,158,255,.3)'):'rgba(255,255,255,.04)')+';color:'+(active?(opt[0]==='na'?'var(--muted)':opt[0]==='present'?'#2a7d48':'#2a6cb8'):'var(--muted)')+';cursor:pointer">'+opt[1]+'</button>';
+            return '<button onclick="jdEquipMode('+jid2+','+ci2+',\''+dataKey+'\',\''+opt[0]+'\')" style="padding:3px 10px;font-size:11px;font-family:var(--cond);font-weight:800;border:1.5px solid var(--border);'+(oi<2?'border-right:none;':'')+'background:'+(active?(opt[0]==='na'?'rgba(128,128,128,.2)':'rgba(74,158,255,.3)'):'rgba(255,255,255,.04)')+';color:'+(active?(opt[0]==='na'?'var(--muted)':'#2a6cb8'):'var(--muted)')+';cursor:pointer">'+opt[1]+'</button>';
           }).join('')+'</div>';
         var eqInput='';
         if(ed.mode==='hired'){
@@ -11012,8 +10947,6 @@ function renderJobDet(j) {
         :'<button class="ibtn" style="font-size:9px;padding:1px 6px;color:var(--muted)" onclick="this.style.display=\'none\';this.nextElementSibling.style.display=\'\'">+ label</button>'
          +'<input class="fi" style="display:none;font-size:12px;padding:2px 5px;flex:1;min-width:0;font-family:var(--cond);font-weight:700;letter-spacing:.04em;text-transform:uppercase" value="" placeholder="e.g. Jib" onchange="jdSetCamDetail('+jid+','+i+',\'camLabel\',this.value)" onclick="event.stopPropagation()"/>';
 
-      var _camNotesVal=(cd.notes||(cd.fieldData&&cd.fieldData.notes&&cd.fieldData.notes.val)||'').toString();
-      var notesRow='<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border-l)"><div class="dfl" style="font-size:10px;margin-bottom:3px">Notes</div><textarea class="fi" style="font-size:12px;padding:5px 7px;width:100%;min-height:48px;resize:vertical;line-height:1.4" placeholder="Camera notes\u2026" onchange="jdSetCamDetail('+jid+','+i+',\'notes\',this.value)">'+_camNotesVal.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</textarea></div>';
       return '<div style="min-width:240px;max-width:260px;background:rgba(255,255,255,.025);'+_camBorder+';border-radius:6px;padding:10px;flex-shrink:0">'
         +'<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px">'
         +'<div style="font-family:var(--cond);font-size:22px;font-weight:900;letter-spacing:-.01em;flex-shrink:0">'+_camNumHtml+'</div>'
@@ -11027,7 +10960,6 @@ function renderJobDet(j) {
         +autocueRow+retMonRow+vfRow
         +_camWallbox(jid,i,cd)
         +fieldRows
-        +notesRow
         +addBtn
         +camPhotos+camPhotoBtn
         +'</div>';
@@ -11041,16 +10973,13 @@ function renderJobDet(j) {
         +'</div>')
       :j.camDetails.map(function(cd,idx2){return mkCamCol(cd,idx2);}).join('');
     content='<div class="det-sec"><div class="det-sec-lbl">Camera Specification</div>'
-      +((j.camDetails&&j.camDetails.length)?''
-        :'<div style="margin-bottom:10px"><button class="ibtn" style="font-size:11px;padding:4px 12px;background:rgba(250,160,0,.12);color:#b87400;font-weight:800;letter-spacing:.03em" onclick="jdLoadBroadcastCard('+j.id+')">Load broadcast card &mdash; 10&times; HDC-3500 (hired)</button></div>'
-          +(j.name==='Dragons Den'?'<div style="margin-bottom:10px"><button class="ibtn" style="font-size:11px;padding:4px 12px;background:rgba(60,160,90,.14);color:#2a7d48;font-weight:800;letter-spacing:.03em" onclick="importDragonsDenPlan('+j.id+')">&#11015; Import Dragons Den plan &mdash; schedule, 11 cams, 9 minis, 2 Hydras</button></div>':''))
       +'<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px">'
       +'<div><div class="dfl">Camera Supervisor</div><input class="fi" style="font-size:14px;padding:5px 8px;width:100%" value="'+(j.camSupervisor||'')+'" placeholder="Supervisor name" onchange="jdSetField('+j.id+',\'camSupervisor\',this.value)"/></div>'
       +'<div><div class="dfl">Camera Guarantee</div><input class="fi" style="font-size:14px;padding:5px 8px;width:100%" value="'+(j.camGuarantee||'')+'" placeholder="Guarantee name" onchange="jdSetField('+j.id+',\'camGuarantee\',this.value)"/></div>'
       +'</div>'
       +'<div style="margin-bottom:12px"><label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-family:var(--cond);font-weight:700;font-size:12px;color:var(--muted)"><input type="checkbox" '+(j.hideOperators?'checked':'')+' onchange="jdSetField('+j.id+',\'hideOperators\',this.checked);saveData();renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))"> Hide operator names on cameras</label></div>'
       +'<div style="font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border)">Studio Cameras</div>'
-      +'<div id="jdCamScroll" style="overflow-x:auto;padding-bottom:8px"><div style="display:flex;gap:10px;min-width:max-content">'
+      +'<div style="overflow-x:auto;padding-bottom:8px"><div style="display:flex;gap:10px;min-width:max-content">'
       +camCols
       +'</div></div>'
       +(function(){
@@ -11075,9 +11004,9 @@ function renderJobDet(j) {
             +'<div style="flex:1"></div>'
             +'<button onclick="jdRemoveSpecCam('+j.id+','+si+')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;line-height:1;padding:0">×</button>'
             +'</div>'
-            +(j.hideSpecOperators?'':('<div style="margin-bottom:8px"><div class="dfl" style="font-size:10px;margin-bottom:2px">Operator</div>'
+            +'<div style="margin-bottom:8px"><div class="dfl" style="font-size:10px;margin-bottom:2px">Operator</div>'
             +'<input class="fi" style="font-size:12px;padding:3px 6px;width:100%" value="'+(sc.operator||'')+'" placeholder="Operator name..." onchange="jdSetSpecCam('+j.id+','+si+',\'operator\',this.value)"/>'
-            +'</div>'))
+            +'</div>'
             +'<div style="margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--border-l)"><div class="dfl" style="margin-bottom:4px">Camera Body</div>'
             +'<div style="display:flex;flex-direction:column;gap:4px">'
             +(scKit
@@ -11115,9 +11044,8 @@ function renderJobDet(j) {
           +(specOn?'<button class="ibtn" style="font-size:11px;padding:3px 10px;margin-left:6px" onclick="jdAddSpecCam('+j.id+')">+ Add</button>':'')
           +'</div>'
           +'</div>'
-          +(specOn?'<label style="display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-family:var(--cond);font-weight:700;font-size:11px;color:var(--muted);margin-bottom:10px"><input type="checkbox" '+(j.hideSpecOperators?'checked':'')+' onchange="jdSetField('+j.id+',\'hideSpecOperators\',this.checked);saveData();renderJobDet(jobs.find(function(x){return x.id==='+j.id+'}))"> Hide operator names on mini cameras</label>':'')
           +(specOn
-            ?'<div id="jdSpecScroll" style="overflow-x:auto;padding-bottom:8px"><div style="display:flex;gap:10px;min-width:max-content">'
+            ?'<div style="overflow-x:auto;padding-bottom:8px"><div style="display:flex;gap:10px;min-width:max-content">'
               +(specRows||'<div style="color:var(--muted);font-size:13px;padding:6px 0">No specialist cameras added — click + Add above.</div>')
               +'</div></div>'
             :'')
@@ -11885,11 +11813,7 @@ function renderJobDet(j) {
     +'</div>'
     +(mnRows||'<div style="color:var(--muted);font-size:12px;padding:2px 0">No notes for this tab yet.</div>')
     +'</div>';
-  var _cs0=document.getElementById('jdCamScroll'),_ss0=document.getElementById('jdSpecScroll');
-  var _camX=_cs0?_cs0.scrollLeft:0,_specX=_ss0?_ss0.scrollLeft:0;
   document.getElementById('jobDet').innerHTML=topCard+'<div style="margin-top:14px">'+tabBar+'<div id="jdContent">'+_tabHodBanner(j,_jdTab)+content+(_jdTab==='info'?'':mnSection)+'</div></div>';
-  if(_camX){var _cs1=document.getElementById('jdCamScroll');if(_cs1)_cs1.scrollLeft=_camX;}
-  if(_specX){var _ss1=document.getElementById('jdSpecScroll');if(_ss1)_ss1.scrollLeft=_specX;}
 }
 
 function jdMnAdd(jid,tab){
@@ -12285,11 +12209,11 @@ function techHandleCodecSel(jid,val){
 function jdContAdd(jid){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;if(!j.contacts)j.contacts=[];j.contacts.push({name:'',company:'',email:'',tel:''});saveData();renderJobDet(j);}
 function jdContRm(jid,ci){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.contacts)return;j.contacts.splice(ci,1);saveData();renderJobDet(j);}
 function jdContSet(jid,ci,field,val){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.contacts||!j.contacts[ci])return;j.contacts[ci][field]=val;saveData();}
-function jdSetCs(jid, field, val) { const j=jobs.find(x=>x.id==jid);if(!j)return;if(!j.camSpec)j.camSpec={};j.camSpec[field]=val; saveData(); }
+function jdSetCs(jid, field, val) { const j=jobs.find(x=>x.id==jid);if(!j)return;if(!j.camSpec)j.camSpec={};j.camSpec[field]=val; }
 function noteAdd(jid){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;if(!j.meetingNotes)j.meetingNotes=[];j.meetingNotes.push({date:new Date().toISOString().split('T')[0],subject:'',body:''});renderJobDet(j);}
 function noteRm(jid,ni){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.meetingNotes)return;j.meetingNotes.splice(ni,1);renderJobDet(j);}
 function noteSet(jid,ni,field,val){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.meetingNotes||!j.meetingNotes[ni])return;j.meetingNotes[ni][field]=val;}
-function jdSetLv(jid, field, val) { const j=jobs.find(x=>x.id==jid);if(!j)return;if(!j.lvSpec)j.lvSpec={};j.lvSpec[field]=val; saveData(); }
+function jdSetLv(jid, field, val) { const j=jobs.find(x=>x.id==jid);if(!j)return;if(!j.lvSpec)j.lvSpec={};j.lvSpec[field]=val; }
 
 function lvOledSection(j){
   if(!j.lvSpec)j.lvSpec={};
@@ -12919,7 +12843,7 @@ function auClearLegacyGramsOp(jid){
   saveData();
   renderJobDet(j);
 }
-function jdSetPo(jid, field, val) { const j=jobs.find(x=>x.id==jid);if(!j)return;if(!j.post)j.post={};j.post[field]=val; saveData(); }
+function jdSetPo(jid, field, val) { const j=jobs.find(x=>x.id==jid);if(!j)return;if(!j.post)j.post={};j.post[field]=val; }
 function jdGoCalDate(dateStr, row) {
   const d=new Date(dateStr);
   calYear=d.getFullYear(); calMonth=d.getMonth();
@@ -13552,33 +13476,12 @@ function jdSchedDragLeave(ev,el){
 function jdSchedDrop(ev,jid,targetIso){
   ev.preventDefault();
   var el=ev.currentTarget;if(el)el.style.boxShadow='';
-  var raw='';try{raw=ev.dataTransfer.getData('text/plain');}catch(e){}
-  if(window._jdCrewDragId!=null||(raw&&raw.indexOf('crew:')===0)){
-    var cid=(window._jdCrewDragId!=null)?window._jdCrewDragId:parseInt(raw.slice(5));
-    window._jdCrewDragId=null;
-    jdSchedAssignCrew(jid,cid,targetIso);
-    return;
-  }
-  var sourceIso=raw;
+  var sourceIso='';
+  try{sourceIso=ev.dataTransfer.getData('text/plain');}catch(e){}
   if(!sourceIso)sourceIso=window._jdSchedDragIso||'';
   window._jdSchedDragIso=null;
   if(!sourceIso||sourceIso===targetIso)return;
   jdSchedMoveDay(jid,sourceIso,targetIso);
-}
-function jdCrewChipDrag(ev,gi){
-  window._jdCrewDragId=gi;
-  try{ev.dataTransfer.setData('text/plain','crew:'+gi);ev.dataTransfer.effectAllowed='copy';}catch(e){}
-}
-function jdSchedAssignCrew(jid,gi,iso){
-  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.crew||!j.crew[gi]||!iso)return;
-  var c=j.crew[gi];if(!Array.isArray(c.dates))c.dates=[];
-  if(c.dates.indexOf(iso)<0){c.dates.push(iso);c.dates.sort();}
-  saveData();renderJobDet(j);
-}
-function jdSchedUnassignCrew(jid,gi,iso){
-  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.crew||!j.crew[gi])return;
-  var c=j.crew[gi];if(Array.isArray(c.dates))c.dates=c.dates.filter(function(d){return d!==iso;});
-  saveData();renderJobDet(j);
 }
 function jdSchedMoveDay(jid,sourceIso,targetIso){
   var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
@@ -13734,7 +13637,7 @@ function _jdSchedEntriesByDate(j){
   return map;
 }
 
-function renderProdScheduleCal(j,withCrew){
+function renderProdScheduleCal(j){
   if(!j)return'';
   var byDate=_jdSchedEntriesByDate(j);
   var dates=Object.keys(byDate).sort();
@@ -13816,21 +13719,6 @@ function renderProdScheduleCal(j,withCrew){
     return L>165?'#302f2c':'#fff';
   }
   var BORDER='1px solid rgba(48,47,44,.15)';
-  // Crew drag palette + per-day chip helper
-  var _versaCrew=(j.crew||[]).filter(function(c){return c&&c.type==='versa';});
-  var crewPalette='';
-  if(withCrew&&_versaCrew.length){
-    crewPalette='<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:14px 0 8px">'
-      +'<span style="font-family:var(--cond);font-size:11px;font-weight:900;letter-spacing:.07em;text-transform:uppercase;color:rgba(48,47,44,.55);margin-right:2px">Drag crew onto days</span>'
-      +_versaCrew.map(function(c){var gi=j.crew.indexOf(c);var dc=Array.isArray(c.dates)?c.dates.length:0;var col=crewColor(c.name||'');return '<span draggable="true" ondragstart="jdCrewChipDrag(event,'+gi+')" ondragend="window._jdCrewDragId=null" style="display:inline-flex;align-items:center;gap:5px;background:'+col+';color:#fff;border-radius:4px;font-family:var(--cond);font-weight:800;font-size:12px;padding:4px 10px;cursor:grab;user-select:none">'+escHtml(c.name||'?')+(dc?' <span style="opacity:.7;font-size:10px">'+dc+'d</span>':'')+'</span>';}).join('')
-      +'</div>';
-  }
-  function crewChips(iso){
-    var list=[];
-    (j.crew||[]).forEach(function(c,gi){if(c&&c.type==='versa'&&Array.isArray(c.dates)&&c.dates.indexOf(iso)>=0)list.push({gi:gi,name:c.name||'?'});});
-    if(!list.length)return '';
-    return '<div style="display:flex;flex-direction:column;gap:1px;padding:1px 0 0">'+list.map(function(p){var col=crewColor(p.name);return '<div style="display:flex;align-items:center;justify-content:center;gap:4px;background:'+col+';color:#fff;width:100%;padding:2px 4px;font-family:var(--cond);font-weight:800;font-size:11px;letter-spacing:.02em;line-height:1.35;text-transform:uppercase">'+escHtml(p.name)+'<span onclick="event.stopPropagation();jdSchedUnassignCrew('+j.id+','+p.gi+',\''+iso+'\')" style="cursor:pointer;opacity:.7;font-size:12px;font-weight:400">&times;</span></div>';}).join('')+'</div>';
-  }
   var html='<div style="background:transparent;border-radius:8px;overflow:hidden;border:'+BORDER+';margin-top:14px">';
   // Month picker
   if(useMonthPicker){
@@ -13844,7 +13732,7 @@ function renderProdScheduleCal(j,withCrew){
   // Day headers
   html+='<div style="display:grid;grid-template-columns:repeat(7,1fr);background:transparent;border-bottom:1.5px solid #302f2c">';
   ['MON','TUE','WED','THU','FRI','SAT','SUN'].forEach(function(dl){
-    html+='<div style="padding:5px 8px;text-align:center;font-family:var(--cond);font-size:12px;font-weight:900;color:#302f2c;letter-spacing:.12em;border-right:'+BORDER+'">'+dl+'</div>';
+    html+='<div style="padding:10px 8px;text-align:center;font-family:var(--cond);font-size:13px;font-weight:900;color:#302f2c;letter-spacing:.12em;border-right:'+BORDER+'">'+dl+'</div>';
   });
   html+='</div>';
   weeks.forEach(function(week){
@@ -13852,12 +13740,12 @@ function renderProdScheduleCal(j,withCrew){
     html+='<div style="display:grid;grid-template-columns:repeat(7,1fr);background:#302f2c;color:#efede3">';
     week.forEach(function(cell){
       var d=cell.d;
-      html+='<div style="padding:3px 6px;text-align:center;font-family:var(--cond);font-size:10px;font-weight:800;color:#efede3;border-right:1px solid rgba(239,237,227,.12);letter-spacing:.04em">'+ord(d.getDate())+' '+monShort[d.getMonth()]+'</div>';
+      html+='<div style="padding:6px 8px;text-align:center;font-family:var(--cond);font-size:11px;font-weight:800;color:#efede3;border-right:1px solid rgba(239,237,227,.12);letter-spacing:.04em">'+ord(d.getDate())+' '+monShort[d.getMonth()]+'</div>';
     });
     html+='</div>';
     // Activity row — height grows to fit max entries in this week
     var maxEntries=Math.max.apply(null,week.map(function(c){return Math.max(c.entries.length,1);}));
-    var rowMinHeight=Math.max(40,maxEntries*20+6);
+    var rowMinHeight=Math.max(70,maxEntries*32+16);
     html+='<div style="display:grid;grid-template-columns:repeat(7,1fr);border-bottom:'+BORDER+';min-height:'+rowMinHeight+'px">';
     week.forEach(function(cell){
       var hol=holsByIso[cell.iso];
@@ -13873,46 +13761,34 @@ function renderProdScheduleCal(j,withCrew){
           +'onmouseover="this.style.background=\''+adjustLuma(col.bg,-8)+'\'" '
           +'onmouseout="this.style.background=\''+col.bg+'\'" '
           +'style="background:'+col.bg+';padding:0;border-right:'+BORDER+';cursor:pointer;transition:background .12s;display:flex;flex-direction:column;align-items:center;justify-content:center">'
-          +(label?'<div style="font-family:var(--cond);font-size:13px;font-weight:900;color:'+col.fg+';letter-spacing:.04em;text-transform:uppercase">'+label+'</div>':'')
+          +(label?'<div style="font-family:var(--cond);font-size:20px;font-weight:900;color:'+col.fg+';letter-spacing:.04em;text-transform:uppercase">'+label+'</div>':'')
           +holHtml
-          +(withCrew?crewChips(cell.iso):'')
           +'</div>';
         return;
       }
       // 1+ entries: stack as colored bands, whole cell draggable to move all entries to another day
       html+='<div data-iso="'+cell.iso+'" draggable="true" ondragstart="jdSchedDragStart(event,this,\''+cell.iso+'\')" ondragend="jdSchedDragEnd(event,this)" ondragover="jdSchedDragOver(event,this)" ondragleave="jdSchedDragLeave(event,this)" ondrop="jdSchedDrop(event,'+j.id+',\''+cell.iso+'\')" onclick="jdOpenDayEditor('+j.id+',\''+cell.iso+'\')" title="Click to edit · drag to move to another day" style="border-right:'+BORDER+';cursor:pointer;display:flex;flex-direction:column">';
-      if(withCrew){
-        // One concise, readable tag per day — prefer the short (non-custom) entry, drop verbose detail
-        var sE=entries.find(function(e){return e.type&&e.type!=='custom';})||entries[0];
-        var sCol=TYPE_COLORS[sE.type]||DARK;
-        var sBg=sE.color||sCol.bg;
-        var sFg=sE.color?pickFg(sBg):sCol.fg;
-        var sLbl=(sE.label||'').split('\u2014')[0].split(' \u00b7 ')[0].trim();
-        html+='<div style="background:'+sBg+';flex:1;padding:4px 6px;text-align:center;display:flex;align-items:center;justify-content:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:var(--cond);font-weight:900;font-size:12px;color:'+sFg+';letter-spacing:.03em;text-transform:uppercase;line-height:1.3">'+escHtml(sLbl.toUpperCase())+'</div>';
-      } else {
       entries.forEach(function(e){
         var defCol=TYPE_COLORS[e.type]||DARK;
         var bg=e.color||defCol.bg;
         var fg=e.color?pickFg(bg):defCol.fg;
-        var fontSize=entries.length===1?'14px':(entries.length===2?'12px':'11px');
-        var labelHtml='<div style="font-family:var(--cond);font-size:'+fontSize+';font-weight:900;color:'+fg+';letter-spacing:.02em;text-transform:uppercase;line-height:1.04">'+escHtml((e.label||'').toUpperCase())+'</div>';
+        var fontSize=entries.length===1?'22px':(entries.length===2?'18px':'16px');
+        var labelHtml='<div style="font-family:var(--cond);font-size:'+fontSize+';font-weight:900;color:'+fg+';letter-spacing:.04em;text-transform:uppercase;line-height:1.1">'+escHtml((e.label||'').toUpperCase())+'</div>';
         var tmHtml='';
         if(e.tm){
           var tmCol=(typeof opsMlColor==='function')?opsMlColor(e.tm):'#5e564f';
           var tmFg=pickFg(tmCol);
           tmHtml='<div style="margin-top:5px;background:'+tmCol+';color:'+tmFg+';padding:3px 8px;border-radius:3px;font-family:var(--cond);font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;line-height:1.05;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:96%">'+escHtml(e.tm)+'</div>';
         }
-        html+='<div style="background:'+bg+';flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3px 4px;text-align:center">'+labelHtml+tmHtml+'</div>';
+        html+='<div style="background:'+bg+';flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px 4px;text-align:center">'+labelHtml+tmHtml+'</div>';
       });
-      }
       if(hol)html+='<div style="background:#fff;padding:2px 0;text-align:center">'+holHtml+'</div>';
-      if(withCrew)html+=crewChips(cell.iso);
       html+='</div>';
     });
     html+='</div>';
   });
   html+='</div>';
-  return crewPalette+html;
+  return html;
 }
 
 // Switch selected month for a job's schedule calendar
@@ -14724,184 +14600,10 @@ function jdCamLensSetCustom(jid,i,val){
 }
 
 // ── Generic equipment field handlers (Pedestal, Head, Zoom, Focus) ──
-function _ensureHiredLens(name){
-  var hit=hiredCatalogue.find(function(h){return (h.name||'').toLowerCase()===name.toLowerCase()&&(h.subcat==='Lens'||h.subcat==='Lens Range');});
-  if(hit)return hit.id;
-  var newId=hiredCatalogue.reduce(function(m,h){return Math.max(m,h.id||0);},0)+1;
-  hiredCatalogue.push({id:newId,name:name,cat:'Camera',subcat:'Lens',compat:'',notes:'',suppliers:[]});
-  if(typeof _hiredCatNextId==='number'&&_hiredCatNextId<=newId)_hiredCatNextId=newId+1;
-  return newId;
-}
-function importDragonsDenPlan(jid){
-  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
-  if(!confirm('Import the Dragons Den plan?\n\nThis sets the filming schedule, REPLACES the camera card with the 11-camera plan, adds the 9 RX0 II mini cameras, and sets the two 24/8 Hydras. Existing camera-card and Hydra data will be overwritten.'))return;
-
-  // Resolve the HDC-3500 body in inventory; fall back to hired text if not found
-  var hdc=(kit||[]).find(function(k){return /HDC-?3500/i.test(k.name||'')&&k.status!=='Bin';});
-  var hdcId=hdc?hdc.id:null;
-  function none(){return {mode:'inv',kitId:null,hiredVal:''};}
-  function ftxt(v){return {mode:'hired',kitId:null,hiredVal:v||''};}
-
-  // ── 1. Filming schedule → scheduleCustom (date,label) ──
-  var SCHED=[
-    ['2026-04-15','Truss rig by Versa'],
-    ['2026-04-16','Rigging \u2014 Lighting'],
-    ['2026-04-17','Rigging \u2014 Scenic & Lighting'],
-    ['2026-04-20','Rigging \u2014 Scenic & Lighting'],
-    ['2026-04-21','Rigging \u2014 Scenic & Lighting'],
-    ['2026-04-22','Rigging \u2014 Scenic & Lighting'],
-    ['2026-04-23','Rigging \u2014 Scenic & Lighting'],
-    ['2026-04-24','Rigging \u2014 Scenic & Lighting'],
-    ['2026-04-26','Rigging \u2014 Scenic, Cameras & Sound'],
-    ['2026-04-27','Rigging \u2014 Scenic & Lighting, Cameras & Sound'],
-    ['2026-04-28','Tech Rehearsal'],
-    ['2026-04-29','Filming \u2014 Gary/Susie 4 pitch \u00b7 call 0815 wrap 1930'],
-    ['2026-04-30','Filming \u2014 Gary/Susie 5 pitch \u00b7 call 0730 wrap 2055'],
-    ['2026-05-01','Filming \u2014 Gary/Susie 4 pitch \u00b7 call 0800 wrap 1900'],
-    ['2026-05-04','Dark \u2014 Bank Holiday'],
-    ['2026-05-05','Filming \u2014 Gary/Susie 4 pitch (inc TBC Comic Relief pitch) \u00b7 call 0815 wrap 1930'],
-    ['2026-05-06','Filming \u2014 Susie/Jenna 5 pitch \u00b7 call 0730 wrap 2055'],
-    ['2026-05-07','Filming \u2014 Gary/Susie 4 pitch + Gary green screen/stills \u00b7 call 0800 wrap 2000'],
-    ['2026-05-12','Filming \u2014 Susie & new 4 pitch + New Dragon heroes \u00b7 call 0815 wrap 2015'],
-    ['2026-05-13','Filming \u2014 Susie & new 3 pitch + Pretitles (all Dragons) \u00b7 call 0730 wrap 2015'],
-    ['2026-05-14','Filming \u2014 Susie & new 3 pitch + New Dragon green screen + stills \u00b7 call 0815 wrap 1800'],
-    ['2026-05-19','Filming \u2014 Gary/Susie 4 pitch + Gary pre-titles \u00b7 call 0815 wrap 2030'],
-    ['2026-05-20','Filming \u2014 Gary/Susie 5 pitch \u00b7 call 0730 wrap 2055'],
-    ['2026-05-21','Filming \u2014 Gary/Susie 4 pitch \u00b7 call 0800 wrap 1900'],
-    ['2026-05-25','Dark \u2014 Bank Holiday'],
-    ['2026-06-01','Filming \u2014 Susie/Jenna 3 pitch + green screen + stills (all Dragons) \u00b7 call 0815 wrap 1915'],
-    ['2026-06-02','Filming \u2014 Susie/Jenna 5 pitch \u00b7 call 0730 wrap 2055'],
-    ['2026-06-03','Filming \u2014 Susie/Jenna 4 pitch \u00b7 call 0800 wrap 1900'],
-    ['2026-06-04','Backup Filming Day'],
-    ['2026-06-08','Filming \u2014 Susie/Jenna 4 pitch + Jenna pre-titles \u00b7 call 0815 wrap 2030'],
-    ['2026-06-09','Filming \u2014 Jenna/Susie 4 pitch \u00b7 call 0730 wrap 1810'],
-    ['2026-06-10','Derig'],
-    ['2026-06-11','Derig'],
-    ['2026-06-12','Wrap up day']
-  ];
-  if(!Array.isArray(j.scheduleCustom))j.scheduleCustom=[];
-  SCHED.forEach(function(s){
-    var ex=j.scheduleCustom.find(function(c){return c&&c.date===s[0];});
-    if(ex){ex.label=s[1];} else {j.scheduleCustom.push({date:s[0],label:s[1],color:null});}
-  });
-
-  // ── 2. Cameras (11) — body = HDC-3500; lens/head/support carried in Notes ──
-  var CAMS=[
-    {n:1,lens:'90:1 box lens',head:'Vector 750 head',sup:'Quattro Ped'},
-    {n:2,lens:'90:1 lens',head:'Vector 750 head',sup:'Quattro Ped'},
-    {n:3,lens:'HJ 24 lens',head:'Vinten 250 head',sup:'Squattro with 24ft track'},
-    {n:4,lens:'HJ 24 lens',head:'Vinten 250 head',sup:'Osprey Elite ped'},
-    {n:5,label:'Locked off',lens:'CJ 15 lens',head:'Vinten Vision 250 head',sup:'Vinten tripod with spreaders'},
-    {n:6,label:'Locked off',lens:'CJ 15 lens',head:'Vinten 250 head',sup:'World Cup bowl'},
-    {n:7,lens:'CJ 20 lens',head:'Vinten 250 head',sup:'Osprey Elite ped'},
-    {n:8,lens:'CJ 20 lens',head:'Vinten 250 head',sup:'Vinten tripod with spreaders'},
-    {n:9,lens:'CJ 15 lens',head:'Vinten 250 head',sup:"'Wally Dolly' 9ft track"},
-    {n:10,label:'Whisper Cam',lens:'CJ 25 lens',head:'Vinten Vision 250 head',sup:'Vinten tripod with rolling base'},
-    {n:11,lens:'HJ 24 lens',head:'Hot Head (hired from LUNA)',sup:''}
-  ];
-  j.camDetails=CAMS.map(function(c){
-    return {
-      kitId:hdcId,hired:hdcId?false:true,hiredType:hdcId?'':'HDC-3500',
-      operator:'',camNum:c.n,camLabel:c.label||'',
-      activeFields:[],fieldData:{},notes:'',
-      lensData:{mode:'hired',kitId:null,hiredCatId:null,hiredCustom:c.lens||''},
-      pedestalData:c.sup?ftxt(c.sup):none(),headData:c.head?ftxt(c.head):none(),
-      zoomData:none(),focusData:none(),
-      autocueData:none(),retMonData:none(),viewfinderData:none()
-    };
-  });
-  j.cameras=11;
-
-  // ── 3. Mini cameras — ensure 10 × Sony RX0 II in inventory, link 10 minis ──
-  var rxUnits=(kit||[]).filter(function(k){return /RX0/i.test(k.name||'')&&k.status!=='Bin';});
-  var nextKid2=(kit||[]).reduce(function(m,k){return Math.max(m,(typeof k.id==='number'?k.id:0));},0)+1;
-  for(var ri=rxUnits.length;ri<10;ri++){
-    kit.push({id:nextKid2,name:'Sony RX0 II',cat:'Camera',subcat:'Mini Camera',make:'Sony',model:'RX0 II',status:'Available',loc:'',notes:'',serial:'',tag:'RX0-'+(ri+1),cond:'Good',hired:false,inUse:false,subsubcat:'',suppliers:[]});
-    nextKid2++;
-  }
-  rxUnits=(kit||[]).filter(function(k){return /RX0/i.test(k.name||'')&&k.status!=='Bin';});
-  j.hasSpecCams=true;
-  j.hideSpecOperators=true;
-  j.specCams=[];
-  for(var mn=0;mn<10;mn++){j.specCams.push({camNum:'Mini '+(mn+1),kitId:(rxUnits[mn]&&rxUnits[mn].id)||null,operator:'',notes:''});}
-
-  // ── 4. Two 24/8 Hydras (Wallbox 2 = talent/demo radio; Wallbox 3 = FX/sync) ──
-  if(!j.audio)j.audio={};
-  function inp(alloc,show,notes){return {alloc:alloc||'',rx:'',freq:'',show:show||'',notes:notes||''};}
-  function outp(use,feed,show,notes){return {use:use||'',freq:'',feed:feed||'',show:show||'',notes:notes||''};}
-  function blanks(n,fn){var a=[];for(var k=0;k<n;k++)a.push(fn());return a;}
-  var h1in=blanks(24,function(){return inp();});
-  [['Bodypack 1','Dragon 1 Touker'],['Bodypack 2','Dragon 2 Guest'],['Bodypack 3','Dragon 3 Deborah'],['Bodypack 4','Dragon 4 Steven'],['Bodypack 5','Dragon 5 Peter'],['Bodypack 6','Dragon 6'],['Bodypack 7','Entrepreneur 1'],['Bodypack 8','Entrepreneur 2'],['Bodypack 9','Entrepreneur 3'],['Bodypack 10','Entrepreneur 4'],['Bodypack 11','Entrepreneur 5'],['Bodypack 12','Spare 1']].forEach(function(r,k){h1in[k]=inp(r[0],r[1],'');});
-  h1in[13]=inp('Slung DPA 2017','Demo area atmos','& foam windshield');
-  var h1out=blanks(8,function(){return outp();});
-  h1out[0]=outp('Dragons foldback','Aux 1','','');
-  h1out[1]=outp('Demo area foldback','Aux 2','','To Radio Line TX for battery L/S');
-  h1out[5]=outp('Hearing loop','Aux 6','','');
-  var h2in=blanks(24,function(){return inp();});
-  [['Corridor 1 416','',''],['Corridor 2 416','',''],['Lift 1 416','',''],['Lift 2 416','',''],['Computer Left','','DI box L'],['Computer Right','','DI box R']].forEach(function(r,k){h2in[k]=inp(r[0],r[1],r[2]);});
-  ['Demo 1','Demo 2','Demo 3','Demo 4','Demo 5','Demo 6','Demo 7','Demo 8'].forEach(function(d,k){h2in[10+k]=inp(d,'',k===0?'To be advised per pitch':'');});
-  var h2out=blanks(8,function(){return outp();});
-  h2out[0]=outp('Demo area foldback','Aux 2','Fostex','');
-  h2out[1]=outp('Lift sync foldback','Aux 3','Amp 1 > L/S on set','Sync POP logic');
-  h2out[2]=outp('Corridor sync foldback','Aux 4','Amp 2 > L/S on set','Sync POP logic');
-  j.audio.hydras=[
-    {mode:'inv',kitId:null,hiredVal:'',location:'Wallbox 2',notes:'24 in / 8 out',ins:24,outs:8,inputs:h1in,outputs:h1out,collapsed:false},
-    {mode:'inv',kitId:null,hiredVal:'',location:'Wallbox 3',notes:'24 in / 8 out',ins:24,outs:8,inputs:h2in,outputs:h2out,collapsed:false}
-  ];
-
-  saveData();renderJobDet(j);toast('Dragons Den plan imported \u2713');
-}
-
-function jdLoadBroadcastCard(jid){
-  var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
-  if((j.camDetails&&j.camDetails.length)&&!confirm('Replace the current camera card with the 10\u00d7 HDC-3500 broadcast card?'))return;
-  var ua7=_ensureHiredLens('Fuji UA7');
-  var ua14=_ensureHiredLens('Fuji UA14');
-  function hv(v){return {mode:'hired',kitId:null,hiredVal:v};}        // hired free-text equip value
-  function present(){return {mode:'present',kitId:null,hiredVal:''};} // tick / on-order TBC
-  function none(){return {mode:'inv',kitId:null,hiredVal:''};}        // blank row
-  function lensCat(id){return {mode:'hired',kitId:null,hiredId:null,hiredCatId:id};}
-  var rows=[
-    {ped:'Quattro L', head:'Vinten 750', vf:'7" OLED', lens:ua7,  shot:'present',    acc:'Script Holder', mon:'24" Prompt'},
-    {ped:'Quattro L', head:'Vinten 750', vf:'7" OLED', lens:ua7,  shot:'present',    acc:'Script Holder', mon:''},
-    {ped:'Quattro L', head:'Vinten 750', vf:'7" OLED', lens:ua7,  shot:'present',    acc:'Script Holder', mon:'24" Prompt'},
-    {ped:'Quattro L', head:'Vinten 750', vf:'7" OLED', lens:ua7,  shot:'present',    acc:'Script Holder', mon:''},
-    {ped:'Quattro L', head:'Vinten 750', vf:'7" OLED', lens:ua7,  shot:'present',    acc:'Script Holder', mon:''},
-    {ped:'Quattro L', head:'Vinten 750', vf:'7" OLED', lens:ua7,  shot:'present',    acc:'Script Holder', mon:''},
-    {ped:'Quattro L', head:'Vinten 750', vf:'7" OLED', lens:ua7,  shot:'present',    acc:'Script Holder', mon:''},
-    {ped:'Jimmy Jib', head:'',          vf:'',          lens:ua14, shot:'Jib Remotes',acc:'Tally Light',   mon:''},
-    {ped:'LW PED',    head:'Vinten 250', vf:'',          lens:ua14, shot:'',           acc:'Lock Off',      mon:''},
-    {ped:'LW Tripod', head:'Vinten 250', vf:'',          lens:ua14, shot:'',           acc:'Lock Off',      mon:''}
-  ];
-  j.camDetails=rows.map(function(r,i){
-    var notesBits=[];
-    if(r.acc)notesBits.push('Accessories: '+r.acc);
-    if(r.mon)notesBits.push('Monitoring: '+r.mon);
-    return {
-      op:'',focusPuller:'',grip:'',body:'',support:'',lens:'',matteBox:'',filters:'',iris:'',focus:'',zoom:'',
-      remotePanel:'',power:'',videoConn:'',timecode:'',dataBridge:'',rcp:'',sensorFps:'',codec:'',sensorRes:'',lut:'',
-      kitId:null,hired:true,hiredType:'HDC-3500',notes:notesBits.join(' \u00b7 '),activeFields:[],camNum:i+1,
-      lensData:lensCat(r.lens),
-      pedestalData:r.ped?hv(r.ped):none(),
-      headData:r.head?hv(r.head):none(),
-      viewfinderData:r.vf?hv(r.vf):none(),
-      focusData:(r.shot==='present'?present():(r.shot?hv(r.shot):none()))
-    };
-  });
-  j.cameras=10;
-  saveData();renderJobDet(j);toast('Loaded 10\u00d7 HDC-3500 broadcast card');
-}
 function jdEquipMode(jid,ci,dataKey,mode){
   var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.camDetails||!j.camDetails[ci])return;
   if(!j.camDetails[ci][dataKey])j.camDetails[ci][dataKey]={mode:'inv',kitId:null,hiredVal:''};
   j.camDetails[ci][dataKey].mode=mode;
-  saveData();renderJobDet(j);
-}
-function jdEquipClear(jid,ci,dataKey){
-  var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.camDetails||!j.camDetails[ci])return;
-  var ed=j.camDetails[ci][dataKey];
-  if(ed&&ed.kitId){if(!j.prep)j.prep=[];j.prep=j.prep.filter(function(p){return p.kid!==ed.kitId||p._camspec!==true;});}
-  j.camDetails[ci][dataKey]={mode:'inv',kitId:null,hiredVal:''};
   saveData();renderJobDet(j);
 }
 function jdEquipHired(jid,ci,dataKey,val){
@@ -15627,474 +15329,695 @@ function printJobPDF(jid){
   if(!win)return alert('Please allow popups for this page.');
   var lv=j.lvSpec||{};
   var au=j.audio||{};
+  var ev=j.evs||{};
+  var gx=j.gfx||{};
   var numCams=parseInt(j.cameras)||0;
 
-  // ── tiny helpers ──
+  // ─────────── helpers ───────────
   function esc(s){return (s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-  function row(label,val){if(val==null||val==='')return '';return '<div class="p-row"><span class="p-lbl">'+esc(label)+'</span><span class="p-val">'+val+'</span></div>';}
-  function heading(t){return '<div class="p-heading">'+esc(t)+'</div>';}
-  function sec(title,body,key){if(!body)return '';return '<div class="p-sec"'+(key?' data-sec="'+key+'"':'')+'><div class="p-sec-hdr">'+esc(title)+'</div>'+body+'</div>';}
-  function kitNm(id){if(id==null)return '';var k=kit.find(function(x){return x.id===id;});return k?k.name:'';}
-  function gear(o){if(!o)return '';if(o.mode==='hired')return o.hiredVal?('Hired — '+esc(o.hiredVal)):'';var n=kitNm(o.kitId);return n?esc(n):'';}
-  function has(o){return o&&((o.mode==='hired'&&o.hiredVal)||(o.kitId!=null&&kitNm(o.kitId)));}
+  function fmtD(iso){if(!iso)return '';var p=String(iso).split('-');if(p.length<3)return iso;var d=new Date(+p[0],+p[1]-1,+p[2]);if(isNaN(d))return iso;return d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});}
+  function fmtDLong(iso){if(!iso)return '';var p=String(iso).split('-');if(p.length<3)return iso;var d=new Date(+p[0],+p[1]-1,+p[2]);if(isNaN(d))return iso;return d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});}
+  function fmtRange(a,b){a=fmtD(a);b=fmtD(b);if(a&&b)return a+' – '+b;return a||b||'';}
+  function row2(lbl,val){if(val==null||val==='')return '';return '<div class="row2"><span class="rl">'+esc(lbl)+'</span><span class="rv">'+val+'</span></div>';}
+  function row3(lbl,val){if(val==null||val==='')return '';return '<div class="row3"><span class="rl">'+esc(lbl)+'</span><span class="rv">'+val+'</span></div>';}
+  function sec(title,body,key){if(!body||!String(body).trim())return '';return '<section class="sec"'+(key?' data-k="'+key+'"':'')+'><h2>'+esc(title)+'</h2>'+body+'</section>';}
+  function emptySec(){return '<div class="empty">— Not specified —</div>';}
+  function chip(t,bg,fg){return '<span class="chip" style="background:'+bg+';color:'+(fg||'#302f2c')+'">'+esc(t)+'</span>';}
 
-  var sc=(typeof STATUS_CFG!=='undefined'&&STATUS_CFG[j.status])||{color:'#7A766F',bg:'rgba(122,118,111,.15)',label:j.status||'TBC'};
-  var isTX=(j.txRx||'TX')==='TX';
-  var txStr=(isTX&&(j.txTime||j.txTimeEnd))?((j.txTime||'')+(j.txTimeEnd?' – '+j.txTimeEnd:'')):'';
+  // ─────────── status badge ───────────
+  var sc=(typeof STATUS_CFG!=='undefined'&&STATUS_CFG[j.status||'Confirmed'])||{label:j.status||'Confirmed',bg:'#efede3',color:'#302f2c'};
+  var statusBadge='<span class="status" style="background:'+sc.bg+';color:'+sc.color+';border-color:'+sc.color+'40">'+esc(sc.label||j.status||'Confirmed')+'</span>';
 
-  // ── principals: Tech Manager prominent ──
+  // ─────────── tech manager resolution ───────────
   var techMgr='';
-  (j.crew||[]).forEach(function(c){if(!techMgr&&/tech\s*manager/i.test(c.role||''))techMgr=c.name;});
-  if(!techMgr&&j.crew)((j.hods||[]).forEach(function(h){if(!techMgr&&/tech\s*manager/i.test(h.role||''))techMgr=h.name;}));
-  if(!techMgr)techMgr=j.lead||'';
-  var pm=j.versaPM||'';
-  var clientNm=j.prodCompany||j.client||'';
-
-  // ── Job info ──
-  var infoHTML=''
-    +row('Production Company',esc(j.prodCompany||j.client||''))
-    +row('Director',esc(j.director||''))
-    +row('Location',esc(j.loc))
-    +row('Studio',esc(j.studio))
-    +row('Tech Manager',esc(techMgr))
-    +row('Project Manager',esc(pm))
-    +row('Start',esc(fmtD(j.start)))
-    +row('End',esc(fmtD(j.end)))
-    +row(isTX?'TX Window':'Mode',isTX?(txStr||'TX'):esc(j.txRx||''))
-    +row('Status',esc(j.status));
-
-  // ── Key dates ──
-  var datesHTML='';
-  (j.rigDates||[]).forEach(function(d,i){datesHTML+=row('Rig Day '+(i+1),esc(fmtD(d.date))+(d.note?' — '+esc(d.note):''));});
-  (j.txDates||[]).forEach(function(d,i){datesHTML+=row((isTX?'TX':'RX')+' Date '+(i+1),esc(fmtD(d.date)));});
-  if(j.drigDate)datesHTML+=row('De-Rig',esc(fmtD(j.drigDate)));
-
-  // ── Contacts ──
-  var contHTML='';
-  (j.contacts||[]).forEach(function(c){
-    contHTML+='<div class="p-contact"><strong>'+esc(c.name)+'</strong>'
-      +(c.company?' · '+esc(c.company):'')
-      +(c.email?'<br>'+esc(c.email):'')
-      +(c.tel?(c.email?' · ':'<br>')+esc(c.tel):'')
-      +'</div>';
-  });
-
-  // ── Tech spec ──
-  var techHTML=''
-    +row('Resolution',esc(j.techRes))
-    +row('Frame Rate',esc(j.techFR))
-    +row('Scan Type',esc(j.techScan))
-    +row('Codec',esc(j.techCodec))
-    +row('Cameras',esc(j.cameras));
-
-  // ── Camera spec (full kit) ──
-  function eqResolve(o){if(!o)return '';if(o.mode==='na')return '';if(o.kitId!=null){var k=kitNm(o.kitId);return k||'';}if(o.mode==='present')return '\u2713 Present';if(o.mode==='hired')return o.hiredVal||'';return '';}
-  function lensResolve(ld){if(!ld)return '';if(ld.kitId!=null){var k=kitNm(ld.kitId);if(k)return k;}if(ld.hiredCatId!=null){var h=(typeof hiredCatalogue!=='undefined'?hiredCatalogue:[]).find(function(x){return x.id===ld.hiredCatId;});if(h)return 'Hired \u2014 '+h.name;}if(ld.hiredCustom)return ld.hiredCustom;return '';}
-  var CAM_EQUIP=[['lensData','Lens'],['pedestalData','Pedestal'],['headData','Head'],['zoomData','Zoom Demand'],['focusData','Focus Demand'],['autocueData','Autocue'],['retMonData','Return Monitor'],['viewfinderData','Viewfinder']];
-  var camHTML='';
-  (j.camDetails||[]).forEach(function(cd,ci){
-    var rc=(typeof RESISTOR_COLORS!=='undefined'&&RESISTOR_COLORS[ci])||{bg:'#302f2c',name:'Cam '+(ci+1)};
-    var kitName=cd.kitId?(kitNm(cd.kitId)||'TBC'):(cd.hired?'Hired'+(cd.hiredType?' \u2014 '+cd.hiredType:''):'TBC');
-    camHTML+='<div class="p-cam" style="border-left:3px solid '+rc.bg+'">';
-    camHTML+='<div class="p-cam-hdr">CAM '+(ci+1)+(cd.camLabel?' \u2014 '+esc(cd.camLabel):'')+'</div>';
-    camHTML+=row('Body',esc(kitName));
-    camHTML+=row('Operator',esc(cd.operator||''));
-    CAM_EQUIP.forEach(function(eq){var v=(eq[0]==='lensData')?lensResolve(cd.lensData):eqResolve(cd[eq[0]]);if(v)camHTML+=row(eq[1],esc(v));});
-    (cd.activeFields||[]).forEach(function(fkey){
-      var fd=(typeof ALL_CAM_FIELDS!=='undefined')&&ALL_CAM_FIELDS.find(function(f){return f.key===fkey;});
-      if(!fd)return;
-      var fm=(cd.fieldData||{})[fkey];
-      var val=fm?(fm.mode==='inv'&&fm.kitId?(kitNm(fm.kitId)||''):fm.mode==='hired'?'Hired \u2014 '+(fm.hiredVal||''):fm.val):cd[fkey]||'';
-      if(val)camHTML+=row(fd.label,esc(val));
-    });
-    if(cd.notes)camHTML+=row('Notes',esc(cd.notes));
-    camHTML+='</div>';
-  });
-
-  // ── LV / Camera Control ──
-  var lvHTML='';
-  if(lv.ld)lvHTML+=row('Lighting Director',esc(lv.ld));
-  if(lv.vm)lvHTML+=row('Vision Mixer',esc(lv.vm));
-  if(lv.galleryLayout)lvHTML+=row('Gallery Layout',esc(lv.galleryLayout));
-  var mcsG=lv.mcsGlobal||{};
-  if(mcsG.enabled){
-    var mcsName=mcsG.kitId?(kitNm(mcsG.kitId)||'Inventory'):'Hired — '+(mcsG.hiredVal||'');
-    lvHTML+=row('MCS',esc(mcsName)+(mcsG.ip?' (IP: '+esc(mcsG.ip)+')':''));
+  if(Array.isArray(j.crew)){
+    var tm=j.crew.find(function(c){return c&&/tech\s*manager/i.test(c.role||'');});
+    if(tm&&tm.name)techMgr=tm.name;
   }
-  (lv.camRcp||[]).forEach(function(rcp,ci){
-    if(rcp.mode==='local')return;
-    var rcpName=rcp.mode==='rcp-ip'
-      ?'IP Control'+(rcp.ccuIp?' CCU:'+esc(rcp.ccuIp):'')+(rcp.rcpIp?' RCP:'+esc(rcp.rcpIp):'')
-      :(rcp.kitId?(kitNm(rcp.kitId)||'Inventory'):'Hired — '+(rcp.hiredVal||''));
-    lvHTML+=row('CAM '+(ci+1)+' RCP',esc(rcpName));
-  });
-  (lv.visionOps||[]).forEach(function(op,vi){
-    lvHTML+=row('Vision Engineer '+(vi+1),esc(op.name)+(op.monCount?' ('+op.monCount+' mon)':'')+(op.evs?' + EVS':''));
-  });
+  if(!techMgr&&j.lead)techMgr=j.lead;
+  if(!techMgr)techMgr='Andrew Rowell';
 
-  // ── EVS ──
-  var evsHTML='';
-  if(!j.evsNA&&j.evs){
-    var e=j.evs;
-    evsHTML+=row('Supervisor',esc(e.supervisor));
-    if((e.operators||[]).filter(Boolean).length)evsHTML+=row('Operators',esc(e.operators.filter(Boolean).join(', ')));
-    evsHTML+=row('System',esc(e.system));
-    evsHTML+=row('Software',esc(e.software));
-    evsHTML+=row('Channels',esc(e.channels));
-    evsHTML+=row('Codec',esc(e.codec));
-    (e.extraKit||[]).forEach(function(k){if(k.type||k.model)evsHTML+=row(k.type||'Kit',esc(k.model||''));});
-    if(e.notes)evsHTML+=row('Notes',esc(e.notes));
+  // ─────────── logo ───────────
+  var logo=(typeof window._VERSA_LOGO==='string')?window._VERSA_LOGO:'';
+
+  // ─────────── PRINCIPALS ───────────
+  function principalsHtml(){
+    var pm=j.versaPM||'';
+    var dir=j.director||'';
+    var snr=Array.isArray(j.crew)?(j.crew.find(function(c){return c&&/senior\s*engineer/i.test(c.role||'');})||{}).name:'';
+    var prodCo=j.prodCompany||'';
+    var cli=j.client||'';
+    var parts=[];
+    parts.push('<div class="prin-card prin-pri"><span class="pl">Technical Manager</span><span class="pv">'+esc(techMgr)+'</span></div>');
+    if(pm)parts.push('<div class="prin-card"><span class="pl">Project Manager</span><span class="pv">'+esc(pm)+'</span></div>');
+    if(dir)parts.push('<div class="prin-card"><span class="pl">Director</span><span class="pv">'+esc(dir)+'</span></div>');
+    if(snr)parts.push('<div class="prin-card"><span class="pl">Senior Engineer</span><span class="pv">'+esc(snr)+'</span></div>');
+    if(prodCo)parts.push('<div class="prin-card"><span class="pl">Production Co.</span><span class="pv">'+esc(prodCo)+'</span></div>');
+    if(cli&&cli!==prodCo)parts.push('<div class="prin-card"><span class="pl">Client</span><span class="pv">'+esc(cli)+'</span></div>');
+    return '<div class="prin-grid">'+parts.join('')+'</div>';
   }
 
-  // ── GFX ──
-  var gfxHTML='';
-  if(!j.gfxNA&&j.gfx){
-    var g=j.gfx;
-    gfxHTML+=row('Supervisor',esc(g.supervisor));
-    if((g.operators||[]).filter(Boolean).length)gfxHTML+=row('Operators',esc(g.operators.filter(Boolean).join(', ')));
-    gfxHTML+=row('System',esc(g.system));
-    gfxHTML+=row('Engine Version',esc(g.engineVersion));
-    gfxHTML+=row('Engines',esc(g.numEngines));
-    gfxHTML+=row('Template Pack',esc(g.templatePack));
-    gfxHTML+=row('Output Res',esc(g.outputRes));
-    if(g.notes)gfxHTML+=row('Notes',esc(g.notes));
+  // ─────────── KEY FACTS ───────────
+  function keyFactsHtml(){
+    var rows='';
+    rows+=row3('Location', esc((j.loc||'')+(j.studio?' · '+j.studio:'')));
+    if(Array.isArray(j.studios)&&j.studios.length>1)rows+=row3('Studios', esc(j.studios.join(' + ')));
+    rows+=row3('Run', esc(fmtRange(j.start,j.end)));
+    if(j.txTime||j.txTimeEnd){
+      var tx=(j.txTime||'')+(j.txTimeEnd?' – '+j.txTimeEnd:'');
+      rows+=row3('TX Window', esc(tx));
+    }
+    if(j.txRx)rows+=row3('TX/RX', esc(String(j.txRx)));
+    if(numCams)rows+=row3('Cameras', esc(String(numCams)));
+    if(j.techRes||j.techFR){
+      var spec=(j.techRes||'')+(j.techFR?' @ '+j.techFR:'');
+      if(j.techCodec)spec+=' / '+j.techCodec;
+      if(j.techScan)spec+=' '+j.techScan;
+      rows+=row3('Technical', esc(spec));
+    }
+    return '<div class="facts">'+rows+'</div>';
   }
 
-  // ── Audio ──
-  var audioHTML='';
-  (function(){
-    var bits='';
-    // Sound crew
-    var crewLines='';
-    if(au.supervisor)crewLines+=row('Sound Supervisor',esc(au.supervisor));
-    (au.floorCrew||[]).forEach(function(c){var nm=(typeof c==='string')?c:(c.name||'');var rl=(typeof c==='object'&&c.role)?c.role:'';if(nm)crewLines+=row(rl||'Sound Crew',esc(nm));});
-    if(crewLines)bits+=heading('Sound Team')+crewLines;
-    // Grams / SpotOn
-    var gsLines='';
-    if(au.hasGramsDesk!==false&&has(au.gramsDesk))gsLines+=row('Grams Desk',gear(au.gramsDesk));
-    if(au.hasSpotOn!==false&&has(au.spotOn))gsLines+=row('SpotOn',gear(au.spotOn));
-    if(gsLines)bits+=heading('Playout')+gsLines;
-    // Hydras
-    var hyLines='';
-    (au.hydras||[]).forEach(function(h,i){
-      var nm=gear(h)||esc(h.hiredVal||('Hydra '+(i+1)));
-      var io=(h.ins||0)+' in / '+(h.outs||0)+' out';
-      hyLines+=row(nm,io+(h.wallbox?' · WB: '+esc(h.wallbox):''));
-      var ins=(h.inputs||[]).map(function(p,k){return (p&&(p.alloc||p.show))?((k+1)+': '+esc(p.alloc||p.show)):null;}).filter(Boolean);
-      var outs=(h.outputs||[]).map(function(p,k){return (p&&(p.use||p.feed))?((k+1)+': '+esc(p.use||p.feed)):null;}).filter(Boolean);
-      if(ins.length)hyLines+=row('› Inputs',ins.join(' · '));
-      if(outs.length)hyLines+=row('› Outputs',outs.join(' · '));
-    });
-    if(hyLines)bits+=heading('Hydra')+hyLines;
-    // MADI
-    var madiLines='';
-    (au.madi||[]).forEach(function(s,i){
-      var used=(s.inputs||[]).map(function(v,k){return v?((k+1)+': '+esc(v)):null;}).filter(Boolean);
-      if(s.name||used.length){madiLines+=row(esc(s.name||('MADI '+(i+1))),used.length+' ch used');if(used.length)madiLines+=row('› Channels',used.join(' · '));}
-    });
-    if(madiLines)bits+=heading('MADI')+madiLines;
-    // Radio mics
-    var rmLines='';
-    if(au.radioMicSystem)rmLines+=row('System',esc(au.radioMicSystem));
-    var rmList=(au.radioMics||[]).filter(function(m){return m&&(m.mic||m.alloc||m.show||m.freq);});
-    if(rmList.length){rmLines+=row('Channels',String(rmList.length));rmList.forEach(function(m,k){rmLines+=row('› RM '+(k+1),esc([m.mic,m.alloc||m.show,m.freq].filter(Boolean).join(' · '))+(m.notes?' ('+esc(m.notes)+')':''));});}
-    if(au.radioMicNotes)rmLines+=row('Notes',esc(au.radioMicNotes).replace(/\n/g,'<br>'));
-    if(rmLines)bits+=heading('Radio Mics')+rmLines;
-    // Multitrack
-    var mt=au.multitrack||{};
-    var mtLines='';
-    if(mt.recorder)mtLines+=row('Recorder',esc(mt.recorder));
-    if(mt.samplingFreq||mt.bitDepth)mtLines+=row('Format',(mt.samplingFreq?esc(mt.samplingFreq)+' kHz':'')+(mt.bitDepth?' / '+esc(mt.bitDepth)+'-bit':'')+(mt.bwav?' / BWAV':''));
-    var mtTracks=(mt.tracks||[]).filter(function(t){return t&&t.name;});
-    if(mtTracks.length){mtLines+=row('Tracks',String(mtTracks.length));mtTracks.forEach(function(t,k){mtLines+=row('› Trk '+(k+1),esc(t.name)+(t.source?' ← '+esc(t.source):'')+(t.realtime?' [RT]':'')+(t.delay?' +'+esc(t.delay):''));});}
-    if(mt.otherNotes)mtLines+=row('Notes',esc(mt.otherNotes));
-    if(mtLines)bits+=heading('Multitrack Record')+mtLines;
-    audioHTML=bits;
-  })();
+  // ─────────── SCHEDULE CALENDAR PICTURE ───────────
+  // Print-safe port of renderProdScheduleCal — one grid per month, no interactivity
+  function scheduleHtml(){
+    var byDate=(typeof _jdSchedEntriesByDate==='function')?_jdSchedEntriesByDate(j):{};
+    var dates=Object.keys(byDate).sort();
+    if(!dates.length)return '';
 
-  // ── Multiviewers ──
-  var mvHTML='';
-  (function(){
-    if(typeof _mvDesEnsure!=='function')return;
-    var mv=_mvDesEnsure(j);
-    var views=[['production','Production'],['vision','Vision'],['sound','Sound']];
+    function startOfWeek(d){var dow=d.getDay();var diff=dow===0?-6:1-dow;var w=new Date(d);w.setDate(d.getDate()+diff);w.setHours(0,0,0,0);return w;}
+    function endOfWeek(d){var s=startOfWeek(d);var e=new Date(s);e.setDate(s.getDate()+6);return e;}
+    function ord(n){var s=['th','st','nd','rd'],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0]);}
+    function pickFg(bg){if(!bg)return '#302f2c';var hex=bg.replace('#','');if(hex.length===3)hex=hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];var r=parseInt(hex.slice(0,2),16),g=parseInt(hex.slice(2,4),16),b=parseInt(hex.slice(4,6),16);var L=(0.299*r+0.587*g+0.114*b);return L>165?'#302f2c':'#fff';}
+
+    var TYPE_COLORS={
+      rig:{bg:'#e8d8a8',fg:'#5a4818'},
+      reh:{bg:'#dcc2d8',fg:'#4a2a44'},
+      tx:{bg:'#c5d8b4',fg:'#3a4f30'},
+      derig:{bg:'#e8b8a0',fg:'#5a3018'},
+      custom:{bg:'#b8b8d8',fg:'#2a2a55'}
+    };
+    var DARK={bg:'#dcd8d0',fg:'#5a564f'};
+    var WK={bg:'#ebe8e0',fg:'#8a8780'};
+    var monShort=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+    var monLong=['January','February','March','April','May','June','July','August','September','October','November','December'];
+    var holsByIso={};
+    (window._opsHolidays||[]).forEach(function(h){if(h&&h.date)holsByIso[h.date]=h;});
+
+    // Build per-month list
+    var firstD=new Date(dates[0]+'T00:00:00');
+    var lastD=new Date(dates[dates.length-1]+'T00:00:00');
+    var monthList=[];
+    var cM=new Date(firstD.getFullYear(),firstD.getMonth(),1);
+    var lMo=new Date(lastD.getFullYear(),lastD.getMonth(),1);
+    while(cM.getTime()<=lMo.getTime()){
+      monthList.push({y:cM.getFullYear(),m:cM.getMonth()});
+      cM.setMonth(cM.getMonth()+1);
+    }
+
+    var allMonths='';
+    monthList.forEach(function(mo){
+      var first=startOfWeek(new Date(mo.y,mo.m,1));
+      var last=endOfWeek(new Date(mo.y,mo.m+1,0));
+      var weeks=[];var cur=new Date(first);
+      while(cur.getTime()<=last.getTime()){
+        var wk=[];
+        for(var i=0;i<7;i++){
+          var iso=cur.getFullYear()+'-'+String(cur.getMonth()+1).padStart(2,'0')+'-'+String(cur.getDate()).padStart(2,'0');
+          wk.push({iso:iso,d:new Date(cur),entries:byDate[iso]||[],inMonth:cur.getMonth()===mo.m});
+          cur.setDate(cur.getDate()+1);
+        }
+        weeks.push(wk);
+      }
+      // Check if month has any entries
+      var hasAny=weeks.some(function(w){return w.some(function(c){return c.inMonth&&c.entries.length;});});
+      if(!hasAny)return; // skip empty months
+
+      var monBlock='<div class="cal-block">';
+      monBlock+='<div class="cal-title">'+monLong[mo.m]+' '+mo.y+'</div>';
+      monBlock+='<div class="cal-grid">';
+      // Day headers
+      monBlock+='<div class="cal-hdr">';
+      ['MON','TUE','WED','THU','FRI','SAT','SUN'].forEach(function(dl){
+        monBlock+='<div class="cal-hdr-c">'+dl+'</div>';
+      });
+      monBlock+='</div>';
+      weeks.forEach(function(week){
+        // Date strip
+        monBlock+='<div class="cal-strip">';
+        week.forEach(function(cell){
+          var d=cell.d;
+          var dim=cell.inMonth?'':' dim';
+          monBlock+='<div class="cal-strip-c'+dim+'">'+ord(d.getDate())+' '+monShort[d.getMonth()]+'</div>';
+        });
+        monBlock+='</div>';
+        // Activity row
+        var maxEntries=Math.max.apply(null,week.map(function(c){return Math.max(c.entries.length,1);}));
+        var rowMinHeight=Math.max(48,maxEntries*22+10);
+        monBlock+='<div class="cal-row" style="min-height:'+rowMinHeight+'px">';
+        week.forEach(function(cell){
+          var hol=holsByIso[cell.iso];
+          var entries=cell.entries;
+          var dow=cell.d.getDay();
+          var isWeekend=(dow===0||dow===6);
+          var holHtml=hol?'<div class="cal-hol">Bank Holiday</div>':'';
+          if(!entries.length||!cell.inMonth){
+            var col=cell.inMonth?(isWeekend?WK:DARK):{bg:'#f5f3eb',fg:'#bdbab2'};
+            var label=cell.inMonth?(isWeekend?'':'DARK'):'';
+            monBlock+='<div class="cal-cell empty" style="background:'+col.bg+'">'
+              +(label?'<div class="cal-dark" style="color:'+col.fg+'">'+label+'</div>':'')
+              +holHtml+'</div>';
+            return;
+          }
+          monBlock+='<div class="cal-cell">';
+          entries.forEach(function(e){
+            var defCol=TYPE_COLORS[e.type]||DARK;
+            var bg=e.color||defCol.bg;
+            var fg=e.color?pickFg(bg):defCol.fg;
+            var fontSize=entries.length===1?'15px':(entries.length===2?'12px':'10px');
+            monBlock+='<div class="cal-ent" style="background:'+bg+';color:'+fg+'">';
+            monBlock+='<div class="cal-lbl" style="font-size:'+fontSize+';color:'+fg+'">'+esc((e.label||'').toUpperCase())+'</div>';
+            if(e.tm){
+              var tmCol=(typeof opsMlColor==='function')?opsMlColor(e.tm):'#5e564f';
+              var tmFg=pickFg(tmCol);
+              monBlock+='<div class="cal-tm" style="background:'+tmCol+';color:'+tmFg+'">'+esc(e.tm)+'</div>';
+            }
+            monBlock+='</div>';
+          });
+          if(hol)monBlock+='<div class="cal-hol-band">'+holHtml+'</div>';
+          monBlock+='</div>';
+        });
+        monBlock+='</div>';
+      });
+      monBlock+='</div></div>';
+      allMonths+=monBlock;
+    });
+    return allMonths||'';
+  }
+
+  // ─────────── CONTACTS ───────────
+  function contactsHtml(){
+    if(!Array.isArray(j.contacts)||!j.contacts.length)return '';
+    var rows=j.contacts.map(function(c){
+      if(!c)return '';
+      var n=esc(c.name||'');
+      var r=esc(c.role||'');
+      var ph=esc(c.phone||'');
+      var em=esc(c.email||'');
+      if(!n&&!r&&!ph&&!em)return '';
+      return '<div class="contact"><div class="c-name">'+n+'</div>'
+        +(r?'<div class="c-role">'+r+'</div>':'')
+        +(ph?'<div class="c-line">'+ph+'</div>':'')
+        +(em?'<div class="c-line">'+em+'</div>':'')
+        +'</div>';
+    }).filter(Boolean).join('');
+    return rows?'<div class="contacts-grid">'+rows+'</div>':'';
+  }
+
+  // ─────────── CREW ───────────
+  function crewHtml(){
+    if(!Array.isArray(j.crew)||!j.crew.length)return '';
+    var byType={versa:[],freelance:[],production:[]};
+    j.crew.forEach(function(c){if(!c||!c.name)return;var t=c.type||'versa';if(!byType[t])byType[t]=[];byType[t].push(c);});
     var out='';
-    views.forEach(function(v){
-      var mons=(mv.mons&&mv.mons[v[0]])||[];
-      if(!mons.length)return;
-      var lines='';
-      mons.forEach(function(m,i){
-        var nm=esc(m.name||('Monitor '+(i+1)));
-        if(m.img){lines+='<div class="p-mvimg"><img src="'+m.img+'"><div class="p-mvimg-cap">'+nm+'</div></div>';return;}
-        var val='';
-        if(m.type==='small'){val=m.src?esc(m.src):'<span style="color:#A8A39B">\u2014 blank \u2014</span>';}
-        else if(m.mode==='picture'){val='Picture';}
-        else{var srcs=Object.keys(m.panes||{}).map(function(k){return m.panes[k];}).filter(Boolean);var uniq=srcs.filter(function(s,k){return srcs.indexOf(s)===k;});val='Designer \u00b7 preset '+esc(m.layout||'1')+(uniq.length?' \u00b7 '+esc(uniq.join(', ')):'');}
-        lines+=row(nm,val);
+    function block(title,arr){
+      if(!arr.length)return '';
+      var rows=arr.map(function(c){return '<div class="crew-row"><span class="cr-role">'+esc(c.role||'')+'</span><span class="cr-name">'+esc(c.name||'')+'</span></div>';}).join('');
+      return '<div class="crew-block"><div class="crew-sub">'+esc(title)+'</div>'+rows+'</div>';
+    }
+    out+=block('Versa Crew',byType.versa);
+    out+=block('Freelance',byType.freelance);
+    out+=block('Production',byType.production);
+    return out||'';
+  }
+
+  // ─────────── CAMERAS ───────────
+  function camerasHtml(){
+    if(!numCams)return '';
+    var head='';
+    if(j.techRes||j.techFR||j.techCodec||j.techScan){
+      var spec=[];
+      if(j.techRes)spec.push(j.techRes);
+      if(j.techFR)spec.push(j.techFR);
+      if(j.techScan)spec.push(j.techScan);
+      if(j.techCodec)spec.push(j.techCodec);
+      head='<div class="cam-spec">'+esc(spec.join(' / '))+'</div>';
+    }
+    var camRcp=(j.lvSpec&&j.lvSpec.camRcp)||[];
+    var details=j.camDetails||[];
+    var rows='';
+    for(var i=0;i<numCams;i++){
+      var n=i+1;
+      var d=details[i]||{};
+      var r=camRcp[i]||{};
+      var rcp=r.mode==='rcp'?'RCP':(r.mode==='local'?'Local':'');
+      var bits=[];
+      if(d.body)bits.push(d.body);
+      if(d.lens)bits.push(d.lens);
+      if(d.notes)bits.push(d.notes);
+      rows+='<div class="cam-row"><span class="cam-n">CAM '+n+'</span>'
+        +'<span class="cam-d">'+esc(bits.join(' · '))+'</span>'
+        +(rcp?'<span class="cam-rcp">'+rcp+'</span>':'')+'</div>';
+    }
+    return head+rows;
+  }
+
+  // ─────────── AUDIO ───────────
+  function audioHtml(){
+    var blocks='';
+    var hasAny=false;
+    // Sound Supervisor
+    var supRow='';
+    if(au.supervisor)supRow+=row3('Sound Supervisor', esc(au.supervisor));
+    if(au.gramsOp)supRow+=row3('Grams Operator', esc(au.gramsOp));
+    if(au.floorCrew)supRow+=row3('Floor Crew', esc(au.floorCrew));
+    if(supRow){blocks+='<div class="aud-sub">Personnel</div><div class="facts">'+supRow+'</div>';hasAny=true;}
+
+    // Hydras
+    if(Array.isArray(au.hydras)&&au.hydras.length){
+      au.hydras.forEach(function(h,hi){
+        if(!h)return;
+        blocks+='<div class="aud-sub">Hydra '+(hi+1)+(h.wallbox?' · '+esc(h.wallbox):'')+'</div>';
+        var meta='';
+        if(h.ins)meta+=row3('Inputs', esc(String(h.ins)));
+        if(h.outs)meta+=row3('Outputs', esc(String(h.outs)));
+        if(meta)blocks+='<div class="facts">'+meta+'</div>';
+        // Input list
+        if(Array.isArray(h.inputs)&&h.inputs.length){
+          var ins=h.inputs.map(function(x,xi){if(!x||!x.label)return '';return '<div class="aud-row"><span class="aud-n">IN '+(xi+1)+'</span><span class="aud-l">'+esc(x.label)+'</span></div>';}).filter(Boolean).join('');
+          if(ins)blocks+='<div class="aud-list">'+ins+'</div>';
+        }
+        if(Array.isArray(h.outputs)&&h.outputs.length){
+          var ots=h.outputs.map(function(x,xi){if(!x||!x.label)return '';return '<div class="aud-row"><span class="aud-n">OUT '+(xi+1)+'</span><span class="aud-l">'+esc(x.label)+'</span></div>';}).filter(Boolean).join('');
+          if(ots)blocks+='<div class="aud-list">'+ots+'</div>';
+        }
+        hasAny=true;
       });
-      out+=heading(v[1]+' Wall')+lines;
-    });
-    mvHTML=out;
-  })();
-
-  // ── Comms ──
-  var commsHTML='';
-  (function(){
-    var c=j.comms; if(!c)return;
-    var bits='';
-    if(c.supervisor)bits+=row('Comms Supervisor',esc(c.supervisor));
-    if(c.supplier)bits+=row('Supplier',esc(c.supplier));
-    var ppl=(c.people||[]).filter(function(p){return p&&p.name;});
-    if(ppl.length){
-      bits+=heading('Comms List');
-      ppl.forEach(function(p){
-        var dev=[];
-        if(p.bolero)dev.push('Bolero'+(p.boleroNum?' '+p.boleroNum:''));
-        if(p.panel)dev.push('Panel'+(p.panelPos?' '+p.panelPos:(p.panelNum?' '+p.panelNum:'')));
-        if(p.walkie)dev.push('Walkie'+(p.walkieNum?' '+p.walkieNum:''));
-        if(p.commType&&!p.bolero&&!p.panel&&!p.walkie)dev.push(p.commType);
-        if(p.headset)dev.push(p.headset);
-        bits+=row(p.role||'Comms',esc(p.name||'')+(dev.length?' \u00b7 '+esc(dev.join(' \u00b7 ')):''));
+    }
+    // MADI
+    if(Array.isArray(au.madi)&&au.madi.length){
+      au.madi.forEach(function(m,mi){
+        if(!m)return;
+        blocks+='<div class="aud-sub">'+esc(m.name||('MADI '+(mi+1)))+'</div>';
+        if(Array.isArray(m.inputs)&&m.inputs.length){
+          var ins=m.inputs.map(function(x,xi){if(!x||!x.label)return '';return '<div class="aud-row"><span class="aud-n">'+(xi+1)+'</span><span class="aud-l">'+esc(x.label)+'</span></div>';}).filter(Boolean).join('');
+          if(ins)blocks+='<div class="aud-list">'+ins+'</div>';
+        }
+        hasAny=true;
       });
     }
-    if(c.showChannels!==false){
-      var chs=(c.channels||[]).filter(function(ch){return ch&&ch.name;});
-      if(chs.length){bits+=heading('Walkie Channels');chs.forEach(function(ch,i){bits+=row('Ch '+(i+1),esc(ch.name)+(ch.notes?' \u2014 '+esc(ch.notes):''));});}
+    // Radio Mics
+    if(Array.isArray(au.radioMics)&&au.radioMics.length){
+      blocks+='<div class="aud-sub">Radio Mics'+(au.radioMicSystem?' · '+esc(au.radioMicSystem):'')+'</div>';
+      var rm=au.radioMics.map(function(r,ri){if(!r)return '';var l=r.name||r.label||('Mic '+(ri+1));var v=r.user||r.holder||r.notes||'';return '<div class="aud-row"><span class="aud-n">RM '+(ri+1)+'</span><span class="aud-l">'+esc(l)+(v?' — '+esc(v):'')+'</span></div>';}).filter(Boolean).join('');
+      if(rm)blocks+='<div class="aud-list">'+rm+'</div>';
+      if(au.radioMicNotes)blocks+='<div class="aud-note">'+esc(au.radioMicNotes)+'</div>';
+      hasAny=true;
     }
-    if(c.showBoleroChannels!==false){
-      var bchs=(c.boleroChannels||[]).filter(function(ch){return ch&&(typeof ch==='string'?ch:ch.name);});
-      if(bchs.length){bits+=heading('Bolero Channels');bchs.forEach(function(ch,i){var nm=(typeof ch==='string')?ch:(ch.name||'');bits+=row('Ch '+(i+1),esc(nm)+((ch&&ch.notes)?' \u2014 '+esc(ch.notes):''));});}
+    // Multitrack
+    if(au.multitrack){
+      var mt=au.multitrack;
+      var mtRow='';
+      if(mt.recorder)mtRow+=row3('Recorder', esc(mt.recorder));
+      if(mt.samplingFreq)mtRow+=row3('Sample Rate', esc(mt.samplingFreq));
+      if(mt.bitDepth)mtRow+=row3('Bit Depth', esc(mt.bitDepth));
+      if(mt.bwav)mtRow+=row3('BWAV', esc(mt.bwav));
+      if(mtRow){
+        blocks+='<div class="aud-sub">Multitrack</div><div class="facts">'+mtRow+'</div>';
+        if(Array.isArray(mt.tracks)&&mt.tracks.length){
+          var tks=mt.tracks.map(function(t,ti){if(!t||!t.label)return '';return '<div class="aud-row"><span class="aud-n">TR '+(ti+1)+'</span><span class="aud-l">'+esc(t.label)+'</span></div>';}).filter(Boolean).join('');
+          if(tks)blocks+='<div class="aud-list">'+tks+'</div>';
+        }
+        if(mt.otherNotes)blocks+='<div class="aud-note">'+esc(mt.otherNotes)+'</div>';
+        hasAny=true;
+      }
     }
-    if(c.notes)bits+=heading('Comms Notes')+'<div class="p-row" style="flex:0 0 100%"><span class="p-val">'+esc(c.notes).replace(/\n/g,'<br>')+'</span></div>';
-    commsHTML=bits;
-  })();
-
-  // ── Filming Schedule (chronological) ──
-  var schedHTML='';
-  (function(){
-    var ev=[];
-    (j.rigDates||[]).forEach(function(d){if(d&&d.date)ev.push({date:d.date,label:d.label||d.note||'Rig',crew:d.crew});});
-    (j.txDates||[]).forEach(function(d){if(d&&d.date)ev.push({date:d.date,label:d.label||(isTX?'TX':'RX'),crew:d.crew});});
-    (j.drigDates||[]).forEach(function(d){if(d&&d.date)ev.push({date:d.date,label:d.label||d.note||'De-Rig',crew:d.crew});});
-    if(j.drigDate)ev.push({date:j.drigDate,label:'De-Rig'});
-    (j.scheduleCustom||[]).forEach(function(d){if(d&&d.date)ev.push({date:d.date,label:d.label||'Event',crew:d.crew});});
-    if(!ev.length)return;
-    ev.sort(function(a,b){return a.date<b.date?-1:a.date>b.date?1:0;});
-    ev.forEach(function(e){
-      var crewStr='';
-      if(e.crew&&typeof e.crew==='object'){crewStr=Object.keys(e.crew).map(function(k){return e.crew[k]?(k+': '+e.crew[k]):'';}).filter(Boolean).join(' \u00b7 ');}
-      schedHTML+='<div class="p-row" style="flex:0 0 100%"><span class="p-lbl" style="min-width:150px">'+esc(fmtD(e.date))+' \u00b7 '+esc(e.label)+'</span><span class="p-val">'+esc(crewStr)+'</span></div>';
-    });
-  })();
-
-  // ── Crew ──
-  var crewHTML='';
-  var versaCr=(j.crew||[]).filter(function(c){return c.type==='versa';});
-  var flCr=(j.crew||[]).filter(function(c){return c.type==='freelance';});
-  var prodCr=(j.crew||[]).filter(function(c){return c.type==='production';});
-  if(versaCr.length){crewHTML+=heading('Versa Crew');versaCr.forEach(function(c){crewHTML+=row(c.role||'Crew',esc(c.name)+(c.dates&&c.dates.length?' ('+c.dates.length+' days)':''));});}
-  if(flCr.length){crewHTML+=heading('Versa Freelance');flCr.forEach(function(c){crewHTML+=row(c.role||'Crew',esc(c.name)+(c.dates&&c.dates.length?' ('+c.dates.length+' days)':''));});}
-  if(prodCr.length){crewHTML+=heading('Production Crew');prodCr.forEach(function(c){crewHTML+=row(c.role||'Crew',esc(c.name));});}
-
-  // ── Monitors ──
-  var monHTML='';
-  (j.monitors||[]).filter(function(m){return m.name||m.use;}).forEach(function(m){
-    monHTML+='<div class="p-row"><span class="p-lbl">'+esc(m.name||'—')+'</span><span class="p-val">'
-      +(m.use?esc(m.use)+' · ':'')+esc(m.type||'')
-      +(m.feed?' Feed: '+esc(m.feed):'')
-      +(m.routerOut?' Out: '+esc(m.routerOut):'')
-      +(m.wallBox?' WB: '+esc(m.wallBox):'')
-      +(m.rigged?' ✓ Rigged':'')
-      +'</span></div>';
-  });
-
-  // ── Prep / Kit ──
-  var prepHTML='';
-  (j.prep||[]).forEach(function(p){
-    var k=kit.find(function(x){return x.id===p.kid;});if(!k)return;
-    prepHTML+=row(k.name,(p.supplier&&p.supplier!=='Versa Inventory'?'Hired from '+esc(p.supplier):'Inventory')+(p.arrivalDate?' · Arrives '+esc(fmtD(p.arrivalDate)):'')+(p.done?' ✓':''));
-  });
-
-  // ── IP Addresses ──
-  var ipHTML='';var autoIps=[];
-  (lv.camRcp||[]).forEach(function(rcp,ci){
-    if(rcp.mode==='rcp-ip'){
-      if(rcp.ccuIp)autoIps.push({l:'CAM '+(ci+1)+' CCU IP',v:rcp.ccuIp});
-      if(rcp.rcpIp)autoIps.push({l:'CAM '+(ci+1)+' RCP IP',v:rcp.rcpIp});
-      if(rcp.targetIp)autoIps.push({l:'CAM '+(ci+1)+' Target IP',v:rcp.targetIp});
+    // Grams / SpotOn
+    if(au.hasGramsDesk||au.gramsDesk){
+      blocks+='<div class="aud-sub">Grams Desk</div>';
+      var gdRow='';
+      if(au.gramsDesk&&au.gramsDesk.model)gdRow+=row3('Model', esc(au.gramsDesk.model));
+      if(au.gramsDesk&&au.gramsDesk.notes)gdRow+=row3('Notes', esc(au.gramsDesk.notes));
+      if(gdRow)blocks+='<div class="facts">'+gdRow+'</div>';
+      hasAny=true;
     }
-  });
-  if(mcsG.enabled&&mcsG.ip)autoIps.push({l:'MCS IP',v:mcsG.ip});
-  autoIps.concat(j.manualIps||[]).forEach(function(ip){ipHTML+=row(ip.l||ip.label,esc(ip.v||ip.value));});
-
-  // ── logo ──
-  var pdfLogo=window._VERSA_LOGO||window._versaLogoSrc||'';
-  if(!pdfLogo){var el=document.querySelector('img[src^="data:image/svg"]');if(el)pdfLogo=el.src;}
-
-  // ── masthead + principals builder ──
-  function masthead(docTitle){
-    return '<div class="p-masthead">'
-      +'<img class="p-mh-logo" src="'+pdfLogo+'" alt="Versa Studios">'
-      +'<div class="p-mh-right"><div class="p-mh-doc">'+esc(docTitle)+'</div>'
-      +'<div class="p-mh-org">Technical Operations'+((j.loc)?' · '+esc((j.loc||'').toUpperCase()):'')+'</div></div>'
-      +'</div>';
-  }
-  function principals(){
-    function chip(lbl,val,strong){if(!val)return '';return '<div class="p-prin'+(strong?' p-prin-strong':'')+'"><span class="p-prin-l">'+esc(lbl)+'</span><span class="p-prin-v">'+esc(val)+'</span></div>';}
-    var inner=chip('Tech Manager',techMgr,true)+chip('Project Manager',pm)+chip('Client',clientNm);
-    if(!inner)return '';
-    return '<div class="p-prin-row">'+inner+'</div>';
-  }
-  function titleBlock(){
-    return '<div class="p-jobtitle">'+esc(j.name)+'</div>'
-      +'<div class="p-subtitle">'+esc(j.studio||j.loc||'')
-      +(j.start?' · '+esc(fmtD(j.start)):'')+(j.end?' – '+esc(fmtD(j.end)):'')
-      +(txStr?' · '+esc(txStr):'')
-      +' · <span class="p-status" style="background:'+sc.bg+';color:'+sc.color+'">'+esc(j.status||'TBC')+'</span></div>';
+    if(au.hasSpotOn||au.spotOn){
+      blocks+='<div class="aud-sub">SpotOn</div>';
+      var spRow='';
+      if(au.spotOn&&au.spotOn.unit)spRow+=row3('Unit', esc(au.spotOn.unit));
+      if(au.spotOn&&au.spotOn.notes)spRow+=row3('Notes', esc(au.spotOn.notes));
+      if(spRow)blocks+='<div class="facts">'+spRow+'</div>';
+      hasAny=true;
+    }
+    return hasAny?blocks:'';
   }
 
-  // ══ CLIENT SHEET ══
-  var clientDoc='<div class="p-doc" id="doc-client"><div class="p-page">'
-    +masthead('Production Summary')
-    +'<div class="p-body">'+titleBlock()+principals()
-    +(contHTML?sec('Key Contacts',contHTML):'')
-    +(datesHTML?sec('Key Dates',datesHTML):'')
-    +(crewHTML?sec('Crew',crewHTML):'')
-    +'<div class="p-foot"><span>VERSA STUDIOS</span><span>'+esc(j.name)+' · Production Summary</span><span id="gen-c"></span></div>'
-    +'</div></div></div>';
+  // ─────────── EVS ───────────
+  function evsHtml(){
+    if(!ev||(!ev.system&&!ev.supervisor&&!ev.operators&&!ev.channels&&!ev.notes))return '';
+    var rows='';
+    if(ev.supervisor)rows+=row3('Supervisor', esc(ev.supervisor));
+    if(ev.operators)rows+=row3('Operators', esc(ev.operators));
+    if(ev.system)rows+=row3('System', esc(ev.system));
+    if(ev.software)rows+=row3('Software', esc(ev.software));
+    if(ev.channels)rows+=row3('Channels', esc(ev.channels));
+    if(ev.codec)rows+=row3('Codec', esc(ev.codec));
+    if(ev.extraKit)rows+=row3('Extra Kit', esc(ev.extraKit));
+    var out=rows?'<div class="facts">'+rows+'</div>':'';
+    if(ev.notes)out+='<div class="aud-note">'+esc(ev.notes)+'</div>';
+    return out;
+  }
 
-  // ══ TECHNICAL PACK ══
-  var techDoc='<div class="p-doc" id="doc-technical"><div class="p-page">'
-    +masthead('Technical Pack')
-    +'<div class="p-body">'+titleBlock()+principals()
-    +sec('Job Details',infoHTML,'info')
-    +(datesHTML?sec('Key Dates',datesHTML,'dates'):'')
-    +(schedHTML?sec('Filming Schedule',schedHTML,'schedule'):'')
-    +(contHTML?sec('Contacts',contHTML,'contacts'):'')
-    +(techHTML?sec('Tech Spec',techHTML,'tech'):'')
-    +(camHTML?sec('Camera Spec','<div class="p-cam-grid">'+camHTML+'</div>','cameras'):'')
-    +(lvHTML?sec('Lighting / Vision & Control',lvHTML,'lv'):'')
-    +(evsHTML?sec('EVS / Replay',evsHTML,'evs'):'')
-    +(gfxHTML?sec('GFX',gfxHTML,'gfx'):'')
-    +(audioHTML?sec('Audio',audioHTML,'audio'):'')
-    +(commsHTML?sec('Comms',commsHTML,'comms'):'')
-    +(mvHTML?sec('Multiviewers',mvHTML,'mv'):'')
-    +(monHTML?sec('Monitors',monHTML,'monitors'):'')
-    +(crewHTML?sec('Crew',crewHTML,'crew'):'')
-    +(prepHTML?sec('Kit / Prep List',prepHTML,'prep'):'')
-    +(ipHTML?sec('IP Addresses',ipHTML,'ip'):'')
-    +'<div class="p-foot"><span>VERSA STUDIOS</span><span>'+esc(j.name)+' · Technical Pack</span><span id="gen-t"></span></div>'
-    +'</div></div></div>';
+  // ─────────── GFX ───────────
+  function gfxHtml(){
+    if(!gx||(!gx.system&&!gx.supervisor&&!gx.operators&&!gx.channels&&!gx.notes))return '';
+    var rows='';
+    if(gx.supervisor)rows+=row3('Supervisor', esc(gx.supervisor));
+    if(gx.operators)rows+=row3('Operators', esc(gx.operators));
+    if(gx.system)rows+=row3('System', esc(gx.system));
+    if(gx.software)rows+=row3('Software', esc(gx.software));
+    if(gx.channels)rows+=row3('Channels', esc(gx.channels));
+    if(gx.extraKit)rows+=row3('Extra Kit', esc(gx.extraKit));
+    var out=rows?'<div class="facts">'+rows+'</div>':'';
+    if(gx.notes)out+='<div class="aud-note">'+esc(gx.notes)+'</div>';
+    return out;
+  }
 
-  // section toggle controls (technical only)
-  var secDefs=[['info','Job Details'],['dates','Key Dates'],['schedule','Filming Schedule'],['contacts','Contacts'],['tech','Tech Spec'],['cameras','Cameras'],['lv','Lighting/Vision'],['evs','EVS'],['gfx','GFX'],['audio','Audio'],['comms','Comms'],['mv','Multiviewers'],['monitors','Monitors'],['crew','Crew'],['prep','Kit/Prep'],['ip','IP']];
-  var toggleHtml=secDefs.map(function(d){
-    if(techDoc.indexOf('data-sec="'+d[0]+'"')<0)return '';
-    return '<label class="p-tg"><input type="checkbox" data-k="'+d[0]+'" checked onchange="togSec(\''+d[0]+'\',this.checked)"> '+d[1]+'</label>';
-  }).join('');
-  var soloHtml='<span class="p-solo-lbl">Export only:</span><button class="p-solo" onclick="soloSec(\'all\')">All</button>'
-    +secDefs.map(function(d){
-      if(techDoc.indexOf('data-sec="'+d[0]+'"')<0)return '';
-      return '<button class="p-solo" onclick="soloSec(\''+d[0]+'\')">'+d[1]+'</button>';
-    }).join('');
+  // ─────────── MULTIVIEWERS ───────────
+  function mvHtml(){
+    if(typeof _mvDesEnsure!=='function')return '';
+    var walls;
+    try{walls=_mvDesEnsure(j);}catch(e){walls=null;}
+    if(!walls||!walls.mons)return '';
+    var mons=walls.mons;
+    function wall(title,arr){
+      if(!arr||!arr.length)return '';
+      var cells=arr.map(function(m,i){
+        var nm=m.name||('Mon '+(i+1));
+        var sz=m.type==='big'?'cal-big':'cal-sm';
+        return '<div class="mv-cell '+sz+'">'+esc(nm)+'</div>';
+      }).join('');
+      return '<div class="mv-block"><div class="aud-sub">'+esc(title)+'</div><div class="mv-grid">'+cells+'</div></div>';
+    }
+    var html='';
+    html+=wall('Production', mons.production);
+    html+=wall('Vision', mons.vision);
+    html+=wall('Sound', mons.sound);
+    return html||'';
+  }
 
-  var doc='<!DOCTYPE html><html><head><meta charset="utf-8"><title>'+esc(j.name)+' — Versa Studios</title>'
-    +'<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">'
+  // ─────────── KIT PREP ───────────
+  function prepHtml(){
+    if(!Array.isArray(j.prep)||!j.prep.length||typeof kit==='undefined')return '';
+    var rows=j.prep.map(function(p){
+      if(!p)return '';
+      var k=kit.find(function(x){return x.id==p.kid;});
+      if(!k)return '';
+      return '<div class="prep-row"><span class="prep-tk">'+(p.done?'☑':'☐')+'</span><span class="prep-nm">'+esc(k.name||'')+'</span>'+(p.area?'<span class="prep-area">'+esc(p.area)+'</span>':'')+'</div>';
+    }).filter(Boolean).join('');
+    return rows;
+  }
+
+  // ─────────── MANUAL IPS ───────────
+  function ipsHtml(){
+    if(!Array.isArray(j.manualIps)||!j.manualIps.length)return '';
+    var rows=j.manualIps.map(function(ip){
+      if(!ip||(!ip.label&&!ip.value))return '';
+      return '<div class="ip-row"><span class="ip-l">'+esc(ip.label||'')+'</span><span class="ip-v">'+esc(ip.value||'')+'</span>'+(ip.notes?'<span class="ip-n">'+esc(ip.notes)+'</span>':'')+'</div>';
+    }).filter(Boolean).join('');
+    return rows;
+  }
+
+  // ─────────── NOTES ───────────
+  function notesHtml(){
+    if(!j.notes&&!j.techNotes)return '';
+    var out='';
+    if(j.notes)out+='<div class="note-block"><div class="aud-sub">Production Notes</div><div class="note-body">'+esc(j.notes).replace(/\n/g,'<br>')+'</div></div>';
+    if(j.techNotes)out+='<div class="note-block"><div class="aud-sub">Technical Notes</div><div class="note-body">'+esc(j.techNotes).replace(/\n/g,'<br>')+'</div></div>';
+    return out;
+  }
+
+  // ─────────── DOCUMENT ASSEMBLY ───────────
+  var schedBlock=scheduleHtml();
+  var prinBlock=principalsHtml();
+  var factsBlock=keyFactsHtml();
+  var contactsBlock=contactsHtml();
+  var crewBlock=crewHtml();
+
+  // Production Summary (client doc) — compact, no internal-only sections
+  var prodSummary=''
+    +sec('Key Facts', factsBlock)
+    +sec('Principals', prinBlock)
+    +sec('Schedule', schedBlock?'<div class="cal-wrap">'+schedBlock+'</div>':'')
+    +sec('Contacts', contactsBlock);
+
+  // Technical Pack (internal) — everything, with per-section toggle keys
+  var camsBlock=camerasHtml();
+  var audBlock=audioHtml();
+  var evsBlock=evsHtml();
+  var gfxBlock=gfxHtml();
+  var mvBlock=mvHtml();
+  var prepBlock=prepHtml();
+  var ipsBlock=ipsHtml();
+  var notesBlock=notesHtml();
+  var crewSecBlock=crewBlock;
+
+  var techPack=''
+    +sec('Key Facts', factsBlock, 'facts')
+    +sec('Principals', prinBlock, 'principals')
+    +sec('Schedule', schedBlock?'<div class="cal-wrap">'+schedBlock+'</div>':'', 'schedule')
+    +sec('Crew', crewSecBlock, 'crew')
+    +sec('Contacts', contactsBlock, 'contacts')
+    +sec('Cameras', camsBlock, 'cameras')
+    +sec('Audio', audBlock, 'audio')
+    +sec('EVS / Replay', evsBlock, 'evs')
+    +sec('GFX', gfxBlock, 'gfx')
+    +sec('Multiviewers', mvBlock, 'mv')
+    +sec('Kit Prep', prepBlock, 'prep')
+    +sec('Manual IPs', ipsBlock, 'ips')
+    +sec('Notes', notesBlock, 'notes');
+
+  // Build section toggle list for tech pack
+  var togSections=[
+    {k:'facts',l:'Key Facts'},{k:'principals',l:'Principals'},{k:'schedule',l:'Schedule'},
+    {k:'crew',l:'Crew'},{k:'contacts',l:'Contacts'},{k:'cameras',l:'Cameras'},{k:'audio',l:'Audio'},
+    {k:'evs',l:'EVS'},{k:'gfx',l:'GFX'},{k:'mv',l:'Multiviewers'},{k:'prep',l:'Kit Prep'},
+    {k:'ips',l:'Manual IPs'},{k:'notes',l:'Notes'}
+  ];
+  var togHtml=togSections.map(function(t){return '<label class="tog"><input type="checkbox" checked data-tog="'+t.k+'"> '+esc(t.l)+'</label>';}).join('');
+
+  var genDate=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+  var genTime=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+
+  // ─────────── HTML DOCUMENT ───────────
+  var doc=''
+    +'<!doctype html><html><head><meta charset="utf-8">'
+    +'<title>'+esc(j.name||'Job')+' — Versa Studios</title>'
+    +'<link rel="preconnect" href="https://fonts.googleapis.com">'
+    +'<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
+    +'<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700;800;900&display=swap" rel="stylesheet">'
     +'<style>'
-    +'*{box-sizing:border-box;margin:0;padding:0}'
-    +'body{font-family:"Barlow",sans-serif;font-size:13px;color:#1A1918;background:#E8E5DF}'
-    +'.p-page{max-width:800px;margin:0 auto 28px;background:#FAFAF8;box-shadow:0 1px 3px rgba(0,0,0,.08),0 8px 32px rgba(0,0,0,.1);position:relative}'
-    +'.p-masthead{background:#fff;padding:14px 30px 11px;display:flex;align-items:flex-end;justify-content:space-between;gap:20px;border-bottom:2px solid #302f2c}'
-    +'.p-mh-org{font-family:"Barlow Condensed",sans-serif;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#9A958D;margin-top:3px}'
-    +'.p-mh-doc{font-family:"Barlow Condensed",sans-serif;font-size:20px;font-weight:700;color:#302f2c;line-height:1;letter-spacing:.04em;text-transform:uppercase;text-align:right}'
-    +'.p-mh-sub{font-size:12px;color:#7A766F;margin-top:5px}'
-    +'.p-mh-right{display:flex;flex-direction:column;align-items:flex-end;gap:0;flex-shrink:0}'
-    +'.p-mh-logo{height:34px;width:auto;filter:brightness(0)}'
-    +'.p-mh-ref{font-family:"Barlow Condensed",sans-serif;font-size:10px;color:#9A958D;letter-spacing:.12em}'
-    +'.p-accent{height:0}'
-    +'.p-body{padding:18px 30px 30px}'
-    +'.p-jobtitle{font-family:"Barlow Condensed",sans-serif;font-size:30px;font-weight:700;color:#302f2c;margin-bottom:2px;line-height:1;letter-spacing:.01em;text-transform:uppercase}'
-    +'.p-subtitle{font-size:12.5px;color:#7A766F;margin-bottom:14px;font-weight:500}'
-    +'.p-prin-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}'
-    +'.p-prin{border:1px solid #D4CFC8;border-radius:4px;padding:6px 13px;background:#FAFAF8;min-width:120px}'
-    +'.p-prin-strong{border-color:#302f2c;border-left:3px solid #F4A258;background:#fff}'
-    +'.p-prin-strong .p-prin-l{color:#9A958D}'
-    +'.p-prin-strong .p-prin-v{color:#302f2c}'
-    +'.p-prin-l{display:block;font-family:"Barlow Condensed",sans-serif;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#9A958D;margin-bottom:1px}'
-    +'.p-prin-v{display:block;font-size:15px;font-weight:600;color:#1A1918}'
-    +'.p-sec{margin-bottom:14px;display:flex;flex-wrap:wrap;column-gap:20px;align-content:flex-start}'
-    +'.p-sec-hdr{flex:0 0 100%;font-family:"Barlow Condensed",sans-serif;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#302f2c;border-bottom:1.5px solid #F4A258;padding-bottom:3px;margin-bottom:7px}'
-    +'.p-row{flex:0 0 calc(50% - 10px);display:flex;gap:10px;padding:2.5px 0;border-bottom:1px solid #EDEAE4;align-items:baseline}'
-    +'.p-lbl{font-family:"Barlow Condensed",sans-serif;font-weight:600;min-width:96px;flex-shrink:0;color:#8A857D;font-size:10.5px;letter-spacing:.04em;text-transform:uppercase}'
-    +'.p-val{color:#1A1918;font-size:12px;font-weight:500;flex:1}'
-    +'.p-heading{flex:0 0 100%;font-family:"Barlow Condensed",sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#B07A2E;margin:9px 0 3px}'
-    +'.p-contact{flex:0 0 calc(50% - 10px);padding:4px 0;border-bottom:1px solid #EDEAE4;font-size:12px;line-height:1.45}'
-    +'.p-cam-grid{flex:0 0 100%;display:grid;grid-template-columns:repeat(2,1fr);gap:8px}'
-    +'.p-cam{padding:8px 11px;border:1px solid #D4CFC8;border-radius:4px;background:#FAFAF8}'
-    +'.p-cam-hdr{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;padding-bottom:3px;border-bottom:1px solid #D4CFC8;color:#302f2c}'
-    +'.p-status{display:inline-block;font-family:"Barlow Condensed",sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:1px 8px;border-radius:2px}'
-    +'.p-foot{display:none;font-family:"Barlow Condensed",sans-serif;font-size:9.5px;letter-spacing:.06em;color:#9A958D;text-transform:uppercase}'
-    +'.p-foot span:nth-child(2){flex:1;text-align:center}'
-    // toolbar
-    +'.p-bar{position:fixed;top:0;left:0;right:0;background:#302f2c;padding:9px 16px;display:flex;gap:10px;align-items:center;z-index:9999;flex-wrap:wrap;box-shadow:0 2px 12px rgba(0,0,0,.3)}'
-    +'.p-bar .brand{color:#F4A258;font-weight:800;font-size:15px;font-family:"Barlow Condensed",sans-serif;letter-spacing:.1em}'
-    +'.p-bar button{padding:6px 14px;background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.22);cursor:pointer;border-radius:4px;font-size:12.5px;font-family:"Barlow",sans-serif}'
-    +'.p-bar button.active{background:#F4A258;color:#302f2c;border-color:#F4A258;font-weight:700}'
-    +'.p-bar button.print{background:#F4A258;color:#302f2c;border-color:#F4A258;font-weight:700;margin-left:auto}'
-    +'.p-tgs{display:none;width:100%;gap:10px 16px;flex-wrap:wrap;padding:8px 2px 2px;border-top:1px solid rgba(255,255,255,.12)}'
-    +'.p-tg{color:rgba(255,255,255,.8);font-size:11.5px;display:inline-flex;align-items:center;gap:5px;cursor:pointer}'
-    +'.p-mvimg{flex:0 0 calc(50% - 10px);margin:2px 0 6px}'
-    +'.p-mvimg img{width:100%;display:block;border:1px solid #D4CFC8;border-radius:3px;background:#000}'
-    +'.p-mvimg-cap{font-family:"Barlow Condensed",sans-serif;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#7A766F;margin-top:3px}'
-    +'.p-solos{display:none;width:100%;gap:6px;flex-wrap:wrap;align-items:center;padding:8px 2px 2px;border-top:1px solid rgba(255,255,255,.12)}'
-    +'.p-solo-lbl{font-family:"Barlow Condensed",sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-right:4px}'
-    +'.p-solo{padding:4px 11px;background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:3px;cursor:pointer;font-family:"Barlow Condensed",sans-serif;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}'
-    +'.p-solo:hover{background:#F4A258;color:#302f2c;border-color:#F4A258}'
-    +'@page{size:A4;margin:13mm}'
-    +'@media print{'
-    +'  body{background:#fff;font-size:11px}'
-    +'  .no-print{display:none !important}'
-    +'  .p-spacer{display:none !important}'
-    +'  .p-page{max-width:none;margin:0;box-shadow:none;background:#fff}'
-    +'  .p-masthead{padding:14px 0 12px}'
-    +'  .p-body{padding:16px 0 0}'
-    +'  .p-doc{break-after:page}'
-    +'  .p-doc:last-child{break-after:auto}'
-    +'  .p-sec,.p-cam,.p-contact,.p-row,.p-prin,.p-mvimg{break-inside:avoid}'
-    +'  .p-jobtitle{font-size:21px}'
-    +'  .p-foot{display:flex;position:fixed;bottom:4mm;left:0;right:0;justify-content:space-between;border-top:1px solid #D4CFC8;padding-top:3px}'
-    +'}'
+    +'*{box-sizing:border-box;margin:0;padding:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}'
+    +'html,body{background:#efede3;color:#302f2c;font-family:"Barlow",-apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif;font-size:10pt;line-height:1.35}'
+    +':root{--ink:#302f2c;--bg:#efede3;--accent:#F4A258;--muted:#8a8780;--border:rgba(48,47,44,.18);--subtle:rgba(48,47,44,.04);--cond:"Barlow Condensed",sans-serif}'
+
+    // Toolbar (screen only)
+    +'.toolbar{position:fixed;top:0;left:0;right:0;background:#302f2c;color:#efede3;padding:10px 16px;display:flex;align-items:center;gap:12px;z-index:1000;border-bottom:1px solid #1a1917}'
+    +'.toolbar h1{font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;flex:1}'
+    +'.toolbar button{background:#F4A258;color:#302f2c;border:none;padding:7px 14px;font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:3px}'
+    +'.toolbar button.alt{background:transparent;color:#efede3;border:1.5px solid #efede3}'
+    +'.toolbar select{background:#efede3;color:#302f2c;border:none;padding:7px 12px;font-family:var(--cond);font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border-radius:3px}'
+    +'.toggles{position:fixed;top:48px;left:0;right:0;background:#2a2926;color:#efede3;padding:10px 16px;display:none;flex-wrap:wrap;gap:6px 16px;z-index:999;border-bottom:1px solid #1a1917}'
+    +'.toggles.on{display:flex}'
+    +'.tog{font-family:var(--cond);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;display:inline-flex;align-items:center;gap:5px;color:#efede3}'
+    +'.tog input{margin:0;accent-color:#F4A258}'
+    +'.page-wrap{padding-top:60px}'
+    +'.page-wrap.has-tog{padding-top:88px}'
+
+    // Page layout
+    +'@page{size:A4;margin:14mm 14mm 18mm 14mm}'
+    +'.page{background:#efede3;width:182mm;margin:0 auto 8mm;padding:0;min-height:269mm;position:relative;page-break-after:always}'
+    +'.page:last-child{page-break-after:auto}'
+    +'@media print{.toolbar,.toggles{display:none!important}.page-wrap{padding-top:0}.page{margin:0;width:auto;min-height:auto;box-shadow:none;page-break-after:always}.page:last-child{page-break-after:auto}}'
+    +'@media screen{.page{box-shadow:0 1px 3px rgba(0,0,0,.06),0 8px 24px rgba(0,0,0,.05);border:1px solid var(--border)}}'
+
+    // Masthead
+    +'.mast{padding:0 0 8px;border-bottom:1.5px solid var(--ink);margin-bottom:14px;display:flex;align-items:flex-end;justify-content:space-between;gap:16px}'
+    +'.mast .logo{height:24px;display:flex;align-items:center}'
+    +'.mast .logo img{height:100%;object-fit:contain}'
+    +'.mast .logo-fallback{font-family:var(--cond);font-size:18px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:var(--ink)}'
+    +'.mast .tm{text-align:right;font-family:var(--cond);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);line-height:1.3}'
+    +'.mast .tm b{display:block;color:var(--ink);font-size:12px;font-weight:900;letter-spacing:.04em;text-transform:none;font-family:"Barlow",sans-serif;margin-top:1px}'
+
+    // Doc title block
+    +'.doc-id{font-family:var(--cond);font-size:9px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:4px}'
+    +'.title-row{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:6px}'
+    +'.title-row h1{font-family:"Barlow",sans-serif;font-size:24pt;font-weight:800;letter-spacing:-0.01em;color:var(--ink);line-height:1.05;flex:1}'
+    +'.status{font-family:var(--cond);font-size:9px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:3px;border:1px solid;white-space:nowrap;align-self:flex-start;margin-top:6px}'
+    +'.sub{font-family:var(--cond);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:18px}'
+    +'.sub b{color:var(--ink);font-weight:900}'
+
+    // Sections
+    +'section.sec{margin-bottom:14px;break-inside:avoid}'
+    +'section.sec h2{font-family:var(--cond);font-size:11px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);padding-bottom:4px;border-bottom:1px solid var(--ink);margin-bottom:8px;position:relative}'
+    +'section.sec h2:after{content:"";position:absolute;left:0;bottom:-1.5px;width:32px;height:1.5px;background:var(--accent)}'
+    +'.empty{font-style:italic;color:var(--muted);font-size:9pt}'
+
+    // Facts grid (2 columns)
+    +'.facts{display:grid;grid-template-columns:1fr 1fr;gap:3px 18px;margin-bottom:4px}'
+    +'.row2,.row3{display:flex;gap:8px;padding:3px 0;border-bottom:1px dotted var(--border);font-size:9.5pt;align-items:baseline}'
+    +'.row2:last-child,.row3:last-child{border-bottom:none}'
+    +'.rl{font-family:var(--cond);font-size:8.5pt;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);min-width:90px;flex:0 0 auto}'
+    +'.rv{color:var(--ink);font-weight:600;flex:1}'
+
+    // Principals
+    +'.prin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}'
+    +'.prin-card{background:var(--subtle);border:1px solid var(--border);padding:8px 10px;border-radius:3px;display:flex;flex-direction:column;gap:1px}'
+    +'.prin-pri{background:#302f2c;border-color:#302f2c}'
+    +'.prin-pri .pl{color:#F4A258}'
+    +'.prin-pri .pv{color:#efede3}'
+    +'.pl{font-family:var(--cond);font-size:7.5pt;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}'
+    +'.pv{font-family:"Barlow",sans-serif;font-size:10.5pt;font-weight:700;color:var(--ink);line-height:1.2}'
+
+    // Schedule calendar — print-safe port
+    +'.cal-wrap{margin-top:2px}'
+    +'.cal-block{margin-bottom:10px;break-inside:avoid}'
+    +'.cal-title{font-family:var(--cond);font-size:11pt;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);margin-bottom:5px;padding-left:2px}'
+    +'.cal-grid{border:1px solid var(--border);border-radius:4px;overflow:hidden;background:transparent}'
+    +'.cal-hdr{display:grid;grid-template-columns:repeat(7,1fr);background:transparent;border-bottom:1.5px solid var(--ink)}'
+    +'.cal-hdr-c{padding:6px 4px;text-align:center;font-family:var(--cond);font-size:9pt;font-weight:900;color:var(--ink);letter-spacing:.12em;border-right:1px solid var(--border)}'
+    +'.cal-hdr-c:last-child{border-right:none}'
+    +'.cal-strip{display:grid;grid-template-columns:repeat(7,1fr);background:#302f2c;color:#efede3}'
+    +'.cal-strip-c{padding:4px 4px;text-align:center;font-family:var(--cond);font-size:8pt;font-weight:800;color:#efede3;border-right:1px solid rgba(239,237,227,.12);letter-spacing:.04em}'
+    +'.cal-strip-c:last-child{border-right:none}'
+    +'.cal-strip-c.dim{color:rgba(239,237,227,.35)}'
+    +'.cal-row{display:grid;grid-template-columns:repeat(7,1fr);border-bottom:1px solid var(--border)}'
+    +'.cal-row:last-child{border-bottom:none}'
+    +'.cal-cell{border-right:1px solid var(--border);display:flex;flex-direction:column}'
+    +'.cal-cell:last-child{border-right:none}'
+    +'.cal-cell.empty{align-items:center;justify-content:center}'
+    +'.cal-dark{font-family:var(--cond);font-size:13pt;font-weight:900;letter-spacing:.04em;text-transform:uppercase}'
+    +'.cal-ent{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px 3px;text-align:center}'
+    +'.cal-lbl{font-family:var(--cond);font-weight:900;letter-spacing:.04em;text-transform:uppercase;line-height:1.1}'
+    +'.cal-tm{margin-top:3px;padding:2px 6px;border-radius:2px;font-family:var(--cond);font-size:7.5pt;font-weight:900;letter-spacing:.06em;text-transform:uppercase;line-height:1.05;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:96%}'
+    +'.cal-hol{font-size:7pt;color:#a82020;font-weight:900;margin-top:2px;font-family:var(--cond);letter-spacing:.08em;text-transform:uppercase;text-align:center}'
+    +'.cal-hol-band{background:#fff;padding:1px 0;text-align:center}'
+
+    // Contacts grid
+    +'.contacts-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}'
+    +'.contact{background:var(--subtle);border:1px solid var(--border);padding:7px 9px;border-radius:3px}'
+    +'.c-name{font-family:"Barlow",sans-serif;font-size:10pt;font-weight:700;color:var(--ink);line-height:1.2}'
+    +'.c-role{font-family:var(--cond);font-size:8pt;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}'
+    +'.c-line{font-size:8.5pt;color:var(--ink);line-height:1.3}'
+
+    // Crew blocks
+    +'.crew-block{margin-bottom:8px;break-inside:avoid}'
+    +'.crew-sub{font-family:var(--cond);font-size:9pt;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:3px;padding-left:2px}'
+    +'.crew-row{display:flex;gap:8px;padding:2px 0;border-bottom:1px dotted var(--border);font-size:9.5pt;align-items:baseline}'
+    +'.cr-role{font-family:var(--cond);font-size:8.5pt;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);min-width:120px;flex:0 0 auto}'
+    +'.cr-name{color:var(--ink);font-weight:600}'
+
+    // Cameras
+    +'.cam-spec{font-family:var(--cond);font-size:9.5pt;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;padding:3px 6px;border:1px solid var(--border);border-radius:3px;display:inline-block}'
+    +'.cam-row{display:flex;gap:10px;padding:3px 0;border-bottom:1px dotted var(--border);font-size:9.5pt;align-items:baseline}'
+    +'.cam-n{font-family:var(--cond);font-size:9pt;font-weight:900;letter-spacing:.06em;color:var(--ink);min-width:60px}'
+    +'.cam-d{color:var(--ink);font-weight:500;flex:1}'
+    +'.cam-rcp{font-family:var(--cond);font-size:8pt;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);padding:1px 6px;border:1px solid var(--accent);border-radius:2px}'
+
+    // Audio
+    +'.aud-sub{font-family:var(--cond);font-size:9.5pt;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin:8px 0 4px;padding-left:2px}'
+    +'.aud-sub:first-child{margin-top:0}'
+    +'.aud-list{display:grid;grid-template-columns:repeat(2,1fr);gap:1px 14px;margin-bottom:4px}'
+    +'.aud-row{display:flex;gap:6px;padding:2px 0;font-size:9pt;align-items:baseline}'
+    +'.aud-n{font-family:var(--cond);font-size:8pt;font-weight:900;letter-spacing:.04em;color:var(--muted);min-width:40px;flex:0 0 auto}'
+    +'.aud-l{color:var(--ink);flex:1}'
+    +'.aud-note{margin-top:4px;padding:6px 10px;background:var(--subtle);border-left:2px solid var(--accent);font-size:9pt;font-style:italic;color:var(--ink)}'
+
+    // Multiviewers
+    +'.mv-block{margin-bottom:8px}'
+    +'.mv-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}'
+    +'.mv-cell{padding:5px 7px;background:#302f2c;color:#efede3;font-family:var(--cond);font-size:8.5pt;font-weight:800;letter-spacing:.05em;text-transform:uppercase;border-radius:2px;text-align:center;line-height:1.2}'
+    +'.mv-cell.cal-big{padding:10px 7px;font-size:9.5pt}'
+
+    // Prep
+    +'.prep-row{display:flex;gap:8px;padding:2px 0;border-bottom:1px dotted var(--border);font-size:9pt;align-items:baseline}'
+    +'.prep-tk{font-size:10pt;min-width:16px}'
+    +'.prep-nm{color:var(--ink);flex:1}'
+    +'.prep-area{font-family:var(--cond);font-size:8pt;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}'
+
+    // IPs
+    +'.ip-row{display:flex;gap:10px;padding:3px 0;border-bottom:1px dotted var(--border);font-size:9pt;align-items:baseline}'
+    +'.ip-l{font-family:var(--cond);font-size:9pt;font-weight:800;letter-spacing:.04em;color:var(--ink);min-width:120px;flex:0 0 auto}'
+    +'.ip-v{font-family:"SF Mono",Menlo,monospace;font-size:9pt;color:var(--ink);flex:1}'
+    +'.ip-n{font-size:8.5pt;color:var(--muted);font-style:italic}'
+
+    // Notes
+    +'.note-block{margin-bottom:6px}'
+    +'.note-body{font-size:9.5pt;color:var(--ink);line-height:1.45;padding:6px 10px;background:var(--subtle);border-left:2px solid var(--accent);border-radius:0 2px 2px 0}'
+
+    // Footer
+    +'.foot{margin-top:14px;padding-top:8px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-family:var(--cond);font-size:8pt;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}'
+
     +'</style></head><body>'
-    +'<div class="p-bar no-print">'
-    +'<span class="brand">VERSA STUDIOS</span>'
-    +'<button id="btn-client" class="active" onclick="showDoc(\'client\')">Production Summary</button>'
-    +'<button id="btn-technical" onclick="showDoc(\'technical\')">Technical Pack</button>'
-    +'<button class="print" onclick="window.print()">&#128424; Print / Save PDF</button>'
-    +'<div class="p-tgs" id="tgs">'+toggleHtml+'</div>'
-    +'<div class="p-solos" id="solos">'+soloHtml+'</div>'
+
+    // Toolbar
+    +'<div class="toolbar">'
+      +'<h1>'+esc(j.name||'Job')+' — '+esc(j.studio||j.loc||'')+'</h1>'
+      +'<select id="docSel" onchange="showDoc(this.value)">'
+        +'<option value="client">Production Summary</option>'
+        +'<option value="tech">Technical Pack</option>'
+      +'</select>'
+      +'<button class="alt" onclick="document.getElementById(\'togBar\').classList.toggle(\'on\');document.getElementById(\'pageWrap\').classList.toggle(\'has-tog\')">Sections</button>'
+      +'<button onclick="window.print()">Print / PDF</button>'
+      +'<button class="alt" onclick="window.close()">Close</button>'
     +'</div>'
-    +'<div class="p-spacer" style="height:54px"></div>'
-    +clientDoc+techDoc
+
+    // Toggle bar
+    +'<div class="toggles" id="togBar">'+togHtml+'</div>'
+
+    // Pages container
+    +'<div class="page-wrap" id="pageWrap">'
+
+    // ── Production Summary page ──
+    +'<div class="page" data-doc="client">'
+      +'<div class="mast">'
+        +'<div class="logo">'+(logo?'<img src="'+logo+'" alt="Versa Studios">':'<span class="logo-fallback">Versa Studios</span>')+'</div>'
+        +'<div class="tm">Technical Manager<b>'+esc(techMgr)+'</b></div>'
+      +'</div>'
+      +'<div class="doc-id">Production Summary</div>'
+      +'<div class="title-row"><h1>'+esc(j.name||'Untitled Job')+'</h1>'+statusBadge+'</div>'
+      +'<div class="sub">'+esc(j.client||j.prodCompany||'')+(j.client||j.prodCompany?' · ':'')+'<b>'+esc(j.loc||'')+(j.studio?' · '+esc(j.studio):'')+'</b>'+(j.start||j.end?' · '+esc(fmtRange(j.start,j.end)):'')+'</div>'
+      +prodSummary
+      +'<div class="foot"><span>Versa Studios · '+esc(j.name||'')+'</span><span>Generated '+genDate+' · '+genTime+'</span></div>'
+    +'</div>'
+
+    // ── Technical Pack page ──
+    +'<div class="page" data-doc="tech" style="display:none">'
+      +'<div class="mast">'
+        +'<div class="logo">'+(logo?'<img src="'+logo+'" alt="Versa Studios">':'<span class="logo-fallback">Versa Studios</span>')+'</div>'
+        +'<div class="tm">Technical Manager<b>'+esc(techMgr)+'</b></div>'
+      +'</div>'
+      +'<div class="doc-id">Technical Pack · Internal</div>'
+      +'<div class="title-row"><h1>'+esc(j.name||'Untitled Job')+'</h1>'+statusBadge+'</div>'
+      +'<div class="sub">'+esc(j.client||j.prodCompany||'')+(j.client||j.prodCompany?' · ':'')+'<b>'+esc(j.loc||'')+(j.studio?' · '+esc(j.studio):'')+'</b>'+(j.start||j.end?' · '+esc(fmtRange(j.start,j.end)):'')+'</div>'
+      +techPack
+      +'<div class="foot"><span>Versa Studios · '+esc(j.name||'')+' · INTERNAL</span><span>Generated '+genDate+' · '+genTime+'</span></div>'
+    +'</div>'
+
+    +'</div>' // page-wrap
+
+    // Script: doc switcher + section toggles
     +'<scr'+'ipt>'
-    +'var GEN=new Date().toLocaleString("en-GB",{day:"numeric",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"});'
-    +'document.getElementById("gen-c").textContent="Generated "+GEN;'
-    +'document.getElementById("gen-t").textContent="Generated "+GEN;'
     +'function showDoc(which){'
-    +'  document.getElementById("doc-client").style.display=which==="client"?"":"none";'
-    +'  document.getElementById("doc-technical").style.display=which==="technical"?"":"none";'
-    +'  document.getElementById("btn-client").classList.toggle("active",which==="client");'
-    +'  document.getElementById("btn-technical").classList.toggle("active",which==="technical");'
-    +'  document.getElementById("tgs").style.display=which==="technical"?"flex":"none";'
-    +'  document.getElementById("solos").style.display=which==="technical"?"flex":"none";'
+    +'  document.querySelectorAll(".page").forEach(function(p){p.style.display=p.dataset.doc===which?"":"none";});'
+    +'  document.getElementById("togBar").style.display=which==="tech"?"":"";'
     +'}'
-    +'function soloSec(key){'
-    +'  var secs=document.querySelectorAll("#doc-technical [data-sec]");'
-    +'  for(var i=0;i<secs.length;i++){var k=secs[i].getAttribute("data-sec");secs[i].style.display=(key==="all"||k===key)?"":"none";}'
-    +'  var cbs=document.querySelectorAll("#tgs input[data-k]");'
-    +'  for(var n=0;n<cbs.length;n++){var kk=cbs[n].getAttribute("data-k");cbs[n].checked=(key==="all"||kk===key);}'
-    +'  showDoc("technical");'
-    +'}'
-    +'function togSec(key,on){var els=document.querySelectorAll(\'#doc-technical [data-sec="\'+key+\'"]\');for(var i=0;i<els.length;i++)els[i].style.display=on?"":"none";}'
+    +'document.querySelectorAll("input[data-tog]").forEach(function(cb){'
+    +'  cb.addEventListener("change",function(){'
+    +'    var k=cb.dataset.tog;'
+    +'    document.querySelectorAll(".page[data-doc=\\"tech\\"] section[data-k=\\""+k+"\\"]").forEach(function(s){s.style.display=cb.checked?"":"none";});'
+    +'  });'
+    +'});'
     +'showDoc("client");'
     +'<\/scr'+'ipt>'
     +'</body></html>';
@@ -16901,60 +16824,35 @@ function renderCrewTab(j) {
   if(j.comms&&j.comms.supervisor&&j.comms.supervisor.trim())allTabNames.push({name:j.comms.supervisor.trim(),role:'Comms Supervisor'});
   var alreadyAdded=(j.crew||[]).map(function(c){return c.name;});
   var flSugg=allTabNames.filter(function(p){return !alreadyAdded.includes(p.name)&&VERSA_FREELANCE.some(function(f){return f.name===p.name;});});
-  var prodSugg=[];
-  // Merge legacy 'freelance' into one unified Versa crew list
-  var _mig=false;j.crew.forEach(function(c){if(c.type==='freelance'){c.type='versa';_mig=true;}});if(_mig)saveData();
+  var prodSugg=allTabNames.filter(function(p){return !alreadyAdded.includes(p.name)&&!VERSA_FREELANCE.some(function(f){return f.name===p.name;});});
   var versaCrew=j.crew.filter(function(c){return c.type==='versa';});
+  var flCrew=j.crew.filter(function(c){return c.type==='freelance';});
   var prodCrew=j.crew.filter(function(c){return c.type==='production';});
   var camOps=[];
   if(j.camDetails){var sorted=j.camDetails.slice().sort(function(a,b){return (a.camNum||0)-(b.camNum||0);});sorted.forEach(function(cd){if(cd.operator&&cd.operator.trim())camOps.push({camNum:cd.camNum||'?',label:cd.camLabel||'',name:cd.operator.trim()});});}
-  var CREW_ROLES=['Technical Manager','Senior Engineer','Engineer','Camera Operator','Lighting Director','Vision Mixer','Sound Supervisor','Comms Supervisor','EVS Operator','Rigger','Driver','Runner'];
-  var mkVersaRow=function(c){
-    var gi=j.crew.indexOf(c);
-    var roles=CREW_ROLES.slice();if(c.role&&roles.indexOf(c.role)<0)roles.push(c.role);
-    var roleSel='<select onchange="crewSetRoleG('+j.id+','+gi+',this.value)"><option value="">-- Role --</option>'+roles.map(function(r){return '<option'+(r===c.role?' selected':'')+'>'+r+'</option>';}).join('')+'<option value="__custom__" style="color:var(--accent);font-style:italic">+ Custom...</option></select>';
-    var col=crewColor(c.name||'');
-    return '<div class="jd-crew-row" ondragover="event.preventDefault()" ondrop="crewDrop(event,'+j.id+','+gi+')" style="border-left:4px solid '+col+';padding-left:7px">'
-      +'<span draggable="true" ondragstart="crewDragStart(event,'+gi+')" ondragend="window._crewDragGi=null" title="Drag to reorder" style="cursor:grab;color:var(--muted);font-size:13px;text-align:center;user-select:none">\u2630</span>'
-      +roleSel
-      +'<input value="'+((c.name||'').replace(/"/g,'&quot;'))+'" placeholder="Name..." onchange="crewSetNameG('+j.id+','+gi+',this.value)"/>'
-      +'<button onclick="crewRmG('+j.id+','+gi+')" title="Delete" style="background:rgba(168,60,60,.1);border:1px solid rgba(168,60,60,.4);color:#9a3b3b;border-radius:4px;font-family:var(--cond);font-weight:800;font-size:11px;letter-spacing:.04em;padding:4px 11px;cursor:pointer;white-space:nowrap">Delete</button>'
-      +'</div>';
+  var mkCrewRow=function(c,ci,type){
+    var roleOpts='';
+    if(type==='versa'){var allRoles=['Technical Manager','Senior Engineer','Engineer','Camera Operator','Lighting Director','Vision Mixer','Sound Supervisor','Rigger','Driver'];roleOpts='<select class="fi" style="font-size:12px;padding:2px 6px;max-width:180px" onchange="crewSetRole('+j.id+',\''+type+'\','+ci+',this.value)">'+allRoles.map(function(r){return '<option'+(r===c.role?' selected':'')+'>'+r+'</option>';}).join('')+'</select>';}
+    else{roleOpts=c.role?'<span style="font-size:13px;color:var(--muted)">'+c.role+'</span>':'';}
+    var moveBtn='';
+    if(type==='versa')moveBtn='<button onclick="crewMove('+j.id+','+ci+',\'versa\',\'freelance\')" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:3px;font-size:10px;padding:1px 6px;cursor:pointer;font-family:var(--cond);font-weight:700">→ Freelance</button>';
+    else if(type==='freelance')moveBtn='<button onclick="crewMove('+j.id+','+ci+',\'freelance\',\'versa\')" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:3px;font-size:10px;padding:1px 6px;cursor:pointer;font-family:var(--cond);font-weight:700">→ Versa</button>';
+    return '<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);flex-wrap:wrap"><div style="flex:1;min-width:120px;font-size:14px;font-weight:600;color:var(--white)">'+c.name+'</div>'+roleOpts+moveBtn+'<button onclick="crewRm('+j.id+',\''+type+'\','+ci+')" class="rm-btn" style="font-size:11px">×</button></div>';
   };
-  var mkSuggChips=function(suggestions,type){return suggestions.map(function(p,pi){return '<span style="display:inline-flex;align-items:center;background:rgba(74,158,255,.12);border:1px solid rgba(74,158,255,.35);border-radius:3px;margin:2px;overflow:hidden"><button data-jid="'+j.id+'" data-pi="'+pi+'" data-type="'+type+'" onclick="_crewSuggAdd(this,'+j.id+',\''+type+'\')" style="display:inline-flex;align-items:center;gap:4px;background:none;border:none;color:#2a6cb8;font-size:12px;padding:3px 8px;cursor:pointer">+ '+p.name+(p.role?' <span style="opacity:.6;font-size:11px">('+p.role+')</span>':'')+'</button><span onclick="crewDismissSugg('+j.id+',\''+(p.name||'').replace(/\\\\/g,"").replace(/'/g,"\\'")+'\')" title="Dismiss this suggestion" style="cursor:pointer;color:#2a6cb8;opacity:.5;font-size:13px;padding:3px 7px 3px 3px;border-left:1px solid rgba(74,158,255,.25)">&times;</span></span>';}).join('');};
-  var versaSugg=allTabNames.filter(function(p){return !alreadyAdded.includes(p.name)&&!((j.crewSuggDismiss||[]).indexOf(p.name)>=0);});
-  var versaSuggHtml=versaSugg.length?'<div style="margin:4px 0 8px">'+mkSuggChips(versaSugg,'versa')+'</div>':'';
-  var prodSuggHtml=prodSugg.length?'<div style="margin:4px 0 8px">'+mkSuggChips(prodSugg,'production')+'</div>':'';
+  var mkSuggChips=function(suggestions,type){return suggestions.map(function(p,pi){return '<button data-jid="'+j.id+'" data-pi="'+pi+'" data-type="'+type+'" onclick="_crewSuggAdd(this,'+j.id+',\''+type+'\')" style="display:inline-flex;align-items:center;gap:4px;background:rgba(74,158,255,.12);border:1px solid rgba(74,158,255,.35);color:#2a6cb8;border-radius:3px;font-size:12px;padding:3px 9px;cursor:pointer;margin:2px">+ '+p.name+(p.role?' <span style="opacity:.6;font-size:11px">('+p.role+')</span>':'')+'</button>';}).join('');};
+  var flSuggHtml=flSugg.length?'<div style="margin-bottom:8px">'+mkSuggChips(flSugg,'freelance')+'</div>':'';
+  var prodSuggHtml=prodSugg.length?'<div style="margin-bottom:8px">'+mkSuggChips(prodSugg,'production')+'</div>':'';
   var camOpsHtml=camOps.length?'<div class="det-sec"><div class="det-sec-lbl">Camera Operators</div>'+camOps.map(function(op){return '<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border)"><div style="font-family:var(--cond);font-size:12px;font-weight:800;color:var(--accent);min-width:52px">CAM '+op.camNum+(op.label?' · '+op.label:'')+'</div><div style="flex:1;font-size:14px;font-weight:600;color:var(--white)">'+op.name+'</div></div>';}).join('')+'</div>':'';
-  var versaSection='<div class="jd-card">'
-    +'<div class="jd-card-hd"><div class="jd-card-ti">Versa Crew</div>'
-    +'<div style="display:flex;gap:6px;align-items:center"><span class="jd-card-ct">'+versaCrew.length+'</span>'
-    +'<button class="ibtn" style="font-size:10px;padding:3px 10px" onclick="addCrew('+j.id+',\'versa\')">+ Add</button></div></div>'
-    +versaSuggHtml
-    +(versaCrew.length?versaCrew.map(mkVersaRow).join(''):'<div style="color:var(--muted);font-size:13px;padding:4px 0">No crew yet.</div>')
-    +'</div>';
-  var prodSection='<div class="jd-card"><div class="jd-card-hd"><div class="jd-card-ti">Production Crew</div>'
-    +'<div style="display:flex;gap:6px;align-items:center"><span class="jd-card-ct">'+prodCrew.length+'</span>'
-    +'<button class="ibtn" style="font-size:10px;padding:3px 10px" onclick="addCrew('+j.id+',\'production\')">+ Add</button></div></div>'
-    +prodSuggHtml
-    +(prodCrew.length?prodCrew.map(mkVersaRow).join(''):'<div style="color:var(--muted);font-size:13px;padding:4px 0">None assigned.</div>')
-    +'</div>';
-  var crewSchedSection=(j.name==='Morning Live')?'':'<div class="det-sec"><div class="det-sec-lbl">Crew Schedule</div><div style="font-size:12px;color:var(--muted);margin:-4px 0 6px">Drag a crew name onto the days they\u2019re working. These dates flow through to the Crew planner.</div>'+renderProdScheduleCal(j,true)+'</div>';
-  return camOpsHtml+versaSection+prodSection+crewSchedSection;
+  var versaSection='<div class="det-sec"><div class="det-sec-lbl" style="display:flex;align-items:center;justify-content:space-between">Versa Staff <button class="panel-act" onclick="addCrew('+j.id+',\'versa\')">+ Add</button></div>'+(versaCrew.length?versaCrew.map(function(c,ci){return mkCrewRow(c,ci,'versa');}).join(''):'<div style="color:var(--muted);font-size:14px;padding:6px 0">None assigned.</div>')+'</div>';
+  var flSection='<div class="det-sec"><div class="det-sec-lbl" style="display:flex;align-items:center;justify-content:space-between">Versa Freelance <button class="panel-act" onclick="addCrew('+j.id+',\'freelance\')">+ Add</button></div>'+flSuggHtml+(flCrew.length?flCrew.map(function(c,ci){return mkCrewRow(c,ci,'freelance');}).join(''):'<div style="color:var(--muted);font-size:14px;padding:6px 0">None assigned.</div>')+'</div>';
+  var prodSection='<div class="det-sec"><div class="det-sec-lbl" style="display:flex;align-items:center;justify-content:space-between">Production Crew <button class="panel-act" onclick="addCrew('+j.id+',\'production\')">+ Add</button></div>'+prodSuggHtml+(prodCrew.length?prodCrew.map(function(c,ci){return mkCrewRow(c,ci,'production');}).join(''):'<div style="color:var(--muted);font-size:14px;padding:6px 0">None assigned.</div>')+'</div>';
+  return camOpsHtml+versaSection+flSection+prodSection;
 }
 function crewSetRole(jid,type,ci,role){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.crew)return;var arr=j.crew.filter(function(c){return c.type===type;});if(!arr[ci])return;arr[ci].role=role;saveData();}
 function crewMove(jid,ci,fromType,toType){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.crew)return;var arr=j.crew.filter(function(c){return c.type===fromType;});if(!arr[ci])return;arr[ci].type=toType;saveData();renderJobDet(j);}
 function crewRm(jid,type,ci){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.crew)return;var arr=j.crew.filter(function(c){return c.type===type;});if(!arr[ci])return;var gIdx=j.crew.indexOf(arr[ci]);if(gIdx>=0)j.crew.splice(gIdx,1);saveData();renderJobDet(j);}
 function rmCrew(jid,ci,type){crewRm(jid,type,ci);}
-function crewSetRoleG(jid,gi,val){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.crew||!j.crew[gi])return;if(val==='__custom__'){var c=prompt('Enter custom role:');if(!c)return;j.crew[gi].role=c;}else j.crew[gi].role=val;saveData();renderJobDet(j);}
-function crewSetNameG(jid,gi,val){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.crew||!j.crew[gi])return;j.crew[gi].name=val;saveData();}
-function crewRmG(jid,gi){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.crew||!j.crew[gi])return;var nm=j.crew[gi].name;j.crew.splice(gi,1);if(nm){if(!Array.isArray(j.crewSuggDismiss))j.crewSuggDismiss=[];if(j.crewSuggDismiss.indexOf(nm)<0)j.crewSuggDismiss.push(nm);}saveData();renderJobDet(j);}
-function crewDismissSugg(jid,name){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;if(!Array.isArray(j.crewSuggDismiss))j.crewSuggDismiss=[];if(j.crewSuggDismiss.indexOf(name)<0)j.crewSuggDismiss.push(name);saveData();renderJobDet(j);}
-function crewColor(name){var pal=['#b5524f','#4f7fb5','#5e9150','#9a7b32','#7d5fa0','#358078','#a85a32','#6f6f42','#9a4068','#456b88','#8a5a3a','#577a55'];var s=0;name=name||'';for(var i=0;i<name.length;i++)s=(s*31+name.charCodeAt(i))>>>0;return pal[s%pal.length];}
-function crewDragStart(ev,gi){window._crewDragGi=gi;try{ev.dataTransfer.setData('text/plain','crewrow');ev.dataTransfer.effectAllowed='move';}catch(e){}}
-function crewDrop(ev,jid,toGi){ev.preventDefault();var from=window._crewDragGi;window._crewDragGi=null;if(from==null||from===toGi)return;var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.crew||!j.crew[from])return;var item=j.crew.splice(from,1)[0];var idx=(from<toGi)?toGi-1:toGi;if(idx<0)idx=0;if(idx>j.crew.length)idx=j.crew.length;j.crew.splice(idx,0,item);saveData();renderJobDet(j);}
-function crewMoveTypeG(jid,gi,toType){var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.crew||!j.crew[gi])return;j.crew[gi].type=toType;saveData();renderJobDet(j);}
-function _crewSuggAdd(btn,jid,type){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;var pi=parseInt(btn.getAttribute('data-pi'));var allTabNames=[];if(j.lvSpec&&j.lvSpec.ld&&j.lvSpec.ld.trim())allTabNames.push({name:j.lvSpec.ld.trim(),role:'Lighting Director'});if(j.lvSpec&&j.lvSpec.vm&&j.lvSpec.vm.trim())allTabNames.push({name:j.lvSpec.vm.trim(),role:'Vision Mixer'});if(j.camDetails)j.camDetails.forEach(function(cd,ci2){if(cd.operator&&cd.operator.trim())allTabNames.push({name:cd.operator.trim(),role:'Camera Operator (Cam '+(cd.camNum||ci2+1)+')'});});if(j.audio&&j.audio.supervisor&&j.audio.supervisor.trim())allTabNames.push({name:j.audio.supervisor.trim(),role:'Sound Supervisor'});if(j.comms&&j.comms.supervisor&&j.comms.supervisor.trim())allTabNames.push({name:j.comms.supervisor.trim(),role:'Comms Supervisor'});var alreadyAdded=(j.crew||[]).map(function(c){return c.name;});var filtered=allTabNames.filter(function(p){return !alreadyAdded.includes(p.name)&&!((j.crewSuggDismiss||[]).indexOf(p.name)>=0);});var p=filtered[pi];if(!p)return;if(!j.crew)j.crew=[];if(!j.crew.find(function(c){return c.name===p.name;}))j.crew.push({name:p.name,role:p.role||'',type:type});saveData();renderJobDet(j);}
+function _crewSuggAdd(btn,jid,type){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;var pi=parseInt(btn.getAttribute('data-pi'));var allTabNames=[];if(j.lvSpec&&j.lvSpec.ld&&j.lvSpec.ld.trim())allTabNames.push({name:j.lvSpec.ld.trim(),role:'Lighting Director'});if(j.lvSpec&&j.lvSpec.vm&&j.lvSpec.vm.trim())allTabNames.push({name:j.lvSpec.vm.trim(),role:'Vision Mixer'});if(j.camDetails)j.camDetails.forEach(function(cd,ci2){if(cd.operator&&cd.operator.trim())allTabNames.push({name:cd.operator.trim(),role:'Camera Operator (Cam '+(cd.camNum||ci2+1)+')'});});if(j.audio&&j.audio.supervisor&&j.audio.supervisor.trim())allTabNames.push({name:j.audio.supervisor.trim(),role:'Sound Supervisor'});if(j.comms&&j.comms.supervisor&&j.comms.supervisor.trim())allTabNames.push({name:j.comms.supervisor.trim(),role:'Comms Supervisor'});var alreadyAdded=(j.crew||[]).map(function(c){return c.name;});var filtered=allTabNames.filter(function(p){if(alreadyAdded.includes(p.name))return false;var isFL=VERSA_FREELANCE.some(function(f){return f.name===p.name;});return type==='freelance'?isFL:!isFL;});var p=filtered[pi];if(!p)return;if(!j.crew)j.crew=[];if(!j.crew.find(function(c){return c.name===p.name;}))j.crew.push({name:p.name,role:p.role||'',type:type});saveData();renderJobDet(j);}
 function crewAddProd(jid,name,role){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;if(!j.crew)j.crew=[];if(!j.crew.find(function(c){return c.name===name;}))j.crew.push({name:name,role:role,type:'production'});saveData();renderJobDet(j);}
 
 
@@ -16964,10 +16862,7 @@ function addCrew(jid, type) {
   const existing=document.getElementById('crewPickerOv');if(existing)existing.remove();
   let opts='';
   if(type==='versa'){
-    var _roster=VERSA_ROSTER.map(function(r){return {name:r.name,role:r.role||''};}).concat(VERSA_FREELANCE.map(function(r){return {name:r.name,role:r.role||''};}));
-    var _seen={};_roster=_roster.filter(function(r){if(_seen[r.name])return false;_seen[r.name]=1;return true;});
-    opts=_roster.map(function(r){return '<div onclick="crewPick('+jid+',\'versa\',\''+r.name.replace(/'/g,"\\'")+'\',\''+(r.role||'').replace(/'/g,"\\'")+'\')" class="ops-co" style="padding:10px 14px;font-size:14px">'+r.name+(r.role?'<span style="color:var(--muted);font-size:12px;margin-left:8px">'+r.role+'</span>':'')+'</div>';}).join('');
-    opts+='<div class="ops-div"></div><div style="padding:8px 14px"><input class="ops-ci" id="crewCustomName" placeholder="Or type a name..."/><input class="ops-ci" id="crewCustomRole" placeholder="Role..." style="margin-top:4px"/><button class="ops-ca" onclick="crewPickCustom('+jid+',\'versa\')">+ Add Custom</button></div>';
+    opts=VERSA_ROSTER.map(r=>'<div onclick="crewPick('+jid+',\'versa\',\''+r.name+'\',\''+r.role+'\')" class="ops-co" style="padding:10px 14px;font-size:14px">'+r.name+'<span style="color:var(--muted);font-size:12px;margin-left:8px">'+r.role+'</span></div>').join('');
   } else if(type==='freelance'){
     opts=VERSA_FREELANCE.map(function(r){var roleStr=r.role||'';return '<div onclick="crewPick('+jid+',\'freelance\',\''+r.name+'\',\''+roleStr+'\')" class="ops-co" style="padding:10px 14px;font-size:14px">'+r.name+(roleStr?'<span style="color:var(--muted);font-size:12px;margin-left:8px">'+roleStr+'</span>':'')+'</div>';}).join('');
     opts+='<div class="ops-div"></div><div style="padding:8px 14px"><input class="ops-ci" id="crewCustomName" placeholder="Or type a name..."/><input class="ops-ci" id="crewCustomRole" placeholder="Role..." style="margin-top:4px"/><button class="ops-ca" onclick="crewPickCustom('+jid+',\'freelance\')">+ Add Custom</button></div>';
@@ -17799,18 +17694,9 @@ function _buildCalMonthHTML(){return '';}
 // ── OPS SEED ─────────────────────────────────────────────────────────────────
 function opsSeedFromJobs(){
   jobs.forEach(function(j){
-    if(!j)return;
-    var stuKeys=((j.studios&&j.studios.length)?j.studios:[j.loc==='London'?'London':j.studio]).filter(Boolean);
-    if(!stuKeys.length)return;
-    // Read TX dates from the array; fall back to the singular txDate, then the
-    // start date, so jobs created via the Add-Job form (which stores one date)
-    // still appear on the planner. We do NOT mutate the job or call saveData
-    // here — the os() writes below persist only the planner cells.
-    var txList=(Array.isArray(j.txDates)&&j.txDates.length)?j.txDates
-              :(j.txDate?[{date:j.txDate,label:'TX',crew:{}}]
-              :(j.start?[{date:j.start,label:'TX',crew:{}}]:[]));
-    if(!txList.length)return;
-    txList.forEach(function(td,di){
+    if(!j.txDates||!j.studio)return;
+    var stuKeys=j.studios?j.studios:[j.loc==='London'?'London':j.studio];
+    j.txDates.forEach(function(td,di){
       var val=td.date;if(!val)return;
       var ds=val.split('-');if(ds.length!==3)return;
       var yr=parseInt(ds[0]),mo=parseInt(ds[1]),day=parseInt(ds[2]);
@@ -17843,16 +17729,14 @@ function opsSeedFromJobs(){
               }
             }
             if(!cur.includes(label)){cur.push(label);changed=true;}
-            if(changed)_opsD[OPS_CAL[mi].month+'|'+day+'|'+row]=cur;
+            if(changed)os(OPS_CAL[mi].month,day,row,cur);
             if(!_opsStu.has(sk))_opsStu.add(sk);
           });
-          // Morning Live: seed tech manager into the ml row ONLY when the cell
-          // is empty. Never overwrite a value already there — that was wiping
-          // manual Tech Manager edits on every load.
+          // Morning Live: write tech manager name to ml row as plain string
           if(j.name==='Morning Live'&&td.crew&&td.crew['Tech Manager']){
             var tm=td.crew['Tech Manager'];
             var mlCur=og(OPS_CAL[mi].month,day,'ml').slice();
-            if(!mlCur.length){mlCur=[tm];_opsD[OPS_CAL[mi].month+'|'+day+'|ml']=mlCur;}
+            if(!mlCur.includes(tm)){mlCur=[tm];os(OPS_CAL[mi].month,day,'ml',mlCur);}
           }
           break;
         }
@@ -17862,9 +17746,12 @@ function opsSeedFromJobs(){
   // Cleanup pass: remove studio-row labels that look job-derived but no longer
   // correspond to any job's current date entries.
   try{_opsCleanStaleStudioEntries();}catch(e){console.warn('Stale-entry cleanup failed:',e);}
-  // Junk normalisation still runs in-memory, but we no longer auto-save it.
-  // Auto-saving here was persisting cleanup-driven removals of user data.
-  try{_opsCleanSeedJunk();}catch(e){console.warn('Seed-junk cleanup failed:',e);}
+  // Also: scrub seed-junk entries (Apr-01 stubs, DD entries, weekend ML, dupes).
+  // Persist to Supabase if anything was actually changed.
+  try{
+    var seedChanged=_opsCleanSeedJunk();
+    if(seedChanged&&typeof saveData==='function')saveData();
+  }catch(e){console.warn('Seed-junk cleanup failed:',e);}
 }
 
 // Remove studio-row labels that look like job-sync output but no longer
@@ -17876,9 +17763,6 @@ function opsSeedFromJobs(){
 //       unless a current job entry still validates them.
 // Manual entries (free-text notes that don't match either case) are untouched.
 function _opsCleanStaleStudioEntries(){
-  return; // DISABLED 2026-05-23: this was deleting manually-typed studio-row
-  // entries whose text happened to start with a job name. Kept as a no-op so
-  // callers don't break. Do not re-enable without a safe-list of manual entries.
   if(!Array.isArray(jobs)||!jobs.length)return;
   var jobNames=jobs.map(function(j){return (j&&j.name)?j.name.toLowerCase():'';}).filter(Boolean);
   if(!jobNames.length)return;
@@ -18023,9 +17907,7 @@ function _opsCleanSeedJunk(){
   // Only merges cells with EXACTLY ONE entry that have identical text — doesn't
   // touch cells with multiple entries or with pre-existing spans.
   try{
-    // DISABLED 2026-05-25: auto-merging consecutive identical cells on load forced
-    // merges the user couldn't undo. Merging is now intentional only (drag a range).
-    if(false) OPS_CAL.forEach(function(m){
+    OPS_CAL.forEach(function(m){
       // Collect the set of rows that have data this month
       var rowsInMonth={};
       Object.keys(_opsD).forEach(function(k){
@@ -18391,22 +18273,6 @@ function opsMlSpans(month,days){
       for(let k=i+1;k<=ei;k++)cov.add(k);
       i=j;continue;
     }
-    // Span consecutive 'Break / Off Air' day-entries (incl. weekends) into one bar
-    var _bv=og(month,d.day,'ml');
-    var _bv0=_bv.length?(typeof _bv[0]==='string'?_bv[0]:((_bv[0]&&(_bv[0].text||_bv[0].person))||'')):'';
-    if(_bv0==='Break / Off Air'){
-      let j=i+1;
-      while(j<days.length){
-        if(opsInBrk(opsDStr(month,days[j].day)))break;
-        var _nv=og(month,days[j].day,'ml');
-        var _nv0=_nv.length?(typeof _nv[0]==='string'?_nv[0]:((_nv[0]&&(_nv[0].text||_nv[0].person))||'')):'';
-        if(_nv0==='Break / Off Air')j++;else break;
-      }
-      const ei=j-1;
-      spans.push({si:i,ei,label:'Break',isBreak:true});
-      for(let k=i+1;k<=ei;k++)cov.add(k);
-      i=j;continue;
-    }
     // Skip weekends — they render as their own cells, never start/continue a span
     if(opsIsWk(d.dow)){i++;continue;}
     const v=og(month,d.day,'ml');
@@ -18446,7 +18312,7 @@ function opsRenderMonth(m,mi){
   const{spans,cov}=opsMlSpans(m.month,days);
   const spMap={};spans.forEach(sp=>spMap[sp.si]=sp);
   let h='<table class="ops-tbl">';
-  h+='<tr class="ops-mhdr"><td colspan="'+(n+1)+'"><div style="display:inline-flex;align-items:flex-end;gap:14px;flex-wrap:wrap;position:sticky;left:20px;"><span class="ops-mhdr-txt">'+m.month.split(' ')[0].toUpperCase()+'</span><span style="font-size:18px;font-weight:800;letter-spacing:.04em;color:rgba(216,90,97,.7);padding-bottom:8px;">'+m.month.split(' ')[1]+'</span></div></td></tr>';
+  h+='<tr class="ops-mhdr"><td colspan="'+(n+1)+'"><div style="display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap;"><span class="ops-mhdr-txt">'+m.month.split(' ')[0].toUpperCase()+'</span><span style="font-size:18px;font-weight:800;letter-spacing:.04em;color:rgba(216,90,97,.7);padding-bottom:8px;">'+m.month.split(' ')[1]+'</span></div></td></tr>';
   h+='<tr class="ops-dhdr"><td class="ops-rlbl" style="border-bottom:1px solid var(--border)"></td>';
   days.forEach(d=>{
     const wk=opsIsWk(d.dow);
@@ -18536,19 +18402,12 @@ function opsRenderMonth(m,mi){
   });
 
 
-  // Render the fixed studios PLUS any studio actually used by a job, so a job
-  // in a studio outside the hard-coded list still gets a visible row.
-  var stus=OPS_STUDIOS.slice();
-  (Array.isArray(jobs)?jobs:[]).forEach(function(j){
-    if(!j)return;
-    var sks=((j.studios&&j.studios.length)?j.studios:[j.loc==='London'?'London':j.studio]).filter(Boolean);
-    sks.forEach(function(sk){if(stus.indexOf(sk)<0)stus.push(sk);});
-  });
+  const stus=OPS_STUDIOS;
   stus.forEach(function(st){
     if(_opsHidStu.has(st))return;
     var loc=stuLocMap[st]||'';
     var lCol=loc==='Manchester'?'#2a6e3a':loc==='London'?'#1a4e8a':'rgba(154,112,48,.9)';
-    var lBg=loc==='Manchester'?'#ecefe5':loc==='London'?'#eaecec':'#fdfaf4';
+    var lBg=loc==='Manchester'?'rgba(42,110,58,.08)':loc==='London'?'rgba(26,78,138,.08)':'rgba(255,251,246,.9)';
     var locBadge='';
     let r='<tr><td class="ops-rlbl" style="color:'+lCol+';background:'+lBg+'">'+st+locBadge+'<span class="ops-rlbl-x" onclick="event.stopPropagation();opsToggleStu(\''+st.replace(/'/g,"\\'")+'\')" title="Hide '+st+'">&times;</span></td>';
     // Span tracking — see versa-opsplanner.html for explanation
@@ -18734,52 +18593,10 @@ function opsFitAllChips(){versaFitAll();}
   };
   if(document.body)go();else document.addEventListener('DOMContentLoaded',go);
 })();
-// Merge consecutive identical single-entry cells in each row into one span bar.
-// Safe & idempotent: only merges cells whose single entry has identical text;
-// the text is preserved in the span, so nothing is lost. Run before each render.
-function opsMergeAll(){
-  try{
-    OPS_CAL.forEach(function(m){
-      var rowsInMonth={};
-      Object.keys(_opsD).forEach(function(k){var p=k.split('|');if(p[0]===m.month&&p.length===3)rowsInMonth[p[2]]=true;});
-      Object.keys(rowsInMonth).forEach(function(row){
-        if(row==='ml')return; // ML has its own span logic
-        var i=0;
-        while(i<m.days.length){
-          var dayI=m.days[i].day;
-          var valsI=_opsD[m.month+'|'+dayI+'|'+row]||[];
-          if(valsI.length!==1){i++;continue;}
-          var v0=valsI[0];
-          if(v0&&typeof v0==='object'&&v0.span&&v0.span>1){i+=v0.span;continue;}
-          var textI=(typeof v0==='string')?v0:(v0&&v0.text?v0.text:'');
-          if(!textI){i++;continue;}
-          var j=i+1;
-          while(j<m.days.length){
-            var valsJ=_opsD[m.month+'|'+m.days[j].day+'|'+row]||[];
-            if(valsJ.length!==1)break;
-            var vJ=valsJ[0];
-            if(vJ&&typeof vJ==='object'&&vJ.span&&vJ.span>1)break;
-            var textJ=(typeof vJ==='string')?vJ:(vJ&&vJ.text?vJ.text:'');
-            if(textJ!==textI)break;
-            j++;
-          }
-          var len=j-i;
-          if(len>1){
-            var spanEntry={text:textI,span:len};
-            if(v0&&typeof v0==='object'){if(v0.cls)spanEntry.cls=v0.cls;if(v0.color)spanEntry.color=v0.color;}
-            _opsD[m.month+'|'+dayI+'|'+row]=[spanEntry];
-            for(var kk=i+1;kk<j;kk++){_opsD[m.month+'|'+m.days[kk].day+'|'+row]=[];}
-          }
-          i=j;
-        }
-      });
-    });
-  }catch(e){}
-}
 function opsReRender(){
   var secs=document.querySelectorAll('#opsBody2 .ops-ms2');
   secs.forEach(function(sec,i){
-    if(sec.style.display!=='none'){var _sx=sec.scrollLeft;sec.innerHTML=opsRenderMonth(OPS_CAL[i],i);sec.scrollLeft=_sx;}
+    if(sec.style.display!=='none') sec.innerHTML=opsRenderMonth(OPS_CAL[i],i);
   });
   requestAnimationFrame(versaFitAll);
 }
@@ -18789,7 +18606,7 @@ function opsReRenderAll(){
   opsSeedFromJobs();
   var secs=document.querySelectorAll('#opsBody2 .ops-ms2');
   secs.forEach(function(sec,i){
-    if(sec.style.display!=='none'){var _sx=sec.scrollLeft;sec.innerHTML=opsRenderMonth(OPS_CAL[i],i);sec.scrollLeft=_sx;}
+    if(sec.style.display!=='none') sec.innerHTML=opsRenderMonth(OPS_CAL[i],i);
   });
   requestAnimationFrame(opsFitAllChips);
 }
@@ -18805,6 +18622,8 @@ function opsCk(td){
     var _offIdx=Math.max(0,Math.min(td.colSpan-1,Math.floor((window._lastOpsClickX-_spnR.left)/_perDay)));
     day=day+_offIdx;
   }
+  // Block editing weekend ML cells
+  if(row==='ml'){const m=OPS_CAL[mi];if(m){const d=m.days.find(function(x){return x.day===day;});if(d&&opsIsWk(d.dow))return;}}
   const month=OPS_CAL[mi].month;
   _opsEd={mi,day,row,id:td.id,month};
   const cur=og(month,day,row);
@@ -18931,19 +18750,7 @@ function _opsRepositionOpenCed(){
   ced.style.visibility='visible';
   _opsPositionCed(td);
 }
-function opsOpt(el){if(!_opsEd)return;const val=el.dataset.v;const single=el.dataset.s==='1';const{month,day,row,id}=_opsEd;
-  // Pending span from a drag-across-empty-cells gesture — apply the preset across
-  // the whole dragged range as one merged bar (mirrors the custom-text path).
-  const pending=window._opsPendingSpan;
-  if(single&&pending&&pending.month===month&&pending.row===row&&pending.lo===day){
-    for(var pd=pending.lo+1;pd<=pending.hi;pd++){os(month,pd,row,[]);}
-    os(month,day,row,[{text:val,span:pending.span}]);
-    window._opsPendingSpan=null;
-    opsReRender();
-    if(typeof opsCloseCed==='function')opsCloseCed();
-    return;
-  }
-  let cur=og(month,day,row).slice();if(single)cur=cur.includes(val)?[]:[val];else{if(cur.includes(val))cur=cur.filter(x=>x!==val);else cur.push(val);}os(month,day,row,cur);if(row==='ml'){opsReRender();}else{opsRefCell(id,month,day,row);opsCk(document.getElementById(id));}}
+function opsOpt(el){if(!_opsEd)return;const val=el.dataset.v;const single=el.dataset.s==='1';const{month,day,row,id}=_opsEd;let cur=og(month,day,row).slice();if(single)cur=cur.includes(val)?[]:[val];else{if(cur.includes(val))cur=cur.filter(x=>x!==val);else cur.push(val);}os(month,day,row,cur);if(row==='ml'){opsReRender();}else{opsRefCell(id,month,day,row);opsCk(document.getElementById(id));}}
 function opsCiAdd(){
   const inp=document.getElementById('opsCiTxt');
   if(!inp||!inp.value.trim())return;
@@ -20065,13 +19872,7 @@ function opsRenderWeek(){
   h+='</tr>';
   h+=wbrow('Morning Live TM','ml','#2d7dd2','');
   // Studio toggle bar handled by persistent #opsStuToggle2 div
-  var stusW=OPS_STUDIOS.slice();
-  (Array.isArray(jobs)?jobs:[]).forEach(function(j){
-    if(!j)return;
-    var sks=((j.studios&&j.studios.length)?j.studios:[j.loc==='London'?'London':j.studio]).filter(Boolean);
-    sks.forEach(function(sk){if(stusW.indexOf(sk)<0)stusW.push(sk);});
-  });
-  stusW.forEach(function(st){
+  OPS_STUDIOS.forEach(function(st){
     if(_opsHidStu.has(st))return;
     var loc=stuLocMap[st]||'';
     var lCol=loc==='Manchester'?'#2a6e3a':loc==='London'?'#1a4e8a':'rgba(154,112,48,.9)';
@@ -20219,7 +20020,7 @@ async function saveCrewContacts(){
 function renderCrewContacts(){
   // Make sure FL_CREW_DB is populated from job assignments (same as Planner does)
   jobs.forEach(function(j){
-    (j.crew||[]).filter(function(c){return c.type==='versa'||c.type==='freelance';}).forEach(function(c){
+    (j.crew||[]).filter(function(c){return c.type==='freelance';}).forEach(function(c){
       flGetOrCreate(c.name,c.role);
     });
     if(j.txDates)j.txDates.forEach(function(td){
@@ -20509,22 +20310,6 @@ function opsInit2(){
       if(sec.style.display!=='none')sec.innerHTML=opsRenderMonth(OPS_CAL[i],i);
     });
   }
-  // Centre today's date horizontally on open (after layout settles).
-  requestAnimationFrame(function(){ setTimeout(opsCenterToday, 50); });
-}
-// Scroll the planner so today's day column sits in the middle of the view.
-function opsCenterToday(){
-  try{
-    var target=null;
-    document.querySelectorAll('#opsBody2 .ops-cell.td').forEach(function(c){ if(!target && c.offsetParent!==null) target=c; });
-    if(!target)return;
-    var ms=target.closest('.ops-ms2')||document.getElementById('opsScroll2');
-    if(!ms)return;
-    var msRect=ms.getBoundingClientRect();
-    var cRect=target.getBoundingClientRect();
-    var left=ms.scrollLeft + (cRect.left - msRect.left) - (ms.clientWidth/2) + (cRect.width/2);
-    ms.scrollLeft=Math.max(0,left);
-  }catch(e){}
 }
 // Backwards-compat shim: any leftover callers route through the new model
 function opsShowQ2(qi){opsShowFromIdx(qi);}
@@ -20805,7 +20590,7 @@ function revokeAccess(idx) {
 var _admTab = 'users';
 function admSwitch(tab) {
   _admTab = tab;
-  ['users','cats','dv','suppliers','pat','access','reminders','holidays','notes','backup'].forEach(function(t) {
+  ['users','cats','dv','suppliers','pat','access','reminders','holidays','notes'].forEach(function(t) {
     var c = document.getElementById('admContent-'+t);
     var b = document.getElementById('admTab-'+t);
     if(c) c.style.display = t===tab ? '' : 'none';
