@@ -72,7 +72,8 @@ body.embed .title-row h1{font-size:20px}
 .meta > div{padding:10px 14px;border-right:1px solid var(--border);background:var(--panel)}
 .meta > div:last-child{border-right:none}
 .meta .ml{font-family:var(--cond);font-size:9px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
-.meta .mv{font-family:var(--sans);font-size:15px;font-weight:700;color:var(--ink)}
+.meta .mv{font-family:var(--sans);font-size:16px;font-weight:800;color:var(--ink);line-height:1.15}
+.meta .msub{font-family:var(--cond);font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:4px;line-height:1.3}
 @media (max-width:640px){.meta{grid-template-columns:1fr}.meta > div{border-right:none;border-bottom:1px solid var(--border)}.meta > div:last-child{border-bottom:none}}
 
 /* ── Sections ── */
@@ -225,16 +226,11 @@ select.fi{appearance:none;-webkit-appearance:none;cursor:pointer;background-imag
   </div>
 
   <div class="wrap">
-    <div class="title-row">
-      <h1 id="jobTitle">—</h1>
-      <span class="status" id="statusBadge" style="display:none"></span>
-    </div>
-    <div class="sub" id="jobSub">—</div>
-
     <div class="meta">
       <div>
         <div class="ml">Programme</div>
         <div class="mv" id="metaProg">—</div>
+        <div class="msub" id="metaSub">—</div>
       </div>
       <div>
         <div class="ml">RX Date</div>
@@ -243,6 +239,7 @@ select.fi{appearance:none;-webkit-appearance:none;cursor:pointer;background-imag
       <div>
         <div class="ml">Version</div>
         <div class="mv" id="metaVer">v1</div>
+        <span class="status" id="statusBadge" style="display:none;margin-top:6px"></span>
       </div>
     </div>
 
@@ -412,7 +409,6 @@ function render(){
 
   // Masthead job info
   document.getElementById('jobLocLine').textContent = (j.loc||'') + (j.studio? ' · '+j.studio : '');
-  document.getElementById('jobTitle').textContent = j.name || 'Untitled Job';
   document.title = (j.name||'Ingest Sheet') + ' — Versa Studios';
 
   // Status pill
@@ -426,14 +422,12 @@ function render(){
     pill.style.display='inline-block';
   }
 
-  var subBits=[];
-  if(j.client||j.prodCompany) subBits.push(esc(j.client||j.prodCompany));
-  if(j.loc||j.studio) subBits.push('<b>'+esc((j.loc||'')+(j.studio? ' · '+j.studio : ''))+'</b>');
-  if(j.start||j.end) subBits.push(esc(fmtDate(j.start)+(j.end?' – '+fmtDate(j.end):'')));
-  document.getElementById('jobSub').innerHTML = subBits.join(' · ') || '—';
-
-  // Meta box
+  // Meta box (Programme = job name, sub-line under with client + dates)
   document.getElementById('metaProg').textContent = j.name || '—';
+  var subBits=[];
+  if(j.client||j.prodCompany) subBits.push(j.client||j.prodCompany);
+  if(j.start||j.end) subBits.push(fmtDate(j.start)+(j.end?' – '+fmtDate(j.end):''));
+  document.getElementById('metaSub').textContent = subBits.join(' · ') || '';
   var rxDate = j.txDates && j.txDates[0] && j.txDates[0].date ? j.txDates[0].date : (j.start||'');
   document.getElementById('metaRx').textContent = fmtDate(rxDate) || '—';
   document.getElementById('metaVer').textContent = j.ingestVersion || 'v1';
@@ -443,11 +437,11 @@ function render(){
   opField.value = j.ingestOperator || '';
   opField.onchange = () => setField('ingestOperator', opField.value);
 
-  // Tech pill
+  // Tech pill — strip any existing i/p from the frame rate to avoid doubling
   var scan = j.techScan||'';
   var scanLtr = scan==='Interlaced' ? 'i' : (scan==='Progressive' ? 'p' : '');
   var resNum = ({'UHD':'2160','HD':'1080','3G':'1080','2K':'2160'})[j.techRes||''] || j.techRes || '';
-  var fr = (j.techFR||'').replace('.00','').replace('.','');
+  var fr = (j.techFR||'').replace('.00','').replace('.','').replace(/[ip]/gi,'');
   var fmtLabel = resNum ? (resNum + scanLtr + fr) : '';
   if(fmtLabel || j.techCodec){
     document.getElementById('techPill').style.display = 'inline-flex';
