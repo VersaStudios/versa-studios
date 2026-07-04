@@ -3122,6 +3122,17 @@ async function loadData() {
     try { if(typeof _ddHodsMigration==='function') _ddHodsMigration(); } catch(e){ console.warn('ddHods mig failed', e); }
     try { if(typeof _ddCommsMigration==='function') _ddCommsMigration(); } catch(e){ console.warn('ddComms mig failed', e); }
     try { if(typeof _celebCommsMigration==='function') _celebCommsMigration(); } catch(e){ console.warn('celebComms mig failed', e); }
+    // One-time: rename recorder "Prolog" → "Pronology mRes" on all Ingest streams. Idempotent.
+    try {
+      var _prologFixed=0;
+      jobs.forEach(function(j){
+        if(!j.ingestAudio||!Array.isArray(j.ingestAudio.streams))return;
+        j.ingestAudio.streams.forEach(function(s){
+          if(s&&s.recorder==='Prolog'){s.recorder='Pronology mRes';_prologFixed++;}
+        });
+      });
+      if(_prologFixed>0){console.log('Prolog → Pronology mRes: fixed '+_prologFixed+' stream(s)');saveData();}
+    } catch(e){ console.warn('prolog mig failed', e); }
     dismissLoading();
   } catch(e) {
     console.error('loadData error:', e);
@@ -15177,6 +15188,61 @@ function _galleryPlanSection(j){
 }
 
 
+// ── INGEST SHARE (external sheet — versa-ingest.html) ──────────────
+function _ingestLinkFor(j){
+  if(!j) return '';
+  // Reuse gallery's base-url helper
+  return _galleryBaseUrl() + 'versa-ingest.html?j=' + j.id;
+}
+function copyIngestShareLink(jid){
+  var j = jobs.find(function(x){return x.id == jid;});
+  if(!j) return;
+  var link = _ingestLinkFor(j);
+  if(!link){ alert('No link available'); return; }
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(link).then(function(){ toast('Ingest share link copied'); });
+  } else {
+    prompt('Copy link:', link);
+  }
+}
+function openIngestFor(jid){
+  var j = jobs.find(function(x){return x.id == jid;});
+  if(!j) return;
+  window.open(_ingestLinkFor(j), '_blank');
+}
+function _ingestSharePanel(j){
+  var link = _ingestLinkFor(j);
+  var embedUrl = link + '&embed=1';
+  var pwd = (j.password || '').replace(/"/g,'&quot;');
+  var lblCss = 'font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px';
+
+  return '<div class="det-sec" style="margin-bottom:14px">'
+    + '<div class="det-sec-lbl">Ingest Sheet &mdash; External Share</div>'
+    + '<div style="display:grid;grid-template-columns:200px 1fr auto auto;gap:10px;align-items:end">'
+      + '<div>'
+        + '<div style="'+lblCss+'">Client Password</div>'
+        + '<input class="fi" type="text" value="'+pwd+'" placeholder="(none - open access)" onchange="jdSetField('+j.id+',\'password\',this.value);renderJobDet(jobs.find(function(x){return x.id==='+j.id+';}))" style="width:100%"/>'
+      + '</div>'
+      + '<div>'
+        + '<div style="'+lblCss+'">Share Link</div>'
+        + '<input class="fi" type="text" value="'+link+'" readonly onclick="this.select()" style="width:100%;font-family:monospace;font-size:11px"/>'
+      + '</div>'
+      + '<button class="ibtn" onclick="copyIngestShareLink('+j.id+')" style="font-size:12px;padding:7px 14px">Copy</button>'
+      + '<button class="ibtn" onclick="openIngestFor('+j.id+')" style="font-size:12px;padding:7px 14px">Open</button>'
+    + '</div>'
+    + '<div style="color:var(--muted);font-size:11px;margin-top:8px;line-height:1.5">'
+    + 'Send the share link + password to ingest ops or clients. They open it, enter the password, and can view/edit signal names, codecs, recorders and notes. Edits autosave back to this job.'
+    + '</div>'
+    + '<div style="margin-top:14px;border:1px solid var(--border);border-radius:6px;overflow:hidden;background:#efede3">'
+      + '<div style="background:rgba(255,255,255,.04);padding:6px 12px;font-family:var(--cond);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">'
+      +   '<span>Live Preview &mdash; same view the recipient sees</span>'
+      +   '<button class="ibtn" style="font-size:10px;padding:3px 10px" onclick="document.getElementById(\'ingPreviewFrame_'+j.id+'\').contentWindow.location.reload()">&#8635; Refresh</button>'
+      + '</div>'
+      + '<iframe id="ingPreviewFrame_'+j.id+'" src="'+embedUrl+'" style="width:100%;height:900px;border:0;display:block;background:#efede3" allow="clipboard-write"></iframe>'
+    + '</div>'
+  + '</div>';
+}
+
 function renderGalleryTab(j) {
   if(!j.galleryRooms)j.galleryRooms={gallery:[],lighting:[],sound:[]};
   var rooms = [
@@ -16126,7 +16192,7 @@ function renderIngestTab(j) {
               +allCodecs.map(function(x){return '<option'+(x===s.codec?' selected':'')+'>'+x+'</option>';}).join('')
               +'<option value="__add__" style="color:#2a6cb8;font-style:italic">+ Add...</option>';
             var recOpts='<option value="">Recorder...</option>'
-              +['Prolog','Hyperdeck Studio','Hyperdeck Mini','Atomos Shogun','Atomos Sumo','Ki Pro Ultra','Ki Pro Rack'].map(function(r){return '<option'+(r===s.recorder?' selected':'')+'>'+r+'</option>';}).join('');
+              +['Pronology mRes','Hyperdeck Studio','Hyperdeck Mini','Atomos Shogun','Atomos Sumo','Ki Pro Ultra','Ki Pro Rack'].map(function(r){return '<option'+(r===s.recorder?' selected':'')+'>'+r+'</option>';}).join('');
             return '<select class="fi" style="font-size:12px;padding:2px 6px;max-width:130px;flex-shrink:0" onchange="ingestSetStreamCodec('+j.id+','+si+',this.value)">'+codecOpts+'</select>'
               +'<select class="fi" style="font-size:12px;padding:2px 6px;max-width:130px;flex-shrink:0" onchange="ingestSetStream('+j.id+','+si+',\'recorder\',this.value)">'+recOpts+'</select>';
           }())
@@ -16145,7 +16211,7 @@ function renderIngestTab(j) {
       }).join('')
     +'</div>';
 
-  return '<div class="det-sec">'
+  return _ingestSharePanel(j) + '<div class="det-sec">'
     // Ingest Operator
     +'<div style="margin-bottom:14px"><div class="dfl" style="margin-bottom:4px">Ingest Operator</div>'
     +'<input class="fi" style="font-size:14px;padding:5px 8px;width:100%;max-width:480px" value="'+(j.ingestOperator||'')+'" placeholder="Operator name..." onchange="jdSetField('+j.id+',\'ingestOperator\',this.value)"/></div>'
