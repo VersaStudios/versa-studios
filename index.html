@@ -564,9 +564,10 @@ textarea.det-edit{resize:vertical;line-height:1.4;font-weight:600;font-size:14px
 
 
 
-.ops-ced{position:fixed;background:#fff8ef;border:1px solid rgba(216,90,97,.18);border-radius:10px;z-index:900;width:240px;box-shadow:0 10px 32px rgba(48,47,44,.18),0 2px 6px rgba(48,47,44,.08);padding:6px 0;max-height:72vh;overflow-y:auto}
-.ops-cs{padding:7px 13px 4px;font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(184,79,85,.65);margin-top:3px}
-.ops-co{display:flex;align-items:center;gap:10px;padding:9px 13px;cursor:pointer;font-size:14px;font-weight:700;color:#302f2c;letter-spacing:.01em;transition:background .12s}
+.ops-ced{position:fixed;background:#fff8ef;border:1px solid rgba(216,90,97,.18);border-radius:10px;z-index:900;width:258px;box-shadow:0 10px 32px rgba(48,47,44,.18),0 2px 6px rgba(48,47,44,.08);padding:6px 0;max-height:72vh;overflow-y:auto}
+.ops-cs{padding:6px 13px 3px;font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(184,79,85,.65);margin-top:2px}
+.ops-co{display:flex;align-items:center;gap:9px;padding:6px 13px;cursor:pointer;font-size:13px;font-weight:700;color:#302f2c;letter-spacing:.01em;transition:background .12s}
+.ops-ci-sw{width:13px !important;height:13px !important}
 .ops-co:hover{background:rgba(216,90,97,.06)}
 .ops-co.sel{background:rgba(216,90,97,.1)}
 .ops-div{height:1px;background:rgba(216,90,97,.14);margin:5px 10px}
@@ -3133,11 +3134,67 @@ async function loadData() {
       });
       if(_prologFixed>0){console.log('Prolog → Pronology mRes: fixed '+_prologFixed+' stream(s)');saveData();}
     } catch(e){ console.warn('prolog mig failed', e); }
+    // One-time: seed Morning Live 2026/27 TX dates (198 shows, from broadcaster schedule
+    // sheet dated Jul 26). Merges: existing entries keep their crew/colour, labels are
+    // corrected to the sheet numbering, missing dates are added. Flag on the job stops re-runs.
+    try { _mlSeed2627(); } catch(e){ console.warn('ML 26/27 seed failed', e); }
     dismissLoading();
   } catch(e) {
     console.error('loadData error:', e);
     setMsg('Could not connect — working offline'); _appReady = true; dismissLoading();
   }
+}
+
+// ── Morning Live 2026/27 schedule seed ──────────────────────────────────────
+// Show dates transcribed from the broadcaster schedule sheet (weeks 15/26 – 13/27).
+// Dark: Fri 8 May 26, Mon 25 May 26, wc 13 Jul–24 Aug 26, wc 12 Oct 26,
+// wc 21 + 28 Dec 26, wc 29 Mar + 5 Apr 27. Show N = index+1.
+const ML_TX_2627=['2026-04-13','2026-04-14','2026-04-15','2026-04-16','2026-04-17','2026-04-20','2026-04-21','2026-04-22','2026-04-23','2026-04-24','2026-04-27','2026-04-28','2026-04-29','2026-04-30','2026-05-01','2026-05-04','2026-05-05','2026-05-06','2026-05-07','2026-05-11','2026-05-12','2026-05-13','2026-05-14','2026-05-15','2026-05-18','2026-05-19','2026-05-20','2026-05-21','2026-05-22','2026-05-26','2026-05-27','2026-05-28','2026-05-29','2026-06-01','2026-06-02','2026-06-03','2026-06-04','2026-06-05','2026-06-08','2026-06-09','2026-06-10','2026-06-11','2026-06-12','2026-06-15','2026-06-16','2026-06-17','2026-06-18','2026-06-19','2026-06-22','2026-06-23','2026-06-24','2026-06-25','2026-06-26','2026-06-29','2026-06-30','2026-07-01','2026-07-02','2026-07-03','2026-07-06','2026-07-07','2026-07-08','2026-07-09','2026-07-10','2026-08-31','2026-09-01','2026-09-02','2026-09-03','2026-09-04','2026-09-07','2026-09-08','2026-09-09','2026-09-10','2026-09-11','2026-09-14','2026-09-15','2026-09-16','2026-09-17','2026-09-18','2026-09-21','2026-09-22','2026-09-23','2026-09-24','2026-09-25','2026-09-28','2026-09-29','2026-09-30','2026-10-01','2026-10-02','2026-10-05','2026-10-06','2026-10-07','2026-10-08','2026-10-09','2026-10-19','2026-10-20','2026-10-21','2026-10-22','2026-10-23','2026-10-26','2026-10-27','2026-10-28','2026-10-29','2026-10-30','2026-11-02','2026-11-03','2026-11-04','2026-11-05','2026-11-06','2026-11-09','2026-11-10','2026-11-11','2026-11-12','2026-11-13','2026-11-16','2026-11-17','2026-11-18','2026-11-19','2026-11-20','2026-11-23','2026-11-24','2026-11-25','2026-11-26','2026-11-27','2026-11-30','2026-12-01','2026-12-02','2026-12-03','2026-12-04','2026-12-07','2026-12-08','2026-12-09','2026-12-10','2026-12-11','2026-12-14','2026-12-15','2026-12-16','2026-12-17','2026-12-18','2027-01-04','2027-01-05','2027-01-06','2027-01-07','2027-01-08','2027-01-11','2027-01-12','2027-01-13','2027-01-14','2027-01-15','2027-01-18','2027-01-19','2027-01-20','2027-01-21','2027-01-22','2027-01-25','2027-01-26','2027-01-27','2027-01-28','2027-01-29','2027-02-01','2027-02-02','2027-02-03','2027-02-04','2027-02-05','2027-02-08','2027-02-09','2027-02-10','2027-02-11','2027-02-12','2027-02-15','2027-02-16','2027-02-17','2027-02-18','2027-02-19','2027-02-22','2027-02-23','2027-02-24','2027-02-25','2027-02-26','2027-03-01','2027-03-02','2027-03-03','2027-03-04','2027-03-05','2027-03-08','2027-03-09','2027-03-10','2027-03-11','2027-03-12','2027-03-15','2027-03-16','2027-03-17','2027-03-18','2027-03-19','2027-03-22','2027-03-23','2027-03-24','2027-03-25','2027-03-26'];
+function _mlSeed2627(){
+  var j=jobs.find(function(x){return x&&(x.name||'').toLowerCase()==='morning live';});
+  if(!j)return;
+  if(j._mlSched2627Seeded)return;
+  if(!Array.isArray(j.txDates))j.txDates=[];
+  // Follow the existing label convention if one is established ("TX n" vs "Show n")
+  var prefix='Show';
+  for(var i=0;i<j.txDates.length;i++){
+    var lab=(j.txDates[i]&&j.txDates[i].label)||'';
+    if(/^TX\s*\d+$/i.test(lab)){prefix='TX';break;}
+    if(/^Show\s*\d+$/i.test(lab)){prefix='Show';break;}
+  }
+  var byDate={};
+  j.txDates.forEach(function(t){if(t&&t.date)byDate[t.date]=t;});
+  var added=0,relabelled=0;
+  ML_TX_2627.forEach(function(iso,idx){
+    var want=prefix+' '+(idx+1);
+    var ex=byDate[iso];
+    if(ex){
+      if((ex.label||'')!==want){ex.label=want;relabelled++;}
+    } else {
+      j.txDates.push({date:iso,label:want,color:null});
+      added++;
+    }
+  });
+  // Report (but do not delete) TX entries inside the seeded window that are NOT
+  // on the sheet — e.g. shows previously assumed on now-dark weeks.
+  var lo=ML_TX_2627[0],hi=ML_TX_2627[ML_TX_2627.length-1];
+  var inSheet={};ML_TX_2627.forEach(function(d){inSheet[d]=1;});
+  var stray=j.txDates.filter(function(t){return t&&t.date&&t.date>=lo&&t.date<=hi&&!inSheet[t.date];}).map(function(t){return t.date+(t.label?' ('+t.label+')':'');});
+  if(stray.length)console.warn('ML seed: '+stray.length+' TX date(s) in the window are not on the new sheet — review manually:',stray);
+  // Off-air breaks on the Ops Planner — only add ranges no existing break covers
+  var mkBrk=function(name,start,end){
+    var covered=_opsBrk.some(function(b){return start<=b.end&&end>=b.start;});
+    if(!covered){_opsBrk.push({id:Date.now()+Math.floor(Math.random()*1000),name:name,start:start,end:end});return 1;}
+    return 0;
+  };
+  var brkAdded=0;
+  brkAdded+=mkBrk('ML Summer Break','2026-07-13','2026-08-28');
+  brkAdded+=mkBrk('ML Off Air','2026-10-12','2026-10-16');
+  brkAdded+=mkBrk('ML Christmas Break','2026-12-21','2027-01-01');
+  brkAdded+=mkBrk('ML Spring Break','2027-03-29','2027-04-09');
+  j._mlSched2627Seeded=true;
+  console.log('ML 26/27 seed: added '+added+' date(s), relabelled '+relabelled+', breaks added '+brkAdded);
+  if(added||relabelled||brkAdded||true)saveData();
 }
 
 // ── AUTH ──────────────────────────────────────────────────────────────────────
@@ -18816,7 +18873,7 @@ function _opsRepositionOpenCed(){
   ced.style.visibility='visible';
   _opsPositionCed(td);
 }
-function opsOpt(el){if(!_opsEd)return;const val=el.dataset.v;const single=el.dataset.s==='1';const{month,day,row,id}=_opsEd;let cur=og(month,day,row).slice();if(single)cur=cur.includes(val)?[]:[val];else{if(cur.includes(val))cur=cur.filter(x=>x!==val);else cur.push(val);}os(month,day,row,cur);if(row==='ml'){opsReRender();}else{opsRefCell(id,month,day,row);opsCk(document.getElementById(id));}}
+function opsOpt(el){if(!_opsEd)return;const val=el.dataset.v;const single=el.dataset.s==='1';const{month,day,row,id}=_opsEd;let cur=og(month,day,row).slice();if(single)cur=cur.includes(val)?[]:[val];else{if(cur.includes(val))cur=cur.filter(x=>x!==val);else cur.push(val);}os(month,day,row,cur);if(row==='ml'){opsReRender();}else{opsRefCell(id,month,day,row);}opsCloseCed();}
 function opsCiAdd(){
   const inp=document.getElementById('opsCiTxt');
   if(!inp||!inp.value.trim())return;
@@ -18855,7 +18912,7 @@ function opsCiAdd(){
   inp.value='';
   if(clsInp)clsInp.value='';
   opsRefCell(id,month,day,row);
-  opsCk(document.getElementById(id));
+  opsCloseCed();
 }
 // Swatch click handler for the Add Custom colour palette
 function opsCiPick(el,cls){
