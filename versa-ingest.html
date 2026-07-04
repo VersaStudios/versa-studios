@@ -1,0 +1,730 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ingest Sheet — Versa Studios</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#efede3;
+  --panel:#faf9f4;
+  --ink:#302f2c;
+  --ink-2:#1a1917;
+  --muted:#7a7770;
+  --accent:#F4A258;
+  --border:rgba(48,47,44,.18);
+  --subtle:rgba(48,47,44,.04);
+  --cond:"Barlow Condensed",sans-serif;
+  --sans:"Barlow",-apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif;
+  --ok:#3a8a55;
+  --warn:#c8a020;
+  --err:#c04040;
+  --iso:#4a6a9e;
+  --lc:#3a7a5a;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+html,body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.4;min-height:100vh}
+body.embed{background:var(--bg)}
+
+/* ── Dark masthead bar ── */
+.masthead{background:var(--ink-2);color:#fff;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+body.embed .masthead{padding:10px 16px}
+.logo{height:26px;display:flex;align-items:center}
+.logo img{height:100%;object-fit:contain}
+.mast-right{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.mast-right .doc-id{font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.55);text-align:right;line-height:1.3}
+.mast-right .doc-id b{display:block;color:var(--accent);font-size:11px}
+.save-ind{font-family:var(--cond);font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 10px;border-radius:3px;background:rgba(255,255,255,.08);color:rgba(255,255,255,.6);min-width:70px;text-align:center}
+.save-ind.saving{color:var(--accent);background:rgba(244,162,88,.15)}
+.save-ind.saved{color:#a8dbb3;background:rgba(90,200,110,.12)}
+.save-ind.err{color:#f0a0a0;background:rgba(200,60,60,.15)}
+
+/* ── Wrap ── */
+.wrap{max-width:1240px;margin:0 auto;padding:22px 22px 60px}
+body.embed .wrap{padding:14px 16px 40px;max-width:none}
+
+/* ── Loading / error / password gate ── */
+.msg{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg);z-index:100;font-family:var(--cond);font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:20px}
+.pwbox{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:24px 26px;max-width:340px;width:90%;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.06)}
+.pwbox .pwlogo{background:var(--ink-2);padding:12px 16px;margin:-24px -26px 16px;border-radius:6px 6px 0 0;display:flex;justify-content:center}
+.pwbox .pwlogo img{height:22px}
+.pwbox h2{font-family:var(--cond);font-size:12px;font-weight:900;letter-spacing:.14em;color:var(--muted);margin-bottom:6px}
+.pwbox .jobname{font-family:var(--sans);font-size:20px;font-weight:800;color:var(--ink);margin-bottom:16px;text-transform:none;letter-spacing:0}
+.pwbox input{width:100%;font-family:var(--sans);font-size:15px;padding:9px 12px;background:var(--bg);border:1.5px solid var(--border);border-radius:5px;color:var(--ink);margin-bottom:10px;text-align:center}
+.pwbox input:focus{outline:none;border-color:var(--accent)}
+.pwbox button{width:100%;background:var(--ink);color:var(--bg);border:none;padding:10px;font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;border-radius:5px}
+.pwbox button:hover{background:var(--accent);color:var(--ink)}
+.pwbox .err{color:var(--err);font-size:12px;margin-top:8px;font-family:var(--cond);letter-spacing:.06em;text-transform:uppercase;font-weight:700}
+
+/* ── Title block ── */
+.title-row{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:4px;flex-wrap:wrap}
+.title-row h1{font-family:var(--sans);font-size:26px;font-weight:800;letter-spacing:-0.01em;color:var(--ink);line-height:1.1;flex:1}
+body.embed .title-row h1{font-size:20px}
+.status{font-family:var(--cond);font-size:9px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:3px;border:1px solid;white-space:nowrap;align-self:flex-start;margin-top:6px}
+.sub{font-family:var(--cond);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
+.sub b{color:var(--ink);font-weight:900}
+
+/* ── Meta box (Programme / RX / Version) ── */
+.meta{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-bottom:22px;border:1px solid var(--border);border-radius:5px;overflow:hidden}
+.meta > div{padding:10px 14px;border-right:1px solid var(--border);background:var(--panel)}
+.meta > div:last-child{border-right:none}
+.meta .ml{font-family:var(--cond);font-size:9px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.meta .mv{font-family:var(--sans);font-size:15px;font-weight:700;color:var(--ink)}
+@media (max-width:640px){.meta{grid-template-columns:1fr}.meta > div{border-right:none;border-bottom:1px solid var(--border)}.meta > div:last-child{border-bottom:none}}
+
+/* ── Sections ── */
+section{margin-bottom:20px}
+.det-sec-lbl{font-family:var(--cond);font-size:11px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding-bottom:5px;border-bottom:1px solid var(--border);margin-bottom:10px}
+
+/* ── Editable inputs styled to blend ── */
+.dfl{font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.fi{background:var(--panel);border:1px solid var(--border);font:inherit;color:var(--ink);padding:5px 8px;border-radius:4px;transition:background .12s,border-color .12s;font-size:14px;font-family:var(--sans)}
+.fi:hover{border-color:rgba(244,162,88,.4)}
+.fi:focus{outline:none;background:#fff;border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+select.fi{appearance:none;-webkit-appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23302f2c' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;padding-right:24px;background-color:var(--panel)}
+.fta{background:var(--panel);border:1px solid var(--border);font-family:var(--sans);color:var(--ink);padding:9px 12px;border-radius:5px;font-size:14px;line-height:1.5;resize:vertical;min-height:80px;width:100%}
+.fta:focus{outline:none;background:#fff;border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+
+/* ── Tech spec pill ── */
+.tech-pill{display:inline-flex;gap:10px;align-items:baseline;margin-bottom:16px;padding:6px 12px;background:var(--panel);border:1px solid var(--border);border-radius:5px;flex-wrap:wrap}
+.tech-pill .fmt{font-family:var(--cond);font-size:14px;font-weight:800;letter-spacing:.06em;color:var(--ink)}
+.tech-pill .codec{font-family:var(--cond);font-size:13px;font-weight:700;color:var(--iso)}
+.tech-pill .note{font-size:10px;color:var(--muted);font-family:var(--cond);letter-spacing:.08em;text-transform:uppercase}
+
+/* ── MADI summary ── */
+.madi-panel{margin-bottom:16px;padding:10px 14px;background:rgba(90,90,170,.06);border:1px solid var(--border);border-radius:6px}
+.madi-panel-hdr{display:flex;align-items:baseline;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.madi-panel-hdr .lbl{font-family:var(--cond);font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--ink)}
+.madi-panel-hdr .cnt{font-size:10px;color:var(--muted);font-family:var(--cond);letter-spacing:.08em;text-transform:uppercase}
+.madi-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+.madi-chip-stream{display:flex;align-items:center;gap:8px;padding:5px 10px;background:var(--panel);border:1px solid var(--border);border-radius:5px}
+.madi-chip-stream .name{font-family:var(--cond);font-size:12px;font-weight:800;color:var(--accent);letter-spacing:.04em}
+.madi-chip-stream .count{font-size:11px;color:var(--muted)}
+
+.madi-inputs{border-top:1px dashed var(--border);padding-top:8px;margin-top:2px}
+.madi-inputs-hdr{font-family:var(--cond);font-size:9px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.madi-inputs-grid{display:flex;flex-wrap:wrap;gap:6px}
+.madi-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 9px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:3px;font-size:12px;line-height:1.2;cursor:grab;transition:background .12s,transform .12s,box-shadow .12s;user-select:none}
+.madi-chip:hover{background:rgba(244,162,88,.08);box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.madi-chip:active{cursor:grabbing;transform:scale(.98)}
+.madi-chip .m-src{font-family:var(--cond);font-size:10px;font-weight:800;color:var(--muted);letter-spacing:.02em}
+.madi-chip .m-lbl{color:var(--ink);font-weight:600}
+.madi-empty{font-size:11px;color:var(--muted);font-style:italic;padding:4px 0}
+.drag-hint{font-family:var(--cond);font-size:10px;color:var(--accent);letter-spacing:.06em;text-transform:uppercase;font-weight:700;margin-top:6px;display:block}
+
+/* ── Streams control row ── */
+.streams-ctrl{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+.streams-ctrl .left{display:flex;align-items:center;gap:12px}
+.streams-ctrl input[type=number]{width:60px;text-align:center;font-size:14px;padding:4px 6px}
+.streams-ctrl .cnt-lbl{font-size:12px;color:var(--muted)}
+
+/* ── Streams grid ── */
+.streams-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(520px,1fr));gap:12px;align-items:start}
+@media (max-width:640px){.streams-grid{grid-template-columns:1fr}}
+.stream{background:var(--panel);border:1px solid var(--border);border-left-width:4px;border-radius:6px;overflow:hidden}
+
+.stream .s-hdr{background:rgba(48,47,44,.04);padding:8px 12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.stream .s-name{font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 6px;background:transparent;border:none;color:var(--accent);min-width:80px;max-width:120px}
+.stream .s-name:focus{outline:none;background:#fff;border-radius:3px}
+
+/* ISO / Line Cut toggle */
+.s-type-tog{display:flex;border-radius:4px;overflow:hidden;flex-shrink:0}
+.s-type-tog button{padding:3px 10px;font-size:11px;font-family:var(--cond);font-weight:800;letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--border);cursor:pointer;background:var(--panel);color:var(--muted)}
+.s-type-tog button.on-iso{background:rgba(74,106,158,.2);color:var(--iso);border-color:var(--iso)}
+.s-type-tog button.on-lc{background:rgba(58,122,90,.2);color:var(--lc);border-color:var(--lc)}
+.s-type-tog button:not(:last-child){border-right:none}
+
+.s-cam-sel{font-size:12px;padding:2px 6px;max-width:150px}
+.s-router-lbl{font-size:11px;color:var(--muted)}
+.s-router-in{font-size:12px;padding:2px 6px;width:65px;text-align:center}
+.s-tag{font-family:var(--cond);font-size:10px;font-weight:800;padding:2px 7px;border-radius:3px;letter-spacing:.06em}
+.s-codec-sel,.s-rec-sel{font-size:12px;padding:2px 6px;max-width:150px;flex-shrink:0}
+
+.stream .s-actions{margin-left:auto;display:flex;gap:4px}
+.ibtn{background:transparent;border:1px solid var(--border);color:var(--ink);padding:4px 10px;font-size:11px;font-family:var(--cond);font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border-radius:3px}
+.ibtn:hover{background:var(--accent);color:var(--ink);border-color:var(--accent)}
+
+.stream table{width:100%;border-collapse:collapse}
+.stream thead th{padding:5px 8px;font-size:10px;font-family:var(--cond);font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:rgba(48,47,44,.04);text-align:left;border-bottom:1px solid var(--border)}
+.stream thead th.num{width:32px;text-align:center}
+.stream thead th.madi{width:170px}
+.stream thead th.rm{width:24px}
+.stream tbody tr{border-bottom:1px solid var(--border);transition:background .15s}
+.stream tbody tr:last-child{border-bottom:none}
+.stream tbody tr.drop-hover{background:rgba(244,162,88,.15);box-shadow:inset 0 0 0 2px var(--accent)}
+.stream tbody tr.just-dropped{animation:flash .6s ease}
+@keyframes flash{0%{background:rgba(244,162,88,.4)}100%{background:transparent}}
+.stream tbody td{padding:2px 8px;font-size:13px}
+.stream tbody td.num{width:32px;text-align:center;font-family:var(--cond);font-weight:800;color:var(--muted);font-size:11px}
+.stream tbody td .fi{font-size:12px;padding:3px 5px;width:100%;background:transparent;border:none}
+.stream tbody td .fi:focus{background:#fff;border:1px solid var(--accent)}
+.stream tbody td.madi-td{width:170px}
+.stream tbody td.madi-td select{width:100%;font-size:12px;padding:2px 4px;color:var(--accent);font-family:var(--cond);font-weight:700}
+.stream tbody td.rm{width:24px;text-align:center}
+.stream tbody td.rm button{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:0;line-height:1}
+.stream tbody td.rm button:hover{color:var(--err)}
+
+.add-row-btn{margin-top:6px;padding:5px 12px;font-size:11px}
+
+/* ── Camera resistor palette ── */
+.cam-brown{border-left-color:#7B3F00}.cam-red{border-left-color:#CC0000}.cam-orange{border-left-color:#FF8C00}
+.cam-yellow{border-left-color:#D4A800}.cam-green{border-left-color:#1A7A1A}.cam-blue{border-left-color:#0047AB}
+.cam-violet{border-left-color:#7B2D8B}.cam-grey{border-left-color:#6B7280}.cam-white{border-left-color:#DEDEDE}
+.cam-gold{border-left-color:#B8860B}
+.tag-brown{background:#7B3F00;color:#fff}.tag-red{background:#CC0000;color:#fff}.tag-orange{background:#FF8C00;color:#000}
+.tag-yellow{background:#D4A800;color:#000}.tag-green{background:#1A7A1A;color:#fff}.tag-blue{background:#0047AB;color:#fff}
+.tag-violet{background:#7B2D8B;color:#fff}.tag-grey{background:#6B7280;color:#fff}.tag-white{background:#DEDEDE;color:#000}
+.tag-gold{background:#B8860B;color:#fff}
+
+/* ── Notes ── */
+.empty{color:var(--muted);font-style:italic;font-size:13px;padding:8px 0}
+
+/* ── Footer ── */
+.foot{margin-top:26px;padding-top:10px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-family:var(--cond);font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);flex-wrap:wrap;gap:8px}
+
+/* ── Print ── */
+@media print{
+  body{background:#fff}
+  .save-ind, .foot, .streams-ctrl .ibtn, .add-row-btn, .rm{display:none}
+  .stream{page-break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<div class="msg" id="loading">Loading…</div>
+
+<div class="msg" id="pwGate" style="display:none">
+  <div class="pwbox">
+    <div class="pwlogo"><img src="data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMzY2IDk2Mi45MiI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiNmZmY7fTwvc3R5bGU+PC9kZWZzPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTE5NC4xNiw1MDcuMzN2LTE0LjdjOS4wOSw0LjQ1LDIzLjQsOS42NywzOC42Nyw5LjY3LDE4LjE3LDAsMzIuMDktOC4xMiwzMi4wOS0yMi4yM3MtNy41NC0yMS42NS0zMi4wOS0zMC4zNWMtMjcuNjQtOS44Ni0zOS4wNS0yMS42Ni0zOS4wNS00MS43NiwwLTIzLDE5LjcyLTM2LjE1LDQ0LjY2LTM2LjE1QTg2LjYsODYuNiwwLDAsMSwyNzIuMjcsMzc5djE0LjMxYy03LjU0LTMuODctMjAuODgtOC4xMy0zMy4yNS04LjEzLTE3Ljc5LDAtMzAuNzQsOC43MS0zMC43NCwyMi4yNCwwLDEyLjU3LDYuNzcsMjEuMjYsMzEuNywzMC4zNSwyNy44NCw5Ljg2LDM5LjQ0LDIxLjA3LDM5LjQ0LDQxLjM3LDAsMjMtMTguNTYsMzYuNTQtNDUuODIsMzYuNTRBOTkuMiw5OS4yLDAsMCwxLDE5NC4xNiw1MDcuMzNaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMzcxLjgzLDM4Ni41VjUxMy4zMkgzNTcuMTRWMzg2LjVIMzE0LjQyVjM3NC4xM0g0MTQuNzVWMzg2LjVaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNNTY1Ljc1LDQ2NS4zOGMwLDMxLjUxLTE5LjUzLDUwLjI2LTUyLjIsNTAuMjYtMzIuNDgsMC01Mi0xOC43NS01Mi01MC4yNlYzNzQuMTNoMTQuNjlWNDY0LjZjMCwyMy40LDEzLjkyLDM3LjMyLDM3LjMyLDM3LjMyczM3LjUtMTMuOTIsMzcuNS0zNy4zMlYzNzQuMTNoMTQuN1oiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik02MjguNTgsNTEzLjMyVjM3NC4xM2gzOC40N2M0MS41NiwwLDczLjQ2LDI2LjY4LDczLjQ2LDY5LjZTNzA5LDUxMy4zMiw2NjcuODIsNTEzLjMyWk02NDMuMjcsMzg2LjVWNTAxaDI0LjU1YzMyLjY4LDAsNTcuNjEtMjIuMjMsNTcuNjEtNTcuMjJTNzAwLjMsMzg2LjUsNjY2Ljg2LDM4Ni41WiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTc5NS4yMyw1MTMuMzJWMzc0LjEzaDE0LjY5VjUxMy4zMloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik05MzguMSwzNzEuODFjNDAsMCw3MC43NiwzMS43LDcwLjc2LDcxLjkyLDAsNDAuNC0zMC4zNiw3MS45MS03MC43Niw3MS45MS00MC4yMSwwLTcwLjc2LTMxLjUxLTcwLjc2LTcxLjkxQzg2Ny4zNCw0MDMuOSw4OTcuODksMzcxLjgxLDkzOC4xLDM3MS44MVptMCwxMzAuMTFjMzIuNDgsMCw1NS42OC0yNS4xNCw1NS42OC01OC4xOXMtMjMuMi01OC4yLTU1LjY4LTU4LjJjLTMyLjI5LDAtNTUuODcsMjUuMTQtNTUuODcsNTguMlM5MDUuODEsNTAxLjkyLDkzOC4xLDUwMS45MloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0xMDU1LjI1LDUwNy4zM3YtMTQuN2M5LjA5LDQuNDUsMjMuNCw5LjY3LDM4LjY3LDkuNjcsMTguMTcsMCwzMi4wOS04LjEyLDMyLjA5LTIyLjIzcy03LjU0LTIxLjY1LTMyLjA5LTMwLjM1Yy0yNy42NC05Ljg2LTM5LjA1LTIxLjY2LTM5LjA1LTQxLjc2LDAtMjMsMTkuNzItMzYuMTUsNDQuNjYtMzYuMTVhODYuNiw4Ni42LDAsMCwxLDMzLjgzLDcuMTV2MTQuMzFjLTcuNTQtMy44Ny0yMC44OC04LjEzLTMzLjI1LTguMTMtMTcuNzksMC0zMC43NCw4LjcxLTMwLjc0LDIyLjI0LDAsMTIuNTcsNi43NywyMS4yNiwzMS43LDMwLjM1LDI3Ljg0LDkuODYsMzkuNDQsMjEuMDcsMzkuNDQsNDEuMzcsMCwyMy0xOC41NiwzNi41NC00NS44MiwzNi41NEE5OS4yLDk5LjIsMCwwLDEsMTA1NS4yNSw1MDcuMzNaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMTMxLjIzLDI3MC44MmgtMi4xOEwwLDUuMDlINjEuMDdMOTUuMjQsODAuN2MxMy40NSwzMC4xNywyNS40NCw1NiwzNC41Myw4MS40M0MxMzcuNCwxNDMuNTgsMTUzLjQsMTA2LjUxLDE2NSw4MC43TDE5OS4yLDUuMDloNjAuNzFaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMzM0Ljc3LDI2Ni44MlY1LjA5SDUwMy4wOFY1MkgzOTAuNzVWMTExLjZINDg2djQ1LjA3SDM5MC43NXY2My4yNUg1MDguNTN2NDYuOVoiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik02OTEuMzYsNS4wOWM2MC43MSwwLDEwMSwzMC4xNywxMDEsODYuMTUsMCwzOC4xNy0yMS40NCw2My4yNS00OS44LDc0LjUyTDc5Ny41LDI2Ni44Mkg3MzguMjVsLTQ2LjE2LTkxLjYxSDY1NC4yOHY5MS42MUg1OTkuMzlWNS4wOVpNNjU0LjI4LDUydjc4LjE2aDQwYzI0LjcyLDAsNDEuOC0xMi4zNiw0MS44LTM4LjksMC0yNi4xNy0xNy44MS0zOS4yNi00My4yNi0zOS4yNloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik04NzUuNjQsMjU3VjIwMy4yYzE4LjE4LDkuNDUsNDIuMTcsMTcuNDUsNjUuOCwxOC45MWE5NS4wOCw5NS4wOCwwLDAsMCwyMy4yNi0xLjQ2YzIwLTIuOTEsMzEuNjMtMTAuNTQsMzEuNjMtMjMuMjYsMC0xNy40NS0xNS42My0yNi41NC01MS42Mi0zOS42My00NS44LTE2LjcyLTcyLjctMzYtNzIuNy04MS40MkM4NzIsMjkuODEsOTEwLjU0LDAsOTY2Ljg4LDBjMjYuMTgsMCw1Miw1LjgyLDY4LjM0LDEzLjA5VjY0LjcxYy0xNS4yNi05LjA5LTQwLTE2LTY0LTE2LTI2LjksMC00NC4zNSwxMC41NC00NC4zNSwyNy4yNywwLDE1LjI2LDE0LjE3LDI1LjgsNDkuOCwzOS4yNSw0NS44LDE3LjgxLDc0LjE1LDM3LjA4LDc0LjE1LDgxLjA3LDAsNDcuMjUtMzUuNjIsNzUuNjEtOTcuNDIsNzUuNjFDOTIzLjYzLDI3MS45MSw4OTQuNTQsMjY1LjM2LDg3NS42NCwyNTdaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMTIzOC43NywxLjA5aC0yLjE4TDExMDkuNzMsMjY2LjgyaDU4LjUybDEyLTI3LjIyYzExLTI0LjgxLDUwLjE3LTExNy44NCw1Ny43OS0xMzYsOCwyMi45LDQ4LjgxLDExNy4wNiw2MC44MSwxNDQuMzJoMGw4LjYyLDE4LjlIMTM2NloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik03NzQuNDYsNzA2Ljc4bC0zMS44OS02NS42NWgtMi42NGwtODYuMjIsMTc4LTUuNCwxMS4xNmMtMTEtMzAuNTEtMjUuMzUtNjEuNDktNDEuNDctOTcuNjVsLTQxLjM4LTkxLjU2aC03NEw2MTUuOSw4OTcuMjdsMzEuODgsNjUuNjVoMi42NGw4Ni4yMi0xNzgsNS40MS0xMS4xNmMxMSwzMC41LDI1LjM1LDYxLjQ5LDQxLjQ2LDk3LjY1bDQxLjM4LDkxLjU2aDc0WiIvPjwvc3ZnPg==" alt="Versa Studios"></div>
+    <h2>Password Required</h2>
+    <div class="jobname" id="pwJobName">Loading…</div>
+    <input type="password" id="pwInput" placeholder="Enter password" autocomplete="off">
+    <button id="pwBtn">Unlock</button>
+    <div class="err" id="pwErr" style="display:none">Incorrect password</div>
+  </div>
+</div>
+
+<div class="msg" id="errBox" style="display:none">
+  <div style="text-align:center;max-width:420px">
+    <div style="font-family:var(--cond);font-size:12px;color:var(--err);letter-spacing:.12em">Error</div>
+    <div id="errMsg" style="margin-top:6px;color:var(--ink);font-family:var(--sans);letter-spacing:0;text-transform:none;font-weight:400"></div>
+  </div>
+</div>
+
+<div id="sheet" style="display:none">
+  <div class="masthead">
+    <div class="logo"><img src="data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMzY2IDk2Mi45MiI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiNmZmY7fTwvc3R5bGU+PC9kZWZzPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTE5NC4xNiw1MDcuMzN2LTE0LjdjOS4wOSw0LjQ1LDIzLjQsOS42NywzOC42Nyw5LjY3LDE4LjE3LDAsMzIuMDktOC4xMiwzMi4wOS0yMi4yM3MtNy41NC0yMS42NS0zMi4wOS0zMC4zNWMtMjcuNjQtOS44Ni0zOS4wNS0yMS42Ni0zOS4wNS00MS43NiwwLTIzLDE5LjcyLTM2LjE1LDQ0LjY2LTM2LjE1QTg2LjYsODYuNiwwLDAsMSwyNzIuMjcsMzc5djE0LjMxYy03LjU0LTMuODctMjAuODgtOC4xMy0zMy4yNS04LjEzLTE3Ljc5LDAtMzAuNzQsOC43MS0zMC43NCwyMi4yNCwwLDEyLjU3LDYuNzcsMjEuMjYsMzEuNywzMC4zNSwyNy44NCw5Ljg2LDM5LjQ0LDIxLjA3LDM5LjQ0LDQxLjM3LDAsMjMtMTguNTYsMzYuNTQtNDUuODIsMzYuNTRBOTkuMiw5OS4yLDAsMCwxLDE5NC4xNiw1MDcuMzNaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMzcxLjgzLDM4Ni41VjUxMy4zMkgzNTcuMTRWMzg2LjVIMzE0LjQyVjM3NC4xM0g0MTQuNzVWMzg2LjVaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNNTY1Ljc1LDQ2NS4zOGMwLDMxLjUxLTE5LjUzLDUwLjI2LTUyLjIsNTAuMjYtMzIuNDgsMC01Mi0xOC43NS01Mi01MC4yNlYzNzQuMTNoMTQuNjlWNDY0LjZjMCwyMy40LDEzLjkyLDM3LjMyLDM3LjMyLDM3LjMyczM3LjUtMTMuOTIsMzcuNS0zNy4zMlYzNzQuMTNoMTQuN1oiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik02MjguNTgsNTEzLjMyVjM3NC4xM2gzOC40N2M0MS41NiwwLDczLjQ2LDI2LjY4LDczLjQ2LDY5LjZTNzA5LDUxMy4zMiw2NjcuODIsNTEzLjMyWk02NDMuMjcsMzg2LjVWNTAxaDI0LjU1YzMyLjY4LDAsNTcuNjEtMjIuMjMsNTcuNjEtNTcuMjJTNzAwLjMsMzg2LjUsNjY2Ljg2LDM4Ni41WiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTc5NS4yMyw1MTMuMzJWMzc0LjEzaDE0LjY5VjUxMy4zMloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik05MzguMSwzNzEuODFjNDAsMCw3MC43NiwzMS43LDcwLjc2LDcxLjkyLDAsNDAuNC0zMC4zNiw3MS45MS03MC43Niw3MS45MS00MC4yMSwwLTcwLjc2LTMxLjUxLTcwLjc2LTcxLjkxQzg2Ny4zNCw0MDMuOSw4OTcuODksMzcxLjgxLDkzOC4xLDM3MS44MVptMCwxMzAuMTFjMzIuNDgsMCw1NS42OC0yNS4xNCw1NS42OC01OC4xOXMtMjMuMi01OC4yLTU1LjY4LTU4LjJjLTMyLjI5LDAtNTUuODcsMjUuMTQtNTUuODcsNTguMlM5MDUuODEsNTAxLjkyLDkzOC4xLDUwMS45MloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0xMDU1LjI1LDUwNy4zM3YtMTQuN2M5LjA5LDQuNDUsMjMuNCw5LjY3LDM4LjY3LDkuNjcsMTguMTcsMCwzMi4wOS04LjEyLDMyLjA5LTIyLjIzcy03LjU0LTIxLjY1LTMyLjA5LTMwLjM1Yy0yNy42NC05Ljg2LTM5LjA1LTIxLjY2LTM5LjA1LTQxLjc2LDAtMjMsMTkuNzItMzYuMTUsNDQuNjYtMzYuMTVhODYuNiw4Ni42LDAsMCwxLDMzLjgzLDcuMTV2MTQuMzFjLTcuNTQtMy44Ny0yMC44OC04LjEzLTMzLjI1LTguMTMtMTcuNzksMC0zMC43NCw4LjcxLTMwLjc0LDIyLjI0LDAsMTIuNTcsNi43NywyMS4yNiwzMS43LDMwLjM1LDI3Ljg0LDkuODYsMzkuNDQsMjEuMDcsMzkuNDQsNDEuMzcsMCwyMy0xOC41NiwzNi41NC00NS44MiwzNi41NEE5OS4yLDk5LjIsMCwwLDEsMTA1NS4yNSw1MDcuMzNaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMTMxLjIzLDI3MC44MmgtMi4xOEwwLDUuMDlINjEuMDdMOTUuMjQsODAuN2MxMy40NSwzMC4xNywyNS40NCw1NiwzNC41Myw4MS40M0MxMzcuNCwxNDMuNTgsMTUzLjQsMTA2LjUxLDE2NSw4MC43TDE5OS4yLDUuMDloNjAuNzFaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMzM0Ljc3LDI2Ni44MlY1LjA5SDUwMy4wOFY1MkgzOTAuNzVWMTExLjZINDg2djQ1LjA3SDM5MC43NXY2My4yNUg1MDguNTN2NDYuOVoiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik02OTEuMzYsNS4wOWM2MC43MSwwLDEwMSwzMC4xNywxMDEsODYuMTUsMCwzOC4xNy0yMS40NCw2My4yNS00OS44LDc0LjUyTDc5Ny41LDI2Ni44Mkg3MzguMjVsLTQ2LjE2LTkxLjYxSDY1NC4yOHY5MS42MUg1OTkuMzlWNS4wOVpNNjU0LjI4LDUydjc4LjE2aDQwYzI0LjcyLDAsNDEuOC0xMi4zNiw0MS44LTM4LjksMC0yNi4xNy0xNy44MS0zOS4yNi00My4yNi0zOS4yNloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik04NzUuNjQsMjU3VjIwMy4yYzE4LjE4LDkuNDUsNDIuMTcsMTcuNDUsNjUuOCwxOC45MWE5NS4wOCw5NS4wOCwwLDAsMCwyMy4yNi0xLjQ2YzIwLTIuOTEsMzEuNjMtMTAuNTQsMzEuNjMtMjMuMjYsMC0xNy40NS0xNS42My0yNi41NC01MS42Mi0zOS42My00NS44LTE2LjcyLTcyLjctMzYtNzIuNy04MS40MkM4NzIsMjkuODEsOTEwLjU0LDAsOTY2Ljg4LDBjMjYuMTgsMCw1Miw1LjgyLDY4LjM0LDEzLjA5VjY0LjcxYy0xNS4yNi05LjA5LTQwLTE2LTY0LTE2LTI2LjksMC00NC4zNSwxMC41NC00NC4zNSwyNy4yNywwLDE1LjI2LDE0LjE3LDI1LjgsNDkuOCwzOS4yNSw0NS44LDE3LjgxLDc0LjE1LDM3LjA4LDc0LjE1LDgxLjA3LDAsNDcuMjUtMzUuNjIsNzUuNjEtOTcuNDIsNzUuNjFDOTIzLjYzLDI3MS45MSw4OTQuNTQsMjY1LjM2LDg3NS42NCwyNTdaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMTIzOC43NywxLjA5aC0yLjE4TDExMDkuNzMsMjY2LjgyaDU4LjUybDEyLTI3LjIyYzExLTI0LjgxLDUwLjE3LTExNy44NCw1Ny43OS0xMzYsOCwyMi45LDQ4LjgxLDExNy4wNiw2MC44MSwxNDQuMzJoMGw4LjYyLDE4LjlIMTM2NloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik03NzQuNDYsNzA2Ljc4bC0zMS44OS02NS42NWgtMi42NGwtODYuMjIsMTc4LTUuNCwxMS4xNmMtMTEtMzAuNTEtMjUuMzUtNjEuNDktNDEuNDctOTcuNjVsLTQxLjM4LTkxLjU2aC03NEw2MTUuOSw4OTcuMjdsMzEuODgsNjUuNjVoMi42NGw4Ni4yMi0xNzgsNS40MS0xMS4xNmMxMSwzMC41LDI1LjM1LDYxLjQ5LDQxLjQ2LDk3LjY1bDQxLjM4LDkxLjU2aDc0WiIvPjwvc3ZnPg==" alt="Versa Studios"></div>
+    <div class="mast-right">
+      <div class="doc-id">Ingest Sheet<b id="jobLocLine">—</b></div>
+      <div class="save-ind saved" id="saveInd">Saved</div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="title-row">
+      <h1 id="jobTitle">—</h1>
+      <span class="status" id="statusBadge" style="display:none"></span>
+    </div>
+    <div class="sub" id="jobSub">—</div>
+
+    <div class="meta">
+      <div>
+        <div class="ml">Programme</div>
+        <div class="mv" id="metaProg">—</div>
+      </div>
+      <div>
+        <div class="ml">RX Date</div>
+        <div class="mv" id="metaRx">—</div>
+      </div>
+      <div>
+        <div class="ml">Version</div>
+        <div class="mv" id="metaVer">v1</div>
+      </div>
+    </div>
+
+    <section>
+      <div style="margin-bottom:14px">
+        <div class="dfl" style="margin-bottom:4px">Ingest Operator</div>
+        <input class="fi" id="opField" style="width:100%;max-width:480px" placeholder="Operator name...">
+      </div>
+      <div class="tech-pill" id="techPill" style="display:none">
+        <span class="fmt" id="techFmt">—</span>
+        <span class="codec" id="techCodec">—</span>
+        <span class="note">Set on Info</span>
+      </div>
+    </section>
+
+    <section id="madiSec" class="madi-panel">
+      <div class="madi-panel-hdr">
+        <span class="lbl">MADI</span>
+        <span class="cnt" id="madiCntTop">— inputs named</span>
+      </div>
+      <div class="madi-chips" id="madiChips"></div>
+      <div class="madi-inputs" id="madiInputs" style="display:none">
+        <div class="madi-inputs-hdr">Drag any channel below onto an audio row to assign it</div>
+        <div class="madi-inputs-grid" id="madiInputsGrid"></div>
+      </div>
+    </section>
+
+    <section id="streamsSec">
+      <div class="streams-ctrl">
+        <div class="left">
+          <div class="det-sec-lbl" style="margin:0;padding:0;border:none">Ingest Streams</div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span class="cnt-lbl" id="streamCount">0 streams</span>
+          </div>
+        </div>
+      </div>
+      <div class="streams-grid" id="streamsGrid"></div>
+    </section>
+
+    <section>
+      <div class="dfl" style="margin-bottom:6px">Ingest Notes</div>
+      <textarea class="fta" id="notesField" placeholder="Ingest notes…"></textarea>
+    </section>
+
+    <div class="foot">
+      <span>Versa Studios · Ingest Sheet</span>
+      <span id="footStamp">—</span>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── SUPABASE CONFIG (same as index.html) ─────────────────────────────
+const _SB_URL = 'https://dttwgmoyxthczlzxjgag.supabase.co';
+const _SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ';
+function _sbHeaders(){
+  return {'Content-Type':'application/json','apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY,'Prefer':'resolution=merge-duplicates'};
+}
+function _sbGet(){
+  return fetch(_SB_URL+'/rest/v1/app_data?select=key,value',{headers:_sbHeaders()}).then(r=>r.json());
+}
+function _sbSet(rows){
+  return fetch(_SB_URL+'/rest/v1/app_data',{method:'POST',headers:_sbHeaders(),body:JSON.stringify(rows)});
+}
+
+// ── CONSTANTS ────────────────────────────────────────────────────────
+const RESISTOR_COLORS = [
+  {n:1,name:'brown'},{n:2,name:'red'},{n:3,name:'orange'},{n:4,name:'yellow'},{n:5,name:'green'},
+  {n:6,name:'blue'},{n:7,name:'violet'},{n:8,name:'grey'},{n:9,name:'white'},{n:10,name:'gold'}
+];
+const STATUS_CFG = {
+  Confirmed:{bg:'rgba(74,154,106,.15)',fg:'#3a8a55'},
+  Likely:   {bg:'rgba(200,160,32,.15)',fg:'#c8a020'},
+  Possible: {bg:'rgba(192,96,96,.15)',fg:'#c06060'},
+  Ongoing:  {bg:'rgba(60,120,200,.18)',fg:'#4a9eff'},
+  Cancelled:{bg:'rgba(180,60,60,.18)',fg:'#e06060'}
+};
+const CODEC_LIST = [
+  'ProRes Proxy','ProRes LT','ProRes 422','ProRes 422 HQ','ProRes 4444',
+  'DNxHD 36','DNxHD 120','DNxHD 145','DNxHD 185',
+  'DNxHR LB','DNxHR SQ','DNxHR HQ','DNxHR HQX',
+  'XAVC Long GOP 50','XAVC Long GOP 100','XAVC Intra 100','XAVC Intra 300',
+  'AVC-Intra 100','AVC-Intra 200','XDCAM HD 422 (50Mb/s)','H.264 / AVC','H.265 / HEVC'
+];
+const RECORDER_LIST = ['Pronology mRes','Hyperdeck Studio','Hyperdeck Mini','Atomos Shogun','Atomos Sumo','Ki Pro Ultra','Ki Pro Rack'];
+
+function esc(s){return (s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function fmtDate(iso){
+  if(!iso)return '';
+  var p=String(iso).split('-');if(p.length<3)return iso;
+  var d=new Date(+p[0],+p[1]-1,+p[2]);if(isNaN(d))return iso;
+  return d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+}
+function showErr(m){
+  document.getElementById('loading').style.display='none';
+  document.getElementById('pwGate').style.display='none';
+  document.getElementById('errMsg').textContent=m;
+  document.getElementById('errBox').style.display='flex';
+}
+
+// ── STATE ────────────────────────────────────────────────────────────
+var _jobsAll = [];
+var _job = null;
+var _saveTimer = null;
+var _saving = false;
+
+// ── URL PARAMS ───────────────────────────────────────────────────────
+var params = new URLSearchParams(location.search);
+var jidRaw = params.get('j');
+var jid = jidRaw ? parseInt(jidRaw) : NaN;
+var embed = params.get('embed') === '1';
+if(embed) document.body.classList.add('embed');
+
+if(!jidRaw){
+  showErr('No job ID in the URL. This sheet needs to be opened via the app\'s Ingest tab share link — direct navigation won\'t work.');
+} else if(isNaN(jid)){
+  showErr('Invalid job ID in URL: "'+jidRaw+'". Expected a number.');
+} else {
+  boot();
+}
+
+// ── BOOT ─────────────────────────────────────────────────────────────
+async function boot(){
+  try{
+    var rows = await _sbGet();
+    if(!Array.isArray(rows)){ showErr('Could not read from database.'); return; }
+    var jobsRow = rows.find(r=>r.key==='jobs');
+    if(!jobsRow || !Array.isArray(jobsRow.value)){ showErr('No jobs data.'); return; }
+    _jobsAll = jobsRow.value;
+    _job = _jobsAll.find(j=>j.id==jid);
+    if(!_job){ showErr('Job '+jid+' not found in the database.'); return; }
+
+    // Password gate (skipped in embed mode)
+    var pw = (_job.password||'').trim();
+    if(pw && !embed){
+      document.getElementById('loading').style.display='none';
+      document.getElementById('pwJobName').textContent = _job.name || 'Job';
+      document.getElementById('pwGate').style.display='flex';
+      var inp = document.getElementById('pwInput');
+      inp.focus();
+      function tryPw(){
+        if(inp.value === pw){
+          document.getElementById('pwGate').style.display='none';
+          render();
+        } else {
+          document.getElementById('pwErr').style.display='block';
+          inp.value=''; inp.focus();
+        }
+      }
+      document.getElementById('pwBtn').onclick = tryPw;
+      inp.onkeydown = e => { if(e.key==='Enter') tryPw(); };
+      return;
+    }
+    render();
+  } catch(e){
+    console.error(e);
+    showErr('Load failed: '+(e && e.message ? e.message : e));
+  }
+}
+
+// ── RENDER ───────────────────────────────────────────────────────────
+function render(){
+  document.getElementById('loading').style.display='none';
+  document.getElementById('sheet').style.display='block';
+
+  var j = _job;
+
+  // Masthead job info
+  document.getElementById('jobLocLine').textContent = (j.loc||'') + (j.studio? ' · '+j.studio : '');
+  document.getElementById('jobTitle').textContent = j.name || 'Untitled Job';
+  document.title = (j.name||'Ingest Sheet') + ' — Versa Studios';
+
+  // Status pill
+  var sc = STATUS_CFG[j.status] || null;
+  if(sc && j.status){
+    var pill = document.getElementById('statusBadge');
+    pill.textContent = j.status;
+    pill.style.background = sc.bg;
+    pill.style.color = sc.fg;
+    pill.style.borderColor = sc.fg+'40';
+    pill.style.display='inline-block';
+  }
+
+  var subBits=[];
+  if(j.client||j.prodCompany) subBits.push(esc(j.client||j.prodCompany));
+  if(j.loc||j.studio) subBits.push('<b>'+esc((j.loc||'')+(j.studio? ' · '+j.studio : ''))+'</b>');
+  if(j.start||j.end) subBits.push(esc(fmtDate(j.start)+(j.end?' – '+fmtDate(j.end):'')));
+  document.getElementById('jobSub').innerHTML = subBits.join(' · ') || '—';
+
+  // Meta box
+  document.getElementById('metaProg').textContent = j.name || '—';
+  var rxDate = j.txDates && j.txDates[0] && j.txDates[0].date ? j.txDates[0].date : (j.start||'');
+  document.getElementById('metaRx').textContent = fmtDate(rxDate) || '—';
+  document.getElementById('metaVer').textContent = j.ingestVersion || 'v1';
+
+  // Ingest operator
+  var opField = document.getElementById('opField');
+  opField.value = j.ingestOperator || '';
+  opField.onchange = () => setField('ingestOperator', opField.value);
+
+  // Tech pill
+  var scan = j.techScan||'';
+  var scanLtr = scan==='Interlaced' ? 'i' : (scan==='Progressive' ? 'p' : '');
+  var resNum = ({'UHD':'2160','HD':'1080','3G':'1080','2K':'2160'})[j.techRes||''] || j.techRes || '';
+  var fr = (j.techFR||'').replace('.00','').replace('.','');
+  var fmtLabel = resNum ? (resNum + scanLtr + fr) : '';
+  if(fmtLabel || j.techCodec){
+    document.getElementById('techPill').style.display = 'inline-flex';
+    document.getElementById('techFmt').textContent = fmtLabel || '';
+    document.getElementById('techCodec').textContent = j.techCodec || '';
+  }
+
+  renderMadi(j);
+  renderStreams(j);
+
+  var notes = document.getElementById('notesField');
+  notes.value = j.ingestNotes || '';
+  notes.onchange = () => setField('ingestNotes', notes.value);
+
+  document.getElementById('footStamp').textContent = 'Live view · ' + new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+}
+
+function renderMadi(j){
+  var madi = (j.audio && Array.isArray(j.audio.madi)) ? j.audio.madi : [];
+  var totalNamed = 0;
+  madi.forEach(s => { totalNamed += (s.inputs||[]).filter(x=>x).length; });
+
+  // Top counts
+  document.getElementById('madiCntTop').textContent = totalNamed + ' input' + (totalNamed===1?'':'s') + ' named' + (totalNamed ? ' · drag or pick from the MADI column below' : '');
+
+  // MADI stream chips
+  var chipsEl = document.getElementById('madiChips');
+  if(!madi.length){
+    chipsEl.innerHTML = '<div class="madi-empty">No MADI streams configured on the Audio tab.</div>';
+    document.getElementById('madiInputs').style.display = 'none';
+    return;
+  }
+  chipsEl.innerHTML = madi.map(function(s, si){
+    var filled = (s.inputs||[]).filter(x=>x).length;
+    return '<div class="madi-chip-stream">'
+      + '<span class="name">MADI '+(si+1)+'</span>'
+      + '<span class="count">'+filled+' / 48 named</span>'
+      + '</div>';
+  }).join('');
+
+  // Named inputs grid (draggable chips)
+  var grid = document.getElementById('madiInputsGrid');
+  var chips = [];
+  madi.forEach(function(s, si){
+    (s.inputs||[]).forEach(function(label, ci){
+      if(!label) return;
+      chips.push({stream:si+1, channel:ci+1, label:label});
+    });
+  });
+  if(!chips.length){
+    document.getElementById('madiInputs').style.display = 'none';
+    return;
+  }
+  document.getElementById('madiInputs').style.display = 'block';
+  grid.innerHTML = chips.map(function(c){
+    return '<div class="madi-chip" draggable="true" data-label="'+esc(c.label)+'" data-src="MADI '+c.stream+'.'+c.channel+'">'
+      + '<span class="m-src">M'+c.stream+'.'+c.channel+'</span>'
+      + '<span class="m-lbl">'+esc(c.label)+'</span>'
+      + '</div>';
+  }).join('');
+
+  // Wire up drag handlers
+  grid.querySelectorAll('.madi-chip').forEach(function(chip){
+    chip.addEventListener('dragstart', function(e){
+      e.dataTransfer.effectAllowed = 'copy';
+      e.dataTransfer.setData('text/plain', chip.dataset.label);
+      e.dataTransfer.setData('application/x-versa-madi', JSON.stringify({label:chip.dataset.label, src:chip.dataset.src}));
+      chip.style.opacity = '0.5';
+    });
+    chip.addEventListener('dragend', function(){
+      chip.style.opacity = '';
+    });
+  });
+}
+
+function renderStreams(j){
+  var grid = document.getElementById('streamsGrid');
+  var streams = (j.ingestAudio && Array.isArray(j.ingestAudio.streams)) ? j.ingestAudio.streams : [];
+  document.getElementById('streamCount').textContent = streams.length + ' stream' + (streams.length===1?'':'s');
+  if(!streams.length){ grid.innerHTML = '<div class="empty">No ingest streams configured yet.</div>'; return; }
+
+  var numCams = parseInt(j.cameras)||0;
+  var madi = (j.audio && Array.isArray(j.audio.madi)) ? j.audio.madi : [];
+
+  // Build MADI options for row dropdown
+  function madiOptsFor(cur){
+    var html = '<option value="">— MADI —</option>';
+    var found = false;
+    madi.forEach(function(s, si){
+      var named = (s.inputs||[]).map((v,i)=>({ci:i,v:v})).filter(o=>o.v);
+      if(!named.length) return;
+      html += '<optgroup label="MADI '+(si+1)+'">';
+      named.forEach(function(o){
+        if(o.v===cur) found = true;
+        html += '<option value="'+esc(o.v)+'"'+(o.v===cur?' selected':'')+'>'+(o.ci+1)+'. '+esc(o.v)+'</option>';
+      });
+      html += '</optgroup>';
+    });
+    if(cur && !found) html += '<option value="'+esc(cur)+'" selected>'+esc(cur)+'</option>';
+    return html;
+  }
+
+  grid.innerHTML = streams.map(function(s, si){
+    var isISO = s.type === 'ISO';
+    var cam = s.camNum && RESISTOR_COLORS[s.camNum-1] ? RESISTOR_COLORS[s.camNum-1] : null;
+    var camCls = cam ? 'cam-'+cam.name : '';
+
+    // Camera dropdown (ISO only)
+    var camOpts = '<option value="">— camera —</option>';
+    for(var ci=0; ci<numCams; ci++){
+      var crc = RESISTOR_COLORS[ci];
+      var nm = crc ? crc.name.charAt(0).toUpperCase()+crc.name.slice(1) : ('Cam '+(ci+1));
+      camOpts += '<option value="'+(ci+1)+'"'+(s.camNum===(ci+1)?' selected':'')+'>CAM '+(ci+1)+' ('+nm+')</option>';
+    }
+
+    var codecOpts = ['<option value="">— Codec —</option>']
+      .concat(CODEC_LIST.map(c => '<option value="'+esc(c)+'"'+(c===s.codec?' selected':'')+'>'+esc(c)+'</option>'))
+      .concat(s.codec && CODEC_LIST.indexOf(s.codec)===-1 ? ['<option value="'+esc(s.codec)+'" selected>'+esc(s.codec)+'</option>'] : [])
+      .join('');
+    var recOpts = ['<option value="">— Recorder —</option>']
+      .concat(RECORDER_LIST.map(r => '<option value="'+esc(r)+'"'+(r===s.recorder?' selected':'')+'>'+esc(r)+'</option>'))
+      .concat(s.recorder && RECORDER_LIST.indexOf(s.recorder)===-1 ? ['<option value="'+esc(s.recorder)+'" selected>'+esc(s.recorder)+'</option>'] : [])
+      .join('');
+
+    // Header
+    var head = '<div class="s-hdr">'
+      + '<input type="text" class="fi s-name" data-f="name" data-si="'+si+'" value="'+esc(s.name||('Stream '+(si+1)))+'" placeholder="Stream name">'
+      + '<div class="s-type-tog">'
+        + '<button data-si="'+si+'" data-type="ISO" class="'+(isISO?'on-iso':'')+'">ISO</button>'
+        + '<button data-si="'+si+'" data-type="Line Cut" class="'+(!isISO?'on-lc':'')+'">Line Cut</button>'
+      + '</div>'
+      + (isISO ? '<select class="fi s-cam-sel" data-f="camNum" data-si="'+si+'">'+camOpts+'</select>' : '')
+      + (isISO ? '<span class="s-router-lbl">Router In</span><input class="fi s-router-in" data-f="routerIn" data-si="'+si+'" value="'+esc(s.routerIn||'')+'" placeholder="—">' : '')
+      + (cam ? '<span class="s-tag tag-'+cam.name+'">'+cam.name.charAt(0).toUpperCase()+cam.name.slice(1)+'</span>' : '')
+      + '<select class="fi s-codec-sel" data-f="codec" data-si="'+si+'">'+codecOpts+'</select>'
+      + '<select class="fi s-rec-sel" data-f="recorder" data-si="'+si+'">'+recOpts+'</select>'
+      + '<div class="s-actions">'
+        + '<button class="ibtn" data-add-row="'+si+'">+ Row</button>'
+      + '</div>'
+      + '</div>';
+
+    // Audio rows
+    var rows = (s.rows||[]);
+    var rowsHtml = rows.map(function(r, ri){
+      return '<tr data-si="'+si+'" data-ri="'+ri+'">'
+        + '<td class="num">'+(ri+1)+'</td>'
+        + '<td><input type="text" class="fi" data-f="signal" data-si="'+si+'" data-ri="'+ri+'" value="'+esc(r.signal||'')+'" placeholder="Audio…"></td>'
+        + '<td class="madi-td"><select class="fi" data-f="madi" data-si="'+si+'" data-ri="'+ri+'">'+madiOptsFor(r.madi||'')+'</select></td>'
+        + '<td class="rm"><button data-rm-row="'+si+':'+ri+'" title="Remove">×</button></td>'
+        + '</tr>';
+    }).join('');
+    var table = '<table><thead><tr>'
+      + '<th class="num">#</th><th>Audio</th><th class="madi">Router/MADI</th><th class="rm"></th>'
+      + '</tr></thead><tbody>'+(rowsHtml||'<tr><td colspan="4" class="empty">No audio rows.</td></tr>')+'</tbody></table>';
+
+    return '<div class="stream '+camCls+'" data-si="'+si+'">' + head + table + '</div>';
+  }).join('');
+
+  // Wire up edits
+  grid.querySelectorAll('input, select').forEach(function(el){
+    el.onchange = function(){
+      var f = el.dataset.f;
+      if(!f) return;
+      var si = parseInt(el.dataset.si);
+      var ri = el.dataset.ri!==undefined ? parseInt(el.dataset.ri) : null;
+      var val = el.value;
+      if(f==='camNum') val = parseInt(val)||null;
+      var streams = j.ingestAudio.streams;
+      if(ri!==null){
+        if(!streams[si].rows) streams[si].rows = [];
+        if(!streams[si].rows[ri]) streams[si].rows[ri] = {signal:'',madi:''};
+        streams[si].rows[ri][f] = val;
+      } else {
+        streams[si][f] = val;
+      }
+      queueSave();
+    };
+  });
+
+  // Wire up ISO/Line Cut toggle
+  grid.querySelectorAll('.s-type-tog button').forEach(function(btn){
+    btn.onclick = function(){
+      var si = parseInt(btn.dataset.si);
+      var t = btn.dataset.type;
+      j.ingestAudio.streams[si].type = t;
+      if(t==='Line Cut'){ j.ingestAudio.streams[si].camNum = null; j.ingestAudio.streams[si].routerIn = ''; }
+      queueSave();
+      renderStreams(j);
+    };
+  });
+
+  // Wire up + Row / remove row
+  grid.querySelectorAll('[data-add-row]').forEach(function(btn){
+    btn.onclick = function(){
+      var si = parseInt(btn.dataset.addRow);
+      if(!j.ingestAudio.streams[si].rows) j.ingestAudio.streams[si].rows = [];
+      j.ingestAudio.streams[si].rows.push({signal:'',madi:''});
+      queueSave();
+      renderStreams(j);
+    };
+  });
+  grid.querySelectorAll('[data-rm-row]').forEach(function(btn){
+    btn.onclick = function(){
+      var parts = btn.dataset.rmRow.split(':');
+      var si = parseInt(parts[0]), ri = parseInt(parts[1]);
+      j.ingestAudio.streams[si].rows.splice(ri, 1);
+      queueSave();
+      renderStreams(j);
+    };
+  });
+
+  // ── DRAG-AND-DROP ──
+  grid.querySelectorAll('tbody tr[data-si]').forEach(function(tr){
+    tr.addEventListener('dragover', function(e){
+      if(!e.dataTransfer || !Array.from(e.dataTransfer.types).includes('application/x-versa-madi')) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'copy';
+      tr.classList.add('drop-hover');
+    });
+    tr.addEventListener('dragleave', function(){
+      tr.classList.remove('drop-hover');
+    });
+    tr.addEventListener('drop', function(e){
+      e.preventDefault();
+      tr.classList.remove('drop-hover');
+      var raw = e.dataTransfer.getData('application/x-versa-madi');
+      if(!raw) return;
+      var payload;
+      try{ payload = JSON.parse(raw); } catch(err){ return; }
+      var si = parseInt(tr.dataset.si), ri = parseInt(tr.dataset.ri);
+      if(!j.ingestAudio.streams[si].rows[ri]) j.ingestAudio.streams[si].rows[ri] = {signal:'',madi:''};
+      j.ingestAudio.streams[si].rows[ri].signal = payload.label;
+      j.ingestAudio.streams[si].rows[ri].madi = payload.label;
+      queueSave();
+      renderStreams(j);
+      // Highlight the dropped-on row briefly on next frame
+      setTimeout(function(){
+        var newTr = grid.querySelector('tr[data-si="'+si+'"][data-ri="'+ri+'"]');
+        if(newTr){ newTr.classList.add('just-dropped'); setTimeout(()=>newTr.classList.remove('just-dropped'), 600); }
+      }, 20);
+    });
+  });
+}
+
+// ── SAVE ─────────────────────────────────────────────────────────────
+function queueSave(){
+  setSaveInd('saving','Saving…');
+  clearTimeout(_saveTimer);
+  _saveTimer = setTimeout(doSave, 900);
+}
+function setField(field, val){
+  _job[field] = val;
+  queueSave();
+}
+async function doSave(){
+  if(_saving) return;
+  _saving = true;
+  try{
+    var idx = _jobsAll.findIndex(j=>j.id===_job.id);
+    if(idx>=0) _jobsAll[idx] = _job;
+    var row = { key:'jobs', value:_jobsAll, updated_at:new Date().toISOString() };
+    var res = await _sbSet([row]);
+    if(!res.ok){ throw new Error('HTTP '+res.status); }
+    setSaveInd('saved','Saved');
+  } catch(e){
+    console.error('Save failed', e);
+    setSaveInd('err','Save failed');
+  } finally {
+    _saving = false;
+  }
+}
+function setSaveInd(cls, txt){
+  var el = document.getElementById('saveInd');
+  if(!el) return;
+  el.className = 'save-ind ' + cls;
+  el.textContent = txt;
+}
+</script>
+</body>
+</html>
