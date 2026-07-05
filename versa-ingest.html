@@ -148,19 +148,18 @@ table.st thead th:last-child, table.st tbody td:last-child{border-right:none}
 table.st td.no{width:28px;text-align:center;font-family:var(--cond);font-weight:900;font-size:12px;color:var(--muted);border-left:4px solid transparent}
 table.st td.sn input{font-family:var(--cond);font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--accent);border:none;background:transparent;width:92px;padding:3px 4px}
 table.st td.sn input:focus{outline:none;background:#fff;border-radius:3px}
-table.st select.mini, table.st input.mini{font-size:11px;padding:2px 3px;border:none;background:transparent;max-width:108px}
+table.st select.mini, table.st input.mini{font-size:11px;padding:2px 3px;border:none;background:transparent;max-width:150px}
 table.st select.mini:focus, table.st input.mini:focus{outline:1px solid var(--accent);background:#fff;border-radius:3px}
 table.st td.ty select{font-family:var(--cond);font-weight:800;font-size:10px;letter-spacing:.05em;text-transform:uppercase;max-width:78px}
 table.st td.ty select.iso{color:var(--iso)}
 table.st td.ty select.lc{color:var(--lc)}
-table.st td.rin input{width:46px;text-align:center}
-table.st td .dash{color:var(--muted);font-size:11px;padding:0 4px}
+table.st td .dash{color:var(--ink);opacity:.55;font-size:11px;padding:0 4px}
 
 /* Audio cells — signal on top, MADI source beneath */
 td.a-cell{min-width:100px;max-width:132px;padding:1px 3px !important;position:relative;transition:background .15s}
 td.a-cell .sig{display:block;width:100%;font-size:12px;font-weight:600;border:none;background:transparent;padding:6px 4px;color:var(--ink)}
 td.a-cell .sig:focus{outline:1px solid var(--accent);background:#fff;border-radius:3px}
-td.a-cell .mad{display:block;width:100%;font-size:9.5px;color:var(--muted);border:none;background:transparent;padding:0 1px;font-family:var(--cond);font-weight:700;letter-spacing:.03em}
+td.a-cell .mad{display:block;width:100%;font-size:11px;color:var(--ink);border:none;background:transparent;padding:4px 1px;font-family:var(--cond);font-weight:700;letter-spacing:.03em}
 td.a-cell .mad:focus{outline:1px solid var(--accent);background:#fff}
 td.a-cell .cx{position:absolute;top:0;right:0;display:none;background:none;border:none;color:var(--muted);font-size:11px;line-height:1;cursor:pointer;padding:2px 3px}
 td.a-cell:hover .cx{display:block}
@@ -559,7 +558,7 @@ function renderStreams(j){
     maxA = Math.min(maxA, 16);
 
     var head = '<thead><tr>'
-      + '<th class="c">#</th><th>Stream</th><th>Type</th><th>Camera</th><th class="c">Rtr In</th><th>Codec</th><th>Recorder</th>';
+      + '<th class="c">#</th><th>Stream</th><th>Type</th><th>Camera</th><th>Codec</th><th>Recorder</th>';
     for(var a=0; a<maxA; a++) head += '<th>Audio '+(a+1)+'</th>';
     head += '<th class="c"></th></tr></thead>';
 
@@ -591,7 +590,6 @@ function renderStreams(j){
           + '<option value="Line Cut"'+(!isISO?' selected':'')+'>Line Cut</option>'
         + '</select></td>'
         + '<td>'+(isISO ? '<select class="mini" data-f="camNum" data-si="'+si+'">'+camOpts+'</select>' : '<span class="dash">—</span>')+'</td>'
-        + '<td class="rin">'+(isISO ? '<input class="mini" data-f="routerIn" data-si="'+si+'" value="'+esc(s.routerIn||'')+'" placeholder="—">' : '<span class="dash">—</span>')+'</td>'
         + '<td><select class="mini" data-f="codec" data-si="'+si+'">'+codecOpts+'</select></td>'
         + '<td><select class="mini" data-f="recorder" data-si="'+si+'">'+recOpts+'</select></td>';
 
