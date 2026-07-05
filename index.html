@@ -2320,7 +2320,7 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
             <div style="font-family:var(--cond);font-weight:800;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">Ops Planner — live embed</div>
             <div style="margin-left:auto;display:flex;gap:8px">
               <button class="btn-p" style="padding:5px 11px;font-size:15px;flex-shrink:0" onclick="opsOpenEmail()">&#9993; ML Email</button>
-              <button class="btn-p" style="padding:5px 11px;font-size:15px;flex-shrink:0" onclick="window.open('opsplanner.html','_blank')">&#8599; Open Full Page</button>
+              <button class="btn-p" style="padding:5px 11px;font-size:15px;flex-shrink:0" onclick="window.open('https://versastudios.github.io/versa-studios/opsplanner.html','_blank')">&#8599; Open Full Page</button>
             </div>
           </div>
           <iframe id="opsFrame" style="flex:1;width:100%;border:none;border-radius:8px;background:#fff8f4;min-height:400px" title="Ops Planner"></iframe>
@@ -6946,7 +6946,7 @@ function nav(page, el) {
   if(page==='studios') { renderStudioInfo('manchester','Studio 12'); renderStudioInfo('london','Studio 1'); renderStudioInfo('abc',null); _tlok={};tlLoad('manchester');tlLoad('london');tlLoad('abc'); }
   if(page==='jobs') { setJobsView(_jobsView||'list'); }
   if(page==='crew') { setCrewView(_crewView||'plan'); }
-  if(page==='calendar') { setPlanView('ops'); }
+  if(page==='calendar') { _embedPlannerFrame(); }
   if(page==='admin') renderAdmin();
   if(page==='holidays') { initHolSelectors(); renderHolidays(); }
   if(page==='ops') opsInit();
@@ -17882,9 +17882,12 @@ function renderCalYear(){renderGantt();}
 function _buildCalMonthHTML(){return '';}
 
 // ── OPS SEED ─────────────────────────────────────────────────────────────────
+// A job is treated as inactive for planner seeding if it's flag-archived,
+// status-archived, or cancelled — the app has both archive mechanisms.
+function _opsJobArchived(j){return !!(j&&(j.archived===true||/^(archived|cancelled|finished|complete|completed)$/i.test(String(j.status||'').trim())));}
 function opsSeedFromJobs(){
   jobs.forEach(function(j){
-    if(!j||j.archived||!j.txDates||!j.studio)return;
+    if(!j||_opsJobArchived(j)||!j.txDates||!j.studio)return;
     var stuKeys=j.studios?j.studios:[j.loc==='London'?'London S1':j.studio];
     j.txDates.forEach(function(td,di){
       var val=td.date;if(!val)return;
@@ -17935,7 +17938,7 @@ function opsSeedFromJobs(){
   });
   // Also seed rig / rehearsal / derig / custom dates (same pattern, add-if-missing)
   jobs.forEach(function(j){
-    if(!j||!j.name||j.archived)return;
+    if(!j||!j.name||_opsJobArchived(j))return;
     var stuKeys=(j.studios?j.studios:[(j.loc==='London'?'London S1':j.studio)]).filter(function(sk){return !!sk;});
     if(!stuKeys.length)return;
     var extras=[];
@@ -17983,7 +17986,7 @@ function opsSeedFromJobs(){
     return dates;
   }
   jobs.forEach(function(j){
-    if(!j||!j.name||j.archived)return;
+    if(!j||!j.name||_opsJobArchived(j))return;
     // Morning Live has its own TM row — it never floods personal calendars
     if(/^morning live$/i.test(j.name.trim()))return;
     var crew=Array.isArray(j.crew)?j.crew:[];
@@ -18059,7 +18062,7 @@ function _opsCleanStaleStudioEntries(){
   ];
   jobs.forEach(function(j){
     if(!j||!j.name)return;
-    if(j.archived)return; // archived jobs validate nothing — their labels get pruned
+    if(_opsJobArchived(j))return; // inactive jobs validate nothing — their labels get pruned
     var _dts=[];
     (j.txDates||[]).forEach(function(t){if(t&&t.date)_dts.push(t.date);});
     (j.rigDates||[]).forEach(function(r){if(r&&r.date)_dts.push(r.date);});
@@ -20588,7 +20591,15 @@ function opsInit(){
   // The Ops Planner now lives in its own page (opsplanner.html) and is embedded
   // here, so there is exactly ONE planner implementation. Lazy-load on first open.
   var f=document.getElementById('opsFrame');
-  if(f&&!f.getAttribute('src'))f.setAttribute('src','opsplanner.html');
+  if(f&&!f.getAttribute('src'))f.setAttribute('src','https://versastudios.github.io/versa-studios/opsplanner.html');
+}
+// The sidebar Planner page (page-calendar) also becomes the embed — the old
+// in-app planner implementation stays in the file but is never rendered.
+function _embedPlannerFrame(){
+  var pg=document.getElementById('page-calendar');
+  if(!pg)return;
+  if(document.getElementById('opsFrame2'))return;
+  pg.innerHTML='<iframe id="opsFrame2" src="https://versastudios.github.io/versa-studios/opsplanner.html" style="width:100%;height:calc(100vh - 80px);border:none;border-radius:8px;background:#fff8f4" title="Ops Planner"></iframe>';
 }
 function _opsInitLegacy(){
   if(_opsInited)return;_opsInited=true;

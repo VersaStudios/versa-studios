@@ -177,6 +177,14 @@ body{margin:0;padding:0;min-height:100vh}
 /* Ops planner light */
 .ops-tbl{border-collapse:collapse;table-layout:auto;background:rgba(255,253,248,.94)}
 .ops-mhdr-txt{font-size:clamp(36px,5vw,64px);font-weight:900;letter-spacing:-0.05em;line-height:.88;color:#d85a61}
+.mnav{display:inline-flex;gap:8px;align-items:center;margin-left:16px;padding-bottom:8px;flex-wrap:wrap}
+.mnav-b{background:transparent;border:2px solid #d85a61;border-radius:9px;color:#d85a61;font-family:'Barlow Condensed',Impact,sans-serif;font-size:15px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:6px 14px;cursor:pointer;line-height:1;white-space:nowrap}
+.mnav-b:hover{background:rgba(216,90,97,.1)}
+.mnav-b:disabled{opacity:.3;cursor:default}
+.mnav-b.mnav-add{background:#d85a61;color:#fff}
+.mnav-b.mnav-add:hover{background:#c34a51}
+.mnav-b.mnav-email{background:#302f2c;border-color:#302f2c;color:#fff}
+.mnav-b.mnav-email:hover{background:#454440}
 .ops-dh{padding:6px 2px 5px;text-align:center;font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#d85a61}
 .ops-dh.wk{background:rgba(216,90,97,.06);color:rgba(216,90,97,.55)}
 .ops-dh.td .dn-wrap{background:#d85a61;color:#fff;border-radius:50%;width:26px;height:26px;line-height:26px;margin:auto;box-shadow:0 4px 10px rgba(216,90,97,.3)}
@@ -304,14 +312,7 @@ body.ops-drag-active .ops-chip::before,body.ops-drag-active .ops-chip::after{poi
   <div class="sa-title">Ops Planner</div>
   <!-- Hidden label kept for compatibility with any internal updatePlanLbl calls -->
   <div id="planLbl" style="display:none"></div>
-  <div class="onav">
-    <button class="onav-btn" onclick="planNav(-1)" title="Previous month">&#8592;</button>
-    <button class="onav-month" onclick="planOpenPicker()"><span id="planLbl2">&hellip;</span><span class="onav-caret">&#9662;</span></button>
-    <button class="onav-btn" onclick="planNav(1)" title="Next month">&#8594;</button>
-    <button class="onav-btn" onclick="planToday()">Today</button>
-    <button class="onav-btn onav-add" onclick="openOpsAddModal()">+ Add to Calendar</button>
-    <button class="onav-btn onav-email" onclick="opsOpenEmail()">&#9993; ML Email</button>
-  </div>
+
 </div>
 
 <div class="ops-scroll" id="opsScroll2">
@@ -376,9 +377,12 @@ function _jdJobPrefixedLabel(j, rawLabel){
 }
 // Stub of opsSeedFromJobs (the standalone reads from Supabase's saved opsPlanner,
 // so we only need the cleanup pass — full seed runs in the main app).
+// A job is treated as inactive for planner seeding if it's flag-archived,
+// status-archived, or cancelled — the app has both archive mechanisms.
+function _opsJobArchived(j){return !!(j&&(j.archived===true||/^(archived|cancelled|finished|complete|completed)$/i.test(String(j.status||'').trim())));}
 function opsSeedFromJobs(){
   jobs.forEach(function(j){
-    if(!j||j.archived||!j.txDates||!j.studio)return;
+    if(!j||_opsJobArchived(j)||!j.txDates||!j.studio)return;
     var stuKeys=j.studios?j.studios:[j.loc==='London'?'London S1':j.studio];
     j.txDates.forEach(function(td,di){
       var val=td.date;if(!val)return;
@@ -420,7 +424,7 @@ function opsSeedFromJobs(){
   });
   // Also seed rig / rehearsal / derig / custom dates (same pattern, add-if-missing)
   jobs.forEach(function(j){
-    if(!j||!j.name||j.archived)return;
+    if(!j||!j.name||_opsJobArchived(j))return;
     var stuKeys=(j.studios?j.studios:[(j.loc==='London'?'London S1':j.studio)]).filter(function(sk){return !!sk;});
     if(!stuKeys.length)return;
     var extras=[];
@@ -468,7 +472,7 @@ function opsSeedFromJobs(){
     return dates;
   }
   jobs.forEach(function(j){
-    if(!j||!j.name||j.archived)return;
+    if(!j||!j.name||_opsJobArchived(j))return;
     // Morning Live has its own TM row — it never floods personal calendars
     if(/^morning live$/i.test(j.name.trim()))return;
     var crew=Array.isArray(j.crew)?j.crew:[];
@@ -724,7 +728,7 @@ function _opsCleanStaleStudioEntries(){
   ];
   jobs.forEach(function(j){
     if(!j||!j.name)return;
-    if(j.archived)return; // archived jobs validate nothing — their labels get pruned
+    if(_opsJobArchived(j))return; // inactive jobs validate nothing — their labels get pruned
     var _dts=[];
     (j.txDates||[]).forEach(function(t){if(t&&t.date)_dts.push(t.date);});
     (j.rigDates||[]).forEach(function(r){if(r&&r.date)_dts.push(r.date);});
@@ -1170,7 +1174,17 @@ function opsRenderMonth(m,mi){
   const{spans,cov}=opsMlSpans(m.month,days);
   const spMap={};spans.forEach(sp=>spMap[sp.si]=sp);
   let h='<table class="ops-tbl">';
-  h+='<tr class="ops-mhdr"><td colspan="'+(n+1)+'"><div style="display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap;"><span class="ops-mhdr-txt">'+m.month.split(' ')[0].toUpperCase()+'</span><span style="font-size:18px;font-weight:800;letter-spacing:.04em;color:rgba(216,90,97,.7);padding-bottom:8px;">'+m.month.split(' ')[1]+'</span></div></td></tr>';
+  h+='<tr class="ops-mhdr"><td colspan="'+(n+1)+'"><div style="display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap;">'
+    +'<span class="ops-mhdr-txt" onclick="planOpenPicker()" style="cursor:pointer" title="Jump to a month">'+m.month.split(' ')[0].toUpperCase()+'</span>'
+    +'<span style="font-size:18px;font-weight:800;letter-spacing:.04em;color:rgba(216,90,97,.7);padding-bottom:8px;">'+m.month.split(' ')[1]+'</span>'
+    +'<span class="mnav">'
+      +'<button class="mnav-b" onclick="opsShowFromIdx('+(mi-1)+')"'+(mi===0?' disabled':'')+' title="Previous month">&#8592;</button>'
+      +'<button class="mnav-b" onclick="opsShowFromIdx('+(mi+1)+')"'+(mi===OPS_CAL.length-1?' disabled':'')+' title="Next month">&#8594;</button>'
+      +'<button class="mnav-b" onclick="planToday()">Today</button>'
+      +'<button class="mnav-b mnav-add" onclick="openOpsAddModal()">+ Add to Calendar</button>'
+      +'<button class="mnav-b mnav-email" onclick="opsOpenEmail()">&#9993; ML Email</button>'
+    +'</span>'
+  +'</div></td></tr>';
   h+='<tr class="ops-dhdr"><td class="ops-rlbl" style="border-bottom:1px solid var(--border)"></td>';
   days.forEach(d=>{
     const wk=opsIsWk(d.dow);
