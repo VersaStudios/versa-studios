@@ -49,6 +49,11 @@ body{margin:0;padding:0;min-height:100vh}
 
 /* Main scroll area */
 .ops-scroll{padding:6px 0 30px}
+.ops-zoom{position:fixed;top:14px;right:16px;z-index:950;display:inline-flex;align-items:center;gap:7px;background:#fff8ef;border:1.5px solid rgba(216,90,97,.35);border-radius:999px;padding:6px 13px;box-shadow:0 4px 14px rgba(48,47,44,.14)}
+.ops-zoom button{background:transparent;border:none;color:#d85a61;font-size:17px;font-weight:900;cursor:pointer;line-height:1;padding:0 3px}
+.ops-zoom input[type=range]{width:110px;accent-color:#d85a61}
+.ops-zoom .opsZoomLbl{font-family:'Barlow Condensed',Impact,sans-serif;font-weight:800;font-size:13px;color:#d85a61;min-width:38px;text-align:right}
+@media print{.ops-zoom{display:none}}
 
 /* Month header — restore the original Barlow Condensed look (MAY) +
    Barlow Regular for the year span (2026) which inherits font-family.
@@ -66,7 +71,7 @@ body{margin:0;padding:0;min-height:100vh}
 /* Month/year header — pin its content to the left edge while the cell scrolls.
    Add left padding so the MAY text has breathing room from the cell edge. */
 .ops-tbl tr.ops-mhdr > td{position:sticky;left:0;z-index:3}
-.ops-tbl tr.ops-mhdr > td > div{position:sticky;left:0;width:max-content;padding-left:24px}
+.ops-tbl tr.ops-mhdr > td > div{position:sticky;left:0;width:calc(100vw - 52px);padding-left:24px;justify-content:flex-start}
 /* Day header row's leftmost (empty) cell — sticky at BOTH top and left so it
    stays in the top-left corner no matter how you scroll. Same inset red strip. */
 .ops-tbl tr.ops-dhdr > td:first-child{position:sticky !important;left:0 !important;top:0 !important;z-index:12 !important;background:#efede3 !important;border-right:none !important;box-shadow:inset -1px 0 0 0 rgba(216,90,97,.25), 4px 0 8px -2px rgba(0,0,0,.06) !important}
@@ -176,7 +181,7 @@ body{margin:0;padding:0;min-height:100vh}
 .yr-dot.b-abc{background:#c4956a}
 /* Ops planner light */
 .ops-tbl{border-collapse:collapse;table-layout:auto;background:rgba(255,253,248,.94)}
-.ops-mhdr-txt{font-size:clamp(36px,5vw,64px);font-weight:900;letter-spacing:-0.05em;line-height:.88;color:#d85a61}
+.ops-mhdr-txt{font-size:clamp(36px,5vw,64px);font-weight:900;letter-spacing:-0.05em;line-height:.88;color:#d85a61;display:inline-block;min-width:4.35em}
 .mnav{display:inline-flex;gap:8px;align-items:center;margin-left:16px;padding-bottom:8px;flex-wrap:wrap}
 .mnav-b{background:transparent;border:2px solid #d85a61;border-radius:9px;color:#d85a61;font-family:'Barlow Condensed',Impact,sans-serif;font-size:15px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:6px 14px;cursor:pointer;line-height:1;white-space:nowrap}
 .mnav-b:hover{background:rgba(216,90,97,.1)}
@@ -336,8 +341,78 @@ body.ops-drag-active .ops-chip::before,body.ops-drag-active .ops-chip::after{poi
 </div>
 
 <!-- ML Email modal placeholder (hidden — main app handles it) -->
-<div class="modal-ov" id="opsEmailModal" style="display:none">
-  <div class="modal" style="display:none"><input type="date" id="opsEmailWeek" style="display:none"/><div id="opsFriBanner" style="display:none"></div><div id="opsEmailPrev" style="display:none"></div></div>
+<div class="modal-ov" id="opsEmailModal">
+        <div class="modal" style="max-width:620px">
+          <div class="modal-hdr"><div class="modal-title">&#9993; Morning Live Email</div><button class="x-btn" onclick="cm('opsEmailModal')">&#215;</button></div>
+          <div class="modal-body">
+            <div id="opsFriBanner" style="display:none;background:rgba(200,160,32,.08);border:1px solid rgba(200,160,32,.25);border-radius:3px;padding:8px 12px;margin-bottom:12px;font-size:14px;color:#d4aa30">&#128197; It's Friday — time to send next week's Morning Live schedule.</div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+              <div class="flbl">Week</div>
+              <button class="mnav-b" onclick="opsEmailWeekStep(-7)" title="Previous week">&#8592;</button>
+              <div id="opsEmailWkLbl" style="font-family:'Barlow Condensed',Impact,sans-serif;font-weight:900;font-size:18px;letter-spacing:.03em;color:#302f2c;min-width:210px;text-align:center">&mdash;</div>
+              <button class="mnav-b" onclick="opsEmailWeekStep(7)" title="Next week">&#8594;</button>
+              <input type="date" id="opsEmailWeek" style="display:none" onchange="opsBuildPreview()"/>
+            </div>
+            <div id="opsEmailPrev" style="background:#fff;border-radius:3px;overflow:hidden;margin-top:10px"></div>
+          </div>
+          <div class="modal-foot">
+            <button class="btn-sec" onclick="cm('opsEmailModal')">Close</button>
+            <button class="btn-p" onclick="opsCopyEmail()">Copy Plain Text</button>
+            <button class="btn-p" onclick="opsMailto()">Open in Mail &#8599;</button>
+          </div>
+        </div>
+      </div>
+
+<div id="opsAddModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9000;align-items:center;justify-content:center;padding:20px" onclick="if(event.target===this)closeOpsAddModal()">
+          <div style="background:var(--cream,#efede3);border-radius:12px;width:100%;max-width:440px;box-shadow:0 20px 60px rgba(0,0,0,.3);overflow:hidden;border:1px solid rgba(216,90,97,.2)">
+            <div style="padding:18px 22px;border-bottom:1px solid rgba(216,90,97,.18);display:flex;align-items:center;justify-content:space-between">
+              <div style="font-family:var(--cond);font-size:18px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#302f2c">+ Add to Calendar</div>
+              <button onclick="closeOpsAddModal()" style="background:none;border:none;font-size:22px;color:#888;cursor:pointer;line-height:1;padding:0 4px">&times;</button>
+            </div>
+            <div style="padding:18px 22px;display:flex;flex-direction:column;gap:14px">
+              <div>
+                <label style="display:block;font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#888;margin-bottom:6px">Row</label>
+                <select id="opsAddRow" style="width:100%;padding:10px 12px;font-size:14px;border:1px solid rgba(216,90,97,.25);border-radius:6px;background:#fff;color:#302f2c;font-family:var(--font);font-weight:600;outline:none"></select>
+              </div>
+              <div>
+                <label style="display:block;font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#888;margin-bottom:6px">What</label>
+                <input id="opsAddValue" type="text" placeholder="e.g. Morning Live, Dragons Den, Day Off…" style="width:100%;padding:10px 12px;font-size:14px;border:1px solid rgba(216,90,97,.25);border-radius:6px;background:#fff;color:#302f2c;font-family:var(--font);font-weight:600;outline:none;box-sizing:border-box"/>
+                <div id="opsAddSuggest" style="display:flex;flex-wrap:wrap;gap:5px;margin-top:7px"></div>
+              </div>
+              <div>
+                <label style="display:block;font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#888;margin-bottom:6px">Dates</label>
+                <div id="opsAddDateChips" style="display:flex;flex-wrap:wrap;gap:5px;padding:8px;border:1px solid rgba(216,90,97,.25);border-radius:6px;background:#fff;min-height:42px;align-items:center"></div>
+                <div style="display:flex;gap:6px;margin-top:8px">
+                  <input id="opsAddDateInput" type="date" style="flex:1;padding:8px 10px;font-size:13px;border:1px solid rgba(216,90,97,.25);border-radius:6px;background:#fff;color:#302f2c;font-family:var(--font);outline:none"/>
+                  <button onclick="opsAddDateToList()" style="padding:8px 14px;font-size:12px;font-weight:800;border:1px solid #d85a61;background:#d85a61;color:#fff;border-radius:6px;cursor:pointer;font-family:var(--font);letter-spacing:.04em">+ Add</button>
+                </div>
+                <details style="margin-top:8px">
+                  <summary style="font-size:12px;font-weight:700;color:#a03040;cursor:pointer;padding:4px 0;user-select:none">Add a date range</summary>
+                  <div style="display:flex;gap:6px;align-items:center;margin-top:6px;flex-wrap:wrap">
+                    <input id="opsAddRangeStart" type="date" style="flex:1;min-width:120px;padding:7px 9px;font-size:12px;border:1px solid rgba(216,90,97,.25);border-radius:5px;background:#fff;color:#302f2c;font-family:var(--font);outline:none"/>
+                    <span style="font-size:12px;color:#888">to</span>
+                    <input id="opsAddRangeEnd" type="date" style="flex:1;min-width:120px;padding:7px 9px;font-size:12px;border:1px solid rgba(216,90,97,.25);border-radius:5px;background:#fff;color:#302f2c;font-family:var(--font);outline:none"/>
+                    <button onclick="opsAddRangeToList()" style="padding:7px 12px;font-size:11px;font-weight:700;border:1px solid rgba(216,90,97,.4);background:rgba(216,90,97,.08);color:#a03040;border-radius:5px;cursor:pointer;font-family:var(--font)">+ Add Range</button>
+                  </div>
+                  <label style="display:flex;align-items:center;gap:7px;font-size:12px;color:#5a5a5a;cursor:pointer;user-select:none;margin-top:6px">
+                    <input type="checkbox" id="opsAddSkipWk" checked style="width:14px;height:14px;cursor:pointer"/>
+                    <span>Skip weekends in range</span>
+                  </label>
+                </details>
+              </div>
+            </div>
+            <div style="padding:14px 22px;border-top:1px solid rgba(216,90,97,.15);display:flex;gap:10px;justify-content:flex-end;background:rgba(216,90,97,.04)">
+              <button onclick="closeOpsAddModal()" style="padding:9px 18px;font-size:13px;font-weight:700;border:1px solid rgba(0,0,0,.15);background:#fff;color:#555;border-radius:6px;cursor:pointer;font-family:var(--font)">Cancel</button>
+              <button onclick="opsAddBulk()" style="padding:9px 22px;font-size:13px;font-weight:800;border:none;background:#d85a61;color:#fff;border-radius:6px;cursor:pointer;font-family:var(--font);letter-spacing:.04em">Add to Calendar</button>
+            </div>
+          </div>
+        </div>
+
+<div class="ops-zoom">
+  <button onclick="opsZoomStep(-5)" title="Smaller">&minus;</button>
+  <input type="range" class="opsZoomSlider" min="50" max="130" step="5" value="100" oninput="opsSetZoom(this.value)">
+  <button onclick="opsZoomStep(5)" title="Bigger">+</button>
+  <span class="opsZoomLbl">100%</span>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -1184,6 +1259,7 @@ function opsRenderMonth(m,mi){
       +'<button class="mnav-b mnav-add" onclick="openOpsAddModal()">+ Add to Calendar</button>'
       +'<button class="mnav-b mnav-email" onclick="opsOpenEmail()">&#9993; ML Email</button>'
     +'</span>'
+
   +'</div></td></tr>';
   h+='<tr class="ops-dhdr"><td class="ops-rlbl" style="border-bottom:1px solid var(--border)"></td>';
   days.forEach(d=>{
@@ -2338,11 +2414,72 @@ function opsRmBrk(i){_opsBrk.splice(i,1);opsRenderBrkList();opsReRenderAll();}
 function opsRenderBrkList(){const el=document.getElementById('opsBrkList');if(!el)return;el.innerHTML=!_opsBrk.length?'<div style="color:var(--muted);font-size:14px;padding:4px 0">No breaks set.</div>':_opsBrk.map((b,i)=>'<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)"><div style="flex:1"><div style="font-family:var(--cond);font-size:14px;font-weight:700;color:var(--white)">'+b.name+'</div><div style="font-size:13px;color:var(--muted);margin-top:2px">'+b.start+' \u2013 '+b.end+'</div></div><button onclick="opsRmBrk('+i+')" class="rm-btn">×</button></div>').join('');}
 
 // ML Email
-function opsOpenEmail(){if(new Date().getDay()===5)document.getElementById('opsFriBanner').style.display='block';const d=new Date();const diff=d.getDay()===0?1:(8-d.getDay());d.setDate(d.getDate()+diff);document.getElementById('opsEmailWeek').value=d.toISOString().split('T')[0];opsBuildPreview();om('opsEmailModal');}
-function opsWeekData(){const ws=document.getElementById('opsEmailWeek').value;if(!ws)return[];const mon=new Date(ws);const names=['Monday','Tuesday','Wednesday','Thursday','Friday'];const res=[];for(let i=0;i<5;i++){const d=new Date(mon);d.setDate(mon.getDate()+i);const ds=d.toISOString().split('T')[0];const[yr,mo,day]=ds.split('-').map(Number);let tech='TBC';for(const m of OPS_CAL){const px=OPS_MPX[m.month];if(!px)continue;const[py,pm]=px.split('-').map(Number);if(py===yr&&pm===mo){const v=og(m.month,day,'ml');if(v.length&&v[0]!=='Break / Off Air')tech=v[0];break;}}res.push({name:names[i],date:d.toLocaleDateString('en-GB',{day:'numeric',month:'long'}),tech});}return res;}
-function opsBuildPreview(){const ws=document.getElementById('opsEmailWeek').value;if(!ws)return;const mon=new Date(ws);const wl=mon.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})+' \u2013 '+new Date(mon.getTime()+4*86400000).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});const rows=opsWeekData().map(d=>'<tr><td style="padding:10px 15px;border-bottom:1px solid #eee;font-weight:600;color:#222">'+d.name+' '+d.date+'</td><td style="padding:10px 15px;border-bottom:1px solid #eee;color:#2d7dd2;font-weight:700">'+d.tech+'</td></tr>').join('');document.getElementById('opsEmailPrev').innerHTML='<div style="font-family:Arial,sans-serif"><div style="background:#0a0a0a;padding:14px 18px"><div style="color:#fff;font-size:15px;font-weight:900;letter-spacing:.08em;text-transform:uppercase">VERSA STUDIOS</div><div style="color:#555;font-size:10px;letter-spacing:.1em;text-transform:uppercase;margin-top:2px">Morning Live \u2014 Tech Schedule</div></div><div style="background:#f4f4f4;padding:10px 18px;border-bottom:2px solid #ddd"><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em">Week of</div><div style="font-size:14px;font-weight:700;color:#111;margin-top:2px">'+wl+'</div></div><table style="width:100%;border-collapse:collapse"><thead><tr><th style="padding:8px 15px;text-align:left;font-size:10px;color:var(--muted);border-bottom:2px solid #eee">Day</th><th style="padding:8px 15px;text-align:left;font-size:10px;color:var(--muted);border-bottom:2px solid #eee">Tech Manager</th></tr></thead><tbody>'+rows+'</tbody></table><div style="background:#f4f4f4;padding:9px 18px;font-size:10px;color:#bbb">Versa Studios Tech Ops</div></div>';}
-function opsCopyEmail(){const wd=opsWeekData();const ws=document.getElementById('opsEmailWeek').value;const mon=new Date(ws);const wl=mon.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})+' to '+new Date(mon.getTime()+4*86400000).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});let body='Morning Live Tech Schedule\nWeek of '+wl+'\n\n';wd.forEach(d=>{body+=d.name+' '+d.date+': '+d.tech+'\n';});navigator.clipboard.writeText(body+'\nVersa Studios Tech Ops').then(()=>alert('Copied'));}
-function opsMailto(){const wd=opsWeekData();const ws=document.getElementById('opsEmailWeek').value;const wl=new Date(ws).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});let body='Morning Live Tech Schedule\nWeek commencing '+wl+'\n\n';wd.forEach(d=>{body+=d.name+' '+d.date+': '+d.tech+'\n';});window.location.href='mailto:?subject='+encodeURIComponent('Morning Live Tech Schedule - w/c '+wl)+'&body='+encodeURIComponent(body+'\nVersa Studios Tech Ops');}
+function opsOpenEmail(){
+  if(new Date().getDay()===5)document.getElementById('opsFriBanner').style.display='block';
+  // Default to THIS week's Monday — built from the LOCAL date, snapped in UTC
+  const n=new Date();
+  const todayIso=n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')+'-'+String(n.getDate()).padStart(2,'0');
+  const wk=document.getElementById('opsEmailWeek');
+  wk.value=_opsMondayOf(todayIso);
+  wk.onchange=opsBuildPreview;   // repick a week -> preview follows
+  opsBuildPreview();
+  om('opsEmailModal');
+}
+function _opsMondayOf(iso){
+  var d=new Date(iso+'T00:00:00Z');
+  var dow=d.getUTCDay();
+  d.setUTCDate(d.getUTCDate()+(dow===0?-6:(1-dow)));
+  return d.toISOString().split('T')[0];
+}
+function opsEmailWeekStep(days){
+  var wk=document.getElementById('opsEmailWeek');
+  if(!wk.value)return;
+  var d=new Date(wk.value+'T00:00:00Z');
+  d.setUTCDate(d.getUTCDate()+days);
+  wk.value=_opsMondayOf(d.toISOString().split('T')[0]);
+  opsBuildPreview();
+}
+function _opsVersaLogoWhite(){
+  var svg=document.querySelector('.sa-logo-svg');
+  if(!svg)return '<div style="color:#fff;font-size:15px;font-weight:900;letter-spacing:.08em;text-transform:uppercase">VERSA STUDIOS</div>';
+  return svg.outerHTML
+    .replace('class="sa-logo-svg"','style="height:30px;width:auto;display:block;fill:#fff"')
+    .replace(/fill="[^"]*"/g,'fill="#fff"');
+}
+function opsWeekData(){
+  const ws=document.getElementById('opsEmailWeek').value;
+  if(!ws)return[];
+  const mon=new Date(ws+'T00:00:00Z');
+  const res=[];
+  for(let i=0;i<5;i++){
+    const d=new Date(mon);
+    d.setUTCDate(mon.getUTCDate()+i);
+    const ds=d.toISOString().split('T')[0];
+    const parts=ds.split('-').map(Number);
+    const yr=parts[0],mo=parts[1],day=parts[2];
+    let tech='TBC';
+    for(const m of OPS_CAL){
+      const px=OPS_MPX[m.month];if(!px)continue;
+      const pp=px.split('-').map(Number);
+      if(pp[0]===yr&&pp[1]===mo){
+        const v=og(m.month,day,'ml');
+        var v0=(v&&v.length)?v[0]:'';
+        if(v0&&typeof v0==='object')v0=v0.person||v0.text||'';
+        if(v0&&v0!=='Break / Off Air')tech=v0;
+        break;
+      }
+    }
+    res.push({
+      name:d.toLocaleDateString('en-GB',{weekday:'long',timeZone:'UTC'}),
+      date:d.toLocaleDateString('en-GB',{day:'numeric',month:'long',timeZone:'UTC'}),
+      tech:tech
+    });
+  }
+  return res;
+}
+function opsBuildPreview(){const ws=document.getElementById('opsEmailWeek').value;if(!ws)return;const mon=new Date(ws+'T00:00:00Z');const _fmt={day:'numeric',month:'long',year:'numeric',timeZone:'UTC'};const wl=mon.toLocaleDateString('en-GB',_fmt)+' \u2013 '+new Date(mon.getTime()+4*86400000).toLocaleDateString('en-GB',_fmt);var _wkl=document.getElementById('opsEmailWkLbl');if(_wkl)_wkl.textContent='w/c '+mon.toLocaleDateString('en-GB',_fmt);const rows=opsWeekData().map(d=>'<tr><td style="padding:10px 15px;border-bottom:1px solid #eee;font-weight:600;color:#222">'+d.name+' '+d.date+'</td><td style="padding:10px 15px;border-bottom:1px solid #eee;color:#2d7dd2;font-weight:700">'+d.tech+'</td></tr>').join('');document.getElementById('opsEmailPrev').innerHTML='<div style="font-family:Arial,sans-serif"><div style="background:#0a0a0a;padding:14px 18px">'+_opsVersaLogoWhite()+'<div style="color:#888;font-size:10px;letter-spacing:.1em;text-transform:uppercase;margin-top:2px">Morning Live \u2014 Tech Schedule</div></div><div style="background:#f4f4f4;padding:10px 18px;border-bottom:2px solid #ddd"><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em">Week of</div><div style="font-size:14px;font-weight:700;color:#111;margin-top:2px">'+wl+'</div></div><table style="width:100%;border-collapse:collapse"><thead><tr><th style="padding:8px 15px;text-align:left;font-size:10px;color:var(--muted);border-bottom:2px solid #eee">Day</th><th style="padding:8px 15px;text-align:left;font-size:10px;color:var(--muted);border-bottom:2px solid #eee">Tech Manager</th></tr></thead><tbody>'+rows+'</tbody></table><div style="background:#f4f4f4;padding:9px 18px;font-size:10px;color:#bbb">Versa Studios Tech Ops</div></div>';}
+function opsCopyEmail(){const wd=opsWeekData();const ws=document.getElementById('opsEmailWeek').value;const mon=new Date(ws+'T00:00:00Z');const _fmt={day:'numeric',month:'long',year:'numeric',timeZone:'UTC'};const wl=mon.toLocaleDateString('en-GB',_fmt)+' to '+new Date(mon.getTime()+4*86400000).toLocaleDateString('en-GB',_fmt);let body='Morning Live Tech Schedule\nWeek of '+wl+'\n\n';wd.forEach(d=>{body+=d.name+' '+d.date+': '+d.tech+'\n';});navigator.clipboard.writeText(body+'\nVersa Studios Tech Ops').then(()=>alert('Copied'));}
+function opsMailto(){const wd=opsWeekData();const ws=document.getElementById('opsEmailWeek').value;const wl=new Date(ws+'T00:00:00Z').toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'});let body='Morning Live Tech Schedule\nWeek commencing '+wl+'\n\n';wd.forEach(d=>{body+=d.name+' '+d.date+': '+d.tech+'\n';});window.location.href='mailto:?subject='+encodeURIComponent('Morning Live Tech Schedule - w/c '+wl)+'&body='+encodeURIComponent(body+'\nVersa Studios Tech Ops');}
 
 
 // ── VIEW SWITCHER + LABEL ────────────────────────────────────────────────────
@@ -2640,7 +2777,7 @@ function setPlanView(v){
     _saBuildStackedMonths();
     _saMonthsRendered=true;
     // Open at today's month
-    setTimeout(function(){_saScrollToMonth(opsTodayMonthIdx(),false);},80);
+    setTimeout(function(){_saScrollToMonth(opsTodayMonthIdx(),false);_saScrollTodayX();},80);
   }
 }
 
@@ -2723,8 +2860,35 @@ function planNext(){
   var s=opsCurrentStart();
   if(s<OPS_CAL.length-1)_saScrollToMonth(s+1,true);
 }
+// ── Zoom control — scales the whole calendar, remembered per browser ──
+var _opsZoomVal=100;
+function opsSetZoom(v){
+  v=Math.max(50,Math.min(130,parseInt(v)||100));
+  _opsZoomVal=v;
+  var el=document.getElementById('opsScroll2');
+  if(el)el.style.zoom=(v/100);
+  document.querySelectorAll('.opsZoomSlider').forEach(function(s){s.value=v;});
+  document.querySelectorAll('.opsZoomLbl').forEach(function(l){l.textContent=v+'%';});
+  try{localStorage.setItem('opsZoom',String(v));}catch(e){}
+}
+function opsZoomStep(d){opsSetZoom(_opsZoomVal+d);}
+try{var _z=parseInt(localStorage.getItem('opsZoom'));if(_z&&_z!==100)setTimeout(function(){opsSetZoom(_z);},50);}catch(e){}
+
 function planToday(){
   _saScrollToMonth(opsTodayMonthIdx(),true);
+  setTimeout(_saScrollTodayX,60);
+}
+// Park today's column centre-left so most of the visible width is what's ahead
+function _saScrollTodayX(){
+  var sc=document.getElementById('opsScroll2');
+  if(!sc)return;
+  var cell=sc.querySelector('.ops-dh.td');
+  if(!cell)return;
+  var td=cell.closest('td');
+  if(!td)return;
+  var labelW=150;
+  var x=td.offsetLeft-labelW-(sc.clientWidth-labelW)*0.22;
+  sc.scrollLeft=Math.max(0,x);
 }
 
 // opsShowFromIdx: scroll to a given month index
