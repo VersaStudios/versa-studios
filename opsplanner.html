@@ -195,7 +195,8 @@ body{margin:0;padding:0;min-height:100vh}
 .ops-dh.td .dn-wrap{background:#d85a61;color:#fff;border-radius:50%;width:26px;height:26px;line-height:26px;margin:auto;box-shadow:0 4px 10px rgba(216,90,97,.3)}
 .ops-dh.td{color:#fff}
 .ops-rlbl{font-family:'Barlow Condensed',Impact,sans-serif;font-size:16px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;line-height:1;padding:8px 14px;white-space:nowrap;border-right:2px solid rgba(216,90,97,.2);border-bottom:1px solid rgba(216,90,97,.12);vertical-align:middle;width:146px;min-width:146px;color:#d85a61 !important;background:rgba(255,251,246,.9)}
-.ops-cell{border-right:1px solid rgba(216,90,97,.1);border-bottom:1px solid rgba(216,90,97,.1);vertical-align:top;padding:3px;min-width:70px;cursor:pointer;background:rgba(255,253,248,.85);transition:background .12s;user-select:none;-webkit-user-select:none;touch-action:pan-y}
+.ops-cell{position:relative;border-right:1px solid rgba(216,90,97,.1);border-bottom:1px solid rgba(216,90,97,.1);vertical-align:top;padding:3px;min-width:70px;cursor:pointer;background:rgba(255,253,248,.85);transition:background .12s;user-select:none;-webkit-user-select:none;touch-action:pan-y}
+.ops-htl{position:absolute;top:50%;right:0;transform:translate(50%,-50%);z-index:5;font-size:13px;font-weight:900;letter-spacing:.05em;color:#7a5a1e;background:#f2e0b8;border:1px solid rgba(122,90,30,.35);border-radius:4px;padding:5px 12px;line-height:1.2;pointer-events:none;box-shadow:0 1px 3px rgba(0,0,0,.12);-webkit-text-stroke:.35px currentColor;white-space:nowrap}
 .ops-cell.ops-drag-sel{background:rgba(216,90,97,.18)!important;outline:2px dashed #d85a61;outline-offset:-2px}
 .ops-cell.ops-drag-src{opacity:.4}
 .ops-cell.ops-drag-dest{background:rgba(58,90,170,.18)!important;outline:2px dashed #3a5aaa;outline-offset:-2px}
@@ -287,6 +288,9 @@ body.ops-drag-active .ops-chip::before,body.ops-drag-active .ops-chip::after{poi
 .ops-ms2:first-of-type{padding-top:0}
 
 /* Mobile */
+@media (pointer:coarse){
+  .ops-cell{touch-action:auto}
+}
 @media (max-width:640px){
   .sa-sub{display:none}
   .vw-row{gap:6px;padding:8px 10px}
@@ -308,7 +312,7 @@ body.ops-drag-active .ops-chip::before,body.ops-drag-active .ops-chip::after{poi
   .ops-zoom input[type=range]{width:76px}
 
   /* Chips & cells: slightly denser */
-  .ops-chip{font-size:12px;padding:3px 7px}
+  .ops-chip{font-size:12px;padding:3px 7px;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .ops-cell{min-width:96px}
 
   /* Modals fill the phone sensibly */
@@ -1343,12 +1347,14 @@ function opsRenderMonth(m,mi){
         // Render the span chip plus any other (non-span) entries in this cell
         var others=vals.filter(function(v){return v!==spanEntry;});
         var otherHtml=others.length?opsRChips(others,fc):'';
-        return'<td class="'+cls+'" colspan="'+spanLen+'" id="'+rid+'" data-mi="'+mi+'" data-day="'+d.day+'" data-row="'+row+'" onclick="opsCk(this)"><div class="ops-chip '+spCls+'"'+spStyle+'>'+spText+'</div>'+otherHtml+'</td>';
+        var spHtl=og(m.month,m.days[Math.min(idx+spanLen-1,days.length-1)].day,row+'_htl').length?'<span class="ops-htl" title="Hotel booked overnight">Hotel</span>':'';
+        return'<td class="'+cls+'" colspan="'+spanLen+'" id="'+rid+'" data-mi="'+mi+'" data-day="'+d.day+'" data-row="'+row+'" onclick="opsCk(this)"><div class="ops-chip '+spCls+'"'+spStyle+'>'+spText+'</div>'+otherHtml+spHtl+'</td>';
       }
       // AUTO-FIT removed — chips render at data span. To extend a chip across days,
       // drag its right-edge handle.
     }
-    return'<td class="'+cls+'" id="'+rid+'" data-mi="'+mi+'" data-day="'+d.day+'" data-row="'+row+'" onclick="opsCk(this)">'+opsRChips(vals,fc)+'</td>';
+    const htl=og(m.month,d.day,row+'_htl').length?'<span class="ops-htl" title="Hotel booked overnight">Hotel</span>':'';
+    return'<td class="'+cls+'" id="'+rid+'" data-mi="'+mi+'" data-day="'+d.day+'" data-row="'+row+'" onclick="opsCk(this)">'+opsRChips(vals,fc)+htl+'</td>';
   };
   const srow=lbl=>'<tr class="ops-srow"><td colspan="'+(n+1)+'">'+lbl+'</td></tr>';
   const gap='<tr class="ops-gap"><td colspan="'+(n+1)+'"></td></tr>';
@@ -1674,7 +1680,11 @@ function opsCk(td){
   }
   else if(row==='events'){html+='<div class="ops-cs">Events</div>';}
   else if(row.startsWith('st_')){const stName=row.slice(3);html+='<div class="ops-cs">'+stName+'</div>';}
-  else{const colMap={andrew:'#3a8a55',chris:'#907010',ian:'#3a5aaa'};const col=colMap[row]||'#555';html+='<div class="ops-cs">'+row.charAt(0).toUpperCase()+row.slice(1)+'</div>';html+=mkO('Day Off',col,false);/* Jobs are no longer picked here — crewing someone on a job in the Jobs section seeds their calendar automatically */}
+  else{const colMap={andrew:'#3a8a55',chris:'#907010',ian:'#3a5aaa'};const col=colMap[row]||'#555';html+='<div class="ops-cs">'+row.charAt(0).toUpperCase()+row.slice(1)+'</div>';html+=mkO('Day Off',col,false);
+  // Hotel overnight marker — shows between this day and the next
+  var _htlOn=og(month,day,row+'_htl').length>0;
+  html+='<div class="ops-co" onclick="opsToggleHotel()"><span>Hotel overnight</span>'+(_htlOn?'<span style="margin-left:auto;color:#3a8a55;font-weight:900">&#10003;</span>':'')+'</div>';
+  /* Jobs are no longer picked here — crewing someone on a job in the Jobs section seeds their calendar automatically */}
   if(cur.length)html+='<div class="ops-div"></div><div class="ops-co" onclick="opsClear()" style="color:#c06060"><div class="ops-cd" style="background:#c06060"></div>Clear cell</div>';
   const ced=document.getElementById('opsCed');
   document.getElementById('opsCedIn').innerHTML=html;
@@ -1685,10 +1695,29 @@ function opsCk(td){
 }
 // Position the cell editor popup next to the given cell, picking the side
 // (below / above / pinned-top) that best fits in the visible viewport.
+var OPS_BUILD='2026-07-06 · b38';
+console.log('%cOps Planner build '+OPS_BUILD,'color:#d85a61;font-weight:bold');
+document.addEventListener('DOMContentLoaded',function(){
+  var b=document.createElement('div');
+  b.textContent=OPS_BUILD;
+  b.style.cssText='position:fixed;bottom:4px;left:8px;z-index:940;font-size:9px;letter-spacing:.05em;color:rgba(48,47,44,.35);font-family:monospace;pointer-events:none';
+  document.body.appendChild(b);
+});
 function _opsCellRect(td){
   var r=td.getBoundingClientRect();
-  var z=(typeof td.currentCSSZoom==='number')?td.currentCSSZoom:1;
-  if(z&&z!==1){
+  // Self-calibrating zoom correction. Browsers disagree on whether rects under
+  // CSS zoom are reported in visual pixels (Safari) or layout pixels (Chrome
+  // 128+). Rather than trust either model, measure: offsetWidth is always
+  // layout px, and layout px x cumulative zoom = true visual width. If the
+  // rect already matches visual (ratio 1) nothing changes; if it's layout-
+  // based, scale everything up to visual so it matches event clientX/Y.
+  var z=1;
+  if(typeof td.currentCSSZoom==='number'&&td.offsetWidth>0&&r.width>0){
+    z=(td.offsetWidth*td.currentCSSZoom)/r.width;
+    if(!isFinite(z)||z<=0)z=1;
+    if(Math.abs(z-1)<0.02)z=1;
+  }
+  if(z!==1){
     return {top:r.top*z,left:r.left*z,bottom:r.bottom*z,right:r.right*z,width:r.width*z,height:r.height*z};
   }
   return r;
@@ -1739,6 +1768,15 @@ function _opsRepositionOpenCed(){
   _opsPositionCed(td);
 }
 function opsOpt(el){if(!_opsEd)return;const val=el.dataset.v;const single=el.dataset.s==='1';const{month,day,row,id}=_opsEd;let cur=og(month,day,row).slice();if(single)cur=cur.includes(val)?[]:[val];else{if(cur.includes(val))cur=cur.filter(x=>x!==val);else cur.push(val);}os(month,day,row,cur);if(row==='ml'){opsReRender();}else{opsRefCell(id,month,day,row);}opsCloseCed();}
+function opsToggleHotel(){
+  if(!_opsEd)return;
+  const ed=_opsEd;
+  const k=ed.row+'_htl';
+  const cur=og(ed.month,ed.day,k);
+  os(ed.month,ed.day,k,cur.length?[]:['HOTEL']);
+  opsReRender();
+  opsCloseCed();
+}
 function opsCiAdd(){
   const inp=document.getElementById('opsCiTxt');
   if(!inp||!inp.value.trim())return;
@@ -1961,7 +1999,7 @@ function _opsVirtualDayAt(cell,clientX){
   var dataDay=+cell.dataset.day;
   var colspan=parseInt(cell.getAttribute('colspan')||'1',10);
   if(colspan<=1)return dataDay;
-  var rect=cell.getBoundingClientRect();
+  var rect=_opsCellRect(cell);   // zoom-corrected — clientX is visual pixels
   if(rect.width<=0)return dataDay;
   var perDay=rect.width/colspan;
   var offIdx=Math.max(0,Math.min(colspan-1,Math.floor((clientX-rect.left)/perDay)));
@@ -1984,7 +2022,7 @@ function _opsDragMouseDown(ev){
   var isHandle=false;
   var handleSide=null;
   if(chipEl){
-    var cr=chipEl.getBoundingClientRect();
+    var cr=_opsCellRect(chipEl);   // zoom-corrected to match ev.clientX/Y
     var fromRight=cr.right-ev.clientX;
     var fromLeft=ev.clientX-cr.left;
     // Detection zone: 18px or 30% of chip width, whichever is smaller. On wide chips this
@@ -2036,8 +2074,23 @@ function _opsDragMouseMove(ev){
     _opsDragHighlight();
     return;
   }
-  // Body-drag: MOVE to whichever cell the cursor ends up over. Same row OR different
-  // row both work. Drag to source cell = no-op.
+  // Empty start cell: painting across the row creates a span (the pending-span
+  // flow). Track the end day from whichever cell the cursor is over.
+  if(!_opsDrag.startVals.length){
+    if(cell.dataset.row!==_opsDrag.row||(+cell.dataset.mi)!==_opsDrag.mi)return;
+    var vDay=_opsVirtualDayAt(cell,ev.clientX);
+    var mm=OPS_CAL[_opsDrag.mi];
+    if(mm)vDay=Math.max(mm.days[0].day,Math.min(mm.days[mm.days.length-1].day,vDay));
+    if(vDay===_opsDrag.endDay)return;
+    _opsDrag.endDay=vDay;
+    _opsDrag.targetCell=cell;
+    _opsDrag.mode='span';
+    _opsDrag.handleSide=(vDay<_opsDrag.startDay)?'left':'right';
+    _opsDragHighlight();
+    return;
+  }
+  // Body-drag on a chip: MOVE to whichever cell the cursor ends up over. Same
+  // row OR different row both work. Drag to source cell = no-op.
   var srcIsML=_opsDrag.row==='ml';
   var tgtIsML=cell.dataset.row==='ml';
   if(srcIsML!==tgtIsML)return;
@@ -2266,18 +2319,48 @@ if(!window._opsDragInstalled){
   document.addEventListener('mousemove',_opsDragMouseMove,true);
   document.addEventListener('mouseup',_opsDragMouseUp,true);
   document.addEventListener('click',_opsDragClickGuard,true);
-  // Touch support — map to mouse handlers
+  // Touch support — LONG-PRESS to drag. A quick swipe pans the month; holding
+  // still on a cell for ~350ms arms the drag, after which finger moves resize
+  // or move the chip and scrolling is suppressed until the finger lifts.
+  var _opsTouch={timer:null,armed:false,started:false,sx:0,sy:0,cell:null};
   document.addEventListener('touchstart',function(ev){
     if(ev.touches.length!==1)return;
     var t=ev.touches[0];
-    _opsDragMouseDown({target:t.target,clientX:t.clientX,clientY:t.clientY,button:0});
+    var cell=t.target&&t.target.closest?t.target.closest('.ops-cell'):null;
+    if(!cell)return;
+    _opsTouch.started=true;_opsTouch.armed=false;
+    _opsTouch.sx=t.clientX;_opsTouch.sy=t.clientY;_opsTouch.cell=cell;
+    _opsTouch.timer=setTimeout(function(){
+      _opsTouch.armed=true;
+      cell.classList.add('ops-drag-src');
+      _opsDragMouseDown({target:t.target,clientX:t.clientX,clientY:t.clientY,button:0,preventDefault:function(){}});
+    },350);
   },{passive:true,capture:true});
   document.addEventListener('touchmove',function(ev){
+    if(!_opsTouch.started)return;
     if(ev.touches.length!==1)return;
     var t=ev.touches[0];
+    if(!_opsTouch.armed){
+      // Moved before the hold completed — it's a scroll, stand down
+      if(Math.abs(t.clientX-_opsTouch.sx)>8||Math.abs(t.clientY-_opsTouch.sy)>8){
+        clearTimeout(_opsTouch.timer);_opsTouch.started=false;
+      }
+      return;
+    }
+    ev.preventDefault();  // drag armed — keep the browser from scrolling
     _opsDragMouseMove({clientX:t.clientX,clientY:t.clientY});
+  },{passive:false,capture:true});
+  document.addEventListener('touchend',function(){
+    if(_opsTouch.timer)clearTimeout(_opsTouch.timer);
+    if(_opsTouch.armed)_opsDragMouseUp({});
+    if(_opsTouch.cell)_opsTouch.cell.classList.remove('ops-drag-src');
+    _opsTouch.started=false;_opsTouch.armed=false;_opsTouch.cell=null;
   },{passive:true,capture:true});
-  document.addEventListener('touchend',function(ev){_opsDragMouseUp({});},{passive:true,capture:true});
+  document.addEventListener('touchcancel',function(){
+    if(_opsTouch.timer)clearTimeout(_opsTouch.timer);
+    if(_opsTouch.cell)_opsTouch.cell.classList.remove('ops-drag-src');
+    _opsTouch.started=false;_opsTouch.armed=false;_opsTouch.cell=null;
+  },{passive:true,capture:true});
 }
 function opsCloseCed(){document.getElementById('opsCed').style.display='none';_opsEd=null;window._opsPendingSpan=null;}
 
@@ -2427,7 +2510,7 @@ function opsAddBulk(){
 }
 
 // ── REF + RX NUM ─────────────────────────────────────────────────────────────
-function opsRefCell(id,month,day,row){const el=document.getElementById(id);if(!el)return;const vals=og(month,day,row);const fc={andrew:'ops-andrew',chris:'ops-chris',ian:'ops-ian'}[row]||null;if(row==='ml'){if(!vals.length)el.innerHTML='<div class="ops-mt"></div>';else if(vals[0]==='Break / Off Air')el.innerHTML='<div class="ops-chip ops-brk">Break</div>';else el.innerHTML='<div class="ops-chip ops-ml" style="background:'+opsMlColor(vals[0])+'">'+String(vals[0])+'</div>';}else el.innerHTML=opsRChips(vals,fc);}
+function opsRefCell(id,month,day,row){const el=document.getElementById(id);if(!el)return;const vals=og(month,day,row);const fc={andrew:'ops-andrew',chris:'ops-chris',ian:'ops-ian'}[row]||null;if(row==='ml'){if(!vals.length)el.innerHTML='<div class="ops-mt"></div>';else if(vals[0]==='Break / Off Air')el.innerHTML='<div class="ops-chip ops-brk">Break</div>';else el.innerHTML='<div class="ops-chip ops-ml" style="background:'+opsMlColor(vals[0])+'">'+String(vals[0])+'</div>';}else{const htl=og(month,day,row+'_htl').length?'<span class="ops-htl" title="Hotel booked overnight">Hotel</span>':'';el.innerHTML=opsRChips(vals,fc)+htl;}}
 function opsRxNum(mi,currentDay,row){const m=OPS_CAL[mi];if(!m)return 1;let n=0;m.days.forEach(d=>{if(d.day<currentDay)og(m.month,d.day,row).forEach(v=>{if(/^RX\s*\d+$/i.test(v.trim()))n++;});});return n+1;}
 document.addEventListener('click',e=>{const ced=document.getElementById('opsCed');if(ced&&ced.style.display==='block'&&!ced.contains(e.target)&&!e.target.closest('.ops-cell'))opsCloseCed();});
 // Keep the cell-editor popup tracking its anchor cell when the planner scrolls
