@@ -90,7 +90,7 @@ body{margin:0;padding:0;min-height:100vh}
 
 
 .ops-ldiv{width:1px;height:12px;background:var(--border)}
-.ops-scroll{overflow:auto;flex:1}
+.ops-scroll{overflow:visible;flex:1}
 
 .ops-mhdr td{padding:16px 20px 12px;background:rgba(255,253,248,.98);border-bottom:2px solid rgba(216,90,97,.2);white-space:nowrap}
 
@@ -283,7 +283,7 @@ body.ops-drag-active .ops-chip::before,body.ops-drag-active .ops-chip::after{poi
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
 
 /* Stacked-month layout */
-.ops-ms2{padding:8px 0 14px}
+.ops-ms2{padding:8px 0 14px;overflow-x:auto;-webkit-overflow-scrolling:touch;scroll-margin-top:12px}
 .ops-ms2:first-of-type{padding-top:0}
 
 /* Mobile */
@@ -292,6 +292,30 @@ body.ops-drag-active .ops-chip::before,body.ops-drag-active .ops-chip::after{poi
   .vw-row{gap:6px;padding:8px 10px}
   .vw-lbl{min-width:auto;font-size:14px}
   .ops-leg-row{padding:6px 10px}
+
+  /* ── Phone pass ── */
+  /* Row labels: slimmer column so day cells get the width */
+  .ops-rlbl{font-size:13px;width:88px;min-width:88px;padding:7px 8px;letter-spacing:.02em}
+
+  /* Month banner: smaller name, tighter strip, buttons wrap under */
+  .ops-mhdr-txt{font-size:clamp(26px,9vw,40px);min-width:0}
+  .ops-tbl tr.ops-mhdr > td > div{width:calc(100vw - 20px);padding-left:10px;gap:8px}
+  .mnav{margin-left:0;gap:5px;padding-bottom:4px}
+  .mnav-b{padding:5px 9px;font-size:12px;border-width:1.5px}
+
+  /* Zoom pill: bottom-right where a thumb can reach, out of the banner's way */
+  .ops-zoom{top:auto;bottom:14px;right:10px;padding:5px 10px}
+  .ops-zoom input[type=range]{width:76px}
+
+  /* Chips & cells: slightly denser */
+  .ops-chip{font-size:12px;padding:3px 7px}
+  .ops-cell{min-width:96px}
+
+  /* Modals fill the phone sensibly */
+  .modal-ov > div, .modal{width:calc(100vw - 20px) !important;max-width:calc(100vw - 20px) !important;max-height:88vh;overflow-y:auto}
+
+  /* Popup: never wider than the screen */
+  .ops-ced{width:min(258px,calc(100vw - 16px))}
 }
 </style>
 </head>
@@ -1661,10 +1685,18 @@ function opsCk(td){
 }
 // Position the cell editor popup next to the given cell, picking the side
 // (below / above / pinned-top) that best fits in the visible viewport.
+function _opsCellRect(td){
+  var r=td.getBoundingClientRect();
+  var z=(typeof td.currentCSSZoom==='number')?td.currentCSSZoom:1;
+  if(z&&z!==1){
+    return {top:r.top*z,left:r.left*z,bottom:r.bottom*z,right:r.right*z,width:r.width*z,height:r.height*z};
+  }
+  return r;
+}
 function _opsPositionCed(td){
   const ced=document.getElementById('opsCed');
   if(!ced||!td)return;
-  const rect=td.getBoundingClientRect();
+  const rect=_opsCellRect(td);
   var vh=window.visualViewport?window.visualViewport.height:window.innerHeight;
   var vw=window.visualViewport?window.visualViewport.width:window.innerWidth;
   var vtop=window.visualViewport?(window.visualViewport.offsetTop||0):0;
@@ -1697,7 +1729,7 @@ function _opsRepositionOpenCed(){
   if(!ced||ced.style.display==='none')return;
   const td=document.getElementById(_opsEd.id);
   if(!td){opsCloseCed();return;}
-  const rect=td.getBoundingClientRect();
+  const rect=_opsCellRect(td);
   var vh=window.visualViewport?window.visualViewport.height:window.innerHeight;
   if(rect.bottom<-20||rect.top>vh+20){
     ced.style.visibility='hidden';
@@ -2403,6 +2435,7 @@ document.addEventListener('click',e=>{const ced=document.getElementById('opsCed'
   var sc=document.getElementById('opsScroll2');
   if(sc)sc.addEventListener('scroll',_opsRepositionOpenCed,{passive:true});
   window.addEventListener('scroll',_opsRepositionOpenCed,{passive:true,capture:true});
+  document.addEventListener('scroll',_opsRepositionOpenCed,{passive:true,capture:true});
   window.addEventListener('resize',_opsRepositionOpenCed);
 })();
 
@@ -2840,14 +2873,9 @@ function _saScrollToMonth(idx,smooth){
   if(!sec)return;
   // Reveal hidden past months if scrolling to one
   if(sec.style.display==='none')opsRevealPastMonths();
-  // Scroll the window (page) to the section, accounting for hero height
-  var rect=sec.getBoundingClientRect();
-  var target=window.pageYOffset+rect.top-12;
-  if(smooth!==false&&window.scrollTo){
-    try{window.scrollTo({top:target,behavior:'smooth'});}catch(e){window.scrollTo(0,target);}
-  } else {
-    window.scrollTo(0,target);
-  }
+  // scrollIntoView computes correctly under CSS zoom, unlike manual rect math
+  try{sec.scrollIntoView({block:'start',behavior:(smooth!==false?'smooth':'auto')});}
+  catch(e){sec.scrollIntoView(true);}
   _opsStart=idx;
   updatePlanLbl(opsLabelForStart(idx));
 }
@@ -2880,15 +2908,16 @@ function planToday(){
 }
 // Park today's column centre-left so most of the visible width is what's ahead
 function _saScrollTodayX(){
-  var sc=document.getElementById('opsScroll2');
-  if(!sc)return;
-  var cell=sc.querySelector('.ops-dh.td');
+  var cell=document.querySelector('#opsScroll2 .ops-dh.td');
   if(!cell)return;
   var td=cell.closest('td');
   if(!td)return;
+  // Each month section scrolls independently — park today within ITS scroller
+  var sec=td.closest('.ops-ms2');
+  if(!sec)return;
   var labelW=150;
-  var x=td.offsetLeft-labelW-(sc.clientWidth-labelW)*0.22;
-  sc.scrollLeft=Math.max(0,x);
+  var x=td.offsetLeft-labelW-(sec.clientWidth-labelW)*0.22;
+  sec.scrollLeft=Math.max(0,x);
 }
 
 // opsShowFromIdx: scroll to a given month index
