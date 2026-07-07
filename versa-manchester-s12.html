@@ -252,6 +252,27 @@ table.t tr:hover td{background:rgba(244,162,88,.04)}
 .dev-pill.on.walkie{background:var(--blue)}
 .dev-pill.on.wire4 {background:var(--amber)}
 
+/* ── Drag-to-reorder ── */
+.drag-handle{cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;white-space:nowrap;color:var(--muted)}
+.drag-handle:active{cursor:grabbing}
+.drag-handle .idx-n{margin-left:5px;font-size:10px;opacity:.7}
+tr.drag-src{opacity:.35}
+tr.drop-before td{border-top:2px solid var(--accent) !important}
+tr.drop-after td{border-bottom:2px solid var(--accent) !important}
+#boleroChips{display:flex;flex-direction:column;gap:6px}
+.bol-chip{display:flex;align-items:center;gap:9px;padding:6px 10px;border:1px solid var(--rule-dark);border-radius:6px;background:rgba(0,0,0,.02)}
+.bol-chip.drag-src{opacity:.35}
+.bol-chip.drop-before{box-shadow:0 -2px 0 var(--accent)}
+.bol-chip.drop-after{box-shadow:0 2px 0 var(--accent)}
+.bol-handle{cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;color:var(--muted);font-size:14px;padding:2px 4px}
+.bol-handle:active{cursor:grabbing}
+.bol-num{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:14px;color:var(--green);min-width:30px;text-align:center}
+.bol-name{max-width:170px}
+.bol-person{font-size:12px;color:var(--text);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bol-person em{color:var(--muted);font-style:normal;font-size:11px;margin-left:4px}
+.bol-reset{background:transparent;border:1px solid var(--rule-dark);color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:4px;cursor:pointer}
+.bol-reset:hover{border-color:var(--accent);color:var(--text)}
+
 .rm-btn{
   background:transparent;border:1px solid rgba(200,0,0,.18);color:rgba(200,0,0,.65);
   width:26px;height:26px;border-radius:4px;cursor:pointer;font-size:15px;line-height:1;
@@ -1707,13 +1728,15 @@ function renderComms(){
   const c = j.comms;
   const people = c.people || [];
 
+  // Numbering matches the main app: an explicit override (p.boleroNum etc.) is used
+  // as-is and advances the counter, otherwise numbers are auto-assigned in list order.
   let bC=0, pC=0, wC=0, fC=0;
   const ids = people.map(p => {
     const r = {};
-    if(p.bolero){ bC++; r.bolero = bC; }
-    if(p.panel) { pC++; r.panel  = pC; }
-    if(p.walkie){ wC++; r.walkie = wC; }
-    if(p.wire4) { fC++; r.wire4  = fC; }
+    if(p.bolero){ const n=parseInt(p.boleroNum); if(n>0){ r.bolero=n; bC=Math.max(bC,n); } else { bC++; r.bolero=bC; } }
+    if(p.panel) { const n=parseInt(p.panelNum);  if(n>0){ r.panel =n; pC=Math.max(pC,n); } else { pC++; r.panel =pC; } }
+    if(p.walkie){ const n=parseInt(p.walkieNum); if(n>0){ r.walkie=n; wC=Math.max(wC,n); } else { wC++; r.walkie=wC; } }
+    if(p.wire4) { const n=parseInt(p.wire4Num);  if(n>0){ r.wire4 =n; fC=Math.max(fC,n); } else { fC++; r.wire4 =fC; } }
     return r;
   });
 
@@ -1721,20 +1744,20 @@ function renderComms(){
     '<option value="'+escHtml(h)+'"'+(h===(cur||'')?' selected':'')+'>'+escHtml(h||'—')+'</option>'
   ).join('');
 
-  const pillCell = (i, key, type, isOn, num) =>
+  const pillCell = (i, key, type, isOn, num, label) =>
     '<td class="dev-cell" onclick="toggleDev('+i+',\''+key+'\')" title="Toggle '+type+'">'+
-      '<span class="dev-pill '+(isOn?'on '+key:'')+'">'+(isOn ? '#'+num : '—')+'</span>'+
+      '<span class="dev-pill '+(isOn?'on '+key:'')+'"'+(key==='bolero'?' data-num="'+(num||'')+'"':'')+'>'+(isOn ? '#'+num+(label?' · '+escHtml(label):'') : '—')+'</span>'+
     '</td>';
 
 
 
   const personRows = people.map((p, i) => {
     const d = ids[i];
-    return '<tr'+(p.fromGallery!=null?' class="synced-row"':'')+'>'+
-      '<td class="idx">'+(i+1)+'</td>'+
+    return '<tr data-pi="'+i+'"'+(p.fromGallery!=null?' class="synced-row"':'')+'>'+
+      '<td class="idx drag-handle" onpointerdown="startRowDrag(event,'+i+')" title="Drag to reorder">⠿<span class="idx-n">'+(i+1)+'</span></td>'+
       '<td><input class="fi" placeholder="Name…" value="'+escHtml(p.name)+'" oninput="setField('+i+',\'name\',this.value)"/></td>'+
       '<td><input class="fi" placeholder="Role…" value="'+escHtml(p.role)+'" oninput="setField('+i+',\'role\',this.value)"/></td>'+
-      pillCell(i, 'bolero', 'Bolero', !!p.bolero, d.bolero)+
+      pillCell(i, 'bolero', 'Bolero', !!p.bolero, d.bolero, p.boleroName)+
       pillCell(i, 'panel',  'Panel',  !!p.panel,  d.panel)+
       pillCell(i, 'walkie', 'Walkie', !!p.walkie, d.walkie)+
       '<td><select class="fi" onchange="setField('+i+',\'headset\',this.value)">'+hsOpts(p.headset)+'</select></td>'+
@@ -1790,6 +1813,32 @@ function renderComms(){
     '</div>';
   };
 
+  // ── Bolero Assignments card — name each Bolero, drag to reorder numbers ──
+  const holders = people.map((p,i)=>({p:p, i:i, num:(ids[i]||{}).bolero})).filter(h=>h.p && h.p.bolero);
+  holders.sort((a,b)=> a.num-b.num || a.i-b.i);
+  const pinned = holders.some(h => parseInt(h.p.boleroNum) > 0);
+  const boleroCard = !holders.length ? '' :
+    '<div class="card">'+
+      '<div class="card-title">'+
+        '<span class="accent-text">Bolero Assignments</span>'+
+        '<span style="display:flex;gap:8px;align-items:center">'+
+          (pinned ? '<button class="bol-reset" onclick="resetBoleroOrder()" title="Clear manual order — numbers follow crew list order again">Reset to list order</button>' : '')+
+          '<span class="count">'+holders.length+' '+(holders.length===1?'unit':'units')+'</span>'+
+        '</span>'+
+      '</div>'+
+      '<div id="boleroChips">'+
+        holders.map((h,pos)=>
+          '<div class="bol-chip">'+
+            '<span class="bol-handle" onpointerdown="startBoleroDrag(event,'+pos+')" title="Drag to reorder Bolero numbers">⠿</span>'+
+            '<span class="bol-num">#'+h.num+'</span>'+
+            '<input class="fi bol-name" placeholder="Label… e.g. Director" value="'+escHtml(h.p.boleroName||'')+'" oninput="setBoleroName('+h.i+',this.value)"/>'+
+            '<span class="bol-person">'+escHtml((h.p.name||'').trim()||'—')+(h.p.role?' <em>'+escHtml(h.p.role)+'</em>':'')+'</span>'+
+          '</div>'
+        ).join('')+
+      '</div>'+
+      '<div class="foot-note" style="margin:8px 0 0">Drag <kbd>⠿</kbd> to reorder Bolero numbers. Labels show on the pill and the PDF.</div>'+
+    '</div>';
+
   const channelsBlock =
     '<div class="chan-grid">'+
       chanCard(c.channels, 'walkie', 'Walkie / Comms Channels', '')+
@@ -1799,9 +1848,10 @@ function renderComms(){
   document.getElementById('commsContent').classList.remove('loading');
   document.getElementById('commsContent').innerHTML =
     peopleCard +
+    boleroCard +
     channelsBlock +
     '<div class="foot-note">'+
-      'Changes save automatically. Anyone with this link can edit. Click a coloured pill to toggle a device on/off — numbers <kbd>#1, #2, #3…</kbd> are assigned in list order.'+
+      'Changes save automatically. Anyone with this link can edit. Click a coloured pill to toggle a device on/off — numbers <kbd>#1, #2, #3…</kbd> follow list order. Drag the <kbd>⠿</kbd> handle on a row to reorder the list.'+
     '</div>';
 }
 
@@ -1832,6 +1882,100 @@ function removePerson(i){
   currentJob.comms.people.splice(i, 1);
   renderComms();
   queueSave();
+}
+
+// ── Drag-to-reorder (pointer events — works on iOS Safari, unlike HTML5 DnD) ──
+function _dragReorder(e, itemsSel, fromIdx, onDrop){
+  e.preventDefault();
+  if(e.button !== undefined && e.button !== 0 && e.pointerType === 'mouse') return;
+  const items = Array.from(document.querySelectorAll(itemsSel));
+  const src = items[fromIdx];
+  if(!src) return;
+  src.classList.add('drag-src');
+  let slot = fromIdx;
+
+  const clearMarks = () => items.forEach(el => el.classList.remove('drop-before','drop-after'));
+
+  const move = ev => {
+    const y = ev.clientY;
+    clearMarks();
+    slot = items.length;
+    for(let k=0; k<items.length; k++){
+      const r = items[k].getBoundingClientRect();
+      if(y < r.top + r.height/2){ slot = k; break; }
+    }
+    if(slot < items.length) items[slot].classList.add('drop-before');
+    else items[items.length-1].classList.add('drop-after');
+  };
+  const up = () => {
+    document.removeEventListener('pointermove', move);
+    document.removeEventListener('pointerup', up);
+    document.removeEventListener('pointercancel', up);
+    clearMarks();
+    src.classList.remove('drag-src');
+    let dest = slot;
+    if(dest > fromIdx) dest--;          // removing the source shifts later slots down one
+    if(dest !== fromIdx) onDrop(fromIdx, dest);
+  };
+  document.addEventListener('pointermove', move);
+  document.addEventListener('pointerup', up);
+  document.addEventListener('pointercancel', up);
+}
+
+// Drag a whole crew row — reorders comms.people; auto-numbered devices renumber
+// to the new order, manual overrides (p.boleroNum etc.) stay with the person.
+function startRowDrag(e, i){
+  _dragReorder(e, '#commsContent table.comms tbody tr[data-pi]', i, (from, to) => {
+    const arr = currentJob.comms.people;
+    const moved = arr.splice(from, 1)[0];
+    arr.splice(to, 0, moved);
+    renderComms();
+    queueSave();
+  });
+}
+
+// Effective Bolero order — same numbering rules as renderComms, sorted by number.
+function _boleroHolders(){
+  const people = (currentJob.comms && currentJob.comms.people) || [];
+  let bC = 0;
+  const hs = [];
+  people.forEach((p, i) => {
+    if(!p || !p.bolero) return;
+    const n = parseInt(p.boleroNum);
+    let num;
+    if(n > 0){ num = n; bC = Math.max(bC, n); } else { bC++; num = bC; }
+    hs.push({ p: p, i: i, num: num });
+  });
+  hs.sort((a,b) => a.num - b.num || a.i - b.i);
+  return hs;
+}
+
+// Drag a Bolero chip — pins an explicit 1..n order onto every holder via boleroNum.
+function startBoleroDrag(e, pos){
+  _dragReorder(e, '#boleroChips .bol-chip', pos, (from, to) => {
+    const order = _boleroHolders().map(h => h.i);
+    const moved = order.splice(from, 1)[0];
+    order.splice(to, 0, moved);
+    order.forEach((pi, k) => { currentJob.comms.people[pi].boleroNum = k + 1; });
+    renderComms();
+    queueSave();
+  });
+}
+
+function resetBoleroOrder(){
+  ((currentJob.comms && currentJob.comms.people) || []).forEach(p => { if(p) delete p.boleroNum; });
+  renderComms();
+  queueSave();
+}
+
+// Label edit — saves and live-updates the table pill without a re-render (keeps focus).
+function setBoleroName(i, val){
+  setField(i, 'boleroName', val);
+  const pill = document.querySelector('tr[data-pi="'+i+'"] .dev-pill.on.bolero');
+  if(pill){
+    const num = pill.getAttribute('data-num');
+    pill.textContent = '#' + num + (val ? ' · ' + val : '');
+  }
 }
 function _chanArr(kind){
   return kind === 'bolero' ? currentJob.comms.boleroChannels : currentJob.comms.channels;
@@ -2099,13 +2243,13 @@ function exportPDF(){
     let bC=0, pC=0, wC=0;
     const devIds = people.map(p => {
       const r = {};
-      if(p.bolero){ bC++; r.bolero = bC; }
-      if(p.panel) { pC++; r.panel  = pC; }
-      if(p.walkie){ wC++; r.walkie = wC; }
+      if(p.bolero){ const n=parseInt(p.boleroNum); if(n>0){ r.bolero=n; bC=Math.max(bC,n); } else { bC++; r.bolero=bC; } }
+      if(p.panel) { const n=parseInt(p.panelNum);  if(n>0){ r.panel =n; pC=Math.max(pC,n); } else { pC++; r.panel =pC; } }
+      if(p.walkie){ const n=parseInt(p.walkieNum); if(n>0){ r.walkie=n; wC=Math.max(wC,n); } else { wC++; r.walkie=wC; } }
       return r;
     });
-    const devCell = (on, num, kind) => on
-      ? '<td class="c dev' + (kind === 'bolero' ? ' bol' : '') + '">#' + num + '</td>'
+    const devCell = (on, num, kind, label) => on
+      ? '<td class="c dev' + (kind === 'bolero' ? ' bol' : '') + '">#' + num + (label ? ' · ' + escHtml(label) : '') + '</td>'
       : '<td class="c dev off">\u2014</td>';
 
     let crewRows = '';
@@ -2116,7 +2260,7 @@ function exportPDF(){
         crewRows += '<td class="n">' + (i+1) + '</td>';
         crewRows += '<td class="nm">' + escHtml((p.name||'').trim() || '\u2014') + '</td>';
         crewRows += '<td class="rl">' + escHtml((p.role||'').trim() || '') + '</td>';
-        crewRows += devCell(!!p.bolero, d.bolero, 'bolero');
+        crewRows += devCell(!!p.bolero, d.bolero, 'bolero', p.boleroName);
         crewRows += devCell(!!p.panel,  d.panel,  'panel');
         crewRows += devCell(!!p.walkie, d.walkie, 'walkie');
         crewRows += '<td class="hs">' + escHtml(p.headset || '') + '</td>';
