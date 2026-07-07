@@ -260,7 +260,20 @@ tr.drag-src{opacity:.35}
 tr.drop-before td{border-top:2px solid var(--accent) !important}
 tr.drop-after td{border-bottom:2px solid var(--accent) !important}
 #boleroChips{display:flex;flex-direction:column;gap:6px}
-.bol-chip{display:flex;align-items:center;gap:9px;padding:6px 10px;border:1px solid var(--rule-dark);border-radius:6px;background:rgba(0,0,0,.02)}
+.bol-chip{display:flex;align-items:center;gap:9px;padding:6px 10px;border:1px solid var(--rule-dark);border-radius:6px;background:rgba(0,0,0,.02);flex-wrap:wrap}
+.bol-keys{display:flex;gap:5px;flex-wrap:wrap;margin-top:2px;width:100%;padding-left:26px}
+.bol-key{display:inline-flex;align-items:center;gap:5px;min-width:82px;padding:5px 9px;border-radius:6px;border:1.5px dashed #c9c4b8;background:rgba(255,255,255,.5);font-size:12px;color:#9a958a;user-select:none}
+.bol-key b{font-size:10px;color:#b5b0a4;font-weight:800}
+.bol-key.filled{border-style:solid;border-color:#3f8a4f;background:rgba(63,138,79,.09);color:#2c5e38;font-weight:700;cursor:grab;touch-action:none}
+.bol-key.filled b{color:#3f8a4f}
+.bol-key-x{margin-left:1px;font-style:normal;cursor:pointer;color:#b04040;font-weight:900;padding:0 3px;font-size:13px;line-height:1}
+.bol-key.drop-ok{border-color:#3f8a4f;background:rgba(63,138,79,.22);border-style:solid}
+.bol-chan-strip{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:10px;padding-top:10px;border-top:1px dashed var(--rule-dark)}
+.bol-chan-lbl{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#9a958a;margin-right:2px}
+.bol-chan-chip{padding:6px 13px;border-radius:5px;background:#3f8a4f;color:#fff;font-size:12px;font-weight:800;cursor:grab;user-select:none;touch-action:none}
+#boleroChips{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:start}
+@media(max-width:760px){#boleroChips{grid-template-columns:1fr}}
+.bol-drag-ghost{position:fixed;z-index:9999;pointer-events:none;padding:6px 13px;border-radius:5px;background:#3f8a4f;color:#fff;font-size:12px;font-weight:800;box-shadow:0 8px 20px rgba(0,0,0,.28);transform:translate(-50%,-130%)}
 .bol-chip.drag-src{opacity:.35}
 .bol-chip.drop-before{box-shadow:0 -2px 0 var(--accent)}
 .bol-chip.drop-after{box-shadow:0 2px 0 var(--accent)}
@@ -1097,42 +1110,42 @@ const IMG_H = 1767;
 // Position centres in image pixel coordinates (3438 × 1908 px)
 const POSITIONS = [
   // Producers Booth 1
-  {id:1,  zone:'Producers Booth', defaultRole:'Producer 1',     cx:590,  cy:320,  labelDir:'top'},
-  {id:2,  zone:'Producers Booth', defaultRole:'Producer 2',     cx:635,  cy:440,  labelDir:'bottom'},
+  {id:1,  zone:'Producers Booth',   defaultRole:'Tech Manager',     cx:590,  cy:320,  labelDir:'top'},
+  {id:2,  zone:'Producers Booth',   defaultRole:'',     cx:635,  cy:440,  labelDir:'bottom'},
 
   // Production Control - Upper Row
-  {id:3,  zone:'Production',      defaultRole:'Script Sup 1',   cx:195,  cy:780,  labelDir:'top'},
-  {id:4,  zone:'Production',      defaultRole:'Script Sup 2',   cx:295,  cy:780,  labelDir:'top'},
-  {id:5,  zone:'Production',      defaultRole:'Director',       cx:470,  cy:780,  labelDir:'top'},
-  {id:6,  zone:'Production',      defaultRole:'Producer',       cx:575,  cy:780,  labelDir:'top'},
-  {id:7,  zone:'Production',      defaultRole:'Exec Producer',  cx:775,  cy:780,  labelDir:'top'},
-  {id:8,  zone:'Production',      defaultRole:'Commissioner',   cx:880,  cy:780,  labelDir:'top'},
+  {id:3,  zone:'Production',        defaultRole:'Autocue',   cx:195,  cy:780,  labelDir:'top'},
+  {id:4,  zone:'Production',        defaultRole:'',   cx:295,  cy:780,  labelDir:'top'},
+  {id:5,  zone:'Production',        defaultRole:'Producer',       cx:470,  cy:780,  labelDir:'top'},
+  {id:6,  zone:'Production',        defaultRole:'Producer',       cx:575,  cy:780,  labelDir:'top'},
+  {id:7,  zone:'Production',        defaultRole:'',  cx:775,  cy:780,  labelDir:'top'},
+  {id:8,  zone:'Production',        defaultRole:'',   cx:880,  cy:780,  labelDir:'top'},
 
   // Production Control - Lower Row
-  {id:9,  zone:'Production',      defaultRole:'TD',             cx:305,  cy:1095, labelDir:'top'},
-  {id:10, zone:'Production',      defaultRole:'Vision Mixer',   cx:450,  cy:1095, labelDir:'top'},
-  {id:11, zone:'Production',      defaultRole:'EVS 1',          cx:585,  cy:1095, labelDir:'top'},
-  {id:12, zone:'Production',      defaultRole:'EVS 2',          cx:720,  cy:1095, labelDir:'top'},
-  {id:13, zone:'Production',      defaultRole:'Engineering',    cx:940,  cy:1095, labelDir:'top'},
+  {id:9,  zone:'Production',        defaultRole:'',             cx:305,  cy:1095, labelDir:'top'},
+  {id:10, zone:'Production',        defaultRole:'Vision Mixer',   cx:450,  cy:1095, labelDir:'top'},
+  {id:11, zone:'Production',        defaultRole:'Director',          cx:585,  cy:1095, labelDir:'top'},
+  {id:12, zone:'Production',        defaultRole:'Producer',          cx:720,  cy:1095, labelDir:'top'},
+  {id:13, zone:'Production',        defaultRole:'Script Supervisor',    cx:940,  cy:1095, labelDir:'top'},
 
   // Producers Booth 2
-  {id:14, zone:'Prod Booth 2',    defaultRole:'Producer 1',     cx:1440, cy:430,  labelDir:'top'},
-  {id:15, zone:'Prod Booth 2',    defaultRole:'Producer 2',     cx:1545, cy:430,  labelDir:'top'},
+  {id:14, zone:'Prod Booth 2',      defaultRole:'Ingest',     cx:1440, cy:430,  labelDir:'top'},
+  {id:15, zone:'Prod Booth 2',      defaultRole:'',     cx:1545, cy:430,  labelDir:'top'},
 
   // Sound
-  {id:16, zone:'Sound',           defaultRole:'A1',             cx:1465, cy:765,  labelDir:'top'},
-  {id:17, zone:'Sound',           defaultRole:'A2 (Sidecar)',   cx:1565, cy:765,  labelDir:'top'},
-  {id:18, zone:'Sound',           defaultRole:'Pro Tools',      cx:1550, cy:1050, labelDir:'top'},
+  {id:16, zone:'Sound',             defaultRole:'Grams Op',             cx:1465, cy:765,  labelDir:'top'},
+  {id:17, zone:'Sound',             defaultRole:'Comms Op',   cx:1565, cy:765,  labelDir:'top'},
+  {id:18, zone:'Sound',             defaultRole:'Sound Supervisor',      cx:1550, cy:1050, labelDir:'top'},
 
   // Vision
-  {id:19, zone:'Vision',          defaultRole:'Vision Super',   cx:2130, cy:800,  labelDir:'top'},
-  {id:20, zone:'Vision',          defaultRole:'Vision Eng',     cx:2240, cy:800,  labelDir:'top'},
+  {id:19, zone:'Vision',            defaultRole:'',   cx:2130, cy:800,  labelDir:'top'},
+  {id:20, zone:'Vision',            defaultRole:'',     cx:2240, cy:800,  labelDir:'top'},
 
   // Lighting / Racks
-  {id:21, zone:'Lighting',        defaultRole:'LD',             cx:1855, cy:1050, labelDir:'top'},
-  {id:22, zone:'Lighting',        defaultRole:'Generics OP',    cx:1965, cy:1050, labelDir:'top'},
-  {id:23, zone:'Lighting',        defaultRole:'Moving Lights',  cx:2100, cy:1050, labelDir:'top'},
-  {id:24, zone:'Lighting',        defaultRole:'Racks / Spare',  cx:2225, cy:1050, labelDir:'top'}
+  {id:21, zone:'Lighting',          defaultRole:'Vision 1',             cx:1855, cy:1050, labelDir:'top'},
+  {id:22, zone:'Lighting',          defaultRole:'Vision 2',    cx:1965, cy:1050, labelDir:'top'},
+  {id:23, zone:'Lighting',          defaultRole:'LD',  cx:2100, cy:1050, labelDir:'top'},
+  {id:24, zone:'Lighting',          defaultRole:'Console Op',  cx:2225, cy:1050, labelDir:'top'}
 ];
 const ZONES = ['Producers Booth','Production','Prod Booth 2','Sound','Vision','Lighting'];
 const ZONE_LABELS = {
@@ -1730,13 +1743,22 @@ function renderComms(){
 
   // Numbering matches the main app: an explicit override (p.boleroNum etc.) is used
   // as-is and advances the counter, otherwise numbers are auto-assigned in list order.
-  let bC=0, pC=0, wC=0, fC=0;
+  // Unique numbering: explicit overrides keep their number if it's free;
+  // clashes and autos take the lowest unused. Reordering the list renumbers
+  // the autos in the new order — no duplicates possible.
+  const mkNum = () => { const used=new Set(); return (explicit)=>{
+    let n=parseInt(explicit);
+    if(n>0 && !used.has(n)){ used.add(n); return n; }
+    let k=1; while(used.has(k)) k++;
+    used.add(k); return k;
+  };};
+  const bN=mkNum(), pN=mkNum(), wN=mkNum(), fN=mkNum();
   const ids = people.map(p => {
     const r = {};
-    if(p.bolero){ const n=parseInt(p.boleroNum); if(n>0){ r.bolero=n; bC=Math.max(bC,n); } else { bC++; r.bolero=bC; } }
-    if(p.panel) { const n=parseInt(p.panelNum);  if(n>0){ r.panel =n; pC=Math.max(pC,n); } else { pC++; r.panel =pC; } }
-    if(p.walkie){ const n=parseInt(p.walkieNum); if(n>0){ r.walkie=n; wC=Math.max(wC,n); } else { wC++; r.walkie=wC; } }
-    if(p.wire4) { const n=parseInt(p.wire4Num);  if(n>0){ r.wire4 =n; fC=Math.max(fC,n); } else { fC++; r.wire4 =fC; } }
+    if(p.bolero) r.bolero = bN(p.boleroNum);
+    if(p.panel)  r.panel  = pN(p.panelNum);
+    if(p.walkie) r.walkie = wN(p.walkieNum);
+    if(p.wire4)  r.wire4  = fN(p.wire4Num);
     return r;
   });
 
@@ -1791,7 +1813,7 @@ function renderComms(){
       '<tr>'+
         '<td class="idx '+accentClass+'">'+(i+1)+'</td>'+
         '<td><input class="fi" placeholder="Channel name…" value="'+escHtml(ch.name)+'" oninput="setChan(\''+kind+'\','+i+',\'name\',this.value)"/></td>'+
-        '<td><input class="fi" placeholder="Details / who&apos;s on it…" value="'+escHtml(ch.notes)+'" oninput="setChan(\''+kind+'\','+i+',\'notes\',this.value)"/></td>'+
+        '<td><input class="fi" placeholder="'+(kind==='bolero'?'Notes…':'Details / who&apos;s on it…')+'" value="'+escHtml(ch.notes)+'" oninput="setChan(\''+kind+'\','+i+',\'notes\',this.value)"/></td>'+
         '<td style="text-align:center"><button class="rm-btn" onclick="removeChan(\''+kind+'\','+i+')" title="Remove">×</button></td>'+
       '</tr>'
     ).join('');
@@ -1804,7 +1826,7 @@ function renderComms(){
         '<thead><tr>'+
           '<th style="text-align:center;width:32px">#</th>'+
           '<th>Channel</th>'+
-          '<th>Details</th>'+
+          '<th>'+(kind==='bolero'?'Notes':'Details')+'</th>'+
           '<th style="width:32px"></th>'+
         '</tr></thead>'+
         '<tbody>'+(rows||'<tr><td colspan="4" class="empty-row">No channels added.</td></tr>')+'</tbody>'+
@@ -1831,12 +1853,23 @@ function renderComms(){
           '<div class="bol-chip">'+
             '<span class="bol-handle" onpointerdown="startBoleroDrag(event,'+pos+')" title="Drag to reorder Bolero numbers">⠿</span>'+
             '<span class="bol-num">#'+h.num+'</span>'+
-            '<input class="fi bol-name" placeholder="Label… e.g. Director" value="'+escHtml(h.p.boleroName||'')+'" oninput="setBoleroName('+h.i+',this.value)"/>'+
-            '<span class="bol-person">'+escHtml((h.p.name||'').trim()||'—')+(h.p.role?' <em>'+escHtml(h.p.role)+'</em>':'')+'</span>'+
+            '<span class="bol-person" style="font-weight:700">'+escHtml((h.p.name||'').trim()||'—')+(h.p.role?' <em>'+escHtml(h.p.role)+'</em>':'')+'</span>'+
+            '<div class="bol-keys">'+[0,1,2,3,4,5].map(function(s){
+              var nm=(c.bolKeys&&c.bolKeys[h.num]&&c.bolKeys[h.num][s])||'';
+              return nm
+                ? '<span class="bol-key filled" data-unit="'+h.num+'" data-slot="'+s+'" onpointerdown="bolKeyDragStart(event,'+h.num+','+s+')" title="Drag to another key — same Bolero moves, another Bolero copies"><b>'+(s+1)+'</b>'+escHtml(nm)+'<i class="bol-key-x" onpointerdown="event.stopPropagation()" onclick="clearBolKey('+h.num+','+s+')" title="Clear key">&times;</i></span>'
+                : '<span class="bol-key" data-unit="'+h.num+'" data-slot="'+s+'"><b>'+(s+1)+'</b>&mdash;</span>';
+            }).join('')+'</div>'+
           '</div>'
         ).join('')+
       '</div>'+
-      '<div class="foot-note" style="margin:8px 0 0">Drag <kbd>⠿</kbd> to reorder Bolero numbers. Labels show on the pill and the PDF.</div>'+
+      ((c.boleroChannels||[]).filter(function(ch){return ch&&ch.name&&ch.name.trim();}).length
+        ? '<div class="bol-chan-strip"><span class="bol-chan-lbl">Channels</span>'+(c.boleroChannels||[]).filter(function(ch){return ch&&ch.name&&ch.name.trim();}).map(function(ch){
+            var nm=ch.name.trim();
+            return '<span class="bol-chan-chip" onpointerdown="bolChanDragStart(event,\''+nm.replace(/\\/g,'\\\\').replace(/'/g,"\\'")+'\')">'+escHtml(nm)+'</span>';
+          }).join('')+'</div>'
+        : '<div class="foot-note" style="margin-top:8px">Add channels in the Bolero Channels card below, then drag them onto the keys here.</div>')+
+      '<div class="foot-note" style="margin:8px 0 0">Drag <kbd>⠿</kbd> to reorder Bolero numbers. Drag a green channel chip onto any of the 6 keys — or drag a key between Boleros (same pack moves it, another pack copies it). Labels show on the pill and the PDF.</div>'+
     '</div>';
 
   const channelsBlock =
@@ -1853,6 +1886,68 @@ function renderComms(){
     '<div class="foot-note">'+
       'Changes save automatically. Anyone with this link can edit. Click a coloured pill to toggle a device on/off — numbers <kbd>#1, #2, #3…</kbd> follow list order. Drag the <kbd>⠿</kbd> handle on a row to reorder the list.'+
     '</div>';
+}
+
+
+// ── Bolero key assignments — 6 keys per pack, drag channels onto them ────────
+function _bolKeysFor(num){
+  const c=currentJob.comms;
+  if(!c.bolKeys)c.bolKeys={};
+  if(!Array.isArray(c.bolKeys[num]))c.bolKeys[num]=['','','','','',''];
+  while(c.bolKeys[num].length<6)c.bolKeys[num].push('');
+  return c.bolKeys[num];
+}
+function clearBolKey(num,slot){_bolKeysFor(num)[slot]='';queueSave();renderComms();}
+var _bolDrag=null;
+function _bolGhost(name,x,y){
+  var g=document.getElementById('bolGhost');
+  if(!g){g=document.createElement('div');g.id='bolGhost';g.className='bol-drag-ghost';document.body.appendChild(g);}
+  g.textContent=name;g.style.left=x+'px';g.style.top=y+'px';
+}
+function _bolDragMove(e){
+  if(!_bolDrag)return;
+  _bolGhost(_bolDrag.name,e.clientX,e.clientY);
+  document.querySelectorAll('.bol-key.drop-ok').forEach(function(k){k.classList.remove('drop-ok');});
+  var el=document.elementFromPoint(e.clientX,e.clientY);
+  var slot=el&&el.closest?el.closest('.bol-key'):null;
+  if(slot)slot.classList.add('drop-ok');
+}
+function _bolDragUp(e){
+  if(!_bolDrag)return;
+  var d=_bolDrag;_bolDrag=null;
+  document.removeEventListener('pointermove',_bolDragMove);
+  document.removeEventListener('pointerup',_bolDragUp);
+  var g=document.getElementById('bolGhost');if(g)g.remove();
+  document.querySelectorAll('.bol-key.drop-ok').forEach(function(k){k.classList.remove('drop-ok');});
+  var el=document.elementFromPoint(e.clientX,e.clientY);
+  var slotEl=el&&el.closest?el.closest('.bol-key'):null;
+  if(!slotEl)return;
+  var unit=slotEl.dataset.unit,slot=+slotEl.dataset.slot;
+  var keys=_bolKeysFor(unit);
+  if(d.fromUnit!=null&&String(d.fromUnit)===String(unit)){
+    var from=_bolKeysFor(d.fromUnit);
+    var tmp=keys[slot];keys[slot]=d.name;from[d.fromSlot]=tmp||'';
+  } else {
+    keys[slot]=d.name;
+  }
+  queueSave();renderComms();
+}
+function bolChanDragStart(e,name){
+  e.preventDefault();
+  _bolDrag={name:name,fromUnit:null,fromSlot:null};
+  _bolGhost(name,e.clientX,e.clientY);
+  document.addEventListener('pointermove',_bolDragMove);
+  document.addEventListener('pointerup',_bolDragUp);
+}
+function bolKeyDragStart(e,unit,slot){
+  if(e.target&&e.target.classList&&e.target.classList.contains('bol-key-x'))return;
+  var keys=_bolKeysFor(unit);
+  var name=keys[slot];if(!name)return;
+  e.preventDefault();
+  _bolDrag={name:name,fromUnit:unit,fromSlot:slot};
+  _bolGhost(name,e.clientX,e.clientY);
+  document.addEventListener('pointermove',_bolDragMove);
+  document.addEventListener('pointerup',_bolDragUp);
 }
 
 function setComms(key, val){
