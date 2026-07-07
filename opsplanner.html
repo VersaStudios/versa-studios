@@ -482,6 +482,33 @@ function _jdJobPrefixedLabel(j, rawLabel){
 // so we only need the cleanup pass — full seed runs in the main app).
 // A job is treated as inactive for planner seeding if it's flag-archived,
 // status-archived, or cancelled — the app has both archive mechanisms.
+const ML_TX_2627=['2026-04-13','2026-04-14','2026-04-15','2026-04-16','2026-04-17','2026-04-20','2026-04-21','2026-04-22','2026-04-23','2026-04-24','2026-04-27','2026-04-28','2026-04-29','2026-04-30','2026-05-01','2026-05-04','2026-05-05','2026-05-06','2026-05-07','2026-05-11','2026-05-12','2026-05-13','2026-05-14','2026-05-15','2026-05-18','2026-05-19','2026-05-20','2026-05-21','2026-05-22','2026-05-26','2026-05-27','2026-05-28','2026-05-29','2026-06-01','2026-06-02','2026-06-03','2026-06-04','2026-06-05','2026-06-08','2026-06-09','2026-06-10','2026-06-11','2026-06-12','2026-06-15','2026-06-16','2026-06-17','2026-06-18','2026-06-19','2026-06-22','2026-06-23','2026-06-24','2026-06-25','2026-06-26','2026-06-29','2026-06-30','2026-07-01','2026-07-02','2026-07-03','2026-07-06','2026-07-07','2026-07-08','2026-07-09','2026-07-10','2026-08-31','2026-09-01','2026-09-02','2026-09-03','2026-09-04','2026-09-07','2026-09-08','2026-09-09','2026-09-10','2026-09-11','2026-09-14','2026-09-15','2026-09-16','2026-09-17','2026-09-18','2026-09-21','2026-09-22','2026-09-23','2026-09-24','2026-09-25','2026-09-28','2026-09-29','2026-09-30','2026-10-01','2026-10-02','2026-10-05','2026-10-06','2026-10-07','2026-10-08','2026-10-09','2026-10-19','2026-10-20','2026-10-21','2026-10-22','2026-10-23','2026-10-26','2026-10-27','2026-10-28','2026-10-29','2026-10-30','2026-11-02','2026-11-03','2026-11-04','2026-11-05','2026-11-06','2026-11-09','2026-11-10','2026-11-11','2026-11-12','2026-11-13','2026-11-16','2026-11-17','2026-11-18','2026-11-19','2026-11-20','2026-11-23','2026-11-24','2026-11-25','2026-11-26','2026-11-27','2026-11-30','2026-12-01','2026-12-02','2026-12-03','2026-12-04','2026-12-07','2026-12-08','2026-12-09','2026-12-10','2026-12-11','2026-12-14','2026-12-15','2026-12-16','2026-12-17','2026-12-18','2027-01-04','2027-01-05','2027-01-06','2027-01-07','2027-01-08','2027-01-11','2027-01-12','2027-01-13','2027-01-14','2027-01-15','2027-01-18','2027-01-19','2027-01-20','2027-01-21','2027-01-22','2027-01-25','2027-01-26','2027-01-27','2027-01-28','2027-01-29','2027-02-01','2027-02-02','2027-02-03','2027-02-04','2027-02-05','2027-02-08','2027-02-09','2027-02-10','2027-02-11','2027-02-12','2027-02-15','2027-02-16','2027-02-17','2027-02-18','2027-02-19','2027-02-22','2027-02-23','2027-02-24','2027-02-25','2027-02-26','2027-03-01','2027-03-02','2027-03-03','2027-03-04','2027-03-05','2027-03-08','2027-03-09','2027-03-10','2027-03-11','2027-03-12','2027-03-15','2027-03-16','2027-03-17','2027-03-18','2027-03-19','2027-03-22','2027-03-23','2027-03-24','2027-03-25','2027-03-26'];
+
+// Correct the Morning Live job IN MEMORY on every load: drop show-numbered TX
+// dates that aren't on the 26/27 sheet (old-schedule leftovers on dark weeks)
+// and normalise labels to the EpN house style. The persistent fix lives in the
+// main app's migrations; this makes the planner right even before those run.
+// jobs are never written back to Supabase from here.
+function _mlFixJobsInMemory(){
+  var j=jobs.find(function(x){return x&&(x.name||'').toLowerCase().trim()==='morning live';});
+  if(!j||!Array.isArray(j.txDates))return;
+  var lo=ML_TX_2627[0],hi=ML_TX_2627[ML_TX_2627.length-1];
+  var num={};ML_TX_2627.forEach(function(d,i){num[d]=i+1;});
+  var showRx=/^(show|ep|tx)\s*\d+$/i;
+  j.txDates=j.txDates.filter(function(t){
+    if(!t||!t.date)return true;
+    if(t.date<lo||t.date>hi)return true;
+    if(num[t.date])return true;
+    return !showRx.test(String(t.label||'').trim());
+  });
+  j.txDates.forEach(function(t){
+    if(!t||!t.date||!num[t.date])return;
+    if(showRx.test(String(t.label||'').trim())){
+      var want='Ep'+num[t.date];
+      if(t.label!==want)t.label=want;
+    }
+  });
+}
 function _opsJobArchived(j){return !!(j&&(j.archived===true||/^(archived|cancelled|finished|complete|completed)$/i.test(String(j.status||'').trim())));}
 function opsSeedFromJobs(){
   jobs.forEach(function(j){
@@ -1695,7 +1722,7 @@ function opsCk(td){
 }
 // Position the cell editor popup next to the given cell, picking the side
 // (below / above / pinned-top) that best fits in the visible viewport.
-var OPS_BUILD='2026-07-06 · b38';
+var OPS_BUILD='2026-07-06 · b39';
 console.log('%cOps Planner build '+OPS_BUILD,'color:#d85a61;font-weight:bold');
 document.addEventListener('DOMContentLoaded',function(){
   var b=document.createElement('div');
@@ -2862,9 +2889,11 @@ function opsRenderYear(){
 
 
 // ── OVERRIDES (must come after the imports define them) ──────────────────────
-// Override sync to no-op (no jobs to update in standalone, and the main app handles it on its side)
+// Override the JOB-writing sync to no-op (the standalone never writes the jobs
+// blob — the main app owns it). The STAFF mirror only touches planner data, so
+// the real implementation above stays live: TM-row edits update Andrew/Ian
+// diaries, and the load-time reconcile actually reconciles.
 function _opsSyncMLToJob(){}
-function _opsSyncMLToStaff(){}
 function _opsSyncAllMLOnce(){}
 // Override saveOpsTMs to skip (we don't need to round-trip TMs from standalone)
 async function saveOpsTMs(){
@@ -3055,6 +3084,7 @@ async function bootstrap(){
     }
     // Now seed studios from jobs (uses og/os — will trigger saves, so we suspend them)
     var _origSave=saveData;saveData=function(){};
+    try{_mlFixJobsInMemory();}catch(e){console.warn('ML mem-fix err',e);}
     try{opsSeedFromJobs();}catch(e){console.warn('seed err',e);}
     try{_opsCleanStaleStudioEntries();}catch(e){console.warn('cleanup err',e);}
     var _seedChanged=false;
