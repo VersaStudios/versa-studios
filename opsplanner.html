@@ -1728,7 +1728,7 @@ function opsCk(td){
 }
 // Position the cell editor popup next to the given cell, picking the side
 // (below / above / pinned-top) that best fits in the visible viewport.
-var OPS_BUILD='2026-07-07 · b40';
+var OPS_BUILD='2026-07-08 · b42';
 console.log('%cOps Planner build '+OPS_BUILD,'color:#d85a61;font-weight:bold');
 document.addEventListener('DOMContentLoaded',function(){
   var b=document.createElement('div');
@@ -2085,11 +2085,35 @@ function _opsDragMouseDown(ev){
     mode:'span',
     handleMode:isHandle,
     handleSide:handleSide,
-    targetCell:cell
+    targetCell:cell,
+    startCell:cell
   };
-  console.log('[opsDrag] mousedown',{row:row,mi:mi,day:dataDay,hasContent:_opsDrag.startVals.length>0,handle:isHandle,side:handleSide});
+  if(isHandle||!_opsDrag.startVals.length){try{_opsCaptureRowMap();}catch(e){console.warn('rowmap err',e);}}
+  console.log('[opsDrag] mousedown',{row:row,mi:mi,day:dataDay,hasContent:_opsDrag.startVals.length>0,handle:isHandle,side:handleSide,rowMapCells:(_opsDrag.rowMap||[]).length});
   document.body.classList.add('ops-drag-active');
   if(isHandle){ev.preventDefault&&ev.preventDefault();}
+}
+// Horizontal gestures (resize / span paint) don't hit-test at all: at drag
+// start we capture the row's cells with their X ranges once, then map the
+// cursor's X straight to a day. Nothing to drift, overlay, or mis-hit.
+function _opsCaptureRowMap(){
+  var map=[];
+  document.querySelectorAll('.ops-cell[data-mi="'+_opsDrag.mi+'"][data-row="'+_opsDrag.row+'"]').forEach(function(td){
+    var r=_opsCellRect(td);
+    var colspan=parseInt(td.getAttribute('colspan')||'1',10);
+    var day0=+td.dataset.day;
+    var w=r.width/colspan;
+    for(var k=0;k<colspan;k++)map.push({day:day0+k,left:r.left+k*w,right:r.left+(k+1)*w});
+  });
+  map.sort(function(a,b){return a.left-b.left;});
+  _opsDrag.rowMap=map;
+}
+function _opsDayFromX(x){
+  var map=_opsDrag&&_opsDrag.rowMap;
+  if(!map||!map.length)return null;
+  if(x<=map[0].left)return map[0].day;
+  for(var i=0;i<map.length;i++)if(x<map[i].right)return map[i].day;
+  return map[map.length-1].day;
 }
 function _opsDragMouseMove(ev){
   if(!_opsDrag)return;
@@ -2097,37 +2121,22 @@ function _opsDragMouseMove(ev){
   var dy=Math.abs(ev.clientY-_opsDrag.startY);
   if(!_opsDrag.moved&&dx<4&&dy<4)return;
   _opsDrag.moved=true;
-  var el=document.elementFromPoint(ev.clientX,ev.clientY);
-  var cell=el?(el.closest&&el.closest('.ops-cell')):null;
-  if(!cell)return;
-  // Handle-drag (resize): pure cursor-position tracking, no thresholds
-  if(_opsDrag.handleMode){
-    if(cell.dataset.row!==_opsDrag.row||(+cell.dataset.mi)!==_opsDrag.mi)return;
-    var virtualDay=_opsVirtualDayAt(cell,ev.clientX);
-    var m=OPS_CAL[_opsDrag.mi];
-    if(m)virtualDay=Math.max(m.days[0].day,Math.min(m.days[m.days.length-1].day,virtualDay));
-    if(virtualDay===_opsDrag.endDay)return;
-    _opsDrag.endDay=virtualDay;
-    _opsDrag.targetCell=cell;
-    _opsDrag.mode='span';
-    _opsDragHighlight();
-    return;
-  }
-  // Empty start cell: painting across the row creates a span (the pending-span
-  // flow). Track the end day from whichever cell the cursor is over.
-  if(!_opsDrag.startVals.length){
-    if(cell.dataset.row!==_opsDrag.row||(+cell.dataset.mi)!==_opsDrag.mi)return;
-    var vDay=_opsVirtualDayAt(cell,ev.clientX);
+  // Horizontal gestures: day comes straight from the captured row map.
+  if(_opsDrag.handleMode||!_opsDrag.startVals.length){
+    var vDay=_opsDayFromX(ev.clientX);
+    if(vDay==null)return;
     var mm=OPS_CAL[_opsDrag.mi];
     if(mm)vDay=Math.max(mm.days[0].day,Math.min(mm.days[mm.days.length-1].day,vDay));
     if(vDay===_opsDrag.endDay)return;
     _opsDrag.endDay=vDay;
-    _opsDrag.targetCell=cell;
     _opsDrag.mode='span';
-    _opsDrag.handleSide=(vDay<_opsDrag.startDay)?'left':'right';
+    if(!_opsDrag.handleMode)_opsDrag.handleSide=(vDay<_opsDrag.startDay)?'left':'right';
     _opsDragHighlight();
     return;
   }
+  var el=document.elementFromPoint(ev.clientX,ev.clientY);
+  var cell=el?(el.closest&&el.closest('.ops-cell')):null;
+  if(!cell)return;
   // Body-drag on a chip: MOVE to whichever cell the cursor ends up over. Same
   // row OR different row both work. Drag to source cell = no-op.
   var srcIsML=_opsDrag.row==='ml';
