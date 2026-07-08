@@ -1728,7 +1728,7 @@ function opsCk(td){
 }
 // Position the cell editor popup next to the given cell, picking the side
 // (below / above / pinned-top) that best fits in the visible viewport.
-var OPS_BUILD='2026-07-08 · b42';
+var OPS_BUILD='2026-07-08 · b43';
 console.log('%cOps Planner build '+OPS_BUILD,'color:#d85a61;font-weight:bold');
 document.addEventListener('DOMContentLoaded',function(){
   var b=document.createElement('div');
@@ -3064,11 +3064,17 @@ function opsShowFromIdx(start){
 // Override the main-app's opsReRender to re-render visible stacked months
 function opsReRender(){
   if(!_saMonthsRendered)return;
+  // Rebuilding cells must NOT move the view: capture each month's horizontal
+  // scroll and the page's vertical scroll, restore after the DOM swap.
+  var winY=window.pageYOffset;
   document.querySelectorAll('#opsBody2 .ops-ms2').forEach(function(sec,i){
     if(sec.style.display!=='none'){
+      var sl=sec.scrollLeft;
       sec.innerHTML=opsRenderMonth(OPS_CAL[i],i);
+      sec.scrollLeft=sl;
     }
   });
+  window.scrollTo(0,winY);
   // Re-observe (new DOM nodes inside sections don't need re-observation, but
   // be defensive in case sections got replaced)
   _saSetupScrollObserver();
