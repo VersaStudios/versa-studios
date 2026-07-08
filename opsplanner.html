@@ -223,12 +223,6 @@ body{margin:0;padding:0;min-height:100vh}
 .ops-cell.td{background:rgba(216,90,97,.1)}
 .ops-cell:hover{background:rgba(216,90,97,.08)}
 .ops-chip{display:block;position:relative;font-size:15px;font-weight:900;letter-spacing:.05em;padding:6px 14px;border-radius:4px;white-space:nowrap;margin-bottom:3px;line-height:1.35;box-shadow:0 1px 3px rgba(0,0,0,.12);cursor:grab;-webkit-text-stroke:.35px currentColor}
-.ops-chh{position:absolute;top:0;bottom:0;width:20px;cursor:ew-resize;z-index:3;-webkit-text-stroke:0}
-.ops-chh-l{left:0}.ops-chh-r{right:0}
-.ops-chh::after{content:'';position:absolute;top:20%;bottom:20%;width:0;border-left:2px solid rgba(0,0,0,.28);border-right:2px solid rgba(0,0,0,.28);opacity:0;transition:opacity .12s}
-.ops-chh-l::after{left:6px}.ops-chh-r::after{right:8px}
-.ops-chip:hover .ops-chh::after{opacity:.75}
-@media(pointer:coarse){.ops-chh{width:26px}.ops-chh::after{opacity:.4}}
 .ops-chip:active{cursor:grabbing}
 .ops-chip::before,.ops-chip::after{content:'';position:absolute;top:3px;bottom:3px;width:5px;cursor:ew-resize;background:rgba(0,0,0,.12);transition:background .12s,width .12s,left .12s,right .12s}
 .ops-chip::before{left:3px;border-radius:2px}
@@ -1119,14 +1113,33 @@ function _opsReconcileMLStaff(){
   var changed=false;
   OPS_CAL.forEach(function(m){
     var px=OPS_MPX[m.month];if(!px)return;
+    // Days covered by a manually stretched chip on a staff row are left alone
+    var covered={andrew:{},ian:{}};
+    ['andrew','ian'].forEach(function(rk){
+      m.days.forEach(function(d){
+        (og(m.month,d.day,rk)||[]).forEach(function(v){
+          if(v&&typeof v==='object'&&v.span&&v.span>1){
+            for(var k=0;k<v.span;k++)covered[rk][d.day+k]=1;
+          }
+        });
+      });
+    });
     m.days.forEach(function(d){
       var iso=px+'-'+String(d.day).padStart(2,'0');
       if(iso<OPS_TODAY)return;
       if(opsIsWk(d.dow))return;
-      try{changed=_opsSyncMLToStaff(m.month,d.day,og(m.month,d.day,'ml'))||changed;}catch(e){}
+      if(covered.andrew[d.day]&&covered.ian[d.day])return;
+      try{changed=_opsSyncMLToStaffSafe(m.month,d.day,og(m.month,d.day,'ml'),covered)||changed;}catch(e){}
     });
   });
   return changed;
+}
+// Wrapper: per-row skip for covered days
+function _opsSyncMLToStaffSafe(month,day,vals,covered){
+  var skip={andrew:!!(covered&&covered.andrew&&covered.andrew[day]),ian:!!(covered&&covered.ian&&covered.ian[day])};
+  if(skip.andrew&&skip.ian)return false;
+  window.__opsSyncSkip=skip;
+  try{return _opsSyncMLToStaff(month,day,vals);}finally{window.__opsSyncSkip=null;}
 }
 // Sync Andrew/Ian rows to match the ML assignment. Strips any stale
 // "Morning Live ..." entry and (if applicable) adds the proper episode label.
@@ -1153,11 +1166,15 @@ function _opsSyncMLToStaff(month,day,vals){
   else if(firstName==='ian')assignsTo='ian';
   var anyChanged=false;
   ['andrew','ian'].forEach(function(rk){
+    if(window.__opsSyncSkip&&window.__opsSyncSkip[rk])return;
     var key=month+'|'+day+'|'+rk;
     var existing=_opsD[key]||[];
     // Strip any "Morning Live ..." entries — strings AND coloured object
     // entries (judged by their .text), so stale mirrors always clear.
     var stripped=existing.filter(function(x){
+      // Manually stretched chips (span objects) are user-authored layout —
+      // the reconcile must never dismantle them.
+      if(x&&typeof x==='object'&&x.span&&x.span>1)return true;
       var t=(typeof x==='string')?x:((x&&typeof x==='object'&&typeof x.text==='string')?x.text:null);
       if(t===null)return true;
       return !/^\s*morning\s*live/i.test(t);
@@ -1224,7 +1241,7 @@ function opsRChips(vals,fc){
     // makes it pink. Fallback chain: v.cls → fc → opsChip auto-detect.
     var cls=(v&&typeof v==='object'&&v.cls)?v.cls:(fc||opsChip(text));
     var style=(v&&typeof v==='object'&&v.color)?' style="background:'+v.color+'"':'';
-    return'<div class="ops-chip '+cls+'"'+style+' title="'+text.replace(/"/g,'&quot;')+'"><span class="ops-chh ops-chh-l"></span>'+text+'<span class="ops-chh ops-chh-r"></span></div>';
+    return'<div class="ops-chip '+cls+'"'+style+' title="'+text.replace(/"/g,'&quot;')+'">'+text+'</div>';
   }).join('');
 }
 
@@ -1728,7 +1745,7 @@ function opsCk(td){
 }
 // Position the cell editor popup next to the given cell, picking the side
 // (below / above / pinned-top) that best fits in the visible viewport.
-var OPS_BUILD='2026-07-08 · b43';
+var OPS_BUILD='2026-07-08 · b47';
 console.log('%cOps Planner build '+OPS_BUILD,'color:#d85a61;font-weight:bold');
 document.addEventListener('DOMContentLoaded',function(){
   var b=document.createElement('div');
@@ -2054,13 +2071,7 @@ function _opsDragMouseDown(ev){
   var chipEl=ev.target&&ev.target.closest&&ev.target.closest('.ops-chip');
   var isHandle=false;
   var handleSide=null;
-  // Real handle elements: no pixel maths, immune to zoom
-  var hEl=ev.target&&ev.target.closest&&ev.target.closest('.ops-chh');
-  if(hEl){
-    isHandle=true;
-    handleSide=hEl.classList.contains('ops-chh-r')?'right':'left';
-  }
-  else if(chipEl){
+  if(chipEl){
     var cr=_opsCellRect(chipEl);   // zoom-corrected to match ev.clientX/Y
     var fromRight=cr.right-ev.clientX;
     var fromLeft=ev.clientX-cr.left;
@@ -2088,7 +2099,7 @@ function _opsDragMouseDown(ev){
     targetCell:cell,
     startCell:cell
   };
-  if(isHandle||!_opsDrag.startVals.length){try{_opsCaptureRowMap();}catch(e){console.warn('rowmap err',e);}}
+  try{_opsCaptureRowMap();}catch(e){console.warn('rowmap err',e);}
   console.log('[opsDrag] mousedown',{row:row,mi:mi,day:dataDay,hasContent:_opsDrag.startVals.length>0,handle:isHandle,side:handleSide,rowMapCells:(_opsDrag.rowMap||[]).length});
   document.body.classList.add('ops-drag-active');
   if(isHandle){ev.preventDefault&&ev.preventDefault();}
@@ -2121,24 +2132,29 @@ function _opsDragMouseMove(ev){
   var dy=Math.abs(ev.clientY-_opsDrag.startY);
   if(!_opsDrag.moved&&dx<4&&dy<4)return;
   _opsDrag.moved=true;
-  // Horizontal gestures: day comes straight from the captured row map.
-  if(_opsDrag.handleMode||!_opsDrag.startVals.length){
+  var el=document.elementFromPoint(ev.clientX,ev.clientY);
+  var cell=el?(el.closest&&el.closest('.ops-cell')):null;
+  var sameRow=!!(cell&&cell.dataset.row===_opsDrag.row&&(+cell.dataset.mi)===_opsDrag.mi);
+  var offRow=!!(cell&&!sameRow);
+  // Along the OWN row — or wobbling with no cell under the cursor — the drag
+  // STRETCHES across dates: chips, handles, and empty-cell painting alike.
+  // Onto ANOTHER row, a chip drag becomes a MOVE. (ML row keeps move-only.)
+  if(_opsDrag.row!=='ml'&&!offRow){
     var vDay=_opsDayFromX(ev.clientX);
+    if(vDay==null&&cell)vDay=_opsVirtualDayAt(cell,ev.clientX);
     if(vDay==null)return;
     var mm=OPS_CAL[_opsDrag.mi];
     if(mm)vDay=Math.max(mm.days[0].day,Math.min(mm.days[mm.days.length-1].day,vDay));
     if(vDay===_opsDrag.endDay)return;
     _opsDrag.endDay=vDay;
+    if(cell)_opsDrag.targetCell=cell;
     _opsDrag.mode='span';
     if(!_opsDrag.handleMode)_opsDrag.handleSide=(vDay<_opsDrag.startDay)?'left':'right';
     _opsDragHighlight();
     return;
   }
-  var el=document.elementFromPoint(ev.clientX,ev.clientY);
-  var cell=el?(el.closest&&el.closest('.ops-cell')):null;
   if(!cell)return;
-  // Body-drag on a chip: MOVE to whichever cell the cursor ends up over. Same
-  // row OR different row both work. Drag to source cell = no-op.
+  // Off-row drag with content: MOVE. (ML row: move only, ML↔ML.)
   var srcIsML=_opsDrag.row==='ml';
   var tgtIsML=cell.dataset.row==='ml';
   if(srcIsML!==tgtIsML)return;
@@ -2208,6 +2224,25 @@ function _opsDragClearHighlight(){
 // Anchor = source cell's leftmost day. Drag forward extends right; drag back
 // past the anchor extends LEFTWARD (moves the data leftward and grows the
 // span to cover endDay..curHi). Drag within the current span shrinks it.
+// Popup steppers: grow/shrink the first entry in the open cell by one day.
+// Reuses the exact same write path as handle-drag resizing.
+function opsChipLen(delta){
+  if(!_opsEd)return;
+  var ed=_opsEd;
+  var cur=og(ed.month,ed.day,ed.row);
+  if(!cur.length)return;
+  var v0=cur[0];
+  var span=(v0&&typeof v0==='object'&&v0.span>1)?v0.span:1;
+  var m=null,mi=-1;
+  OPS_CAL.forEach(function(mm,i){if(mm.month===ed.month){m=mm;mi=i;}});
+  if(!m)return;
+  var maxDay=m.days[m.days.length-1].day;
+  var newSpan=Math.max(1,Math.min(maxDay-ed.day+1,span+delta));
+  if(newSpan===span)return;
+  _opsDragSpanAdjust({mi:mi,month:ed.month,row:ed.row,startDay:ed.day,endDay:ed.day+newSpan-1,handleSide:'right'});
+  var lc=document.getElementById(ed.id)||document.querySelector('.ops-cell[data-mi="'+mi+'"][data-day="'+ed.day+'"][data-row="'+ed.row+'"]');
+  if(lc)opsCk(lc);
+}
 function _opsDragSpanAdjust(drag){
   var m=OPS_CAL[drag.mi];if(!m)return;
   var month=drag.month,leftmost=drag.startDay,row=drag.row;
@@ -2225,8 +2260,7 @@ function _opsDragSpanAdjust(drag){
     window._opsPendingSpan={month:month,row:row,lo:pendLo,hi:pendHi,span:pendHi-pendLo+1};
     var lc=document.querySelector('.ops-cell[data-mi="'+drag.mi+'"][data-day="'+pendLo+'"][data-row="'+row+'"]');
     console.log('[opsDrag] empty start primed',pendLo,'..',pendHi);
-    if(lc){opsCk(lc);if(typeof toast==='function')toast('Span '+pendLo+'\u2013'+pendHi+' \u2014 type to fill it');}
-    else if(typeof toast==='function')toast('Span '+pendLo+'\u2013'+pendHi+' primed \u2014 tap the first cell to name it');
+    if(lc)opsCk(lc);
     return;
   }
   var v0=cur[0];
@@ -2243,7 +2277,7 @@ function _opsDragSpanAdjust(drag){
     newRight=Math.max(leftmost,Math.min(maxDay,endDay));
   }
   var newSpan=newRight-newLeft+1;
-  if(newLeft===leftmost&&newSpan===curSpan){console.log('[opsDrag] no change');if(typeof toast==='function')toast('No change');return;}
+  if(newLeft===leftmost&&newSpan===curSpan){console.log('[opsDrag] no change');return;}
   var text=(typeof v0==='string')?v0:(v0&&v0.text?v0.text:'');
   if(!text)return;
   var newEntry;
@@ -2261,7 +2295,6 @@ function _opsDragSpanAdjust(drag){
   for(var d=clearLo;d<=clearHi;d++)_opsD[month+'|'+d+'|'+row]=[];
   os(month,newLeft,row,[newEntry]);
   console.log('[opsDrag] resized',leftmost,'..',curHi,'→',newLeft,'..',newRight);
-  if(typeof toast==='function')toast('Resized: '+newLeft+'\u2013'+newRight);
   if(typeof opsReRender==='function')opsReRender();
 }
 // SAME-ROW (ML): breaks/person-names span via repeated identical strings in
@@ -2352,7 +2385,6 @@ function _opsDragMove(drag){
     }
   }
   console.log('[opsDrag] moved',moveVals.length,'entries',drag.row,drag.startDay,'→',destRow,destDay,'(replaced)');
-  if(typeof toast==='function')toast('Moved \u2192 '+(destRow.indexOf('st_')===0?destRow.slice(3):destRow)+' '+destDay);
   if(typeof opsReRender==='function')opsReRender();
 }
 // Block the cell-click that fires immediately after a drag-merge mouseup.
