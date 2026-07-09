@@ -1745,7 +1745,7 @@ function opsCk(td){
 }
 // Position the cell editor popup next to the given cell, picking the side
 // (below / above / pinned-top) that best fits in the visible viewport.
-var OPS_BUILD='2026-07-08 · b47';
+var OPS_BUILD='2026-07-08 · b48';
 console.log('%cOps Planner build '+OPS_BUILD,'color:#d85a61;font-weight:bold');
 document.addEventListener('DOMContentLoaded',function(){
   var b=document.createElement('div');
@@ -2108,9 +2108,15 @@ function _opsDragMouseDown(ev){
 // start we capture the row's cells with their X ranges once, then map the
 // cursor's X straight to a day. Nothing to drift, overlay, or mis-hit.
 function _opsCaptureRowMap(){
+  // The map is stored in RAW rect coordinates, and incoming cursor X gets
+  // divided by a scale factor calibrated from the start cell: the app knows
+  // its own zoom (_opsZoomVal), and offsetWidth is always layout pixels, so
+  // scale = (offsetWidth x zoom) / rectWidth. This is exact on engines that
+  // report zoomed rects (scale=1) AND on engines that report unzoomed rects
+  // (scale=zoom) - no browser detection, no currentCSSZoom needed.
   var map=[];
   document.querySelectorAll('.ops-cell[data-mi="'+_opsDrag.mi+'"][data-row="'+_opsDrag.row+'"]').forEach(function(td){
-    var r=_opsCellRect(td);
+    var r=td.getBoundingClientRect();
     var colspan=parseInt(td.getAttribute('colspan')||'1',10);
     var day0=+td.dataset.day;
     var w=r.width/colspan;
@@ -2118,12 +2124,22 @@ function _opsCaptureRowMap(){
   });
   map.sort(function(a,b){return a.left-b.left;});
   _opsDrag.rowMap=map;
+  var sc=_opsDrag.startCell;
+  var scale=1;
+  if(sc&&sc.offsetWidth>0){
+    var r0=sc.getBoundingClientRect();
+    var z=(typeof _opsZoomVal==='number'?_opsZoomVal:100)/100;
+    if(r0.width>0)scale=(sc.offsetWidth*z)/r0.width;
+  }
+  if(!isFinite(scale)||scale<=0)scale=1;
+  _opsDrag.mapScale=scale;
 }
 function _opsDayFromX(x){
   var map=_opsDrag&&_opsDrag.rowMap;
   if(!map||!map.length)return null;
-  if(x<=map[0].left)return map[0].day;
-  for(var i=0;i<map.length;i++)if(x<map[i].right)return map[i].day;
+  var q=x/(_opsDrag.mapScale||1);
+  if(q<=map[0].left)return map[0].day;
+  for(var i=0;i<map.length;i++)if(q<map[i].right)return map[i].day;
   return map[map.length-1].day;
 }
 function _opsDragMouseMove(ev){
