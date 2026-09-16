@@ -408,7 +408,9 @@ const TEXT = {
 };
 const TITLE = { evacuate:'Evacuate', all_clear:'All clear', custom:'Custom' };
 // hold button matches its card
-const TINT = { evacuate:'#f04a23', all_clear:'#5c7d43', custom:'#d8d2c7' };
+// Each dial matches its card exactly. Orange is dark enough for a white
+// label; the pale sage and stone are not, so those take dark text.
+const TINT = { evacuate:'#f04a23', all_clear:'#c3d1b0', custom:'#d8d2c7' };
 
 const S = { pin:'', who:null, type:null, custom:'' };
 
@@ -537,7 +539,7 @@ async function openConfirm(type){
   // Custom is the pale stone card, so it keeps dark type; the two
   // coloured ones take white to match the cards.
   $('disc').style.background = TINT[type];
-  $('disc').style.color = type === 'custom' ? '#0d0d0d' : '#fff';
+  $('disc').style.color = type === 'evacuate' ? '#fff' : '#173404';
   $('prog').style.stroke = TINT[type];
   show('scrConfirm');
   try {
