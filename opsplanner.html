@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Versa Studios — Tech Ops Planner</title>
+<title>Versa Team Planner</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&family=Inter+Tight:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 @font-face{
@@ -71,7 +71,7 @@ body{margin:0;padding:0;min-height:100vh}
 /* Month/year header — pin its content to the left edge while the cell scrolls.
    Add left padding so the MAY text has breathing room from the cell edge. */
 .ops-tbl tr.ops-mhdr > td{position:sticky;left:0;z-index:3}
-.ops-tbl tr.ops-mhdr > td > div{position:sticky;left:0;width:calc(100vw - 52px);padding-left:24px;justify-content:flex-start}
+.ops-tbl tr.ops-mhdr > td > div{position:sticky;left:0;width:calc((100vw - 52px) / var(--ns-zoom,1));padding-left:24px;justify-content:flex-start}
 /* Day header row's leftmost (empty) cell — sticky at BOTH top and left so it
    stays in the top-left corner no matter how you scroll. Same inset red strip. */
 .ops-tbl tr.ops-dhdr > td:first-child{position:sticky !important;left:0 !important;top:0 !important;z-index:12 !important;background:#efede3 !important;border-right:none !important;box-shadow:inset -1px 0 0 0 rgba(216,90,97,.25), 4px 0 8px -2px rgba(0,0,0,.06) !important}
@@ -314,7 +314,7 @@ body.ops-drag-active .ops-chip::before,body.ops-drag-active .ops-chip::after{poi
 
   /* Month banner: smaller name, tighter strip, buttons wrap under */
   .ops-mhdr-txt{font-size:clamp(26px,9vw,40px);min-width:0}
-  .ops-tbl tr.ops-mhdr > td > div{width:calc(100vw - 20px);padding-left:10px;gap:8px}
+  .ops-tbl tr.ops-mhdr > td > div{width:calc((100vw - 20px) / var(--ns-zoom,1));padding-left:10px;gap:8px}
   .mnav{margin-left:0;gap:5px;padding-bottom:4px}
   .mnav-b{padding:5px 9px;font-size:12px;border-width:1.5px}
 
@@ -916,9 +916,10 @@ body.rd-compact .ops-tbl .ops-dh.td .dn-wrap{width:32px!important;min-width:32px
 .ns-mh .mnav{margin-left:auto!important;padding-bottom:0!important}
 .ns-gear{width:58px;height:58px;flex-shrink:0;border:none;border-radius:50%;background:var(--ns-sand);color:var(--ns-ink);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .2s}
 .ns-gear svg{width:26px;height:26px}
-.ns-gear:not(.ns-export):not(.ns-add):not(.ns-crewtog):hover svg{transform:rotate(45deg);transition:transform .3s}
+.ns-gear:not(.ns-export):not(.ns-add):not(.ns-crewtog):not(.ns-search):not(.ns-times):hover svg{transform:rotate(45deg);transition:transform .3s}
 .ns-export:hover svg{transform:translateY(2px);transition:transform .2s}
-.ns-mh .ns-add{margin-left:auto;background:var(--ns-orange);color:var(--ns-ink)}
+.ns-mh .ns-search{margin-left:auto}
+.ns-mh .ns-add{background:var(--ns-orange);color:var(--ns-ink)}
 .ns-add:hover svg{transform:rotate(90deg);transition:transform .25s}
 .ns-gear:focus-visible{outline:2px solid var(--ns-orange);outline-offset:3px}
 .ns-mname{flex-basis:100%;display:flex;align-items:baseline;gap:14px;margin-top:8px}
@@ -932,7 +933,7 @@ body.rd-compact .ns-brand-t{font-size:22px}
   .ns-brand-logo{height:20px}
   .ns-brand-t{padding-left:10px;font-size:18px}
   .ns-gear{order:1;width:48px;height:48px}
-  .ns-gear.ns-add{margin-left:auto}
+  .ns-gear.ns-search{margin-left:auto}
   .ns-mh .mnav{order:2;flex-basis:100%;margin-left:0!important}
   .ns-mname{order:3;margin-top:2px}
 }
@@ -945,7 +946,7 @@ body.rd-compact .ns-brand-t{font-size:22px}
   .ns-gear{width:48px;height:48px}
   .ns-gear svg{width:22px;height:22px}
 }
-@media (prefers-reduced-motion:reduce){.ns-gear:hover svg,.ns-gear:not(.ns-export):not(.ns-add):not(.ns-crewtog):hover svg,.ns-add:hover svg{transform:none!important}}
+@media (prefers-reduced-motion:reduce){.ns-gear:hover svg,.ns-gear:not(.ns-export):not(.ns-add):not(.ns-crewtog):not(.ns-times):hover svg,.ns-add:hover svg{transform:none!important}}
 
 /* b75: Morning Live email sheet */
 .ml-e{width:min(620px,100%)!important;display:flex;flex-direction:column}
@@ -1125,11 +1126,130 @@ html.ns-show-crew .ops-tbl .ops-cell > .ns-crew-tag + .ops-chip{margin-top:8px!i
 html.ns-show-crew .ops-tbl .ops-cell[data-row^="st_"]:has(.ns-crew-tag){padding:4px 0!important}
 
 /* b89: Annual Leave quick button + note */
-.ns-quick{padding:2px 16px 8px}
-.ns-al-btn{display:inline-flex;align-items:center;gap:8px;border:none;border-radius:999px;background:#f3e2a8;color:#111110;font:700 14px var(--ns-body);padding:8px 14px;cursor:pointer}
-.ns-al-btn i,.ns-al-note i{width:10px;height:10px;border-radius:50%;background:#d9b84a;display:inline-block}
-.ns-al-btn:focus-visible{outline:2px solid var(--ns-orange);outline-offset:2px}
+.ns-al-note i{width:10px;height:10px;border-radius:50%;background:#d9b84a;display:inline-block}
 .ns-al-note{display:flex;align-items:center;gap:8px;margin:2px 16px 10px;color:var(--ns-soft);font:500 13px var(--ns-body)}
+
+/* b91: zoom slider in Settings */
+.ns-zoom{margin-left:auto;display:flex;align-items:center;gap:8px}
+.ns-zoom button{border:none;background:var(--ns-cell2);color:var(--ns-text);width:30px;height:30px;border-radius:50%;font:600 16px/1 var(--ns-body);cursor:pointer}
+.ns-zoom button.ns-zoom-reset{width:auto;height:auto;border-radius:0;background:none;padding:4px 0;color:var(--ns-soft);font:600 13px var(--ns-body);text-decoration:underline}
+.ns-zoom input[type=range]{width:140px;accent-color:var(--ns-orange)}
+.ns-zoom [data-zoom-lbl]{min-width:42px;text-align:right;font:600 13px var(--ns-body);color:var(--ns-text)}
+.ns-zoom button:focus-visible,.ns-zoom input:focus-visible{outline:2px solid var(--ns-orange);outline-offset:2px}
+@media (max-width:640px){.ns-zoom input[type=range]{width:90px}}
+
+/* b92: Team panel in Settings shares the Studios switch styles */
+#rdSettings #opsTeamPanel{padding:14px 16px 4px}
+#rdSettings #opsTeamPanel .rd-sites[hidden]{display:none!important}
+#rdSettings #opsTeamPanel .rd-sb-head h2{font-size:24px}
+
+/* b92: crew sections */
+html.ns-hide-crew-tech .ns-crew-tag[data-crew-type="tech"],
+html.ns-hide-crew-studio .ns-crew-tag[data-crew-type="studio"],
+html.ns-hide-crew-runner .ns-crew-tag[data-crew-type="runner"]{display:none!important}
+.ns-crew-sect{margin-left:8px;font:500 12px var(--ns-body);color:var(--ns-soft)}
+.ns-crew-grp{margin:8px 4px 0;font:600 11px var(--ns-body);letter-spacing:.06em;text-transform:uppercase;color:var(--ns-soft)}
+.ns-crew-add.rd-fields{grid-template-columns:1fr 1fr 1fr!important}
+.ns-crew-typef select{appearance:auto}
+#rdSettings #opsCrewTypePanel{padding:14px 16px 4px}
+#rdSettings #opsCrewTypePanel .rd-sb-head h2{font-size:24px}
+@media (max-width:640px){.ns-crew-add.rd-fields{grid-template-columns:1fr 1fr!important}}
+
+/* b92: keycode screen */
+.ns-lock{position:fixed;inset:0;z-index:20000;display:flex;align-items:center;justify-content:center;padding:16px;background:var(--ns-card,#1a1a19)}
+.ns-lock[hidden]{display:none}
+body.ns-locked .ops-wrap,body.ns-locked .ops-save{visibility:hidden}
+.ns-lock-brand{color:inherit;margin-bottom:34px}
+.ns-lock-brand svg{height:34px;width:auto;display:block}
+.ns-pin{width:min(320px,100%);display:flex;flex-direction:column;align-items:center;text-align:center;color:var(--ns-text,#f2f1ee)}
+html.ns-light .ns-pin{color:#111110}
+html.ns-light .ns-lock{background:#f4f4f2!important}
+#nsPinStage{width:100%;display:flex;flex-direction:column;align-items:center}
+.ns-pin h1{margin:0;font:800 32px/1.1 var(--ns-head);letter-spacing:-.03em;color:inherit}
+.ns-pin h1 span{color:var(--ns-soft,#8f8d88)}
+.ns-pin-sub{margin:8px 0 0;font:600 15px var(--ns-body);color:var(--ns-soft,#8f8d88)}
+.ns-pin-dots{display:flex;gap:18px;margin:28px 0 10px}
+.ns-pin-dots span{width:14px;height:14px;border-radius:50%;border:2px solid var(--ns-soft,#8f8d88);box-sizing:border-box;transition:background .12s,border-color .12s}
+.ns-pin-dots span.on{background:currentColor;border-color:currentColor}
+.ns-pin-dots.shake{animation:nsPinShake .4s}
+@keyframes nsPinShake{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+.ns-pin-msg{min-height:20px;margin:0 0 16px;font:600 14px var(--ns-body);color:#e0776e}
+html.ns-light .ns-pin-msg{color:#c2412d}
+.ns-pin-pad{width:100%;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.ns-key{height:64px;border:none;border-radius:18px;background:#2c2b29;color:inherit;font:600 28px var(--ns-body);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .1s,transform .06s;touch-action:manipulation}
+html.ns-light .ns-key{background:#e5e5e2}
+.ns-key:hover{background:#363532}
+html.ns-light .ns-key:hover{background:#dadad6}
+.ns-key:active{transform:scale(.96)}
+.ns-key.ns-key-t,html.ns-light .ns-key.ns-key-t{background:transparent;font:600 16px var(--ns-body)}
+.ns-key:focus-visible,.ns-pin-who button:focus-visible,.ns-pin-back:focus-visible{outline:2px solid var(--ns-orange,#f04b23);outline-offset:2px}
+.ns-pin-who{width:100%;margin-top:22px;display:flex;flex-direction:column}
+.ns-pin-who button{display:flex;justify-content:space-between;align-items:center;gap:10px;border:none;border-bottom:1px solid rgba(128,128,128,.25);background:none;color:inherit;font:700 18px var(--ns-head);padding:14px 4px;cursor:pointer;text-align:left}
+.ns-pin-who button:hover{color:var(--ns-orange,#f04b23)}
+.ns-pin-who small{font:500 13px var(--ns-body);color:var(--ns-soft,#8f8d88)}
+.ns-pin-back{margin-top:18px;border:none;background:none;color:var(--ns-soft,#8f8d88);font:600 15px var(--ns-body);cursor:pointer;padding:6px 10px}
+.ns-whoami{margin-right:auto;font:500 13px var(--ns-body);color:var(--ns-soft)}
+.ns-set-ft .ns-lock-link{margin:0 18px 0 10px!important}
+.rd-ph .ns-hist-last{order:-1}
+.ns-hist-last{margin-top:2px;font:500 12px var(--ns-body);color:var(--ns-soft)}
+.ns-hist-filter{display:flex;align-items:center;gap:10px;padding:0 18px 10px;font:600 13px var(--ns-body);color:var(--ns-soft)}
+.ns-hist-filter select{border:none;background:transparent;color:var(--ns-text);font:600 15px var(--ns-body);padding:4px 2px;cursor:pointer}
+.ops-co.ns-sr.ns-hr{grid-template-columns:52px 1fr auto}
+.ns-set-hist{padding:4px 16px 8px}
+.ns-set-ft{justify-content:space-between!important;align-items:center}
+.ns-set-ft .ns-lock-link{background:none!important;color:var(--ns-soft)!important;font:600 13px var(--ns-body)!important;text-decoration:underline;padding:4px 0!important;border:none!important}
+
+/* b93: Undo bar */
+.ns-undo{position:fixed;left:50%;bottom:22px;z-index:12000;display:flex;align-items:center;gap:14px;padding:10px 10px 10px 18px;border-radius:14px;background:#111110;color:#f2f1ee;font:600 14px var(--ns-body);box-shadow:0 12px 34px rgba(0,0,0,.35);transform:translate(-50%,140%);opacity:0;pointer-events:none;transition:transform .2s,opacity .2s}
+.ns-undo.show{transform:translate(-50%,0);opacity:1;pointer-events:auto}
+.ns-undo button{border:none;border-radius:10px;background:var(--ns-orange,#f04b23);color:#111110;font:700 14px var(--ns-head);padding:8px 14px;cursor:pointer}
+.ns-undo button:focus-visible{outline:2px solid #f2f1ee;outline-offset:2px}
+html.ns-light .ns-undo{background:#111110}
+@media (prefers-reduced-motion:reduce){.ns-undo{transition:none}}
+
+/* b93: search */
+.ns-search-in{width:min(640px,100%)!important;display:flex;flex-direction:column;overflow:hidden!important}
+.ns-search-box{padding:0 16px 10px}
+.ns-search-box input{width:100%;box-sizing:border-box;border:none;border-radius:14px;background:var(--ns-cell2);color:var(--ns-text);font:600 18px var(--ns-body);padding:12px 14px}
+.ns-search-box input:focus-visible{outline:2px solid var(--ns-orange);outline-offset:2px}
+.ns-search-res{flex:1 1 auto;min-height:0;overflow:auto;padding:0 0 14px}
+.ns-search-res .ml-head,.ns-search-res .ml-empty,.ns-search-res .ns-crew-grp{margin-left:18px;margin-right:18px}
+.ops-co.ns-sr{display:grid!important;grid-template-columns:118px 1fr auto;align-items:center;gap:10px;cursor:pointer}
+.ns-sr-date{font:500 13px var(--ns-body);color:var(--ns-soft)}
+.ns-sr-main{font:700 15px var(--ns-head);color:var(--ns-text);min-width:0}
+.ns-sr-main small{display:block;font:500 12px var(--ns-body);color:var(--ns-soft)}
+.ns-sr-row{font:500 13px var(--ns-body);color:var(--ns-soft);text-align:right}
+.ops-co.ns-sr:focus-visible{outline:2px solid var(--ns-orange);outline-offset:2px}
+.ops-tbl td.ops-cell.ns-flash{animation:nsFlash 2.4s ease-out}
+@keyframes nsFlash{0%,35%{box-shadow:inset 0 0 0 3px var(--ns-orange),0 0 0 4px rgba(240,75,35,.35)}100%{box-shadow:none}}
+@media (prefers-reduced-motion:reduce){.ops-tbl td.ops-cell.ns-flash{animation:none;box-shadow:inset 0 0 0 3px var(--ns-orange)}}
+@media (max-width:640px){.ops-co.ns-sr{grid-template-columns:1fr}.ns-sr-row{text-align:left}}
+
+/* b93: crew list manager */
+.ns-cm-in{width:min(1000px,100%)!important;display:flex;flex-direction:column;overflow:hidden!important}
+.ns-cm-body{flex:1 1 auto;min-height:0;overflow:auto;padding:0 16px 8px}
+.ns-cm-grp{margin:18px 0 2px!important}
+.ns-cm-grp .ns-crew-count{background:none!important;padding:0 0 0 4px!important;color:var(--ns-soft)!important;font-weight:500!important}
+.ns-cm-row{display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--ns-cell2)}
+.ns-cm-grid{flex:1;display:grid;grid-template-columns:1.25fr 1.25fr 1fr 1fr 1.6fr;gap:0 6px;min-width:0}
+.ns-cm-head{position:sticky;top:0;z-index:1;background:#242423;border-bottom:1px solid var(--ns-cell2);padding:8px 0;margin-right:34px;font:600 11px var(--ns-body);letter-spacing:.06em;text-transform:uppercase;color:var(--ns-soft)}
+html.ns-light .ns-cm-head{background:#ffffff}
+.ns-cm-head span{padding:0 8px}
+.ns-cm-grid label{min-width:0;display:block}
+.ns-cm-grid input,.ns-cm-grid select{width:100%;min-width:0;box-sizing:border-box;background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;outline:none;color:var(--ns-text)!important;font:500 14px var(--ns-body)!important;padding:11px 8px!important;text-overflow:ellipsis}
+.ns-cm-grid select{appearance:none;-webkit-appearance:none;cursor:pointer}
+.ns-cm-grid input:hover,.ns-cm-grid select:hover{background:var(--ns-cell2)!important}
+.ns-cm-grid input:focus,.ns-cm-grid select:focus{background:var(--ns-cell2)!important;box-shadow:inset 0 -2px 0 var(--ns-orange)!important}
+.ns-cm-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.ns-cm-row .ns-crew-x{flex:0 0 28px}
+.ns-cm-add{border-bottom:none;padding-top:2px}
+.ns-cm-add .ns-cm-grid input,.ns-cm-add .ns-cm-grid select{box-shadow:inset 0 -1px 0 var(--ns-cell2)!important}
+.ns-cm-add .rd-btn{flex:0 0 auto;margin-left:6px}
+.ns-cm-addh{margin:22px 0 0!important}
+.ns-cm-empty{margin:8px 0 10px 8px!important}
+.ops-co.ns-cm-open{margin:4px 0 0!important;cursor:pointer;justify-content:space-between}
+.ns-cm-count{margin-left:auto;font:500 13px var(--ns-body);color:var(--ns-soft)}
+@media (max-width:760px){.ns-cm-grid{grid-template-columns:1fr 1fr}.ns-cm-head{display:none}.ns-cm-row{padding:6px 0}}
 /* b76: light theme — variables plus generated overrides for the dark theme's fixed colours */
 html.ns-light{--ns-page:#ececec;--ns-card:#ffffff;--ns-cell:#f1f0ec;--ns-cell2:#e8e6e0;--ns-wk:#f4f3ef;--ns-text:#111110;--ns-soft:#6b6965;--ns-wkcell:#d6d4cc;--ns-wkhover:#cbc8bf;--ns-wktext:#6b6965}
 html.ns-light .rd-f input,html.ns-light .rd-f select{color-scheme:light}
@@ -1186,10 +1306,188 @@ html.ns-light .ml-row{border-bottom:1px solid #e3e1db!important}
 html.ns-light #rdSettings .rd-chev{background:#ebe9e4!important}
 html.ns-light .ops-tbl td.ops-cell[data-row="notes"]:has(.ops-chip)::after{color:#9d9b95!important}
 html.ns-light .ops-tbl td.ops-cell[data-row="notes"]:has(.ops-chip):hover::after{background:#ebe9e4!important}
+
+/* b90: light theme — keep the "on" state of Settings switches (the generated light "off" rule outranked it) */
+html.ns-light #rdSettings .rd-stu[aria-pressed="true"]::after{background:var(--ns-sage) radial-gradient(circle at 34px 14px,#111110 10px,transparent 10.5px) no-repeat!important}
+html.ns-light #rdSettings .rd-stu[aria-pressed="true"]{color:var(--ns-text)!important}
+
+/* b94: tidy crew popup — plain rows, nothing wider than the popup */
+.ns-crew-mode{display:block!important;margin:0 16px 2px!important;padding:0!important;border-radius:0!important;background:none!important;color:var(--ns-soft)!important;font:600 12px var(--ns-body)!important;text-transform:uppercase;letter-spacing:.06em!important}
+.ns-crew-row{align-items:center!important;gap:12px!important;padding:10px 0!important}
+.ns-crew-who{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.ns-crew-who .ns-crew-nm{font:600 15px var(--ns-body);color:var(--ns-text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ns-crew-meta{font:500 13px var(--ns-body);color:var(--ns-soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ns-crew-meta:empty{display:none}
+.ns-crew-x{width:28px!important;height:28px!important;flex:0 0 28px;background:none!important;border-radius:0!important;color:var(--ns-soft)!important;font-size:22px!important}
+.ns-crew-x:hover{color:var(--ns-orange)!important}
+.ns-crew-avail{font:500 12px var(--ns-body);color:var(--ns-soft);text-transform:none;letter-spacing:0}
+.ns-crew-dd .rd-chev{width:22px!important;height:22px!important;background:none!important;border-radius:0!important;color:var(--ns-soft)!important}
+.ns-crew-add.rd-fields{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:10px 12px!important;padding:4px 4px 0!important}
+.ns-crew-add .rd-f{min-width:0;margin:0!important;padding:0!important}
+.ns-crew-add .ns-crew-namef{grid-column:1 / -1}
+.ns-crew-add .rd-f > span{font:600 12px var(--ns-body)!important;color:var(--ns-soft)!important}
+html .ns-crew-add .rd-f input,html .ns-crew-add .rd-f select{width:100%!important;min-width:0!important;box-sizing:border-box!important;border:none!important;border-radius:0!important;background:transparent!important;box-shadow:inset 0 -1px 0 var(--ns-cell2)!important;color:var(--ns-text)!important;font:500 15px var(--ns-body)!important;padding:8px 2px!important;height:auto!important}
+html .ns-crew-add .rd-f input:focus,html .ns-crew-add .rd-f select:focus{outline:none!important;box-shadow:inset 0 -2px 0 var(--ns-orange)!important}
+.ns-crew-add .rd-btn{grid-column:1 / -1;justify-self:end;padding:8px 22px!important}
+@media (max-width:640px){.ns-crew-add.rd-fields{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}}
+#opsCed .rd-ph{top:-10px}
+
+/* b95: crew times */
+.ns-tm-in{width:min(860px,100%)!important}
+.ns-tm-bar{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px;padding:0 18px 10px;font:600 13px var(--ns-body);color:var(--ns-soft)}
+.ns-tm-bar #nsTimesWeek{font:700 16px var(--ns-head);color:var(--ns-text);min-width:150px;text-align:center}
+.ns-tm-nav{width:32px;height:32px;border:none;background:none;color:var(--ns-text);font:600 26px/1 var(--ns-body);cursor:pointer;padding:0}
+.ns-tm-nav:hover,.ns-tm-now:hover{color:var(--ns-orange)}
+.ns-tm-now{border:none;background:none;color:var(--ns-soft);font:600 13px var(--ns-body);text-decoration:underline;cursor:pointer;margin-right:auto;padding:4px}
+.ns-tm-bar select{border:none;background:transparent;color:var(--ns-text);font:600 15px var(--ns-body);padding:4px 2px;cursor:pointer;max-width:180px}
+.ns-tm-nav:focus-visible,.ns-tm-now:focus-visible,.ns-tm-bar select:focus-visible{outline:2px solid var(--ns-orange);outline-offset:2px}
+.ns-tm-grid{flex:1;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1.5fr) 118px 118px;gap:0 10px;align-items:center;min-width:0}
+.ns-cm-head.ns-tm-grid{margin-right:0}
+.ns-tm-row{padding:4px 0}
+.ns-tm-cell{min-width:0;padding:6px 8px;font:500 14px var(--ns-body);color:var(--ns-text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ns-tm-cell b{font-weight:600}
+.ns-tm-cell small{display:block;font:500 12px var(--ns-body);color:var(--ns-soft);overflow:hidden;text-overflow:ellipsis}
+.ns-tm-grid label{min-width:0;display:block}
+html .ns-tm-grid input[type=time]{width:100%;box-sizing:border-box;border:0;border-radius:0;background:transparent;box-shadow:inset 0 -1px 0 var(--ns-cell2);color:var(--ns-text);font:600 15px var(--ns-body);padding:9px 6px;color-scheme:dark}
+html.ns-light .ns-tm-grid input[type=time]{color-scheme:light}
+html .ns-tm-grid input[type=time]:hover{background:var(--ns-cell2)}
+html .ns-tm-grid input[type=time]:focus{outline:none;background:var(--ns-cell2);box-shadow:inset 0 -2px 0 var(--ns-orange)}
+@media (max-width:640px){.ns-tm-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.ns-tm-row .ns-tm-cell:nth-child(2){text-align:right}}
+
+/* b96: crew hours + export buttons */
+.ns-tm-grid{grid-template-columns:minmax(0,1.2fr) minmax(0,1.5fr) 112px 112px 70px!important}
+.ns-tm-cell{display:flex!important;align-items:center;gap:6px}
+.ns-tm-txt{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ns-tm-ex{flex:0 0 28px;width:28px;height:28px;border:none;background:none;color:var(--ns-soft);padding:4px;cursor:pointer;opacity:.55}
+.ns-tm-ex svg{width:18px;height:18px;display:block}
+.ns-tm-row:hover .ns-tm-ex,.ns-tm-ex:focus-visible{opacity:1}
+.ns-tm-ex:hover{color:var(--ns-orange);opacity:1}
+.ns-tm-ex:focus-visible{outline:2px solid var(--ns-orange);outline-offset:1px}
+.ns-tm-hrs{padding:0 8px;font:600 14px var(--ns-body);color:var(--ns-text);text-align:right;white-space:nowrap}
+.ns-tm-tot{display:flex;justify-content:space-between;gap:12px;padding:9px 8px;border-bottom:1px solid var(--ns-cell2);font:500 14px var(--ns-body);color:var(--ns-text)}
+.ns-tm-tot b{font-weight:600;white-space:nowrap}
+@media (max-width:640px){.ns-tm-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}.ns-tm-hrs{text-align:left}}
+.ex-totals{display:block!important}
+.ex-totals span{display:inline!important;padding:0!important;border-radius:0!important;background:none!important;font:500 13px var(--ns-body)!important;color:var(--ns-soft)!important}
+.ex-totals span+span::before{content:" \00b7  "}
+.ex-totals span b{background:none!important;padding:0!important;color:var(--ns-text)!important;font-weight:600!important}
+
+/* b96: month picker in the planner style; small Undo in the bottom-right corner */
+.ns-mpk{position:fixed;inset:0;z-index:998;background:rgba(17,17,16,.5);display:flex;align-items:flex-start;justify-content:center;padding:70px 16px 16px}
+html.ns-light .ns-mpk{background:rgba(17,17,16,.28)}
+.ns-mpk-in{width:min(300px,100%);max-height:72vh;overflow-y:auto;padding:8px 10px 12px;border-radius:24px;background:#242423;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+html.ns-light .ns-mpk-in{background:#fff;box-shadow:0 30px 80px rgba(0,0,0,.14)}
+.ns-mpk-y{margin:14px 12px 4px;font:600 12px var(--ns-body);letter-spacing:.06em;text-transform:uppercase;color:var(--ns-soft)}
+.ns-mpk-m{display:flex;align-items:baseline;justify-content:space-between;width:100%;border:none;border-bottom:1px solid var(--ns-cell2);background:none;padding:11px 12px;text-align:left;font:700 18px var(--ns-head);letter-spacing:-.02em;color:var(--ns-text);cursor:pointer}
+.ns-mpk-m:last-child{border-bottom:none}
+.ns-mpk-m.ns-past{color:var(--ns-soft)}
+.ns-mpk-m.ns-now{color:var(--ns-orange)}
+.ns-mpk-m small{font:600 12px var(--ns-body);letter-spacing:0;color:var(--ns-orange)}
+.ns-mpk-m:hover{color:var(--ns-orange)}
+.ns-mpk-m:focus-visible{outline:2px solid var(--ns-orange);outline-offset:-2px;border-radius:10px}
+.ns-undo{left:auto!important;right:20px!important;bottom:20px!important;gap:12px!important;padding:8px 8px 8px 14px!important;border-radius:12px!important;font:600 13px var(--ns-body)!important;transform:translateY(160%)!important}
+.ns-undo.show{transform:translateY(0)!important}
+.ns-undo button{background:none!important;color:var(--ns-orange,#f04b23)!important;font:700 13px var(--ns-body)!important;padding:4px 8px!important;border-radius:8px!important}
+.ns-undo button:hover{background:rgba(255,255,255,.08)!important}
+
+/* b97: crew popup with times + section pickers */
+.ns-cr-day{margin:-2px 8px 4px;font:500 12px var(--ns-body);color:var(--ns-soft)}
+.ns-cr-row{padding:9px 4px 8px;border-bottom:1px solid var(--ns-cell2)}
+.ns-cr-top{display:flex;align-items:baseline;gap:8px;min-width:0}
+.ns-cr-top b{flex:0 1 auto;min-width:0;font:600 15px var(--ns-body);color:var(--ns-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ns-cr-top small{flex:1 1 auto;min-width:0;font:500 13px var(--ns-body);color:var(--ns-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ns-cr-top .ns-crew-x{align-self:center;margin-left:auto}
+.ns-cr-times{display:flex;align-items:center;gap:6px;margin-top:4px}
+.ns-cr-times>span{color:var(--ns-soft);font:500 14px var(--ns-body)}
+html .ns-cr-times input[type=time]{width:104px;box-sizing:border-box;border:0;border-radius:0;background:transparent;box-shadow:inset 0 -1px 0 var(--ns-cell2);color:var(--ns-text);font:600 15px var(--ns-body);padding:6px 2px;color-scheme:dark}
+html.ns-light .ns-cr-times input[type=time]{color-scheme:light}
+html .ns-cr-times input[type=time]:hover{background:var(--ns-cell2)}
+html .ns-cr-times input[type=time]:focus{outline:none;background:var(--ns-cell2);box-shadow:inset 0 -2px 0 var(--ns-orange)}
+.ns-cr-times .ns-cr-hrs{margin-left:auto;color:var(--ns-text);font:600 14px var(--ns-body);white-space:nowrap}
+.ns-cr-all .ns-cr-top b{color:var(--ns-soft)}
+.ops-co.ns-cr-sec{display:flex;align-items:center;gap:8px;cursor:pointer}
+.ns-cr-count{margin-left:auto;font:500 13px var(--ns-body);color:var(--ns-soft)}
+.ns-cr-chev{color:var(--ns-soft);font-size:22px;line-height:1}
+.ns-cr-links{display:flex;flex-wrap:wrap;gap:4px 18px;margin:8px 4px 2px}
+.ns-cr-links .ns-crew-edit{margin:0!important}
+.ns-cp-in{width:min(460px,100%)!important;display:flex;flex-direction:column;overflow:hidden!important}
+.ns-cp-hd{min-width:0}
+.ns-cp-sub{margin:4px 0 0;font:500 14px var(--ns-body);color:var(--ns-soft)}
+.ns-cp-body{padding:0 14px 8px!important}
+.ops-co.ns-cp-row{display:flex;align-items:center;gap:8px;cursor:pointer}
+.ns-cp-nm{min-width:0;font:600 16px var(--ns-body);color:var(--ns-text)}
+.ns-cp-nm small{margin-left:8px;font:500 13px var(--ns-body);color:var(--ns-soft)}
+.ops-co.ns-cp-row .ops-ck{margin-left:auto}
+.ops-co.ns-cp-row:focus-visible,.ops-co.ns-cr-sec:focus-visible{outline:2px solid var(--ns-orange);outline-offset:-2px}
+.ns-cp-ft{display:flex!important;align-items:center;justify-content:space-between}
+.ns-cp-ft .ns-lock-link{background:none!important;color:var(--ns-soft)!important;font:600 13px var(--ns-body)!important;text-decoration:underline;padding:4px 0!important;border:none!important;box-shadow:none!important}
+.ops-co.ns-cp-row .ops-ck{color:var(--ns-orange)!important;font-weight:800}
+
+/* b98: one-line crew rows, click a name to add times */
+.ns-cr-line{display:flex;align-items:center;gap:6px;min-height:40px;padding:2px 2px 2px 4px;border-bottom:1px solid var(--ns-cell2)}
+.ns-cr-name{flex:0 1 auto;min-width:0;border:none;background:none;padding:6px 0;text-align:left;font:600 15px var(--ns-body);color:var(--ns-text);cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ns-cr-name:hover{color:var(--ns-orange)}
+.ns-cr-name:focus-visible{outline:2px solid var(--ns-orange);outline-offset:2px;border-radius:4px}
+.ns-cr-open .ns-cr-name{flex:0 1 110px}
+.ns-cr-setall{font-weight:500;font-size:13px;color:var(--ns-soft);text-decoration:underline}
+.ns-cr-all .ns-cr-name:not(.ns-cr-setall){color:var(--ns-soft)}
+.ns-cr-line>.ns-cr-name{flex:0 0 auto;max-width:55%}
+.ns-cr-open>.ns-cr-name{flex:0 1 110px;max-width:110px}
+.ns-cr-role{flex:1 1 0;min-width:0;font:500 13px var(--ns-body);color:var(--ns-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ns-cr-ts{flex:0 0 auto;font:600 13px var(--ns-body);color:var(--ns-text);white-space:nowrap}
+.ns-cr-line .ns-crew-x{flex:0 0 28px;margin-left:auto}
+.ns-cr-dash{color:var(--ns-soft);font:500 14px var(--ns-body)}
+html input.ns-tin{width:58px;flex:0 0 58px;box-sizing:border-box;border:0;border-radius:0;background:transparent;box-shadow:inset 0 -1px 0 var(--ns-soft);color:var(--ns-text);font:600 14px var(--ns-body);padding:6px 2px;text-align:center;outline:none}
+html input.ns-tin:focus{background:var(--ns-cell2);box-shadow:inset 0 -2px 0 var(--ns-orange)}
+html input.ns-tin.ns-bad{box-shadow:inset 0 -2px 0 #d9534f}
+.ns-cr-open .ns-cr-hrs{flex:1 1 auto;text-align:right;font:600 13px var(--ns-body);color:var(--ns-text);white-space:nowrap}
+.ns-cr-all.ns-cr-open{padding-right:34px}
+.ns-tm-grid input.ns-tin{width:100%;flex:none;text-align:left;padding:9px 6px;font-size:15px;box-shadow:inset 0 -1px 0 var(--ns-cell2)}
+
+/* b99: crew list as plain rows + edit form */
+.ns-cm-in{width:min(640px,100%)!important}
+.ops-co.ns-cm-new{margin:2px 0 4px;color:var(--ns-orange);font:600 15px var(--ns-body);cursor:pointer}
+.ops-co.ns-cm-item{display:flex;align-items:center;gap:12px;cursor:pointer;min-height:48px}
+.ns-cm-main{flex:1 1 auto;min-width:0;display:flex;align-items:baseline;gap:8px;overflow:hidden}
+.ns-cm-main b{flex:0 0 auto;font:600 16px var(--ns-body);color:var(--ns-text);white-space:nowrap}
+.ns-cm-main small{flex:0 1 auto;min-width:0;font:500 13px var(--ns-body);color:var(--ns-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ns-cm-contact{flex:0 1 240px;min-width:0;display:flex;flex-direction:column;align-items:flex-end;font:500 12px var(--ns-body);color:var(--ns-soft);line-height:1.35}
+.ns-cm-contact span{max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ops-co.ns-cm-item:focus-visible,.ops-co.ns-cm-new:focus-visible{outline:2px solid var(--ns-orange);outline-offset:-2px}
+.ns-cm-back{border:none;background:none;padding:4px 16px 8px;color:var(--ns-soft);font:600 14px var(--ns-body);cursor:pointer}
+.ns-cm-back:hover{color:var(--ns-orange)}
+.ns-cf.rd-fields{display:grid!important;grid-template-columns:1fr 1fr;gap:12px!important;padding:6px 16px!important}
+.ns-cf-sec{padding:14px 16px 8px!important}
+.ns-cm-ft{display:flex!important;align-items:center;justify-content:space-between;gap:12px}
+.ns-cm-ft .ns-lock-link{background:none!important;color:var(--ns-soft)!important;font:600 13px var(--ns-body)!important;text-decoration:underline;padding:4px 0!important;border:none!important;box-shadow:none!important}
+.ns-cm-ft .ns-cf-rm:hover{color:#d9534f!important}
+.ns-cf-btns{display:flex;align-items:center;gap:18px;margin-left:auto}
+.ns-cm-ft>button:only-child{margin-left:auto}
+@media (max-width:560px){.ns-cm-contact{display:none}.ns-cf.rd-fields{grid-template-columns:1fr}}
+
+/* b100: wider crew popup, hours beside times */
+@media (min-width:641px){#opsCed:has(.ns-crew-mode){width:min(480px,calc(100vw - 24px))!important}}
+.ns-cr-ts{font-weight:500!important;color:var(--ns-soft)!important}
+.ns-cr-ts b{margin-left:10px;font-weight:700;color:var(--ns-text)}
+
+/* b101: crew section colours */
+.ns-cr-dot{flex:0 0 10px;width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:2px}
+.ns-cm-grp .ns-cr-dot{margin-right:8px;vertical-align:0}
+html.ns-show-crew .ops-tbl .ops-cell .ns-crew-tag[data-crew-type="tech"]{background:#a9c6ea!important;color:#111110!important}
+html.ns-show-crew .ops-tbl .ops-cell .ns-crew-tag[data-crew-type="studio"]{background:#b5dbb0!important;color:#111110!important}
+html.ns-show-crew .ops-tbl .ops-cell .ns-crew-tag[data-crew-type="runner"]{background:#f0c2d6!important;color:#111110!important}
+html.ns-show-crew .ops-tbl .ops-cell .ns-crew-tag[data-crew-type] small{color:rgba(17,17,16,.62)!important}
 </style>
 <script>try{if(localStorage.getItem('opsTheme')==='light')document.documentElement.classList.add('ns-light');if(localStorage.getItem('opsShowCrew')==='1')document.documentElement.classList.add('ns-show-crew');}catch(e){}</script>
 </head>
 <body>
+<!-- Sign-in (b94): everyone has their own 4-digit PIN; the team code 1956 sets one up. Keeps casual visitors out; not real security -->
+<div id="nsLock" class="ns-lock" hidden role="dialog" aria-modal="true" aria-labelledby="nsLockTitle">
+  <div class="ns-pin">
+    <div class="ns-lock-brand" id="nsLockBrand"></div>
+    <div id="nsPinStage"></div>
+  </div>
+</div>
 
 <div class="sa-top">
   <svg class="sa-logo-svg" viewBox="0 0 1366 515.64" xmlns="http://www.w3.org/2000/svg" aria-label="Versa Studios">
@@ -1218,14 +1516,53 @@ html.ns-light .ops-tbl td.ops-cell[data-row="notes"]:has(.ops-chip):hover::after
   <div id="opsBody2"></div>
 </div>
 
+<div id="nsSearch" class="rd-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="nsSearchTitle">
+  <div class="rd-sheet-in ns-search-in">
+    <div class="rd-sheet-hd"><h2 id="nsSearchTitle">Search</h2><button type="button" class="rd-x" aria-label="Close search" onclick="opsCloseSearch()">&times;</button></div>
+    <div class="ns-search-box"><input id="nsSearchQ" type="search" autocomplete="off" aria-label="Search jobs, people and crew" oninput="opsRunSearch()" onkeydown="if(event.key==='Enter'){var f=document.querySelector('#nsSearchRes .ops-co');if(f)f.click();}"/></div>
+    <div id="nsSearchRes" class="ns-search-res" aria-live="polite"></div>
+  </div>
+</div>
+<div id="nsTimes" class="rd-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="nsTimesTitle">
+  <div class="rd-sheet-in ns-cm-in ns-tm-in">
+    <div class="rd-sheet-hd"><h2 id="nsTimesTitle">Crew times</h2><button type="button" class="rd-x" aria-label="Close crew times" onclick="opsCloseTimes()">&times;</button></div>
+    <div class="ns-tm-bar"><button type="button" class="ns-tm-nav" onclick="opsTimesWeek(-7)" aria-label="Previous week">&#8249;</button><span id="nsTimesWeek" aria-live="polite"></span><button type="button" class="ns-tm-nav" onclick="opsTimesWeek(7)" aria-label="Next week">&#8250;</button><button type="button" class="ns-tm-now" onclick="opsTimesWeek(0)">This week</button><button type="button" class="ns-tm-now" onclick="opsCloseTimes();opsOpenCrewMgr()">Crew list</button><label for="nsTimesWho">Show</label><select id="nsTimesWho" onchange="_nsRenderTimes()"></select></div>
+    <div id="nsTimesBody" class="ns-cm-body"></div>
+  </div>
+</div>
+<div id="nsHist" class="rd-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="nsHistTitle">
+  <div class="rd-sheet-in ns-search-in">
+    <div class="rd-sheet-hd"><h2 id="nsHistTitle">Change history</h2><button type="button" class="rd-x" aria-label="Close change history" onclick="opsCloseHist()">&times;</button></div>
+    <div class="ns-hist-filter"><label for="nsHistWho">Show</label><select id="nsHistWho" onchange="_nsRenderHist()"></select></div>
+    <div id="nsHistRes" class="ns-search-res" aria-live="polite"></div>
+  </div>
+</div>
+<div id="nsCrewPick" class="rd-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="nsCrewPickTitle">
+  <div class="rd-sheet-in ns-cp-in">
+    <div class="rd-sheet-hd"><div class="ns-cp-hd"><h2 id="nsCrewPickTitle">Tech Crew</h2><p class="ns-cp-sub" id="nsCrewPickSub"></p></div><button type="button" class="rd-x" aria-label="Done" onclick="opsCrewPickDone()">&times;</button></div>
+    <div id="nsCrewPickBody" class="ns-search-res ns-cp-body"></div>
+    <div class="rd-sheet-ft ns-cp-ft"><button type="button" class="ns-lock-link" onclick="opsCrewPickManage()">Manage crew list</button><button type="button" onclick="opsCrewPickDone()">Done</button></div>
+  </div>
+</div>
+<div id="nsCrewMgr" class="rd-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="nsCrewMgrTitle">
+  <div class="rd-sheet-in ns-cm-in">
+    <div class="rd-sheet-hd"><h2 id="nsCrewMgrTitle">Crew list</h2><button type="button" class="rd-x" aria-label="Close crew list" onclick="opsCloseCrewMgr()">&times;</button></div>
+    <div id="nsCrewMgrBody" class="ns-cm-body"></div>
+    <div class="rd-sheet-ft ns-cm-ft" id="nsCrewMgrFt"><button type="button" onclick="opsCloseCrewMgr()">Done</button></div>
+  </div>
+</div>
 <div id="rdSettings" class="rd-sheet" hidden role="dialog" aria-modal="true" aria-label="Settings">
   <div class="rd-sheet-in">
     <div class="rd-sheet-hd"><h2>Settings</h2><button type="button" class="rd-x" aria-label="Close settings" onclick="_rdCloseSettings()">&times;</button></div>
     <div class="rd-density rd-theme"><h2>Theme</h2><div class="rd-presets" role="group" aria-label="Theme"><button type="button" data-theme-set="dark" aria-pressed="true">Dark</button><button type="button" data-theme-set="light" aria-pressed="false">Light</button></div></div>
+    <div class="rd-density rd-zoom"><h2>Zoom</h2><div class="ns-zoom"><button type="button" onclick="opsZoomStep(-5)" aria-label="Zoom out">&minus;</button><input id="nsZoom" type="range" min="60" max="140" step="5" value="100" oninput="opsSetZoom(this.value)" aria-label="Zoom"/><button type="button" onclick="opsZoomStep(5)" aria-label="Zoom in">+</button><span data-zoom-lbl>100%</span><button type="button" class="ns-zoom-reset" onclick="opsSetZoom(100)">Reset</button></div></div>
     <div class="rd-density"><h2>Density</h2><div class="rd-presets" role="group" aria-label="Density"><button type="button" data-dens="comfortable">Comfortable</button><button type="button" data-dens="compact">Compact</button></div></div>
     <div class="rd-density rd-past"><h2>Previous months</h2><div class="rd-presets" role="group" aria-label="Previous months"><button type="button" data-past="0" aria-pressed="true">Hidden</button><button type="button" data-past="1" aria-pressed="false">Shown</button></div></div>
+    <div id="opsTeamPanel" aria-label="Team"></div>
+    <div id="opsCrewTypePanel" aria-label="Crew sections"></div>
     <div id="opsStuPanel" aria-label="Studios"></div>
-    <div class="rd-sheet-ft"><button type="button" onclick="_rdCloseSettings()">Done</button></div>
+    <div class="ns-set-hist"><div class="ops-co ns-cm-open" role="button" tabindex="0" onclick="_rdCloseSettings();opsOpenHist()" onkeydown="if(event.key==='Enter')this.click()">Change history</div></div>
+    <div class="rd-sheet-ft ns-set-ft"><span class="ns-whoami" id="nsWhoAmI"></span><button type="button" class="ns-lock-link" onclick="opsLockPlanner()">Sign out</button><button type="button" onclick="_rdCloseSettings()">Done</button></div>
   </div>
 </div>
 
@@ -1254,7 +1591,7 @@ html.ns-light .ops-tbl td.ops-cell[data-row="notes"]:has(.ops-chip):hover::after
       <label class="rd-f" id="exPersonF"><span>Person</span><select id="exPerson" onchange="opsBuildPreview()"></select></label>
       <label class="rd-f" id="exStudioF"><span>Studio</span><select id="exStudio" onchange="opsBuildPreview()"></select></label>
       <label class="rd-f" id="exCrewF"><span>Crew</span><select id="exCrew" onchange="opsBuildPreview()"></select></label>
-      <label class="rd-f" id="exJobF"><span>Job or keyword</span><input id="exJob" list="exJobList" placeholder="e.g. Dragons Den" autocomplete="off" oninput="opsBuildPreview()"/><datalist id="exJobList"></datalist></label>
+      <label class="rd-f" id="exJobF"><span>Job or keyword</span><input id="exJob" list="exJobList" autocomplete="off" oninput="opsBuildPreview()"/><datalist id="exJobList"></datalist></label>
     </div>
     <p class="ml-fri" id="opsFriBanner" hidden>It's Friday — time to send next week's schedule.</p>
     <div class="rd-density ml-mode"><h2>Range</h2><div class="rd-presets" role="group" aria-label="Range"><button type="button" data-mle="week" aria-pressed="true">Weekly</button><button type="button" data-mle="month" aria-pressed="false">Monthly</button><button type="button" data-mle="custom" aria-pressed="false">Custom</button><button type="button" data-mle="all" aria-pressed="false">All</button></div></div>
@@ -1525,7 +1862,11 @@ function opsSeedFromJobs(){
   var PERSONAL_ROWS=[
     {row:'andrew',names:['andrew rowell','andrew']},
     {row:'ian',names:['ian curry','ian']},
-    {row:'chris',names:['chris warden','chris']}
+    {row:'chris',names:['chris warden','chris']},
+    {row:'esther',names:['esther brazil','esther']},
+    {row:'lily',names:['lily britten','lily']},
+    {row:'nik',names:['nik qerimi','nik']},
+    {row:'sam',names:['sam pickford','sam']}
   ];
   function _jobAllDates(j){
     var dates=[];
@@ -1556,8 +1897,12 @@ function opsSeedFromJobs(){
           if(px!==ds[0]+'-'+ds[1])continue;
           var day=parseInt(ds[2]);
           var cur=og(OPS_CAL[mi].month,day,pr.row).slice();
+          // Only ever added once: if someone deletes a day they aren't working, it stays deleted
+          // (the job only says who is on it, not which days)
+          var pKey=OPS_CAL[mi].month+'|'+day+'|'+pr.row;
+          if(_opsSeeded.has(pKey+'|'+j.name))break;
           if(!_opsHasText(cur,j.name)){cur.push(j.name);os(OPS_CAL[mi].month,day,pr.row,cur);}
-          _opsMarkSeeded(OPS_CAL[mi].month+'|'+day+'|'+pr.row,j.name);
+          _opsMarkSeeded(pKey,j.name);
           break;
         }
       });
@@ -1796,7 +2141,11 @@ function _opsCleanStaleStudioEntries(){
   var PR_CLEAN=[
     {row:'andrew',names:['andrew rowell','andrew']},
     {row:'ian',names:['ian curry','ian']},
-    {row:'chris',names:['chris warden','chris']}
+    {row:'chris',names:['chris warden','chris']},
+    {row:'esther',names:['esther brazil','esther']},
+    {row:'lily',names:['lily britten','lily']},
+    {row:'nik',names:['nik qerimi','nik']},
+    {row:'sam',names:['sam pickford','sam']}
   ];
   jobs.forEach(function(j){
     if(!j||!j.name)return;
@@ -1865,7 +2214,7 @@ function _opsCleanStaleStudioEntries(){
   Object.keys(_opsD).forEach(function(k){
     var parts=k.split('|');
     if(parts.length!==3)return;
-    if(['andrew','ian','chris'].indexOf(parts[2])===-1)return;
+    if(!_nsIsTeam(parts[2]))return;
     var arr=_opsD[k];if(!Array.isArray(arr)||!arr.length)return;
     var kept=arr.filter(function(lbl){
       var txt=(typeof lbl==='string')?lbl:((lbl&&typeof lbl==='object'&&typeof lbl.text==='string')?lbl.text:null);
@@ -1900,17 +2249,24 @@ function planNav(dir){
 }
 function planOpenPicker(){
   var ex=document.getElementById('opsMonthPk');if(ex){ex.remove();return;}
-  var h='<div id="opsMonthPk" onclick="if(event.target===this)this.remove()" style="position:fixed;inset:0;background:rgba(48,47,44,.35);z-index:998;display:flex;align-items:flex-start;justify-content:center;padding-top:70px"><div style="background:#fff8ef;border:1px solid rgba(216,90,97,.25);border-radius:10px;box-shadow:0 12px 40px rgba(0,0,0,.18);min-width:220px;max-height:70vh;overflow-y:auto">';
+  var today=OPS_TODAY.slice(0,7),h='<div id="opsMonthPk" class="ns-mpk" role="dialog" aria-modal="true" aria-label="Jump to a month" onclick="if(event.target===this)this.remove()"><div class="ns-mpk-in">',year=null;
   OPS_CAL.forEach(function(m){
-    h+='<div onclick="document.getElementById(\'opsMonthPk\').remove();plannerGoMonth(\''+m.month+'\')" style="padding:10px 20px;font-family:\'Barlow Condensed\',Impact,sans-serif;font-size:18px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:#8a4a4e;cursor:pointer;border-bottom:1px solid rgba(216,90,97,.08)">'+m.month+'</div>';
+    var px=OPS_MPX[m.month]||'',y=m.month.split(' ')[1],name=m.month.split(' ')[0];
+    if(y!==year){year=y;h+='<div class="ns-mpk-y">'+y+'</div>';}
+    var cls=px===today?' ns-now':(px&&px<today?' ns-past':'');
+    h+='<button type="button" class="ns-mpk-m'+cls+'" onclick="document.getElementById(\'opsMonthPk\').remove();plannerGoMonth(\''+m.month+'\')">'+name+(px===today?'<small>This month</small>':'')+'</button>';
   });
   h+='</div></div>';
   document.body.insertAdjacentHTML('beforeend',h);
+  var cur=document.querySelector('#opsMonthPk .ns-now')||document.querySelector('#opsMonthPk .ns-mpk-m');
+  if(cur)cur.scrollIntoView({block:'center'});
 }
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){var pk=document.getElementById('opsMonthPk');if(pk)pk.remove();}});
 
 // ── DEBOUNCED SAVE ───────────────────────────────────────────────────────────
 var _saveTimer=null;
 function saveData(){
+  try{if(window._opsBooted&&_opsReconcileMLG()&&!_opsDrag)setTimeout(function(){if(!_opsDrag&&typeof opsReRender==='function')opsReRender();},0);}catch(e){console.warn('MLG sync err',e);}
   if(_saveTimer)clearTimeout(_saveTimer);
   _saveTimer=setTimeout(_doSave,600);
 }
@@ -2130,9 +2486,167 @@ const OPS_CAL = [{"month": "March 2026", "days": [{"date": "Mar-01", "day": 1, "
 // ── INITIAL STATE ────────────────────────────────────────────────────────────
 const _opsD={};
 function og(m,d,r){return _opsD[m+'|'+d+'|'+r]||[];}
+// Search (b93): find any entry, note or crew name and jump to it on the calendar
+function opsOpenSearch(){
+  var el=document.getElementById('nsSearch');if(!el)return;
+  if(typeof opsCloseCed==='function')opsCloseCed();
+  el.hidden=false;document.body.style.overflow='hidden';
+  var q=document.getElementById('nsSearchQ');q.focus();q.select();opsRunSearch();
+}
+function opsCloseSearch(){var el=document.getElementById('nsSearch');if(!el||el.hidden)return;el.hidden=true;document.body.style.overflow='';}
+function opsRunSearch(){
+  var q=(document.getElementById('nsSearchQ').value||'').trim().toLowerCase(),out=document.getElementById('nsSearchRes');
+  if(q.length<2){out.innerHTML='<p class="ml-empty">Type at least two letters.</p>';return;}
+  var res=[];
+  Object.keys(_opsD).forEach(function(k){
+    var p=k.split('|');if(p.length!==3||/_htl$/.test(p[2]))return;
+    var mi=OPS_CAL.findIndex(function(m){return m.month===p[0];});if(mi<0)return;
+    var iso=_nsIsoOf(p[0],+p[1]);if(!iso)return;
+    (Array.isArray(_opsD[k])?_opsD[k]:[]).forEach(function(v){
+      var t=_opsTextOf(v);if(!t||t==='Break / Off Air')return;
+      var hay=[t,(v&&v.note)||''].concat((v&&v.crew||[]).map(function(c){return c.name+' '+(c.role||'');})).join(' ').toLowerCase();
+      var rowName=_rdRowName(p[2]);
+      if(hay.indexOf(q)<0&&rowName.toLowerCase()!==q)return;
+      var crewHit=(v&&v.crew||[]).filter(function(c){return c.name.toLowerCase().indexOf(q)>=0;}).map(function(c){return c.name;});
+      res.push({iso:iso,mi:mi,day:+p[1],row:p[2],rowName:rowName,text:t,span:(v&&v.span>1)?v.span:1,crewHit:crewHit});
+    });
+  });
+  var today=OPS_TODAY;
+  res.sort(function(a,b){var af=a.iso>=today,bf=b.iso>=today;if(af!==bf)return af?-1:1;return af?(a.iso<b.iso?-1:1):(a.iso>b.iso?-1:1);});
+  if(!res.length){out.innerHTML='<p class="ml-empty">Nothing found.</p>';return;}
+  var shown=res.slice(0,80),h='<div class="ml-head">'+res.length+' result'+(res.length===1?'':'s')+(res.length>80?' · showing the first 80':'')+'</div>',lastPast=null;
+  shown.forEach(function(r){
+    var past=r.iso<today;
+    if(past&&lastPast===null){h+='<div class="ns-crew-grp">Earlier</div>';lastPast=true;}
+    var d=_mlUtc(r.iso).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric',timeZone:'UTC'});
+    h+='<div class="ops-co ns-sr" role="button" tabindex="0" onclick="opsJumpTo('+r.mi+','+r.day+',\''+r.row.replace(/'/g,"\\'")+'\')" onkeydown="if(event.key===\'Enter\'){this.click();}"><span class="ns-sr-date">'+d+'</span><span class="ns-sr-main">'+_rdEsc(r.text)+(r.crewHit.length?'<small>'+_rdEsc(r.crewHit.join(', '))+'</small>':'')+'</span><span class="ns-sr-row">'+_rdEsc(r.rowName)+(r.span>1?' · '+r.span+' days':'')+'</span></div>';
+  });
+  out.innerHTML=h;
+}
+function opsJumpTo(mi,day,row){
+  opsCloseSearch();
+  var sec=document.getElementById('opsMs2-'+mi);if(!sec)return;
+  if(sec.style.display==='none'&&typeof opsRevealPastMonths==='function')opsRevealPastMonths();
+  var hiddenMsg='';
+  if(row.indexOf('st_')===0&&_opsHidStu.has(row.slice(3)))hiddenMsg=row.slice(3)+' is hidden in Settings';
+  if(_nsIsTeam(row)&&_opsHidTeam.has(row))hiddenMsg=_rdRowName(row)+' is hidden in Settings';
+  setTimeout(function(){
+    var td=null;
+    document.querySelectorAll('#opsMs2-'+mi+' td.ops-cell[data-row="'+row.replace(/"/g,'\\"')+'"]').forEach(function(c){var d0=+c.dataset.day,n=c.colSpan||1;if(day>=d0&&day<d0+n)td=c;});
+    if(!td){toast(hiddenMsg||'Could not find that day on the calendar');return;}
+    td.scrollIntoView({block:'center',inline:'center'});
+    td.classList.remove('ns-flash');void td.offsetWidth;td.classList.add('ns-flash');
+    setTimeout(function(){td.classList.remove('ns-flash');},2600);
+  },80);
+}
+document.addEventListener('keydown',function(e){
+  if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();opsOpenSearch();}
+  else if(e.key==='Escape')opsCloseSearch();
+});
+document.addEventListener('click',function(e){var el=document.getElementById('nsSearch');if(el&&!el.hidden&&e.target===el)opsCloseSearch();});
+// Undo (b93): every cell change records its previous value into a short transaction.
+// Deleting, moving and dragging offer an Undo bar that restores those cells.
+var _nsUndoTx=null,_nsUndoTimer=null,_nsUndoLast=null,_nsUndoing=false,_nsUndoShown=null,_nsUndoHide=null;
+function _nsUndoRecord(key){
+  if(_nsUndoing||!window._opsBooted)return;
+  if(!_nsUndoTx)_nsUndoTx={prev:{},at:Date.now()};
+  if(!Object.prototype.hasOwnProperty.call(_nsUndoTx.prev,key))_nsUndoTx.prev[key]=Object.prototype.hasOwnProperty.call(_opsD,key)?JSON.parse(JSON.stringify(_opsD[key])):null;
+  clearTimeout(_nsUndoTimer);_nsUndoTimer=setTimeout(function(){_nsUndoLast=_nsUndoTx;_nsUndoTx=null;},500);
+}
+function _nsOfferUndo(label){
+  setTimeout(function(){
+    var tx=_nsUndoTx||_nsUndoLast;
+    if(!tx||Date.now()-tx.at>4000||!Object.keys(tx.prev).length)return;
+    clearTimeout(_nsUndoTimer);_nsUndoLast=null;_nsUndoTx=null;
+    _nsUndoShown=tx;
+    var bar=document.getElementById('nsUndo');
+    if(!bar){bar=document.createElement('div');bar.id='nsUndo';bar.className='ns-undo';bar.setAttribute('role','status');
+      bar.innerHTML='<span></span><button type="button" onclick="opsUndo()">Undo</button>';document.body.appendChild(bar);}
+    bar.querySelector('span').textContent=label;
+    bar.classList.add('show');
+    clearTimeout(_nsUndoHide);_nsUndoHide=setTimeout(function(){bar.classList.remove('show');_nsUndoShown=null;},10000);
+  },60);
+}
+function opsUndo(){
+  var tx=_nsUndoShown;if(!tx)return;
+  _nsUndoShown=null;
+  var bar=document.getElementById('nsUndo');if(bar)bar.classList.remove('show');
+  _nsUndoing=true;
+  try{Object.keys(tx.prev).forEach(function(k){var p=k.split('|');os(p[0],+p[1],p.slice(2).join('|'),tx.prev[k]||[]);});}
+  finally{_nsUndoing=false;}
+  if(typeof opsCloseCed==='function')opsCloseCed();
+  if(typeof opsReRender==='function')opsReRender();
+  toast('Undone');
+}
+document.addEventListener('keydown',function(e){
+  if((e.metaKey||e.ctrlKey)&&!e.shiftKey&&e.key.toLowerCase()==='z'&&_nsUndoShown){
+    var t=e.target;if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'))return;
+    e.preventDefault();opsUndo();
+  }
+});
+// Team (b92): one list drives the Team rows, Settings switches, Add to calendar and Export
+var NS_TEAM=[
+  {row:'andrew',name:'Andrew',full:'Andrew Rowell'},
+  {row:'chris',name:'Chris',full:'Chris Warden'},
+  {row:'esther',name:'Esther',full:'Esther Brazil'},
+  {row:'ian',name:'Ian',full:'Ian Curry'},
+  {row:'lily',name:'Lily',full:'Lily Britten'},
+  {row:'nik',name:'Nik',full:'Nik Qerimi'},
+  {row:'sam',name:'Sam',full:'Sam Pickford'}
+];
+function _nsIsTeam(r){return NS_TEAM.some(function(t){return t.row===r;});}
+var _opsHidTeam=new Set();
+try{JSON.parse(localStorage.getItem('opsHidTeam')||'[]').forEach(function(r){_opsHidTeam.add(r);});}catch(e){}
+// Morning Live Guarantee rota (b92)
+var NS_MLG=['Nik Qerimi','Sam Pickford'];
+// Nik or Sam on the Guarantee rota shows on their Team row (b94). Worked out from the whole
+// rota — stretched and dragged boxes included — so the Team row always follows. Only the
+// planner's own "Morning Live Guarantee" labels are touched.
+function _opsSyncMLGToTeam(){return _opsReconcileMLG();}
+function _nsIsMlgMirror(x){return (typeof x==='string'&&/^\s*morning live guarantee\s*$/i.test(x))||!!(x&&typeof x==='object'&&x.mlg);}
+function _opsReconcileMLG(){
+  var changed=false;
+  OPS_CAL.forEach(function(m){
+    var days=m.days,cover=days.map(function(){return {};});
+    days.forEach(function(d,idx){
+      og(m.month,d.day,'mlg').forEach(function(v){
+        var who=_opsTextOf(v).split(' ')[0].toLowerCase();if(who!=='nik'&&who!=='sam')return;
+        var n=(v&&typeof v==='object'&&v.span>1)?v.span:1;
+        for(var k=0;k<n&&idx+k<days.length;k++)cover[idx+k][who]=true;
+      });
+    });
+    ['nik','sam'].forEach(function(rk){
+      days.forEach(function(d,idx){
+        var want=[];
+        if(cover[idx][rk]&&!(idx>0&&cover[idx-1][rk])){
+          var len=1;while(idx+len<days.length&&cover[idx+len][rk])len++;
+          want=[len>1?{text:'Morning Live Guarantee',span:len,mlg:1}:'Morning Live Guarantee'];
+        }
+        var key=m.month+'|'+d.day+'|'+rk,ex=Array.isArray(_opsD[key])?_opsD[key]:[];
+        var kept=ex.filter(function(x){return !_nsIsMlgMirror(x);});
+        if(want.length&&kept.some(function(x){return _opsTextOf(x).toLowerCase()==='morning live guarantee';}))want=[];
+        if(JSON.stringify(ex.filter(_nsIsMlgMirror))===JSON.stringify(want))return;
+        if(!Array.isArray(_opsD[key])&&!want.length)return;
+        _opsD[key]=kept.concat(want);changed=true;
+      });
+    });
+  });
+  return changed;
+}
+function opsMlgPick(name){
+  if(!_opsEd)return;
+  var ed=_opsEd,cur=og(ed.month,ed.day,ed.row);
+  var next=(cur.length===1&&_opsTextOf(cur[0])===name)?[]:[name];
+  os(ed.month,ed.day,ed.row,next);
+  opsCloseCed();opsReRender();
+}
 function os(m,d,r,v){
-  _opsD[m+'|'+d+'|'+r]=v;
+  var key=m+'|'+d+'|'+r,prev=_opsD[key];
+  _nsUndoRecord(key);
+  _opsD[key]=v;
+  _nsHistRecord(key,prev,v);
   if(r==='ml'){_opsSyncMLToJob(m,d,v);_opsSyncMLToStaff(m,d,v);}
+  if(r==='mlg')_opsSyncMLGToTeam(m,d,v);
   saveData();
 }
 // When the Ops Planner ML row changes, mirror the value into the matching
@@ -2381,8 +2895,10 @@ function opsRenderMonth(m,mi){
   let h='<table class="ops-tbl">';
   h+='<tr class="ops-mhdr"><td colspan="'+(n+1)+'"><div class="ns-mh">'
     +_nsBrandHTML()
+    +'<button type="button" class="ns-gear ns-search" onclick="opsOpenSearch()" aria-label="Search" title="Search (⌘K)">'+NS_SEARCH+'</button>'
     +'<button type="button" class="ns-gear ns-add" onclick="openOpsAddModal()" aria-label="Add to calendar" title="Add to calendar">'+NS_ADD+'</button>'
     +'<button type="button" class="ns-gear ns-crewtog" onclick="opsToggleCrew()" aria-label="Show booked crew" aria-pressed="'+document.documentElement.classList.contains('ns-show-crew')+'" title="Show booked crew">'+NS_CREWICON+'</button>'
+    +'<button type="button" class="ns-gear ns-times" onclick="opsOpenTimes()" aria-label="Crew times" title="Crew times">'+NS_CLOCK+'</button>'
     +'<button type="button" class="ns-gear ns-export" onclick="opsOpenExport()" aria-label="Export data" title="Export data">'+NS_EXPORT+'</button>'
     +'<button type="button" class="ns-gear" onclick="_rdOpenSettings()" aria-label="Settings" title="Settings">'+NS_GEAR+'</button>'
     +'<div class="ns-mname"><span class="ops-mhdr-txt" onclick="planOpenPicker()" style="cursor:pointer" title="Jump to a month">'+m.month.split(' ')[0]+'</span>'
@@ -2480,7 +2996,7 @@ function opsRenderMonth(m,mi){
   const brow=(lbl,row,color,fc)=>{
     // Track which cells are covered by an earlier span entry in THIS row
     const rowCov=(row!=='ml')?new Set():null;
-    const staffCls=(row==='andrew'||row==='chris'||row==='ian')?' staff':'';
+    const staffCls=_nsIsTeam(row)?' staff':'';
     let r='<tr><td class="ops-rlbl'+staffCls+'" style="color:'+color+'">'+lbl+'</td>';
     days.forEach((_,i)=>{const c=cell(i,row,fc,rowCov);if(c)r+=c;});
     return r+'</tr>';
@@ -2488,17 +3004,18 @@ function opsRenderMonth(m,mi){
   // Notes — free-text row at the top of the planner
   // Staff rows first — Andrew, Chris, Ian — then the red divider
   h+=nsSec('Team');
-  h+=brow('Andrew','andrew','#f04b23','ops-andrew');
-  h+=gap;
-  h+=brow('Chris','chris','#f04b23','ops-chris');
-  h+=gap;
-  h+=brow('Ian','ian','#f04b23','ops-ian');
+  var _teamFc={andrew:'ops-andrew',chris:'ops-chris',ian:'ops-ian'};
+  NS_TEAM.filter(function(t){return !_opsHidTeam.has(t.row);}).forEach(function(t,ti){
+    if(ti>0)h+=gap;
+    h+=brow(t.name,t.row,'#f04b23',_teamFc[t.row]||null);
+  });
   h+=nsSec('');
   // b64: Info (stored under the 'notes' row key) sits under the team rows
   h+=brow('Info','notes','#8f8d88',null);
   h+=nsSec('Rotas');
   // Morning Live (no extra header — the row label says it all)
   h+=brow('Morning Live TM','ml','#7fa0c8',null);
+  h+=brow('Morning Live Guarantee','mlg','#7fa0c8',null);
   h+=brow('ShopOn Engineer','shopon','#7fa0c8','ops-so');
   h+=nsSec('Studios');
   // Studio location map — hardcoded base + job overrides
@@ -2760,7 +3277,7 @@ function opsCk(td,dayOverride){
   if(dayOverride)day=+dayOverride;
   // Merged ML / Info span: pick the actual day clicked using click X position
   else if((row==='ml'||row==='notes'||td.dataset.run)&&td.colSpan&&td.colSpan>1&&window._lastOpsClickX!=null){
-    var _spnR=td.getBoundingClientRect();
+    var _spnR=_opsCellRect(td);
     var _perDay=_spnR.width/td.colSpan;
     var _offIdx=Math.max(0,Math.min(td.colSpan-1,Math.floor((window._lastOpsClickX-_spnR.left)/_perDay)));
     day=day+_offIdx;
@@ -2782,9 +3299,14 @@ function opsCk(td,dayOverride){
     html+='<div style="background:rgba(216,90,97,.12);color:#a03040;padding:8px 12px;margin:8px 8px 4px;border-radius:6px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;line-height:1.3;border:1px dashed #d85a61;">Drag range: '+_pending.span+' days<br><span style="text-transform:none;letter-spacing:0;font-weight:500;font-size:11px;color:#666">Type below to fill this merged range</span></div>';
   }
   // Custom input + colour palette
+  if(row==='mlg'){
+    var _gTxt=cur.map(function(v){return _opsTextOf(v);});
+    NS_MLG.forEach(function(n){
+      var sel=_gTxt.indexOf(n)>=0;
+      html+='<div class="ops-co'+(sel?' sel':'')+'" role="button" tabindex="0" onclick="opsMlgPick(\''+n.replace(/'/g,"\\'")+'\')" onkeydown="if(event.key===\'Enter\')this.click()"><div class="ops-cd" style="background:'+NS_PEOPLE[n.toLowerCase()]+'"></div>'+_rdEsc(n)+(sel?'<span class="ops-ck">✓</span>':'')+'</div>';
+    });
+  }else if(row!=='ml'&&row!=='shopon'){
   html+='<div class="rd-add"><input class="ops-ci" id="opsCiTxt" placeholder="Add an entry" aria-label="New entry" autocomplete="off" oninput="_nsAutoSwatch(this.value)" onkeydown="if(event.key==\'Enter\'||event.keyCode===13)opsCiAdd()"/><button type="button" onclick="opsCiAdd()">Add</button></div>';
-  // One-tap Annual Leave for the team rows
-  if(row==='andrew'||row==='chris'||row==='ian')html+='<div class="ns-quick"><button type="button" class="ns-al-btn" onclick="event.stopPropagation();opsQuickAdd(\'Annual Leave\')"><i aria-hidden="true"></i>Annual Leave</button></div>';
   if(row!=='ml'&&row!=='shopon'){
     html+='<div style="display:flex;gap:3px;align-items:center;padding:4px 12px 0;flex-wrap:wrap;font-size:10px;color:#888">'+
       NS_SWATCHES.map(function(sw){return '<span class="ops-ci-sw'+(sw.cls?'':' ns-auto')+'" data-cls="'+sw.cls+'" style="display:inline-block;width:16px;height:16px;border-radius:3px;background:'+(sw.cls?sw.c:'')+';cursor:pointer;border:2px solid '+(sw.cls?'transparent':'#302f2c')+'" title="'+sw.n+'" onclick="opsCiPick(this,\''+sw.cls+'\')"></span>';}).join('')+
@@ -2792,6 +3314,7 @@ function opsCk(td,dayOverride){
     '</div>';
   }
   html+='<div class="ops-div"></div>';
+  }
   if(row==='ml'){
     html+='<div class="ops-cs">Tech Manager</div>';
     getOpsTMs().forEach(function(tm){
@@ -2805,6 +3328,7 @@ function opsCk(td,dayOverride){
     html+='<div class="ops-div"></div><div class="ops-cs">Off Air</div>';
     html+=mkO('Break / Off Air','#333',true);
   }
+  else if(row==='mlg'){}
   else if(row==='shopon'){
     html+='<div class="ops-cs">ShopOn Engineer</div>';
     var _soTxt=cur.map(function(v){return typeof v==='string'?v:(v&&v.text)||'';});
@@ -2820,18 +3344,20 @@ function opsCk(td,dayOverride){
   else if(row==='events'){html+='<div class="ops-cs">Events</div>';}
   else if(row==='notes'){html+='<div class="ops-cs">Info</div>';}
   else if(row.startsWith('st_')){const stName=row.slice(3);html+='<div class="ops-cs">'+stName+'</div>';}
-  else{const colMap={andrew:'#3a8a55',chris:'#907010',ian:'#3a5aaa'};const col=colMap[row]||'#555';html+='<div class="ops-cs">'+row.charAt(0).toUpperCase()+row.slice(1)+'</div>';html+=mkO('Day Off',col,false);
+  else{const colMap={andrew:'#3a8a55',chris:'#907010',ian:'#3a5aaa'};const col=colMap[row]||'#555';html+='<div class="ops-cs">'+row.charAt(0).toUpperCase()+row.slice(1)+'</div>';html+=mkO('Annual Leave','#f3e2a8',false); // plain list row, same as Hotel overnight
   // Hotel overnight marker — shows between this day and the next
   var _htlOn=og(month,day,row+'_htl').length>0;
   html+='<div class="ops-co" onclick="opsToggleHotel()"><span>Hotel overnight</span>'+(_htlOn?'<span style="margin-left:auto;color:#3a8a55;font-weight:900">&#10003;</span>':'')+'</div>';
   /* Jobs are no longer picked here — crewing someone on a job in the Jobs section seeds their calendar automatically */}
+  // Morning Live TM / ShopOn: names first, a custom entry underneath
+  if(row==='ml'||row==='shopon')html+='<div class="ops-div"></div><div class="ops-cs">Custom</div>'+'<div class="rd-add"><input class="ops-ci" id="opsCiTxt" placeholder="Add an entry" aria-label="New entry" autocomplete="off" oninput="_nsAutoSwatch(this.value)" onkeydown="if(event.key==\'Enter\'||event.keyCode===13)opsCiAdd()"/><button type="button" onclick="opsCiAdd()">Add</button></div>';
   if(cur.length)html+='<div class="ops-div"></div><div class="ops-co" onclick="opsClear()" style="color:#c06060"><div class="ops-cd" style="background:#c06060"></div>Clear cell</div>';
   const ced=document.getElementById('opsCed');
   document.getElementById('opsCedIn').innerHTML=html;
   ced.style.display='block';
   ced.style.maxHeight=''; // reset before measuring
   _opsPositionCed(td);
-  setTimeout(()=>{const i=document.getElementById('opsCiTxt');if(i)i.focus();},25);
+  if(row!=='ml'&&row!=='shopon')setTimeout(()=>{const i=document.getElementById('opsCiTxt');if(i)i.focus();},25);
 }
 // Position the cell editor popup next to the given cell, picking the side
 // (below / above / pinned-top) that best fits in the visible viewport.
@@ -3047,7 +3573,7 @@ function opsStartEdit(idx,chipEl){
     else if(e.key==='Escape'){e.preventDefault();finish(false);}
   });
 }
-function opsClear(){if(!_opsEd)return;const{month,day,row,id}=_opsEd;os(month,day,row,[]);opsRefCell(id,month,day,row);opsCloseCed();}
+function opsClear(){if(!_opsEd)return;_nsOfferUndo('Day cleared');const{month,day,row,id}=_opsEd;os(month,day,row,[]);opsRefCell(id,month,day,row);opsCloseCed();}
 var _opsChipFocus=null;
 function opsChipClick(ev,idx){
   ev.stopPropagation();
@@ -3061,8 +3587,8 @@ function _nsPlainRunVal(v){return typeof v==='string'?!!v.trim():!!(v&&typeof v=
 function _nsRunDay(td,x){
   var n=td.colSpan||1,start=+td.dataset.day,hdr=td.closest('table')&&td.closest('table').querySelector('tr.ops-dhdr');
   var m=OPS_CAL[+td.dataset.mi],i0=m?m.days.findIndex(function(d){return d.day===start;}):-1;
-  if(hdr&&i0>=0){for(var k=0;k<n;k++){var c=hdr.children[1+i0+k];if(!c)break;var cr=c.getBoundingClientRect();if(x<cr.right+3)return m.days[i0+k].day;}return m.days[Math.min(i0+n-1,m.days.length-1)].day;}
-  var r=td.getBoundingClientRect(),off=Math.floor((x-r.left)/(r.width/n));
+  if(hdr&&i0>=0){for(var k=0;k<n;k++){var c=hdr.children[1+i0+k];if(!c)break;var cr=_opsCellRect(c);if(x<cr.right+3)return m.days[i0+k].day;}return m.days[Math.min(i0+n-1,m.days.length-1)].day;}
+  var r=_opsCellRect(td),off=Math.floor((x-r.left)/(r.width/n));
   return start+Math.max(0,Math.min(n-1,off));
 }
 function opsRunChipClick(ev){
@@ -3098,7 +3624,7 @@ function opsCkChipIdx(td,idx,force,dayOverride){
   if(row.indexOf('st_')===0&&!force&&_nsCrewOn()){
     var crew=(v&&typeof v==='object'&&v.crew)?v.crew:[];
     html+='<div class="ops-cs">Crew'+(crew.length?' <span class="ns-crew-n">'+crew.length+' booked</span>':'')+'</div><div class="ns-crew-list">';
-    crew.forEach(function(c,ci){html+='<div class="ns-crew-row"><span class="ns-crew-nm">'+_rdEsc(c.name)+'</span>'+(c.role?'<span class="ns-crew-role">'+_rdEsc(c.role)+'</span>':'')+'<button type="button" class="ns-crew-x" aria-label="Remove '+_rdEsc(c.name)+'" onclick="opsCrewRemove('+idx+','+ci+')">&times;</button></div>';});
+    crew.forEach(function(c,ci){html+='<div class="ns-crew-row"><span class="ns-crew-who"><span class="ns-crew-nm">'+_rdEsc(c.name)+'</span><span class="ns-crew-meta">'+_rdEsc([c.role,_nsCrewTypeName(_nsCrewType(c)),(v&&v.span>1)?'':_nsCrewTimeStr(c,0)].filter(Boolean).join(' \u00b7 '))+'</span></span>'+'<button type="button" class="ns-crew-x" aria-label="Remove '+_rdEsc(c.name)+'" onclick="opsCrewRemove('+idx+','+ci+')">&times;</button></div>';});
     html+='</div><div class="rd-fields ns-crew-add">'
       +'<label class="rd-f"><span>Name</span><input id="nsCrewName" list="nsCrewNames" autocomplete="off" onkeyup="if(event.key===\'Enter\')opsCrewAdd('+idx+')"/></label>'
       +'<label class="rd-f"><span>Role</span><input id="nsCrewRole" list="nsCrewRoles" autocomplete="off" onkeyup="if(event.key===\'Enter\')opsCrewAdd('+idx+')"/></label>'
@@ -3179,12 +3705,23 @@ function _nsNoteIcon(v){
 // Saved list of freelancers (crew_list = [{name, role}]); bookings add to it automatically.
 window._opsCrewList=window._opsCrewList||[];
 var _nsCrewDirSnap=[];
+// Crew sections (b92): every freelancer is Tech Crew, Studio Crew or a Runner (older entries count as Tech Crew)
+var NS_CREW_TYPES=[{id:'tech',name:'Tech Crew',color:'#a9c6ea'},{id:'studio',name:'Studio Crew',color:'#b5dbb0'},{id:'runner',name:'Runners',color:'#f0c2d6'}];
+function _nsCrewCol(id){var t=NS_CREW_TYPES.find(function(x){return x.id===id;});return t?t.color:'#cfcdc7';}
+function _nsCrewDot(id){return '<i class="ns-cr-dot" style="background:'+_nsCrewCol(id)+'" aria-hidden="true"></i>';}
+function _nsCrewType(c){var t=c&&c.type;return (t==='studio'||t==='runner')?t:'tech';}
+function _nsCrewTypeName(t){var x=NS_CREW_TYPES.find(function(y){return y.id===t;});return x?x.name:'Tech Crew';}
+var _opsHidCrewTypes=new Set();
+try{JSON.parse(localStorage.getItem('opsHidCrewTypes')||'[]').forEach(function(t){_opsHidCrewTypes.add(t);});}catch(e){}
+function _nsApplyCrewTypeView(){NS_CREW_TYPES.forEach(function(t){document.documentElement.classList.toggle('ns-hide-crew-'+t.id,_opsHidCrewTypes.has(t.id));});}
+_nsApplyCrewTypeView();
 function _nsCrewDirectory(){
-  var by={};
-  (window._opsCrewList||[]).forEach(function(c){if(c&&c.name)by[c.name.toLowerCase()]={name:c.name,role:c.role||''};});
+  var by={},gone={};
+  (window._opsCrewList||[]).forEach(function(c){if(!c||!c.name)return;if(c.removed){gone[c.name.toLowerCase()]=1;return;}
+    by[c.name.toLowerCase()]={name:c.name,role:c.role||'',type:_nsCrewType(c),phone:c.phone||'',email:c.email||'',saved:true};});
   Object.keys(_opsD).forEach(function(k){if((k.split('|')[2]||'').indexOf('st_')!==0)return;
     (Array.isArray(_opsD[k])?_opsD[k]:[]).forEach(function(v){if(v&&typeof v==='object'&&v.crew)v.crew.forEach(function(c){
-      if(c&&c.name&&!by[c.name.toLowerCase()])by[c.name.toLowerCase()]={name:c.name,role:c.role||''};});});});
+      if(c&&c.name&&!by[c.name.toLowerCase()]&&!gone[c.name.toLowerCase()])by[c.name.toLowerCase()]={name:c.name,role:c.role||'',type:_nsCrewType(c),phone:'',email:''};});});});
   return Object.keys(by).map(function(k){return by[k];}).sort(function(a,b){return a.name.localeCompare(b.name,'en',{sensitivity:'base'});});
 }
 async function saveCrewList(){
@@ -3192,32 +3729,37 @@ async function saveCrewList(){
     var latest=[];
     try{var r=await fetch(_SB_URL+'/rest/v1/app_data?select=value&key=eq.'+_k('crew_list'),{headers:_sbGet()});
       var rows=await r.json();if(rows&&rows[0]&&Array.isArray(rows[0].value))latest=rows[0].value;}catch(e){}
+    // Merge per person: the most recently changed version wins (edits and removals included)
     var by={};
-    latest.concat(window._opsCrewList||[]).forEach(function(c){if(c&&c.name)by[c.name.toLowerCase()]={name:c.name,role:c.role||''};});
-    window._opsCrewList=Object.keys(by).map(function(k){return by[k];}).sort(function(a,b){return a.name.localeCompare(b.name);});
+    latest.concat(window._opsCrewList||[]).forEach(function(c){
+      if(!c||!c.name)return;var k=c.name.toLowerCase(),cur=by[k];
+      if(!cur||(c.updated||0)>=(cur.updated||0))by[k]={name:c.name,role:c.role||'',type:_nsCrewType(c),phone:c.phone||'',email:c.email||'',updated:c.updated||0,removed:!!c.removed};
+    });
+    window._opsCrewList=Object.keys(by).map(function(k){var c=by[k];if(!c.removed)delete c.removed;return c;}).sort(function(a,b){return a.name.localeCompare(b.name);});
     var p={key:_k('crew_list'),value:window._opsCrewList,updated_at:new Date().toISOString()};
     var w=await fetch(_SB_URL+'/rest/v1/app_data?on_conflict=key',{method:'POST',headers:_sbHeaders(),body:JSON.stringify(p)});
     if(!w.ok)throw new Error('HTTP '+w.status);
   }catch(e){console.warn('crew_list save failed',e);toast('Crew list not saved');}
 }
-function _nsCrewRemember(name,role){
+function _nsCrewRemember(name,role,type){
   var list=window._opsCrewList||[],lc=name.toLowerCase();
   var hit=list.find(function(c){return c.name.toLowerCase()===lc;});
-  if(hit){if(role&&!hit.role){hit.role=role;saveCrewList();}return;}
-  list.push({name:name,role:role||''});window._opsCrewList=list;saveCrewList();
+  if(hit&&!hit.removed){var ch=false;if(role&&!hit.role){hit.role=role;ch=true;}if(type&&hit.type!==type){hit.type=type;ch=true;}if(ch){hit.updated=Date.now();saveCrewList();}return;}
+  if(hit){hit.removed=false;delete hit.removed;hit.role=role||hit.role||'';hit.type=type||'tech';hit.updated=Date.now();saveCrewList();return;}
+  list.push({name:name,role:role||'',type:type||'tech',updated:Date.now()});window._opsCrewList=list;saveCrewList();
 }
-function _nsCrewBook(idx,name,role){
+function _nsCrewBook(idx,name,role,type){
   if(!_opsEd)return;
   const{month,day,row,id}=_opsEd;
   const cur=og(month,day,row).slice();
   if(idx<0||idx>=cur.length)return;
   var v=cur[idx];v=(typeof v==='string')?{text:v}:Object.assign({},v);
   var crew=(v.crew||[]).slice();
-  if(!crew.some(function(c){return c.name.toLowerCase()===name.toLowerCase();}))crew.push(role?{name:name,role:role}:{name:name});
+  if(!crew.some(function(c){return c.name.toLowerCase()===name.toLowerCase();})){var nc={name:name,type:type||'tech'};if(role)nc.role=role;crew.push(nc);}
   v.crew=crew;cur[idx]=v;
   os(month,day,row,cur);opsRefCell(id,month,day,row);_nsReopenEntry(id,idx,day);
 }
-function opsCrewBookIdx(idx,di){var p=_nsCrewDirSnap[di];if(p)_nsCrewBook(idx,p.name,p.role);}
+function opsCrewBookIdx(idx,di){var p=_nsCrewDirSnap[di];if(p)_nsCrewBook(idx,p.name,p.role,p.type);}
 function _nsShowName(text){var k=_nsShowKey(String(text||'').toLowerCase());return k?String(text).slice(0,k.length).trim():String(text||'');}
 function _nsIsoOf(month,day){var px=OPS_MPX[month];return px?px+'-'+String(day).padStart(2,'0'):'';}
 // Other days of the same job (any studio, within 60 days) this person could move to
@@ -3269,6 +3811,7 @@ function opsCrewMove(idx,ci,val){
 
 // Drag & drop crew (b85): drag a crew tag onto another studio job to move that person
 function _nsCrewMoveBetween(src,name,tgt){
+  _nsOfferUndo(name+' moved');
   var sameCell=src.month===tgt.month&&src.day===tgt.day&&src.row===tgt.row;
   var scur=og(src.month,src.day,src.row).slice(),sv=scur[src.idx];
   if(!sv||typeof sv!=='object'||!sv.crew)return false;
@@ -3327,7 +3870,7 @@ function _nsCrewMoveBetween(src,name,tgt){
     if(!drag.target||!info||drag.target.el!==info.el){clearTarget();if(info){info.el.classList.add('ns-drop-target');drag.target=info;}}
     // keep scrolling while near the edges
     var sec=el&&el.closest&&el.closest('.ops-ms2');
-    if(sec){var r=sec.getBoundingClientRect();if(e.clientX>r.right-60)sec.scrollLeft+=16;else if(e.clientX<r.left+250)sec.scrollLeft-=16;}
+    if(sec){var r=_opsCellRect(sec);if(e.clientX>r.right-60)sec.scrollLeft+=16;else if(e.clientX<r.left+250)sec.scrollLeft-=16;}
     if(e.clientY<70)window.scrollBy(0,-16);else if(e.clientY>innerHeight-70)window.scrollBy(0,16);
   },true);
   function targetAt(x,y){
@@ -3360,54 +3903,216 @@ function _nsCrewMoveBetween(src,name,tgt){
 function _nsCrewTags(v,click){
   if(!v||typeof v!=='object'||!v.crew||!v.crew.length)return '';
   return v.crew.map(function(c){
-    return '<span class="ns-crew-tag" data-crew-name="'+_rdEsc(c.name)+'"'+(click?' onclick="'+click+'"':'')+' title="'+_rdEsc(c.name+(c.role?' — '+c.role:''))+' — drag onto another job to move">'+_rdEsc(c.name)+(c.role?'<small>'+_rdEsc(c.role)+'</small>':'')+'</span>';
+    return '<span class="ns-crew-tag" data-crew-name="'+_rdEsc(c.name)+'" data-crew-type="'+_nsCrewType(c)+'"'+(click?' onclick="'+click+'"':'')+' title="'+_rdEsc(c.name+(c.role?' — '+c.role:''))+' — drag onto another job to move">'+_rdEsc(c.name)+(c.role?'<small>'+_rdEsc(c.role)+'</small>':'')+'</span>';
   }).join('');
 }
 function _nsCrewOn(){return document.documentElement.classList.contains('ns-show-crew');}
-// Crew mode menu (b82): who's booked on the boxes for this day, add/remove crew
+// Crew popup (b97): book crew from the crew list only (Tech Crew / Studio Crew / Runners pickers)
+// and put in everyone's start and finish for the day that was clicked.
+var _nsCrewCtx=null,_nsCrewPickCtx=null,_nsCrewMgrReturn=null;
 function opsCrewMenu(td,focusIdx,day){
-  const mi=+td.dataset.mi,row=td.dataset.row,month=OPS_CAL[mi].month;
-  day=day||+td.dataset.day;
-  _opsEd={mi,day,row,id:td.id,month};
-  _opsChipFocus={id:td.id,idx:focusIdx,day:day};
-  const cur=og(month,day,row);
-  var list=cur.map(function(v,i){return i;});
-  if(focusIdx>=0&&focusIdx<cur.length)list=[focusIdx];
-  var html=_rdCedHead(row,month,day)+'<div class="ns-crew-mode">Crew</div>';
-  if(!list.length)html+='<p class="ns-crew-empty">Nothing booked here yet. Turn Crew off to add an entry, then book crew on it.</p>';
-  list.forEach(function(i){
-    var v=cur[i],text=_opsTextOf(v),crew=(v&&typeof v==='object'&&v.crew)?v.crew:[];
-    var tmp=document.createElement('div');tmp.className='ops-chip '+((v&&v.cls)||({andrew:'ops-andrew',chris:'ops-chris',ian:'ops-ian'})[row]||opsChip(text));
+  var d0=+td.dataset.day,entryDay=d0,clicked=day||d0;
+  if(td.dataset.run)entryDay=clicked;                       // separate entries drawn as one bar
+  else if(day&&day!==d0){if(focusIdx>=0)entryDay=day;}      // a box that belongs to a day inside a stretched cell
+  else if((td.colSpan||1)>1&&window._lastOpsClickX!=null)clicked=_nsRunDay(td,window._lastOpsClickX);
+  _nsCrewOpen={};
+  _nsCrewRender(td.id,focusIdx,entryDay,clicked);
+}
+function _nsCrewReopen(){var c=_nsCrewCtx;if(!c)return;setTimeout(function(){_nsCrewRender(c.id,c.focusIdx,c.entryDay,c.clicked);},0);}
+function _nsCrewRender(id,focusIdx,entryDay,clicked){
+  var td=document.getElementById(id);if(!td)return;
+  var mi=+td.dataset.mi,row=td.dataset.row,month=OPS_CAL[mi].month,off=clicked-entryDay;
+  _opsEd={mi:mi,day:entryDay,row:row,id:id,month:month};
+  _opsChipFocus={id:id,idx:focusIdx,day:entryDay};
+  var items=[];
+  og(month,entryDay,row).forEach(function(v,i){
+    if(focusIdx>=0&&i!==focusIdx)return;
+    var span=(v&&typeof v==='object'&&v.span>1)?v.span:1;if(off>=span)return;
+    items.push({month:month,day:entryDay,row:row,idx:i,off:off,span:span});
+  });
+  if(off>0&&focusIdx<0)og(month,clicked,row).forEach(function(v,i){items.push({month:month,day:clicked,row:row,idx:i,off:0,span:1});});
+  _nsCrewCtx={id:id,focusIdx:focusIdx,entryDay:entryDay,clicked:clicked,items:items};
+  var html=_rdCedHead(row,month,clicked)+'<div class="ns-crew-mode">Crew</div>';
+  if(!items.length)html+='<p class="ns-crew-empty">Nothing booked here yet. Turn Crew off to add an entry, then book crew on it.</p>';
+  items.forEach(function(it,k){
+    var v=og(it.month,it.day,it.row)[it.idx],text=_opsTextOf(v),crew=(v&&typeof v==='object'&&v.crew)?v.crew:[];
+    var tmp=document.createElement('div');tmp.className='ops-chip '+((v&&v.cls)||opsChip(text));
     if(v&&v.cls)tmp.setAttribute('data-pick',v.cls);
     var col=_nsPastel(text,tmp)||'#8f8d88';
     html+='<section class="ns-crew-entry"><div class="ns-crew-title"><i style="background:'+col+'"></i>'+_rdEsc(text)+'<span class="ns-crew-n">'+(crew.length?crew.length+' booked':'No crew yet')+'</span></div>';
-    html+='<div class="ns-crew-list">';
-    crew.forEach(function(c,ci){html+='<div class="ns-crew-row"><span class="ns-crew-nm">'+_rdEsc(c.name)+'</span>'+(c.role?'<span class="ns-crew-role">'+_rdEsc(c.role)+'</span>':'')
-      +'<button type="button" class="ns-crew-x" aria-label="Remove '+_rdEsc(c.name)+'" onclick="event.stopPropagation();opsCrewRemove('+i+','+ci+')">&times;</button></div>';});
-    html+='</div>';
-    var booked={};crew.forEach(function(c){booked[c.name.toLowerCase()]=1;});
-    _nsCrewDirSnap=_nsCrewDirectory();
-    var avail=_nsCrewDirSnap.map(function(p,di){return {p:p,di:di};}).filter(function(o){return !booked[o.p.name.toLowerCase()];});
-    if(avail.length){
-      // Same plain rows as the other pickers (e.g. Morning Live TM)
-      html+='<details class="ns-crew-dd"'+(window._nsCrewPickOpen?' open':'')+' ontoggle="window._nsCrewPickOpen=this.open"><summary class="ns-crew-sub" onclick="event.stopPropagation()">Add from list <span class="ns-crew-count">'+avail.length+'</span><span class="rd-chev" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary><div class="ns-crew-pick">'+avail.map(function(o){
-        return '<div class="ops-co ns-crew-co" role="button" tabindex="0" onclick="event.stopPropagation();opsCrewBookIdx('+i+','+o.di+')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();this.click();}"><div class="ops-cd" style="background:'+col+'"></div>'+_rdEsc(o.p.name)+(o.p.role?'<span class="ns-crew-role">'+_rdEsc(o.p.role)+'</span>':'')+'</div>';
-      }).join('')+'</div></details>';
+    if(it.span>1)html+='<div class="ns-cr-day">Times for day '+(it.off+1)+' of '+it.span+'</div>';
+    var order=crew.map(function(c,ci){return {c:c,ci:ci};}).sort(function(a,b){
+      var ta=NS_CREW_TYPES.findIndex(function(t){return t.id===_nsCrewType(a.c);}),tb=NS_CREW_TYPES.findIndex(function(t){return t.id===_nsCrewType(b.c);});
+      return ta-tb||a.c.name.localeCompare(b.c.name);});
+    var open=_nsCrewOpen[k]||{};
+    var tin=function(val,handler,label,data){return '<input class="ns-tin" type="text" inputmode="numeric" maxlength="7" autocomplete="off" value="'+(val||'')+'" aria-label="'+_rdEsc(label)+'" '+data+' onclick="event.stopPropagation()" onkeydown="_nsTinKey(event,this)" onchange="'+handler+'"/>';};
+    if(crew.length>1){
+      if(open.all){
+        var t0=function(f){var vals=crew.map(function(c){var t=c.times&&c.times[it.off];return (t&&t[f])||'';});return vals.every(function(x){return x===vals[0];})?vals[0]:'';};
+        html+='<div class="ns-cr-line ns-cr-open ns-cr-all"><button type="button" class="ns-cr-name" onclick="event.stopPropagation();opsCrewToggleTimes('+k+',\'all\')">Everyone</button>'
+          +tin(t0('s'),'opsCrewAllIn(this,'+k+',\'s\')','Start time for everyone','data-cr="'+k+'_all_s"')+'<span class="ns-cr-dash">&ndash;</span>'
+          +tin(t0('e'),'opsCrewAllIn(this,'+k+',\'e\')','Finish time for everyone','data-cr="'+k+'_all_e"')+'</div>';
+      }else{
+        html+='<div class="ns-cr-line ns-cr-all"><button type="button" class="ns-cr-name ns-cr-setall" onclick="event.stopPropagation();opsCrewToggleTimes('+k+',\'all\')">Set times for everyone</button></div>';
+      }
     }
-    html+='<div class="ns-crew-sub">New freelancer</div><div class="rd-fields ns-crew-add">'
-      +'<label class="rd-f"><span>Name</span><input id="nsCrewName'+i+'" list="nsCrewNames" autocomplete="off" onkeyup="if(event.key===\'Enter\')opsCrewAdd('+i+')"/></label>'
-      +'<label class="rd-f"><span>Role</span><input id="nsCrewRole'+i+'" list="nsCrewRoles" autocomplete="off" onkeyup="if(event.key===\'Enter\')opsCrewAdd('+i+')"/></label>'
-      +'<button type="button" class="rd-btn" onclick="event.stopPropagation();opsCrewAdd('+i+')">+ Add</button></div>'
-      +'<button type="button" class="ns-crew-edit" onclick="event.stopPropagation();var t=document.getElementById(\''+td.id+'\');setTimeout(function(){opsCkChipIdx(t,'+i+',true,'+day+');},0)">Edit entry details</button>'
-      +'</section>';
+    order.forEach(function(o){
+      var c=o.c,ci=o.ci,t=(c.times&&c.times[it.off])||{},isOpen=!!open[ci];
+      var x='<button type="button" class="ns-crew-x" aria-label="Remove '+_rdEsc(c.name)+'" onclick="event.stopPropagation();opsCrewRm('+k+','+ci+')">&times;</button>';
+      var nameBtn=_nsCrewDot(_nsCrewType(c))+'<button type="button" class="ns-cr-name" aria-expanded="'+isOpen+'" title="'+(isOpen?'Done':'Add times')+'" onclick="event.stopPropagation();opsCrewToggleTimes('+k+','+ci+')">'+_rdEsc(c.name)+'</button>';
+      if(isOpen){
+        html+='<div class="ns-cr-line ns-cr-open">'+nameBtn
+          +tin(t.s,'opsCrewTimeIn(this,'+k+','+ci+',\'s\')','Start time for '+c.name,'data-cr="'+k+'_'+ci+'_s"')+'<span class="ns-cr-dash">&ndash;</span>'
+          +tin(t.e,'opsCrewTimeIn(this,'+k+','+ci+',\'e\')','Finish time for '+c.name,'data-cr="'+k+'_'+ci+'_e"')
+          +'<span class="ns-cr-hrs" id="nsCrH'+k+'_'+ci+'">'+_nsHrs(_nsMins(t.s,t.e))+'</span>'+x+'</div>';
+      }else{
+        var ts=(t.s||t.e)?(t.s||'?')+'–'+(t.e||'?'):'',hm=_nsMins(t.s,t.e);
+        html+='<div class="ns-cr-line">'+nameBtn+'<small class="ns-cr-role">'+_rdEsc([c.role,_nsCrewTypeName(_nsCrewType(c))].filter(Boolean).join(' · '))+'</small>'
+          +(ts?'<span class="ns-cr-ts">'+ts+(hm!=null?'<b>'+_nsHrs(hm)+'</b>':'')+'</span>':'')+x+'</div>';
+      }
+    });
+    html+='<div class="ns-crew-sub">Book crew</div>';
+    NS_CREW_TYPES.forEach(function(ty){
+      var n=crew.filter(function(c){return _nsCrewType(c)===ty.id;}).length;
+      html+='<div class="ops-co ns-cr-sec" role="button" tabindex="0" onclick="event.stopPropagation();opsCrewOpenPick('+k+',\''+ty.id+'\')" onkeydown="if(event.key===\'Enter\'){this.click();}">'+_nsCrewDot(ty.id)+ty.name+'<span class="ns-cr-count">'+(n?n+' booked':'')+'</span><span class="ns-cr-chev" aria-hidden="true">&#8250;</span></div>';
+    });
+    html+='<div class="ns-cr-links"><button type="button" class="ns-crew-edit" onclick="event.stopPropagation();var t=document.getElementById(\''+id+'\');setTimeout(function(){opsCkChipIdx(t,'+it.idx+',true,'+it.day+');},0)">Edit entry details</button>'
+      +'<button type="button" class="ns-crew-edit" onclick="event.stopPropagation();opsCrewManageFromPopup()">Manage crew list</button></div></section>';
   });
-  html+='<datalist id="nsCrewNames">'+_nsCrewNames().map(function(n){return '<option value="'+_rdEsc(n)+'">';}).join('')+'</datalist>'
-    +'<datalist id="nsCrewRoles">'+NS_CREW_ROLES.map(function(n){return '<option value="'+n+'">';}).join('')+'</datalist>';
-  const ced=document.getElementById('opsCed');
+  var ced=document.getElementById('opsCed');
   document.getElementById('opsCedIn').innerHTML=html;
   ced.style.display='block';
   _opsPositionCed(td);
 }
+// Change one entry's crew and save it
+function _nsCrewMutate(k,fn){
+  var it=_nsCrewCtx&&_nsCrewCtx.items[k];if(!it)return null;
+  var cur=og(it.month,it.day,it.row).slice(),v=cur[it.idx];if(v==null)return null;
+  v=(typeof v==='string')?{text:v}:Object.assign({},v);
+  v.crew=(v.crew||[]).map(function(c){return Object.assign({},c);});
+  if(fn(v,it)===false)return null;
+  if(!v.crew.length)delete v.crew;
+  var ks=Object.keys(v);cur[it.idx]=(ks.length===1&&ks[0]==='text')?v.text:v;
+  os(it.month,it.day,it.row,cur);
+  return v;
+}
+function _nsSetCrewT(c,off,field,val){
+  var times=Object.assign({},c.times||{}),t=Object.assign({},times[off]||{});
+  if(val)t[field]=val;else delete t[field];
+  if(t.s||t.e)times[off]=t;else delete times[off];
+  if(Object.keys(times).length)c.times=times;else delete c.times;
+}
+function _nsCrewShowHrs(k,v){
+  var off=_nsCrewCtx.items[k].off;
+  (v.crew||[]).forEach(function(c,ci){var t=(c.times&&c.times[off])||{},h=document.getElementById('nsCrH'+k+'_'+ci);if(h)h.textContent=_nsHrs(_nsMins(t.s,t.e));});
+}
+// Which crew rows have their times open, per entry in the popup
+var _nsCrewOpen={};
+function opsCrewToggleTimes(k,ci){
+  var o=_nsCrewOpen[k]=_nsCrewOpen[k]||{};
+  o[ci]=!o[ci];
+  _nsCrewRenderKeep();
+  if(o[ci])setTimeout(function(){var i=document.querySelector('#opsCedIn input[data-cr="'+k+'_'+ci+'_s"]');if(i){i.focus();i.select();}},20);
+}
+function _nsCrewRenderKeep(){var c=_nsCrewCtx;if(c)_nsCrewRender(c.id,c.focusIdx,c.entryDay,c.clicked);}
+// Accepts 0800, 800, 8, 8:00, 18.30, 6pm; returns "08:00", "" for blank, or null if it isn't a time
+function _nsParseTime(v){
+  v=String(v||'').trim().toLowerCase().replace(/\s+/g,'');if(!v)return '';
+  var m=v.match(/^(\d{1,2})(?:[:.h]?(\d{2}))?(am|pm)?$/);if(!m)return null;
+  var h=+m[1],mm=m[2]?+m[2]:0;
+  if(m[3]==='pm'&&h<12)h+=12;if(m[3]==='am'&&h===12)h=0;
+  if(h>23||mm>59)return null;
+  return String(h).padStart(2,'0')+':'+String(mm).padStart(2,'0');
+}
+function _nsTinVal(el){
+  var t=_nsParseTime(el.value);
+  if(t===null){el.classList.add('ns-bad');toast('Type a time like 0800 or 18:30');return null;}
+  el.classList.remove('ns-bad');el.value=t;return t;
+}
+function _nsTinKey(e,el){
+  if(e.key!=='Enter')return;
+  e.preventDefault();
+  var d=el.getAttribute('data-cr')||'';
+  if(/_s$/.test(d)){var n=document.querySelector('#opsCedIn input[data-cr="'+d.replace(/_s$/,'_e')+'"], #nsTimesBody input[data-tm="'+(el.getAttribute('data-tm')||'').replace(/_s$/,'_e')+'"]');if(n){n.focus();n.select();return;}}
+  el.blur();
+  var p=d.split('_');
+  if(p.length===3&&document.getElementById('opsCedIn').contains(el)){setTimeout(function(){opsCrewToggleTimes(+p[0],p[1]==='all'?'all':+p[1]);},30);}
+}
+function opsCrewTimeIn(el,k,ci,field){var t=_nsTinVal(el);if(t!==null)opsCrewSetTime(k,ci,field,t);}
+function opsCrewAllIn(el,k,field){var t=_nsTinVal(el);if(t!==null)opsCrewSetAll(k,field,t);}
+function opsCrewSetTime(k,ci,field,val){
+  var v=_nsCrewMutate(k,function(v,it){if(!v.crew[ci])return false;_nsSetCrewT(v.crew[ci],it.off,field,val);});
+  if(v)_nsCrewShowHrs(k,v);
+}
+function opsCrewSetAll(k,field,val){
+  var v=_nsCrewMutate(k,function(v,it){v.crew.forEach(function(c){_nsSetCrewT(c,it.off,field,val);});});
+  if(!v)return;
+  document.querySelectorAll('#opsCedIn input[data-cr^="'+k+'_"][data-cr$="_'+field+'"]').forEach(function(i){i.value=val||'';});
+  _nsCrewShowHrs(k,v);
+}
+function opsCrewRm(k,ci){
+  _nsOfferUndo('Crew removed');
+  if(_nsCrewMutate(k,function(v){if(!v.crew[ci])return false;v.crew.splice(ci,1);})){opsReRender();_nsCrewReopen();}
+}
+// Pickers: one window per section, tick people to book or unbook them
+function opsCrewOpenPick(k,type){
+  var it=_nsCrewCtx&&_nsCrewCtx.items[k];if(!it)return;
+  _nsCrewPickCtx={k:k,type:type};
+  opsCloseCed();
+  _nsRenderCrewPick();
+  var el=document.getElementById('nsCrewPick');el.hidden=false;document.body.style.overflow='hidden';
+  var x=el.querySelector('.rd-x');if(x)x.focus();
+}
+function _nsRenderCrewPick(){
+  var pc=_nsCrewPickCtx,it=pc&&_nsCrewCtx&&_nsCrewCtx.items[pc.k];if(!it)return;
+  var ty=NS_CREW_TYPES.find(function(t){return t.id===pc.type;})||NS_CREW_TYPES[0];
+  var v=og(it.month,it.day,it.row)[it.idx],text=_opsTextOf(v),crew=(v&&typeof v==='object'&&v.crew)?v.crew:[];
+  var booked={};crew.forEach(function(c){booked[c.name.toLowerCase()]=1;});
+  document.getElementById('nsCrewPickTitle').textContent=ty.name;
+  var iso=_nsIsoOf(it.month,_nsCrewCtx.clicked);
+  document.getElementById('nsCrewPickSub').textContent=text+' · '+(iso?_mlUtc(iso).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',timeZone:'UTC'}):'');
+  _nsCrewDirSnap=_nsCrewDirectory();
+  var people=_nsCrewDirSnap.map(function(p,di){return {p:p,di:di};}).filter(function(o){return _nsCrewType(o.p)===ty.id;});
+  var h='';
+  if(!people.length)h='<p class="ml-empty">No one in '+_rdEsc(ty.name)+' yet. Add people in Manage crew list.</p>';
+  people.forEach(function(o){
+    var on=!!booked[o.p.name.toLowerCase()];
+    h+='<div class="ops-co ns-cp-row'+(on?' sel':'')+'" role="button" tabindex="0" aria-pressed="'+on+'" onclick="opsCrewPickToggle('+o.di+')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();this.click();}">'
+      +_nsCrewDot(ty.id)+'<span class="ns-cp-nm">'+_rdEsc(o.p.name)+(o.p.role?'<small>'+_rdEsc(o.p.role)+'</small>':'')+'</span>'+(on?'<span class="ops-ck">✓</span>':'')+'</div>';
+  });
+  document.getElementById('nsCrewPickBody').innerHTML=h;
+}
+function opsCrewPickToggle(di){
+  var pc=_nsCrewPickCtx,p=_nsCrewDirSnap[di];if(!pc||!p)return;
+  var lc=p.name.toLowerCase();
+  _nsCrewMutate(pc.k,function(v,it){
+    var i=v.crew.findIndex(function(c){return c.name.toLowerCase()===lc;});
+    if(i>=0){v.crew.splice(i,1);return;}
+    var nc={name:p.name,type:p.type||pc.type};if(p.role)nc.role=p.role;
+    v.crew.push(nc);
+  });
+  var y=document.getElementById('nsCrewPickBody').scrollTop;
+  _nsRenderCrewPick();
+  document.getElementById('nsCrewPickBody').scrollTop=y;
+}
+function opsCrewPickDone(){
+  var el=document.getElementById('nsCrewPick');if(!el||el.hidden)return;
+  el.hidden=true;document.body.style.overflow='';
+  _nsCrewPickCtx=null;
+  opsReRender();_nsCrewReopen();
+}
+function opsCrewPickManage(){
+  var el=document.getElementById('nsCrewPick');el.hidden=true;
+  _nsCrewMgrReturn='pick';opsOpenCrewMgr();
+}
+function opsCrewManageFromPopup(){opsCloseCed();_nsCrewMgrReturn='popup';opsOpenCrewMgr();}
+function _nsCrewMgrClosed(){
+  var r=_nsCrewMgrReturn;_nsCrewMgrReturn=null;
+  if(r==='pick'&&_nsCrewPickCtx){_nsRenderCrewPick();var el=document.getElementById('nsCrewPick');el.hidden=false;document.body.style.overflow='hidden';}
+  else if(r==='popup'||r==='pick'){opsReRender();_nsCrewReopen();}
+}
+document.addEventListener('click',function(e){var el=document.getElementById('nsCrewPick');if(el&&!el.hidden&&e.target===el)opsCrewPickDone();});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){var el=document.getElementById('nsCrewPick');if(el&&!el.hidden)opsCrewPickDone();}});
 function _nsSetCrewView(on){
   document.documentElement.classList.toggle('ns-show-crew',on);
   document.querySelectorAll('.ns-crewtog').forEach(function(b){b.setAttribute('aria-pressed',String(on));b.title=on?'Hide booked crew':'Show booked crew';});
@@ -3432,13 +4137,15 @@ function opsCrewAdd(idx){
   if(!_opsEd)return;
   var nEl=document.getElementById('nsCrewName'+idx)||document.getElementById('nsCrewName'),rEl=document.getElementById('nsCrewRole'+idx)||document.getElementById('nsCrewRole');
   var name=(nEl&&nEl.value||'').trim(),role=(rEl&&rEl.value||'').trim();
+  var tEl=document.getElementById('nsCrewType'+idx),type=tEl?tEl.value:'tech';
   if(!name){if(nEl)nEl.focus();return;}
   // Picking a saved name without a role uses their usual role
   if(!role){var known=_nsCrewDirectory().find(function(c){return c.name.toLowerCase()===name.toLowerCase();});if(known){name=known.name;role=known.role;}}
-  _nsCrewRemember(name,role);
-  _nsCrewBook(idx,name,role);
+  _nsCrewRemember(name,role,type);
+  _nsCrewBook(idx,name,role,type);
 }
 function opsCrewRemove(idx,ci){
+  _nsOfferUndo('Crew removed');
   if(!_opsEd)return;
   const{month,day,row,id}=_opsEd;
   const cur=og(month,day,row).slice();
@@ -3502,6 +4209,7 @@ function opsRecolorEntry(idx,cls){
   if(td)opsCkChipIdx(td,idx);
 }
 function opsMoveEntry(idx,iso){
+  _nsOfferUndo('Entry moved');
   if(!_opsEd||!iso)return;
   const{month,day,row,id}=_opsEd;
   var mn=null,px=iso.slice(0,7);
@@ -3519,7 +4227,7 @@ function opsMoveEntry(idx,iso){
   opsCloseCed();
   if(typeof opsReRender==='function')opsReRender();
 }
-function opsRemoveItem(idx){if(!_opsEd)return;const{month,day,row,id}=_opsEd;const cur=og(month,day,row).slice();if(idx<0||idx>=cur.length)return;cur.splice(idx,1);os(month,day,row,cur);opsRefCell(id,month,day,row);opsCk(document.getElementById(id));}
+function opsRemoveItem(idx){if(!_opsEd)return;_nsOfferUndo('Entry removed');const{month,day,row,id}=_opsEd;const cur=og(month,day,row).slice();if(idx<0||idx>=cur.length)return;cur.splice(idx,1);os(month,day,row,cur);opsRefCell(id,month,day,row);opsCk(document.getElementById(id));}
 // Set an entry's span to an absolute number of days. Called from the days
 // input field next to each chip in the cell editor. Toast confirms the change
 // so the user can see something happened even if their attention's elsewhere.
@@ -3752,9 +4460,11 @@ function _opsDragMouseUp(ev){
     setTimeout(function(){_opsBlockClick=false;},120);
   }
   if(!drag.moved)return;
+  _nsOfferUndo(drag.mode==='move'?'Entry moved':'Entry resized');
   if(drag.mode==='move')_opsDragMove(drag);
   else if(drag.row==='ml')_opsDragSpanAdjustML(drag);
   else _opsDragSpanAdjust(drag);
+  if(_opsReconcileMLG()){saveData();if(typeof opsReRender==='function')opsReRender();}
 }
 function _opsDragHighlight(){
   if(!_opsDrag)return;
@@ -3875,7 +4585,7 @@ function _opsDragSpanAdjust(drag){
   }
   // Clear union of old range and new range, then write new entry at newLeft.
   var clearLo=Math.min(leftmost,newLeft),clearHi=Math.max(curHi,newRight);
-  for(var d=clearLo;d<=clearHi;d++)_opsD[month+'|'+d+'|'+row]=[];
+  for(var d=clearLo;d<=clearHi;d++){_nsUndoRecord(month+'|'+d+'|'+row);_opsD[month+'|'+d+'|'+row]=[];}
   os(month,newLeft,row,[newEntry]);
   console.log('[opsDrag] resized',leftmost,'..',curHi,'→',newLeft,'..',newRight);
   if(typeof opsReRender==='function')opsReRender();
@@ -3920,7 +4630,7 @@ function _opsDragSpanAdjustML(drag){
   }
   if(newLeft===runStart&&newRight===runEnd){console.log('[opsDrag-ml] no change');return;}
   var clearLo=Math.min(runStart,newLeft),clearHi=Math.max(runEnd,newRight);
-  for(var d=clearLo;d<=clearHi;d++)_opsD[month+'|'+d+'|'+row]=[];
+  for(var d=clearLo;d<=clearHi;d++){_nsUndoRecord(month+'|'+d+'|'+row);_opsD[month+'|'+d+'|'+row]=[];}
   for(var d=newLeft;d<=newRight;d++)os(month,d,row,[text]);
   console.log('[opsDrag-ml] adjusted',runStart,'..',runEnd,'→',newLeft,'..',newRight,'text=',text);
   if(typeof opsReRender==='function')opsReRender();
@@ -3994,7 +4704,7 @@ function _opsDragMove(drag){
         for(var off=1;off<srcSpan;off++){
           if(srcIdx+off>=srcM.days.length)break;
           var sd=srcM.days[srcIdx+off].day;
-          _opsD[drag.month+'|'+sd+'|'+drag.row]=[];
+          _nsUndoRecord(drag.month+'|'+sd+'|'+drag.row);_opsD[drag.month+'|'+sd+'|'+drag.row]=[];
         }
       }
     }
@@ -4094,9 +4804,9 @@ function _opsFindDate(iso){
   }
   return null;
 }
-var RD_A_STAFF=[['andrew','Andrew'],['chris','Chris'],['ian','Ian']];
+var RD_A_STAFF=NS_TEAM.map(function(t){return [t.row,t.name];});
 var RD_A_QUICK={staff:['London','Annual Leave'],studio:['Rig','Tech reh','Show','Derig','Dark'],events:['Meeting','Recce','Workshop','Training'],notes:[]};
-function _rdAKind(row){if(!row)return '';if(row==='ml'||row==='shopon')return 'rota';if(row.indexOf('st_')===0)return 'studio';if(row==='events'||row==='notes')return row;return 'staff';}
+function _rdAKind(row){if(!row)return '';if(row==='ml'||row==='mlg'||row==='shopon')return 'rota';if(row.indexOf('st_')===0)return 'studio';if(row==='events'||row==='notes')return row;return 'staff';}
 function _rdARowLabel(row){if(!row)return '';var st=RD_A_STAFF.find(function(x){return x[0]===row;});if(st)return st[1];return _rdRowName(row);}
 function _rdAIso(y,m,d){return y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');}
 function _rdAInRange(iso){return !!_opsFindDate(iso);}
@@ -4114,13 +4824,13 @@ function _rdARenderRows(){
   var h='';
   var grp=function(title,items){h+='<div class="rd-a-grp"><span>'+title+'</span><div>';items.forEach(function(it){
     h+='<button type="button" class="rd-a-row'+(it[2]?' is-hid':'')+'" data-v="'+_rdEsc(it[0])+'" aria-pressed="'+(_rdA.row===it[0])+'">'+_rdEsc(it[1])+(it[2]?'<small>hidden</small>':'')+'</button>';});h+='</div></div>';};
-  grp('Team',RD_A_STAFF.map(function(x){return [x[0],x[1]];}));
-  grp('Rotas',[['ml','Morning Live TM'],['shopon','ShopOn Engineer']]);
+  grp('Team',RD_A_STAFF.map(function(x){return [x[0],x[1],_opsHidTeam.has(x[0])];}));
+  grp('Rotas',[['ml','Morning Live TM'],['mlg','Morning Live Guarantee'],['shopon','ShopOn Engineer']]);
   grp('Studios',OPS_STUDIOS.map(function(st){return ['st_'+st,st,_opsHidStu.has(st)];}));
   grp('Other',[['notes','Info'],['events','Events']]);
   document.getElementById('rdARows').innerHTML=h;
 }
-function _rdAPeople(){return _rdA.row==='ml'?getOpsTMs():getOpsSOEngs();}
+function _rdAPeople(){return _rdA.row==='ml'?getOpsTMs():_rdA.row==='mlg'?NS_MLG.slice():getOpsSOEngs();}
 function _rdARenderWhat(){
   var el=document.getElementById('rdAWhat'),k=_rdAKind(_rdA.row),h='';
   if(!k){el.innerHTML='<p class="rd-a-hint">Pick a row first.</p>';return;}
@@ -4128,7 +4838,8 @@ function _rdARenderWhat(){
     h+='<div class="rd-a-people">';
     _rdAPeople().forEach(function(n){h+='<button type="button" class="rd-a-person" data-v="'+_rdEsc(n)+'" aria-pressed="'+(_rdA.what===n)+'" style="--cc:'+opsMlColor(n)+'">'+_rdEsc(n)+'</button>';});
     if(_rdA.row==='ml')h+='<button type="button" class="rd-a-person" data-v="Break / Off Air" aria-pressed="'+(_rdA.what==='Break / Off Air')+'" style="--cc:#302f2c">Off air</button>';
-    h+='<button type="button" class="rd-a-person rd-a-new" data-new="1">+ '+(_rdA.row==='ml'?'Tech manager':'Engineer')+'</button></div>';
+    if(_rdA.row!=='mlg')h+='<button type="button" class="rd-a-person rd-a-new" data-new="1">+ '+(_rdA.row==='ml'?'Tech manager':'Engineer')+'</button>';
+    h+='</div>';
   }else{
     h+='<div class="rd-add rd-a-text"><input id="rdAText" class="ops-ci" placeholder="'+(k==='studio'?'Show, job or note':k==='notes'?'Note':'Entry')+'" aria-label="What to add" value="'+_rdEsc(_rdA.what)+'"/></div>';
     var q=(RD_A_QUICK[k]||[]).slice();
@@ -4254,7 +4965,7 @@ function opsRenderBrkList(){const el=document.getElementById('opsBrkList');if(!e
 // ML Email
 // ── Export data (b75): Morning Live schedule, person, studio or job over a range ──
 var _mlE={kind:'ml',mode:'week',anchor:null};
-var OPS_STAFF={andrew:'Andrew Rowell',chris:'Chris Warden',ian:'Ian Curry'};
+var OPS_STAFF={};NS_TEAM.forEach(function(t){OPS_STAFF[t.row]=t.full;});
 function _mlIso(d){return d.toISOString().split('T')[0];}
 function _mlUtc(iso){return new Date(iso+'T00:00:00Z');}
 function _mlTodayIso(){var n=new Date();return n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')+'-'+String(n.getDate()).padStart(2,'0');}
@@ -4281,7 +4992,7 @@ function _exRecords(){
       for(var i=0;i<span&&day+i<=last;i++){
         var iso=px+'-'+String(day+i).padStart(2,'0'),id=iso+'|'+row+'|'+t;
         if(seen[id])continue;seen[id]=1;
-        out.push({iso:iso,row:row,rowName:_rdRowName(row),text:t,note:(v&&typeof v==='object'&&v.note)||'',crew:(v&&typeof v==='object'&&v.crew)||[]});
+        out.push({iso:iso,off:i,row:row,rowName:_rdRowName(row),text:t,note:(v&&typeof v==='object'&&v.note)||'',crew:(v&&typeof v==='object'&&v.crew)||[]});
       }
     });
   });
@@ -4292,7 +5003,7 @@ function _exPeople(){
   var names={};
   Object.keys(OPS_STAFF).forEach(function(r){names[OPS_STAFF[r]]='Staff';});
   OPS_TM.concat(window._opsTMCustom||[],OPS_SO_ENG,window._opsSOEng||[]).forEach(function(n){if(n&&!names[n])names[n]='Freelance';});
-  Object.keys(_opsD).forEach(function(k){var r=k.split('|')[2];if(r!=='ml'&&r!=='shopon')return;
+  Object.keys(_opsD).forEach(function(k){var r=k.split('|')[2];if(r!=='ml'&&r!=='mlg'&&r!=='shopon')return;
     (_opsD[k]||[]).forEach(function(v){var t=_exText(v).trim();if(t&&t!=='Break / Off Air'&&/^[A-Z][a-z]+ [A-Z]/.test(t)&&!names[t])names[t]='Freelance';});});
   return names;
 }
@@ -4304,7 +5015,8 @@ function _exFillPickers(){
   ps.innerHTML=['Staff','Freelance','Crew'].map(function(g){return grp[g].length?'<optgroup label="'+g+'">'+grp[g].map(function(n){return '<option>'+_rdEsc(n)+'</option>';}).join('')+'</optgroup>':'';}).join('');
   if(keepP)ps.value=keepP;
   var cs=document.getElementById('exCrew'),keepC=cs.value;
-  cs.innerHTML='<option value="*">All crew</option>'+_nsCrewDirectory().map(function(c){return '<option value="'+_rdEsc(c.name)+'">'+_rdEsc(c.name)+'</option>';}).join('');
+  var _dir=_nsCrewDirectory();
+  cs.innerHTML='<option value="*">All crew</option>'+NS_CREW_TYPES.map(function(t){var list=_dir.filter(function(c){return c.type===t.id;});return list.length?'<optgroup label="'+t.name+'">'+list.map(function(c){return '<option value="'+_rdEsc(c.name)+'">'+_rdEsc(c.name)+'</option>';}).join('')+'</optgroup>':'';}).join('');
   if(keepC)cs.value=keepC;
   ss.innerHTML=OPS_STUDIOS.map(function(s){return '<option>'+_rdEsc(s)+'</option>';}).join('');
   if(keepS)ss.value=keepS;
@@ -4416,6 +5128,13 @@ function _exRows(r){
     var q=(document.getElementById('exJob').value||'').trim().toLowerCase();
     recs=q.length<2?[]:recs.filter(function(x){return x.text.toLowerCase().indexOf(q)>=0;});
   }
+  // Crew booked on these jobs, with contact details from the crew list
+  var _cmap={},_ctimes=[];recs.forEach(function(x){(x.crew||[]).forEach(function(c){var k=c.name.toLowerCase();if(!_cmap[k])_cmap[k]={name:c.name,roles:{},type:_nsCrewType(c),days:{},mins:0};if(c.role)_cmap[k].roles[c.role]=1;_cmap[k].days[x.iso]=1;
+    var t=c.times&&c.times[x.off];if(t&&(t.s||t.e)){var m=_nsMins(t.s,t.e);if(m!=null)_cmap[k].mins+=m;_ctimes.push({iso:x.iso,name:c.name,role:c.role||'',job:x.text,s:t.s||'',e:t.e||'',m:m});}});});
+  _ctimes.sort(function(a,b){return a.iso<b.iso?-1:a.iso>b.iso?1:a.name.localeCompare(b.name);});
+  var _dir=_nsCrewDirectory();
+  var _contacts=Object.keys(_cmap).map(function(k){var c=_cmap[k],d=_dir.find(function(y){return y.name.toLowerCase()===k;})||{};
+    return {name:c.name,role:Object.keys(c.roles).join(', ')||d.role||'',section:_nsCrewTypeName(d.type||c.type),phone:d.phone||'',email:d.email||'',days:Object.keys(c.days).length,mins:c.mins};}).sort(function(a,b){return a.name.localeCompare(b.name);});
   // One line per day: every matching entry and row on that date combined
   var byDay={},order=[];
   recs.forEach(function(x){
@@ -4427,7 +5146,9 @@ function _exRows(r){
     if(d.whats.indexOf(what)<0)d.whats.push(what);
     if(d.wheres.indexOf(x.rowName)<0)d.wheres.push(x.rowName);
   });
-  return order.map(function(k){var d=byDay[k];return {iso:d.iso,label:d.label,what:d.whats.join(' · '),where:d.wheres.join(', '),note:d.notes.join(' · ')};});
+  var _rows=order.map(function(k){var d=byDay[k];return {iso:d.iso,label:d.label,what:d.whats.join(' · '),where:d.wheres.join(', '),note:d.notes.join(' · ')};});
+  if(_mlE.kind==='job'||_mlE.kind==='studio'){_rows.crew=_contacts;_rows.crewTimes=_ctimes;}
+  return _rows;
 }
 // Crew export: one person's days (with a per-job total) or everyone's totals
 function _exCrewRows(recs){
@@ -4436,12 +5157,12 @@ function _exCrewRows(recs){
   if(who==='*'){
     var people={};
     recs.forEach(function(x){x.crew.forEach(function(c){
-      var p=people[c.name]=people[c.name]||{name:c.name,roles:{},days:{},jobs:{}};
+      var p=people[c.name]=people[c.name]||{name:c.name,roles:{},days:{},jobs:{},type:_nsCrewType(c)};
       if(c.role)p.roles[c.role]=1;p.days[x.iso]=1;
       var job=_nsShowName(x.text);(p.jobs[job]=p.jobs[job]||{})[x.iso]=1;});});
     return Object.keys(people).map(function(n){var p=people[n];
       var jobs=Object.keys(p.jobs).map(function(j){return {job:j,days:Object.keys(p.jobs[j]).length};}).sort(function(a,b){return b.days-a.days;});
-      return {summary:true,iso:'',label:p.name,role:Object.keys(p.roles).join(', '),days:Object.keys(p.days).length,jobs:jobs,
+      return {summary:true,iso:'',label:p.name,section:_nsCrewTypeName(p.type),role:Object.keys(p.roles).join(', '),days:Object.keys(p.days).length,jobs:jobs,
         what:Object.keys(p.days).length+' day'+(Object.keys(p.days).length===1?'':'s'),where:jobs.map(function(j){return j.job+' ('+j.days+')';}).join(' · ')};
     }).sort(function(a,b){return b.days-a.days||a.label.localeCompare(b.label);});
   }
@@ -4449,12 +5170,13 @@ function _exCrewRows(recs){
   recs.forEach(function(x){
     var c=x.crew.find(function(c){return c.name.toLowerCase()===lc;});if(!c)return;
     var d=byDay[x.iso];
-    if(!d){d=byDay[x.iso]={iso:x.iso,label:_mlUtc(x.iso).toLocaleDateString('en-GB',{weekday:'long',timeZone:'UTC'})+' '+_mlUtc(x.iso).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}),whats:[],wheres:[],notes:[]};order.push(x.iso);}
-    var w=x.text+(c.role?' — '+c.role:'');
-    if(d.whats.indexOf(w)<0)d.whats.push(w);
+    if(!d){d=byDay[x.iso]={iso:x.iso,label:_mlUtc(x.iso).toLocaleDateString('en-GB',{weekday:'long',timeZone:'UTC'})+' '+_mlUtc(x.iso).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}),whats:[],wheres:[],notes:[],starts:[],ends:[],mins:0};order.push(x.iso);}
+    var tm=_nsCrewTimeStr(c,x.off),w=x.text+(c.role?' — '+c.role:'')+(tm?' — '+tm:'');
+    var tt=(c.times&&c.times[x.off])||{};
+    if(d.whats.indexOf(w)<0){d.whats.push(w);d.starts.push(tt.s||'');d.ends.push(tt.e||'');var mm=_nsMins(tt.s,tt.e);if(mm!=null)d.mins+=mm;}
     if(d.wheres.indexOf(x.rowName)<0)d.wheres.push(x.rowName);
   });
-  return order.map(function(k){var d=byDay[k];return {iso:d.iso,label:d.label,what:d.whats.join(' · '),where:d.wheres.join(', '),note:''};});
+  return order.map(function(k){var d=byDay[k];return {iso:d.iso,label:d.label,what:d.whats.join(' · '),where:d.wheres.join(', '),note:'',start:d.starts.filter(Boolean).join(' / '),end:d.ends.filter(Boolean).join(' / '),mins:d.mins};});
 }
 // Per-job day totals for one crew member's rows
 function _exCrewJobTotals(rows){
@@ -4476,15 +5198,22 @@ function _mlText(){
   var rows=_exRows(r),out=_exSubject()+'\n'+r.title+'\n',wk=null;
   if(_mlE.kind==='crew'){
     if(rows.length&&rows[0].summary){
-      out+='\n';rows.forEach(function(x){out+=x.label+(x.role?' ('+x.role+')':'')+': '+x.what+' — '+x.where+'\n';});
-      return out+'\nVersa Studios Tech Ops';
+      NS_CREW_TYPES.forEach(function(t){var list=rows.filter(function(x){return x.section===t.name;});if(!list.length)return;
+        out+='\n'+t.name+'\n';list.forEach(function(x){out+=x.label+(x.role?' ('+x.role+')':'')+': '+x.what+' — '+x.where+'\n';});});
+      return out.replace(/\s+$/,'');
     }
-    if(rows.length){out+='\nTotal: '+rows.length+' day'+(rows.length===1?'':'s')+'\n';_exCrewJobTotals(rows).forEach(function(j){out+=j.job+': '+j.days+' day'+(j.days===1?'':'s')+'\n';});}
+    if(rows.length){out+='\nTotal: '+rows.length+' day'+(rows.length===1?'':'s')+'\n';var _tm=rows.reduce(function(a,x){return a+(x.mins||0);},0);if(_tm)out+='Hours: '+_nsHrs(_tm)+'\n';_exCrewJobTotals(rows).forEach(function(j){out+=j.job+': '+j.days+' day'+(j.days===1?'':'s')+'\n';});}
   }
   rows.forEach(function(x){var w=_opsMondayOf(x.iso);if(w!==wk){out+='\n';wk=w;}
     out+=x.label+': '+x.what+(_exShowWhere()&&x.what!==x.where?' ('+x.where+')':'')+(x.note?' — '+x.note:'')+'\n';});
   if(!rows.length)out+='\nNothing found in this range.\n';
-  return out+'\nVersa Studios Tech Ops';
+  if(rows.crewTimes&&rows.crewTimes.length){
+    var _multi=rows.crewTimes.some(function(t){return t.job!==rows.crewTimes[0].job;});
+    out+='\nCrew times\n';
+    rows.crewTimes.forEach(function(t){out+=_mlUtc(t.iso).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',timeZone:'UTC'})+': '+t.name+' '+(t.s||'?')+'\u2013'+(t.e||'?')+(t.m!=null?' ('+_nsHrs(t.m)+')':'')+(_multi?' — '+t.job:'')+'\n';});
+  }
+  if(rows.crew&&rows.crew.length){out+='\nCrew\n';rows.crew.forEach(function(c){out+=[c.name,c.role,c.phone,c.email,c.mins?_nsHrs(c.mins):''].filter(Boolean).join(' — ')+'\n';});}
+  return out.replace(/\s+$/,'');
 }
 function opsBuildPreview(){
   var r=_mlRange(),lbl=document.getElementById('opsEmailWkLbl'),prev=document.getElementById('opsEmailPrev'),csv=document.getElementById('exCsv');
@@ -4496,16 +5225,19 @@ function opsBuildPreview(){
   var rows=_exRows(r),wk=null,h;
   if(_mlE.kind==='crew'&&rows.length&&rows[0].summary){
     h='<div class="ml-head">All crew · '+_rdEsc(r.title)+' · '+rows.length+' '+(rows.length===1?'person':'people')+'</div>';
-    rows.forEach(function(x){h+='<div class="ml-row"><span>'+_rdEsc(x.label)+(x.role?'<small class="ex-where">'+_rdEsc(x.role)+'</small>':'')+'</span><b>'+_rdEsc(x.what)+'<small class="ex-where">'+_rdEsc(x.where)+'</small></b></div>';});
+    rows.forEach(function(x){h+='<div class="ml-row"><span>'+_rdEsc(x.label)+'<small class="ex-where">'+_rdEsc(x.section+(x.role?' · '+x.role:''))+'</small></span><b>'+_rdEsc(x.what)+'<small class="ex-where">'+_rdEsc(x.where)+'</small></b></div>';});
     prev.innerHTML=h;if(csv)csv.disabled=false;return;
   }
-  h='<div class="ml-head">'+_rdEsc(_exSubject()+' · '+r.title)+' · '+rows.length+' day'+(rows.length===1?'':'s')+'</div>';
+  var _ptm=rows.reduce(function(a,x){return a+(x.mins||0);},0);
+  h='<div class="ml-head">'+_rdEsc(_exSubject()+' · '+r.title)+' · '+rows.length+' day'+(rows.length===1?'':'s')+(_ptm?' · '+_nsHrs(_ptm):'')+'</div>';
   if(_mlE.kind==='crew'&&rows.length)h+='<div class="ex-totals">'+_exCrewJobTotals(rows).map(function(j){return '<span>'+_rdEsc(j.job)+' <b>'+j.days+'</b></span>';}).join('')+'</div>';
   rows.forEach(function(x){
     var w=_opsMondayOf(x.iso);if(wk!==null&&w!==wk)h+='<div class="ml-gap"></div>';wk=w;
     h+='<div class="ml-row"><span>'+_rdEsc(x.label)+'</span><b class="'+(x.soft?'ml-soft':'')+'">'+_rdEsc(x.what)+(_exShowWhere()&&x.what!==x.where?'<small class="ex-where">'+_rdEsc(x.where)+'</small>':'')+(x.note?'<small class="ex-where ex-note">'+_rdEsc(x.note)+'</small>':'')+'</b></div>';
   });
   if(!rows.length)h+='<p class="ml-empty">'+(_mlE.kind==='crew'?'No crew booked in this range.':'Nothing found in this range.')+'</p>';
+  if(rows.crewTimes&&rows.crewTimes.length){h+='<div class="ml-gap"></div><div class="ml-head">Crew times</div>';rows.crewTimes.forEach(function(t){h+='<div class="ml-row"><span>'+_rdEsc(_mlUtc(t.iso).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',timeZone:'UTC'}))+'</span><b>'+_rdEsc(t.name+' '+(t.s||'?')+'\u2013'+(t.e||'?'))+'<small class="ex-where">'+_rdEsc([t.m!=null?_nsHrs(t.m):'',t.job].filter(Boolean).join(' · '))+'</small></b></div>';});}
+  if(rows.crew&&rows.crew.length){h+='<div class="ml-gap"></div><div class="ml-head">Crew · '+rows.crew.length+'</div>';rows.crew.forEach(function(c){h+='<div class="ml-row"><span>'+_rdEsc(c.name)+'<small class="ex-where">'+_rdEsc([c.section,c.role,c.mins?_nsHrs(c.mins):''].filter(Boolean).join(' · '))+'</small></span><b>'+_rdEsc(c.phone||'')+'<small class="ex-where">'+_rdEsc(c.email||'')+'</small></b></div>';});}
   prev.innerHTML=h;
   if(csv)csv.disabled=!rows.length;
 }
@@ -4530,11 +5262,16 @@ function opsExportCsv(){
   var q=function(s){s=String(s==null?'':s);return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;};
   var lines;
   if(_mlE.kind==='crew'&&rows[0].summary){
-    lines=['Name,Role,Days,Jobs'];
-    rows.forEach(function(x){lines.push([x.label,x.role,x.days,x.where].map(q).join(','));});
+    lines=['Name,Section,Role,Days,Jobs'];
+    rows.forEach(function(x){lines.push([x.label,x.section,x.role,x.days,x.where].map(q).join(','));});
   }else{
-    lines=['Date,Day,Row,Entry,Notes'];
-    rows.forEach(function(x){lines.push([x.iso,_mlUtc(x.iso).toLocaleDateString('en-GB',{weekday:'long',timeZone:'UTC'}),x.where,x.what,x.note||''].map(q).join(','));});
+    var crewKind=_mlE.kind==='crew';
+    lines=[crewKind?'Date,Day,Row,Entry,Start,Finish,Hours':'Date,Day,Row,Entry,Notes'];
+    rows.forEach(function(x){var day=_mlUtc(x.iso).toLocaleDateString('en-GB',{weekday:'long',timeZone:'UTC'});
+      lines.push((crewKind?[x.iso,day,x.where,x.what,x.start||'',x.end||'',x.mins?_nsHrsDec(x.mins):'']:[x.iso,day,x.where,x.what,x.note||'']).map(q).join(','));});
+    if(crewKind){var _tm=rows.reduce(function(a,x){return a+(x.mins||0);},0);if(_tm)lines.push(['Total hours','','','','','',_nsHrsDec(_tm)].map(q).join(','));}
+    if(rows.crewTimes&&rows.crewTimes.length){lines.push('');lines.push('Date,Crew,Role,Job,Start,Finish,Hours');rows.crewTimes.forEach(function(t){lines.push([t.iso,t.name,t.role,t.job,t.s,t.e,t.m!=null?_nsHrsDec(t.m):''].map(q).join(','));});}
+    if(rows.crew&&rows.crew.length){lines.push('');lines.push('Crew,Section,Role,Phone,Email,Days,Hours');rows.crew.forEach(function(c){lines.push([c.name,c.section,c.role,c.phone,c.email,c.days,c.mins?_nsHrsDec(c.mins):''].map(q).join(','));});}
     if(_mlE.kind==='crew'){lines.push('');lines.push('Job,Days');_exCrewJobTotals(rows).forEach(function(j){lines.push([j.job,j.days].map(q).join(','));});lines.push(['Total',rows.length].map(q).join(','));}
   }
   var slug=_exSubject().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'export';
@@ -4935,13 +5672,23 @@ function planNext(){
   if(s<OPS_CAL.length-1)_saScrollToMonth(s+1,true);
 }
 // ── Zoom control — scales the whole calendar, remembered per browser ──
-// ZOOM REMOVED (diagnostic b49): the slider is suspected of breaking drag.
-// The planner now always runs at native scale; nothing sets style.zoom and
-// any previously saved zoom level is ignored.
+// Zoom (b91): Settings slider scales the calendar (#opsScroll2) with CSS zoom; popups stay
+// full size. Positioning code measures its own scale (_nsScale / _opsCellRect), so it works
+// whether a browser reports zoomed or unzoomed rects. Remembered per browser.
 var _opsZoomVal=100;
-function opsSetZoom(){}
-function opsZoomStep(){}
 try{var el0=document.getElementById('opsScroll2');if(el0)el0.style.zoom='';}catch(e){}
+function opsSetZoom(v){
+  v=Math.max(60,Math.min(140,Math.round((+v||100)/5)*5));
+  _opsZoomVal=v;
+  var el=document.getElementById('opsScroll2');if(el){el.style.zoom=(v===100?'':String(v/100));el.style.setProperty('--ns-zoom',String(v/100));}
+  try{localStorage.setItem('opsZoom2',String(v));}catch(e){}
+  document.querySelectorAll('[data-zoom-lbl]').forEach(function(l){l.textContent=v+'%';});
+  var inp=document.getElementById('nsZoom');if(inp&&+inp.value!==v)inp.value=v;
+  document.querySelectorAll('table.ops-tbl').forEach(function(t){delete t.dataset.rdFit;});
+  if(typeof _rdPass==='function')setTimeout(function(){_rdPass(true);},40);
+}
+function opsZoomStep(d){opsSetZoom(_opsZoomVal+d);}
+document.addEventListener('DOMContentLoaded',function(){try{var z=parseInt(localStorage.getItem('opsZoom2')||'100',10);if(z&&z!==100)opsSetZoom(z);}catch(e){}});
 
 function planToday(){
   _saScrollToMonth(opsTodayMonthIdx(),true);
@@ -5003,9 +5750,157 @@ function _rdStuSite(st){var m=Object.assign({},OPS_STU_LOC);(jobs||[]).forEach(f
 function _rdThisMonth(){var px=OPS_TODAY.slice(0,7);return OPS_CAL.find(function(m){return OPS_MPX[m.month]===px;})||null;}
 function _rdBooked(st){var m=_rdThisMonth();if(!m)return true;return m.days.some(function(d){return og(m.month,d.day,'st_'+st).length>0;});}
 function _rdPresetWants(p,st){return p==='all'?true:p==='busy'?_rdBooked(st):_rdStuSite(st)===p;}
-function _rdPresetNow(){var ps=['all','Manchester','London','busy'];for(var i=0;i<ps.length;i++){var p=ps[i];if(OPS_STUDIOS.every(function(st){return !_opsHidStu.has(st)===_rdPresetWants(p,st);}))return p;}return '';}
+function _rdPresetNow(){var ps=['all','Manchester','London'];for(var i=0;i<ps.length;i++){var p=ps[i];if(OPS_STUDIOS.every(function(st){return !_opsHidStu.has(st)===_rdPresetWants(p,st);}))return p;}return '';}
 function _rdApplyPreset(p){_opsHidStu.clear();OPS_STUDIOS.forEach(function(st){if(!_rdPresetWants(p,st))_opsHidStu.add(st);});_rdSaveHid();opsReRenderAll();_rdRenderStuPanel();}
 var _rdStuOpen=false; // Studios dropdown in Settings starts closed
+var _rdTeamOpen=false;
+function _rdRenderCrewTypePanel(){
+  var el=document.getElementById('opsCrewTypePanel');if(!el)return;
+  var h='<div class="rd-sb-head"><h2>Crew</h2></div><div class="rd-sites"><div class="rd-site">';
+  NS_CREW_TYPES.forEach(function(t){var on=!_opsHidCrewTypes.has(t.id);h+='<button type="button" class="rd-stu" data-rdct="'+t.id+'" aria-pressed="'+on+'"><span class="bx">'+(on?'&#10003;':'')+'</span><span class="nmx">'+t.name+'</span></button>';});
+  h+='</div></div><div class="ops-co ns-cm-open" role="button" tabindex="0" onclick="_rdCloseSettings();opsOpenCrewMgr()" onkeydown="if(event.key===\'Enter\')this.click()">Manage crew list<span class="ns-cm-count">'+_nsCrewDirectory().length+'</span></div>';
+  el.innerHTML=h;
+}
+// Crew list manager (b93): edit name, role, section, phone, email; remove; add
+function opsOpenCrewMgr(){var el=document.getElementById('nsCrewMgr');if(!el)return;_nsCmEdit=null;_nsRenderCrewMgr();el.hidden=false;document.body.style.overflow='hidden';}
+function opsCloseCrewMgr(){var el=document.getElementById('nsCrewMgr');if(!el||el.hidden)return;if(document.activeElement)document.activeElement.blur();el.hidden=true;document.body.style.overflow='';if(typeof _nsCrewMgrClosed==='function')_nsCrewMgrClosed();}
+// Crew list (b99): plain rows by section; click someone to edit, "+ Add person" for new people
+var _nsCmEdit=null,_nsCmType='tech';
+function _nsCmFooter(h){var f=document.getElementById('nsCrewMgrFt');if(f)f.innerHTML=h;}
+function _nsRenderCrewMgr(){
+  var body=document.getElementById('nsCrewMgrBody');if(!body)return;
+  _nsCrewDirSnap=_nsCrewDirectory();
+  if(_nsCmEdit)return _nsRenderCrewForm();
+  document.getElementById('nsCrewMgrTitle').textContent='Crew list';
+  var h='<div class="ops-co ns-cm-new" role="button" tabindex="0" onclick="opsCrewForm(-1)" onkeydown="if(event.key===\'Enter\')this.click()">+ Add person</div>';
+  NS_CREW_TYPES.forEach(function(t){
+    var list=_nsCrewDirSnap.map(function(p,di){return {p:p,di:di};}).filter(function(o){return _nsCrewType(o.p)===t.id;});
+    h+='<div class="ns-crew-grp ns-cm-grp">'+_nsCrewDot(t.id)+t.name+' <span class="ns-crew-count">'+list.length+'</span></div>';
+    if(!list.length){h+='<p class="ml-empty ns-cm-empty">No one yet.</p>';return;}
+    list.forEach(function(o){var c=o.p;
+      h+='<div class="ops-co ns-cm-item" role="button" tabindex="0" onclick="opsCrewForm('+o.di+')" onkeydown="if(event.key===\'Enter\')this.click()">'
+        +_nsCrewDot(t.id)+'<span class="ns-cm-main"><b>'+_rdEsc(c.name)+'</b>'+(c.role?'<small>'+_rdEsc(c.role)+'</small>':'')+'</span>'
+        +'<span class="ns-cm-contact">'+(c.phone?'<span>'+_rdEsc(c.phone)+'</span>':'')+(c.email?'<span>'+_rdEsc(c.email)+'</span>':'')+'</span>'
+        +'<span class="ns-cr-chev" aria-hidden="true">&#8250;</span></div>';
+    });
+  });
+  body.innerHTML=h;
+  _nsCmFooter('<button type="button" onclick="opsCloseCrewMgr()">Done</button>');
+}
+function opsCrewForm(di){
+  var p=di>=0?_nsCrewDirSnap[di]:null;
+  _nsCmEdit={di:di,name:p?p.name:''};
+  _nsCmType=p?_nsCrewType(p):'tech';
+  _nsRenderCrewMgr();
+  var b=document.getElementById('nsCrewMgrBody');if(b)b.scrollTop=0;
+  setTimeout(function(){var n=document.getElementById('nsCfName');if(n&&di<0)n.focus();},30);
+}
+function _nsRenderCrewForm(){
+  var ed=_nsCmEdit,p=ed.di>=0?(_nsCrewDirectory().find(function(c){return c.name.toLowerCase()===ed.name.toLowerCase();})||{}):{};
+  document.getElementById('nsCrewMgrTitle').textContent=ed.di>=0?'Edit person':'Add person';
+  var f=function(id,label,val,type,extra){return '<label class="rd-f"><span>'+label+'</span><input id="'+id+'"'+(type?' type="'+type+'"':'')+' autocomplete="off" value="'+_rdEsc(val||'')+'"'+(extra||'')+' onkeydown="if(event.key===\'Enter\'){event.preventDefault();opsCrewFormSave();}"/></label>';};
+  var h='<button type="button" class="ns-cm-back" onclick="opsCrewFormCancel()">&#8249; Crew list</button>'
+    +'<div class="rd-fields ns-cf">'+f('nsCfName','Name',p.name)+f('nsCfRole','Role',p.role,'',' list="nsCfRoles"')+'</div>'
+    +'<div class="rd-density ns-cf-sec"><h2>Section</h2><div class="rd-presets" role="group" aria-label="Section">'
+    +NS_CREW_TYPES.map(function(t){return '<button type="button" aria-pressed="'+(t.id===_nsCmType)+'" onclick="opsCrewFormType(\''+t.id+'\')">'+t.name+'</button>';}).join('')+'</div></div>'
+    +'<div class="rd-fields ns-cf">'+f('nsCfPhone','Phone',p.phone,'tel')+f('nsCfEmail','Email',p.email,'email')+'</div>'
+    +'<datalist id="nsCfRoles">'+NS_CREW_ROLES.map(function(n){return '<option value="'+_rdEsc(n)+'">';}).join('')+'</datalist>';
+  document.getElementById('nsCrewMgrBody').innerHTML=h;
+  _nsCmFooter((ed.di>=0?'<button type="button" class="ns-lock-link ns-cf-rm" onclick="opsCrewFormRemove()">Remove from crew list</button>':'<span></span>')
+    +'<span class="ns-cf-btns"><button type="button" class="ns-lock-link" onclick="opsCrewFormCancel()">Cancel</button><button type="button" onclick="opsCrewFormSave()">Save</button></span>');
+}
+function opsCrewFormType(t){
+  _nsCmType=t;
+  document.querySelectorAll('.ns-cf-sec .rd-presets button').forEach(function(b,i){b.setAttribute('aria-pressed',String(NS_CREW_TYPES[i].id===t));});
+}
+function opsCrewFormCancel(){_nsCmEdit=null;_nsRenderCrewMgr();}
+function opsCrewFormSave(){
+  var ed=_nsCmEdit;if(!ed)return;
+  var g=function(id){var el=document.getElementById(id);return el?el.value.trim():'';};
+  var name=g('nsCfName');if(!name){document.getElementById('nsCfName').focus();toast('Add a name');return;}
+  var data={name:name,role:g('nsCfRole'),type:_nsCmType,phone:g('nsCfPhone'),email:g('nsCfEmail')};
+  var lc=name.toLowerCase(),now=Date.now(),list=window._opsCrewList=window._opsCrewList||[];
+  var taken=_nsCrewDirectory().some(function(c){return c.name.toLowerCase()===lc&&c.name.toLowerCase()!==ed.name.toLowerCase();});
+  if(taken){toast(name+' is already on the list');return;}
+  if(ed.di<0){
+    var old=list.find(function(c){return c.name.toLowerCase()===lc;});
+    var entry=Object.assign({},data,{updated:now});
+    if(old){Object.keys(old).forEach(function(k){delete old[k];});Object.assign(old,entry);}else list.push(entry);
+    toast(name+' added');
+  }else{
+    var prev=_nsCrewDirectory().find(function(c){return c.name.toLowerCase()===ed.name.toLowerCase();})||{};
+    var e=_nsCrewEntryFor(ed.name);
+    if(lc!==ed.name.toLowerCase()){
+      // New name: keep one record per name so other devices merge it cleanly
+      list.push(Object.assign({},data,{updated:now}));
+      e.removed=true;e.updated=now;
+    }else{Object.assign(e,data,{updated:now});delete e.removed;}
+    var patch={};
+    if(name!==ed.name)patch.name=name;
+    if(data.type!==_nsCrewType(prev))patch.type=data.type;
+    if(Object.keys(patch).length)_nsCrewUpdateBookings(ed.name,patch);
+    toast('Saved');
+  }
+  saveCrewList();
+  _nsCmEdit=null;_nsRenderCrewMgr();
+  if(typeof opsReRender==='function')opsReRender();
+}
+function opsCrewFormRemove(){
+  var ed=_nsCmEdit;if(!ed||ed.di<0)return;
+  if(!confirm('Remove '+ed.name+' from the crew list? Their existing bookings stay on the calendar.'))return;
+  var e=_nsCrewEntryFor(ed.name);e.removed=true;e.updated=Date.now();
+  saveCrewList();toast(ed.name+' removed');
+  _nsCmEdit=null;_nsRenderCrewMgr();
+}
+function _nsCrewEntryFor(name){
+  var list=window._opsCrewList=window._opsCrewList||[],lc=name.toLowerCase();
+  var hit=list.find(function(c){return c.name.toLowerCase()===lc;});
+  if(!hit){var d=_nsCrewDirectory().find(function(c){return c.name.toLowerCase()===lc;})||{name:name};hit={name:d.name,role:d.role||'',type:d.type||'tech',phone:d.phone||'',email:d.email||''};list.push(hit);}
+  return hit;
+}
+// Apply a change to every booking of a person (rename and/or section)
+function _nsCrewUpdateBookings(oldName,patch){
+  var lc=oldName.toLowerCase();
+  Object.keys(_opsD).forEach(function(k){
+    var p=k.split('|');if(p.length!==3||p[2].indexOf('st_')!==0||!Array.isArray(_opsD[k]))return;
+    var changed=false;
+    var next=_opsD[k].map(function(v){
+      if(!v||typeof v!=='object'||!v.crew)return v;
+      var hit=v.crew.some(function(c){return c.name.toLowerCase()===lc;});if(!hit)return v;
+      changed=true;v=Object.assign({},v);
+      v.crew=v.crew.map(function(c){return c.name.toLowerCase()===lc?Object.assign({},c,patch):c;});
+      return v;
+    });
+    if(changed)os(p[0],+p[1],p[2],next);
+  });
+}
+document.addEventListener('click',function(e){var el=document.getElementById('nsCrewMgr');if(el&&!el.hidden&&e.target===el)opsCloseCrewMgr();});
+document.addEventListener('click',function(e){
+  var b=e.target.closest&&e.target.closest('#opsCrewTypePanel button[data-rdct]');if(!b)return;
+  e.stopPropagation();
+  var t=b.dataset.rdct;if(_opsHidCrewTypes.has(t))_opsHidCrewTypes.delete(t);else _opsHidCrewTypes.add(t);
+  try{localStorage.setItem('opsHidCrewTypes',JSON.stringify(Array.from(_opsHidCrewTypes)));}catch(err){}
+  _nsApplyCrewTypeView();_rdRenderCrewTypePanel();
+  if(typeof _nsRedrawAll==='function')setTimeout(_nsRedrawAll,30);
+},true);
+function _rdRenderTeamPanel(){
+  var el=document.getElementById('opsTeamPanel');if(!el)return;
+  var shown=NS_TEAM.filter(function(t){return !_opsHidTeam.has(t.row);}).length;
+  var h='<div class="rd-sb-head"><h2><button type="button" class="rd-dd" data-rdteam-dd="1" aria-expanded="'+_rdTeamOpen+'">Team <span class="rd-count">'+shown+' of '+NS_TEAM.length+' showing</span><span class="rd-chev" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></h2></div>';
+  h+='<div class="rd-sites"'+(_rdTeamOpen?'':' hidden')+'><div class="rd-site">';
+  NS_TEAM.forEach(function(t){var on=!_opsHidTeam.has(t.row);h+='<button type="button" class="rd-stu" data-rdt="'+t.row+'" aria-pressed="'+on+'"><span class="bx">'+(on?'&#10003;':'')+'</span><span class="nmx">'+_rdEsc(t.name)+'</span></button>';});
+  el.innerHTML=h+'</div></div>';
+}
+document.addEventListener('click',function(e){
+  var b=e.target.closest&&e.target.closest('#opsTeamPanel button');if(!b)return;
+  e.stopPropagation();
+  if(b.dataset.rdteamDd){_rdTeamOpen=!_rdTeamOpen;_rdRenderTeamPanel();var t=document.querySelector('#opsTeamPanel .rd-dd');if(t)t.focus();return;}
+  if(b.dataset.rdt){
+    var r=b.dataset.rdt;if(_opsHidTeam.has(r))_opsHidTeam.delete(r);else _opsHidTeam.add(r);
+    try{localStorage.setItem('opsHidTeam',JSON.stringify(Array.from(_opsHidTeam)));}catch(err){}
+    _rdRenderTeamPanel();if(typeof opsReRender==='function')opsReRender();
+  }
+},true);
 function _rdRenderStuPanel(){
   var el=document.getElementById('opsStuPanel');if(!el)return;
   var sites={};OPS_STUDIOS.forEach(function(st){var k=_rdStuSite(st);(sites[k]=sites[k]||[]).push(st);});
@@ -5013,7 +5908,7 @@ function _rdRenderStuPanel(){
   var cur=_rdPresetNow();
   var h='<div class="rd-sb-head"><h2><button type="button" class="rd-dd" aria-expanded="'+_rdStuOpen+'" aria-controls="rdStuBody">Studios <span class="rd-count">'+shown+' of '+OPS_STUDIOS.length+' showing</span><span class="rd-chev" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></h2></div>'
     +'<div id="rdStuBody"'+(_rdStuOpen?'':' hidden')+'><div class="rd-presets rd-stu-presets" role="group" aria-label="Studio presets">';
-  [['all','All'],['Manchester','Manchester'],['London','London'],['busy','Booked this month']].forEach(function(b){h+='<button type="button" data-rdp="'+b[0]+'" aria-pressed="'+(cur===b[0])+'">'+b[1]+'</button>';});
+  [['all','All'],['Manchester','Manchester'],['London','London']].forEach(function(b){h+='<button type="button" data-rdp="'+b[0]+'" aria-pressed="'+(cur===b[0])+'">'+b[1]+'</button>';});
   h+='</div><div class="rd-sites">';
   Object.keys(sites).forEach(function(site){
     h+='<div class="rd-site"><span>'+_rdEsc(site)+'</span>';
@@ -5031,7 +5926,7 @@ document.addEventListener('click',function(e){
 },true);
 
 function _rdRowName(row){
-  if(row==='ml')return 'Morning Live TM';if(row==='shopon')return 'ShopOn Engineer';
+  if(row==='ml')return 'Morning Live TM';if(row==='mlg')return 'Morning Live Guarantee';if(row==='shopon')return 'ShopOn Engineer';
   if(row.indexOf('st_')===0)return row.slice(3);
   if(row==='notes')return 'Info';
   return row.charAt(0).toUpperCase()+row.slice(1);
@@ -5039,15 +5934,15 @@ function _rdRowName(row){
 function _rdCedHead(row,month,day){
   var px=OPS_MPX[month],when=month+' '+day;
   if(px){var pp=px.split('-');var dt=new Date(Date.UTC(+pp[0],+pp[1]-1,+day));when=dt.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',timeZone:'UTC'});}
-  return '<div class="rd-ph"><div><div class="when">'+_rdEsc(when)+'</div><div class="who">'+_rdEsc(_rdRowName(row))+'</div></div><button type="button" aria-label="Close" onclick="event.stopPropagation();opsCloseCed()">&times;</button></div>';
+  return '<div class="rd-ph"><div><div class="when">'+_rdEsc(when)+'</div><div class="who">'+_rdEsc(_rdRowName(row))+'</div>'+_nsHistLastHTML(month+'|'+day+'|'+row)+'</div><button type="button" aria-label="Close" onclick="event.stopPropagation();opsCloseCed()">&times;</button></div>';
 }
 
 // Chip colours: renderers set an inline background; move it into --cc so the
 // Rundown chip (tint + coloured edge) uses it. Label text gets wrapped for fitting.
 function _rdGroupOf(tr){
   var c=tr.querySelector('[data-row]');var r=c?c.dataset.row:'';
-  if(r==='andrew'||r==='chris'||r==='ian')return 'staff';
-  if(r==='ml'||r==='shopon')return 'rota';
+  if(_nsIsTeam(r))return 'staff';
+  if(r==='ml'||r==='mlg'||r==='shopon')return 'rota';
   if(r.indexOf('st_')===0)return 'studio';
   return 'other:'+r;
 }
@@ -5121,7 +6016,7 @@ function _nsPlaceDayChips(t){
     var i0=m.days.findIndex(function(x){return x.day===+td.dataset.day;});
     var k=ch.classList.contains('ns-dayk')?(parseInt(ch.style.getPropertyValue('--k'),10)||0):0;
     var hc=hdr.children[1+i0+k];if(!hc)return;
-    var z=parseFloat(getComputedStyle(document.body).zoom)||1;
+    var z=_nsScale(td);
     var tr=td.getBoundingClientRect(),hr=hc.getBoundingClientRect();
     ch.style.setProperty('--dx',((hr.left-tr.left)/z)+'px');
     ch.style.setProperty('--dw',(hr.width/z)+'px');
@@ -5131,7 +6026,7 @@ function _nsPlaceDayChips(t){
     var m=OPS_CAL[+td.dataset.mi];if(!m)return;
     var i0=m.days.findIndex(function(x){return x.day===+td.dataset.day;});
     var hc=hdr.children[1+i0+(+rp.dataset.j)];if(!hc)return;
-    var z=parseFloat(getComputedStyle(document.body).zoom)||1;
+    var z=_nsScale(ch);
     rp.style.left=((hc.getBoundingClientRect().left-ch.getBoundingClientRect().left)/z+16)+'px';
   });
 }
@@ -5162,18 +6057,19 @@ function _rdSchedule(force){
 // ── Settings sheet (studios live here) ──────────────────────────────────────
 // Brand block for the month header (logo copied from the hidden page masthead)
 var NS_GEAR='<svg viewBox="0 0 24 24" aria-hidden="true"><g fill="currentColor"><circle cx="12" cy="12" r="7.2"/>'+[0,45,90,135,180,225,270,315].map(function(a){return '<rect x="10.3" y="1.2" width="3.4" height="5" rx="1" transform="rotate('+a+' 12 12)"/>';}).join('')+'</g><circle cx="12" cy="12" r="3" fill="var(--ns-sand)"/></svg>';
+var NS_SEARCH='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M15.5 15.5L21 21" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>';
 var NS_ADD='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>';
 var NS_CREWICON='<svg viewBox="0 0 24 24" aria-hidden="true"><g fill="currentColor"><circle cx="9" cy="8" r="3.6"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0z"/><circle cx="17" cy="9" r="2.8"/><path d="M15.6 13.9A5.4 5.4 0 0 1 22 20h-4.4a8.4 8.4 0 0 0-2-6.1z"/></g></svg>';
 var NS_EXPORT='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5v11m0 0l-4.5-4.5m4.5 4.5l4.5-4.5M4.5 15.5v3a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-3" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 function _nsBrandHTML(){
   var svg=document.querySelector('.sa-logo-svg');
   var logo=svg?svg.outerHTML.replace('class="sa-logo-svg"','class="ns-brand-logo"'):'';
-  return '<div class="ns-brand">'+logo+'<span class="ns-brand-t">Tech Ops <span>Planner</span></span></div>';
+  return '<div class="ns-brand">'+logo+'<span class="ns-brand-t">Team <span>Planner</span></span></div>';
 }
 function _rdSettingsLbl(){return '<span class="ns-bt">Settings</span><span class="ns-ic" aria-hidden="true">&#8594;</span>';}
 function _rdOpenSettings(){
   var el=document.getElementById('rdSettings');if(!el)return;
-  _rdRenderStuPanel();_opsUpdatePrevBtn();el.hidden=false;document.body.style.overflow='hidden';
+  _rdRenderStuPanel();_rdRenderTeamPanel();_rdRenderCrewTypePanel();_opsUpdatePrevBtn();var zi=document.getElementById('nsZoom');if(zi)zi.value=_opsZoomVal;document.querySelectorAll('[data-zoom-lbl]').forEach(function(l){l.textContent=_opsZoomVal+'%';});el.hidden=false;document.body.style.overflow='hidden';
   var x=el.querySelector('.rd-x');if(x)x.focus();
 }
 function _rdCloseSettings(){
@@ -5221,7 +6117,7 @@ document.addEventListener('click',function(e){
 
 
 // ── Night Shift palette (b66): colour follows the show or person, like the preview ──
-var NS_PEOPLE={'andrew rowell':'#c3cfb2','ian curry':'#b9cbe0','marcus lamb':'#d6c6e4','andy mclannahan':'#b5dbd3','james laishley':'#ecd0a8','james forshaw':'#e8c1d6','chris warden':'#ecd0a8'};
+var NS_PEOPLE={'andrew rowell':'#c3cfb2','ian curry':'#b9cbe0','marcus lamb':'#d6c6e4','andy mclannahan':'#b5dbd3','james laishley':'#ecd0a8','james forshaw':'#e8c1d6','chris warden':'#ecd0a8','nik qerimi':'#f0b3ae','sam pickford':'#a9d8d2'};
 // One colour list for every picker AND the chips, so what you pick is what you get.
 // Class names are kept for saved data; ops-andrew/ian/chris double as row defaults,
 // so only chips marked data-pick (an explicit choice) use this list.
@@ -5250,6 +6146,8 @@ function _nsPastel(t,ch){
   if(ch){var pk=ch.getAttribute('data-pick');if(pk&&NS_PICKED[pk])return NS_PICKED[pk];}
   if(/^(day off|leave|holiday|sick)/.test(u))return null;
   // Show names win over task words, so every box for a show shares one colour
+  // Guarantee on Nik's / Sam's Team row takes that person's colour
+  if(u==='morning live guarantee'&&ch&&ch.closest){var gtd=ch.closest('td');var gr=gtd&&gtd.dataset.row;if(gr==='nik')return NS_PEOPLE['nik qerimi'];if(gr==='sam')return NS_PEOPLE['sam pickford'];}
   if(/morning live/.test(u))return '#b9cbe0';
   if(/shop\s?on/.test(u))return '#f0b9b0';
   if(/dragon/.test(u))return '#b5dbd3';
@@ -5275,22 +6173,24 @@ function _nsPastel(t,ch){
 // ── Full-height grey day lines (b73) ──────────────────────────────────────────
 // Drawn as one overlay per month card, positioned from the date header cells.
 // pointer-events:none, so clicks and drags go straight through to the grid.
+// Screen pixels per CSS pixel for an element (1 at 100%; handles CSS zoom in any engine)
+function _nsScale(el){var r=el.getBoundingClientRect();return (el.offsetWidth>0&&r.width>0)?r.width/el.offsetWidth:1;}
 function _nsDrawLines(t){
   var sec=t.closest('.ops-ms2');if(!sec)return;
   var old=sec.querySelector(':scope > .ns-lines');if(old)old.remove();
   if(sec.style.display==='none')return;
   var hdr=t.querySelector('tr.ops-dhdr');if(!hdr)return;
   var tds=Array.prototype.slice.call(hdr.children).slice(1);if(tds.length<2)return;
-  var sr=sec.getBoundingClientRect(),hr=hdr.getBoundingClientRect(),tr=t.getBoundingClientRect();
-  var top=hr.top-sr.top+sec.scrollTop, bottom=tr.bottom-sr.top+sec.scrollTop;
+  var sr=sec.getBoundingClientRect(),hr=hdr.getBoundingClientRect(),tr=t.getBoundingClientRect(),f=_nsScale(sec);
+  var top=(hr.top-sr.top)/f+sec.scrollTop, bottom=(tr.bottom-sr.top)/f+sec.scrollTop;
   var box=document.createElement('div');box.className='ns-lines';box.setAttribute('aria-hidden','true');
   box.style.top=top+'px';box.style.height=Math.max(0,bottom-top)+'px';box.style.width=sec.scrollWidth+'px';
   for(var i=0;i<tds.length-1;i++){
     var a=tds[i].getBoundingClientRect(),b=tds[i+1].getBoundingClientRect();
-    var x=(a.right+b.left)/2-sr.left+sec.scrollLeft;
+    var x=((a.right+b.left)/2-sr.left)/f+sec.scrollLeft;
     var ln=document.createElement('i');ln.style.left=(x-0.5)+'px';ln.dataset.x=x;box.appendChild(ln);
   }
-  var lbl=hdr.children[0];box.dataset.lw=lbl?lbl.getBoundingClientRect().width:0;
+  var lbl=hdr.children[0];box.dataset.lw=lbl?lbl.getBoundingClientRect().width/f:0;
   sec.appendChild(box);
   _nsClip(sec);
   if(!sec.dataset.nsScroll){sec.dataset.nsScroll='1';sec.addEventListener('scroll',function(){_nsClip(sec);},{passive:true});}
@@ -5307,6 +6207,7 @@ if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){set
 
 // ── LOAD STATE FROM SUPABASE ON BOOT ─────────────────────────────────────────
 async function bootstrap(){
+  window._opsBooted=true;
   setStatus('work','Loading…');
   try{
     // Fetch in parallel: opsPlanner, opsBrk, jobs, bank_holidays, ml_tech_managers
@@ -5351,6 +6252,7 @@ async function bootstrap(){
     var _seedChanged=false;
     try{_seedChanged=_opsCleanSeedJunk();}catch(e){console.warn('seed-junk cleanup err',e);}
     try{_seedChanged=_opsReconcileMLStaff()||_seedChanged;}catch(e){console.warn('ML reconcile err',e);}
+    try{_seedChanged=_opsReconcileMLG()||_seedChanged;}catch(e){console.warn('MLG reconcile err',e);}
     saveData=_origSave;
     // Persist seed-junk cleanup to Supabase so it sticks across reloads
     if(_seedChanged){try{saveData();}catch(e){console.warn('seed-junk save err',e);}}
@@ -5367,17 +6269,396 @@ async function bootstrap(){
   _rdApplyDensity(_rdDensity());
   setPlanView('month');
   _rdRenderStuPanel();
+  _nsHistOn=true;_nsHistLoad();
 }
 
 // Boot
-document.addEventListener('DOMContentLoaded',bootstrap);
+// Sign-in (b94): each person signs in with their own 4-digit PIN (remembered on this device).
+// The team code sets up or resets a personal PIN. Keeps casual visitors out; not real security.
+var NS_LOCK_CODE='1956';
+var _nsPins={},_nsPinSt={stage:'enter',buf:'',who:null,first:'',busy:false};
+function _nsMe(){try{var u=localStorage.getItem('opsUser')||'';return NS_TEAM.some(function(t){return t.row===u;})?u:'';}catch(e){return '';}}
+function _nsTeamOf(row){return NS_TEAM.find(function(t){return t.row===row;})||{row:row,name:row,full:row};}
+function _nsUnlocked(){try{return localStorage.getItem('opsUnlocked')==='1'&&!!_nsMe();}catch(e){return false;}}
+async function _nsLoadPins(){
+  var keys=_SB_TEST?['team_pins',_k('team_pins')]:['team_pins'];
+  try{
+    var r=await fetch(_SB_URL+'/rest/v1/app_data?select=key,value&key=in.('+keys.join(',')+')',{headers:_sbGet()});
+    if(!r.ok)return false;
+    var rows=await r.json(),map={};rows.forEach(function(x){map[x.key]=x.value;});
+    var v=map[_k('team_pins')]||map.team_pins;
+    _nsPins=(v&&typeof v==='object'&&!Array.isArray(v))?v:{};
+    return true;
+  }catch(e){return false;}
+}
+async function _nsPinHash(row,pin){
+  var s='versa-team-planner|'+row+'|'+pin;
+  try{if(window.crypto&&crypto.subtle){
+    var buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));
+    return Array.prototype.map.call(new Uint8Array(buf),function(b){return b.toString(16).padStart(2,'0');}).join('');
+  }}catch(e){}
+  var h=2166136261;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)>>>0;}
+  return 'f'+h.toString(16);
+}
+async function _nsSavePin(row,h){
+  try{
+    var latest={};
+    var r=await fetch(_SB_URL+'/rest/v1/app_data?select=value&key=eq.'+_k('team_pins'),{headers:_sbGet()});
+    if(r.ok){var rows=await r.json();if(rows&&rows[0]&&rows[0].value&&typeof rows[0].value==='object'&&!Array.isArray(rows[0].value))latest=rows[0].value;}
+    var merged=Object.assign({},_nsPins,latest);merged[row]={h:h,at:Date.now()};_nsPins=merged;
+    var w=await fetch(_SB_URL+'/rest/v1/app_data?on_conflict=key',{method:'POST',headers:_sbHeaders(),body:JSON.stringify({key:_k('team_pins'),value:merged,updated_at:new Date().toISOString()})});
+    return w.ok;
+  }catch(e){return false;}
+}
+function _nsPinPad(){
+  var h='<div class="ns-pin-pad">';
+  [1,2,3,4,5,6,7,8,9].forEach(function(d){h+='<button type="button" class="ns-key" onclick="_nsPinPress(\''+d+'\')">'+d+'</button>';});
+  return h+'<button type="button" class="ns-key ns-key-t" onclick="_nsPinClear()">Clear</button><button type="button" class="ns-key" onclick="_nsPinPress(\'0\')">0</button><button type="button" class="ns-key ns-key-t" onclick="_nsPinDel()">Delete</button></div>';
+}
+function _nsRenderPin(){
+  var st=_nsPinSt,el=document.getElementById('nsPinStage');if(!el)return;
+  var h='';
+  if(st.stage==='who'){
+    h+='<h1 id="nsLockTitle">Who <span>are you?</span></h1><div class="ns-pin-who">';
+    NS_TEAM.forEach(function(t){h+='<button type="button" onclick="_nsPinPick(\''+t.row+'\')">'+_rdEsc(t.full)+(_nsPins[t.row]?'<small>Reset PIN</small>':'')+'</button>';});
+    h+='</div><button type="button" class="ns-pin-back" onclick="_nsPinBack()">Back</button>';
+  }else{
+    var title=st.stage==='enter'?'Enter <span>your PIN</span>':st.stage==='new'?'Choose <span>your PIN</span>':'Enter it <span>again</span>';
+    h+='<h1 id="nsLockTitle">'+title+'</h1>'+(st.stage==='enter'?'':'<p class="ns-pin-sub">'+_rdEsc(_nsTeamOf(st.who).full)+'</p>');
+    h+='<div class="ns-pin-dots" aria-hidden="true"><span></span><span></span><span></span><span></span></div><p class="ns-pin-msg" role="alert"></p>'+_nsPinPad();
+    if(st.stage!=='enter')h+='<button type="button" class="ns-pin-back" onclick="_nsPinBack()">Back</button>';
+  }
+  el.innerHTML=h;_nsPinDots();
+}
+function _nsPinDots(msg){
+  var n=_nsPinSt.buf.length;
+  document.querySelectorAll('.ns-pin-dots span').forEach(function(sp,i){sp.classList.toggle('on',i<n);});
+  var m=document.querySelector('.ns-pin-msg');if(m){if(msg!=null)m.textContent=msg;else if(n)m.textContent='';}
+}
+function _nsPinPress(d){
+  var st=_nsPinSt;if(st.busy||st.stage==='who'||st.buf.length>=4)return;
+  st.buf+=d;_nsPinDots();
+  if(st.buf.length===4){st.busy=true;setTimeout(_nsPinDone,120);}
+}
+function _nsPinDel(){var st=_nsPinSt;if(st.busy)return;st.buf=st.buf.slice(0,-1);_nsPinDots();}
+function _nsPinClear(){var st=_nsPinSt;if(st.busy)return;st.buf='';_nsPinDots();}
+function _nsPinFail(msg){
+  var st=_nsPinSt;st.buf='';st.busy=false;
+  var d=document.querySelector('.ns-pin-dots');if(d){d.classList.remove('shake');void d.offsetWidth;d.classList.add('shake');}
+  _nsPinDots(msg);
+}
+function _nsPinPick(row){_nsPinSt={stage:'new',buf:'',who:row,first:'',busy:false};_nsRenderPin();}
+function _nsPinBack(){_nsPinSt={stage:_nsPinSt.stage==='confirm'?'new':(_nsPinSt.stage==='new'?'who':'enter'),buf:'',who:_nsPinSt.who,first:'',busy:false};_nsRenderPin();}
+async function _nsPinDone(){
+  var st=_nsPinSt,pin=st.buf,i,t;
+  try{
+    if(st.stage==='enter'){
+      await _nsLoadPins();
+      for(i=0;i<NS_TEAM.length;i++){t=NS_TEAM[i];if(_nsPins[t.row]&&_nsPins[t.row].h===await _nsPinHash(t.row,pin))return _nsSignIn(t.row);}
+      if(pin===NS_LOCK_CODE){_nsPinSt={stage:'who',buf:'',who:null,first:'',busy:false};return _nsRenderPin();}
+      return _nsPinFail("That PIN isn't right");
+    }
+    if(st.stage==='new'){
+      if(pin===NS_LOCK_CODE)return _nsPinFail('Pick a different PIN');
+      for(i=0;i<NS_TEAM.length;i++){t=NS_TEAM[i];if(t.row!==st.who&&_nsPins[t.row]&&_nsPins[t.row].h===await _nsPinHash(t.row,pin))return _nsPinFail('Pick a different PIN');}
+      _nsPinSt={stage:'confirm',buf:'',who:st.who,first:pin,busy:false};return _nsRenderPin();
+    }
+    if(st.stage==='confirm'){
+      if(pin!==st.first){_nsPinSt={stage:'new',buf:'',who:st.who,first:'',busy:false};_nsRenderPin();return _nsPinFail("Those didn't match, try again");}
+      var ok=await _nsSavePin(st.who,await _nsPinHash(st.who,pin));
+      return _nsSignIn(st.who,ok?null:"Signed in, but your PIN couldn't be saved");
+    }
+  }catch(e){console.warn('sign-in error',e);_nsPinFail('Something went wrong, try again');}
+}
+function _nsUpdateWhoAmI(){var el=document.getElementById('nsWhoAmI'),me=_nsMe();if(el)el.textContent=me?'Signed in as '+_nsTeamOf(me).name:'';}
+function _nsSignIn(row,warn){
+  try{localStorage.setItem('opsUnlocked','1');localStorage.setItem('opsUser',row);}catch(e){}
+  _nsPinSt={stage:'enter',buf:'',who:null,first:'',busy:false};
+  document.getElementById('nsLock').hidden=true;document.body.classList.remove('ns-locked');
+  _nsUpdateWhoAmI();
+  if(!window._opsBooted)bootstrap();
+  toast(warn||('Signed in as '+_nsTeamOf(row).name));
+}
+function _nsShowLock(){
+  var el=document.getElementById('nsLock');if(!el)return;
+  var svg=document.querySelector('.sa-logo-svg');if(svg)document.getElementById('nsLockBrand').innerHTML=svg.outerHTML.replace('class="sa-logo-svg"','class="ns-brand-logo"');
+  _nsPinSt={stage:'enter',buf:'',who:null,first:'',busy:false};
+  _nsRenderPin();
+  el.hidden=false;document.body.classList.add('ns-locked');
+  _nsLoadPins();
+}
+function opsLockPlanner(){try{localStorage.removeItem('opsUnlocked');localStorage.removeItem('opsUser');}catch(e){}location.reload();}
+document.addEventListener('keydown',function(e){
+  var el=document.getElementById('nsLock');if(!el||el.hidden)return;
+  if(e.metaKey||e.ctrlKey||e.altKey)return;
+  if(/^[0-9]$/.test(e.key)){e.preventDefault();_nsPinPress(e.key);}
+  else if(e.key==='Backspace'){e.preventDefault();_nsPinDel();}
+  else if(e.key==='Escape'){e.preventDefault();_nsPinClear();}
+},true);
+document.addEventListener('DOMContentLoaded',function(){if(_nsUnlocked()){_nsUpdateWhoAmI();bootstrap();}else _nsShowLock();});
+
+// Change history (b94): who changed which box and when. Each person's changes are kept
+// in their own record per month (ops_hist_<person>_<yyyy-mm>) so saves never collide.
+var _nsHist={},_nsHistDirty={},_nsHistPrev={},_nsHistTimer=null,_nsHistSaving=false,_nsHistOn=false,_nsLastInput=0;
+document.addEventListener('pointerdown',function(){_nsLastInput=Date.now();},true);
+document.addEventListener('keydown',function(){_nsLastInput=Date.now();},true);
+function _nsHistEntries(v){
+  return (Array.isArray(v)?v:[]).map(function(x){
+    if(typeof x==='string')return {t:x,n:'',c:[],ct:{},s:1,col:''};
+    if(!x)return null;
+    var ct={};(x.crew||[]).forEach(function(c){ct[c.name]=JSON.stringify(c.times||{});});
+    return {t:_opsTextOf(x)||'',n:x.note||'',c:(x.crew||[]).map(function(c){return c.name;}),ct:ct,s:x.span||1,col:x.color||''};
+  }).filter(function(x){return x&&x.t;});
+}
+function _nsHistDiff(a,b){
+  var A=_nsHistEntries(a),B=_nsHistEntries(b),parts=[],q=function(t){return '\u201c'+t+'\u201d';};
+  var at=A.map(function(e){return e.t;}),bt=B.map(function(e){return e.t;});
+  var added=B.filter(function(e){return at.indexOf(e.t)<0;}),removed=A.filter(function(e){return bt.indexOf(e.t)<0;});
+  if(added.length===1&&removed.length===1)parts.push('Changed '+q(removed[0].t)+' to '+q(added[0].t));
+  else{added.forEach(function(e){parts.push('Added '+q(e.t));});removed.forEach(function(e){parts.push('Removed '+q(e.t));});}
+  B.forEach(function(e){
+    var o=A.find(function(x){return x.t===e.t;});if(!o)return;
+    if(o.n!==e.n)parts.push(e.n?(o.n?'Edited the note on ':'Added a note to ')+q(e.t):'Removed the note from '+q(e.t));
+    var ca=e.c.filter(function(n){return o.c.indexOf(n)<0;}),cr=o.c.filter(function(n){return e.c.indexOf(n)<0;});
+    if(ca.length)parts.push('Booked '+ca.join(', ')+' on '+q(e.t));
+    if(cr.length)parts.push('Took '+cr.join(', ')+' off '+q(e.t));
+    var tc=e.c.filter(function(n){return o.ct[n]!=null&&o.ct[n]!==e.ct[n];});
+    if(tc.length)parts.push('Changed times for '+tc.join(', ')+' on '+q(e.t));
+    if(o.s!==e.s)parts.push(q(e.t)+' now '+e.s+' day'+(e.s===1?'':'s'));
+    if(o.col!==e.col)parts.push('Changed the colour of '+q(e.t));
+  });
+  return parts.join('; ');
+}
+function _nsHistRecord(key,before,after){
+  if(!_nsHistOn)return;
+  var me=_nsMe();if(!me)return;
+  if(Date.now()-_nsLastInput>8000)return; // only changes someone made, not background tidy-ups
+  var now=Date.now(),hit=null;
+  Object.keys(_nsHistPrev).forEach(function(id){
+    var it=_nsHist[id];
+    if(!it||now-it.t>60000){delete _nsHistPrev[id];return;}
+    if(it.by===me&&it.k===key)hit=it;
+  });
+  if(hit){hit.w=_nsHistDiff(_nsHistPrev[hit.id],after);hit.t=now;_nsHistDirty[hit.id]=1;}
+  else{
+    var w=_nsHistDiff(before,after);if(!w)return;
+    var id=me+'-'+now.toString(36)+'-'+Math.random().toString(36).slice(2,6);
+    _nsHist[id]={id:id,at:now,t:now,by:me,k:key,w:w};
+    _nsHistPrev[id]=before==null?null:JSON.parse(JSON.stringify(before));
+    _nsHistDirty[id]=1;
+  }
+  clearTimeout(_nsHistTimer);_nsHistTimer=setTimeout(_nsHistSave,2500);
+}
+function _nsHistMonth(ts){var d=new Date(ts);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');}
+function _nsHistKey(by,mon){return _k('ops_hist_'+by+'_'+mon);}
+async function _nsHistSave(){
+  if(_nsHistSaving){clearTimeout(_nsHistTimer);_nsHistTimer=setTimeout(_nsHistSave,1500);return;}
+  var ids=Object.keys(_nsHistDirty);if(!ids.length)return;
+  _nsHistSaving=true;_nsHistDirty={};
+  var groups={};
+  ids.forEach(function(id){var it=_nsHist[id];if(!it)return;var key=_nsHistKey(it.by,_nsHistMonth(it.at));(groups[key]=groups[key]||[]).push(it);});
+  try{
+    for(var key in groups){
+      var latest=[];
+      var r=await fetch(_SB_URL+'/rest/v1/app_data?select=value&key=eq.'+key,{headers:_sbGet()});
+      if(!r.ok)throw new Error('HTTP '+r.status);
+      var rows=await r.json();if(rows&&rows[0]&&Array.isArray(rows[0].value))latest=rows[0].value;
+      var by={};
+      latest.concat(groups[key]).forEach(function(it){if(it&&it.id&&(!by[it.id]||(it.t||0)>=(by[it.id].t||0)))by[it.id]=it;});
+      var list=Object.keys(by).map(function(x){return by[x];}).sort(function(a,b){return a.at-b.at;});
+      if(list.length>3000)list=list.slice(-3000);
+      var w=await fetch(_SB_URL+'/rest/v1/app_data?on_conflict=key',{method:'POST',headers:_sbHeaders(),body:JSON.stringify({key:key,value:list,updated_at:new Date().toISOString()})});
+      if(!w.ok)throw new Error('HTTP '+w.status);
+    }
+  }catch(e){
+    console.warn('history save failed',e);
+    ids.forEach(function(id){_nsHistDirty[id]=1;});
+    clearTimeout(_nsHistTimer);_nsHistTimer=setTimeout(_nsHistSave,15000);
+  }finally{_nsHistSaving=false;}
+}
+async function _nsHistLoad(){
+  var now=new Date(),mons=[_nsHistMonth(now.getTime()),_nsHistMonth(new Date(now.getFullYear(),now.getMonth()-1,15).getTime())],keys=[];
+  NS_TEAM.forEach(function(t){mons.forEach(function(m){keys.push(_nsHistKey(t.row,m));});});
+  try{
+    var r=await fetch(_SB_URL+'/rest/v1/app_data?select=value&key=in.('+keys.join(',')+')',{headers:_sbGet()});
+    if(!r.ok)return;
+    var rows=await r.json();
+    rows.forEach(function(row){(Array.isArray(row.value)?row.value:[]).forEach(function(it){
+      if(!it||!it.id||_nsHistDirty[it.id])return;
+      var cur=_nsHist[it.id];if(!cur||(it.t||0)>(cur.t||0))_nsHist[it.id]=it;
+    });});
+  }catch(e){return;}
+  var sh=document.getElementById('nsHist');if(sh&&!sh.hidden)_nsRenderHist();
+}
+setInterval(function(){if(_nsHistOn&&!document.hidden)_nsHistLoad();},20000);
+function _nsAgo(ts){
+  var s=(Date.now()-ts)/1000;
+  if(s<60)return 'just now';if(s<3600)return Math.floor(s/60)+' min ago';
+  var d=new Date(ts),t=d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  if(new Date().toDateString()===d.toDateString())return 'today at '+t;
+  return d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})+' at '+t;
+}
+function _nsHistLastHTML(key){
+  var best=null;
+  for(var id in _nsHist){var it=_nsHist[id];if(it.k===key&&it.w&&(!best||it.t>best.t))best=it;}
+  return best?'<div class="ns-hist-last">Changed by '+_rdEsc(_nsTeamOf(best.by).name)+' '+_nsAgo(best.t)+'</div>':'';
+}
+function opsOpenHist(){
+  var el=document.getElementById('nsHist');if(!el)return;
+  if(typeof opsCloseCed==='function')opsCloseCed();
+  var sel=document.getElementById('nsHistWho'),cur=sel.value||'';
+  sel.innerHTML='<option value="">Everyone</option>'+NS_TEAM.map(function(t){return '<option value="'+t.row+'"'+(t.row===cur?' selected':'')+'>'+_rdEsc(t.name)+'</option>';}).join('');
+  el.hidden=false;document.body.style.overflow='hidden';
+  _nsRenderHist();_nsHistLoad();
+  var x=el.querySelector('.rd-x');if(x)x.focus();
+}
+function opsCloseHist(){var el=document.getElementById('nsHist');if(!el||el.hidden)return;el.hidden=true;document.body.style.overflow='';}
+function opsHistJump(mi,day,row){opsCloseHist();opsJumpTo(mi,day,row);}
+function _nsRenderHist(){
+  var out=document.getElementById('nsHistRes');if(!out)return;
+  var who=document.getElementById('nsHistWho').value||'';
+  var items=Object.keys(_nsHist).map(function(id){return _nsHist[id];}).filter(function(it){return it.w&&(!who||it.by===who);}).sort(function(a,b){return b.t-a.t;});
+  if(!items.length){out.innerHTML='<p class="ml-empty">No changes yet.</p>';return;}
+  var h='',lastDay=null,today=new Date().toDateString(),yest=new Date(Date.now()-86400000).toDateString();
+  items.slice(0,200).forEach(function(it){
+    var d=new Date(it.t),ds=d.toDateString();
+    if(ds!==lastDay){lastDay=ds;h+='<div class="ns-crew-grp">'+(ds===today?'Today':ds===yest?'Yesterday':d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'}))+'</div>';}
+    var p=it.k.split('|'),mi=OPS_CAL.findIndex(function(m){return m.month===p[0];}),iso=mi>=0?_nsIsoOf(p[0],+p[1]):'';
+    var where=(iso?_mlUtc(iso).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',timeZone:'UTC'}):p[0]+' '+p[1])+' \u00b7 '+_rdRowName(p.slice(2).join('|'));
+    var attrs=mi>=0?' role="button" tabindex="0" onclick="opsHistJump('+mi+','+(+p[1])+',\''+p.slice(2).join('|').replace(/'/g,"\\'")+'\')" onkeydown="if(event.key===\'Enter\'){this.click();}"':'';
+    h+='<div class="ops-co ns-sr ns-hr"'+attrs+'><span class="ns-sr-date">'+d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})+'</span><span class="ns-sr-main">'+_rdEsc(it.w)+'<small>'+_rdEsc(where)+'</small></span><span class="ns-sr-row">'+_rdEsc(_nsTeamOf(it.by).name)+'</span></div>';
+  });
+  if(items.length>200)h+='<p class="ml-empty">Showing the latest 200 changes.</p>';
+  out.innerHTML=h;
+}
+document.addEventListener('click',function(e){var el=document.getElementById('nsHist');if(el&&!el.hidden&&e.target===el)opsCloseHist();});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')opsCloseHist();});
+// Crew times (b95): start and finish time for each crew booking, per day. Stored on the booking
+// ({name, role, type, times:{<day of the entry>:{s,e}}}) so it moves with the entry and the person.
+var NS_CLOCK='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.6" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M12 7.4V12l3.2 2.2" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+var _nsTimesMon=null,_nsTimesSnap=[];
+function _nsMins(st,en){
+  if(!st||!en)return null;
+  var a=st.split(':'),b=en.split(':'),m=(+b[0]*60+(+b[1]))-(+a[0]*60+(+a[1]));
+  if(m<=0)m+=1440; // finishes after midnight
+  return m;
+}
+function _nsHrs(m){if(m==null)return '';var h=Math.floor(m/60),mm=m%60;return h+'h'+(mm?' '+String(mm).padStart(2,'0')+'m':'');}
+function _nsHrsDec(m){return m==null?'':String(Math.round(m/60*100)/100);}
+function _nsCrewTimeStr(c,off){var t=c&&c.times&&c.times[off||0];if(!t||!(t.s||t.e))return '';var m=_nsMins(t.s,t.e);return (t.s||'?')+'\u2013'+(t.e||'?')+(m!=null?' ('+_nsHrs(m)+')':'');}
+function opsOpenTimes(){
+  var el=document.getElementById('nsTimes');if(!el)return;
+  if(typeof opsCloseCed==='function')opsCloseCed();
+  if(!_nsTimesMon)_nsTimesMon=_opsMondayOf(OPS_TODAY);
+  var sel=document.getElementById('nsTimesWho'),cur=sel.value||'';
+  sel.innerHTML='<option value="">Everyone</option>'+_nsCrewDirectory().map(function(p){return '<option value="'+_rdEsc(p.name)+'"'+(p.name===cur?' selected':'')+'>'+_rdEsc(p.name)+'</option>';}).join('');
+  el.hidden=false;document.body.style.overflow='hidden';
+  _nsRenderTimes();
+  var x=el.querySelector('.rd-x');if(x)x.focus();
+}
+function opsCloseTimes(){var el=document.getElementById('nsTimes');if(!el||el.hidden)return;if(document.activeElement)document.activeElement.blur();el.hidden=true;document.body.style.overflow='';}
+function opsTimesWeek(delta){
+  if(!delta)_nsTimesMon=_opsMondayOf(OPS_TODAY);
+  else{var d=_mlUtc(_nsTimesMon||_opsMondayOf(OPS_TODAY));d.setUTCDate(d.getUTCDate()+delta);_nsTimesMon=_mlIso(d);}
+  _nsRenderTimes();
+}
+function _nsTimesRows(from,to,who){
+  var rows=[],lc=(who||'').toLowerCase();
+  Object.keys(_opsD).forEach(function(k){
+    var p=k.split('|');if(p.length!==3||p[2].indexOf('st_')!==0)return;
+    var month=p[0],d0=+p[1],px=OPS_MPX[month],m=OPS_CAL.find(function(x){return x.month===month;});
+    if(!px||!m||!Array.isArray(_opsD[k]))return;
+    var last=m.days[m.days.length-1].day;
+    _opsD[k].forEach(function(v){
+      if(!v||typeof v!=='object'||!v.crew||!v.crew.length)return;
+      var span=v.span>1?v.span:1,text=_opsTextOf(v);
+      for(var off=0;off<span&&d0+off<=last;off++){
+        var iso=px+'-'+String(d0+off).padStart(2,'0');if(iso<from||iso>to)continue;
+        v.crew.forEach(function(c){
+          if(lc&&c.name.toLowerCase()!==lc)return;
+          var t=(c.times&&c.times[off])||{};
+          rows.push({iso:iso,month:month,day:d0,row:p[2],text:text,off:off,name:c.name,type:_nsCrewType(c),role:c.role||'',s:t.s||'',e:t.e||''});
+        });
+      }
+    });
+  });
+  return rows.sort(function(a,b){return a.iso<b.iso?-1:a.iso>b.iso?1:(_rdRowName(a.row).localeCompare(_rdRowName(b.row))||a.text.localeCompare(b.text)||a.name.localeCompare(b.name));});
+}
+function _nsRenderTimes(){
+  var body=document.getElementById('nsTimesBody');if(!body)return;
+  var from=_nsTimesMon,end=_mlUtc(from);end.setUTCDate(end.getUTCDate()+6);var to=_mlIso(end);
+  var f=function(iso,o){return _mlUtc(iso).toLocaleDateString('en-GB',Object.assign({timeZone:'UTC'},o));};
+  document.getElementById('nsTimesWeek').textContent=f(from,{day:'numeric',month:'short'})+' – '+f(to,{day:'numeric',month:'short',year:'numeric'});
+  var rows=_nsTimesRows(from,to,document.getElementById('nsTimesWho').value);
+  _nsTimesSnap=rows;
+  if(!rows.length){body.innerHTML='<p class="ml-empty ns-cm-empty">No crew booked this week.</p>';return;}
+  var h='<div class="ns-cm-head ns-tm-grid"><span>Name</span><span>Job</span><span>Start</span><span>Finish</span><span>Hours</span></div>',last=null;
+  var exBtn=function(kind,i,label){return '<button type="button" class="ns-tm-ex" onclick="opsTimesExport(\''+kind+'\','+i+')" aria-label="'+_rdEsc(label)+'" title="'+_rdEsc(label)+'">'+NS_EXPORT+'</button>';};
+  rows.forEach(function(r,i){
+    if(r.iso!==last){last=r.iso;h+='<div class="ns-crew-grp ns-cm-grp">'+f(r.iso,{weekday:'long',day:'numeric',month:'long'})+'</div>';}
+    h+='<div class="ns-cm-row ns-tm-row"><div class="ns-tm-grid">'
+      +'<span class="ns-tm-cell">'+_nsCrewDot(r.type)+'<span class="ns-tm-txt"><b>'+_rdEsc(r.name)+'</b>'+(r.role?'<small>'+_rdEsc(r.role)+'</small>':'')+'</span>'+exBtn('person',i,'Export '+r.name)+'</span>'
+      +'<span class="ns-tm-cell"><span class="ns-tm-txt">'+_rdEsc(r.text)+'<small>'+_rdEsc(_rdRowName(r.row))+'</small></span>'+exBtn('job',i,'Export '+r.text)+'</span>'
+      +'<label><span class="ns-cm-sr">Start time for '+_rdEsc(r.name)+'</span><input class="ns-tin" type="text" inputmode="numeric" maxlength="7" autocomplete="off" data-tm="'+i+'_s" value="'+r.s+'" onkeydown="_nsTinKey(event,this)" onchange="var t=_nsTinVal(this);if(t!==null)opsCrewTime('+i+',\'s\',t)"/></label>'
+      +'<label><span class="ns-cm-sr">Finish time for '+_rdEsc(r.name)+'</span><input class="ns-tin" type="text" inputmode="numeric" maxlength="7" autocomplete="off" data-tm="'+i+'_e" value="'+r.e+'" onkeydown="_nsTinKey(event,this)" onchange="var t=_nsTinVal(this);if(t!==null)opsCrewTime('+i+',\'e\',t)"/></label>'
+      +'<span class="ns-tm-hrs" id="nsTmH'+i+'">'+_nsHrs(_nsMins(r.s,r.e))+'</span>'
+      +'</div></div>';
+  });
+  h+='<div id="nsTmTotals"></div>';
+  body.innerHTML=h;_nsTimesTotals();
+}
+function _nsTimesTotals(){
+  var el=document.getElementById('nsTmTotals');if(!el)return;
+  var people={},jobs={};
+  _nsTimesSnap.forEach(function(r){var m=_nsMins(r.s,r.e);if(m==null)return;people[r.name]=(people[r.name]||0)+m;var j=r.text+' \u00b7 '+_rdRowName(r.row);jobs[j]=(jobs[j]||0)+m;});
+  var list=function(o){return Object.keys(o).sort().map(function(k){return '<div class="ns-tm-tot"><span>'+_rdEsc(k)+'</span><b>'+_nsHrs(o[k])+'</b></div>';}).join('');};
+  el.innerHTML=Object.keys(people).length?'<div class="ns-crew-grp ns-cm-grp">Hours this week \u00b7 people</div>'+list(people)+'<div class="ns-crew-grp ns-cm-grp">Hours this week \u00b7 jobs</div>'+list(jobs):'';
+}
+// Export one person's or one job's crew times for the week on screen (opens Export data)
+function opsTimesExport(kind,i){
+  var r=_nsTimesSnap[i];if(!r)return;
+  var e=_mlUtc(_nsTimesMon);e.setUTCDate(e.getUTCDate()+6);
+  document.getElementById('mlEFrom').value=_nsTimesMon;document.getElementById('mlETo').value=_mlIso(e);
+  _mlE.mode='custom';
+  opsCloseTimes();
+  if(kind==='person'){
+    opsOpenExport('crew');
+    var sel=document.getElementById('exCrew');
+    if(![].some.call(sel.options,function(o){return o.value===r.name;})){var o=document.createElement('option');o.value=o.textContent=r.name;sel.appendChild(o);}
+    sel.value=r.name;
+  }else{
+    opsOpenExport('job');
+    document.getElementById('exJob').value=r.text;
+  }
+  opsBuildPreview();
+}
+function opsCrewTime(i,field,val){
+  var r=_nsTimesSnap[i];if(!r)return;
+  var cur=og(r.month,r.day,r.row).slice(),idx=_opsTextIdx(cur,r.text);
+  if(idx<0){toast('That booking has changed, refreshing');_nsRenderTimes();return;}
+  var v=Object.assign({},cur[idx]);if(!v.crew){_nsRenderTimes();return;}
+  var ci=v.crew.findIndex(function(c){return c.name===r.name;});if(ci<0){toast('That booking has changed, refreshing');_nsRenderTimes();return;}
+  var c=Object.assign({},v.crew[ci]),times=Object.assign({},c.times||{}),t=Object.assign({},times[r.off]||{});
+  if(val)t[field]=val;else delete t[field];
+  if(t.s||t.e)times[r.off]=t;else delete times[r.off];
+  if(Object.keys(times).length)c.times=times;else delete c.times;
+  v.crew=v.crew.slice();v.crew[ci]=c;cur[idx]=v;
+  r[field]=val||'';
+  os(r.month,r.day,r.row,cur);
+  var hc=document.getElementById('nsTmH'+i);if(hc)hc.textContent=_nsHrs(_nsMins(r.s,r.e));
+  _nsTimesTotals();
+}
+document.addEventListener('click',function(e){var el=document.getElementById('nsTimes');if(el&&!el.hidden&&e.target===el)opsCloseTimes();});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')opsCloseTimes();});
+
+
 
 // Near-live sync (b80): every 2s ask only for the last-saved time (tiny request) and
 // download the planner only when someone else has saved. Also checks when the tab
 // becomes visible again and when an edit popup closes.
 var _opsPolling=false;
 async function _opsPollOnce(){
-  if(_opsPolling||_opsSaving||_opsEd||document.hidden)return;
+  if(!window._opsBooted||_opsPolling||_opsSaving||_opsEd||document.hidden)return;
   _opsPolling=true;
   try{
     var r=await fetch(_SB_URL+'/rest/v1/app_data?select=updated_at&key=eq.'+_k('opsPlanner'),{headers:_sbGet()});
