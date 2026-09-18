@@ -1512,7 +1512,7 @@ html.ns-light .ns-tm-menu{background:#fff;box-shadow:0 16px 40px rgba(0,0,0,.16)
 /* b102: hotel marker readable in both themes */
 html .ops-tbl td.ops-cell:has(> .ops-htl){position:relative;z-index:4!important}
 html .ops-tbl td.ops-rlbl{z-index:6!important}
-html .ops-htl{background:#e8c26a!important;color:#111110!important;font:700 12px var(--ns-body)!important;letter-spacing:0!important;box-shadow:0 1px 3px rgba(0,0,0,.18)!important}
+html .ops-htl{pointer-events:none!important;background:#e8c26a!important;color:#111110!important;font:700 12px var(--ns-body)!important;letter-spacing:0!important;box-shadow:0 1px 3px rgba(0,0,0,.18)!important}
 
 
 /* b104: header bar follows sideways scrolling by script, not sticky.
@@ -1525,6 +1525,14 @@ html .ops-htl{background:#e8c26a!important;color:#111110!important;font:700 12px
 .ops-ms2.ns-has-bar{margin-top:0!important;border-radius:0 0 28px 28px!important}
 .ops-tbl tr.ops-mhdr{display:none}
 @media (max-width:640px){.ns-mbar{margin:10px 6px 0;padding:4px 2px 0}.ns-mbar .ns-mh{padding:8px 10px 2px}}
+
+.ns-tm-ft{display:flex!important;align-items:center;justify-content:space-between}
+.ns-tm-ft .ns-lock-link{background:none!important;color:var(--ns-soft)!important;font:600 13px var(--ns-body)!important;text-decoration:underline;padding:4px 0!important;border:none!important;box-shadow:none!important}
+
+/* b106: London marker in the corner of a box */
+.ops-chip{position:relative}
+.ns-loc{position:absolute;top:3px;right:6px;padding:1px 4px;border-radius:5px;background:rgba(255,255,255,.6);font:700 9px/1.2 var(--ns-body);letter-spacing:.06em;text-transform:uppercase;color:rgba(17,17,16,.7);font-style:normal;pointer-events:none}
+.ns-run-lbl+.ns-loc,.ops-chip .ns-loc{z-index:2}
 </style>
 <script>try{if(localStorage.getItem('opsTheme')==='light')document.documentElement.classList.add('ns-light');if(localStorage.getItem('opsShowCrew')==='1')document.documentElement.classList.add('ns-show-crew');}catch(e){}</script>
 </head>
@@ -1574,8 +1582,9 @@ html .ops-htl{background:#e8c26a!important;color:#111110!important;font:700 12px
 <div id="nsTimes" class="rd-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="nsTimesTitle">
   <div class="rd-sheet-in ns-cm-in ns-tm-in">
     <div class="rd-sheet-hd"><h2 id="nsTimesTitle">Crew times</h2><button type="button" class="rd-x" aria-label="Close crew times" onclick="opsCloseTimes()">&times;</button></div>
-    <div class="ns-tm-bar"><div class="rd-presets" role="group" aria-label="Jobs to show"><button type="button" data-tmr="recent" aria-pressed="true" onclick="opsTimesRange('recent')">Recent</button><button type="button" data-tmr="all" aria-pressed="false" onclick="opsTimesRange('all')">All jobs</button></div><button type="button" class="ns-tm-now" onclick="opsCloseTimes();opsOpenCrewMgr()">Crew list</button></div>
+    <div class="ns-tm-bar"><div class="rd-presets" role="group" aria-label="Jobs to show"><button type="button" data-tmr="recent" aria-pressed="true" onclick="opsTimesRange('recent')">Recent</button><button type="button" data-tmr="all" aria-pressed="false" onclick="opsTimesRange('all')">All jobs</button></div></div>
     <div id="nsTimesBody" class="ns-cm-body"></div>
+    <div class="rd-sheet-ft ns-tm-ft"><button type="button" class="ns-lock-link" onclick="opsCloseTimes();opsOpenCrewMgr()">Crew list</button><button type="button" onclick="opsCloseTimes()">Done</button></div>
   </div>
 </div>
 <div id="nsHist" class="rd-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="nsHistTitle">
@@ -3319,6 +3328,7 @@ function opsReRender(){
   });
   requestAnimationFrame(versaFitAll);
   if(typeof _nsExtractBars==='function')_nsExtractBars();
+  if(typeof _opsRepositionOpenCed==='function')setTimeout(_opsRepositionOpenCed,0);
 }
 function opsReRenderAll(){
   if(plannerView==='week'){opsRenderWeek();return;}
@@ -3491,14 +3501,29 @@ function _opsRepositionOpenCed(){
   if(!td){opsCloseCed();return;}
   const rect=_opsCellRect(td);
   var vh=window.visualViewport?window.visualViewport.height:window.innerHeight;
+  ced.style.visibility='visible';
+  // The day has scrolled right out of view: keep the popup on screen rather than hiding it,
+  // so it can never seem to vanish while you are working in it.
   if(rect.bottom<-20||rect.top>vh+20){
-    ced.style.visibility='hidden';
+    var h=ced.offsetHeight||240;
+    ced.style.top=(rect.top>vh?Math.max(8,vh-h-8):8)+'px';
     return;
   }
-  ced.style.visibility='visible';
   _opsPositionCed(td);
 }
 function opsOpt(el){if(!_opsEd)return;const val=el.dataset.v;const single=el.dataset.s==='1';const{month,day,row,id}=_opsEd;let cur=og(month,day,row).slice();if(single)cur=cur.includes(val)?[]:[val];else{if(cur.includes(val))cur=cur.filter(x=>x!==val);else cur.push(val);}os(month,day,row,cur);if(row==='ml'){opsReRender();}else{opsRefCell(id,month,day,row);}opsCloseCed();}
+// Marks a day as being in London — shown as a small tag in the corner of the box
+function opsToggleLondon(idx){
+  if(!_opsEd)return;
+  var ed=_opsEd,cur=og(ed.month,ed.day,ed.row).slice();
+  if(idx<0||idx>=cur.length)return;
+  var v=cur[idx];v=(typeof v==='string')?{text:v}:Object.assign({},v);
+  if(v.loc)delete v.loc;else v.loc='London';
+  var ks=Object.keys(v);cur[idx]=(ks.length===1&&ks[0]==='text')?v.text:v;
+  os(ed.month,ed.day,ed.row,cur);
+  opsRefCell(ed.id,ed.month,ed.day,ed.row);
+  _nsReopenEntry(ed.id,idx,ed.day);
+}
 function opsToggleHotel(){
   if(!_opsEd)return;
   const ed=_opsEd;
@@ -3723,6 +3748,13 @@ function opsCkChipIdx(td,idx,force,dayOverride){
       +'<label class="rd-f"><span>New entry</span><input id="opsSpanAddTxt" placeholder="Name" autocomplete="off" onkeydown="if(event.key===\'Enter\')opsAddOnSpanDay('+idx+')"/></label>'
       +'<button type="button" class="rd-btn ns-secondary" onclick="opsAddOnSpanDay('+idx+')">Add</button></div></details>';
   }
+  // Day actions — reachable even when the day already has something in it
+  var _htlOn2=og(month,day,row+'_htl').length>0;
+  var _locOn=!!(v&&typeof v==='object'&&v.loc);
+  html+='<div class="ops-div"></div>'
+    +'<div class="ops-co" role="button" tabindex="0" onclick="event.stopPropagation();var t=document.getElementById(\''+td.id+'\');opsCloseCed();setTimeout(function(){opsCk(t,'+day+');},0)" onkeydown="if(event.key===\'Enter\')this.click()"><div class="ops-cd" style="background:transparent;border:1.5px dashed var(--ns-soft)"></div>Add another entry</div>'
+    +'<div class="ops-co" role="button" tabindex="0" onclick="event.stopPropagation();opsToggleHotel()" onkeydown="if(event.key===\'Enter\')this.click()"><div class="ops-cd" style="background:#e8c26a"></div>Hotel overnight'+(_htlOn2?'<span class="ops-ck">\u2713</span>':'')+'</div>'
+    +'<div class="ops-co" role="button" tabindex="0" onclick="event.stopPropagation();opsToggleLondon('+idx+')" onkeydown="if(event.key===\'Enter\')this.click()"><div class="ops-cd" style="background:#b9cbe0"></div>In London'+(_locOn?'<span class="ops-ck">\u2713</span>':'')+'</div>';
   html+='<div class="ops-div"></div><div class="ops-co" onclick="opsRemoveItem('+idx+');opsCloseCed();" style="color:#b8434b!important"><div class="ops-cd" style="background:#c06060"></div>Remove entry</div>';
   // Changes save as you go — Done just closes (blur first so a half-typed note/name is kept)
   html+='<div class="ns-ed-foot"><span>Changes save automatically</span><button type="button" class="ns-done" onclick="event.stopPropagation();if(document.activeElement)document.activeElement.blur();setTimeout(opsCloseCed,0)">Done</button></div>';
@@ -3761,6 +3793,7 @@ function _nsAutoSwatch(txt){
 }
 function _nsNoteIcon(v){
   var o=v&&typeof v==='object'?v:null,s='';
+  if(o&&o.loc)s+='<i class="ns-loc" title="In '+_rdEsc(o.loc)+'">'+_rdEsc(o.loc)+'</i>';
   if(o&&o.note)s+='<i class="ns-note" title="'+_rdEsc(o.note)+'" aria-label="Has notes"></i>';
   if(o&&o.crew&&o.crew.length){var who=o.crew.map(function(c){return c.name+(c.role?' ('+c.role+')':'');}).join(', ');
     s+='<i class="ns-crew" title="'+_rdEsc(who)+'" aria-label="'+o.crew.length+' crew booked">'+o.crew.length+'</i>';}
@@ -4398,7 +4431,7 @@ function _opsDragMouseDown(ev){
     // Detection zone: 18px or 30% of chip width, whichever is smaller. On wide chips this
     // stays a narrow band at each edge; on narrow single-cell chips it expands so the handle
     // is hittable without trackpad-precision.
-    var hz=Math.min(18,Math.max(10,cr.width*0.3));
+    var hz=Math.min(26,Math.max(14,cr.width*0.35));
     if(ev.clientY>=cr.top&&ev.clientY<=cr.bottom){
       if(fromRight>=0&&fromRight<hz){isHandle=true;handleSide='right';}
       else if(fromLeft>=0&&fromLeft<hz){isHandle=true;handleSide='left';}
@@ -6757,17 +6790,29 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')opsCloseTime
 // Month header bar (b105): lifted out of the month's sideways-scrolling table so it cannot
 // move with the columns. Safari ignores sticky inside the zoomed calendar, and nudging it on
 // every scroll made it jitter and lag, so the bar is now its own strip above the table.
+var _nsBarObs=null;
+function _nsBarShow(sec){
+  var bar=sec.previousElementSibling;
+  if(bar&&bar.classList.contains('ns-mbar'))bar.style.display=(sec.style.display==='none')?'none':'';
+}
 function _nsExtractBars(){
   document.querySelectorAll('#opsBody2 .ops-ms2').forEach(function(sec){
     var mh=sec.querySelector('table .ns-mh');
-    if(!mh)return;
-    var prev=sec.previousElementSibling;
-    if(prev&&prev.classList.contains('ns-mbar'))prev.remove();
-    var bar=document.createElement('div');bar.className='ns-mbar';
-    bar.appendChild(mh);
-    sec.parentNode.insertBefore(bar,sec);
-    sec.classList.add('ns-has-bar');
+    if(mh){
+      var prev=sec.previousElementSibling;
+      if(prev&&prev.classList.contains('ns-mbar'))prev.remove();
+      var bar=document.createElement('div');bar.className='ns-mbar';
+      bar.appendChild(mh);
+      sec.parentNode.insertBefore(bar,sec);
+      sec.classList.add('ns-has-bar');
+    }
+    _nsBarShow(sec);
   });
+  // a month can be hidden from several places (past months, week/year views) — follow it
+  if(!_nsBarObs&&window.MutationObserver){
+    _nsBarObs=new MutationObserver(function(ms){ms.forEach(function(m){if(m.target.classList&&m.target.classList.contains('ops-ms2'))_nsBarShow(m.target);});});
+    document.querySelectorAll('#opsBody2 .ops-ms2').forEach(function(sec){_nsBarObs.observe(sec,{attributes:true,attributeFilter:['style']});});
+  }
 }
 function _nsFloatHeadQueue(){setTimeout(_nsExtractBars,0);}
 window.addEventListener('resize',_nsFloatHeadQueue);
