@@ -1514,16 +1514,17 @@ html .ops-tbl td.ops-cell:has(> .ops-htl){position:relative;z-index:4!important}
 html .ops-tbl td.ops-rlbl{z-index:6!important}
 html .ops-htl{background:#e8c26a!important;color:#111110!important;font:700 12px var(--ns-body)!important;letter-spacing:0!important;box-shadow:0 1px 3px rgba(0,0,0,.18)!important}
 
-/* b103: pinned month header */
-.ns-floathead{position:fixed;top:0;z-index:800;display:none;overflow:hidden;box-sizing:border-box;border-radius:0 0 22px 22px;box-shadow:0 10px 24px rgba(0,0,0,.28);pointer-events:auto}
-html.ns-light .ns-floathead{box-shadow:0 10px 24px rgba(0,0,0,.10)}
-.ns-floathead .ops-tbl{border-collapse:separate}
-.ns-floathead tr.ops-mhdr td,.ns-floathead tr.ops-dhdr td{position:static}
-.ns-floathead tr.ops-dhdr > td:first-child{position:sticky!important;left:0!important}
 
 /* b104: header bar follows sideways scrolling by script, not sticky.
    Safari drops sticky inside the zoomed calendar, so it only held at 100% zoom. */
 .ops-tbl tr.ops-mhdr > td > div.ns-mh{position:relative!important;left:auto!important;will-change:transform}
+
+/* b105: month header bar sits above the scrolling table */
+.ns-mbar{background:var(--ns-card);margin:10px 12px 0;padding:6px 6px 0;border-radius:28px 28px 0 0}
+.ns-mbar .ns-mh{display:flex;flex-wrap:wrap;align-items:center;gap:10px 8px;width:auto!important;position:static!important;transform:none!important;padding:10px 22px 4px 24px}
+.ops-ms2.ns-has-bar{margin-top:0!important;border-radius:0 0 28px 28px!important}
+.ops-tbl tr.ops-mhdr{display:none}
+@media (max-width:640px){.ns-mbar{margin:10px 6px 0;padding:4px 2px 0}.ns-mbar .ns-mh{padding:8px 10px 2px}}
 </style>
 <script>try{if(localStorage.getItem('opsTheme')==='light')document.documentElement.classList.add('ns-light');if(localStorage.getItem('opsShowCrew')==='1')document.documentElement.classList.add('ns-show-crew');}catch(e){}</script>
 </head>
@@ -3317,8 +3318,7 @@ function opsReRender(){
     if(sec.style.display!=='none') sec.innerHTML=opsRenderMonth(OPS_CAL[i],i);
   });
   requestAnimationFrame(versaFitAll);
-  if(typeof _nsFloatHeadQueue==='function'){_nsFH.src=null;setTimeout(_nsFloatHeadQueue,60);}
-  if(typeof _nsSyncHeadBars==='function')setTimeout(_nsSyncHeadBars,0);
+  if(typeof _nsExtractBars==='function')_nsExtractBars();
 }
 function opsReRenderAll(){
   if(plannerView==='week'){opsRenderWeek();return;}
@@ -6338,7 +6338,7 @@ async function bootstrap(){
   _rdApplyDensity(_rdDensity());
   setPlanView('month');
   _rdRenderStuPanel();
-  setTimeout(function(){if(typeof _nsSyncHeadBars==='function')_nsSyncHeadBars();},120);
+  setTimeout(function(){if(typeof _nsExtractBars==='function')_nsExtractBars();},60);
   _nsHistOn=true;_nsHistLoad();
 }
 
@@ -6754,75 +6754,24 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')opsCloseTime
 
 
 
-// Pinned header (b103): each month scrolls sideways in its own box while the page scrolls down,
-// so CSS sticky can't keep the header in view. Once a month's header scrolls off the top, show a
-// copy of it (logo, buttons, month, dates) pinned to the top, kept in line with sideways scrolling.
-var _nsFH={wrap:null,sec:null,src:null,w:0,raf:0};
-function _nsFloatHeadHide(){if(_nsFH.wrap)_nsFH.wrap.style.display='none';}
-function _nsFloatHeadBuild(sec){
-  var fh=_nsFH,host=document.getElementById('opsScroll2')||document.body;
-  if(!fh.wrap||!host.contains(fh.wrap)){
-    fh.wrap=document.createElement('div');fh.wrap.className='ns-floathead';
-    host.appendChild(fh.wrap);
-  }
-  var tbl=sec.querySelector('table.ops-tbl'),mh=sec.querySelector('tr.ops-mhdr'),dh=sec.querySelector('tr.ops-dhdr');
-  var clone=document.createElement('table');clone.className=tbl.className;
-  clone.style.cssText='table-layout:fixed;width:'+tbl.offsetWidth+'px;margin:0';
-  var cg=document.createElement('colgroup');
-  Array.prototype.forEach.call(dh.children,function(td){var n=td.colSpan||1,w=td.offsetWidth/n;for(var i=0;i<n;i++){var c=document.createElement('col');c.style.width=w+'px';cg.appendChild(c);}});
-  clone.appendChild(cg);
-  var tb=document.createElement('tbody');
-  [mh,dh].forEach(function(tr){var c=tr.cloneNode(true);c.querySelectorAll('[id]').forEach(function(x){x.removeAttribute('id');});tb.appendChild(c);});
-  clone.appendChild(tb);
-  fh.wrap.innerHTML='';fh.wrap.appendChild(clone);
-  var cs=getComputedStyle(sec);
-  fh.wrap.style.background=cs.backgroundColor;
-  fh.wrap.style.paddingLeft=cs.paddingLeft;fh.wrap.style.paddingRight=cs.paddingRight;
-  fh.sec=sec;fh.src=mh;fh.w=sec.clientWidth;
-}
-function _nsFloatHead(){
-  _nsFH.raf=0;
-  _nsSyncHeadBars();
-  if(typeof plannerView!=='undefined'&&plannerView!=='month')return _nsFloatHeadHide();
-  var active=null,secs=document.querySelectorAll('#opsBody2 .ops-ms2');
-  for(var i=0;i<secs.length;i++){
-    var sec=secs[i];if(sec.style.display==='none')continue;
-    var mh=sec.querySelector('tr.ops-mhdr'),dh=sec.querySelector('tr.ops-dhdr');if(!mh||!dh)continue;
-    var top=mh.getBoundingClientRect().top,h=dh.getBoundingClientRect().bottom-top,r=sec.getBoundingClientRect();
-    if(top<0&&r.bottom>h+40){active=sec;break;}
-  }
-  if(!active)return _nsFloatHeadHide();
-  var fh=_nsFH;
-  if(fh.sec!==active||!fh.src||!document.contains(fh.src)||fh.w!==active.clientWidth||!fh.wrap||!fh.wrap.firstChild)_nsFloatHeadBuild(active);
-  var sc=_nsScale(active),rr=active.getBoundingClientRect();
-  fh.wrap.style.left=(rr.left/sc)+'px';
-  fh.wrap.style.width=active.offsetWidth+'px';
-  fh.wrap.style.display='block';
-  fh.wrap.scrollLeft=active.scrollLeft;
-  _nsPinBar(fh.wrap,fh.wrap.querySelector('.ns-mh'));
-}
-// Keep the month header bar (logo, buttons, month) in view while a month scrolls sideways
-function _nsPinBar(box,mh){
-  if(!mh)return;
-  var scale=_nsScale(box)||1,r=box.getBoundingClientRect();
-  var target=r.left+(parseFloat(getComputedStyle(box).borderLeftWidth)||0);
-  var x=box.scrollLeft;                                  // first guess in the calendar's own pixels
-  mh.style.transform=x?'translateX('+x+'px)':'';
-  var d=(target-mh.getBoundingClientRect().left)/scale;   // then correct for zoom and rounding
-  if(Math.abs(d)>0.5){x+=d;mh.style.transform='translateX('+x+'px)';}
-}
-function _nsSyncHeadBars(){
+// Month header bar (b105): lifted out of the month's sideways-scrolling table so it cannot
+// move with the columns. Safari ignores sticky inside the zoomed calendar, and nudging it on
+// every scroll made it jitter and lag, so the bar is now its own strip above the table.
+function _nsExtractBars(){
   document.querySelectorAll('#opsBody2 .ops-ms2').forEach(function(sec){
-    if(sec.style.display==='none')return;
-    _nsPinBar(sec,sec.querySelector(':scope > table .ns-mh'));
+    var mh=sec.querySelector('table .ns-mh');
+    if(!mh)return;
+    var prev=sec.previousElementSibling;
+    if(prev&&prev.classList.contains('ns-mbar'))prev.remove();
+    var bar=document.createElement('div');bar.className='ns-mbar';
+    bar.appendChild(mh);
+    sec.parentNode.insertBefore(bar,sec);
+    sec.classList.add('ns-has-bar');
   });
-  var w=_nsFH.wrap;
-  if(w&&w.style.display!=='none')_nsPinBar(w,w.querySelector('.ns-mh'));
 }
-function _nsFloatHeadQueue(){if(_nsFH.raf)return;_nsFH.raf=requestAnimationFrame(_nsFloatHead);setTimeout(function(){if(_nsFH.raf){cancelAnimationFrame(_nsFH.raf);_nsFloatHead();}},60);}
-window.addEventListener('scroll',_nsFloatHeadQueue,{passive:true});
-document.addEventListener('scroll',function(e){if(e.target&&e.target.classList&&e.target.classList.contains('ops-ms2'))_nsFloatHeadQueue();},{capture:true,passive:true});
-window.addEventListener('resize',function(){_nsFH.sec=null;_nsFloatHeadQueue();});
+function _nsFloatHeadQueue(){setTimeout(_nsExtractBars,0);}
+window.addEventListener('resize',_nsFloatHeadQueue);
+
 // Near-live sync (b80): every 2s ask only for the last-saved time (tiny request) and
 // download the planner only when someone else has saved. Also checks when the tab
 // becomes visible again and when an edit popup closes.
