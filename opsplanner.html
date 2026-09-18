@@ -1209,9 +1209,14 @@ html.ns-light .ns-undo{background:#111110}
 
 /* b93: search */
 .ns-search-in{width:min(640px,100%)!important;display:flex;flex-direction:column;overflow:hidden!important}
-.ns-search-box{padding:0 16px 10px}
-.ns-search-box input{width:100%;box-sizing:border-box;border:none;border-radius:14px;background:var(--ns-cell2);color:var(--ns-text);font:600 18px var(--ns-body);padding:12px 14px}
-.ns-search-box input:focus-visible{outline:2px solid var(--ns-orange);outline-offset:2px}
+.ns-search-box{display:flex;align-items:center;gap:10px;margin:0 18px 8px;padding:0 0 6px;border-bottom:1px solid var(--ns-cell2)}
+.ns-search-box .ns-sb-ico{flex:0 0 20px;width:20px;height:20px;color:var(--ns-soft)}
+.ns-search-box .ns-sb-ico svg{width:20px;height:20px;display:block}
+html .ns-search-box input{flex:1 1 auto;min-width:0;width:100%;box-sizing:border-box;border:none!important;border-radius:0!important;background:transparent!important;color:var(--ns-text)!important;font:600 20px var(--ns-body)!important;padding:8px 2px!important;outline:none;-webkit-appearance:none;appearance:none}
+html .ns-search-box input::-webkit-search-cancel-button,html .ns-search-box input::-webkit-search-decoration{-webkit-appearance:none;display:none}
+.ns-search-box:focus-within{border-bottom-color:var(--ns-orange)}
+.ns-search-box:focus-within .ns-sb-ico{color:var(--ns-orange)}
+
 .ns-search-res{flex:1 1 auto;min-height:0;overflow:auto;padding:0 0 14px}
 .ns-search-res .ml-head,.ns-search-res .ml-empty,.ns-search-res .ns-crew-grp{margin-left:18px;margin-right:18px}
 .ops-co.ns-sr{display:grid!important;grid-template-columns:118px 1fr auto;align-items:center;gap:10px;cursor:pointer}
@@ -1477,6 +1482,44 @@ html.ns-show-crew .ops-tbl .ops-cell .ns-crew-tag[data-crew-type="tech"]{backgro
 html.ns-show-crew .ops-tbl .ops-cell .ns-crew-tag[data-crew-type="studio"]{background:#b5dbb0!important;color:#111110!important}
 html.ns-show-crew .ops-tbl .ops-cell .ns-crew-tag[data-crew-type="runner"]{background:#f0c2d6!important;color:#111110!important}
 html.ns-show-crew .ops-tbl .ops-cell .ns-crew-tag[data-crew-type] small{color:rgba(17,17,16,.62)!important}
+
+/* b102: crew times by job */
+.ns-tm-in{width:min(720px,100%)!important}
+.ns-tm-bar .rd-presets{margin-left:0!important;margin-right:auto}
+.ns-tj{padding:6px 0 10px;border-bottom:1px solid var(--ns-cell2)}
+.ns-tj:last-child{border-bottom:none}
+.ns-tj-head{display:flex;align-items:center;gap:10px;padding:10px 4px 6px}
+.ns-tj-head .ns-cr-dot{flex:0 0 12px;width:12px;height:12px}
+.ns-tj-name{flex:1 1 auto;min-width:0;display:flex;flex-direction:column}
+.ns-tj-name b{font:700 17px var(--ns-head);letter-spacing:-.01em;color:var(--ns-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ns-tj-name small{font:500 12px var(--ns-body);color:var(--ns-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ns-tj-sum{flex:0 0 auto;font:500 13px var(--ns-body);color:var(--ns-soft);white-space:nowrap}
+.ns-tj-sum b{color:var(--ns-text);font-weight:700}
+.ns-tp{display:flex;align-items:center;gap:10px;min-height:40px;padding:2px 4px 2px 26px;border-top:1px solid var(--ns-cell2)}
+.ns-tp-name{flex:1 1 auto;min-width:0;display:flex;align-items:baseline;gap:8px;overflow:hidden}
+.ns-tp-name b{flex:0 0 auto;font:600 15px var(--ns-body);color:var(--ns-text);white-space:nowrap}
+.ns-tp-name small{flex:0 1 auto;min-width:0;font:500 13px var(--ns-body);color:var(--ns-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ns-tp-days{flex:0 0 64px;text-align:right;font:500 13px var(--ns-body);color:var(--ns-soft);white-space:nowrap}
+.ns-tp-hrs{flex:0 0 64px;text-align:right;font:700 14px var(--ns-body);color:var(--ns-text);white-space:nowrap}
+.ns-tj .ns-tm-ex{opacity:.7}
+.ns-tj .ns-tm-ex:hover,.ns-tj .ns-tm-ex:focus-visible{opacity:1}
+.ns-tm-menu{position:fixed;z-index:1200;min-width:160px;padding:6px;border-radius:14px;background:#2c2b29;box-shadow:0 16px 40px rgba(0,0,0,.4);display:flex;flex-direction:column}
+html.ns-light .ns-tm-menu{background:#fff;box-shadow:0 16px 40px rgba(0,0,0,.16)}
+.ns-tm-menu button{border:none;background:none;text-align:left;padding:10px 12px;border-radius:9px;font:600 14px var(--ns-body);color:var(--ns-text);cursor:pointer}
+.ns-tm-menu button:hover,.ns-tm-menu button:focus-visible{background:var(--ns-cell2);outline:none}
+@media (max-width:560px){.ns-tp-name small{display:none}.ns-tp{padding-left:4px}}
+
+/* b102: hotel marker readable in both themes */
+html .ops-tbl td.ops-cell:has(> .ops-htl){position:relative;z-index:4!important}
+html .ops-tbl td.ops-rlbl{z-index:6!important}
+html .ops-htl{background:#e8c26a!important;color:#111110!important;font:700 12px var(--ns-body)!important;letter-spacing:0!important;box-shadow:0 1px 3px rgba(0,0,0,.18)!important}
+
+/* b103: pinned month header */
+.ns-floathead{position:fixed;top:0;z-index:800;display:none;overflow:hidden;box-sizing:border-box;border-radius:0 0 22px 22px;box-shadow:0 10px 24px rgba(0,0,0,.28);pointer-events:auto}
+html.ns-light .ns-floathead{box-shadow:0 10px 24px rgba(0,0,0,.10)}
+.ns-floathead .ops-tbl{border-collapse:separate}
+.ns-floathead tr.ops-mhdr td,.ns-floathead tr.ops-dhdr td{position:static}
+.ns-floathead tr.ops-dhdr > td:first-child{position:sticky!important;left:0!important}
 </style>
 <script>try{if(localStorage.getItem('opsTheme')==='light')document.documentElement.classList.add('ns-light');if(localStorage.getItem('opsShowCrew')==='1')document.documentElement.classList.add('ns-show-crew');}catch(e){}</script>
 </head>
@@ -1519,14 +1562,14 @@ html.ns-show-crew .ops-tbl .ops-cell .ns-crew-tag[data-crew-type] small{color:rg
 <div id="nsSearch" class="rd-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="nsSearchTitle">
   <div class="rd-sheet-in ns-search-in">
     <div class="rd-sheet-hd"><h2 id="nsSearchTitle">Search</h2><button type="button" class="rd-x" aria-label="Close search" onclick="opsCloseSearch()">&times;</button></div>
-    <div class="ns-search-box"><input id="nsSearchQ" type="search" autocomplete="off" aria-label="Search jobs, people and crew" oninput="opsRunSearch()" onkeydown="if(event.key==='Enter'){var f=document.querySelector('#nsSearchRes .ops-co');if(f)f.click();}"/></div>
+    <div class="ns-search-box"><span class="ns-sb-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M15.5 15.5L21 21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span><input id="nsSearchQ" type="text" autocomplete="off" spellcheck="false" aria-label="Search jobs, people and crew" oninput="opsRunSearch()" onkeydown="if(event.key==='Enter'){var f=document.querySelector('#nsSearchRes .ops-co');if(f)f.click();}"/></div>
     <div id="nsSearchRes" class="ns-search-res" aria-live="polite"></div>
   </div>
 </div>
 <div id="nsTimes" class="rd-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="nsTimesTitle">
   <div class="rd-sheet-in ns-cm-in ns-tm-in">
     <div class="rd-sheet-hd"><h2 id="nsTimesTitle">Crew times</h2><button type="button" class="rd-x" aria-label="Close crew times" onclick="opsCloseTimes()">&times;</button></div>
-    <div class="ns-tm-bar"><button type="button" class="ns-tm-nav" onclick="opsTimesWeek(-7)" aria-label="Previous week">&#8249;</button><span id="nsTimesWeek" aria-live="polite"></span><button type="button" class="ns-tm-nav" onclick="opsTimesWeek(7)" aria-label="Next week">&#8250;</button><button type="button" class="ns-tm-now" onclick="opsTimesWeek(0)">This week</button><button type="button" class="ns-tm-now" onclick="opsCloseTimes();opsOpenCrewMgr()">Crew list</button><label for="nsTimesWho">Show</label><select id="nsTimesWho" onchange="_nsRenderTimes()"></select></div>
+    <div class="ns-tm-bar"><div class="rd-presets" role="group" aria-label="Jobs to show"><button type="button" data-tmr="recent" aria-pressed="true" onclick="opsTimesRange('recent')">Recent</button><button type="button" data-tmr="all" aria-pressed="false" onclick="opsTimesRange('all')">All jobs</button></div><button type="button" class="ns-tm-now" onclick="opsCloseTimes();opsOpenCrewMgr()">Crew list</button></div>
     <div id="nsTimesBody" class="ns-cm-body"></div>
   </div>
 </div>
@@ -2226,6 +2269,22 @@ function _opsCleanStaleStudioEntries(){
       if(personalValid[parts[0]+'|'+parts[1]+'|'+parts[2]+'|'+lc])return true;
       // Only remove job names the planner added itself (not typed in by a person)
       if(typeof lbl!=='string'||!_opsSeeded.has(pid))return true;
+      _opsUnmarkSeeded(pid);return false;
+    });
+    if(kept.length!==arr.length)_opsD[k]=kept;
+  });
+  // A person's day showing the job twice — the planner's plain job name plus a fuller
+  // label for the same job ("Mock the Week" and "Mock the Week RX2"). Keep the fuller one.
+  Object.keys(_opsD).forEach(function(k){
+    var parts=k.split('|');
+    if(parts.length!==3||!_nsIsTeam(parts[2]))return;
+    var arr=_opsD[k];if(!Array.isArray(arr)||arr.length<2)return;
+    var kept=arr.filter(function(lbl){
+      if(typeof lbl!=='string')return true;                 // never touch anything with details on it
+      var pid=k+'|'+lbl;if(!_opsSeeded.has(pid))return true; // only labels the planner added
+      var lc=lbl.toLowerCase().trim();
+      var fuller=arr.some(function(o){var t=_opsTextOf(o).toLowerCase().trim();return t!==lc&&t.indexOf(lc)===0;});
+      if(!fuller)return true;
       _opsUnmarkSeeded(pid);return false;
     });
     if(kept.length!==arr.length)_opsD[k]=kept;
@@ -3254,6 +3313,7 @@ function opsReRender(){
     if(sec.style.display!=='none') sec.innerHTML=opsRenderMonth(OPS_CAL[i],i);
   });
   requestAnimationFrame(versaFitAll);
+  if(typeof _nsFloatHeadQueue==='function'){_nsFH.src=null;setTimeout(_nsFloatHeadQueue,60);}
 }
 function opsReRenderAll(){
   if(plannerView==='week'){opsRenderWeek();return;}
@@ -5753,12 +5813,14 @@ function _rdPresetWants(p,st){return p==='all'?true:p==='busy'?_rdBooked(st):_rd
 function _rdPresetNow(){var ps=['all','Manchester','London'];for(var i=0;i<ps.length;i++){var p=ps[i];if(OPS_STUDIOS.every(function(st){return !_opsHidStu.has(st)===_rdPresetWants(p,st);}))return p;}return '';}
 function _rdApplyPreset(p){_opsHidStu.clear();OPS_STUDIOS.forEach(function(st){if(!_rdPresetWants(p,st))_opsHidStu.add(st);});_rdSaveHid();opsReRenderAll();_rdRenderStuPanel();}
 var _rdStuOpen=false; // Studios dropdown in Settings starts closed
-var _rdTeamOpen=false;
+var _rdTeamOpen=false,_rdCrewOpen=false;
 function _rdRenderCrewTypePanel(){
   var el=document.getElementById('opsCrewTypePanel');if(!el)return;
-  var h='<div class="rd-sb-head"><h2>Crew</h2></div><div class="rd-sites"><div class="rd-site">';
+  var shown=NS_CREW_TYPES.filter(function(t){return !_opsHidCrewTypes.has(t.id);}).length;
+  var h='<div class="rd-sb-head"><h2><button type="button" class="rd-dd" data-rdcrew-dd="1" aria-expanded="'+_rdCrewOpen+'" aria-controls="rdCrewBody">Crew <span class="rd-count">'+shown+' of '+NS_CREW_TYPES.length+' showing</span><span class="rd-chev" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></h2></div>';
+  h+='<div id="rdCrewBody"'+(_rdCrewOpen?'':' hidden')+'><div class="rd-sites"><div class="rd-site">';
   NS_CREW_TYPES.forEach(function(t){var on=!_opsHidCrewTypes.has(t.id);h+='<button type="button" class="rd-stu" data-rdct="'+t.id+'" aria-pressed="'+on+'"><span class="bx">'+(on?'&#10003;':'')+'</span><span class="nmx">'+t.name+'</span></button>';});
-  h+='</div></div><div class="ops-co ns-cm-open" role="button" tabindex="0" onclick="_rdCloseSettings();opsOpenCrewMgr()" onkeydown="if(event.key===\'Enter\')this.click()">Manage crew list<span class="ns-cm-count">'+_nsCrewDirectory().length+'</span></div>';
+  h+='</div></div><div class="ops-co ns-cm-open" role="button" tabindex="0" onclick="_rdCloseSettings();opsOpenCrewMgr()" onkeydown="if(event.key===\'Enter\')this.click()">Manage crew list<span class="ns-cm-count">'+_nsCrewDirectory().length+'</span></div></div>';
   el.innerHTML=h;
 }
 // Crew list manager (b93): edit name, role, section, phone, email; remove; add
@@ -5876,8 +5938,10 @@ function _nsCrewUpdateBookings(oldName,patch){
 }
 document.addEventListener('click',function(e){var el=document.getElementById('nsCrewMgr');if(el&&!el.hidden&&e.target===el)opsCloseCrewMgr();});
 document.addEventListener('click',function(e){
-  var b=e.target.closest&&e.target.closest('#opsCrewTypePanel button[data-rdct]');if(!b)return;
+  var b=e.target.closest&&e.target.closest('#opsCrewTypePanel button');if(!b)return;
   e.stopPropagation();
+  if(b.dataset.rdcrewDd){_rdCrewOpen=!_rdCrewOpen;_rdRenderCrewTypePanel();var t=document.querySelector('#opsCrewTypePanel .rd-dd');if(t)t.focus();return;}
+  if(!b.dataset.rdct)return;
   var t=b.dataset.rdct;if(_opsHidCrewTypes.has(t))_opsHidCrewTypes.delete(t);else _opsHidCrewTypes.add(t);
   try{localStorage.setItem('opsHidCrewTypes',JSON.stringify(Array.from(_opsHidCrewTypes)));}catch(err){}
   _nsApplyCrewTypeView();_rdRenderCrewTypePanel();
@@ -6546,113 +6610,193 @@ function _nsMins(st,en){
 function _nsHrs(m){if(m==null)return '';var h=Math.floor(m/60),mm=m%60;return h+'h'+(mm?' '+String(mm).padStart(2,'0')+'m':'');}
 function _nsHrsDec(m){return m==null?'':String(Math.round(m/60*100)/100);}
 function _nsCrewTimeStr(c,off){var t=c&&c.times&&c.times[off||0];if(!t||!(t.s||t.e))return '';var m=_nsMins(t.s,t.e);return (t.s||'?')+'\u2013'+(t.e||'?')+(m!=null?' ('+_nsHrs(m)+')':'');}
+// Crew times (b102): one line per job and per person on it, with days and total hours.
+// Export a whole job, or one person for the whole job.
+var _nsTmRange='recent',_nsTmJobs=[];
 function opsOpenTimes(){
   var el=document.getElementById('nsTimes');if(!el)return;
   if(typeof opsCloseCed==='function')opsCloseCed();
-  if(!_nsTimesMon)_nsTimesMon=_opsMondayOf(OPS_TODAY);
-  var sel=document.getElementById('nsTimesWho'),cur=sel.value||'';
-  sel.innerHTML='<option value="">Everyone</option>'+_nsCrewDirectory().map(function(p){return '<option value="'+_rdEsc(p.name)+'"'+(p.name===cur?' selected':'')+'>'+_rdEsc(p.name)+'</option>';}).join('');
   el.hidden=false;document.body.style.overflow='hidden';
   _nsRenderTimes();
   var x=el.querySelector('.rd-x');if(x)x.focus();
 }
-function opsCloseTimes(){var el=document.getElementById('nsTimes');if(!el||el.hidden)return;if(document.activeElement)document.activeElement.blur();el.hidden=true;document.body.style.overflow='';}
-function opsTimesWeek(delta){
-  if(!delta)_nsTimesMon=_opsMondayOf(OPS_TODAY);
-  else{var d=_mlUtc(_nsTimesMon||_opsMondayOf(OPS_TODAY));d.setUTCDate(d.getUTCDate()+delta);_nsTimesMon=_mlIso(d);}
-  _nsRenderTimes();
-}
-function _nsTimesRows(from,to,who){
-  var rows=[],lc=(who||'').toLowerCase();
+function opsCloseTimes(){var el=document.getElementById('nsTimes');if(!el||el.hidden)return;_nsTmMenuClose();if(document.activeElement)document.activeElement.blur();el.hidden=true;document.body.style.overflow='';}
+function opsTimesRange(r){_nsTmRange=r;document.querySelectorAll('#nsTimes [data-tmr]').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.tmr===r));});_nsRenderTimes();}
+// Every crew booking, one record per person per day, grouped into jobs by show name
+function _nsCrewJobs(){
+  var jobs={};
   Object.keys(_opsD).forEach(function(k){
-    var p=k.split('|');if(p.length!==3||p[2].indexOf('st_')!==0)return;
+    var p=k.split('|');if(p.length!==3||p[2].indexOf('st_')!==0||!Array.isArray(_opsD[k]))return;
     var month=p[0],d0=+p[1],px=OPS_MPX[month],m=OPS_CAL.find(function(x){return x.month===month;});
-    if(!px||!m||!Array.isArray(_opsD[k]))return;
+    if(!px||!m)return;
     var last=m.days[m.days.length-1].day;
     _opsD[k].forEach(function(v){
       if(!v||typeof v!=='object'||!v.crew||!v.crew.length)return;
-      var span=v.span>1?v.span:1,text=_opsTextOf(v);
+      var text=_opsTextOf(v),key=_nsShowKey(text.toLowerCase())||text.toLowerCase(),span=v.span>1?v.span:1;
+      var j=jobs[key]=jobs[key]||{key:key,name:_nsShowName(text)||text,people:{},days:{},studios:{},first:'9999',last:''};
       for(var off=0;off<span&&d0+off<=last;off++){
-        var iso=px+'-'+String(d0+off).padStart(2,'0');if(iso<from||iso>to)continue;
+        var iso=px+'-'+String(d0+off).padStart(2,'0');
+        j.days[iso]=1;j.studios[_rdRowName(p[2])]=1;
+        if(iso<j.first)j.first=iso;if(iso>j.last)j.last=iso;
         v.crew.forEach(function(c){
-          if(lc&&c.name.toLowerCase()!==lc)return;
-          var t=(c.times&&c.times[off])||{};
-          rows.push({iso:iso,month:month,day:d0,row:p[2],text:text,off:off,name:c.name,type:_nsCrewType(c),role:c.role||'',s:t.s||'',e:t.e||''});
+          var pk=c.name.toLowerCase(),t=(c.times&&c.times[off])||{},mins=_nsMins(t.s,t.e);
+          var pp=j.people[pk]=j.people[pk]||{name:c.name,role:c.role||'',type:_nsCrewType(c),recs:[]};
+          pp.recs.push({iso:iso,text:text,studio:_rdRowName(p[2]),role:c.role||'',s:t.s||'',e:t.e||'',m:mins});
         });
       }
     });
   });
-  return rows.sort(function(a,b){return a.iso<b.iso?-1:a.iso>b.iso?1:(_rdRowName(a.row).localeCompare(_rdRowName(b.row))||a.text.localeCompare(b.text)||a.name.localeCompare(b.name));});
+  return Object.keys(jobs).map(function(k){
+    var j=jobs[k];
+    j.list=Object.keys(j.people).map(function(pk){
+      var pp=j.people[pk];
+      pp.recs.sort(function(a,b){return a.iso<b.iso?-1:a.iso>b.iso?1:0;});
+      pp.days=Object.keys(pp.recs.reduce(function(o,r){o[r.iso]=1;return o;},{})).length;
+      pp.mins=pp.recs.reduce(function(a,r){return a+(r.m||0);},0);
+      return pp;
+    }).sort(function(a,b){
+      var ta=NS_CREW_TYPES.findIndex(function(t){return t.id===a.type;}),tb=NS_CREW_TYPES.findIndex(function(t){return t.id===b.type;});
+      return ta-tb||a.name.localeCompare(b.name);});
+    j.mins=j.list.reduce(function(a,p){return a+p.mins;},0);
+    return j;
+  }).sort(function(a,b){return a.first<b.first?1:a.first>b.first?-1:0;});
+}
+function _nsTmDates(a,b){
+  var f=function(iso,o){return _mlUtc(iso).toLocaleDateString('en-GB',Object.assign({timeZone:'UTC'},o));};
+  if(a===b)return f(a,{weekday:'short',day:'numeric',month:'short'});
+  return f(a,{day:'numeric',month:'short'})+' – '+f(b,{day:'numeric',month:'short'});
 }
 function _nsRenderTimes(){
   var body=document.getElementById('nsTimesBody');if(!body)return;
-  var from=_nsTimesMon,end=_mlUtc(from);end.setUTCDate(end.getUTCDate()+6);var to=_mlIso(end);
-  var f=function(iso,o){return _mlUtc(iso).toLocaleDateString('en-GB',Object.assign({timeZone:'UTC'},o));};
-  document.getElementById('nsTimesWeek').textContent=f(from,{day:'numeric',month:'short'})+' – '+f(to,{day:'numeric',month:'short',year:'numeric'});
-  var rows=_nsTimesRows(from,to,document.getElementById('nsTimesWho').value);
-  _nsTimesSnap=rows;
-  if(!rows.length){body.innerHTML='<p class="ml-empty ns-cm-empty">No crew booked this week.</p>';return;}
-  var h='<div class="ns-cm-head ns-tm-grid"><span>Name</span><span>Job</span><span>Start</span><span>Finish</span><span>Hours</span></div>',last=null;
-  var exBtn=function(kind,i,label){return '<button type="button" class="ns-tm-ex" onclick="opsTimesExport(\''+kind+'\','+i+')" aria-label="'+_rdEsc(label)+'" title="'+_rdEsc(label)+'">'+NS_EXPORT+'</button>';};
-  rows.forEach(function(r,i){
-    if(r.iso!==last){last=r.iso;h+='<div class="ns-crew-grp ns-cm-grp">'+f(r.iso,{weekday:'long',day:'numeric',month:'long'})+'</div>';}
-    h+='<div class="ns-cm-row ns-tm-row"><div class="ns-tm-grid">'
-      +'<span class="ns-tm-cell">'+_nsCrewDot(r.type)+'<span class="ns-tm-txt"><b>'+_rdEsc(r.name)+'</b>'+(r.role?'<small>'+_rdEsc(r.role)+'</small>':'')+'</span>'+exBtn('person',i,'Export '+r.name)+'</span>'
-      +'<span class="ns-tm-cell"><span class="ns-tm-txt">'+_rdEsc(r.text)+'<small>'+_rdEsc(_rdRowName(r.row))+'</small></span>'+exBtn('job',i,'Export '+r.text)+'</span>'
-      +'<label><span class="ns-cm-sr">Start time for '+_rdEsc(r.name)+'</span><input class="ns-tin" type="text" inputmode="numeric" maxlength="7" autocomplete="off" data-tm="'+i+'_s" value="'+r.s+'" onkeydown="_nsTinKey(event,this)" onchange="var t=_nsTinVal(this);if(t!==null)opsCrewTime('+i+',\'s\',t)"/></label>'
-      +'<label><span class="ns-cm-sr">Finish time for '+_rdEsc(r.name)+'</span><input class="ns-tin" type="text" inputmode="numeric" maxlength="7" autocomplete="off" data-tm="'+i+'_e" value="'+r.e+'" onkeydown="_nsTinKey(event,this)" onchange="var t=_nsTinVal(this);if(t!==null)opsCrewTime('+i+',\'e\',t)"/></label>'
-      +'<span class="ns-tm-hrs" id="nsTmH'+i+'">'+_nsHrs(_nsMins(r.s,r.e))+'</span>'
-      +'</div></div>';
+  var cut=new Date(OPS_TODAY+'T00:00:00Z');cut.setUTCDate(cut.getUTCDate()-45);var cutIso=_mlIso(cut);
+  _nsTmJobs=_nsCrewJobs().filter(function(j){return _nsTmRange==='all'||j.last>=cutIso;});
+  if(!_nsTmJobs.length){body.innerHTML='<p class="ml-empty ns-cm-empty">'+(_nsTmRange==='all'?'No crew booked yet.':'No crew booked on recent jobs. Choose All to see older jobs.')+'</p>';return;}
+  var ex=function(ji,pi,label){return '<button type="button" class="ns-tm-ex" aria-label="'+_rdEsc(label)+'" title="'+_rdEsc(label)+'" onclick="event.stopPropagation();opsTmMenu(this,'+ji+','+pi+')">'+NS_EXPORT+'</button>';};
+  var h='';
+  _nsTmJobs.forEach(function(j,ji){
+    var tmp=document.createElement('div');tmp.className='ops-chip '+opsChip(j.name);
+    h+='<section class="ns-tj"><div class="ns-tj-head"><i class="ns-cr-dot" style="background:'+(_nsPastel(j.name,tmp)||'#cfcdc7')+'"></i>'
+      +'<span class="ns-tj-name"><b>'+_rdEsc(j.name)+'</b><small>'+_rdEsc(_nsTmDates(j.first,j.last)+' · '+Object.keys(j.studios).join(', '))+'</small></span>'
+      +'<span class="ns-tj-sum">'+j.list.length+' '+(j.list.length===1?'person':'people')+(j.mins?' · <b>'+_nsHrs(j.mins)+'</b>':'')+'</span>'+ex(ji,-1,'Export '+j.name)+'</div>';
+    j.list.forEach(function(p,pi){
+      h+='<div class="ns-tp">'+_nsCrewDot(p.type)+'<span class="ns-tp-name"><b>'+_rdEsc(p.name)+'</b>'+(p.role?'<small>'+_rdEsc(p.role)+'</small>':'')+'</span>'
+        +'<span class="ns-tp-days">'+p.days+' day'+(p.days===1?'':'s')+'</span><span class="ns-tp-hrs">'+(p.mins?_nsHrs(p.mins):'')+'</span>'+ex(ji,pi,'Export '+p.name+' on '+j.name)+'</div>';
+    });
+    h+='</section>';
   });
-  h+='<div id="nsTmTotals"></div>';
-  body.innerHTML=h;_nsTimesTotals();
+  body.innerHTML=h;
 }
-function _nsTimesTotals(){
-  var el=document.getElementById('nsTmTotals');if(!el)return;
-  var people={},jobs={};
-  _nsTimesSnap.forEach(function(r){var m=_nsMins(r.s,r.e);if(m==null)return;people[r.name]=(people[r.name]||0)+m;var j=r.text+' \u00b7 '+_rdRowName(r.row);jobs[j]=(jobs[j]||0)+m;});
-  var list=function(o){return Object.keys(o).sort().map(function(k){return '<div class="ns-tm-tot"><span>'+_rdEsc(k)+'</span><b>'+_nsHrs(o[k])+'</b></div>';}).join('');};
-  el.innerHTML=Object.keys(people).length?'<div class="ns-crew-grp ns-cm-grp">Hours this week \u00b7 people</div>'+list(people)+'<div class="ns-crew-grp ns-cm-grp">Hours this week \u00b7 jobs</div>'+list(jobs):'';
+// Small menu under an export button: Copy text / Download CSV
+function _nsTmMenuClose(){var m=document.getElementById('nsTmMenu');if(m)m.remove();}
+function opsTmMenu(btn,ji,pi){
+  var open=document.getElementById('nsTmMenu');_nsTmMenuClose();
+  if(open&&open.dataset.for===ji+'_'+pi)return;
+  var m=document.createElement('div');m.id='nsTmMenu';m.className='ns-tm-menu';m.dataset.for=ji+'_'+pi;m.setAttribute('role','menu');
+  m.innerHTML='<button type="button" role="menuitem" onclick="opsTmExport('+ji+','+pi+',\'copy\')">Copy text</button><button type="button" role="menuitem" onclick="opsTmExport('+ji+','+pi+',\'csv\')">Download CSV</button>';
+  document.body.appendChild(m);
+  var r=btn.getBoundingClientRect();
+  m.style.top=Math.min(r.bottom+4,window.innerHeight-m.offsetHeight-8)+'px';
+  m.style.left=Math.max(8,r.right-m.offsetWidth)+'px';
+  m.querySelector('button').focus();
 }
-// Export one person's or one job's crew times for the week on screen (opens Export data)
-function opsTimesExport(kind,i){
-  var r=_nsTimesSnap[i];if(!r)return;
-  var e=_mlUtc(_nsTimesMon);e.setUTCDate(e.getUTCDate()+6);
-  document.getElementById('mlEFrom').value=_nsTimesMon;document.getElementById('mlETo').value=_mlIso(e);
-  _mlE.mode='custom';
-  opsCloseTimes();
-  if(kind==='person'){
-    opsOpenExport('crew');
-    var sel=document.getElementById('exCrew');
-    if(![].some.call(sel.options,function(o){return o.value===r.name;})){var o=document.createElement('option');o.value=o.textContent=r.name;sel.appendChild(o);}
-    sel.value=r.name;
-  }else{
-    opsOpenExport('job');
-    document.getElementById('exJob').value=r.text;
+document.addEventListener('click',function(e){var m=document.getElementById('nsTmMenu');if(m&&!m.contains(e.target)&&!(e.target.closest&&e.target.closest('.ns-tm-ex')))_nsTmMenuClose();},true);
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&document.getElementById('nsTmMenu')){e.stopImmediatePropagation();_nsTmMenuClose();}},true);
+function opsTmExport(ji,pi,how){
+  _nsTmMenuClose();
+  var j=_nsTmJobs[ji];if(!j)return;
+  var people=pi>=0?[j.list[pi]]:j.list;if(!people[0])return;
+  var dshort=function(iso){return _mlUtc(iso).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',timeZone:'UTC'});};
+  var tstr=function(r){return (r.s||r.e)?(r.s||'?')+'–'+(r.e||'?')+(r.m!=null?' ('+_nsHrs(r.m)+')':''):'no times';};
+  var title=pi>=0?people[0].name+' — '+j.name:j.name+' — crew hours';
+  var dates=_mlUtc(j.first).toLocaleDateString('en-GB',{day:'numeric',month:'long',timeZone:'UTC'})+(j.first!==j.last?' – '+_mlUtc(j.last).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}):' '+j.first.slice(0,4));
+  var slug=title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+  if(how==='copy'){
+    var out=title+'\n'+dates+'\n';
+    if(pi>=0){
+      var p=people[0];
+      out+=[p.role,_nsCrewTypeName(p.type)].filter(Boolean).join(' · ')+'\n';
+      out+='Days: '+p.days+(p.mins?' · Hours: '+_nsHrs(p.mins):'')+'\n\n';
+      p.recs.forEach(function(r){out+=dshort(r.iso)+': '+tstr(r)+' — '+r.text+', '+r.studio+'\n';});
+    }else{
+      out+=people.length+' '+(people.length===1?'person':'people')+(j.mins?' · Hours: '+_nsHrs(j.mins):'')+'\n';
+      people.forEach(function(p){
+        out+='\n'+p.name+(p.role?' ('+p.role+')':'')+': '+p.days+' day'+(p.days===1?'':'s')+(p.mins?', '+_nsHrs(p.mins):'')+'\n';
+        p.recs.forEach(function(r){out+='  '+dshort(r.iso)+': '+tstr(r)+'\n';});
+      });
+    }
+    out=out.replace(/\s+$/,'');
+    var done=function(ok){toast(ok?'Copied':'Copy failed');};
+    var legacy=function(){var ta=document.createElement('textarea');ta.value=out;ta.setAttribute('readonly','');ta.style.cssText='position:fixed;top:0;left:0;opacity:0';document.body.appendChild(ta);ta.select();var ok=false;try{ok=document.execCommand('copy');}catch(e){}ta.remove();done(ok);};
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(out).then(function(){done(true);},legacy);else legacy();
+    return;
   }
-  opsBuildPreview();
-}
-function opsCrewTime(i,field,val){
-  var r=_nsTimesSnap[i];if(!r)return;
-  var cur=og(r.month,r.day,r.row).slice(),idx=_opsTextIdx(cur,r.text);
-  if(idx<0){toast('That booking has changed, refreshing');_nsRenderTimes();return;}
-  var v=Object.assign({},cur[idx]);if(!v.crew){_nsRenderTimes();return;}
-  var ci=v.crew.findIndex(function(c){return c.name===r.name;});if(ci<0){toast('That booking has changed, refreshing');_nsRenderTimes();return;}
-  var c=Object.assign({},v.crew[ci]),times=Object.assign({},c.times||{}),t=Object.assign({},times[r.off]||{});
-  if(val)t[field]=val;else delete t[field];
-  if(t.s||t.e)times[r.off]=t;else delete times[r.off];
-  if(Object.keys(times).length)c.times=times;else delete c.times;
-  v.crew=v.crew.slice();v.crew[ci]=c;cur[idx]=v;
-  r[field]=val||'';
-  os(r.month,r.day,r.row,cur);
-  var hc=document.getElementById('nsTmH'+i);if(hc)hc.textContent=_nsHrs(_nsMins(r.s,r.e));
-  _nsTimesTotals();
+  var q=function(s){s=String(s==null?'':s);return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;};
+  var lines=['Name,Role,Section,Date,Day,Entry,Studio,Start,Finish,Hours'];
+  people.forEach(function(p){p.recs.forEach(function(r){
+    lines.push([p.name,r.role,_nsCrewTypeName(p.type),r.iso,_mlUtc(r.iso).toLocaleDateString('en-GB',{weekday:'long',timeZone:'UTC'}),r.text,r.studio,r.s,r.e,r.m!=null?_nsHrsDec(r.m):''].map(q).join(','));
+  });});
+  lines.push('');lines.push('Name,Days,Hours');
+  people.forEach(function(p){lines.push([p.name,p.days,p.mins?_nsHrsDec(p.mins):''].map(q).join(','));});
+  if(pi<0)lines.push(['Total','',j.mins?_nsHrsDec(j.mins):''].map(q).join(','));
+  var blob=new Blob(['﻿'+lines.join('\r\n')],{type:'text/csv;charset=utf-8'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=slug+'.csv';
+  document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},500);
+  toast('Downloaded');
 }
 document.addEventListener('click',function(e){var el=document.getElementById('nsTimes');if(el&&!el.hidden&&e.target===el)opsCloseTimes();});
 document.addEventListener('keydown',function(e){if(e.key==='Escape')opsCloseTimes();});
 
 
 
+// Pinned header (b103): each month scrolls sideways in its own box while the page scrolls down,
+// so CSS sticky can't keep the header in view. Once a month's header scrolls off the top, show a
+// copy of it (logo, buttons, month, dates) pinned to the top, kept in line with sideways scrolling.
+var _nsFH={wrap:null,sec:null,src:null,w:0,raf:0};
+function _nsFloatHeadHide(){if(_nsFH.wrap)_nsFH.wrap.style.display='none';}
+function _nsFloatHeadBuild(sec){
+  var fh=_nsFH,host=document.getElementById('opsScroll2')||document.body;
+  if(!fh.wrap||!host.contains(fh.wrap)){
+    fh.wrap=document.createElement('div');fh.wrap.className='ns-floathead';
+    host.appendChild(fh.wrap);
+  }
+  var tbl=sec.querySelector('table.ops-tbl'),mh=sec.querySelector('tr.ops-mhdr'),dh=sec.querySelector('tr.ops-dhdr');
+  var clone=document.createElement('table');clone.className=tbl.className;
+  clone.style.cssText='table-layout:fixed;width:'+tbl.offsetWidth+'px;margin:0';
+  var cg=document.createElement('colgroup');
+  Array.prototype.forEach.call(dh.children,function(td){var n=td.colSpan||1,w=td.offsetWidth/n;for(var i=0;i<n;i++){var c=document.createElement('col');c.style.width=w+'px';cg.appendChild(c);}});
+  clone.appendChild(cg);
+  var tb=document.createElement('tbody');
+  [mh,dh].forEach(function(tr){var c=tr.cloneNode(true);c.querySelectorAll('[id]').forEach(function(x){x.removeAttribute('id');});tb.appendChild(c);});
+  clone.appendChild(tb);
+  fh.wrap.innerHTML='';fh.wrap.appendChild(clone);
+  var cs=getComputedStyle(sec);
+  fh.wrap.style.background=cs.backgroundColor;
+  fh.wrap.style.paddingLeft=cs.paddingLeft;fh.wrap.style.paddingRight=cs.paddingRight;
+  fh.sec=sec;fh.src=mh;fh.w=sec.clientWidth;
+}
+function _nsFloatHead(){
+  _nsFH.raf=0;
+  if(typeof plannerView!=='undefined'&&plannerView!=='month')return _nsFloatHeadHide();
+  var active=null,secs=document.querySelectorAll('#opsBody2 .ops-ms2');
+  for(var i=0;i<secs.length;i++){
+    var sec=secs[i];if(sec.style.display==='none')continue;
+    var mh=sec.querySelector('tr.ops-mhdr'),dh=sec.querySelector('tr.ops-dhdr');if(!mh||!dh)continue;
+    var top=mh.getBoundingClientRect().top,h=dh.getBoundingClientRect().bottom-top,r=sec.getBoundingClientRect();
+    if(top<0&&r.bottom>h+40){active=sec;break;}
+  }
+  if(!active)return _nsFloatHeadHide();
+  var fh=_nsFH;
+  if(fh.sec!==active||!fh.src||!document.contains(fh.src)||fh.w!==active.clientWidth||!fh.wrap||!fh.wrap.firstChild)_nsFloatHeadBuild(active);
+  var sc=_nsScale(active),rr=active.getBoundingClientRect();
+  fh.wrap.style.left=(rr.left/sc)+'px';
+  fh.wrap.style.width=active.offsetWidth+'px';
+  fh.wrap.style.display='block';
+  fh.wrap.scrollLeft=active.scrollLeft;
+}
+function _nsFloatHeadQueue(){if(_nsFH.raf)return;_nsFH.raf=requestAnimationFrame(_nsFloatHead);setTimeout(function(){if(_nsFH.raf){cancelAnimationFrame(_nsFH.raf);_nsFloatHead();}},60);}
+window.addEventListener('scroll',_nsFloatHeadQueue,{passive:true});
+document.addEventListener('scroll',function(e){if(e.target&&e.target.classList&&e.target.classList.contains('ops-ms2'))_nsFloatHeadQueue();},{capture:true,passive:true});
+window.addEventListener('resize',function(){_nsFH.sec=null;_nsFloatHeadQueue();});
 // Near-live sync (b80): every 2s ask only for the last-saved time (tiny request) and
 // download the planner only when someone else has saved. Also checks when the tab
 // becomes visible again and when an edit popup closes.
