@@ -1520,6 +1520,10 @@ html.ns-light .ns-floathead{box-shadow:0 10px 24px rgba(0,0,0,.10)}
 .ns-floathead .ops-tbl{border-collapse:separate}
 .ns-floathead tr.ops-mhdr td,.ns-floathead tr.ops-dhdr td{position:static}
 .ns-floathead tr.ops-dhdr > td:first-child{position:sticky!important;left:0!important}
+
+/* b104: header bar follows sideways scrolling by script, not sticky.
+   Safari drops sticky inside the zoomed calendar, so it only held at 100% zoom. */
+.ops-tbl tr.ops-mhdr > td > div.ns-mh{position:relative!important;left:auto!important;will-change:transform}
 </style>
 <script>try{if(localStorage.getItem('opsTheme')==='light')document.documentElement.classList.add('ns-light');if(localStorage.getItem('opsShowCrew')==='1')document.documentElement.classList.add('ns-show-crew');}catch(e){}</script>
 </head>
@@ -3314,6 +3318,7 @@ function opsReRender(){
   });
   requestAnimationFrame(versaFitAll);
   if(typeof _nsFloatHeadQueue==='function'){_nsFH.src=null;setTimeout(_nsFloatHeadQueue,60);}
+  if(typeof _nsSyncHeadBars==='function')setTimeout(_nsSyncHeadBars,0);
 }
 function opsReRenderAll(){
   if(plannerView==='week'){opsRenderWeek();return;}
@@ -6333,6 +6338,7 @@ async function bootstrap(){
   _rdApplyDensity(_rdDensity());
   setPlanView('month');
   _rdRenderStuPanel();
+  setTimeout(function(){if(typeof _nsSyncHeadBars==='function')_nsSyncHeadBars();},120);
   _nsHistOn=true;_nsHistLoad();
 }
 
@@ -6776,6 +6782,7 @@ function _nsFloatHeadBuild(sec){
 }
 function _nsFloatHead(){
   _nsFH.raf=0;
+  _nsSyncHeadBars();
   if(typeof plannerView!=='undefined'&&plannerView!=='month')return _nsFloatHeadHide();
   var active=null,secs=document.querySelectorAll('#opsBody2 .ops-ms2');
   for(var i=0;i<secs.length;i++){
@@ -6792,6 +6799,25 @@ function _nsFloatHead(){
   fh.wrap.style.width=active.offsetWidth+'px';
   fh.wrap.style.display='block';
   fh.wrap.scrollLeft=active.scrollLeft;
+  _nsPinBar(fh.wrap,fh.wrap.querySelector('.ns-mh'));
+}
+// Keep the month header bar (logo, buttons, month) in view while a month scrolls sideways
+function _nsPinBar(box,mh){
+  if(!mh)return;
+  var scale=_nsScale(box)||1,r=box.getBoundingClientRect();
+  var target=r.left+(parseFloat(getComputedStyle(box).borderLeftWidth)||0);
+  var x=box.scrollLeft;                                  // first guess in the calendar's own pixels
+  mh.style.transform=x?'translateX('+x+'px)':'';
+  var d=(target-mh.getBoundingClientRect().left)/scale;   // then correct for zoom and rounding
+  if(Math.abs(d)>0.5){x+=d;mh.style.transform='translateX('+x+'px)';}
+}
+function _nsSyncHeadBars(){
+  document.querySelectorAll('#opsBody2 .ops-ms2').forEach(function(sec){
+    if(sec.style.display==='none')return;
+    _nsPinBar(sec,sec.querySelector(':scope > table .ns-mh'));
+  });
+  var w=_nsFH.wrap;
+  if(w&&w.style.display!=='none')_nsPinBar(w,w.querySelector('.ns-mh'));
 }
 function _nsFloatHeadQueue(){if(_nsFH.raf)return;_nsFH.raf=requestAnimationFrame(_nsFloatHead);setTimeout(function(){if(_nsFH.raf){cancelAnimationFrame(_nsFH.raf);_nsFloatHead();}},60);}
 window.addEventListener('scroll',_nsFloatHeadQueue,{passive:true});
