@@ -1533,6 +1533,18 @@ html .ops-htl{pointer-events:none!important;background:#e8c26a!important;color:#
 .ops-chip{position:relative}
 .ns-loc{position:absolute;top:3px;right:6px;padding:1px 4px;border-radius:5px;background:rgba(255,255,255,.6);font:700 9px/1.2 var(--ns-body);letter-spacing:.06em;text-transform:uppercase;color:rgba(17,17,16,.7);font-style:normal;pointer-events:none}
 .ns-run-lbl+.ns-loc,.ops-chip .ns-loc{z-index:2}
+
+/* b107: the grab bars at each end of a box are visible on hover, so it is clear
+   where to pull from to stretch across days */
+.ops-chip:hover::before,.ops-chip:hover::after{background:rgba(17,17,16,.25)!important;width:8px!important}
+html.ns-light .ops-chip:hover::before,html.ns-light .ops-chip:hover::after{background:rgba(17,17,16,.2)!important}
+body.ops-drag-active .ops-chip:hover::before,body.ops-drag-active .ops-chip:hover::after{background:transparent!important}
+
+.ns-locday{position:absolute;top:4px;right:8px;z-index:6;padding:1px 5px;border-radius:6px;background:#b9cbe0;font:700 9px/1.3 var(--ns-body);letter-spacing:.06em;text-transform:uppercase;color:#111110;pointer-events:none}
+html .ops-tbl td.ops-cell:has(> .ns-locday){position:relative}
+
+.ns-cr-sum{margin:-2px 4px 8px;padding:0 0 8px;border-bottom:1px solid var(--ns-cell2);font:500 12px var(--ns-body);color:var(--ns-soft)}
+.ns-cr-sum b{font-weight:700;color:var(--ns-text)}
 </style>
 <script>try{if(localStorage.getItem('opsTheme')==='light')document.documentElement.classList.add('ns-light');if(localStorage.getItem('opsShowCrew')==='1')document.documentElement.classList.add('ns-show-crew');}catch(e){}</script>
 </head>
@@ -3053,14 +3065,17 @@ function opsRenderMonth(m,mi){
             coveredHtml+='<div class="ops-chip ns-dayk '+cvCls+'"'+(cvV&&typeof cvV==='object'&&cvV.cls?' data-pick="'+cvV.cls+'"':'')+cvStyle+' title="'+cvTxt.replace(/"/g,'&quot;')+' ('+cvDay+')" onclick="opsChipClickDay(event,'+mi+','+cvDay+',\''+row+'\','+cvI+')">'+cvTxt+_nsNoteIcon(cvV)+' <span style="opacity:.55;font-weight:800">'+cvDay+'</span></div>'+_nsCrewTags(cvV,'opsChipClickDay(event,'+mi+','+cvDay+',\''+row+'\','+cvI+')');
           });
         }
-        var spHtl=og(m.month,m.days[Math.min(idx+spanLen-1,days.length-1)].day,row+'_htl').length?'<span class="ops-htl" title="Hotel booked overnight">Hotel</span>':'';
-        return'<td class="'+cls+'" colspan="'+spanLen+'" style="--span:'+spanLen+'" id="'+rid+'" data-mi="'+mi+'" data-day="'+d.day+'" data-row="'+row+'" onclick="opsCk(this)"><div class="ops-chip '+spCls+'"'+(spanEntry.cls?' data-pick="'+spanEntry.cls+'"':'')+spStyle+' onclick="opsChipClick(event,'+spanIdx+')">'+spText+_nsNoteIcon(spanEntry)+'</div>'+_nsCrewTags(spanEntry,'opsChipClick(event,'+spanIdx+')')+otherHtml+coveredHtml+spHtl+'</td>';
+        var _spHd=m.days[Math.min(idx+spanLen-1,days.length-1)].day;
+        var spHtl=og(m.month,_spHd,row+'_htl').length?'<span class="ops-htl" title="'+_nsHtlTitle(m.month,_spHd)+'">Hotel</span>':'';
+        var spLoc='';for(var _li=0;_li<spanLen&&idx+_li<days.length;_li++){if(_nsLocTag(m.month,days[idx+_li].day,row)){spLoc=_nsLocTag(m.month,days[idx+_li].day,row);break;}}
+        return'<td class="'+cls+'" colspan="'+spanLen+'" style="--span:'+spanLen+'" id="'+rid+'" data-mi="'+mi+'" data-day="'+d.day+'" data-row="'+row+'" onclick="opsCk(this)"><div class="ops-chip '+spCls+'"'+(spanEntry.cls?' data-pick="'+spanEntry.cls+'"':'')+spStyle+' onclick="opsChipClick(event,'+spanIdx+')">'+spText+_nsNoteIcon(spanEntry)+'</div>'+_nsCrewTags(spanEntry,'opsChipClick(event,'+spanIdx+')')+otherHtml+coveredHtml+spHtl+spLoc+'</td>';
       }
       // AUTO-FIT removed — chips render at data span. To extend a chip across days,
       // drag its right-edge handle.
     }
-    const htl=og(m.month,d.day,row+'_htl').length?'<span class="ops-htl" title="Hotel booked overnight">Hotel</span>':'';
-    return'<td class="'+cls+'" id="'+rid+'" data-mi="'+mi+'" data-day="'+d.day+'" data-row="'+row+'" onclick="opsCk(this)">'+opsRChips(vals,fc)+htl+'</td>';
+    const htl=og(m.month,d.day,row+'_htl').length?'<span class="ops-htl" title="'+_nsHtlTitle(m.month,d.day)+'">Hotel</span>':'';
+    const locT=_nsLocTag(m.month,d.day,row);
+    return'<td class="'+cls+'" id="'+rid+'" data-mi="'+mi+'" data-day="'+d.day+'" data-row="'+row+'" onclick="opsCk(this)">'+opsRChips(vals,fc)+htl+locT+'</td>';
   };
   const srow=lbl=>'<tr class="ops-srow"><td colspan="'+(n+1)+'">'+lbl+'</td></tr>';
   const gap='<tr class="ops-gap"><td colspan="'+(n+1)+'"></td></tr>';
@@ -3423,6 +3438,7 @@ function opsCk(td,dayOverride){
   // Hotel overnight marker — shows between this day and the next
   var _htlOn=og(month,day,row+'_htl').length>0;
   html+='<div class="ops-co" onclick="opsToggleHotel()"><span>Hotel overnight</span>'+(_htlOn?'<span style="margin-left:auto;color:#3a8a55;font-weight:900">&#10003;</span>':'')+'</div>';
+  html+='<div class="ops-co" onclick="opsToggleLoc()"><span>In London</span>'+(_nsLocOf(month,day,row)?'<span style="margin-left:auto;color:#3a8a55;font-weight:900">&#10003;</span>':'')+'</div>';
   /* Jobs are no longer picked here — crewing someone on a job in the Jobs section seeds their calendar automatically */}
   // Morning Live TM / ShopOn: names first, a custom entry underneath
   if(row==='ml'||row==='shopon')html+='<div class="ops-div"></div><div class="ops-cs">Custom</div>'+'<div class="rd-add"><input class="ops-ci" id="opsCiTxt" placeholder="Add an entry" aria-label="New entry" autocomplete="off" oninput="_nsAutoSwatch(this.value)" onkeydown="if(event.key==\'Enter\'||event.keyCode===13)opsCiAdd()"/><button type="button" onclick="opsCiAdd()">Add</button></div>';
@@ -3490,6 +3506,11 @@ function _opsPositionCed(td){
   ced.style.top=top+'px';
   ced.style.left=Math.max(4,Math.min(rect.left,vw-(ced.offsetWidth||260)-8))+'px';
   ced.style.maxHeight=maxH+'px';
+  // Always open fully on screen — a day low down used to put the popup below the fold,
+  // so clicking it looked like nothing happened until you scrolled.
+  var hh=ced.offsetHeight||240;
+  if(top+hh>vtop+vh-8)ced.style.top=Math.max(vtop+8,vtop+vh-hh-8)+'px';
+  if(parseFloat(ced.style.top)<vtop+8)ced.style.top=(vtop+8)+'px';
 }
 // When the planner scrolls, reposition the open popup so it tracks its cell.
 // If the cell is no longer in the viewport, hide the popup until it's back.
@@ -3499,20 +3520,34 @@ function _opsRepositionOpenCed(){
   if(!ced||ced.style.display==='none')return;
   const td=document.getElementById(_opsEd.id);
   if(!td){opsCloseCed();return;}
-  const rect=_opsCellRect(td);
+  // The popup stays put once opened — scrolling the planner underneath it no longer moves
+  // or hides it. It is only nudged back if it would end up off the screen.
   var vh=window.visualViewport?window.visualViewport.height:window.innerHeight;
   ced.style.visibility='visible';
-  // The day has scrolled right out of view: keep the popup on screen rather than hiding it,
-  // so it can never seem to vanish while you are working in it.
-  if(rect.bottom<-20||rect.top>vh+20){
-    var h=ced.offsetHeight||240;
-    ced.style.top=(rect.top>vh?Math.max(8,vh-h-8):8)+'px';
-    return;
-  }
-  _opsPositionCed(td);
+  var r=ced.getBoundingClientRect(),h=r.height||ced.offsetHeight||240;
+  if(r.top<4)ced.style.top='8px';
+  else if(r.bottom>vh-4)ced.style.top=Math.max(8,vh-h-8)+'px';
 }
 function opsOpt(el){if(!_opsEd)return;const val=el.dataset.v;const single=el.dataset.s==='1';const{month,day,row,id}=_opsEd;let cur=og(month,day,row).slice();if(single)cur=cur.includes(val)?[]:[val];else{if(cur.includes(val))cur=cur.filter(x=>x!==val);else cur.push(val);}os(month,day,row,cur);if(row==='ml'){opsReRender();}else{opsRefCell(id,month,day,row);}opsCloseCed();}
 // Marks a day as being in London — shown as a small tag in the corner of the box
+// "Hotel overnight" sits on the line between two days because it marks the night between
+// them — spell that out on hover so it doesn't look like a stray marker on the next day.
+function _nsHtlTitle(month,day){
+  var iso=_nsIsoOf(month,day);if(!iso)return 'Hotel booked overnight';
+  var a=_mlUtc(iso),b=new Date(a.getTime()+86400000),f={weekday:'short',day:'numeric',month:'short',timeZone:'UTC'};
+  return 'Hotel overnight: '+a.toLocaleDateString('en-GB',f)+' \u2192 '+b.toLocaleDateString('en-GB',f);
+}
+function _nsLocOf(month,day,row){var v=og(month,day,row+'_loc');return v.length?(_opsTextOf(v[0])||'London'):'';}
+function _nsLocTag(month,day,row){var l=_nsLocOf(month,day,row);return l?'<span class="ns-locday" title="In '+_rdEsc(l)+'">'+_rdEsc(l)+'</span>':'';}
+// A day marked as being in London — shown as a small tag in the box's corner, with or
+// without anything else on that day
+function opsToggleLoc(){
+  if(!_opsEd)return;
+  var ed=_opsEd,k=ed.row+'_loc',on=og(ed.month,ed.day,k).length;
+  os(ed.month,ed.day,k,on?[]:['London']);
+  if(typeof opsReRender==='function')opsReRender();
+  opsCloseCed();
+}
 function opsToggleLondon(idx){
   if(!_opsEd)return;
   var ed=_opsEd,cur=og(ed.month,ed.day,ed.row).slice();
@@ -3750,11 +3785,11 @@ function opsCkChipIdx(td,idx,force,dayOverride){
   }
   // Day actions — reachable even when the day already has something in it
   var _htlOn2=og(month,day,row+'_htl').length>0;
-  var _locOn=!!(v&&typeof v==='object'&&v.loc);
+  var _locOn=!!_nsLocOf(month,day,row)||!!(v&&typeof v==='object'&&v.loc);
   html+='<div class="ops-div"></div>'
     +'<div class="ops-co" role="button" tabindex="0" onclick="event.stopPropagation();var t=document.getElementById(\''+td.id+'\');opsCloseCed();setTimeout(function(){opsCk(t,'+day+');},0)" onkeydown="if(event.key===\'Enter\')this.click()"><div class="ops-cd" style="background:transparent;border:1.5px dashed var(--ns-soft)"></div>Add another entry</div>'
     +'<div class="ops-co" role="button" tabindex="0" onclick="event.stopPropagation();opsToggleHotel()" onkeydown="if(event.key===\'Enter\')this.click()"><div class="ops-cd" style="background:#e8c26a"></div>Hotel overnight'+(_htlOn2?'<span class="ops-ck">\u2713</span>':'')+'</div>'
-    +'<div class="ops-co" role="button" tabindex="0" onclick="event.stopPropagation();opsToggleLondon('+idx+')" onkeydown="if(event.key===\'Enter\')this.click()"><div class="ops-cd" style="background:#b9cbe0"></div>In London'+(_locOn?'<span class="ops-ck">\u2713</span>':'')+'</div>';
+    +'<div class="ops-co" role="button" tabindex="0" onclick="event.stopPropagation();opsToggleLoc()" onkeydown="if(event.key===\'Enter\')this.click()"><div class="ops-cd" style="background:#b9cbe0"></div>In London'+(_locOn?'<span class="ops-ck">\u2713</span>':'')+'</div>';
   html+='<div class="ops-div"></div><div class="ops-co" onclick="opsRemoveItem('+idx+');opsCloseCed();" style="color:#b8434b!important"><div class="ops-cd" style="background:#c06060"></div>Remove entry</div>';
   // Changes save as you go — Done just closes (blur first so a half-typed note/name is kept)
   html+='<div class="ns-ed-foot"><span>Changes save automatically</span><button type="button" class="ns-done" onclick="event.stopPropagation();if(document.activeElement)document.activeElement.blur();setTimeout(opsCloseCed,0)">Done</button></div>';
@@ -4062,7 +4097,8 @@ function _nsCrewRender(id,focusIdx,entryDay,clicked){
         html+='<div class="ns-cr-line ns-cr-open">'+nameBtn
           +tin(t.s,'opsCrewTimeIn(this,'+k+','+ci+',\'s\')','Start time for '+c.name,'data-cr="'+k+'_'+ci+'_s"')+'<span class="ns-cr-dash">&ndash;</span>'
           +tin(t.e,'opsCrewTimeIn(this,'+k+','+ci+',\'e\')','Finish time for '+c.name,'data-cr="'+k+'_'+ci+'_e"')
-          +'<span class="ns-cr-hrs" id="nsCrH'+k+'_'+ci+'">'+_nsHrs(_nsMins(t.s,t.e))+'</span>'+x+'</div>';
+          +'<span class="ns-cr-hrs" id="nsCrH'+k+'_'+ci+'">'+_nsHrs(_nsMins(t.s,t.e))+'</span>'+x+'</div>'
+          +_nsPersonJobHoursHTML(c.name,text);
       }else{
         var ts=(t.s||t.e)?(t.s||'?')+'–'+(t.e||'?'):'',hm=_nsMins(t.s,t.e);
         html+='<div class="ns-cr-line">'+nameBtn+'<small class="ns-cr-role">'+_rdEsc([c.role,_nsCrewTypeName(_nsCrewType(c))].filter(Boolean).join(' · '))+'</small>'
@@ -4083,6 +4119,33 @@ function _nsCrewRender(id,focusIdx,entryDay,clicked){
   _opsPositionCed(td);
 }
 // Change one entry's crew and save it
+// That person's hours on this job: days already gone are "completed", the rest are "booked"
+function _nsPersonJobHours(name,text){
+  var key=_nsShowKey(String(text||'').toLowerCase())||String(text||'').toLowerCase(),lc=name.toLowerCase();
+  var done=0,todo=0,dDays=0,bDays=0;
+  Object.keys(_opsD).forEach(function(k){
+    var p=k.split('|');if(p.length!==3||p[2].indexOf('st_')!==0||!Array.isArray(_opsD[k]))return;
+    var px=OPS_MPX[p[0]],m=OPS_CAL.find(function(x){return x.month===p[0];});if(!px||!m)return;
+    var last=m.days[m.days.length-1].day;
+    _opsD[k].forEach(function(v){
+      if(!v||typeof v!=='object'||!v.crew)return;
+      var t=_opsTextOf(v),vk=_nsShowKey(t.toLowerCase())||t.toLowerCase();if(vk!==key)return;
+      var c=v.crew.find(function(x){return x.name.toLowerCase()===lc;});if(!c)return;
+      var span=v.span>1?v.span:1;
+      for(var off=0;off<span&&(+p[1])+off<=last;off++){
+        var iso=px+'-'+String((+p[1])+off).padStart(2,'0'),tt=(c.times&&c.times[off])||{},mm=_nsMins(tt.s,tt.e);
+        if(iso<OPS_TODAY){dDays++;if(mm)done+=mm;}else{bDays++;if(mm)todo+=mm;}
+      }
+    });
+  });
+  return {doneMins:done,bookedMins:todo,doneDays:dDays,bookedDays:bDays};
+}
+function _nsPersonJobHoursHTML(name,text){
+  var h=_nsPersonJobHours(name,text),parts=[];
+  if(h.doneDays)parts.push('<b>'+(h.doneMins?_nsHrs(h.doneMins):h.doneDays+' day'+(h.doneDays===1?'':'s'))+'</b> completed');
+  if(h.bookedDays)parts.push('<b>'+(h.bookedMins?_nsHrs(h.bookedMins):h.bookedDays+' day'+(h.bookedDays===1?'':'s'))+'</b> booked');
+  return parts.length?'<div class="ns-cr-sum">'+parts.join(' \u00b7 ')+' on this job</div>':'';
+}
 function _nsCrewMutate(k,fn){
   var it=_nsCrewCtx&&_nsCrewCtx.items[k];if(!it)return null;
   var cur=og(it.month,it.day,it.row).slice(),v=cur[it.idx];if(v==null)return null;
@@ -4425,13 +4488,16 @@ function _opsDragMouseDown(ev){
   var isHandle=false;
   var handleSide=null;
   if(chipEl){
-    var cr=_opsCellRect(chipEl);   // zoom-corrected to match ev.clientX/Y
-    var fromRight=cr.right-ev.clientX;
-    var fromLeft=ev.clientX-cr.left;
+    // Measure the box's own scale (visual width / layout width) instead of trusting a
+    // browser-specific zoom property, so the grab strip lands under the pointer everywhere.
+    var cr=chipEl.getBoundingClientRect();
+    var csc=(chipEl.offsetWidth>0&&cr.width>0)?cr.width/chipEl.offsetWidth:1;
+    var fromRight=(cr.right-ev.clientX)/csc;
+    var fromLeft=(ev.clientX-cr.left)/csc;
     // Detection zone: 18px or 30% of chip width, whichever is smaller. On wide chips this
     // stays a narrow band at each edge; on narrow single-cell chips it expands so the handle
     // is hittable without trackpad-precision.
-    var hz=Math.min(26,Math.max(14,cr.width*0.35));
+    var hz=Math.min(26,Math.max(14,chipEl.offsetWidth*0.35));
     if(ev.clientY>=cr.top&&ev.clientY<=cr.bottom){
       if(fromRight>=0&&fromRight<hz){isHandle=true;handleSide='right';}
       else if(fromLeft>=0&&fromLeft<hz){isHandle=true;handleSide='left';}
