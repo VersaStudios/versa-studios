@@ -1547,6 +1547,21 @@ html .ops-tbl td.ops-cell:has(> .ns-locday){position:relative}
 
 .ns-cr-sum{margin:-2px 4px 8px;padding:0 0 8px;border-bottom:1px solid var(--ns-cell2);font:500 12px var(--ns-body);color:var(--ns-soft)}
 .ns-cr-sum b{font-weight:700;color:var(--ns-text)}
+
+/* b111: drag preview drawn on top of the day, so it shows in both directions.
+   As a cell background it was hidden behind each day's inner block. */
+html .ops-tbl .ops-cell.ops-drag-sel,html .ops-tbl .ops-cell.ops-drag-dest{position:relative;background:transparent!important}
+html .ops-tbl .ops-cell.ops-drag-sel::after,html .ops-tbl .ops-cell.ops-drag-dest::after{content:'';position:absolute;inset:3px;border-radius:12px;pointer-events:none;z-index:7}
+html .ops-tbl .ops-cell.ops-drag-sel::after{background:rgba(240,75,35,.22);box-shadow:inset 0 0 0 2px rgba(240,75,35,.9)}
+html .ops-tbl .ops-cell.ops-drag-dest::after{background:rgba(58,110,200,.22);box-shadow:inset 0 0 0 2px rgba(58,110,200,.9)}
+html .ops-prev-seg{background:rgba(240,75,35,.22)!important;outline:none!important;box-shadow:inset 0 0 0 2px rgba(240,75,35,.9);border-radius:12px;top:3px;bottom:3px;z-index:7!important}
+body.ops-drag-active .ops-chip{transition:none!important}
+
+/* b112: markers keep out of the way of the box text —
+   hotel drops to the bottom of the day line, London sits neatly in the top corner */
+html .ops-htl{top:auto!important;bottom:3px!important;right:5px!important;transform:none!important;z-index:9!important;font:700 10px var(--ns-body)!important;padding:2px 6px!important;border-radius:6px!important}
+html body.rd-compact .ops-htl{font-size:9px!important;padding:1px 5px!important}
+html .ns-locday{top:5px;right:6px;padding:1px 5px;border-radius:6px;background:rgba(255,255,255,.88);color:#111110;font:700 8.5px/1.35 var(--ns-body);letter-spacing:.05em;z-index:8}
 </style>
 <script>try{if(localStorage.getItem('opsTheme')==='light')document.documentElement.classList.add('ns-light');if(localStorage.getItem('opsShowCrew')==='1')document.documentElement.classList.add('ns-show-crew');}catch(e){}</script>
 </head>
@@ -3454,7 +3469,7 @@ function opsCk(td,dayOverride){
 }
 // Position the cell editor popup next to the given cell, picking the side
 // (below / above / pinned-top) that best fits in the visible viewport.
-var OPS_BUILD='2026-09-19 · b110';
+var OPS_BUILD='2026-09-19 · b113';
 console.log('%cOps Planner build '+OPS_BUILD,'color:#d85a61;font-weight:bold');
 document.addEventListener('DOMContentLoaded',function(){
   var b=document.createElement('div');
@@ -3490,34 +3505,33 @@ function _opsPositionCed(td){
   const ced=document.getElementById('opsCed');
   if(!ced||!td)return;
   const rect=_opsCellRect(td);
-  var vh=window.visualViewport?window.visualViewport.height:window.innerHeight;
-  var vw=window.visualViewport?window.visualViewport.width:window.innerWidth;
-  var vtop=window.visualViewport?(window.visualViewport.offsetTop||0):0;
-  var spaceBelow=(vtop+vh)-(rect.bottom+8);
-  var spaceAbove=(rect.top)-(vtop+8);
+  // A fixed popup is placed against the layout viewport, so the limits must be too —
+  // measuring against the visual viewport pushed it down behind Safari's toolbar.
+  var vv=window.visualViewport;
+  var vw=vv?vv.width:window.innerWidth;
+  var top0=8,bot0=window.innerHeight-8;
+  if(vv&&vv.height+((vv.offsetTop)||0)<window.innerHeight)bot0=vv.height+((vv.offsetTop)||0)-8;
+  var avail=bot0-top0;
+  var spaceBelow=bot0-(rect.bottom+6);
+  var spaceAbove=(rect.top-6)-top0;
   var top,maxH;
-  // Prefer below if there's room; otherwise above; otherwise pin to top
-  if(spaceBelow>=240||spaceBelow>=spaceAbove){
-    top=rect.bottom+3;
-    maxH=Math.max(160,spaceBelow);
-  } else if(spaceAbove>=240){
-    // Place above the cell. We'll measure after setting maxHeight.
+  // Below when there's room, otherwise above, otherwise fill the screen and scroll inside
+  if(spaceBelow>=260||spaceBelow>=spaceAbove){
+    top=rect.bottom+3;maxH=Math.max(160,spaceBelow);
+  } else if(spaceAbove>=200){
     ced.style.maxHeight=spaceAbove+'px';
-    var measuredH=ced.offsetHeight;
-    top=rect.top-measuredH-3;
-    maxH=spaceAbove;
+    top=rect.top-(ced.offsetHeight||200)-3;maxH=spaceAbove;
   } else {
-    top=vtop+8;
-    maxH=vh-16;
+    top=top0;maxH=avail;
   }
-  ced.style.top=top+'px';
+  ced.style.maxHeight=Math.max(160,Math.min(maxH,avail))+'px';
   ced.style.left=Math.max(4,Math.min(rect.left,vw-(ced.offsetWidth||260)-8))+'px';
-  ced.style.maxHeight=maxH+'px';
-  // Always open fully on screen — a day low down used to put the popup below the fold,
-  // so clicking it looked like nothing happened until you scrolled.
+  ced.style.top=top+'px';
+  // Nudge back on screen once its real height is known
   var hh=ced.offsetHeight||240;
-  if(top+hh>vtop+vh-8)ced.style.top=Math.max(vtop+8,vtop+vh-hh-8)+'px';
-  if(parseFloat(ced.style.top)<vtop+8)ced.style.top=(vtop+8)+'px';
+  if(top+hh>bot0)top=bot0-hh;
+  if(top<top0)top=top0;
+  ced.style.top=top+'px';
 }
 // When the planner scrolls, reposition the open popup so it tracks its cell.
 // If the cell is no longer in the viewport, hide the popup until it's back.
@@ -4647,6 +4661,9 @@ function _opsDragMouseUp(ev){
   else if(drag.row==='ml')_opsDragSpanAdjustML(drag);
   else _opsDragSpanAdjust(drag);
   if(_opsReconcileMLG()){saveData();if(typeof opsReRender==='function')opsReRender();}
+  // Colour the boxes straight away: the repaint is skipped while a drag is in progress,
+  // so without this the redrawn boxes flash in their plain colour for a moment.
+  if(typeof _rdPass==='function')_rdPass(true);
 }
 function _opsDragHighlight(){
   if(!_opsDrag)return;
@@ -6235,7 +6252,7 @@ function _rdSchedule(force){
   if(document.body)go();else document.addEventListener('DOMContentLoaded',go);
   var t=null;window.addEventListener('resize',function(){clearTimeout(t);t=setTimeout(function(){_rdPass(true);},150);});
   window.addEventListener('scroll',function(){if(!_opsDrag)_rdSchedule(false);},{passive:true});
-  document.addEventListener('mouseup',function(){setTimeout(function(){_rdSchedule(false);},60);},true);
+  document.addEventListener('mouseup',function(){_rdSchedule(false);setTimeout(function(){_rdSchedule(false);},60);},true);
   document.addEventListener('touchend',function(){setTimeout(function(){_rdSchedule(false);},60);},{capture:true,passive:true});
   if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){_rdPass(true);});
 })();
