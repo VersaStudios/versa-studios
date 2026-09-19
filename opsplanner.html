@@ -1575,6 +1575,89 @@ html.ns-show-crew .ops-tbl .ops-cell .ns-crew-tag::before{display:none!important
 .ns-ct-name{flex:1 1 auto;min-width:0;white-space:nowrap;font:600 13px var(--ns-body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ns-ct-time{flex:0 0 auto;font:600 12px var(--ns-body);font-style:normal;font-variant-numeric:tabular-nums;opacity:.82}
 @media (max-width:640px){.ns-ct-role{display:none}}
+
+.ns-bk-row{display:flex!important;align-items:center;gap:12px}
+.ns-bk-day{flex:1 1 auto;min-width:0;display:flex;align-items:baseline;gap:8px}
+.ns-bk-day b{font:600 15px var(--ns-body);color:var(--ns-text)}
+.ns-bk-day small{font:500 12px var(--ns-body);color:var(--ns-soft)}
+.ns-bk-row .ns-lock-link{background:none!important;border:none!important;color:var(--ns-soft)!important;font:600 13px var(--ns-body)!important;text-decoration:underline;cursor:pointer;padding:4px 0!important}
+.ns-bk-row .ns-lock-link:hover{color:var(--ns-orange)!important}
+
+/* b119: monthly and yearly overviews */
+.ns-alt{padding:0 12px 24px}
+.ns-alt[hidden]{display:none}
+.ns-alt-bar{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;padding:14px 6px 10px}
+.ns-alt-title{font:800 26px var(--ns-head);letter-spacing:-.03em;color:var(--ns-text)}
+.ns-mv-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.ns-mv-hd{font:600 12px var(--ns-body);letter-spacing:.06em;text-transform:uppercase;color:var(--ns-soft);padding:2px 4px}
+.ns-mv-day{min-height:104px;background:var(--ns-cell);border-radius:14px;padding:6px 6px 8px;cursor:pointer;overflow:hidden}
+.ns-mv-day:hover{outline:2px solid var(--ns-orange);outline-offset:-2px}
+.ns-mv-wk{background:var(--ns-wkcell,var(--ns-cell2))}
+.ns-mv-today{box-shadow:inset 0 0 0 2px var(--ns-orange)}
+.ns-mv-pad{background:transparent}
+.ns-mv-num{position:relative;font:700 15px var(--ns-head);color:var(--ns-text);margin:0 0 4px 2px}
+.ns-mv-item{margin:0 0 3px;padding:2px 6px;border-radius:7px;font:500 11px/1.35 var(--ns-body);color:#111110;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ns-mv-item b{font-weight:700}
+.ns-mv-item i{font-style:normal;opacity:.65}
+.ns-mv-more{font:600 11px var(--ns-body);color:var(--ns-soft);padding-left:2px}
+.ns-yv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+.ns-yv-m{background:var(--ns-card);border-radius:18px;padding:12px 14px 14px;cursor:pointer}
+.ns-yv-m:hover{outline:2px solid var(--ns-orange);outline-offset:-2px}
+.ns-yv-hd{display:flex;align-items:baseline;gap:6px;margin-bottom:8px}
+.ns-yv-hd b{font:800 18px var(--ns-head);letter-spacing:-.02em;color:var(--ns-text)}
+.ns-yv-hd small{font:500 12px var(--ns-body);color:var(--ns-soft)}
+.ns-yv-hd span{margin-left:auto;font:600 12px var(--ns-body);color:var(--ns-soft)}
+.ns-yv-cells{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.ns-yv-d,.ns-yv-pad{display:block;aspect-ratio:1;border-radius:4px}
+.ns-yv-pad{background:transparent}
+.ns-yv-d.l0{background:var(--ns-cell2)}
+.ns-yv-d.l1{background:#cfe0c6}
+.ns-yv-d.l2{background:#f0c9a0}
+.ns-yv-d.l3{background:#e59b86}
+.ns-yv-today{box-shadow:0 0 0 2px var(--ns-orange)}
+@media (max-width:820px){.ns-mv-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.ns-mv-hd{display:none}.ns-mv-pad{display:none}.ns-mv-day{min-height:88px}}
+
+/* b120: day list and phone layout */
+.ns-dv-bar{position:sticky;top:0;z-index:12;background:var(--ns-page);padding:10px 4px;margin:0 -4px}
+.ns-dv-date{display:flex;flex-direction:column;line-height:1.15}
+.ns-dv-date b{font:800 22px var(--ns-head);letter-spacing:-.02em;color:var(--ns-text)}
+.ns-dv-date small{font:500 13px var(--ns-body);color:var(--ns-soft)}
+.ns-dv-today{font:600 12px var(--ns-body);color:var(--ns-orange);border:1px solid var(--ns-orange);border-radius:999px;padding:2px 10px}
+.ns-dv-grp{margin:16px 2px 6px;font:600 12px var(--ns-body);letter-spacing:.06em;text-transform:uppercase;color:var(--ns-soft)}
+.ns-dv-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px 12px;margin-bottom:6px;border-radius:14px;background:var(--ns-card);cursor:pointer}
+.ns-dv-row:hover{outline:2px solid var(--ns-orange);outline-offset:-2px}
+.ns-dv-who{flex:0 0 auto;font:700 14px var(--ns-head);color:var(--ns-text)}
+.ns-dv-what{flex:1 1 auto;min-width:0;padding:4px 10px;border-radius:9px;color:#111110;font:600 14px var(--ns-body)}
+.ns-dv-what i{font-style:normal;opacity:.6;font-weight:500}
+.ns-dv-crew{flex:1 0 100%;display:flex;flex-direction:column;gap:2px;padding-left:2px}
+.ns-dv-crew span{font:500 13px var(--ns-body);color:var(--ns-text)}
+.ns-dv-crew small{color:var(--ns-soft);font-weight:500}
+.ns-dv-crew em{font-style:normal;color:var(--ns-soft);font-weight:600}
+.ns-dv-tag{flex:0 0 auto;padding:2px 8px;border-radius:7px;background:#b9cbe0;color:#111110;font:700 10px var(--ns-body);letter-spacing:.05em;text-transform:uppercase}
+.ns-dv-htl{background:#e8c26a}
+.ns-dv-empty{margin:24px 4px!important}
+@media (max-width:640px){
+  .ns-alt{padding:0 8px 28px}
+  .ns-alt-title{font-size:22px}
+  .ns-dv-row{padding:12px}
+  .ns-mv-grid{grid-template-columns:1fr;gap:8px}
+  .ns-mv-day{min-height:0}
+  .ns-yv-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .rd-sheet-in{max-height:92vh!important}
+}
+
+.ns-althead{background:var(--ns-card);border-radius:0 0 22px 22px;margin:0 12px;padding:6px 6px 10px;position:sticky;top:0;z-index:20}
+.ns-althead[hidden]{display:none}
+.ns-althead .ns-mh{display:flex!important;align-items:center;gap:10px 8px;width:auto!important;position:static!important;transform:none!important;padding:8px 14px 2px}
+@media (max-width:640px){
+  .ns-althead{margin:0 8px;padding:4px 2px 6px}
+  .ns-althead .ns-mh{padding:6px 6px 2px;gap:4px;justify-content:space-between}
+  .ns-althead .ns-brand-t{display:none}
+  .ns-althead .ns-brand-logo{height:22px}
+  .ns-althead .ns-gear{width:36px!important;height:36px!important;flex:0 0 36px}
+  .ns-althead .ns-gear svg{width:18px!important;height:18px!important}
+  .ns-dv-bar{position:static;padding:12px 4px 4px}
+}
 </style>
 <script>try{if(localStorage.getItem('opsTheme')==='light')document.documentElement.classList.add('ns-light');if(localStorage.getItem('opsShowCrew')==='1')document.documentElement.classList.add('ns-show-crew');}catch(e){}</script>
 </head>
@@ -1629,6 +1712,13 @@ html.ns-show-crew .ops-tbl .ops-cell .ns-crew-tag::before{display:none!important
     <div class="rd-sheet-ft ns-tm-ft"><button type="button" class="ns-lock-link" onclick="opsCloseTimes();opsOpenCrewMgr()">Crew list</button><button type="button" onclick="opsCloseTimes()">Done</button></div>
   </div>
 </div>
+<div id="nsBackups" class="rd-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="nsBackupsTitle">
+  <div class="rd-sheet-in ns-search-in">
+    <div class="rd-sheet-hd"><h2 id="nsBackupsTitle">Backups</h2><button type="button" class="rd-x" aria-label="Close backups" onclick="opsCloseBackups()">&times;</button></div>
+    <div id="nsBackupsBody" class="ns-search-res"></div>
+    <div class="rd-sheet-ft"><button type="button" onclick="opsCloseBackups()">Done</button></div>
+  </div>
+</div>
 <div id="nsHist" class="rd-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="nsHistTitle">
   <div class="rd-sheet-in ns-search-in">
     <div class="rd-sheet-hd"><h2 id="nsHistTitle">Change history</h2><button type="button" class="rd-x" aria-label="Close change history" onclick="opsCloseHist()">&times;</button></div>
@@ -1653,6 +1743,7 @@ html.ns-show-crew .ops-tbl .ops-cell .ns-crew-tag::before{display:none!important
 <div id="rdSettings" class="rd-sheet" hidden role="dialog" aria-modal="true" aria-label="Settings">
   <div class="rd-sheet-in">
     <div class="rd-sheet-hd"><h2>Settings</h2><button type="button" class="rd-x" aria-label="Close settings" onclick="_rdCloseSettings()">&times;</button></div>
+    <div class="rd-density rd-view"><h2>View</h2><div class="rd-presets" role="group" aria-label="View"><button type="button" data-nsview="day" aria-pressed="false" onclick="opsSetViewMode('day')">Day</button><button type="button" data-nsview="planner" aria-pressed="true" onclick="opsSetViewMode('planner')">Planner</button><button type="button" data-nsview="month" aria-pressed="false" onclick="opsSetViewMode('month')">Monthly</button><button type="button" data-nsview="year" aria-pressed="false" onclick="opsSetViewMode('year')">Yearly</button></div></div>
     <div class="rd-density rd-theme"><h2>Theme</h2><div class="rd-presets" role="group" aria-label="Theme"><button type="button" data-theme-set="dark" aria-pressed="true">Dark</button><button type="button" data-theme-set="light" aria-pressed="false">Light</button></div></div>
     <div class="rd-density rd-zoom"><h2>Zoom</h2><div class="ns-zoom"><button type="button" onclick="opsZoomStep(-5)" aria-label="Zoom out">&minus;</button><input id="nsZoom" type="range" min="60" max="140" step="5" value="100" oninput="opsSetZoom(this.value)" aria-label="Zoom"/><button type="button" onclick="opsZoomStep(5)" aria-label="Zoom in">+</button><span data-zoom-lbl>100%</span><button type="button" class="ns-zoom-reset" onclick="opsSetZoom(100)">Reset</button></div></div>
     <div class="rd-density"><h2>Density</h2><div class="rd-presets" role="group" aria-label="Density"><button type="button" data-dens="comfortable">Comfortable</button><button type="button" data-dens="compact">Compact</button></div></div>
@@ -1660,7 +1751,8 @@ html.ns-show-crew .ops-tbl .ops-cell .ns-crew-tag::before{display:none!important
     <div id="opsTeamPanel" aria-label="Team"></div>
     <div id="opsCrewTypePanel" aria-label="Crew sections"></div>
     <div id="opsStuPanel" aria-label="Studios"></div>
-    <div class="ns-set-hist"><div class="ops-co ns-cm-open" role="button" tabindex="0" onclick="_rdCloseSettings();opsOpenHist()" onkeydown="if(event.key==='Enter')this.click()">Change history</div></div>
+    <div class="ns-set-hist"><div class="ops-co ns-cm-open" role="button" tabindex="0" onclick="_rdCloseSettings();opsOpenHist()" onkeydown="if(event.key==='Enter')this.click()">Change history</div>
+      <div class="ops-co ns-cm-open" role="button" tabindex="0" onclick="_rdCloseSettings();opsOpenBackups()" onkeydown="if(event.key==='Enter')this.click()">Backups</div></div>
     <div class="rd-sheet-ft ns-set-ft"><span class="ns-whoami" id="nsWhoAmI"></span><button type="button" class="ns-lock-link" onclick="opsLockPlanner()">Sign out</button><button type="button" onclick="_rdCloseSettings()">Done</button></div>
   </div>
 </div>
@@ -3483,7 +3575,7 @@ function opsCk(td,dayOverride){
 }
 // Position the cell editor popup next to the given cell, picking the side
 // (below / above / pinned-top) that best fits in the visible viewport.
-var OPS_BUILD='2026-09-19 · b115';
+var OPS_BUILD='2026-09-19 · b121';
 console.log('%cOps Planner build '+OPS_BUILD,'color:#d85a61;font-weight:bold');
 document.addEventListener('DOMContentLoaded',function(){
   var b=document.createElement('div');
@@ -4071,7 +4163,7 @@ function _nsCrewMoveBetween(src,name,tgt){
 function _nsCrewTags(v,click){
   if(!v||typeof v!=='object'||!v.crew||!v.crew.length)return '';
   var span=(v.span>1)?v.span:1;
-  return v.crew.map(function(c){
+  return v.crew.slice().sort(_nsCrewOrder).map(function(c){
     // Times for the day: on a stretched box only when every day it covers is the same,
     // otherwise the tag would claim hours for days that differ.
     var t=(c.times&&c.times[0])||{},show=true;
@@ -4121,9 +4213,7 @@ function _nsCrewRender(id,focusIdx,entryDay,clicked){
     var col=_nsPastel(text,tmp)||'#8f8d88';
     html+='<section class="ns-crew-entry"><div class="ns-crew-title"><i style="background:'+col+'"></i>'+_rdEsc(text)+'<span class="ns-crew-n">'+(crew.length?crew.length+' booked':'No crew yet')+'</span></div>';
     if(it.span>1)html+='<div class="ns-cr-day">Times for day '+(it.off+1)+' of '+it.span+'</div>';
-    var order=crew.map(function(c,ci){return {c:c,ci:ci};}).sort(function(a,b){
-      var ta=NS_CREW_TYPES.findIndex(function(t){return t.id===_nsCrewType(a.c);}),tb=NS_CREW_TYPES.findIndex(function(t){return t.id===_nsCrewType(b.c);});
-      return ta-tb||a.c.name.localeCompare(b.c.name);});
+    var order=crew.map(function(c,ci){return {c:c,ci:ci};}).sort(function(a,b){return _nsCrewOrder(a.c,b.c);});
     var open=_nsCrewOpen[k]||{};
     var tin=function(val,handler,label,data){return '<input class="ns-tin" type="text" inputmode="numeric" maxlength="7" autocomplete="off" value="'+(val||'')+'" aria-label="'+_rdEsc(label)+'" '+data+' onclick="event.stopPropagation()" onkeydown="_nsTinKey(event,this)" onchange="'+handler+'"/>';};
     if(crew.length>1){
@@ -4333,7 +4423,22 @@ function opsToggleCrew(){
   if(_opsEd&&window._opsChipFocus&&_opsChipFocus.id===_opsEd.id&&_opsChipFocus.idx>=0){var td=document.getElementById(_opsEd.id),f=_opsChipFocus;if(td)setTimeout(function(){opsCkChipIdx(td,f.idx,false,f.day);},0);}
 }
 // Crew (b78): freelancers booked on an entry, stored as entry.crew=[{name,role}]
-var NS_CREW_ROLES=['Sound Supervisor','Sound Assistant','Boom Op','Sound Engineer','Camera Op','Lighting','Vision','Rigger'];
+var NS_CREW_ROLES=['Sound Supervisor','Sound Assistant','Floor Sound','Sound Engineer','Camera Op','Lighting','Vision','Rigger'];
+// Crew are listed in this order of role, not alphabetically. Say the word to reorder it.
+var NS_ROLE_ORDER=['tech manager','senior engineer','broadcast engineer','engineer','vision engineer','vision','sound supervisor','sound engineer','sound guarantee','comms guarantee','guarantee','sound assistant','floor sound','camera op','lighting','rigger','tech assist','floor manager','stage manager','scenic','floor runner','runner'];
+function _nsRoleRank(role){
+  var r=String(role||'').toLowerCase().trim();
+  if(!r)return NS_ROLE_ORDER.length+50;                 // no role given: last
+  var i=NS_ROLE_ORDER.indexOf(r);
+  if(i>=0)return i;
+  for(var k=0;k<NS_ROLE_ORDER.length;k++)if(r.indexOf(NS_ROLE_ORDER[k])>=0)return k+0.5;
+  return NS_ROLE_ORDER.length;                          // unknown roles after the known ones
+}
+function _nsCrewOrder(a,b){
+  var ta=NS_CREW_TYPES.findIndex(function(t){return t.id===_nsCrewType(a);});
+  var tb=NS_CREW_TYPES.findIndex(function(t){return t.id===_nsCrewType(b);});
+  return ta-tb||_nsRoleRank(a.role)-_nsRoleRank(b.role)||String(a.name||'').localeCompare(String(b.name||''));
+}
 function _nsCrewNames(){
   var seen={};
   Object.keys(_opsD).forEach(function(k){(Array.isArray(_opsD[k])?_opsD[k]:[]).forEach(function(v){
@@ -5805,6 +5910,193 @@ document.addEventListener('click',function(e){
   if(ced&&ced.style.display==='block'&&!ced.contains(e.target)&&!e.target.closest('.ops-cell'))opsCloseCed();
 });
 
+// Monthly and Yearly views (b119). The planner itself is unchanged; these are overviews
+// that sit on top of it, and clicking through drops you back into the planner at that month.
+var _nsView='planner',_nsViewMi=-1;
+try{
+  var _sv=localStorage.getItem('opsViewMode');
+  var _phone=Math.min(window.innerWidth||999,window.screen&&window.screen.width||999)<=640;
+  _nsView=_sv||(_phone?'day':'planner');
+}catch(e){}
+function _nsViewRows(){
+  var rows=[];
+  NS_TEAM.forEach(function(t){if(!_opsHidTeam.has(t.row))rows.push({row:t.row,name:t.name,kind:'team'});});
+  rows.push({row:'ml',name:'Morning Live TM',kind:'rota'});
+  rows.push({row:'mlg',name:'ML Guarantee',kind:'rota'});
+  rows.push({row:'shopon',name:'ShopOn',kind:'rota'});
+  OPS_STUDIOS.forEach(function(st){if(!_opsHidStu.has(st))rows.push({row:'st_'+st,name:st,kind:'studio'});});
+  rows.push({row:'notes',name:'Info',kind:'other'});
+  return rows;
+}
+function _nsDayItems(month,day){
+  var out=[];
+  _nsViewRows().forEach(function(r){
+    og(month,day,r.row).forEach(function(v){
+      var t=_opsTextOf(v);if(!t||t==='Break / Off Air'||t==='Weekend')return;
+      out.push({row:r.row,who:r.name,kind:r.kind,text:t,crew:(v&&v.crew)||[]});
+    });
+    // a stretched box that started earlier still counts on this day
+    for(var b=1;b<=6;b++){
+      og(month,day-b,r.row).forEach(function(v){
+        if(!v||typeof v!=='object'||!(v.span>b))return;
+        var t=_opsTextOf(v);if(!t)return;
+        out.push({row:r.row,who:r.name,kind:r.kind,text:t,crew:v.crew||[],cont:true});
+      });
+    }
+  });
+  return out;
+}
+// Day view (b120): the phone-friendly layout — one day at a time as a list, tap a line to
+// edit it in the planner. Phones open on this unless another view was chosen.
+var _nsDayIso=null;
+function _nsDayIsoNow(){return _nsDayIso||OPS_TODAY;}
+function _nsDayStep(n){
+  var d=_mlUtc(_nsDayIsoNow());d.setUTCDate(d.getUTCDate()+n);
+  var iso=_mlIso(d);
+  var first=OPS_MPX[OPS_CAL[0].month]+'-01';
+  var lm=OPS_CAL[OPS_CAL.length-1],last=OPS_MPX[lm.month]+'-'+String(lm.days[lm.days.length-1].day).padStart(2,'0');
+  if(iso<first||iso>last)return;
+  _nsDayIso=iso;_nsRenderDayView();
+}
+function _nsDayToday(){_nsDayIso=OPS_TODAY;_nsRenderDayView();}
+function _nsMonthOfIso(iso){
+  var px=iso.slice(0,7);
+  for(var i=0;i<OPS_CAL.length;i++)if(OPS_MPX[OPS_CAL[i].month]===px)return {mi:i,month:OPS_CAL[i].month,day:+iso.slice(8)};
+  return null;
+}
+// Tapping a line hands over to the planner at that day and opens it
+function opsDayEdit(row,iso){
+  var m=_nsMonthOfIso(iso);if(!m)return;
+  opsSetViewMode('planner');
+  setTimeout(function(){
+    var td=null;
+    document.querySelectorAll('#opsMs2-'+m.mi+' td.ops-cell[data-row="'+row.replace(/"/g,'\\"')+'"]').forEach(function(c){
+      var d0=+c.dataset.day,n=c.colSpan||1;if(m.day>=d0&&m.day<d0+n)td=c;});
+    if(!td){toast('That row is hidden in Settings');return;}
+    td.scrollIntoView({block:'center',inline:'center'});
+    setTimeout(function(){opsCk(td,m.day);},220);
+  },120);
+}
+function _nsRenderDayView(){
+  var alt=document.getElementById('nsAltView');if(!alt)return;
+  var iso=_nsDayIsoNow(),m=_nsMonthOfIso(iso);
+  if(!m){alt.innerHTML='<p class="ml-empty">That day is outside the planner.</p>';return;}
+  var d=_mlUtc(iso);
+  var h='<div class="ns-alt-bar ns-dv-bar"><button type="button" class="ns-tm-nav" onclick="_nsDayStep(-1)" aria-label="Previous day">&#8249;</button>'
+    +'<span class="ns-dv-date"><b>'+d.toLocaleDateString('en-GB',{weekday:'long',timeZone:'UTC'})+'</b><small>'+d.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'})+'</small></span>'
+    +'<button type="button" class="ns-tm-nav" onclick="_nsDayStep(1)" aria-label="Next day">&#8250;</button>'
+    +(iso!==OPS_TODAY?'<button type="button" class="ns-tm-now" onclick="_nsDayToday()">Today</button>':'<span class="ns-dv-today">Today</span>')+'</div>';
+  var groups=[{kind:'team',label:'Team'},{kind:'rota',label:'Rotas'},{kind:'studio',label:'Studios'},{kind:'other',label:'Info'}];
+  var any=false;
+  groups.forEach(function(g){
+    var rows=_nsViewRows().filter(function(r){return r.kind===g.kind;}),body='';
+    rows.forEach(function(r){
+      var items=[];
+      og(m.month,m.day,r.row).forEach(function(v){var t=_opsTextOf(v);if(t&&t!=='Weekend')items.push({v:v,t:t});});
+      for(var b=1;b<=6;b++)og(m.month,m.day-b,r.row).forEach(function(v){
+        if(v&&typeof v==='object'&&v.span>b){var t=_opsTextOf(v);if(t)items.push({v:v,t:t,cont:true});}});
+      if(!items.length)return;
+      any=true;
+      items.forEach(function(it){
+        var tmp=document.createElement('div');tmp.className='ops-chip '+opsChip(it.t);
+        var col=_nsPastel(it.t,tmp)||'#cfcdc7';
+        var crew=(it.v&&it.v.crew)||[];
+        body+='<div class="ns-dv-row" role="button" tabindex="0" onclick="opsDayEdit(\''+r.row.replace(/'/g,"\\'")+'\',\''+iso+'\')" onkeydown="if(event.key===\'Enter\')this.click()">'
+          +'<span class="ns-dv-who">'+_rdEsc(r.name)+'</span>'
+          +'<span class="ns-dv-what" style="background:'+col+'">'+_rdEsc(it.t)+(it.cont?' <i>cont.</i>':'')+'</span>';
+        if(crew.length){
+          body+='<span class="ns-dv-crew">'+crew.slice().sort(_nsCrewOrder).map(function(c){
+            var t=(c.times&&c.times[0])||{},tm=(t.s||t.e)?((t.s||'?')+'\u2013'+(t.e||'?')):'';
+            return '<span>'+(c.role?'<small>'+_rdEsc(c.role)+'</small> ':'')+_rdEsc(c.name)+(tm?' <em>'+tm+'</em>':'')+'</span>';
+          }).join('')+'</span>';
+        }
+        if(_nsLocOf(m.month,m.day,r.row))body+='<span class="ns-dv-tag">London</span>';
+        if(og(m.month,m.day,r.row+'_htl').length)body+='<span class="ns-dv-tag ns-dv-htl">Hotel tonight</span>';
+        body+='</div>';
+      });
+    });
+    if(body)h+='<div class="ns-dv-grp">'+g.label+'</div>'+body;
+  });
+  if(!any)h+='<p class="ml-empty ns-dv-empty">Nothing booked on this day.</p>';
+  alt.innerHTML=h;
+}
+function opsSetViewMode(v){
+  _nsView=v;try{localStorage.setItem('opsViewMode',v);}catch(e){}
+  document.querySelectorAll('[data-nsview]').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.nsview===v));});
+  var body=document.getElementById('opsBody2'),alt=document.getElementById('nsAltView');
+  if(!alt){alt=document.createElement('div');alt.id='nsAltView';alt.className='ns-alt';body.parentNode.insertBefore(alt,body);}
+  document.querySelectorAll('.ns-mbar').forEach(function(b){b.style.display=(v==='planner')?'':'none';});
+  var hd=document.getElementById('nsAltHead');
+  if(v==='planner'){alt.hidden=true;if(hd)hd.hidden=true;body.style.display='';if(typeof _nsExtractBars==='function')_nsExtractBars();return;}
+  body.style.display='none';alt.hidden=false;
+  // These views replace the planner, so carry the logo and buttons across with them
+  var src=document.querySelector('.ns-mbar .ns-mh');
+  var bar=document.getElementById('nsAltHead');
+  if(!bar){bar=document.createElement('div');bar.id='nsAltHead';bar.className='ns-althead';alt.parentNode.insertBefore(bar,alt);}
+  if(src){var c2=src.cloneNode(true);c2.querySelectorAll('[id]').forEach(function(x){x.removeAttribute('id');});var mn=c2.querySelector('.ns-mname');if(mn)mn.remove();bar.innerHTML='';bar.appendChild(c2);}
+  bar.hidden=false;
+  if(_nsViewMi<0)_nsViewMi=Math.max(0,opsTodayMonthIdx());
+  if(v==='month')_nsRenderMonthView();else if(v==='day')_nsRenderDayView();else _nsRenderYearView();
+}
+function _nsViewMonthStep(d){
+  _nsViewMi=Math.max(0,Math.min(OPS_CAL.length-1,_nsViewMi+d));
+  _nsRenderMonthView();
+}
+function _nsViewOpenMonth(mi){
+  _nsViewMi=mi;
+  opsSetViewMode('planner');
+  setTimeout(function(){if(typeof _saScrollToMonth==='function')_saScrollToMonth(mi,true);else{var s=document.getElementById('opsMs2-'+mi);if(s)s.scrollIntoView({block:'start'});}},60);
+}
+function _nsRenderMonthView(){
+  var alt=document.getElementById('nsAltView'),m=OPS_CAL[_nsViewMi];if(!alt||!m)return;
+  var px=OPS_MPX[m.month]||'';
+  var h='<div class="ns-alt-bar"><button type="button" class="ns-tm-nav" onclick="_nsViewMonthStep(-1)" aria-label="Previous month">&#8249;</button>'
+    +'<span class="ns-alt-title">'+_rdEsc(m.month)+'</span>'
+    +'<button type="button" class="ns-tm-nav" onclick="_nsViewMonthStep(1)" aria-label="Next month">&#8250;</button>'
+    +'<button type="button" class="ns-tm-now" onclick="_nsViewMi='+Math.max(0,opsTodayMonthIdx())+';_nsRenderMonthView()">This month</button>'
+    +'<button type="button" class="ns-tm-now" onclick="_nsViewOpenMonth('+_nsViewMi+')">Open in planner</button></div>';
+  h+='<div class="ns-mv-grid"><div class="ns-mv-hd">Mon</div><div class="ns-mv-hd">Tue</div><div class="ns-mv-hd">Wed</div><div class="ns-mv-hd">Thu</div><div class="ns-mv-hd">Fri</div><div class="ns-mv-hd">Sat</div><div class="ns-mv-hd">Sun</div>';
+  var first=m.days[0],fd=first?_mlUtc(px+'-'+String(first.day).padStart(2,'0')):null;
+  var lead=fd?((fd.getUTCDay()+6)%7):0;
+  for(var i=0;i<lead;i++)h+='<div class="ns-mv-day ns-mv-pad"></div>';
+  m.days.forEach(function(d){
+    var iso=px+'-'+String(d.day).padStart(2,'0'),wk=opsIsWk(d.dow),today=iso===OPS_TODAY;
+    var items=_nsDayItems(m.month,d.day);
+    h+='<div class="ns-mv-day'+(wk?' ns-mv-wk':'')+(today?' ns-mv-today':'')+'" role="button" tabindex="0" onclick="_nsViewOpenMonth('+_nsViewMi+')" onkeydown="if(event.key===\'Enter\')this.click()">'
+      +'<div class="ns-mv-num">'+d.day+_nsLocTag(m.month,d.day,'')+'</div>';
+    items.slice(0,5).forEach(function(it){
+      var tmp=document.createElement('div');tmp.className='ops-chip '+opsChip(it.text);
+      var col=_nsPastel(it.text,tmp)||'#cfcdc7';
+      h+='<div class="ns-mv-item" style="background:'+col+'" title="'+_rdEsc(it.who+' — '+it.text)+'"><b>'+_rdEsc(it.who)+'</b> '+_rdEsc(it.text)+(it.crew.length?' <i>'+it.crew.length+'</i>':'')+'</div>';
+    });
+    if(items.length>5)h+='<div class="ns-mv-more">+'+(items.length-5)+' more</div>';
+    h+='</div>';
+  });
+  h+='</div>';
+  alt.innerHTML=h;
+}
+function _nsRenderYearView(){
+  var alt=document.getElementById('nsAltView');if(!alt)return;
+  var h='<div class="ns-alt-bar"><span class="ns-alt-title">Year at a glance</span>'
+    +'<button type="button" class="ns-tm-now" onclick="opsSetViewMode(\'planner\')">Back to planner</button></div><div class="ns-yv-grid">';
+  OPS_CAL.forEach(function(m,mi){
+    var px=OPS_MPX[m.month]||'',busiest=0,cells='';
+    var counts=m.days.map(function(d){var n=_nsDayItems(m.month,d.day).length;if(n>busiest)busiest=n;return n;});
+    var first=m.days[0],fd=first?_mlUtc(px+'-'+String(first.day).padStart(2,'0')):null;
+    var lead=fd?((fd.getUTCDay()+6)%7):0;
+    for(var i=0;i<lead;i++)cells+='<i class="ns-yv-pad"></i>';
+    m.days.forEach(function(d,di){
+      var n=counts[di],lvl=n===0?0:n<=2?1:n<=5?2:3;
+      var iso=px+'-'+String(d.day).padStart(2,'0');
+      cells+='<i class="ns-yv-d l'+lvl+(iso===OPS_TODAY?' ns-yv-today':'')+'" title="'+d.day+' '+_rdEsc(m.month)+' — '+n+' booked"></i>';
+    });
+    var total=counts.reduce(function(a,b){return a+b;},0);
+    h+='<div class="ns-yv-m" role="button" tabindex="0" onclick="_nsViewOpenMonth('+mi+')" onkeydown="if(event.key===\'Enter\')this.click()">'
+      +'<div class="ns-yv-hd"><b>'+_rdEsc(m.month.split(" ")[0])+'</b><small>'+_rdEsc(m.month.split(" ")[1])+'</small><span>'+total+'</span></div>'
+      +'<div class="ns-yv-cells">'+cells+'</div></div>';
+  });
+  alt.innerHTML=h+'</div>';
+}
 // ── PLAN VIEW WIRING (stacked months — scroll vertically) ────────────────────
 var _saMonthsRendered=false;
 var _saScrollObs=null;
@@ -6529,8 +6821,9 @@ async function bootstrap(){
   _rdApplyDensity(_rdDensity());
   setPlanView('month');
   _rdRenderStuPanel();
-  setTimeout(function(){if(typeof _nsExtractBars==='function')_nsExtractBars();},60);
+  setTimeout(function(){if(typeof _nsExtractBars==='function')_nsExtractBars();if(_nsView&&_nsView!=='planner')opsSetViewMode(_nsView);},60);
   _nsHistOn=true;_nsHistLoad();
+  setTimeout(_nsBackupToday,4000);   // a dated copy once a day
 }
 
 // Boot
@@ -6851,9 +7144,7 @@ function _nsCrewJobs(){
       pp.days=Object.keys(pp.recs.reduce(function(o,r){o[r.iso]=1;return o;},{})).length;
       pp.mins=pp.recs.reduce(function(a,r){return a+(r.m||0);},0);
       return pp;
-    }).sort(function(a,b){
-      var ta=NS_CREW_TYPES.findIndex(function(t){return t.id===a.type;}),tb=NS_CREW_TYPES.findIndex(function(t){return t.id===b.type;});
-      return ta-tb||a.name.localeCompare(b.name);});
+    }).sort(_nsCrewOrder);
     j.mins=j.list.reduce(function(a,p){return a+p.mins;},0);
     return j;
   }).sort(function(a,b){return a.first<b.first?1:a.first>b.first?-1:0;});
@@ -6975,6 +7266,72 @@ function _nsExtractBars(){
 function _nsFloatHeadQueue(){setTimeout(_nsExtractBars,0);}
 window.addEventListener('resize',_nsFloatHeadQueue);
 
+// Daily backup (b118): once a day the planner keeps a dated copy of itself, so a bad day
+// can be put back. Kept for two weeks, then the oldest is dropped.
+var NS_BACKUP_KEEP=14;
+function _nsBackupKey(d){return _k('ops_backup_'+d);}
+async function _nsBackupList(){
+  try{
+    var r=await fetch(_SB_URL+'/rest/v1/app_data?select=key,updated_at&key=like.'+encodeURIComponent(_k('ops_backup_%')),{headers:_sbGet()});
+    if(!r.ok)return [];
+    var rows=await r.json();
+    return rows.map(function(x){return {key:x.key,day:(x.key.match(/ops_backup_(\d{4}-\d{2}-\d{2})/)||[])[1]||'',at:x.updated_at};})
+      .filter(function(x){return x.day;}).sort(function(a,b){return a.day<b.day?1:-1;});
+  }catch(e){return [];}
+}
+async function _nsBackupToday(){
+  if(!window._opsBooted||!Object.keys(_opsD).length)return;
+  var today=new Date().toISOString().slice(0,10);
+  try{
+    var list=await _nsBackupList();
+    if(list.some(function(x){return x.day===today;}))return;      // already done today
+    var r=await fetch(_SB_URL+'/rest/v1/app_data?select=value&key=eq.'+_k('opsPlanner'),{headers:_sbGet()});
+    if(!r.ok)return;
+    var rows=await r.json(),val=rows&&rows[0]&&rows[0].value;
+    if(!val||Object.keys(val).length<50)return;                    // never back up a half-loaded planner
+    var w=await fetch(_SB_URL+'/rest/v1/app_data?on_conflict=key',{method:'POST',headers:_sbHeaders(),body:JSON.stringify({key:_nsBackupKey(today),value:val,updated_at:new Date().toISOString()})});
+    if(!w.ok)return;
+    var old=list.slice(NS_BACKUP_KEEP-1);
+    for(var i=0;i<old.length;i++){try{await fetch(_SB_URL+'/rest/v1/app_data?key=eq.'+encodeURIComponent(old[i].key),{method:'DELETE',headers:_sbHeaders()});}catch(e){}}
+    console.log('[backup] saved',today,'| kept',Math.min(list.length+1,NS_BACKUP_KEEP));
+  }catch(e){console.warn('backup failed',e);}
+}
+function opsOpenBackups(){
+  var el=document.getElementById('nsBackups');if(!el)return;
+  el.hidden=false;document.body.style.overflow='hidden';
+  document.getElementById('nsBackupsBody').innerHTML='<p class="ml-empty">Looking…</p>';
+  _nsRenderBackups();
+  var x=el.querySelector('.rd-x');if(x)x.focus();
+}
+function opsCloseBackups(){var el=document.getElementById('nsBackups');if(!el||el.hidden)return;el.hidden=true;document.body.style.overflow='';}
+async function _nsRenderBackups(){
+  var body=document.getElementById('nsBackupsBody');if(!body)return;
+  var list=await _nsBackupList();
+  if(!list.length){body.innerHTML='<p class="ml-empty">No backups yet. The planner takes one each day it is opened.</p>';return;}
+  var h='';
+  list.forEach(function(b,i){
+    var d=_mlUtc(b.day);
+    h+='<div class="ops-co ns-bk-row"><span class="ns-bk-day"><b>'+_rdEsc(d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',timeZone:'UTC'}))+'</b>'
+      +(i===0?'<small>most recent</small>':'')+'</span>'
+      +'<button type="button" class="ns-lock-link" onclick="opsRestoreBackup(\''+b.day+'\')">Restore this day</button></div>';
+  });
+  body.innerHTML=h;
+}
+async function opsRestoreBackup(day){
+  if(!confirm('Put the planner back to how it was on '+day+'?\n\nEverything entered since then is replaced. The current state is saved first, so this can be undone.'))return;
+  try{
+    var r=await fetch(_SB_URL+'/rest/v1/app_data?select=value&key=eq.'+_nsBackupKey(day),{headers:_sbGet()});
+    var rows=await r.json(),val=rows&&rows[0]&&rows[0].value;
+    if(!val){toast('That backup could not be read');return;}
+    var cur=await fetch(_SB_URL+'/rest/v1/app_data?select=value&key=eq.'+_k('opsPlanner'),{headers:_sbGet()});
+    var crows=await cur.json();
+    if(crows&&crows[0])await fetch(_SB_URL+'/rest/v1/app_data?on_conflict=key',{method:'POST',headers:_sbHeaders(),body:JSON.stringify({key:_k('ops_backup_before_restore'),value:crows[0].value,updated_at:new Date().toISOString()})});
+    var w=await fetch(_SB_URL+'/rest/v1/app_data?on_conflict=key',{method:'POST',headers:_sbHeaders(),body:JSON.stringify({key:_k('opsPlanner'),value:val,updated_at:new Date().toISOString()})});
+    if(!w.ok){toast('Restore failed');return;}
+    toast('Restored — reloading');
+    setTimeout(function(){location.reload();},800);
+  }catch(e){console.warn('restore failed',e);toast('Restore failed');}
+}
 // Near-live sync (b80): every 2s ask only for the last-saved time (tiny request) and
 // download the planner only when someone else has saved. Also checks when the tab
 // becomes visible again and when an edit popup closes.
