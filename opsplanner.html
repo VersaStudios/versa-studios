@@ -1670,6 +1670,20 @@ html.ns-show-crew .ops-tbl .ops-cell .ns-crew-tag::before{display:none!important
 .ns-tj-pick:focus-visible{outline:2px solid var(--ns-orange);outline-offset:-2px}
 .ns-tj-pick .ns-cr-dot{flex:0 0 12px;width:12px;height:12px}
 .ns-tj-lead{border-bottom:1px solid var(--ns-cell2);padding-bottom:10px}
+
+.ns-cr-tap{cursor:pointer}
+.ns-cr-tap:hover{background:var(--ns-cell2);border-radius:10px}
+.ns-cr-tap:focus-visible{outline:2px solid var(--ns-orange);outline-offset:-2px;border-radius:10px}
+.ns-cr-tap .ns-cr-ts{text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px}
+
+/* b127: older jobs tucked away in Crew times */
+.ns-tm-old{margin-top:10px;border-top:1px solid var(--ns-cell2);padding-top:6px}
+.ns-tm-oldbtn{display:flex;align-items:center;gap:8px;width:100%;border:none;background:none;padding:10px 6px;font:600 13px var(--ns-body);letter-spacing:.04em;text-transform:uppercase;color:var(--ns-soft);cursor:pointer}
+.ns-tm-oldbtn span:not(.rd-chev){font:600 13px var(--ns-body);letter-spacing:0;text-transform:none}
+.ns-tm-oldbtn .rd-chev{margin-left:auto;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;transition:transform .2s}
+.ns-tm-oldbtn .rd-chev svg{width:18px;height:18px}
+.ns-tm-oldbtn[aria-expanded="true"] .rd-chev{transform:rotate(180deg)}
+.ns-tm-oldbtn:hover{color:var(--ns-orange)}
 </style>
 <script>try{if(localStorage.getItem('opsTheme')==='light')document.documentElement.classList.add('ns-light');if(localStorage.getItem('opsShowCrew')==='1')document.documentElement.classList.add('ns-show-crew');}catch(e){}</script>
 </head>
@@ -1719,7 +1733,7 @@ html.ns-show-crew .ops-tbl .ops-cell .ns-crew-tag::before{display:none!important
 <div id="nsTimes" class="rd-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="nsTimesTitle">
   <div class="rd-sheet-in ns-cm-in ns-tm-in">
     <div class="rd-sheet-hd"><h2 id="nsTimesTitle">Crew times</h2><button type="button" class="rd-x" aria-label="Close crew times" onclick="opsCloseTimes()">&times;</button></div>
-    <div class="ns-tm-bar"><div class="rd-presets" role="group" aria-label="Jobs to show"><button type="button" data-tmr="recent" aria-pressed="true" onclick="opsTimesRange('recent')">Recent</button><button type="button" data-tmr="all" aria-pressed="false" onclick="opsTimesRange('all')">All jobs</button></div></div>
+
     <div id="nsTimesBody" class="ns-cm-body"></div>
     <div class="rd-sheet-ft ns-tm-ft"><button type="button" class="ns-lock-link" onclick="opsCloseTimes();opsOpenCrewMgr()">Crew list</button><button type="button" onclick="opsCloseTimes()">Done</button></div>
   </div>
@@ -3587,7 +3601,7 @@ function opsCk(td,dayOverride){
 }
 // Position the cell editor popup next to the given cell, picking the side
 // (below / above / pinned-top) that best fits in the visible viewport.
-var OPS_BUILD='2026-09-19 · b123';
+var OPS_BUILD='2026-09-19 · b127';
 console.log('%cOps Planner build '+OPS_BUILD,'color:#d85a61;font-weight:bold');
 document.addEventListener('DOMContentLoaded',function(){
   var b=document.createElement('div');
@@ -4252,7 +4266,7 @@ function _nsCrewRender(id,focusIdx,entryDay,clicked){
           +_nsPersonJobHoursHTML(c.name,text);
       }else{
         var ts=(t.s||t.e)?(t.s||'?')+'–'+(t.e||'?'):'',hm=_nsMins(t.s,t.e);
-        html+='<div class="ns-cr-line">'+nameBtn+'<small class="ns-cr-role">'+_rdEsc([c.role,_nsCrewTypeName(_nsCrewType(c))].filter(Boolean).join(' · '))+'</small>'
+        html+='<div class="ns-cr-line ns-cr-tap" role="button" tabindex="0" title="'+(ts?'Change the hours':'Add hours')+'" onclick="event.stopPropagation();opsCrewToggleTimes('+k+','+ci+')" onkeydown="if(event.key===\'Enter\'){event.preventDefault();this.click();}">'+nameBtn+'<small class="ns-cr-role">'+_rdEsc([c.role,_nsCrewTypeName(_nsCrewType(c))].filter(Boolean).join(' · '))+'</small>'
           +(ts?'<span class="ns-cr-ts">'+ts+(hm!=null?'<b>'+_nsHrs(hm)+'</b>':'')+'</span>':'')+x+'</div>';
       }
     });
@@ -4324,7 +4338,11 @@ function opsCrewToggleTimes(k,ci){
   var o=_nsCrewOpen[k]=_nsCrewOpen[k]||{};
   o[ci]=!o[ci];
   _nsCrewRenderKeep();
-  if(o[ci])setTimeout(function(){var i=document.querySelector('#opsCedIn input[data-cr="'+k+'_'+ci+'_s"]');if(i){i.focus();i.select();}},20);
+  if(o[ci]){
+    // A redraw right after the tap can steal focus, so try again once it has settled
+    var put=function(){var i=document.querySelector('#opsCedIn input[data-cr="'+k+'_'+ci+'_s"]');if(i&&document.activeElement!==i){i.focus();i.select();}};
+    setTimeout(put,30);setTimeout(put,140);setTimeout(put,320);
+  }
 }
 function _nsCrewRenderKeep(){var c=_nsCrewCtx;if(c)_nsCrewRender(c.id,c.focusIdx,c.entryDay,c.clicked);}
 // Accepts 0800, 800, 8, 8:00, 18.30, 6pm; returns "08:00", "" for blank, or null if it isn't a time
@@ -7132,7 +7150,7 @@ function _nsHrsDec(m){return m==null?'':String(Math.round(m/60*100)/100);}
 function _nsCrewTimeStr(c,off){var t=c&&c.times&&c.times[off||0];if(!t||!(t.s||t.e))return '';var m=_nsMins(t.s,t.e);return (t.s||'?')+'\u2013'+(t.e||'?')+(m!=null?' ('+_nsHrs(m)+')':'');}
 // Crew times (b102): one line per job and per person on it, with days and total hours.
 // Export a whole job, or one person for the whole job.
-var _nsTmRange='recent',_nsTmJobs=[],_nsTmJobKey=null;
+var _nsTmJobs=[],_nsTmJobKey=null,_nsTmOldOpen=false;
 function opsOpenTimes(){
   var el=document.getElementById('nsTimes');if(!el)return;
   if(typeof opsCloseCed==='function')opsCloseCed();
@@ -7142,7 +7160,7 @@ function opsOpenTimes(){
   var x=el.querySelector('.rd-x');if(x)x.focus();
 }
 function opsCloseTimes(){var el=document.getElementById('nsTimes');if(!el||el.hidden)return;_nsTmMenuClose();if(document.activeElement)document.activeElement.blur();el.hidden=true;document.body.style.overflow='';}
-function opsTimesRange(r){_nsTmRange=r;_nsTmJobKey=null;document.querySelectorAll('#nsTimes [data-tmr]').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.tmr===r));});_nsRenderTimes();}
+function opsTimesRange(){_nsTmJobKey=null;_nsRenderTimes();}   // kept for older links
 // Every crew booking, one record per person per day, grouped into jobs by show name
 function _nsCrewJobs(){
   var jobs={};
@@ -7178,7 +7196,7 @@ function _nsCrewJobs(){
     }).sort(_nsCrewOrder);
     j.mins=j.list.reduce(function(a,p){return a+p.mins;},0);
     return j;
-  }).sort(function(a,b){return a.first<b.first?1:a.first>b.first?-1:0;});
+  }).sort(function(a,b){return a.first<b.first?-1:a.first>b.first?1:a.name.localeCompare(b.name);});   // in date order, earliest first
 }
 function _nsTmDates(a,b){
   var f=function(iso,o){return _mlUtc(iso).toLocaleDateString('en-GB',Object.assign({timeZone:'UTC'},o));};
@@ -7187,8 +7205,8 @@ function _nsTmDates(a,b){
 }
 function _nsRenderTimes(){
   var body=document.getElementById('nsTimesBody');if(!body)return;
-  var cut=new Date(OPS_TODAY+'T00:00:00Z');cut.setUTCDate(cut.getUTCDate()-45);var cutIso=_mlIso(cut);
-  _nsTmJobs=_nsCrewJobs().filter(function(j){return _nsTmRange==='all'||j.last>=cutIso;});
+  var cut=new Date(OPS_TODAY+'T00:00:00Z');cut.setUTCDate(cut.getUTCDate()-30);var cutIso=_mlIso(cut);
+  _nsTmJobs=_nsCrewJobs();
   var ex=function(ji,pi,label){return '<button type="button" class="ns-tm-ex" aria-label="'+_rdEsc(label)+'" title="'+_rdEsc(label)+'" onclick="event.stopPropagation();opsTmMenu(this,'+ji+','+pi+')">'+NS_EXPORT+'</button>';};
   // Step two: one job, with the option of the whole job or a single person
   if(_nsTmJobKey){
@@ -7210,17 +7228,25 @@ function _nsRenderTimes(){
       body.innerHTML=h;return;
     }
   }
-  // Step one: pick a job
-  if(!_nsTmJobs.length){body.innerHTML='<p class="ml-empty ns-cm-empty">'+(_nsTmRange==='all'?'No crew booked yet.':'No crew booked on recent jobs. Choose All jobs to see older ones.')+'</p>';return;}
-  var h2='';
-  _nsTmJobs.forEach(function(j,ji){
+  // Step one: pick a job. Anything finished over a month ago is tucked into Previous jobs.
+  if(!_nsTmJobs.length){body.innerHTML='<p class="ml-empty ns-cm-empty">No crew booked yet.</p>';return;}
+  var row=function(j,ji){
     var tmp=document.createElement('div');tmp.className='ops-chip '+opsChip(j.name);
-    h2+='<div class="ns-tj-pick" role="button" tabindex="0" onclick="opsTmPickJob(\''+j.key.replace(/'/g,"\\'")+'\')" onkeydown="if(event.key===\'Enter\')this.click()">'
+    return '<div class="ns-tj-pick" role="button" tabindex="0" onclick="opsTmPickJob(\''+j.key.replace(/'/g,"\\'")+'\')" onkeydown="if(event.key===\'Enter\')this.click()">'
       +'<i class="ns-cr-dot" style="background:'+(_nsPastel(j.name,tmp)||'#cfcdc7')+'"></i>'
       +'<span class="ns-tj-name"><b>'+_rdEsc(j.name)+'</b><small>'+_rdEsc(_nsTmDates(j.first,j.last)+' \u00b7 '+Object.keys(j.studios).join(', '))+'</small></span>'
       +'<span class="ns-tj-sum">'+j.list.length+' '+(j.list.length===1?'person':'people')+(j.mins?' \u00b7 <b>'+_nsHrs(j.mins)+'</b>':'')+'</span>'
       +'<span class="ns-cr-chev" aria-hidden="true">&#8250;</span></div>';
-  });
+  };
+  var h2='',older=[];
+  _nsTmJobs.forEach(function(j,ji){if(j.last<cutIso)older.push({j:j,ji:ji});else h2+=row(j,ji);});
+  if(!h2)h2='<p class="ml-empty ns-cm-empty">Nothing current. Previous jobs are below.</p>';
+  if(older.length){
+    h2+='<div class="ns-tm-old"><button type="button" class="ns-tm-oldbtn" aria-expanded="'+(_nsTmOldOpen?'true':'false')+'" onclick="_nsTmOldOpen=!_nsTmOldOpen;_nsRenderTimes()">Previous jobs <span>'+older.length+'</span>'
+      +'<span class="rd-chev" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>';
+    if(_nsTmOldOpen)older.forEach(function(o){h2+=row(o.j,o.ji);});
+    h2+='</div>';
+  }
   body.innerHTML=h2;
 }
 function opsTmPickJob(key){_nsTmJobKey=key;_nsRenderTimes();var b=document.getElementById('nsTimesBody');if(b)b.scrollTop=0;}
