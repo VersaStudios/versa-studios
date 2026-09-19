@@ -1536,10 +1536,10 @@ html .ops-htl{pointer-events:none!important;background:#e8c26a!important;color:#
 
 /* b107: the grab bars at each end of a box are visible on hover, so it is clear
    where to pull from to stretch across days */
-.ops-chip::before,.ops-chip::after{background:rgba(17,17,16,.16)!important;width:7px!important}
-.ops-chip:hover::before,.ops-chip:hover::after{background:rgba(17,17,16,.34)!important;width:9px!important}
-html.ns-light .ops-chip::before,html.ns-light .ops-chip::after{background:rgba(17,17,16,.14)!important}
-html.ns-light .ops-chip:hover::before,html.ns-light .ops-chip:hover::after{background:rgba(17,17,16,.28)!important}
+.ops-chip::before,.ops-chip::after{background:rgba(17,17,16,.18)!important;width:12px!important;border-radius:6px!important}
+.ops-chip:hover::before,.ops-chip:hover::after{background:rgba(17,17,16,.36)!important;width:16px!important}
+html.ns-light .ops-chip::before,html.ns-light .ops-chip::after{background:rgba(17,17,16,.15)!important}
+html.ns-light .ops-chip:hover::before,html.ns-light .ops-chip:hover::after{background:rgba(17,17,16,.3)!important}
 body.ops-drag-active .ops-chip:hover::before,body.ops-drag-active .ops-chip:hover::after{background:transparent!important}
 
 .ns-locday{position:absolute;top:4px;right:8px;z-index:6;padding:1px 5px;border-radius:6px;background:#b9cbe0;font:700 9px/1.3 var(--ns-body);letter-spacing:.06em;text-transform:uppercase;color:#111110;pointer-events:none}
@@ -3454,7 +3454,7 @@ function opsCk(td,dayOverride){
 }
 // Position the cell editor popup next to the given cell, picking the side
 // (below / above / pinned-top) that best fits in the visible viewport.
-var OPS_BUILD='2026-09-19 · b108';
+var OPS_BUILD='2026-09-19 · b109';
 console.log('%cOps Planner build '+OPS_BUILD,'color:#d85a61;font-weight:bold');
 document.addEventListener('DOMContentLoaded',function(){
   var b=document.createElement('div');
@@ -4479,7 +4479,10 @@ function _nsDbgSay(msg){
   if(!_nsDbg)return;
   var el=document.getElementById('nsDragDbg');
   if(!el){el=document.createElement('div');el.id='nsDragDbg';el.style.cssText='position:fixed;left:8px;bottom:30px;z-index:20000;max-width:min(520px,92vw);padding:8px 10px;border-radius:10px;background:rgba(17,17,16,.92);color:#f2f1ee;font:600 12px/1.45 ui-monospace,Menlo,monospace;white-space:pre-wrap;pointer-events:none';document.body.appendChild(el);}
-  el.textContent=msg;
+  var keep=(el.dataset.log||'').split('\n---\n').filter(Boolean);
+  keep.push(msg);if(keep.length>2)keep=keep.slice(-2);
+  el.dataset.log=keep.join('\n---\n');
+  el.textContent=keep.join('\n---\n');
 }
 if(_nsDbg)document.addEventListener('DOMContentLoaded',function(){setTimeout(function(){_nsDbgSay('drag debug is ON\nNow drag a box and this panel will show what happened.');},800);});
 function _opsDragMouseDown(ev){
@@ -4508,7 +4511,7 @@ function _opsDragMouseDown(ev){
     // Detection zone: 18px or 30% of chip width, whichever is smaller. On wide chips this
     // stays a narrow band at each edge; on narrow single-cell chips it expands so the handle
     // is hittable without trackpad-precision.
-    hz=Math.min(26,Math.max(14,chipEl.offsetWidth*0.35));
+    hz=Math.min(48,Math.max(18,chipEl.offsetWidth*0.3));
     if(ev.clientY>=cr.top&&ev.clientY<=cr.bottom){
       if(fromRight>=0&&fromRight<hz){isHandle=true;handleSide='right';}
       else if(fromLeft>=0&&fromLeft<hz){isHandle=true;handleSide='left';}
