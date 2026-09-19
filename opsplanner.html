@@ -1658,6 +1658,18 @@ html.ns-show-crew .ops-tbl .ops-cell .ns-crew-tag::before{display:none!important
   .ns-althead .ns-gear svg{width:18px!important;height:18px!important}
   .ns-dv-bar{position:static;padding:12px 4px 4px}
 }
+
+.ns-cr-clear{flex:0 0 auto;border:none;background:none;padding:4px 6px;color:var(--ns-soft);font:600 12px var(--ns-body);text-decoration:underline;cursor:pointer;white-space:nowrap}
+.ns-cr-clear:hover{color:var(--ns-orange)}
+.ns-cr-clear:focus-visible{outline:2px solid var(--ns-orange);outline-offset:2px;border-radius:6px}
+.ns-cr-open .ns-cr-hrs{flex:0 1 auto;margin-left:auto}
+
+/* b123: Crew times — pick a job, then the job or one person */
+.ns-tj-pick{display:flex;align-items:center;gap:10px;padding:12px 6px;border-bottom:1px solid var(--ns-cell2);cursor:pointer}
+.ns-tj-pick:hover{background:var(--ns-cell2)}
+.ns-tj-pick:focus-visible{outline:2px solid var(--ns-orange);outline-offset:-2px}
+.ns-tj-pick .ns-cr-dot{flex:0 0 12px;width:12px;height:12px}
+.ns-tj-lead{border-bottom:1px solid var(--ns-cell2);padding-bottom:10px}
 </style>
 <script>try{if(localStorage.getItem('opsTheme')==='light')document.documentElement.classList.add('ns-light');if(localStorage.getItem('opsShowCrew')==='1')document.documentElement.classList.add('ns-show-crew');}catch(e){}</script>
 </head>
@@ -3575,7 +3587,7 @@ function opsCk(td,dayOverride){
 }
 // Position the cell editor popup next to the given cell, picking the side
 // (below / above / pinned-top) that best fits in the visible viewport.
-var OPS_BUILD='2026-09-19 · b121';
+var OPS_BUILD='2026-09-19 · b123';
 console.log('%cOps Planner build '+OPS_BUILD,'color:#d85a61;font-weight:bold');
 document.addEventListener('DOMContentLoaded',function(){
   var b=document.createElement('div');
@@ -4221,7 +4233,8 @@ function _nsCrewRender(id,focusIdx,entryDay,clicked){
         var t0=function(f){var vals=crew.map(function(c){var t=c.times&&c.times[it.off];return (t&&t[f])||'';});return vals.every(function(x){return x===vals[0];})?vals[0]:'';};
         html+='<div class="ns-cr-line ns-cr-open ns-cr-all"><button type="button" class="ns-cr-name" onclick="event.stopPropagation();opsCrewToggleTimes('+k+',\'all\')">Everyone</button>'
           +tin(t0('s'),'opsCrewAllIn(this,'+k+',\'s\')','Start time for everyone','data-cr="'+k+'_all_s"')+'<span class="ns-cr-dash">&ndash;</span>'
-          +tin(t0('e'),'opsCrewAllIn(this,'+k+',\'e\')','Finish time for everyone','data-cr="'+k+'_all_e"')+'</div>';
+          +tin(t0('e'),'opsCrewAllIn(this,'+k+',\'e\')','Finish time for everyone','data-cr="'+k+'_all_e"')
+          +'<button type="button" class="ns-cr-clear" onclick="event.stopPropagation();opsCrewClearAll('+k+')">Clear all</button></div>';
       }else{
         html+='<div class="ns-cr-line ns-cr-all"><button type="button" class="ns-cr-name ns-cr-setall" onclick="event.stopPropagation();opsCrewToggleTimes('+k+',\'all\')">Set times for everyone</button></div>';
       }
@@ -4234,7 +4247,8 @@ function _nsCrewRender(id,focusIdx,entryDay,clicked){
         html+='<div class="ns-cr-line ns-cr-open">'+nameBtn
           +tin(t.s,'opsCrewTimeIn(this,'+k+','+ci+',\'s\')','Start time for '+c.name,'data-cr="'+k+'_'+ci+'_s"')+'<span class="ns-cr-dash">&ndash;</span>'
           +tin(t.e,'opsCrewTimeIn(this,'+k+','+ci+',\'e\')','Finish time for '+c.name,'data-cr="'+k+'_'+ci+'_e"')
-          +'<span class="ns-cr-hrs" id="nsCrH'+k+'_'+ci+'">'+_nsHrs(_nsMins(t.s,t.e))+'</span>'+x+'</div>'
+          +'<span class="ns-cr-hrs" id="nsCrH'+k+'_'+ci+'">'+_nsHrs(_nsMins(t.s,t.e))+'</span>'
+          +'<button type="button" class="ns-cr-clear" title="Take the hours out" onclick="event.stopPropagation();opsCrewClearTime('+k+','+ci+')">Clear</button>'+x+'</div>'
           +_nsPersonJobHoursHTML(c.name,text);
       }else{
         var ts=(t.s||t.e)?(t.s||'?')+'–'+(t.e||'?'):'',hm=_nsMins(t.s,t.e);
@@ -4338,6 +4352,22 @@ function _nsTinKey(e,el){
 }
 function opsCrewTimeIn(el,k,ci,field){var t=_nsTinVal(el);if(t!==null)opsCrewSetTime(k,ci,field,t);}
 function opsCrewAllIn(el,k,field){var t=_nsTinVal(el);if(t!==null)opsCrewSetAll(k,field,t);}
+// Take the hours back out — for one person, or for everyone on the job that day
+function opsCrewClearTime(k,ci){
+  var v=_nsCrewMutate(k,function(v,it){var c=v.crew[ci];if(!c)return false;_nsSetCrewT(c,it.off,'s','');_nsSetCrewT(c,it.off,'e','');});
+  if(!v)return;
+  document.querySelectorAll('#opsCedIn input[data-cr="'+k+'_'+ci+'_s"],#opsCedIn input[data-cr="'+k+'_'+ci+'_e"]').forEach(function(i){i.value='';i.classList.remove('ns-bad');});
+  document.querySelectorAll('#opsCedIn input[data-cr^="'+k+'_all"]').forEach(function(i){i.value='';});
+  _nsCrewShowHrs(k,v);
+  toast('Hours cleared');
+}
+function opsCrewClearAll(k){
+  var v=_nsCrewMutate(k,function(v,it){v.crew.forEach(function(c){_nsSetCrewT(c,it.off,'s','');_nsSetCrewT(c,it.off,'e','');});});
+  if(!v)return;
+  document.querySelectorAll('#opsCedIn input.ns-tin').forEach(function(i){i.value='';i.classList.remove('ns-bad');});
+  _nsCrewShowHrs(k,v);
+  toast('Hours cleared for everyone');
+}
 function opsCrewSetTime(k,ci,field,val){
   var v=_nsCrewMutate(k,function(v,it){if(!v.crew[ci])return false;_nsSetCrewT(v.crew[ci],it.off,field,val);});
   if(v)_nsCrewShowHrs(k,v);
@@ -7102,16 +7132,17 @@ function _nsHrsDec(m){return m==null?'':String(Math.round(m/60*100)/100);}
 function _nsCrewTimeStr(c,off){var t=c&&c.times&&c.times[off||0];if(!t||!(t.s||t.e))return '';var m=_nsMins(t.s,t.e);return (t.s||'?')+'\u2013'+(t.e||'?')+(m!=null?' ('+_nsHrs(m)+')':'');}
 // Crew times (b102): one line per job and per person on it, with days and total hours.
 // Export a whole job, or one person for the whole job.
-var _nsTmRange='recent',_nsTmJobs=[];
+var _nsTmRange='recent',_nsTmJobs=[],_nsTmJobKey=null;
 function opsOpenTimes(){
   var el=document.getElementById('nsTimes');if(!el)return;
   if(typeof opsCloseCed==='function')opsCloseCed();
   el.hidden=false;document.body.style.overflow='hidden';
+  _nsTmJobKey=null;
   _nsRenderTimes();
   var x=el.querySelector('.rd-x');if(x)x.focus();
 }
 function opsCloseTimes(){var el=document.getElementById('nsTimes');if(!el||el.hidden)return;_nsTmMenuClose();if(document.activeElement)document.activeElement.blur();el.hidden=true;document.body.style.overflow='';}
-function opsTimesRange(r){_nsTmRange=r;document.querySelectorAll('#nsTimes [data-tmr]').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.tmr===r));});_nsRenderTimes();}
+function opsTimesRange(r){_nsTmRange=r;_nsTmJobKey=null;document.querySelectorAll('#nsTimes [data-tmr]').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.tmr===r));});_nsRenderTimes();}
 // Every crew booking, one record per person per day, grouped into jobs by show name
 function _nsCrewJobs(){
   var jobs={};
@@ -7158,22 +7189,42 @@ function _nsRenderTimes(){
   var body=document.getElementById('nsTimesBody');if(!body)return;
   var cut=new Date(OPS_TODAY+'T00:00:00Z');cut.setUTCDate(cut.getUTCDate()-45);var cutIso=_mlIso(cut);
   _nsTmJobs=_nsCrewJobs().filter(function(j){return _nsTmRange==='all'||j.last>=cutIso;});
-  if(!_nsTmJobs.length){body.innerHTML='<p class="ml-empty ns-cm-empty">'+(_nsTmRange==='all'?'No crew booked yet.':'No crew booked on recent jobs. Choose All to see older jobs.')+'</p>';return;}
   var ex=function(ji,pi,label){return '<button type="button" class="ns-tm-ex" aria-label="'+_rdEsc(label)+'" title="'+_rdEsc(label)+'" onclick="event.stopPropagation();opsTmMenu(this,'+ji+','+pi+')">'+NS_EXPORT+'</button>';};
-  var h='';
+  // Step two: one job, with the option of the whole job or a single person
+  if(_nsTmJobKey){
+    var ji=_nsTmJobs.findIndex(function(j){return j.key===_nsTmJobKey;});
+    if(ji<0){_nsTmJobKey=null;}
+    else{
+      var j=_nsTmJobs[ji];
+      var tmp=document.createElement('div');tmp.className='ops-chip '+opsChip(j.name);
+      var h='<button type="button" class="ns-cm-back" onclick="opsTmBack()">&#8249; All jobs</button>'
+        +'<div class="ns-tj-head ns-tj-lead"><i class="ns-cr-dot" style="background:'+(_nsPastel(j.name,tmp)||'#cfcdc7')+'"></i>'
+        +'<span class="ns-tj-name"><b>'+_rdEsc(j.name)+'</b><small>'+_rdEsc(_nsTmDates(j.first,j.last)+' \u00b7 '+Object.keys(j.studios).join(', '))+'</small></span>'
+        +'<span class="ns-tj-sum">'+j.list.length+' '+(j.list.length===1?'person':'people')+(j.mins?' \u00b7 <b>'+_nsHrs(j.mins)+'</b>':'')+'</span>'
+        +ex(ji,-1,'Export the whole job')+'</div>';
+      h+='<div class="ns-crew-grp ns-cm-grp">Everyone on this job</div>';
+      j.list.forEach(function(p,pi){
+        h+='<div class="ns-tp">'+_nsCrewDot(p.type)+'<span class="ns-tp-name"><b>'+_rdEsc(p.name)+'</b>'+(p.role?'<small>'+_rdEsc(p.role)+'</small>':'')+'</span>'
+          +'<span class="ns-tp-days">'+p.days+' day'+(p.days===1?'':'s')+'</span><span class="ns-tp-hrs">'+(p.mins?_nsHrs(p.mins):'')+'</span>'+ex(ji,pi,'Export '+p.name+' on '+j.name)+'</div>';
+      });
+      body.innerHTML=h;return;
+    }
+  }
+  // Step one: pick a job
+  if(!_nsTmJobs.length){body.innerHTML='<p class="ml-empty ns-cm-empty">'+(_nsTmRange==='all'?'No crew booked yet.':'No crew booked on recent jobs. Choose All jobs to see older ones.')+'</p>';return;}
+  var h2='';
   _nsTmJobs.forEach(function(j,ji){
     var tmp=document.createElement('div');tmp.className='ops-chip '+opsChip(j.name);
-    h+='<section class="ns-tj"><div class="ns-tj-head"><i class="ns-cr-dot" style="background:'+(_nsPastel(j.name,tmp)||'#cfcdc7')+'"></i>'
-      +'<span class="ns-tj-name"><b>'+_rdEsc(j.name)+'</b><small>'+_rdEsc(_nsTmDates(j.first,j.last)+' · '+Object.keys(j.studios).join(', '))+'</small></span>'
-      +'<span class="ns-tj-sum">'+j.list.length+' '+(j.list.length===1?'person':'people')+(j.mins?' · <b>'+_nsHrs(j.mins)+'</b>':'')+'</span>'+ex(ji,-1,'Export '+j.name)+'</div>';
-    j.list.forEach(function(p,pi){
-      h+='<div class="ns-tp">'+_nsCrewDot(p.type)+'<span class="ns-tp-name"><b>'+_rdEsc(p.name)+'</b>'+(p.role?'<small>'+_rdEsc(p.role)+'</small>':'')+'</span>'
-        +'<span class="ns-tp-days">'+p.days+' day'+(p.days===1?'':'s')+'</span><span class="ns-tp-hrs">'+(p.mins?_nsHrs(p.mins):'')+'</span>'+ex(ji,pi,'Export '+p.name+' on '+j.name)+'</div>';
-    });
-    h+='</section>';
+    h2+='<div class="ns-tj-pick" role="button" tabindex="0" onclick="opsTmPickJob(\''+j.key.replace(/'/g,"\\'")+'\')" onkeydown="if(event.key===\'Enter\')this.click()">'
+      +'<i class="ns-cr-dot" style="background:'+(_nsPastel(j.name,tmp)||'#cfcdc7')+'"></i>'
+      +'<span class="ns-tj-name"><b>'+_rdEsc(j.name)+'</b><small>'+_rdEsc(_nsTmDates(j.first,j.last)+' \u00b7 '+Object.keys(j.studios).join(', '))+'</small></span>'
+      +'<span class="ns-tj-sum">'+j.list.length+' '+(j.list.length===1?'person':'people')+(j.mins?' \u00b7 <b>'+_nsHrs(j.mins)+'</b>':'')+'</span>'
+      +'<span class="ns-cr-chev" aria-hidden="true">&#8250;</span></div>';
   });
-  body.innerHTML=h;
+  body.innerHTML=h2;
 }
+function opsTmPickJob(key){_nsTmJobKey=key;_nsRenderTimes();var b=document.getElementById('nsTimesBody');if(b)b.scrollTop=0;}
+function opsTmBack(){_nsTmJobKey=null;_nsRenderTimes();}
 // Small menu under an export button: Copy text / Download CSV
 function _nsTmMenuClose(){var m=document.getElementById('nsTmMenu');if(m)m.remove();}
 function opsTmMenu(btn,ji,pi){
