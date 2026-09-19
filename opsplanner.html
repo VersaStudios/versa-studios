@@ -3454,7 +3454,7 @@ function opsCk(td,dayOverride){
 }
 // Position the cell editor popup next to the given cell, picking the side
 // (below / above / pinned-top) that best fits in the visible viewport.
-var OPS_BUILD='2026-09-19 · b109';
+var OPS_BUILD='2026-09-19 · b110';
 console.log('%cOps Planner build '+OPS_BUILD,'color:#d85a61;font-weight:bold');
 document.addEventListener('DOMContentLoaded',function(){
   var b=document.createElement('div');
@@ -3470,9 +3470,14 @@ function _opsCellRect(td){
   // layout px, and layout px x cumulative zoom = true visual width. If the
   // rect already matches visual (ratio 1) nothing changes; if it's layout-
   // based, scale everything up to visual so it matches event clientX/Y.
+  // Chrome exposes currentCSSZoom; Safari does not, and there it reports rects in layout
+  // pixels while pointer events come in visual pixels — so without this the maths drifts
+  // further the further right you click, and only behaved at 100% zoom. Fall back to the
+  // zoom the planner itself is applying.
   var z=1;
-  if(typeof td.currentCSSZoom==='number'&&td.offsetWidth>0&&r.width>0){
-    z=(td.offsetWidth*td.currentCSSZoom)/r.width;
+  var cz=(typeof td.currentCSSZoom==='number')?td.currentCSSZoom:((typeof _opsZoomVal==='number'?_opsZoomVal:100)/100);
+  if(td.offsetWidth>0&&r.width>0){
+    z=(td.offsetWidth*cz)/r.width;
     if(!isFinite(z)||z<=0)z=1;
     if(Math.abs(z-1)<0.02)z=1;
   }
@@ -4502,16 +4507,13 @@ function _opsDragMouseDown(ev){
   var isHandle=false;
   var handleSide=null,fromLeft=-1,fromRight=-1,hz=0;
   if(chipEl){
-    // Measure the box's own scale (visual width / layout width) instead of trusting a
-    // browser-specific zoom property, so the grab strip lands under the pointer everywhere.
-    var cr=chipEl.getBoundingClientRect();
-    var csc=(chipEl.offsetWidth>0&&cr.width>0)?cr.width/chipEl.offsetWidth:1;
-    fromRight=(cr.right-ev.clientX)/csc;
-    fromLeft=(ev.clientX-cr.left)/csc;
+    var cr=_opsCellRect(chipEl);   // corrected for zoom in every browser
+    fromRight=cr.right-ev.clientX;
+    fromLeft=ev.clientX-cr.left;
     // Detection zone: 18px or 30% of chip width, whichever is smaller. On wide chips this
     // stays a narrow band at each edge; on narrow single-cell chips it expands so the handle
     // is hittable without trackpad-precision.
-    hz=Math.min(48,Math.max(18,chipEl.offsetWidth*0.3));
+    hz=Math.min(48,Math.max(18,cr.width*0.3));
     if(ev.clientY>=cr.top&&ev.clientY<=cr.bottom){
       if(fromRight>=0&&fromRight<hz){isHandle=true;handleSide='right';}
       else if(fromLeft>=0&&fromLeft<hz){isHandle=true;handleSide='left';}
@@ -4535,7 +4537,7 @@ function _opsDragMouseDown(ev){
   };
   try{_opsCaptureRowMap();}catch(e){console.warn('rowmap err',e);}
   console.log('[opsDrag] mousedown',{row:row,mi:mi,day:dataDay,hasContent:_opsDrag.startVals.length>0,handle:isHandle,side:handleSide,rowMapCells:(_opsDrag.rowMap||[]).length});
-  _nsDbgSay('DOWN row='+row+' day='+dataDay+'\nchip='+(chipEl?'yes':'NO')+'  grabbedEdge='+(isHandle?handleSide:'no (will MOVE)')+(chipEl?'\nfromLeft='+Math.round(fromLeft)+'px fromRight='+Math.round(fromRight)+'px zone='+Math.round(hz)+'px chipW='+chipEl.offsetWidth:'')+'\nzoom='+(typeof _opsZoomVal==='number'?_opsZoomVal:'?')+'% mapCells='+(_opsDrag.rowMap||[]).length+' mapScale='+(Math.round((_opsDrag.mapScale||1)*100)/100));
+  _nsDbgSay('DOWN row='+row+' day='+dataDay+'\nchip='+(chipEl?'yes':'NO')+'  grabbedEdge='+(isHandle?handleSide:'no (will MOVE)')+(chipEl?'\nfromLeft='+Math.round(fromLeft)+'px fromRight='+Math.round(fromRight)+'px zone='+Math.round(hz)+'px chipW='+Math.round(_opsCellRect(chipEl).width):'')+'\nzoom='+(typeof _opsZoomVal==='number'?_opsZoomVal:'?')+'% mapCells='+(_opsDrag.rowMap||[]).length+' mapScale='+(Math.round((_opsDrag.mapScale||1)*100)/100));
   document.body.classList.add('ops-drag-active');
   if(isHandle){ev.preventDefault&&ev.preventDefault();}
 }
