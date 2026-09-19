@@ -1562,6 +1562,19 @@ body.ops-drag-active .ops-chip{transition:none!important}
 html .ops-htl{top:auto!important;bottom:3px!important;right:5px!important;transform:none!important;z-index:9!important;font:700 10px var(--ns-body)!important;padding:2px 6px!important;border-radius:6px!important}
 html body.rd-compact .ops-htl{font-size:9px!important;padding:1px 5px!important}
 html .ns-locday{top:5px;right:6px;padding:1px 5px;border-radius:6px;background:rgba(255,255,255,.88);color:#111110;font:700 8.5px/1.35 var(--ns-body);letter-spacing:.05em;z-index:8}
+
+/* b114: hotel marker straddles the line between the two nights, drawn above the cells */
+.ns-lines{z-index:5!important}
+.ns-htl-pin{position:absolute;transform:translateX(-50%);padding:2px 7px;border-radius:7px;background:#e8c26a;color:#111110;font:700 10px/1.4 var(--ns-body);letter-spacing:0;box-shadow:0 1px 4px rgba(0,0,0,.22);pointer-events:none;white-space:nowrap}
+body.rd-compact .ns-htl-pin{font-size:9px;padding:1px 5px}
+
+/* b115: crew tags read role, then name, then their hours */
+html.ns-show-crew .ops-tbl .ops-cell .ns-crew-tag{gap:8px!important;padding-left:9px!important}
+html.ns-show-crew .ops-tbl .ops-cell .ns-crew-tag::before{display:none!important}
+.ns-ct-role{flex:0 3 31%;max-width:31%;font:500 11.5px var(--ns-body)!important;opacity:.75;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ns-ct-name{flex:1 1 auto;min-width:0;white-space:nowrap;font:600 13px var(--ns-body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ns-ct-time{flex:0 0 auto;font:600 12px var(--ns-body);font-style:normal;font-variant-numeric:tabular-nums;opacity:.82}
+@media (max-width:640px){.ns-ct-role{display:none}}
 </style>
 <script>try{if(localStorage.getItem('opsTheme')==='light')document.documentElement.classList.add('ns-light');if(localStorage.getItem('opsShowCrew')==='1')document.documentElement.classList.add('ns-show-crew');}catch(e){}</script>
 </head>
@@ -3083,14 +3096,14 @@ function opsRenderMonth(m,mi){
           });
         }
         var _spHd=m.days[Math.min(idx+spanLen-1,days.length-1)].day;
-        var spHtl=og(m.month,_spHd,row+'_htl').length?'<span class="ops-htl" title="'+_nsHtlTitle(m.month,_spHd)+'">Hotel</span>':'';
+        var spHtl='';
         var spLoc='';for(var _li=0;_li<spanLen&&idx+_li<days.length;_li++){if(_nsLocTag(m.month,days[idx+_li].day,row)){spLoc=_nsLocTag(m.month,days[idx+_li].day,row);break;}}
         return'<td class="'+cls+'" colspan="'+spanLen+'" style="--span:'+spanLen+'" id="'+rid+'" data-mi="'+mi+'" data-day="'+d.day+'" data-row="'+row+'" onclick="opsCk(this)"><div class="ops-chip '+spCls+'"'+(spanEntry.cls?' data-pick="'+spanEntry.cls+'"':'')+spStyle+' onclick="opsChipClick(event,'+spanIdx+')">'+spText+_nsNoteIcon(spanEntry)+'</div>'+_nsCrewTags(spanEntry,'opsChipClick(event,'+spanIdx+')')+otherHtml+coveredHtml+spHtl+spLoc+'</td>';
       }
       // AUTO-FIT removed — chips render at data span. To extend a chip across days,
       // drag its right-edge handle.
     }
-    const htl=og(m.month,d.day,row+'_htl').length?'<span class="ops-htl" title="'+_nsHtlTitle(m.month,d.day)+'">Hotel</span>':'';
+    const htl='';   // drawn in the overlay above the cells instead (see _nsDrawLines)
     const locT=_nsLocTag(m.month,d.day,row);
     return'<td class="'+cls+'" id="'+rid+'" data-mi="'+mi+'" data-day="'+d.day+'" data-row="'+row+'" onclick="opsCk(this)">'+opsRChips(vals,fc)+htl+locT+'</td>';
   };
@@ -3360,6 +3373,7 @@ function opsReRender(){
   });
   requestAnimationFrame(versaFitAll);
   if(typeof _nsExtractBars==='function')_nsExtractBars();
+  if(typeof _nsRedrawAll==='function')requestAnimationFrame(_nsRedrawAll);
   if(typeof _opsRepositionOpenCed==='function')setTimeout(_opsRepositionOpenCed,0);
 }
 function opsReRenderAll(){
@@ -3469,7 +3483,7 @@ function opsCk(td,dayOverride){
 }
 // Position the cell editor popup next to the given cell, picking the side
 // (below / above / pinned-top) that best fits in the visible viewport.
-var OPS_BUILD='2026-09-19 · b113';
+var OPS_BUILD='2026-09-19 · b115';
 console.log('%cOps Planner build '+OPS_BUILD,'color:#d85a61;font-weight:bold');
 document.addEventListener('DOMContentLoaded',function(){
   var b=document.createElement('div');
@@ -4056,8 +4070,20 @@ function _nsCrewMoveBetween(src,name,tgt){
 // Crew tags shown under a box when the Crew toggle is on
 function _nsCrewTags(v,click){
   if(!v||typeof v!=='object'||!v.crew||!v.crew.length)return '';
+  var span=(v.span>1)?v.span:1;
   return v.crew.map(function(c){
-    return '<span class="ns-crew-tag" data-crew-name="'+_rdEsc(c.name)+'" data-crew-type="'+_nsCrewType(c)+'"'+(click?' onclick="'+click+'"':'')+' title="'+_rdEsc(c.name+(c.role?' — '+c.role:''))+' — drag onto another job to move">'+_rdEsc(c.name)+(c.role?'<small>'+_rdEsc(c.role)+'</small>':'')+'</span>';
+    // Times for the day: on a stretched box only when every day it covers is the same,
+    // otherwise the tag would claim hours for days that differ.
+    var t=(c.times&&c.times[0])||{},show=true;
+    if(span>1){var f=JSON.stringify(t);for(var k=1;k<span;k++){if(JSON.stringify((c.times&&c.times[k])||{})!==f){show=false;break;}}}
+    var tm=(show&&(t.s||t.e))?((t.s||'?')+'\u2013'+(t.e||'?')):'';
+    var mins=show?_nsMins(t.s,t.e):null;
+    return '<span class="ns-crew-tag" data-crew-name="'+_rdEsc(c.name)+'" data-crew-type="'+_nsCrewType(c)+'"'+(click?' onclick="'+click+'"':'')
+      +' title="'+_rdEsc(c.name+(c.role?' \u2014 '+c.role:'')+(tm?' \u2014 '+tm+(mins!=null?' ('+_nsHrs(mins)+')':''):''))+' \u2014 drag onto another job to move">'
+      +(c.role?'<small class="ns-ct-role">'+_rdEsc(c.role)+'</small>':'<small class="ns-ct-role"></small>')
+      +'<b class="ns-ct-name">'+_rdEsc(c.name)+'</b>'
+      +(tm?'<em class="ns-ct-time">'+tm+'</em>':'')
+      +'</span>';
   }).join('');
 }
 function _nsCrewOn(){return document.documentElement.classList.contains('ns-show-crew');}
@@ -6392,6 +6418,37 @@ function _nsDrawLines(t){
     var a=tds[i].getBoundingClientRect(),b=tds[i+1].getBoundingClientRect();
     var x=((a.right+b.left)/2-sr.left)/f+sec.scrollLeft;
     var ln=document.createElement('i');ln.style.left=(x-0.5)+'px';ln.dataset.x=x;box.appendChild(ln);
+  }
+  // Hotel markers: an overnight belongs between two days, so draw them here, above the
+  // cells — inside a cell they were painted over by the next day.
+  var mi=+t.closest('.ops-ms2').id.replace('opsMs2-','');
+  var mn=OPS_CAL[mi]&&OPS_CAL[mi].month;
+  if(mn){
+    var days=OPS_CAL[mi].days;
+    Object.keys(_opsD).forEach(function(k){
+      var p=k.split('|');
+      if(p.length!==3||p[0]!==mn||!/_htl$/.test(p[2]))return;
+      if(!(_opsD[k]||[]).length)return;
+      var row=p[2].replace(/_htl$/,''),day=+p[1];
+      var di=days.findIndex(function(d){return d.day===day;});if(di<0)return;
+      var hcell=hdr.children[1+di];if(!hcell)return;
+      var any=t.querySelector('td.ops-cell[data-row="'+row.replace(/"/g,'\\"')+'"]');if(!any)return;
+      var rr=null;
+      Array.prototype.forEach.call(t.querySelectorAll('td.ops-cell[data-row="'+row.replace(/"/g,'\\"')+'"]'),function(c){
+        var d0=+c.dataset.day,n=c.colSpan||1;if(day>=d0&&day<d0+n)rr=c;});
+      rr=rr||any;
+      var cr=rr.getBoundingClientRect(),hcr=hcell.getBoundingClientRect();
+      var nxt=hdr.children[2+di];                     // centre it in the gap between the two days
+      var xr=nxt?((hcr.right+nxt.getBoundingClientRect().left)/2):hcr.right;
+      var x=(xr-sr.left)/f+sec.scrollLeft;
+      var y=((cr.bottom)-sr.top)/f+sec.scrollTop-top;
+      var pill=document.createElement('b');
+      pill.className='ns-htl-pin';pill.textContent='Hotel';
+      pill.title=_nsHtlTitle(mn,day);
+      pill.style.left=x+'px';pill.style.top=(y-20)+'px';
+      pill.dataset.x=x;
+      box.appendChild(pill);
+    });
   }
   var lbl=hdr.children[0];box.dataset.lw=lbl?lbl.getBoundingClientRect().width/f:0;
   sec.appendChild(box);
