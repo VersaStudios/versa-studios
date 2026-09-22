@@ -1684,6 +1684,24 @@ html.ns-show-crew .ops-tbl .ops-cell .ns-crew-tag::before{display:none!important
 .ns-tm-oldbtn .rd-chev svg{width:18px;height:18px}
 .ns-tm-oldbtn[aria-expanded="true"] .rd-chev{transform:rotate(180deg)}
 .ns-tm-oldbtn:hover{color:var(--ns-orange)}
+
+/* b128: signing in with an account */
+.ns-sf{width:100%;margin:26px 0 4px;display:flex;flex-direction:column;gap:18px;text-align:left}
+.ns-sf label{display:flex;flex-direction:column;gap:6px;font:600 12px var(--ns-body);letter-spacing:.08em;text-transform:uppercase;color:var(--ns-soft,#8f8d88)}
+.ns-sf input{border:none;border-bottom:1px solid rgba(128,128,128,.4);background:none;color:inherit;font:600 19px var(--ns-body);padding:6px 2px;border-radius:0;-webkit-appearance:none}
+.ns-sf input:focus{outline:none;border-bottom-color:var(--ns-orange,#f04b23)}
+.ns-sf-go{width:100%;margin-top:8px;border:none;border-radius:14px;background:var(--ns-orange,#f04b23);color:#fff;font:700 17px var(--ns-body);padding:15px 0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.ns-sf-go:active{transform:scale(.99)}
+.ns-pin-msg.ns-msg-ok{color:var(--ns-soft,#8f8d88)}
+body.ns-ro #nsUndo,body.ns-ro .ns-undo{display:none!important}
+body.ns-ro .ops-cell{cursor:default}
+
+/* b132: changing your own password */
+.ns-pw-in{max-width:420px}
+.ns-pw-body{padding:4px 18px 18px}
+.ns-pw-who{margin:0;font:600 14px var(--ns-body);color:var(--ns-soft)}
+.ns-pw-body .ns-sf{margin:18px 0 4px}
+.ns-pw-body .ns-pin-msg{min-height:20px;margin:10px 0 0}
 </style>
 <script>try{if(localStorage.getItem('opsTheme')==='light')document.documentElement.classList.add('ns-light');if(localStorage.getItem('opsShowCrew')==='1')document.documentElement.classList.add('ns-show-crew');}catch(e){}</script>
 </head>
@@ -1778,8 +1796,25 @@ html.ns-show-crew .ops-tbl .ops-cell .ns-crew-tag::before{display:none!important
     <div id="opsCrewTypePanel" aria-label="Crew sections"></div>
     <div id="opsStuPanel" aria-label="Studios"></div>
     <div class="ns-set-hist"><div class="ops-co ns-cm-open" role="button" tabindex="0" onclick="_rdCloseSettings();opsOpenHist()" onkeydown="if(event.key==='Enter')this.click()">Change history</div>
-      <div class="ops-co ns-cm-open" role="button" tabindex="0" onclick="_rdCloseSettings();opsOpenBackups()" onkeydown="if(event.key==='Enter')this.click()">Backups</div></div>
+      <div class="ops-co ns-cm-open" role="button" tabindex="0" onclick="_rdCloseSettings();opsOpenBackups()" onkeydown="if(event.key==='Enter')this.click()">Backups</div>
+      <div class="ops-co ns-cm-open" role="button" tabindex="0" onclick="_rdCloseSettings();opsOpenPw()" onkeydown="if(event.key==='Enter')this.click()">Your password</div></div>
     <div class="rd-sheet-ft ns-set-ft"><span class="ns-whoami" id="nsWhoAmI"></span><button type="button" class="ns-lock-link" onclick="opsLockPlanner()">Sign out</button><button type="button" onclick="_rdCloseSettings()">Done</button></div>
+  </div>
+</div>
+
+<div id="nsPwSheet" class="rd-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="nsPwTitle">
+  <div class="rd-sheet-in ns-pw-in">
+    <div class="rd-sheet-hd"><h2 id="nsPwTitle">Your password</h2><button type="button" class="rd-x" aria-label="Close" onclick="opsClosePw()">&times;</button></div>
+    <div class="ns-pw-body">
+      <p class="ns-pw-who" id="nsPwWho"></p>
+      <div class="ns-sf">
+        <label>Current password<input id="nsPwOld" type="password" autocomplete="current-password"></label>
+        <label>New password<input id="nsPwNew" type="password" autocomplete="new-password"></label>
+        <label>Type the new one again<input id="nsPwNew2" type="password" autocomplete="new-password" onkeydown="if(event.key==='Enter')opsSavePw()"></label>
+      </div>
+      <p class="ns-pin-msg" id="nsPwMsg" role="alert"></p>
+      <button type="button" class="ns-sf-go" onclick="opsSavePw()">Save password</button>
+    </div>
   </div>
 </div>
 
@@ -1844,9 +1879,12 @@ html.ns-show-crew .ops-tbl .ops-cell .ns-crew-tag::before{display:none!important
 <script>
 // ── SUPABASE ─────────────────────────────────────────────────────────────────
 const _SB_URL='https://dttwgmoyxthczlzxjgag.supabase.co';
+const _SB_SHARED='app_data';   // the Technical Dashboard's table, shared for jobs and the engineer lists
 const _SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0dHdnbW95eHRoY3psenhqZ2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzc5NDIsImV4cCI6MjA4ODgxMzk0Mn0.RcmcYXqdfVbwVsr1eu-V1l4Zt_6m8wvUmr0mURZvGeQ';
-function _sbHeaders(){return{'Content-Type':'application/json','apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY,'Prefer':'resolution=merge-duplicates,return=minimal'};}
-function _sbGet(){return{'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY};}
+var _nsRawFetch=window.fetch.bind(window);   // sign-in talks straight to Supabase
+function _sbTok(){return (_nsSess&&_nsSess.access)?_nsSess.access:_SB_KEY;}
+function _sbHeaders(){return{'Content-Type':'application/json','apikey':_SB_KEY,'Authorization':'Bearer '+_sbTok(),'Prefer':'resolution=merge-duplicates,return=minimal'};}
+function _sbGet(){return{'apikey':_SB_KEY,'Authorization':'Bearer '+_sbTok()};}
 
 // ── TEST MODE ────────────────────────────────────────────────────────────────
 // Live data only on the published site. Anywhere else (local file, preview,
@@ -1866,6 +1904,7 @@ if(_SB_TEST){
   var _origFetch=window.fetch.bind(window);
   window.fetch=function(url,opts){
     var m=(opts&&opts.method||'GET').toUpperCase();
+    if(String(url).indexOf(_SB_URL+'/auth/')===0)return _origFetch(url,opts);   // signing in is real either way
     if(String(url).indexOf(_SB_URL)===0&&m!=='GET'){
       var key;try{key=JSON.parse(opts.body).key;}catch(e){}
       if(!key||!/_test(_[a-z0-9]+)?$/.test(key)){
@@ -1882,6 +1921,31 @@ if(_SB_TEST){
     document.body.appendChild(b);
   });
 }
+
+// Every read and write to the planner's table carries the signed-in session.
+// Tokens last an hour, so refresh just before they lapse and retry once if one
+// has already gone stale in a tab left open overnight.
+(function(){
+  var raw=window.fetch.bind(window);
+  var stamp=function(o){
+    if(!o||!o.headers||!_nsSess)return o;
+    var h={},k;for(k in o.headers)h[k]=o.headers[k];
+    h['Authorization']='Bearer '+_nsSess.access;
+    var n={};for(k in o)n[k]=o[k];n.headers=h;return n;
+  };
+  window.fetch=function(u,o){
+    if(String(u).indexOf(_SB_URL+'/rest/v1/')!==0||!_nsSess)return raw(u,o);
+    return _nsAuthFresh().then(function(){
+      return raw(u,stamp(o)).then(function(r){
+        if(r.status!==401)return r;
+        return _nsRefresh().then(function(ok){
+          if(!ok){_nsAuthLost();return r;}
+          return raw(u,stamp(o));
+        });
+      });
+    });
+  };
+})();
 
 // ── MAIN-APP STUBS ───────────────────────────────────────────────────────────
 var jobs=[];
@@ -1969,11 +2033,11 @@ function _opsSeededQueue(){if(_opsSeededTimer)clearTimeout(_opsSeededTimer);_ops
 async function saveOpsSeeded(){
   try{
     var latest=[];
-    try{var r=await fetch(_SB_URL+'/rest/v1/app_data?select=value&key=eq.'+_k('ops_seeded'),{headers:_sbGet()});
+    try{var r=await fetch(_SB_URL+'/rest/v1/planner_data?select=value&key=eq.'+_k('ops_seeded'),{headers:_sbGet()});
       var rows=await r.json();if(rows&&rows[0]&&Array.isArray(rows[0].value))latest=rows[0].value;}catch(e){}
     latest.forEach(function(id){if(!_opsSeededGone.has(id))_opsSeeded.add(id);});
     var p={key:_k('ops_seeded'),value:Array.from(_opsSeeded),updated_at:new Date().toISOString()};
-    await fetch(_SB_URL+'/rest/v1/app_data?on_conflict=key',{method:'POST',headers:_sbHeaders(),body:JSON.stringify(p)});
+    await fetch(_SB_URL+'/rest/v1/planner_data?on_conflict=key',{method:'POST',headers:_sbHeaders(),body:JSON.stringify(p)});
   }catch(e){console.warn('ops_seeded save failed',e);}
 }
 function _opsTextOf(v){return typeof v==='string'?v:(v&&typeof v.text==='string'?v.text:'');}
@@ -2499,6 +2563,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){var pk=docu
 // ── DEBOUNCED SAVE ───────────────────────────────────────────────────────────
 var _saveTimer=null;
 function saveData(){
+  if(!_nsCanEdit())return;   // view-only: the tidy-ups stay in this browser
   try{if(window._opsBooted&&_opsReconcileMLG()&&!_opsDrag)setTimeout(function(){if(!_opsDrag&&typeof opsReRender==='function')opsReRender();},0);}catch(e){console.warn('MLG sync err',e);}
   if(_saveTimer)clearTimeout(_saveTimer);
   _saveTimer=setTimeout(_doSave,600);
@@ -2516,7 +2581,7 @@ function _opsChangedKeys(){
   return out;
 }
 async function _opsFetchPlanner(){
-  var r=await fetch(_SB_URL+'/rest/v1/app_data?select=value&key=eq.'+_k('opsPlanner'),{headers:_sbGet()});
+  var r=await fetch(_SB_URL+'/rest/v1/planner_data?select=value&key=eq.'+_k('opsPlanner'),{headers:_sbGet()});
   if(!r.ok)throw new Error('HTTP '+r.status);
   var rows=await r.json();
   return (rows&&rows[0]&&rows[0].value&&typeof rows[0].value==='object')?rows[0].value:{};
@@ -2539,7 +2604,7 @@ async function _doSave(){
     changed.forEach(function(k){if(_opsD.hasOwnProperty(k))merged[k]=_opsD[k];else delete merged[k];});
     var payload={key:_k('opsPlanner'),value:merged,updated_at:new Date().toISOString()};
     _opsStamp=Date.parse(payload.updated_at); // our own save shouldn't trigger a re-download
-    var r=await fetch(_SB_URL+'/rest/v1/app_data?on_conflict=key',{method:'POST',headers:_sbHeaders(),body:JSON.stringify(payload)});
+    var r=await fetch(_SB_URL+'/rest/v1/planner_data?on_conflict=key',{method:'POST',headers:_sbHeaders(),body:JSON.stringify(payload)});
     if(!r.ok)throw new Error('HTTP '+r.status);
     // Anything changed locally while we were saving stays marked as changed
     var stillChanged=changed.filter(function(k){return JSON.stringify(_opsD[k])!==JSON.stringify(merged[k]);});
@@ -2549,7 +2614,7 @@ async function _doSave(){
     if(stillChanged.length)_opsSaveAgain=true;
     // Also save breaks (separate key)
     var bp={key:_k('opsBrk'),value:_opsBrk.slice(),updated_at:new Date().toISOString()};
-    await fetch(_SB_URL+'/rest/v1/app_data?on_conflict=key',{method:'POST',headers:_sbHeaders(),body:JSON.stringify(bp)});
+    await fetch(_SB_URL+'/rest/v1/planner_data?on_conflict=key',{method:'POST',headers:_sbHeaders(),body:JSON.stringify(bp)});
     setStatus('','Synced');
   }catch(e){
     console.error('Save failed:',e);
@@ -2583,7 +2648,7 @@ function isCustomOpsTM(name){
 }
 async function saveOpsTMs(){
   try{
-    await fetch(_SB_URL+'/rest/v1/app_data',{
+    await fetch(_SB_URL+'/rest/v1/'+_SB_SHARED+'?on_conflict=key',{
       method:'POST',
       headers:_sbHeaders(),
       body:JSON.stringify({key:_k('ml_tech_managers'),value:window._opsTMCustom||[],updated_at:new Date().toISOString()})
@@ -2635,7 +2700,7 @@ function isCustomOpsSOEng(name){
 async function saveOpsSOEngs(){
   try{
     var p={key:_k('shopon_engineers'),value:window._opsSOEng||[],updated_at:new Date().toISOString()};
-    var r=await fetch(_SB_URL+'/rest/v1/app_data?on_conflict=key',{method:'POST',headers:_sbHeaders(),body:JSON.stringify(p)});
+    var r=await fetch(_SB_URL+'/rest/v1/'+_SB_SHARED+'?on_conflict=key',{method:'POST',headers:_sbHeaders(),body:JSON.stringify(p)});
     if(!r.ok)throw new Error('HTTP '+r.status);
   }catch(e){console.warn('shopon_engineers save failed',e);toast('Engineer list not saved');}
 }
@@ -2714,7 +2779,7 @@ function opsHolidayFor(monthName,day){
 }
 
 // ── OPS_CAL DATA ─────────────────────────────────────────────────────────────
-const OPS_CAL = [{"month": "March 2026", "days": [{"date": "Mar-01", "day": 1, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-02", "day": 2, "dow": "MONDAY", "ml": [{"text": "MORNING LIVE Andy", "person": "Andy"}], "andrew": ["Morning Live — Ep173"], "ian": ["Ian Off"], "chris": ["CHRIS OFF"], "other": []}, {"date": "Mar-03", "day": 3, "dow": "TUESDAY", "ml": [], "andrew": ["Morning Live — Ep174"], "ian": [], "chris": [], "other": []}, {"date": "Mar-04", "day": 4, "dow": "WEDNESDAY", "ml": [], "andrew": ["Morning Live — Ep175"], "ian": [], "chris": [], "other": []}, {"date": "Mar-05", "day": 5, "dow": "THURSDAY", "ml": [], "andrew": ["Morning Live — Ep176"], "ian": [], "chris": [], "other": []}, {"date": "Mar-06", "day": 6, "dow": "FRIDAY", "ml": [], "andrew": ["Morning Live — Ep177"], "ian": [], "chris": [], "other": []}, {"date": "Mar-07", "day": 7, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-08", "day": 8, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-09", "day": 9, "dow": "MONDAY", "ml": [{"text": "MORNING LIVE Andy", "person": "Andy"}], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-10", "day": 10, "dow": "TUESDAY", "ml": [], "andrew": ["Morning Live — Ep179"], "ian": [], "chris": [], "other": [{"text": "Dragons Tech Meeting 2.30pm", "cat": "dragons"}]}, {"date": "Mar-11", "day": 11, "dow": "WEDNESDAY", "ml": [], "andrew": ["Morning Live — Ep180"], "ian": [], "chris": [], "other": []}, {"date": "Mar-12", "day": 12, "dow": "THURSDAY", "ml": [], "andrew": ["Morning Live — Ep181"], "ian": [], "chris": [], "other": []}, {"date": "Mar-13", "day": 13, "dow": "FRIDAY", "ml": [], "andrew": ["Morning Live — Ep182"], "ian": [], "chris": [], "other": []}, {"date": "Mar-14", "day": 14, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-15", "day": 15, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-16", "day": 16, "dow": "MONDAY", "ml": [{"text": "MORNING LIVE Andy", "person": "Andy"}], "andrew": ["Morning Live — Ep178"], "ian": [], "chris": [], "other": [{"text": "KATE AWAY", "cat": "absence"}]}, {"date": "Mar-17", "day": 17, "dow": "TUESDAY", "ml": [{"text": "ML James Laishley", "person": "James Laishley"}], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-18", "day": 18, "dow": "WEDNESDAY", "ml": [], "andrew": ["Andy Away"], "ian": [], "chris": [], "other": [{"text": "Felsted London", "cat": "note"}]}, {"date": "Mar-19", "day": 19, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-20", "day": 20, "dow": "FRIDAY", "ml": [{"text": "MORNING LIVE Andy", "person": "Andy"}], "andrew": ["Morning Live — Ep182"], "ian": [], "chris": [], "other": []}, {"date": "Mar-21", "day": 21, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-22", "day": 22, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-23", "day": 23, "dow": "MONDAY", "ml": [{"text": "MORNING LIVE Ian", "person": "Ian"}], "andrew": [], "ian": ["Morning Live — Ep183"], "chris": [], "other": [{"text": "Sherwood S8", "cat": "note"}]}, {"date": "Mar-24", "day": 24, "dow": "TUESDAY", "ml": [{"text": "MORNING LIVE Andy", "person": "Andy"}], "andrew": ["Morning Live — Ep184"], "ian": [], "chris": [], "other": []}, {"date": "Mar-25", "day": 25, "dow": "WEDNESDAY", "ml": [], "andrew": ["Morning Live — Ep185"], "ian": [], "chris": [], "other": []}, {"date": "Mar-26", "day": 26, "dow": "THURSDAY", "ml": [], "andrew": ["Morning Live — Ep186"], "ian": [], "chris": [], "other": []}, {"date": "Mar-27", "day": 27, "dow": "FRIDAY", "ml": [], "andrew": ["Morning Live — Ep187"], "ian": [], "chris": [], "other": []}, {"date": "Mar-28", "day": 28, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": [{"text": "litter pick", "cat": "note"}, {"text": "Tina", "cat": "staff"}, {"text": "Turner", "cat": "staff"}]}, {"date": "Mar-29", "day": 29, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-30", "day": 30, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-31", "day": 31, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}]}, {"month": "April 2026", "days": [{"date": "Apr-01", "day": 1, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-02", "day": 2, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-03", "day": 3, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-04", "day": 4, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-05", "day": 5, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-06", "day": 6, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-07", "day": 7, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-08", "day": 8, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-09", "day": 9, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-10", "day": 10, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-11", "day": 11, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-12", "day": 12, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-13", "day": 13, "dow": "MONDAY", "ml": [], "andrew": ["Morning Live — Ep1"], "ian": [], "chris": [], "other": []}, {"date": "Apr-14", "day": 14, "dow": "TUESDAY", "ml": [], "andrew": ["Morning Live — Ep2"], "ian": [], "chris": [], "other": []}, {"date": "Apr-15", "day": 15, "dow": "WEDNESDAY", "ml": [], "andrew": ["Morning Live — Ep3"], "ian": [], "chris": [], "other": []}, {"date": "Apr-16", "day": 16, "dow": "THURSDAY", "ml": [], "andrew": ["Morning Live — Ep4"], "ian": [], "chris": [], "other": []}, {"date": "Apr-17", "day": 17, "dow": "FRIDAY", "ml": [], "andrew": ["Morning Live — Ep5"], "ian": [], "chris": [], "other": []}, {"date": "Apr-18", "day": 18, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-19", "day": 19, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-20", "day": 20, "dow": "MONDAY", "ml": [], "andrew": ["Dragons Den — Versa Rig", "Morning Live — Ep6"], "ian": ["Dragons Den — Versa Rig"], "chris": [], "other": []}, {"date": "Apr-21", "day": 21, "dow": "TUESDAY", "ml": [], "andrew": ["Dragons Den — Versa Rig"], "ian": ["Dragons Den — Versa Rig"], "chris": [], "other": []}, {"date": "Apr-22", "day": 22, "dow": "WEDNESDAY", "ml": [], "andrew": ["Dragons Den — Versa Rig"], "ian": ["Dragons Den — Versa Rig"], "chris": [], "other": []}, {"date": "Apr-23", "day": 23, "dow": "THURSDAY", "ml": [], "andrew": ["Dragons Den — Versa Rig"], "ian": ["Dragons Den — Versa Rig"], "chris": [], "other": []}, {"date": "Apr-24", "day": 24, "dow": "FRIDAY", "ml": [], "andrew": ["Dragons Den — Versa Rig"], "ian": ["Dragons Den — Versa Rig", "Morning Live — Ep10"], "chris": [], "other": []}, {"date": "Apr-25", "day": 25, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-26", "day": 26, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": ["Dragons Den — Cam Rig"], "chris": [], "other": []}, {"date": "Apr-27", "day": 27, "dow": "MONDAY", "ml": [], "andrew": ["Dragons Den — Cam Rig"], "ian": ["Morning Live — Ep11"], "chris": [], "other": []}, {"date": "Apr-28", "day": 28, "dow": "TUESDAY", "ml": [], "andrew": ["Dragons Den — Tech Reh"], "ian": ["Morning Live — Ep12"], "chris": [], "other": []}, {"date": "Apr-29", "day": 29, "dow": "WEDNESDAY", "ml": [], "andrew": ["Dragons Den — RX1"], "ian": ["Morning Live — Ep13"], "chris": [], "other": []}, {"date": "Apr-30", "day": 30, "dow": "THURSDAY", "ml": [], "andrew": ["Dragons Den — RX2"], "ian": ["Morning Live — Ep14"], "chris": [], "other": []}]}, {"month": "May 2026", "days": [{"date": "May-01", "day": 1, "dow": "FRIDAY", "ml": [], "andrew": ["Dragons Den — RX3"], "ian": ["Morning Live — Ep15"], "chris": [], "other": []}, {"date": "May-02", "day": 2, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "May-03", "day": 3, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "May-04", "day": 4, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "May-05", "day": 5, "dow": "TUESDAY", "ml": [], "andrew": ["Dragons Den — RX4"], "ian": ["Morning Live — Ep16"], "chris": [], "other": []}, {"date": "May-06", "day": 6, "dow": "WEDNESDAY", "ml": [], "andrew": ["Dragons Den — RX5"], "ian": ["Morning Live — Ep17"], "chris": [], "other": []}, {"date": "May-07", "day": 7, "dow": "THURSDAY", "ml": [], "andrew": ["Dragons Den — RX6"], "ian": ["Morning Live — Ep18"], "chris": [], "other": []}, {"date": "May-08", "day": 8, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": ["Morning Live — Ep19"], "chris": [], "other": []}, {"date": "May-09", "day": 9, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "May-10", "day": 10, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "May-11", "day": 11, "dow": "MONDAY", "ml": [], "andrew": [], "ian": ["Morning Live — Ep20"], "chris": [], "other": []}, {"date": "May-12", "day": 12, "dow": "TUESDAY", "ml": [], "andrew": ["Dragons Den — RX7"], "ian": ["Morning Live — Ep21"], "chris": [], "other": []}, {"date": "May-13", "day": 13, "dow": "WEDNESDAY", "ml": [], "andrew": ["Dragons Den — RX8"], "ian": ["Morning Live — Ep22"], "chris": [], "other": []}, {"date": "May-14", "day": 14, "dow": "THURSDAY", "ml": [], "andrew": ["Dragons Den — RX9"], "ian": ["Morning Live — Ep23"], "chris": [], "other": []}, {"date": "May-15", "day": 15, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": ["Morning Live — Ep24"], "chris": [], "other": []}, {"date": "May-16", "day": 16, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "May-17", "day": 17, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "May-18", "day": 18, "dow": "MONDAY", "ml": [], "andrew": [], "ian": ["Morning Live — Ep25"], "chris": [], "other": []}, {"date": "May-19", "day": 19, "dow": "TUESDAY", "ml": [], "andrew": ["Dragons Den — RX10"], "ian": ["Morning Live — Ep26"], "chris": [], "other": []}, {"date": "May-20", "day": 20, "dow": "WEDNESDAY", "ml": [], "andrew": ["Dragons Den — RX11"], "ian": ["Morning Live — Ep27"], "chris": [], "other": []}, {"date": "May-21", "day": 21, "dow": "THURSDAY", "ml": [], "andrew": ["Dragons Den — RX12"], "ian": ["Morning Live — Ep28"], "chris": [], "other": []}, {"date": "May-22", "day": 22, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": ["Morning Live — Ep29"], "chris": [], "other": []}, {"date": "May-23", "day": 23, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "May-24", "day": 24, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "May-25", "day": 25, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "May-26", "day": 26, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": ["Morning Live — Ep30"], "chris": [], "other": []}, {"date": "May-27", "day": 27, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": ["Morning Live — Ep31"], "chris": [], "other": []}, {"date": "May-28", "day": 28, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": ["Morning Live — Ep32"], "chris": [], "other": []}, {"date": "May-29", "day": 29, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": ["Morning Live — Ep33"], "chris": [], "other": []}, {"date": "May-30", "day": 30, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "May-31", "day": 31, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}]}, {"month": "June 2026", "days": [{"date": "Jun-01", "day": 1, "dow": "MONDAY", "ml": [], "andrew": ["Dragons Den — RX13"], "ian": [], "chris": [], "other": []}, {"date": "Jun-02", "day": 2, "dow": "TUESDAY", "ml": [], "andrew": ["Dragons Den — RX14"], "ian": [], "chris": [], "other": []}, {"date": "Jun-03", "day": 3, "dow": "WEDNESDAY", "ml": [], "andrew": ["Dragons Den — RX15"], "ian": [], "chris": [], "other": []}, {"date": "Jun-04", "day": 4, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-05", "day": 5, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-06", "day": 6, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-07", "day": 7, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-08", "day": 8, "dow": "MONDAY", "ml": [], "andrew": ["Dragons Den — RX13"], "ian": [], "chris": [], "other": []}, {"date": "Jun-09", "day": 9, "dow": "TUESDAY", "ml": [], "andrew": ["Dragons Den — RX14"], "ian": [], "chris": [], "other": []}, {"date": "Jun-10", "day": 10, "dow": "WEDNESDAY", "ml": [], "andrew": ["Dragons Den — Derig"], "ian": ["Dragons Den — Derig"], "chris": [], "other": []}, {"date": "Jun-11", "day": 11, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-12", "day": 12, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-13", "day": 13, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-14", "day": 14, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-15", "day": 15, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-16", "day": 16, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-17", "day": 17, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-18", "day": 18, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-19", "day": 19, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-20", "day": 20, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-21", "day": 21, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-22", "day": 22, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-23", "day": 23, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-24", "day": 24, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-25", "day": 25, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-26", "day": 26, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-27", "day": 27, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-28", "day": 28, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-29", "day": 29, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jun-30", "day": 30, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}]}, {"month": "July 2026", "days": [{"date": "Jul-01", "day": 1, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-02", "day": 2, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-03", "day": 3, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-04", "day": 4, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-05", "day": 5, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-06", "day": 6, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-07", "day": 7, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-08", "day": 8, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-09", "day": 9, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-10", "day": 10, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-11", "day": 11, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-12", "day": 12, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-13", "day": 13, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-14", "day": 14, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-15", "day": 15, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-16", "day": 16, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-17", "day": 17, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-18", "day": 18, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-19", "day": 19, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-20", "day": 20, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-21", "day": 21, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-22", "day": 22, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-23", "day": 23, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-24", "day": 24, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-25", "day": 25, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-26", "day": 26, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-27", "day": 27, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-28", "day": 28, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-29", "day": 29, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-30", "day": 30, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jul-31", "day": 31, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}]}, {"month": "August 2026", "days": [{"date": "Aug-01", "day": 1, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-02", "day": 2, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-03", "day": 3, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-04", "day": 4, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-05", "day": 5, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-06", "day": 6, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-07", "day": 7, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-08", "day": 8, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-09", "day": 9, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-10", "day": 10, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-11", "day": 11, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-12", "day": 12, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-13", "day": 13, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-14", "day": 14, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-15", "day": 15, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-16", "day": 16, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-17", "day": 17, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-18", "day": 18, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-19", "day": 19, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-20", "day": 20, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-21", "day": 21, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-22", "day": 22, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-23", "day": 23, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-24", "day": 24, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-25", "day": 25, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-26", "day": 26, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-27", "day": 27, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-28", "day": 28, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-29", "day": 29, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-30", "day": 30, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Aug-31", "day": 31, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}]}, {"month": "September 2026", "days": [{"date": "Sep-01", "day": 1, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-02", "day": 2, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-03", "day": 3, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-04", "day": 4, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-05", "day": 5, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-06", "day": 6, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-07", "day": 7, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-08", "day": 8, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-09", "day": 9, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-10", "day": 10, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-11", "day": 11, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-12", "day": 12, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-13", "day": 13, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-14", "day": 14, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-15", "day": 15, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-16", "day": 16, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-17", "day": 17, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-18", "day": 18, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-19", "day": 19, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-20", "day": 20, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-21", "day": 21, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-22", "day": 22, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-23", "day": 23, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-24", "day": 24, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-25", "day": 25, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-26", "day": 26, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-27", "day": 27, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-28", "day": 28, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-29", "day": 29, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Sep-30", "day": 30, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}]}, {"month": "October 2026", "days": [{"date": "Oct-01", "day": 1, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-02", "day": 2, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-03", "day": 3, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-04", "day": 4, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-05", "day": 5, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-06", "day": 6, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-07", "day": 7, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-08", "day": 8, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-09", "day": 9, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-10", "day": 10, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-11", "day": 11, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-12", "day": 12, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-13", "day": 13, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-14", "day": 14, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-15", "day": 15, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-16", "day": 16, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-17", "day": 17, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-18", "day": 18, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-19", "day": 19, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-20", "day": 20, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-21", "day": 21, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-22", "day": 22, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-23", "day": 23, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-24", "day": 24, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-25", "day": 25, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-26", "day": 26, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-27", "day": 27, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-28", "day": 28, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-29", "day": 29, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-30", "day": 30, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Oct-31", "day": 31, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}]}, {"month": "November 2026", "days": [{"date": "Nov-01", "day": 1, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-02", "day": 2, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-03", "day": 3, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-04", "day": 4, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-05", "day": 5, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-06", "day": 6, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-07", "day": 7, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-08", "day": 8, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-09", "day": 9, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-10", "day": 10, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-11", "day": 11, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-12", "day": 12, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-13", "day": 13, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-14", "day": 14, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-15", "day": 15, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-16", "day": 16, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-17", "day": 17, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-18", "day": 18, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-19", "day": 19, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-20", "day": 20, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-21", "day": 21, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-22", "day": 22, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-23", "day": 23, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-24", "day": 24, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-25", "day": 25, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-26", "day": 26, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-27", "day": 27, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-28", "day": 28, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-29", "day": 29, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Nov-30", "day": 30, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}]}, {"month": "December 2026", "days": [{"date": "Dec-01", "day": 1, "dow": "TUESDAY", "ml": [{"text": "MORNING LIVE IAN", "person": "IAN"}, {"text": "MORNING LIVE IAN", "person": "IAN"}], "andrew": [], "ian": [], "chris": ["CHRIS OFF"], "other": [{"text": "Apr-01", "cat": "note"}, {"text": "May-01", "cat": "note"}, {"text": "DD RX 3", "cat": "transmission"}, {"text": "Jun-01", "cat": "note"}, {"text": "DD RX - 13", "cat": "transmission"}, {"text": "Jul-01", "cat": "note"}, {"text": "Aug-01", "cat": "note"}, {"text": "Sep-01", "cat": "note"}, {"text": "Oct-01", "cat": "note"}, {"text": "Nov-01", "cat": "note"}, {"text": "Dec-01", "cat": "note"}]}, {"date": "Dec-02", "day": 2, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": [{"text": "Apr-02", "cat": "note"}, {"text": "May-02", "cat": "note"}, {"text": "BANK HOLIDAY", "cat": "absence"}, {"text": "Jun-02", "cat": "note"}, {"text": "DD RX - 14", "cat": "transmission"}, {"text": "Jul-02", "cat": "note"}, {"text": "Aug-02", "cat": "note"}, {"text": "Sep-02", "cat": "note"}, {"text": "Oct-02", "cat": "note"}, {"text": "Nov-02", "cat": "note"}, {"text": "Dec-02", "cat": "note"}]}, {"date": "Dec-03", "day": 3, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": [{"text": "Apr-03", "cat": "note"}, {"text": "Easter Weekend", "cat": "note"}, {"text": "May-03", "cat": "note"}, {"text": "Jun-03", "cat": "note"}, {"text": "DD RX - 15", "cat": "transmission"}, {"text": "Jul-03", "cat": "note"}, {"text": "Aug-03", "cat": "note"}, {"text": "Sep-03", "cat": "note"}, {"text": "Oct-03", "cat": "note"}, {"text": "Nov-03", "cat": "note"}, {"text": "Dec-03", "cat": "note"}]}, {"date": "Dec-04", "day": 4, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": [{"text": "Apr-04", "cat": "note"}, {"text": "May-04", "cat": "note"}, {"text": "Jun-04", "cat": "note"}, {"text": "Jul-04", "cat": "note"}, {"text": "Aug-04", "cat": "note"}, {"text": "Sep-04", "cat": "note"}, {"text": "Oct-04", "cat": "note"}, {"text": "Nov-04", "cat": "note"}, {"text": "Dec-04", "cat": "note"}]}, {"date": "Dec-05", "day": 5, "dow": "SATURDAY", "ml": [{"text": "MORNING LIVE IAN", "person": "IAN"}], "andrew": [], "ian": [], "chris": [], "other": [{"text": "Apr-05", "cat": "note"}, {"text": "May-05", "cat": "note"}, {"text": "DD RX - 4", "cat": "transmission"}, {"text": "Jun-05", "cat": "note"}, {"text": "Jul-05", "cat": "note"}, {"text": "Aug-05", "cat": "note"}, {"text": "Sep-05", "cat": "note"}, {"text": "Oct-05", "cat": "note"}, {"text": "Nov-05", "cat": "note"}, {"text": "Dec-05", "cat": "note"}]}, {"date": "Dec-06", "day": 6, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": [{"text": "Apr-06", "cat": "note"}, {"text": "May-06", "cat": "note"}, {"text": "DD RX - 5", "cat": "transmission"}, {"text": "Jun-06", "cat": "note"}, {"text": "Jul-06", "cat": "note"}, {"text": "Aug-06", "cat": "note"}, {"text": "Sep-06", "cat": "note"}, {"text": "Oct-06", "cat": "note"}, {"text": "Nov-06", "cat": "note"}, {"text": "Dec-06", "cat": "note"}]}, {"date": "Dec-07", "day": 7, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": ["CHRIS OFF"], "other": [{"text": "Apr-07", "cat": "note"}, {"text": "May-07", "cat": "note"}, {"text": "DD RX - 6", "cat": "transmission"}, {"text": "Jun-07", "cat": "note"}, {"text": "Jul-07", "cat": "note"}, {"text": "Aug-07", "cat": "note"}, {"text": "Sep-07", "cat": "note"}, {"text": "Oct-07", "cat": "note"}, {"text": "Nov-07", "cat": "note"}, {"text": "Dec-07", "cat": "note"}]}, {"date": "Dec-08", "day": 8, "dow": "TUESDAY", "ml": [{"text": "MORNING LIVE IAN", "person": "IAN"}], "andrew": [], "ian": [], "chris": [], "other": [{"text": "Apr-08", "cat": "note"}, {"text": "May-08", "cat": "note"}, {"text": "Jun-08", "cat": "note"}, {"text": "DD RX - 16", "cat": "transmission"}, {"text": "Jul-08", "cat": "note"}, {"text": "Aug-08", "cat": "note"}, {"text": "Sep-08", "cat": "note"}, {"text": "Oct-08", "cat": "note"}, {"text": "Nov-08", "cat": "note"}, {"text": "Dec-08", "cat": "note"}]}, {"date": "Dec-09", "day": 9, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": [{"text": "Apr-09", "cat": "note"}, {"text": "May-09", "cat": "note"}, {"text": "Jun-09", "cat": "note"}, {"text": "DD RX - 17", "cat": "transmission"}, {"text": "Jul-09", "cat": "note"}, {"text": "Aug-09", "cat": "note"}, {"text": "Sep-09", "cat": "note"}, {"text": "Oct-09", "cat": "note"}, {"text": "Nov-09", "cat": "note"}, {"text": "Dec-09", "cat": "note"}]}, {"date": "Dec-10", "day": 10, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": [{"text": "Apr-10", "cat": "note"}, {"text": "May-10", "cat": "note"}, {"text": "Jun-10", "cat": "note"}, {"text": "DD - Strike 1/2", "cat": "production"}, {"text": "Jul-10", "cat": "note"}, {"text": "Aug-10", "cat": "note"}, {"text": "Sep-10", "cat": "note"}, {"text": "Oct-10", "cat": "note"}, {"text": "Nov-10", "cat": "note"}, {"text": "Dec-10", "cat": "note"}]}, {"date": "Dec-11", "day": 11, "dow": "FRIDAY", "ml": [{"text": "MORNING LIVE IAN", "person": "IAN"}], "andrew": [], "ian": [], "chris": ["CHRIS OFF"], "other": [{"text": "Apr-11", "cat": "note"}, {"text": "May-11", "cat": "note"}, {"text": "Jun-11", "cat": "note"}, {"text": "Jul-11", "cat": "note"}, {"text": "Aug-11", "cat": "note"}, {"text": "Sep-11", "cat": "note"}, {"text": "Oct-11", "cat": "note"}, {"text": "Nov-11", "cat": "note"}, {"text": "Dec-11", "cat": "note"}]}, {"date": "Dec-12", "day": 12, "dow": "SATURDAY", "ml": [], "andrew": ["Andy London Concert"], "ian": [], "chris": ["CHRIS OFF"], "other": [{"text": "Apr-12", "cat": "note"}, {"text": "AR ML to check", "cat": "note"}, {"text": "May-12", "cat": "note"}, {"text": "DD RX - 7", "cat": "transmission"}, {"text": "Jun-12", "cat": "note"}, {"text": "Jul-12", "cat": "note"}, {"text": "Aug-12", "cat": "note"}, {"text": "Sep-12", "cat": "note"}, {"text": "Oct-12", "cat": "note"}, {"text": "Nov-12", "cat": "note"}, {"text": "Dec-12", "cat": "note"}]}, {"date": "Dec-13", "day": 13, "dow": "SUNDAY", "ml": [{"text": "MORNING LIVE Andrew", "person": "Andrew"}], "andrew": ["Andy Great North Run"], "ian": [], "chris": [], "other": [{"text": "Apr-13", "cat": "note"}, {"text": "May-13", "cat": "note"}, {"text": "DD RX - 8", "cat": "transmission"}, {"text": "Jun-13", "cat": "note"}, {"text": "Jul-13", "cat": "note"}, {"text": "Aug-13", "cat": "note"}, {"text": "Sep-13", "cat": "note"}, {"text": "Oct-13", "cat": "note"}, {"text": "Nov-13", "cat": "note"}, {"text": "Dec-13", "cat": "note"}]}, {"date": "Dec-14", "day": 14, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": [{"text": "Apr-14", "cat": "note"}, {"text": "May-14", "cat": "note"}, {"text": "DD RX - 9", "cat": "transmission"}, {"text": "Jun-14", "cat": "note"}, {"text": "Jul-14", "cat": "note"}, {"text": "Aug-14", "cat": "note"}, {"text": "Sep-14", "cat": "note"}, {"text": "Oct-14", "cat": "note"}, {"text": "Nov-14", "cat": "note"}, {"text": "Dec-14", "cat": "note"}]}, {"date": "Dec-15", "day": 15, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": [{"text": "Apr-15", "cat": "note"}, {"text": "DRAGONS - LX Truss 1/10", "cat": "dragons"}, {"text": "May-15", "cat": "note"}, {"text": "Jun-15", "cat": "note"}, {"text": "Jul-15", "cat": "note"}, {"text": "Aug-15", "cat": "note"}, {"text": "Sep-15", "cat": "note"}, {"text": "Oct-15", "cat": "note"}, {"text": "Nov-15", "cat": "note"}, {"text": "Dec-15", "cat": "note"}]}, {"date": "Dec-16", "day": 16, "dow": "WEDNESDAY", "ml": [], "andrew": ["ANDY OFF"], "ian": [], "chris": ["CHRIS OFF"], "other": [{"text": "Apr-16", "cat": "note"}, {"text": "DRAGONS - LX & Scenic 2/10", "cat": "dragons"}, {"text": "May-16", "cat": "note"}, {"text": "Jun-16", "cat": "note"}, {"text": "Jul-16", "cat": "note"}, {"text": "Aug-16", "cat": "note"}, {"text": "Sep-16", "cat": "note"}, {"text": "Oct-16", "cat": "note"}, {"text": "Nov-16", "cat": "note"}, {"text": "Dec-16", "cat": "note"}]}, {"date": "Dec-17", "day": 17, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": [{"text": "Apr-17", "cat": "note"}, {"text": "DD - LX & Scenic 3/10", "cat": "note"}, {"text": "May-17", "cat": "note"}, {"text": "Jun-17", "cat": "note"}, {"text": "Jul-17", "cat": "note"}, {"text": "Aug-17", "cat": "note"}, {"text": "Sep-17", "cat": "note"}, {"text": "Oct-17", "cat": "note"}, {"text": "Nov-17", "cat": "note"}, {"text": "Dec-17", "cat": "note"}]}, {"date": "Dec-18", "day": 18, "dow": "FRIDAY", "ml": [{"text": "MORNING LIVE IAN", "person": "IAN"}], "andrew": [], "ian": [], "chris": [], "other": [{"text": "Apr-18", "cat": "note"}, {"text": "May-18", "cat": "note"}, {"text": "Jun-18", "cat": "note"}, {"text": "Jul-18", "cat": "note"}, {"text": "Aug-18", "cat": "note"}, {"text": "Sep-18", "cat": "note"}, {"text": "Oct-18", "cat": "note"}, {"text": "Nov-18", "cat": "note"}, {"text": "Dec-18", "cat": "note"}]}, {"date": "Dec-19", "day": 19, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": [{"text": "Apr-19", "cat": "note"}, {"text": "May-19", "cat": "note"}, {"text": "DD RX - 10", "cat": "transmission"}, {"text": "Jun-19", "cat": "note"}, {"text": "Jul-19", "cat": "note"}, {"text": "Aug-19", "cat": "note"}, {"text": "Sep-19", "cat": "note"}, {"text": "Oct-19", "cat": "note"}, {"text": "Nov-19", "cat": "note"}, {"text": "Dec-19", "cat": "note"}]}, {"date": "Dec-20", "day": 20, "dow": "SUNDAY", "ml": [{"text": "MORNING LIVE", "person": ""}], "andrew": [], "ian": [], "chris": [], "other": [{"text": "Apr-20", "cat": "note"}, {"text": "DD - Cable Rig 4/10", "cat": "production"}, {"text": "May-20", "cat": "note"}, {"text": "DD RX - 11", "cat": "transmission"}, {"text": "Jun-20", "cat": "note"}, {"text": "Jul-20", "cat": "note"}, {"text": "Aug-20", "cat": "note"}, {"text": "Sep-20", "cat": "note"}, {"text": "Oct-20", "cat": "note"}, {"text": "Nov-20", "cat": "note"}, {"text": "Dec-20", "cat": "note"}]}, {"date": "Dec-21", "day": 21, "dow": "MONDAY", "ml": [{"text": "MORNING LIVE - JAMES LAISHLEY", "person": "- JAMES LAISHLEY"}], "andrew": [], "ian": [], "chris": [], "other": [{"text": "Apr-21", "cat": "note"}, {"text": "DD S & L 5/10", "cat": "note"}, {"text": "I'm a Celeb - London", "cat": "note"}, {"text": "May-21", "cat": "note"}, {"text": "DD RX - 12", "cat": "transmission"}, {"text": "Jun-21", "cat": "note"}, {"text": "Jul-21", "cat": "note"}, {"text": "Aug-21", "cat": "note"}, {"text": "Sep-21", "cat": "note"}, {"text": "Oct-21", "cat": "note"}, {"text": "Nov-21", "cat": "note"}, {"text": "Dec-21", "cat": "note"}]}, {"date": "Dec-22", "day": 22, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": ["CHRIS OFF"], "other": [{"text": "Apr-22", "cat": "note"}, {"text": "DD S & L 6/10", "cat": "note"}, {"text": "May-22", "cat": "note"}, {"text": "Jun-22", "cat": "note"}, {"text": "Jul-22", "cat": "note"}, {"text": "Aug-22", "cat": "note"}, {"text": "Sep-22", "cat": "note"}, {"text": "Oct-22", "cat": "note"}, {"text": "Nov-22", "cat": "note"}, {"text": "Dec-22", "cat": "note"}]}, {"date": "Dec-23", "day": 23, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": [{"text": "Apr-23", "cat": "note"}, {"text": "DD S & L 7/10", "cat": "note"}, {"text": "May-23", "cat": "note"}, {"text": "BANK HOLIDAY", "cat": "absence"}, {"text": "Jun-23", "cat": "note"}, {"text": "Jul-23", "cat": "note"}, {"text": "Aug-23", "cat": "note"}, {"text": "Sep-23", "cat": "note"}, {"text": "Oct-23", "cat": "note"}, {"text": "Nov-23", "cat": "note"}, {"text": "Dec-23", "cat": "note"}]}, {"date": "Dec-24", "day": 24, "dow": "````", "ml": [{"text": "MORNING LIVE - Ian", "person": "- Ian"}], "andrew": [], "ian": [], "chris": [], "other": [{"text": "Apr-24", "cat": "note"}, {"text": "DD S & L 8/10 + 1 Cam", "cat": "note"}, {"text": "DD Versa Rig1", "cat": "production"}, {"text": "May-24", "cat": "note"}, {"text": "Jun-24", "cat": "note"}, {"text": "Jul-24", "cat": "note"}, {"text": "Aug-24", "cat": "note"}, {"text": "Sep-24", "cat": "note"}, {"text": "Oct-24", "cat": "note"}, {"text": "Nov-24", "cat": "note"}, {"text": "Dec-24", "cat": "note"}]}, {"date": "Dec-25", "day": 25, "dow": "FRIDAY", "ml": [], "andrew": ["Andy Running London Marathon"], "ian": [], "chris": [], "other": [{"text": "Apr-25", "cat": "note"}, {"text": "DD - DARK", "cat": "transmission"}, {"text": "May-25", "cat": "note"}, {"text": "Jun-25", "cat": "note"}, {"text": "Jul-25", "cat": "note"}, {"text": "Aug-25", "cat": "note"}, {"text": "Sep-25", "cat": "note"}, {"text": "Oct-25", "cat": "note"}, {"text": "Nov-25", "cat": "note"}, {"text": "Dec-25", "cat": "note"}, {"text": "XMAS DAY", "cat": "holiday"}]}, {"date": "Dec-26", "day": 26, "dow": "SATURDAY", "ml": [{"text": "MORNING LIVE IAN", "person": "IAN"}], "andrew": [], "ian": [], "chris": [], "other": [{"text": "Apr-26", "cat": "note"}, {"text": "DD - 9/10 Sound & Cam Rig", "cat": "production"}, {"text": "May-26", "cat": "note"}, {"text": "Jun-26", "cat": "note"}, {"text": "Jul-26", "cat": "note"}, {"text": "Aug-26", "cat": "note"}, {"text": "Sep-26", "cat": "note"}, {"text": "Oct-26", "cat": "note"}, {"text": "Nov-26", "cat": "note"}, {"text": "Dec-26", "cat": "note"}]}, {"date": "Dec-27", "day": 27, "dow": "SUNDAY", "ml": [{"text": "MORNING LIVE IAN", "person": "IAN"}], "andrew": [], "ian": [], "chris": ["CHRIS OFF"], "other": [{"text": "Apr-27", "cat": "note"}, {"text": "DD - Tech Line Up - 10/10", "cat": "note"}, {"text": "May-27", "cat": "note"}, {"text": "Jun-27", "cat": "note"}, {"text": "Jul-27", "cat": "note"}, {"text": "Aug-27", "cat": "note"}, {"text": "Sep-27", "cat": "note"}, {"text": "Oct-27", "cat": "note"}, {"text": "Nov-27", "cat": "note"}, {"text": "Dec-27", "cat": "note"}]}, {"date": "Dec-28", "day": 28, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": [{"text": "Apr-28", "cat": "note"}, {"text": "DD - TECH REH", "cat": "production"}, {"text": "May-28", "cat": "note"}, {"text": "Jun-28", "cat": "note"}, {"text": "Jul-28", "cat": "note"}, {"text": "Aug-28", "cat": "note"}, {"text": "Sep-28", "cat": "note"}, {"text": "Oct-28", "cat": "note"}, {"text": "Nov-28", "cat": "note"}, {"text": "Dec-28", "cat": "note"}]}, {"date": "Dec-29", "day": 29, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": [{"text": "Apr-29", "cat": "note"}, {"text": "DD RX 1", "cat": "transmission"}, {"text": "May-29", "cat": "note"}, {"text": "Jun-29", "cat": "note"}, {"text": "Jul-29", "cat": "note"}, {"text": "Aug-29", "cat": "note"}, {"text": "Sep-29", "cat": "note"}, {"text": "Oct-29", "cat": "note"}, {"text": "Nov-29", "cat": "note"}, {"text": "Dec-29", "cat": "note"}]}, {"date": "Dec-30", "day": 30, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": [{"text": "Apr-30", "cat": "note"}, {"text": "DD RX 2", "cat": "transmission"}, {"text": "May-30", "cat": "note"}, {"text": "Jun-30", "cat": "note"}, {"text": "Jul-30", "cat": "note"}, {"text": "Aug-30", "cat": "note"}, {"text": "Sep-30", "cat": "note"}, {"text": "Oct-30", "cat": "note"}, {"text": "Nov-30", "cat": "note"}, {"text": "Dec-30", "cat": "note"}]}, {"date": "Dec-31", "day": 31, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": [{"text": "May-31", "cat": "note"}, {"text": "Jul-31", "cat": "note"}, {"text": "Aug-31", "cat": "note"}, {"text": "Oct-31", "cat": "note"}, {"text": "Dec-31", "cat": "note"}]}]}, {"month": "January 2027", "days": [{"date": "Jan-01", "day": 1, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jan-02", "day": 2, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jan-03", "day": 3, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jan-04", "day": 4, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jan-05", "day": 5, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jan-06", "day": 6, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jan-07", "day": 7, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jan-08", "day": 8, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jan-09", "day": 9, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jan-10", "day": 10, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jan-11", "day": 11, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jan-12", "day": 12, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jan-13", "day": 13, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jan-14", "day": 14, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jan-15", "day": 15, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jan-16", "day": 16, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jan-17", "day": 17, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jan-18", "day": 18, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jan-19", "day": 19, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jan-20", "day": 20, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jan-21", "day": 21, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jan-22", "day": 22, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jan-23", "day": 23, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jan-24", "day": 24, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jan-25", "day": 25, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jan-26", "day": 26, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jan-27", "day": 27, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jan-28", "day": 28, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jan-29", "day": 29, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jan-30", "day": 30, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Jan-31", "day": 31, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}]}, {"month": "February 2027", "days": [{"date": "Feb-01", "day": 1, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Feb-02", "day": 2, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Feb-03", "day": 3, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Feb-04", "day": 4, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Feb-05", "day": 5, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Feb-06", "day": 6, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Feb-07", "day": 7, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Feb-08", "day": 8, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Feb-09", "day": 9, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Feb-10", "day": 10, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Feb-11", "day": 11, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Feb-12", "day": 12, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Feb-13", "day": 13, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Feb-14", "day": 14, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Feb-15", "day": 15, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Feb-16", "day": 16, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Feb-17", "day": 17, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Feb-18", "day": 18, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Feb-19", "day": 19, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Feb-20", "day": 20, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Feb-21", "day": 21, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Feb-22", "day": 22, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Feb-23", "day": 23, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Feb-24", "day": 24, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Feb-25", "day": 25, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Feb-26", "day": 26, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Feb-27", "day": 27, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Feb-28", "day": 28, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}]}, {"month": "March 2027", "days": [{"date": "Mar-01", "day": 1, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-02", "day": 2, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-03", "day": 3, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-04", "day": 4, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-05", "day": 5, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-06", "day": 6, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-07", "day": 7, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-08", "day": 8, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-09", "day": 9, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-10", "day": 10, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-11", "day": 11, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-12", "day": 12, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-13", "day": 13, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-14", "day": 14, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-15", "day": 15, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-16", "day": 16, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-17", "day": 17, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-18", "day": 18, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-19", "day": 19, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-20", "day": 20, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-21", "day": 21, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-22", "day": 22, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-23", "day": 23, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-24", "day": 24, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-25", "day": 25, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-26", "day": 26, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-27", "day": 27, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-28", "day": 28, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-29", "day": 29, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-30", "day": 30, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Mar-31", "day": 31, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}]}, {"month": "April 2027", "days": [{"date": "Apr-01", "day": 1, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-02", "day": 2, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-03", "day": 3, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-04", "day": 4, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-05", "day": 5, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-06", "day": 6, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-07", "day": 7, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-08", "day": 8, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-09", "day": 9, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-10", "day": 10, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-11", "day": 11, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-12", "day": 12, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-13", "day": 13, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-14", "day": 14, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-15", "day": 15, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-16", "day": 16, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-17", "day": 17, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-18", "day": 18, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-19", "day": 19, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-20", "day": 20, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-21", "day": 21, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-22", "day": 22, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-23", "day": 23, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-24", "day": 24, "dow": "SATURDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-25", "day": 25, "dow": "SUNDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-26", "day": 26, "dow": "MONDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-27", "day": 27, "dow": "TUESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-28", "day": 28, "dow": "WEDNESDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-29", "day": 29, "dow": "THURSDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}, {"date": "Apr-30", "day": 30, "dow": "FRIDAY", "ml": [], "andrew": [], "ian": [], "chris": [], "other": []}]}];
+const OPS_CAL = [{"month":"March 2026","days":[{"date":"Mar-01","day":1,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-02","day":2,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-03","day":3,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-04","day":4,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-05","day":5,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-06","day":6,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-07","day":7,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-08","day":8,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-09","day":9,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-10","day":10,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-11","day":11,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-12","day":12,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-13","day":13,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-14","day":14,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-15","day":15,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-16","day":16,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-17","day":17,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-18","day":18,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-19","day":19,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-20","day":20,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-21","day":21,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-22","day":22,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-23","day":23,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-24","day":24,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-25","day":25,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-26","day":26,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-27","day":27,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-28","day":28,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-29","day":29,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-30","day":30,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-31","day":31,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]}]},{"month":"April 2026","days":[{"date":"Apr-01","day":1,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-02","day":2,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-03","day":3,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-04","day":4,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-05","day":5,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-06","day":6,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-07","day":7,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-08","day":8,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-09","day":9,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-10","day":10,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-11","day":11,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-12","day":12,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-13","day":13,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-14","day":14,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-15","day":15,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-16","day":16,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-17","day":17,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-18","day":18,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-19","day":19,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-20","day":20,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-21","day":21,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-22","day":22,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-23","day":23,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-24","day":24,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-25","day":25,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-26","day":26,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-27","day":27,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-28","day":28,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-29","day":29,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-30","day":30,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]}]},{"month":"May 2026","days":[{"date":"May-01","day":1,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"May-02","day":2,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"May-03","day":3,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"May-04","day":4,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"May-05","day":5,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"May-06","day":6,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"May-07","day":7,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"May-08","day":8,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"May-09","day":9,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"May-10","day":10,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"May-11","day":11,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"May-12","day":12,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"May-13","day":13,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"May-14","day":14,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"May-15","day":15,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"May-16","day":16,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"May-17","day":17,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"May-18","day":18,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"May-19","day":19,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"May-20","day":20,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"May-21","day":21,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"May-22","day":22,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"May-23","day":23,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"May-24","day":24,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"May-25","day":25,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"May-26","day":26,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"May-27","day":27,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"May-28","day":28,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"May-29","day":29,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"May-30","day":30,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"May-31","day":31,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]}]},{"month":"June 2026","days":[{"date":"Jun-01","day":1,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jun-02","day":2,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jun-03","day":3,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jun-04","day":4,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jun-05","day":5,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jun-06","day":6,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jun-07","day":7,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jun-08","day":8,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jun-09","day":9,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jun-10","day":10,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jun-11","day":11,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jun-12","day":12,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jun-13","day":13,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jun-14","day":14,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jun-15","day":15,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jun-16","day":16,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jun-17","day":17,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jun-18","day":18,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jun-19","day":19,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jun-20","day":20,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jun-21","day":21,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jun-22","day":22,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jun-23","day":23,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jun-24","day":24,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jun-25","day":25,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jun-26","day":26,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jun-27","day":27,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jun-28","day":28,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jun-29","day":29,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jun-30","day":30,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]}]},{"month":"July 2026","days":[{"date":"Jul-01","day":1,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jul-02","day":2,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jul-03","day":3,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jul-04","day":4,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jul-05","day":5,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jul-06","day":6,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jul-07","day":7,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jul-08","day":8,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jul-09","day":9,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jul-10","day":10,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jul-11","day":11,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jul-12","day":12,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jul-13","day":13,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jul-14","day":14,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jul-15","day":15,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jul-16","day":16,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jul-17","day":17,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jul-18","day":18,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jul-19","day":19,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jul-20","day":20,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jul-21","day":21,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jul-22","day":22,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jul-23","day":23,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jul-24","day":24,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jul-25","day":25,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jul-26","day":26,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jul-27","day":27,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jul-28","day":28,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jul-29","day":29,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jul-30","day":30,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jul-31","day":31,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]}]},{"month":"August 2026","days":[{"date":"Aug-01","day":1,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Aug-02","day":2,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Aug-03","day":3,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Aug-04","day":4,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Aug-05","day":5,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Aug-06","day":6,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Aug-07","day":7,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Aug-08","day":8,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Aug-09","day":9,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Aug-10","day":10,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Aug-11","day":11,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Aug-12","day":12,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Aug-13","day":13,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Aug-14","day":14,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Aug-15","day":15,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Aug-16","day":16,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Aug-17","day":17,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Aug-18","day":18,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Aug-19","day":19,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Aug-20","day":20,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Aug-21","day":21,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Aug-22","day":22,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Aug-23","day":23,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Aug-24","day":24,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Aug-25","day":25,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Aug-26","day":26,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Aug-27","day":27,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Aug-28","day":28,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Aug-29","day":29,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Aug-30","day":30,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Aug-31","day":31,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]}]},{"month":"September 2026","days":[{"date":"Sep-01","day":1,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Sep-02","day":2,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Sep-03","day":3,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Sep-04","day":4,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Sep-05","day":5,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Sep-06","day":6,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Sep-07","day":7,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Sep-08","day":8,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Sep-09","day":9,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Sep-10","day":10,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Sep-11","day":11,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Sep-12","day":12,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Sep-13","day":13,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Sep-14","day":14,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Sep-15","day":15,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Sep-16","day":16,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Sep-17","day":17,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Sep-18","day":18,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Sep-19","day":19,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Sep-20","day":20,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Sep-21","day":21,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Sep-22","day":22,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Sep-23","day":23,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Sep-24","day":24,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Sep-25","day":25,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Sep-26","day":26,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Sep-27","day":27,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Sep-28","day":28,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Sep-29","day":29,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Sep-30","day":30,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]}]},{"month":"October 2026","days":[{"date":"Oct-01","day":1,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Oct-02","day":2,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Oct-03","day":3,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Oct-04","day":4,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Oct-05","day":5,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Oct-06","day":6,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Oct-07","day":7,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Oct-08","day":8,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Oct-09","day":9,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Oct-10","day":10,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Oct-11","day":11,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Oct-12","day":12,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Oct-13","day":13,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Oct-14","day":14,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Oct-15","day":15,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Oct-16","day":16,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Oct-17","day":17,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Oct-18","day":18,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Oct-19","day":19,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Oct-20","day":20,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Oct-21","day":21,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Oct-22","day":22,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Oct-23","day":23,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Oct-24","day":24,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Oct-25","day":25,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Oct-26","day":26,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Oct-27","day":27,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Oct-28","day":28,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Oct-29","day":29,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Oct-30","day":30,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Oct-31","day":31,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]}]},{"month":"November 2026","days":[{"date":"Nov-01","day":1,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Nov-02","day":2,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Nov-03","day":3,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Nov-04","day":4,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Nov-05","day":5,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Nov-06","day":6,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Nov-07","day":7,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Nov-08","day":8,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Nov-09","day":9,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Nov-10","day":10,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Nov-11","day":11,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Nov-12","day":12,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Nov-13","day":13,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Nov-14","day":14,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Nov-15","day":15,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Nov-16","day":16,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Nov-17","day":17,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Nov-18","day":18,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Nov-19","day":19,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Nov-20","day":20,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Nov-21","day":21,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Nov-22","day":22,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Nov-23","day":23,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Nov-24","day":24,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Nov-25","day":25,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Nov-26","day":26,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Nov-27","day":27,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Nov-28","day":28,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Nov-29","day":29,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Nov-30","day":30,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]}]},{"month":"December 2026","days":[{"date":"Dec-01","day":1,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Dec-02","day":2,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Dec-03","day":3,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Dec-04","day":4,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Dec-05","day":5,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Dec-06","day":6,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Dec-07","day":7,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Dec-08","day":8,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Dec-09","day":9,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Dec-10","day":10,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Dec-11","day":11,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Dec-12","day":12,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Dec-13","day":13,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Dec-14","day":14,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Dec-15","day":15,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Dec-16","day":16,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Dec-17","day":17,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Dec-18","day":18,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Dec-19","day":19,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Dec-20","day":20,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Dec-21","day":21,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Dec-22","day":22,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Dec-23","day":23,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Dec-24","day":24,"dow":"````","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Dec-25","day":25,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Dec-26","day":26,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Dec-27","day":27,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Dec-28","day":28,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Dec-29","day":29,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Dec-30","day":30,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Dec-31","day":31,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]}]},{"month":"January 2027","days":[{"date":"Jan-01","day":1,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jan-02","day":2,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jan-03","day":3,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jan-04","day":4,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jan-05","day":5,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jan-06","day":6,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jan-07","day":7,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jan-08","day":8,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jan-09","day":9,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jan-10","day":10,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jan-11","day":11,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jan-12","day":12,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jan-13","day":13,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jan-14","day":14,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jan-15","day":15,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jan-16","day":16,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jan-17","day":17,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jan-18","day":18,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jan-19","day":19,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jan-20","day":20,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jan-21","day":21,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jan-22","day":22,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jan-23","day":23,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jan-24","day":24,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jan-25","day":25,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jan-26","day":26,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jan-27","day":27,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jan-28","day":28,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jan-29","day":29,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jan-30","day":30,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Jan-31","day":31,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]}]},{"month":"February 2027","days":[{"date":"Feb-01","day":1,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Feb-02","day":2,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Feb-03","day":3,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Feb-04","day":4,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Feb-05","day":5,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Feb-06","day":6,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Feb-07","day":7,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Feb-08","day":8,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Feb-09","day":9,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Feb-10","day":10,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Feb-11","day":11,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Feb-12","day":12,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Feb-13","day":13,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Feb-14","day":14,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Feb-15","day":15,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Feb-16","day":16,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Feb-17","day":17,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Feb-18","day":18,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Feb-19","day":19,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Feb-20","day":20,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Feb-21","day":21,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Feb-22","day":22,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Feb-23","day":23,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Feb-24","day":24,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Feb-25","day":25,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Feb-26","day":26,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Feb-27","day":27,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Feb-28","day":28,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]}]},{"month":"March 2027","days":[{"date":"Mar-01","day":1,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-02","day":2,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-03","day":3,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-04","day":4,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-05","day":5,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-06","day":6,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-07","day":7,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-08","day":8,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-09","day":9,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-10","day":10,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-11","day":11,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-12","day":12,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-13","day":13,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-14","day":14,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-15","day":15,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-16","day":16,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-17","day":17,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-18","day":18,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-19","day":19,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-20","day":20,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-21","day":21,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-22","day":22,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-23","day":23,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-24","day":24,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-25","day":25,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-26","day":26,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-27","day":27,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-28","day":28,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-29","day":29,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-30","day":30,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Mar-31","day":31,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]}]},{"month":"April 2027","days":[{"date":"Apr-01","day":1,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-02","day":2,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-03","day":3,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-04","day":4,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-05","day":5,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-06","day":6,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-07","day":7,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-08","day":8,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-09","day":9,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-10","day":10,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-11","day":11,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-12","day":12,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-13","day":13,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-14","day":14,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-15","day":15,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-16","day":16,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-17","day":17,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-18","day":18,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-19","day":19,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-20","day":20,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-21","day":21,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-22","day":22,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-23","day":23,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-24","day":24,"dow":"SATURDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-25","day":25,"dow":"SUNDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-26","day":26,"dow":"MONDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-27","day":27,"dow":"TUESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-28","day":28,"dow":"WEDNESDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-29","day":29,"dow":"THURSDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]},{"date":"Apr-30","day":30,"dow":"FRIDAY","ml":[],"andrew":[],"ian":[],"chris":[],"other":[]}]}];
 
 // ── INITIAL STATE ────────────────────────────────────────────────────────────
 const _opsD={};
@@ -2801,6 +2866,7 @@ function _nsOfferUndo(label){
   },60);
 }
 function opsUndo(){
+  if(_nsRO())return;
   var tx=_nsUndoShown;if(!tx)return;
   _nsUndoShown=null;
   var bar=document.getElementById('nsUndo');if(bar)bar.classList.remove('show');
@@ -2874,6 +2940,7 @@ function opsMlgPick(name){
   opsCloseCed();opsReRender();
 }
 function os(m,d,r,v){
+  if(_nsRO())return;
   var key=m+'|'+d+'|'+r,prev=_opsD[key];
   _nsUndoRecord(key);
   _opsD[key]=v;
@@ -3511,6 +3578,7 @@ let _opsEd=null;
 // Remember where the last click landed so a click on a multi-day cell can pick its day
 document.addEventListener('pointerdown',function(e){window._lastOpsClickX=e.clientX;},true);
 function opsCk(td,dayOverride){
+  if(_nsRO())return;
   const mi=+td.dataset.mi,row=td.dataset.row;
   let day=+td.dataset.day;
   if(dayOverride)day=+dayOverride;
@@ -3601,7 +3669,7 @@ function opsCk(td,dayOverride){
 }
 // Position the cell editor popup next to the given cell, picking the side
 // (below / above / pinned-top) that best fits in the visible viewport.
-var OPS_BUILD='2026-09-19 · b127';
+var OPS_BUILD='2026-09-22 · b132';
 console.log('%cOps Planner build '+OPS_BUILD,'color:#d85a61;font-weight:bold');
 document.addEventListener('DOMContentLoaded',function(){
   var b=document.createElement('div');
@@ -3882,6 +3950,7 @@ function opsChipClickDay(ev,mi,day,row,idx){
   if(td)opsCkChipIdx(td,idx,false,day);
 }
 function opsCkChipIdx(td,idx,force,dayOverride){
+  if(_nsRO())return;
   const mi=+td.dataset.mi, day=dayOverride?+dayOverride:+td.dataset.day, row=td.dataset.row;
   if(!force&&_nsCrewOn()&&row.indexOf('st_')===0)return opsCrewMenu(td,idx,day); // crew is for studio jobs only
   const month=OPS_CAL[mi].month;
@@ -4013,7 +4082,7 @@ function _nsCrewDirectory(){
 async function saveCrewList(){
   try{
     var latest=[];
-    try{var r=await fetch(_SB_URL+'/rest/v1/app_data?select=value&key=eq.'+_k('crew_list'),{headers:_sbGet()});
+    try{var r=await fetch(_SB_URL+'/rest/v1/planner_data?select=value&key=eq.'+_k('crew_list'),{headers:_sbGet()});
       var rows=await r.json();if(rows&&rows[0]&&Array.isArray(rows[0].value))latest=rows[0].value;}catch(e){}
     // Merge per person: the most recently changed version wins (edits and removals included)
     var by={};
@@ -4023,7 +4092,7 @@ async function saveCrewList(){
     });
     window._opsCrewList=Object.keys(by).map(function(k){var c=by[k];if(!c.removed)delete c.removed;return c;}).sort(function(a,b){return a.name.localeCompare(b.name);});
     var p={key:_k('crew_list'),value:window._opsCrewList,updated_at:new Date().toISOString()};
-    var w=await fetch(_SB_URL+'/rest/v1/app_data?on_conflict=key',{method:'POST',headers:_sbHeaders(),body:JSON.stringify(p)});
+    var w=await fetch(_SB_URL+'/rest/v1/planner_data?on_conflict=key',{method:'POST',headers:_sbHeaders(),body:JSON.stringify(p)});
     if(!w.ok)throw new Error('HTTP '+w.status);
   }catch(e){console.warn('crew_list save failed',e);toast('Crew list not saved');}
 }
@@ -4209,6 +4278,7 @@ function _nsCrewOn(){return document.documentElement.classList.contains('ns-show
 // and put in everyone's start and finish for the day that was clicked.
 var _nsCrewCtx=null,_nsCrewPickCtx=null,_nsCrewMgrReturn=null;
 function opsCrewMenu(td,focusIdx,day){
+  if(_nsRO())return;
   var d0=+td.dataset.day,entryDay=d0,clicked=day||d0;
   if(td.dataset.run)entryDay=clicked;                       // separate entries drawn as one bar
   else if(day&&day!==d0){if(focusIdx>=0)entryDay=day;}      // a box that belongs to a day inside a stretched cell
@@ -4218,6 +4288,7 @@ function opsCrewMenu(td,focusIdx,day){
 }
 function _nsCrewReopen(){var c=_nsCrewCtx;if(!c)return;setTimeout(function(){_nsCrewRender(c.id,c.focusIdx,c.entryDay,c.clicked);},0);}
 function _nsCrewRender(id,focusIdx,entryDay,clicked){
+  if(!_nsCanEdit())return;
   var td=document.getElementById(id);if(!td)return;
   var mi=+td.dataset.mi,row=td.dataset.row,month=OPS_CAL[mi].month,off=clicked-entryDay;
   _opsEd={mi:mi,day:entryDay,row:row,id:id,month:month};
@@ -4684,6 +4755,7 @@ function _nsDbgSay(msg){
 }
 if(_nsDbg)document.addEventListener('DOMContentLoaded',function(){setTimeout(function(){_nsDbgSay('drag debug is ON\nNow drag a box and this panel will show what happened.');},800);});
 function _opsDragMouseDown(ev){
+  if(!_nsCanEdit())return;
   if(ev.button!==0&&ev.button!==undefined)return;
   var cell=ev.target&&ev.target.closest&&ev.target.closest('.ops-cell');
   if(!cell)return;
@@ -5948,7 +6020,7 @@ function _opsSyncAllMLOnce(){}
 async function saveOpsTMs(){
   try{
     var p={key:_k('ml_tech_managers'),value:window._opsTMCustom||[],updated_at:new Date().toISOString()};
-    await fetch(_SB_URL+'/rest/v1/app_data?on_conflict=key',{method:'POST',headers:_sbHeaders(),body:JSON.stringify(p)});
+    await fetch(_SB_URL+'/rest/v1/planner_data?on_conflict=key',{method:'POST',headers:_sbHeaders(),body:JSON.stringify(p)});
   }catch(e){}
 }
 
@@ -6014,6 +6086,7 @@ function _nsMonthOfIso(iso){
 }
 // Tapping a line hands over to the planner at that day and opens it
 function opsDayEdit(row,iso){
+  if(_nsRO())return;
   var m=_nsMonthOfIso(iso);if(!m)return;
   opsSetViewMode('planner');
   setTimeout(function(){
@@ -6382,6 +6455,7 @@ function opsCrewFormType(t){
 }
 function opsCrewFormCancel(){_nsCmEdit=null;_nsRenderCrewMgr();}
 function opsCrewFormSave(){
+  if(_nsRO())return;
   var ed=_nsCmEdit;if(!ed)return;
   var g=function(id){var el=document.getElementById(id);return el?el.value.trim():'';};
   var name=g('nsCfName');if(!name){document.getElementById('nsCfName').focus();toast('Add a name');return;}
@@ -6413,6 +6487,7 @@ function opsCrewFormSave(){
   if(typeof opsReRender==='function')opsReRender();
 }
 function opsCrewFormRemove(){
+  if(_nsRO())return;
   var ed=_nsCmEdit;if(!ed||ed.di<0)return;
   if(!confirm('Remove '+ed.name+' from the crew list? Their existing bookings stay on the calendar.'))return;
   var e=_nsCrewEntryFor(ed.name);e.removed=true;e.updated=Date.now();
@@ -6810,14 +6885,23 @@ async function bootstrap(){
   window._opsBooted=true;
   setStatus('work','Loading…');
   try{
-    // Fetch in parallel: opsPlanner, opsBrk, jobs, bank_holidays, ml_tech_managers
-    var KEYS=['opsPlanner','opsBrk','jobs','bank_holidays','ml_tech_managers','shopon_engineers','crew_list','ops_seeded'];
+    // The planner's own records live in the locked table; jobs, bank holidays
+    // and the two engineer lists are shared with the Technical Dashboard and
+    // stay where that app can still reach them.
+    var MINE=['opsPlanner','opsBrk','crew_list','ops_seeded'];
+    var SHARED=['jobs','bank_holidays','ml_tech_managers','shopon_engineers'];
     // Test mode also fetches the *_test copies; the first run starts from a copy of live data
     var WRITABLE=['opsPlanner','opsBrk','ml_tech_managers','shopon_engineers','crew_list','ops_seeded'];
-    var FETCH=_SB_TEST?KEYS.concat(WRITABLE.map(_k)):KEYS;
-    var r=await fetch(_SB_URL+'/rest/v1/app_data?select=key,value,updated_at&key=in.('+FETCH.join(',')+')',{headers:_sbGet()});
+    var fMine=_SB_TEST?MINE.concat(MINE.map(_k)):MINE;
+    var fShared=_SB_TEST?SHARED.concat(['ml_tech_managers','shopon_engineers'].map(_k)):SHARED;
+    var pair=await Promise.all([
+      fetch(_SB_URL+'/rest/v1/planner_data?select=key,value,updated_at&key=in.('+fMine.join(',')+')',{headers:_sbGet()}),
+      fetch(_SB_URL+'/rest/v1/'+_SB_SHARED+'?select=key,value,updated_at&key=in.('+fShared.join(',')+')',{headers:_sbGet()})
+    ]);
+    var r=pair[0];
     if(!r.ok)throw new Error('HTTP '+r.status);
     var rows=await r.json();
+    if(pair[1].ok){try{rows=rows.concat(await pair[1].json());}catch(e){}}
     var map={};rows.forEach(function(row){map[row.key]=row.value;if(row.key===_k('opsPlanner'))_opsStamp=Date.parse(row.updated_at)||null;});
     if(_SB_TEST)WRITABLE.forEach(function(k){if(map.hasOwnProperty(_k(k)))map[k]=map[_k(k)];});
     if(map.opsPlanner&&typeof map.opsPlanner==='object'){
@@ -6875,129 +6959,231 @@ async function bootstrap(){
 }
 
 // Boot
-// Sign-in (b94): each person signs in with their own 4-digit PIN (remembered on this device).
-// The team code sets up or resets a personal PIN. Keeps casual visitors out; not real security.
-var NS_LOCK_CODE='1956';
-var _nsPins={},_nsPinSt={stage:'enter',buf:'',who:null,first:'',busy:false};
-function _nsMe(){try{var u=localStorage.getItem('opsUser')||'';return NS_TEAM.some(function(t){return t.row===u;})?u:'';}catch(e){return '';}}
+// Sign-in (b128): real accounts. Everyone signs in with their own Versa email
+// and password, held by Supabase. The database answers nobody without a valid
+// session, and only the planner managers are allowed to write to it — that part
+// is enforced by the database itself, not by hiding buttons here.
+// Who is who, and who may write, is held in the database and read after
+// sign-in. Nothing here lists an address, and if that check can't be made the
+// session stays view-only rather than guessing.
+var _nsAdmins=[],_nsPeople={},_nsPermFail=false;
+var _nsSess=null,_nsAuthBusy=false,_nsAuthStage='in',_nsResetTok='';
+function _nsSessRead(){try{var s=JSON.parse(localStorage.getItem('opsSess')||'null');return(s&&s.access&&s.email)?s:null;}catch(e){return null;}}
+function _nsSessWrite(s){_nsSess=s;try{localStorage.setItem('opsSess',JSON.stringify(s));localStorage.setItem('opsLastEmail',s.email||'');}catch(e){}}
+function _nsSessDrop(){_nsSess=null;try{localStorage.removeItem('opsSess');}catch(e){}}
+function _nsSessOf(j,fallbackEmail){return{access:j.access_token,refresh:j.refresh_token,email:String((j.user&&j.user.email)||fallbackEmail||'').toLowerCase(),exp:Date.now()+((j.expires_in||3600)*1000)};}
+function _nsEmail(){return _nsSess?String(_nsSess.email||'').toLowerCase():'';}
+function _nsMe(){var e=_nsEmail();return (e&&_nsPeople[e])||'';}
 function _nsTeamOf(row){return NS_TEAM.find(function(t){return t.row===row;})||{row:row,name:row,full:row};}
-function _nsUnlocked(){try{return localStorage.getItem('opsUnlocked')==='1'&&!!_nsMe();}catch(e){return false;}}
-async function _nsLoadPins(){
-  var keys=_SB_TEST?['team_pins',_k('team_pins')]:['team_pins'];
+function _nsCanEdit(){var e=_nsEmail();return !!e&&_nsAdmins.indexOf(e)>=0;}
+// One guard in front of every editing action, so view-only people are told
+// plainly rather than watching a save fail.
+function _nsRO(msg){
+  if(_nsCanEdit())return false;
+  if(typeof toast==='function')toast(msg||('View only — ask '+_nsManagerNames()+' to make the change'));
+  return true;
+}
+// Who to ask, taken from the database rather than written into the page
+function _nsManagerNames(){
+  var names=_nsAdmins.map(function(e){
+    var row=_nsPeople[e];return row?_nsTeamOf(row).name:e;
+  }).filter(Boolean);
+  if(!names.length)return 'a planner manager';
+  if(names.length===1)return names[0];
+  return names.slice(0,-1).join(', ')+' or '+names[names.length-1];
+}
+async function _nsAuthReq(method,path,body,tok){
+  var h={'apikey':_SB_KEY,'Content-Type':'application/json'};
+  if(tok)h['Authorization']='Bearer '+tok;
   try{
-    var r=await fetch(_SB_URL+'/rest/v1/app_data?select=key,value&key=in.('+keys.join(',')+')',{headers:_sbGet()});
-    if(!r.ok)return false;
-    var rows=await r.json(),map={};rows.forEach(function(x){map[x.key]=x.value;});
-    var v=map[_k('team_pins')]||map.team_pins;
-    _nsPins=(v&&typeof v==='object'&&!Array.isArray(v))?v:{};
-    return true;
-  }catch(e){return false;}
+    var r=await _nsRawFetch(_SB_URL+'/auth/v1/'+path,{method:method,headers:h,body:JSON.stringify(body||{})});
+    var j=null;try{j=await r.json();}catch(e){}
+    return{ok:r.ok,status:r.status,j:j};
+  }catch(e){return{ok:false,status:0,j:null};}
 }
-async function _nsPinHash(row,pin){
-  var s='versa-team-planner|'+row+'|'+pin;
-  try{if(window.crypto&&crypto.subtle){
-    var buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));
-    return Array.prototype.map.call(new Uint8Array(buf),function(b){return b.toString(16).padStart(2,'0');}).join('');
-  }}catch(e){}
-  var h=2166136261;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)>>>0;}
-  return 'f'+h.toString(16);
+async function _nsRefresh(){
+  var s=_nsSess;if(!s||!s.refresh)return false;
+  var r=await _nsAuthReq('POST','token?grant_type=refresh_token',{refresh_token:s.refresh});
+  if(!r.ok||!r.j||!r.j.access_token)return false;
+  _nsSessWrite(_nsSessOf(r.j,s.email));return true;
 }
-async function _nsSavePin(row,h){
+async function _nsAuthFresh(){
+  if(!_nsSess)return false;
+  if(_nsSess.exp-Date.now()>120000)return true;
+  return _nsRefresh();
+}
+setInterval(function(){if(_nsSess)_nsAuthFresh();},600000);
+function _nsAuthLost(){
+  var el=document.getElementById('nsLock');if(el&&!el.hidden)return;
+  _nsSessDrop();
+  if(typeof toast==='function')toast('Signed out — please sign in again');
+  _nsAuthStage='in';_nsShowLock();
+}
+async function _nsLoadPeople(){
+  _nsAdmins=[];_nsPeople={};_nsPermFail=true;
   try{
-    var latest={};
-    var r=await fetch(_SB_URL+'/rest/v1/app_data?select=value&key=eq.'+_k('team_pins'),{headers:_sbGet()});
-    if(r.ok){var rows=await r.json();if(rows&&rows[0]&&rows[0].value&&typeof rows[0].value==='object'&&!Array.isArray(rows[0].value))latest=rows[0].value;}
-    var merged=Object.assign({},_nsPins,latest);merged[row]={h:h,at:Date.now()};_nsPins=merged;
-    var w=await fetch(_SB_URL+'/rest/v1/app_data?on_conflict=key',{method:'POST',headers:_sbHeaders(),body:JSON.stringify({key:_k('team_pins'),value:merged,updated_at:new Date().toISOString()})});
-    return w.ok;
-  }catch(e){return false;}
+    var r=await _nsRawFetch(_SB_URL+'/rest/v1/planner_people?select=email,row,can_edit',{headers:_sbGet()});
+    if(!r.ok)return;
+    var rows=await r.json();if(!rows)return;
+    rows.forEach(function(x){
+      var e=String(x.email||'').trim().toLowerCase();if(!e)return;
+      if(x.row)_nsPeople[e]=String(x.row);
+      if(x.can_edit)_nsAdmins.push(e);
+    });
+    _nsPermFail=false;
+  }catch(e){}
 }
-function _nsPinPad(){
-  var h='<div class="ns-pin-pad">';
-  [1,2,3,4,5,6,7,8,9].forEach(function(d){h+='<button type="button" class="ns-key" onclick="_nsPinPress(\''+d+'\')">'+d+'</button>';});
-  return h+'<button type="button" class="ns-key ns-key-t" onclick="_nsPinClear()">Clear</button><button type="button" class="ns-key" onclick="_nsPinPress(\'0\')">0</button><button type="button" class="ns-key ns-key-t" onclick="_nsPinDel()">Delete</button></div>';
+function _nsAuthMsg(t,quiet){
+  var m=document.querySelector('.ns-pin-msg');if(!m)return;
+  m.textContent=t||'';m.classList.toggle('ns-msg-ok',!!quiet);
 }
-function _nsRenderPin(){
-  var st=_nsPinSt,el=document.getElementById('nsPinStage');if(!el)return;
-  var h='';
-  if(st.stage==='who'){
-    h+='<h1 id="nsLockTitle">Who <span>are you?</span></h1><div class="ns-pin-who">';
-    NS_TEAM.forEach(function(t){h+='<button type="button" onclick="_nsPinPick(\''+t.row+'\')">'+_rdEsc(t.full)+(_nsPins[t.row]?'<small>Reset PIN</small>':'')+'</button>';});
-    h+='</div><button type="button" class="ns-pin-back" onclick="_nsPinBack()">Back</button>';
-  }else{
-    var title=st.stage==='enter'?'Enter <span>your PIN</span>':st.stage==='new'?'Choose <span>your PIN</span>':'Enter it <span>again</span>';
-    h+='<h1 id="nsLockTitle">'+title+'</h1>'+(st.stage==='enter'?'':'<p class="ns-pin-sub">'+_rdEsc(_nsTeamOf(st.who).full)+'</p>');
-    h+='<div class="ns-pin-dots" aria-hidden="true"><span></span><span></span><span></span><span></span></div><p class="ns-pin-msg" role="alert"></p>'+_nsPinPad();
-    if(st.stage!=='enter')h+='<button type="button" class="ns-pin-back" onclick="_nsPinBack()">Back</button>';
+function _nsAuthVal(id){var el=document.getElementById(id);return el?el.value:'';}
+async function _nsDoSignIn(){
+  if(_nsAuthBusy)return;
+  var em=_nsAuthVal('nsEmail').trim().toLowerCase(),pw=_nsAuthVal('nsPw');
+  if(!em||!pw)return _nsAuthMsg('Enter your email and password');
+  _nsAuthBusy=true;_nsAuthMsg('Signing in…',true);
+  var r=await _nsAuthReq('POST','token?grant_type=password',{email:em,password:pw});
+  _nsAuthBusy=false;
+  if(!r.ok||!r.j||!r.j.access_token){
+    if(r.status===0)return _nsAuthMsg('No connection — check your signal and try again');
+    return _nsAuthMsg('That email and password don’t match');
   }
-  el.innerHTML=h;_nsPinDots();
+  _nsSessWrite(_nsSessOf(r.j,em));
+  await _nsLoadPeople();
+  _nsEnter();
 }
-function _nsPinDots(msg){
-  var n=_nsPinSt.buf.length;
-  document.querySelectorAll('.ns-pin-dots span').forEach(function(sp,i){sp.classList.toggle('on',i<n);});
-  var m=document.querySelector('.ns-pin-msg');if(m){if(msg!=null)m.textContent=msg;else if(n)m.textContent='';}
+async function _nsForgot(){
+  var em=_nsAuthVal('nsEmail').trim().toLowerCase();
+  if(!em)return _nsAuthMsg('Type your email above first, then tap again');
+  _nsAuthMsg('Sending…',true);
+  await _nsAuthReq('POST','recover',{email:em});
+  _nsAuthMsg('If that address has an account, a reset link is on its way',true);
 }
-function _nsPinPress(d){
-  var st=_nsPinSt;if(st.busy||st.stage==='who'||st.buf.length>=4)return;
-  st.buf+=d;_nsPinDots();
-  if(st.buf.length===4){st.busy=true;setTimeout(_nsPinDone,120);}
+async function _nsSetPassword(){
+  if(_nsAuthBusy)return;
+  var a=_nsAuthVal('nsPw1'),b=_nsAuthVal('nsPw2');
+  if(a.length<8)return _nsAuthMsg('Use at least 8 characters');
+  if(a!==b)return _nsAuthMsg('Those don’t match');
+  _nsAuthBusy=true;_nsAuthMsg('Saving…',true);
+  var r=await _nsAuthReq('PUT','user',{password:a},_nsResetTok);
+  _nsAuthBusy=false;
+  if(!r.ok)return _nsAuthMsg('That link has expired — ask for a new one');
+  _nsResetTok='';_nsAuthStage='in';_nsRenderAuth();
+  _nsAuthMsg('Password saved — sign in with it now',true);
 }
-function _nsPinDel(){var st=_nsPinSt;if(st.busy)return;st.buf=st.buf.slice(0,-1);_nsPinDots();}
-function _nsPinClear(){var st=_nsPinSt;if(st.busy)return;st.buf='';_nsPinDots();}
-function _nsPinFail(msg){
-  var st=_nsPinSt;st.buf='';st.busy=false;
-  var d=document.querySelector('.ns-pin-dots');if(d){d.classList.remove('shake');void d.offsetWidth;d.classList.add('shake');}
-  _nsPinDots(msg);
+function _nsRenderAuth(){
+  var el=document.getElementById('nsPinStage');if(!el)return;
+  if(_nsAuthStage==='reset'){
+    el.innerHTML='<h1 id="nsLockTitle">Choose <span>a new password</span></h1>'
+      +'<div class="ns-sf">'
+      +'<label>New password<input id="nsPw1" type="password" autocomplete="new-password"></label>'
+      +'<label>Type it again<input id="nsPw2" type="password" autocomplete="new-password" onkeydown="if(event.key===\'Enter\')_nsSetPassword()"></label>'
+      +'</div><p class="ns-pin-msg" role="alert"></p>'
+      +'<button type="button" class="ns-sf-go" onclick="_nsSetPassword()">Save password</button>';
+    return;
+  }
+  var last='';try{last=localStorage.getItem('opsLastEmail')||'';}catch(e){}
+  el.innerHTML='<h1 id="nsLockTitle">Sign in <span>to the planner</span></h1>'
+    +'<div class="ns-sf">'
+    +'<label>Email<input id="nsEmail" type="email" inputmode="email" autocomplete="username" autocapitalize="off" spellcheck="false" value="'+_rdEsc(last)+'" onkeydown="if(event.key===\'Enter\')document.getElementById(\'nsPw\').focus()"></label>'
+    +'<label>Password<input id="nsPw" type="password" autocomplete="current-password" onkeydown="if(event.key===\'Enter\')_nsDoSignIn()"></label>'
+    +'</div><p class="ns-pin-msg" role="alert"></p>'
+    +'<button type="button" class="ns-sf-go" onclick="_nsDoSignIn()">Sign in</button>'
+    +'<button type="button" class="ns-pin-back" onclick="_nsForgot()">Forgotten your password?</button>';
 }
-function _nsPinPick(row){_nsPinSt={stage:'new',buf:'',who:row,first:'',busy:false};_nsRenderPin();}
-function _nsPinBack(){_nsPinSt={stage:_nsPinSt.stage==='confirm'?'new':(_nsPinSt.stage==='new'?'who':'enter'),buf:'',who:_nsPinSt.who,first:'',busy:false};_nsRenderPin();}
-async function _nsPinDone(){
-  var st=_nsPinSt,pin=st.buf,i,t;
-  try{
-    if(st.stage==='enter'){
-      await _nsLoadPins();
-      for(i=0;i<NS_TEAM.length;i++){t=NS_TEAM[i];if(_nsPins[t.row]&&_nsPins[t.row].h===await _nsPinHash(t.row,pin))return _nsSignIn(t.row);}
-      if(pin===NS_LOCK_CODE){_nsPinSt={stage:'who',buf:'',who:null,first:'',busy:false};return _nsRenderPin();}
-      return _nsPinFail("That PIN isn't right");
-    }
-    if(st.stage==='new'){
-      if(pin===NS_LOCK_CODE)return _nsPinFail('Pick a different PIN');
-      for(i=0;i<NS_TEAM.length;i++){t=NS_TEAM[i];if(t.row!==st.who&&_nsPins[t.row]&&_nsPins[t.row].h===await _nsPinHash(t.row,pin))return _nsPinFail('Pick a different PIN');}
-      _nsPinSt={stage:'confirm',buf:'',who:st.who,first:pin,busy:false};return _nsRenderPin();
-    }
-    if(st.stage==='confirm'){
-      if(pin!==st.first){_nsPinSt={stage:'new',buf:'',who:st.who,first:'',busy:false};_nsRenderPin();return _nsPinFail("Those didn't match, try again");}
-      var ok=await _nsSavePin(st.who,await _nsPinHash(st.who,pin));
-      return _nsSignIn(st.who,ok?null:"Signed in, but your PIN couldn't be saved");
-    }
-  }catch(e){console.warn('sign-in error',e);_nsPinFail('Something went wrong, try again');}
+function _nsUpdateWhoAmI(){
+  var el=document.getElementById('nsWhoAmI');if(!el)return;
+  var me=_nsMe(),who=me?_nsTeamOf(me).name:_nsEmail();
+  el.textContent=who?('Signed in as '+who+(_nsCanEdit()?'':' · view only')):'';
 }
-function _nsUpdateWhoAmI(){var el=document.getElementById('nsWhoAmI'),me=_nsMe();if(el)el.textContent=me?'Signed in as '+_nsTeamOf(me).name:'';}
-function _nsSignIn(row,warn){
-  try{localStorage.setItem('opsUnlocked','1');localStorage.setItem('opsUser',row);}catch(e){}
-  _nsPinSt={stage:'enter',buf:'',who:null,first:'',busy:false};
-  document.getElementById('nsLock').hidden=true;document.body.classList.remove('ns-locked');
+function _nsEnter(){
+  var el=document.getElementById('nsLock');if(el)el.hidden=true;
+  document.body.classList.remove('ns-locked');
+  document.body.classList.toggle('ns-ro',!_nsCanEdit());
+  _nsAuthStage='in';
   _nsUpdateWhoAmI();
   if(!window._opsBooted)bootstrap();
-  toast(warn||('Signed in as '+_nsTeamOf(row).name));
+  var me=_nsMe();
+  if(typeof toast==='function'){
+    if(_nsPermFail)toast('Signed in, but your access couldn’t be checked — view only until you reload');
+    else toast(_nsCanEdit()?('Signed in as '+(me?_nsTeamOf(me).name:_nsEmail())):'Signed in — view only');
+  }
 }
 function _nsShowLock(){
   var el=document.getElementById('nsLock');if(!el)return;
   var svg=document.querySelector('.sa-logo-svg');if(svg)document.getElementById('nsLockBrand').innerHTML=svg.outerHTML.replace('class="sa-logo-svg"','class="ns-brand-logo"');
-  _nsPinSt={stage:'enter',buf:'',who:null,first:'',busy:false};
-  _nsRenderPin();
+  _nsRenderAuth();
   el.hidden=false;document.body.classList.add('ns-locked');
-  _nsLoadPins();
+  setTimeout(function(){var f=document.getElementById(_nsAuthStage==='reset'?'nsPw1':(_nsAuthVal('nsEmail')?'nsPw':'nsEmail'));if(f)f.focus();},60);
 }
-function opsLockPlanner(){try{localStorage.removeItem('opsUnlocked');localStorage.removeItem('opsUser');}catch(e){}location.reload();}
-document.addEventListener('keydown',function(e){
-  var el=document.getElementById('nsLock');if(!el||el.hidden)return;
-  if(e.metaKey||e.ctrlKey||e.altKey)return;
-  if(/^[0-9]$/.test(e.key)){e.preventDefault();_nsPinPress(e.key);}
-  else if(e.key==='Backspace'){e.preventDefault();_nsPinDel();}
-  else if(e.key==='Escape'){e.preventDefault();_nsPinClear();}
-},true);
-document.addEventListener('DOMContentLoaded',function(){if(_nsUnlocked()){_nsUpdateWhoAmI();bootstrap();}else _nsShowLock();});
+// Changing your own password while signed in: no email, so no waiting on a
+// reset link. The current one is checked first, so an unattended screen can't
+// be used to lock the owner out.
+function opsOpenPw(){
+  var el=document.getElementById('nsPwSheet');if(!el)return;
+  if(!_nsSess){if(typeof toast==='function')toast('Sign in first');return;}
+  ['nsPwOld','nsPwNew','nsPwNew2'].forEach(function(id){var i=document.getElementById(id);if(i)i.value='';});
+  document.getElementById('nsPwMsg').textContent='';
+  document.getElementById('nsPwWho').textContent=_nsEmail();
+  el.hidden=false;document.body.style.overflow='hidden';
+  setTimeout(function(){var f=document.getElementById('nsPwOld');if(f)f.focus();},60);
+}
+function opsClosePw(){
+  var el=document.getElementById('nsPwSheet');if(!el||el.hidden)return;
+  if(document.activeElement)document.activeElement.blur();
+  ['nsPwOld','nsPwNew','nsPwNew2'].forEach(function(id){var i=document.getElementById(id);if(i)i.value='';});
+  el.hidden=true;document.body.style.overflow='';
+}
+function _nsPwMsg(t){var m=document.getElementById('nsPwMsg');if(m)m.textContent=t||'';}
+async function opsSavePw(){
+  if(_nsAuthBusy)return;
+  var old=(document.getElementById('nsPwOld')||{}).value||'',
+      a=(document.getElementById('nsPwNew')||{}).value||'',
+      b=(document.getElementById('nsPwNew2')||{}).value||'';
+  if(!old)return _nsPwMsg('Type your current password');
+  if(a.length<8)return _nsPwMsg('Use at least 8 characters');
+  if(a!==b)return _nsPwMsg('The new ones don\u2019t match');
+  if(a===old)return _nsPwMsg('That\u2019s the same as your current one');
+  _nsAuthBusy=true;_nsPwMsg('Saving\u2026');
+  var chk=await _nsAuthReq('POST','token?grant_type=password',{email:_nsEmail(),password:old});
+  if(!chk.ok||!chk.j||!chk.j.access_token){
+    _nsAuthBusy=false;
+    return _nsPwMsg(chk.status===0?'No connection \u2014 try again':'Your current password isn\u2019t right');
+  }
+  _nsSessWrite(_nsSessOf(chk.j,_nsEmail()));
+  var r=await _nsAuthReq('PUT','user',{password:a},_nsSess.access);
+  _nsAuthBusy=false;
+  if(!r.ok)return _nsPwMsg('Couldn\u2019t save that \u2014 try again');
+  opsClosePw();
+  if(typeof toast==='function')toast('Password changed');
+}
+function opsLockPlanner(){
+  var s=_nsSess;_nsSessDrop();
+  try{localStorage.removeItem('opsUnlocked');localStorage.removeItem('opsUser');}catch(e){}
+  if(s)_nsAuthReq('POST','logout',{},s.access);
+  setTimeout(function(){location.reload();},150);
+}
+// A reset link lands back here with a one-off token in the address bar.
+function _nsRecoveryToken(){
+  var h=location.hash||'';
+  if(h.indexOf('access_token')<0||h.indexOf('type=recovery')<0)return '';
+  var out='';h.replace(/^#/,'').split('&').forEach(function(kv){
+    var i=kv.indexOf('=');if(i>0&&kv.slice(0,i)==='access_token')out=decodeURIComponent(kv.slice(i+1));
+  });
+  return out;
+}
+document.addEventListener('DOMContentLoaded',async function(){
+  var tok=_nsRecoveryToken();
+  if(tok){
+    _nsResetTok=tok;_nsAuthStage='reset';
+    try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}
+    return _nsShowLock();
+  }
+  _nsSess=_nsSessRead();
+  if(_nsSess&&await _nsAuthFresh()){await _nsLoadPeople();return _nsEnter();}
+  _nsSessDrop();_nsShowLock();
+});
 
 // Change history (b94): who changed which box and when. Each person's changes are kept
 // in their own record per month (ops_hist_<person>_<yyyy-mm>) so saves never collide.
@@ -7062,14 +7248,14 @@ async function _nsHistSave(){
   try{
     for(var key in groups){
       var latest=[];
-      var r=await fetch(_SB_URL+'/rest/v1/app_data?select=value&key=eq.'+key,{headers:_sbGet()});
+      var r=await fetch(_SB_URL+'/rest/v1/planner_data?select=value&key=eq.'+key,{headers:_sbGet()});
       if(!r.ok)throw new Error('HTTP '+r.status);
       var rows=await r.json();if(rows&&rows[0]&&Array.isArray(rows[0].value))latest=rows[0].value;
       var by={};
       latest.concat(groups[key]).forEach(function(it){if(it&&it.id&&(!by[it.id]||(it.t||0)>=(by[it.id].t||0)))by[it.id]=it;});
       var list=Object.keys(by).map(function(x){return by[x];}).sort(function(a,b){return a.at-b.at;});
       if(list.length>3000)list=list.slice(-3000);
-      var w=await fetch(_SB_URL+'/rest/v1/app_data?on_conflict=key',{method:'POST',headers:_sbHeaders(),body:JSON.stringify({key:key,value:list,updated_at:new Date().toISOString()})});
+      var w=await fetch(_SB_URL+'/rest/v1/planner_data?on_conflict=key',{method:'POST',headers:_sbHeaders(),body:JSON.stringify({key:key,value:list,updated_at:new Date().toISOString()})});
       if(!w.ok)throw new Error('HTTP '+w.status);
     }
   }catch(e){
@@ -7082,7 +7268,7 @@ async function _nsHistLoad(){
   var now=new Date(),mons=[_nsHistMonth(now.getTime()),_nsHistMonth(new Date(now.getFullYear(),now.getMonth()-1,15).getTime())],keys=[];
   NS_TEAM.forEach(function(t){mons.forEach(function(m){keys.push(_nsHistKey(t.row,m));});});
   try{
-    var r=await fetch(_SB_URL+'/rest/v1/app_data?select=value&key=in.('+keys.join(',')+')',{headers:_sbGet()});
+    var r=await fetch(_SB_URL+'/rest/v1/planner_data?select=value&key=in.('+keys.join(',')+')',{headers:_sbGet()});
     if(!r.ok)return;
     var rows=await r.json();
     rows.forEach(function(row){(Array.isArray(row.value)?row.value:[]).forEach(function(it){
@@ -7349,7 +7535,7 @@ var NS_BACKUP_KEEP=14;
 function _nsBackupKey(d){return _k('ops_backup_'+d);}
 async function _nsBackupList(){
   try{
-    var r=await fetch(_SB_URL+'/rest/v1/app_data?select=key,updated_at&key=like.'+encodeURIComponent(_k('ops_backup_%')),{headers:_sbGet()});
+    var r=await fetch(_SB_URL+'/rest/v1/planner_data?select=key,updated_at&key=like.'+encodeURIComponent(_k('ops_backup_%')),{headers:_sbGet()});
     if(!r.ok)return [];
     var rows=await r.json();
     return rows.map(function(x){return {key:x.key,day:(x.key.match(/ops_backup_(\d{4}-\d{2}-\d{2})/)||[])[1]||'',at:x.updated_at};})
@@ -7357,19 +7543,20 @@ async function _nsBackupList(){
   }catch(e){return [];}
 }
 async function _nsBackupToday(){
+  if(!_nsCanEdit())return;
   if(!window._opsBooted||!Object.keys(_opsD).length)return;
   var today=new Date().toISOString().slice(0,10);
   try{
     var list=await _nsBackupList();
     if(list.some(function(x){return x.day===today;}))return;      // already done today
-    var r=await fetch(_SB_URL+'/rest/v1/app_data?select=value&key=eq.'+_k('opsPlanner'),{headers:_sbGet()});
+    var r=await fetch(_SB_URL+'/rest/v1/planner_data?select=value&key=eq.'+_k('opsPlanner'),{headers:_sbGet()});
     if(!r.ok)return;
     var rows=await r.json(),val=rows&&rows[0]&&rows[0].value;
     if(!val||Object.keys(val).length<50)return;                    // never back up a half-loaded planner
-    var w=await fetch(_SB_URL+'/rest/v1/app_data?on_conflict=key',{method:'POST',headers:_sbHeaders(),body:JSON.stringify({key:_nsBackupKey(today),value:val,updated_at:new Date().toISOString()})});
+    var w=await fetch(_SB_URL+'/rest/v1/planner_data?on_conflict=key',{method:'POST',headers:_sbHeaders(),body:JSON.stringify({key:_nsBackupKey(today),value:val,updated_at:new Date().toISOString()})});
     if(!w.ok)return;
     var old=list.slice(NS_BACKUP_KEEP-1);
-    for(var i=0;i<old.length;i++){try{await fetch(_SB_URL+'/rest/v1/app_data?key=eq.'+encodeURIComponent(old[i].key),{method:'DELETE',headers:_sbHeaders()});}catch(e){}}
+    for(var i=0;i<old.length;i++){try{await fetch(_SB_URL+'/rest/v1/planner_data?key=eq.'+encodeURIComponent(old[i].key),{method:'DELETE',headers:_sbHeaders()});}catch(e){}}
     console.log('[backup] saved',today,'| kept',Math.min(list.length+1,NS_BACKUP_KEEP));
   }catch(e){console.warn('backup failed',e);}
 }
@@ -7395,15 +7582,16 @@ async function _nsRenderBackups(){
   body.innerHTML=h;
 }
 async function opsRestoreBackup(day){
+  if(_nsRO('Only a planner manager can restore a backup'))return;
   if(!confirm('Put the planner back to how it was on '+day+'?\n\nEverything entered since then is replaced. The current state is saved first, so this can be undone.'))return;
   try{
-    var r=await fetch(_SB_URL+'/rest/v1/app_data?select=value&key=eq.'+_nsBackupKey(day),{headers:_sbGet()});
+    var r=await fetch(_SB_URL+'/rest/v1/planner_data?select=value&key=eq.'+_nsBackupKey(day),{headers:_sbGet()});
     var rows=await r.json(),val=rows&&rows[0]&&rows[0].value;
     if(!val){toast('That backup could not be read');return;}
-    var cur=await fetch(_SB_URL+'/rest/v1/app_data?select=value&key=eq.'+_k('opsPlanner'),{headers:_sbGet()});
+    var cur=await fetch(_SB_URL+'/rest/v1/planner_data?select=value&key=eq.'+_k('opsPlanner'),{headers:_sbGet()});
     var crows=await cur.json();
-    if(crows&&crows[0])await fetch(_SB_URL+'/rest/v1/app_data?on_conflict=key',{method:'POST',headers:_sbHeaders(),body:JSON.stringify({key:_k('ops_backup_before_restore'),value:crows[0].value,updated_at:new Date().toISOString()})});
-    var w=await fetch(_SB_URL+'/rest/v1/app_data?on_conflict=key',{method:'POST',headers:_sbHeaders(),body:JSON.stringify({key:_k('opsPlanner'),value:val,updated_at:new Date().toISOString()})});
+    if(crows&&crows[0])await fetch(_SB_URL+'/rest/v1/planner_data?on_conflict=key',{method:'POST',headers:_sbHeaders(),body:JSON.stringify({key:_k('ops_backup_before_restore'),value:crows[0].value,updated_at:new Date().toISOString()})});
+    var w=await fetch(_SB_URL+'/rest/v1/planner_data?on_conflict=key',{method:'POST',headers:_sbHeaders(),body:JSON.stringify({key:_k('opsPlanner'),value:val,updated_at:new Date().toISOString()})});
     if(!w.ok){toast('Restore failed');return;}
     toast('Restored — reloading');
     setTimeout(function(){location.reload();},800);
@@ -7417,7 +7605,7 @@ async function _opsPollOnce(){
   if(!window._opsBooted||_opsPolling||_opsSaving||_opsEd||document.hidden)return;
   _opsPolling=true;
   try{
-    var r=await fetch(_SB_URL+'/rest/v1/app_data?select=updated_at&key=eq.'+_k('opsPlanner'),{headers:_sbGet()});
+    var r=await fetch(_SB_URL+'/rest/v1/planner_data?select=updated_at&key=eq.'+_k('opsPlanner'),{headers:_sbGet()});
     if(!r.ok)return;
     var rows=await r.json(),stamp=rows&&rows[0]&&Date.parse(rows[0].updated_at);
     if(!stamp||stamp===_opsStamp)return;
