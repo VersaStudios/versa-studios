@@ -2491,6 +2491,8 @@ html[data-theme="softdark"] #kitPageTitle + div{margin-left:auto}
 }
 .vsk-cimg img{width:100%;height:100%;object-fit:cover;display:block}
 .vsk-cimg-none{border-style:dashed}
+.vsk-hired{margin-left:7px;font-size:9px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--accent);font-style:normal}
 .vsk-card:hover{border-color:var(--field-edge-hi)}
 .vsk-cnm{font-size:13px;font-weight:800;letter-spacing:-.02em;color:var(--ink);line-height:1.25;
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
@@ -2529,6 +2531,21 @@ html[data-theme="softdark"] #kitPageTitle + div{margin-left:auto}
   .vsk-r{width:auto}
   .vsk-rs{width:100%;margin-left:0}
   .vsk-cat,.vsk-tag,.vsk-loc{display:none}
+}
+
+/* Heads of department, grouped ─────────────────────────────────────── */
+html[data-theme="soft"]  #jdContent .jd-hodcard,
+html[data-theme="softdark"] #jdContent .jd-hodcard{display:block!important}
+.jd-hodgrp + .jd-hodgrp{margin-top:11px}
+.jd-hodgh{
+  display:flex;align-items:baseline;gap:7px;margin-bottom:5px;
+  font-size:9px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);
+}
+.jd-hodgh em{font-style:normal;font-size:10px;font-weight:800;color:var(--ink)}
+.jd-hodgb{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+html[data-theme="soft"]  #jdContent .jd-hodcard > .jd-card-hd,
+html[data-theme="softdark"] #jdContent .jd-hodcard > .jd-card-hd{
+  display:flex!important;align-items:baseline;justify-content:space-between;margin-bottom:9px;
 }
 
 /* ── A kit item, information first ────────────────────────────────── */
@@ -12787,7 +12804,7 @@ function _vsKitLive(){
 }
 function vsKitSelect(type,value){
   _vsKitSel={type:type,value:value||'',sub:''};
-  if(type==='hired'||type==='lth'||type==='logistics'){
+  if(type==='logistics'){
     try{ showKitTab(type); }catch(e){}
     vsKitRail();
     return;
@@ -12853,9 +12870,9 @@ function vsKitRail(){
     +sec('Categories')+catRows
     +sec('Where')
     +Object.keys(locs).sort().map(function(l){return row('loc',l,l,locs[l]);}).join('')
-    +sec('Hired')
-    +row('hired','','Hired catalogue',null)
-    +row('lth','','Long term hired',null)
+    +sec('Ours or hired')
+    +row('own','','Versa owns',live.filter(function(k){return !k.isHired;}).length)
+    +row('hire','','Hired in',live.filter(function(k){return !!k.isHired;}).length)
     +sec('Other')
     +row('logistics','','Logistics',null);
 }
@@ -12874,6 +12891,8 @@ function vsKitList(){
     if(_vsKitSel.sub) live=live.filter(function(k){return (k.subcat||'').trim()===_vsKitSel.sub;});
   }
   else if(_vsKitSel.type==='loc') live=live.filter(function(k){return (k.loc||'Unknown')===_vsKitSel.value;});
+  else if(_vsKitSel.type==='own') live=live.filter(function(k){return !k.isHired;});
+  else if(_vsKitSel.type==='hire') live=live.filter(function(k){return !!k.isHired;});
   var q=_vsKitQ.trim().toLowerCase();
   if(q){
     live=live.filter(function(k){
@@ -12919,7 +12938,8 @@ function vsKitList(){
         +_vsKitThumb(g.items)
         +'<span class="vsk-ctext">'
           +'<span class="vsk-cnm">'+_vsEsc(g.label)+'</span>'
-          +'<span class="vsk-cwhat">'+_vsEsc(_vsKitWhat(first))+'</span>'
+          +'<span class="vsk-cwhat">'+_vsEsc(_vsKitWhat(first))
+            +(first.isHired?'<b class="vsk-hired">Hired</b>':'')+'</span>'
           +'<span class="vsk-cfoot">'
             +'<span class="vsk-gn">\u00d7'+g.items.length+'</span>'
             +'<span class="vsk-cst">'+_vsEsc(bits.join(' \u00b7 '))+'</span>'
@@ -12966,7 +12986,8 @@ function _vsKitCard(k){
     +_vsKitThumb(k)
     +'<span class="vsk-ctext">'
       +'<span class="vsk-cnm">'+_vsEsc(k.name||'')+'</span>'
-      +'<span class="vsk-cwhat">'+_vsEsc(_vsKitWhat(k))+(k.tag?('  \u00b7  '+_vsEsc(k.tag)):'')+'</span>'
+      +'<span class="vsk-cwhat">'+_vsEsc(_vsKitWhat(k))+(k.tag?('  \u00b7  '+_vsEsc(k.tag)):'')
+        +(k.isHired?'<b class="vsk-hired">Hired</b>':'')+'</span>'
       +'<span class="vsk-cfoot"><span class="vsk-dot k-'+kind+'"></span>'
         +'<span class="vsk-cst">'+_vsEsc(st)+'</span>'
         +'<span class="vsk-cloc">'+_vsEsc(k.loc||'')+'</span></span>'
@@ -17515,6 +17536,7 @@ function hodSection(j){
   // Ensure default roles exist
   var defaults=['Director','Executive Producer','Lighting Supervisor','Sound Supervisor'];
   defaults.forEach(function(r){if(!j.hods.find(function(h){return h.role===r;}))j.hods.push({role:r,name:''});});
+  var rowAt=function(i){ return _hodRow(j,j.hods[i],i); };
   var rows=j.hods.map(function(h,i){
     /* Merge saved custom roles into options */
     var allRoles=HOD_ROLES.slice();
@@ -17527,7 +17549,24 @@ function hodSection(j){
       +'<button class="rm-btn" onclick="hodRemove('+j.id+','+i+')">×</button>'
       +'</div>';
   }).join('');
-  return '<div class="jd-card">'
+  /* Thirty-nine names in one wrap is a wall. Group them by the department
+     they belong to, in the order a call sheet reads. */
+  var grouped='';
+  if(typeof _vsIsSoft==='function'&&_vsIsSoft()&&j.hods.length>8){
+    var order=['Production','Camera','Sound','Lighting & Media','Gallery','Floor','Suppliers','Everyone else'];
+    var buckets={};
+    j.hods.forEach(function(h,i){
+      var d=_vsHodDept(h.role);
+      (buckets[d]=buckets[d]||[]).push(i);
+    });
+    grouped=order.filter(function(d){return buckets[d]&&buckets[d].length;}).map(function(d){
+      return '<div class="jd-hodgrp"><div class="jd-hodgh">'+_vsEsc(d)
+        +'<em>'+buckets[d].length+'</em></div>'
+        +'<div class="jd-hodgb">'+buckets[d].map(function(i){return rowAt(i);}).join('')+'</div>'
+      +'</div>';
+    }).join('');
+  }
+  return '<div class="jd-card'+(grouped?' jd-hodcard':'')+'">'
     +'<div class="jd-card-hd">'
       +'<div class="jd-card-ti">Heads of Department</div>'
       +'<div style="display:flex;gap:6px;align-items:center">'
@@ -17535,8 +17574,36 @@ function hodSection(j){
         +'<button class="ibtn" style="font-size:10px;padding:3px 10px" onclick="hodAdd('+j.id+')">+ Add</button>'
       +'</div>'
     +'</div>'
-    +(rows||'<div style="color:var(--muted);font-size:13px;padding:4px 0">No HODs yet.</div>')
+    +(grouped||rows||'<div style="color:var(--muted);font-size:13px;padding:4px 0">No HODs yet.</div>')
     +'</div>';
+}
+/* Which department a role belongs to. Matched on the words in the role, so
+   a role typed in by hand lands somewhere sensible without being on a list. */
+function _vsHodDept(role){
+  var r=String(role||'').toLowerCase();
+  if(!r) return 'Everyone else';
+  if(/lumina|supplier|\bltd\b/.test(r)) return 'Suppliers';
+  if(/camera|jib/.test(r)) return 'Camera';
+  if(/sound|audio|grams|mic/.test(r)) return 'Sound';
+  if(/light|gaffer|console op|media server|media technician|spark|\blx\b/.test(r)) return 'Lighting & Media';
+  if(/vision mixer|autocue|gallery|\bevs\b|graphic|\bgfx\b/.test(r)) return 'Gallery';
+  if(/floor manager|\bafm\b|stage/.test(r)) return 'Floor';
+  if(/director|producer|production|editor|script|coordinator|h&s|safety|manager/.test(r)) return 'Production';
+  return 'Everyone else';
+}
+
+function _hodRow(j,h,i){
+  if(!h) return '';
+  var allRoles=HOD_ROLES.slice();
+  if(h.role&&allRoles.indexOf(h.role)<0)allRoles.push(h.role);
+  j.hods.forEach(function(hh){if(hh.role&&allRoles.indexOf(hh.role)<0)allRoles.push(hh.role);});
+  var roleOpts=allRoles.map(function(r){return '<option'+(r===h.role?' selected':'')+'>'+r+'</option>';}).join('');
+  return '<div class="jd-hod-row">'
+    +'<select onchange="hodSetRole('+j.id+','+i+',this.value)"><option value="">-- Role --</option>'+roleOpts
+      +'<option value="__custom__" style="color:var(--accent);font-style:italic">+ Custom...</option></select>'
+    +'<input value="'+((h.name||'').replace(/"/g,'&quot;'))+'" placeholder="Name..." onchange="hodSetName('+j.id+','+i+',this.value)"/>'
+    +'<button class="rm-btn" onclick="hodRemove('+j.id+','+i+')">\u00d7</button>'
+  +'</div>';
 }
 
 // Meeting notes rendered inline on the Info tab (replaces global mnSection for info)
@@ -20216,6 +20283,7 @@ function _vsSrcStock(name){
   if(!toks.length) return null;
   var hits=kit.filter(function(k){
     if(!k||k.status==='Bin') return false;
+    if(k.isHired) return false;   /* a hired model is not stock we hold */
     var hay=((k.name||'')+' '+(k.make||'')+' '+(k.model||'')+' '+(k.subcat||'')).toLowerCase();
     if(hay.indexOf(n)>-1) return true;
     return toks.every(function(t){return hay.indexOf(t)>-1;});
