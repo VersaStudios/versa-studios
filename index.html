@@ -2429,6 +2429,13 @@ html[data-theme="softdark"] #jdContent .vsn-new{
 .vs-stripweeks{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
 .vs-stripweeks .vs-stripday{width:auto}
 .vs-stripgap{border:none;background:none}
+/* The bar at the top already says Kit List, so the page does not need to
+   say Kit Inventory underneath it. The buttons keep the row. */
+html[data-theme="soft"]  #kitPageTitle,
+html[data-theme="softdark"] #kitPageTitle{display:none}
+html[data-theme="soft"]  #kitPageTitle + div,
+html[data-theme="softdark"] #kitPageTitle + div{margin-left:auto}
+
 /* ── The Kit page: a rail, and a line per item ────────────────────── */
 #vsKitWrap{display:flex;gap:20px;align-items:flex-start}
 .vsk-rail{flex:0 0 184px;position:sticky;top:0}
@@ -2469,12 +2476,21 @@ html[data-theme="softdark"] #jdContent .vsn-new{
 .vsk-count{font-size:10px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);
   white-space:nowrap}
 /* three or four across, rather than one item to a line */
-.vsk-grid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:7px}
+.vsk-grid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(258px,1fr));gap:7px}
 .vsk-card{
-  display:flex;flex-direction:column;gap:3px;text-align:left;cursor:pointer;
+  display:flex;align-items:flex-start;gap:10px;text-align:left;cursor:pointer;
   background:var(--surface);border:1.5px solid var(--field-edge);border-radius:9px;
-  padding:9px 11px 8px;font-family:var(--font);min-width:0;
+  padding:8px 11px 8px 8px;font-family:var(--font);min-width:0;
 }
+.vsk-ctext{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}
+/* the picture of it */
+.vsk-cimg{
+  flex:0 0 44px;width:44px;height:44px;border-radius:6px;overflow:hidden;
+  background:var(--surface-2);border:1.5px solid var(--border-l,rgba(13,13,13,.12));
+  display:flex;align-items:center;justify-content:center;
+}
+.vsk-cimg img{width:100%;height:100%;object-fit:cover;display:block}
+.vsk-cimg-none{border-style:dashed}
 .vsk-card:hover{border-color:var(--field-edge-hi)}
 .vsk-cnm{font-size:13px;font-weight:800;letter-spacing:-.02em;color:var(--ink);line-height:1.25;
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
@@ -2606,6 +2622,26 @@ html[data-theme="softdark"] #kitDrawer .vsk-i::placeholder{color:var(--faint,#b9
 .vsk-hire.on{color:var(--ink)}
 .vsk-hire input{width:15px;height:15px;accent-color:var(--ink);cursor:pointer}
 /* what the item is out on, and what it has been out on */
+/* where it is right now */
+.vsk-now{
+  display:flex;align-items:baseline;gap:10px;width:100%;text-align:left;
+  background:var(--surface);border:1.5px solid var(--field-edge);border-radius:8px;
+  padding:7px 11px;margin-bottom:13px;font-family:var(--font);
+}
+button.vsk-now{cursor:pointer}
+button.vsk-now:hover{border-color:var(--field-edge-hi)}
+.vsk-now.on{background:var(--nav-kit,#eec0b4);border-color:var(--ink)}
+.vsk-now.free{background:var(--nav-studio,#c9d6c3);border-color:var(--ink)}
+.vsk-now.warn{background:var(--surface);border-color:#b23b3b}
+.vsk-nowl{font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;
+  color:rgba(13,13,13,.55);flex:0 0 auto}
+.vsk-now.warn .vsk-nowl{color:#b23b3b}
+.vsk-nowj{flex:1;min-width:0;font-size:13.5px;font-weight:800;letter-spacing:-.02em;color:#0d0d0d;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vsk-now.warn .vsk-nowj{color:var(--ink)}
+.vsk-nowd{font-size:11px;font-weight:700;color:rgba(13,13,13,.55);flex:0 0 auto}
+.vsk-now.warn .vsk-nowd{color:var(--muted)}
+.vsk-nowx{font-size:10px;font-weight:800;color:rgba(13,13,13,.55);flex:0 0 auto}
 .vsk-diary{margin-top:16px;padding-top:13px;border-top:1.5px solid var(--border-l,rgba(13,13,13,.14))}
 .vsk-dh{display:flex;align-items:baseline;gap:8px;font-size:9px;font-weight:800;letter-spacing:.12em;
   text-transform:uppercase;color:var(--muted);margin:0 0 6px}
@@ -2639,6 +2675,8 @@ html[data-theme="softdark"] #kitDrawer .vsk-i::placeholder{color:var(--faint,#b9
 .vsk-card[draggable="true"],.vsk-unit[draggable="true"]{cursor:grab}
 .vsk-card[draggable="true"]:active,.vsk-unit[draggable="true"]:active{cursor:grabbing}
 
+html[data-theme="soft"]  #kitDrawer .vsk-unset,
+html[data-theme="softdark"] #kitDrawer .vsk-unset{color:var(--faint,#b9b9b9)!important;font-weight:700!important}
 .vsk-notes{margin-top:14px}
 .vsk-notes textarea{min-height:70px;resize:vertical;line-height:1.5;font-weight:700!important}
 @media (max-width:640px){
@@ -12878,12 +12916,15 @@ function vsKitList(){
       +'<button class="vsk-card vsk-gcard" draggable="true" '
         +'ondragstart="vsKitDrag(event,\'group\',\''+g.key.replace(/'/g,"\\'")+'\')" '
         +'onclick="vsKitToggleGroup(\''+g.key.replace(/'/g,"\\'")+'\')">'
-        +'<span class="vsk-cnm">'+_vsEsc(g.label)+'</span>'
-        +'<span class="vsk-cwhat">'+_vsEsc(first.subcat||first.cat||'')+'</span>'
-        +'<span class="vsk-cfoot">'
-          +'<span class="vsk-gn">\u00d7'+g.items.length+'</span>'
-          +'<span class="vsk-cst">'+_vsEsc(bits.join(' \u00b7 '))+'</span>'
-          +'<span class="vsk-cloc">'+_vsEsc(first.loc||'')+'</span></span>'
+        +_vsKitThumb(g.items)
+        +'<span class="vsk-ctext">'
+          +'<span class="vsk-cnm">'+_vsEsc(g.label)+'</span>'
+          +'<span class="vsk-cwhat">'+_vsEsc(_vsKitWhat(first))+'</span>'
+          +'<span class="vsk-cfoot">'
+            +'<span class="vsk-gn">\u00d7'+g.items.length+'</span>'
+            +'<span class="vsk-cst">'+_vsEsc(bits.join(' \u00b7 '))+'</span>'
+            +'<span class="vsk-cloc">'+_vsEsc(first.loc||'')+'</span></span>'
+        +'</span>'
       +'</button>'
       +(open?('<div class="vsk-units">'+g.items.map(function(k){
           var job=_vsKitJobName(k);
@@ -12900,6 +12941,21 @@ function vsKitList(){
   }).join('')+'</div>';
 }
 /* one item, on its own */
+/* The picture, where there is one. A group borrows the first picture any
+   of its units has, since they are the same model. */
+function _vsKitThumb(items){
+  var list=[].concat(items||[]);
+  for(var i=0;i<list.length;i++){
+    var ph=list[i]&&list[i].photos&&list[i].photos[0];
+    if(ph) return '<span class="vsk-cimg"><img src="'+_vsEsc(ph)+'" alt="" loading="lazy"></span>';
+  }
+  return '<span class="vsk-cimg vsk-cimg-none"></span>';
+}
+/* "Sony \u00b7 Radio TX" \u2014 who made it, then what it is. */
+function _vsKitWhat(k){
+  return [String(k.make||'').trim(), String(k.subcat||k.cat||'').trim()]
+    .filter(Boolean).join(' \u00b7 ');
+}
 function _vsKitCard(k){
   var job=_vsKitJobName(k);
   var st=job?('On job \u00b7 '+job):(k.status||'');
@@ -12907,11 +12963,14 @@ function _vsKitCard(k){
   return '<button class="vsk-card" draggable="true" '
     +'ondragstart="vsKitDrag(event,\'item\','+k.id+')" '
     +'onclick="openDrawer('+k.id+')">'
-    +'<span class="vsk-cnm">'+_vsEsc(k.name||'')+'</span>'
-    +'<span class="vsk-cwhat">'+_vsEsc(k.subcat||k.cat||'')+(k.tag?('  \u00b7  '+_vsEsc(k.tag)):'')+'</span>'
-    +'<span class="vsk-cfoot"><span class="vsk-dot k-'+kind+'"></span>'
-      +'<span class="vsk-cst">'+_vsEsc(st)+'</span>'
-      +'<span class="vsk-cloc">'+_vsEsc(k.loc||'')+'</span></span>'
+    +_vsKitThumb(k)
+    +'<span class="vsk-ctext">'
+      +'<span class="vsk-cnm">'+_vsEsc(k.name||'')+'</span>'
+      +'<span class="vsk-cwhat">'+_vsEsc(_vsKitWhat(k))+(k.tag?('  \u00b7  '+_vsEsc(k.tag)):'')+'</span>'
+      +'<span class="vsk-cfoot"><span class="vsk-dot k-'+kind+'"></span>'
+        +'<span class="vsk-cst">'+_vsEsc(st)+'</span>'
+        +'<span class="vsk-cloc">'+_vsEsc(k.loc||'')+'</span></span>'
+    +'</span>'
   +'</button>';
 }
 /* "BA61 Batteries 07" and "BA61 Batteries 12" are the same model. The
@@ -13900,6 +13959,46 @@ function _vsRange(b){
   return (t&&t!==f)?(f+' – '+t):f;
 }
 
+/* Where it is right now, said first rather than left to be found under
+   sixteen fields. If the record claims it is in use but no job has it, the
+   line says so instead of quietly showing nothing. */
+function vsKitNow(k){
+  var today=_vsToday();
+  var all=vsKitBookings(k.id);
+  var now=all.filter(function(b){ return b.from&&b.from<=today&&(!b.to||b.to>=today); });
+  var next=all.filter(function(b){ return b.from&&b.from>today; });
+  var inUse=!!(k.inUse||k.status==='In Use');
+
+  if(now.length){
+    var b=now[0];
+    return '<button class="vsk-now on" onclick="vsKitGoJob('+b.job.id+')">'
+      +'<span class="vsk-nowl">On</span>'
+      +'<span class="vsk-nowj">'+_vsEsc(b.job.name||'a job')+'</span>'
+      +'<span class="vsk-nowd">'+_vsEsc(_vsRange(b))+'</span>'
+      +(now.length>1?'<span class="vsk-nowx">+'+(now.length-1)+' more</span>':'')
+    +'</button>';
+  }
+  if(inUse){
+    return '<div class="vsk-now warn">'
+      +'<span class="vsk-nowl">In use</span>'
+      +'<span class="vsk-nowj">but not allocated to a job</span>'
+      +'<span class="vsk-nowd">Allocate it below, or set it available</span>'
+    +'</div>';
+  }
+  if(next.length){
+    var n=next[0];
+    return '<button class="vsk-now" onclick="vsKitGoJob('+n.job.id+')">'
+      +'<span class="vsk-nowl">Next</span>'
+      +'<span class="vsk-nowj">'+_vsEsc(n.job.name||'a job')+'</span>'
+      +'<span class="vsk-nowd">'+_vsEsc(_vsRange(n))+'</span>'
+    +'</button>';
+  }
+  return '<div class="vsk-now free">'
+    +'<span class="vsk-nowl">Free</span>'
+    +'<span class="vsk-nowj">not on anything</span>'
+  +'</div>';
+}
+
 /* The block on the item's own page: what it is out on, and what it has
    been out on. */
 function vsKitDiary(k){
@@ -14076,7 +14175,11 @@ function openDrawer(id) {
   }
   // Subtitle badges
   var catLine=k.cat+(k.subcat?' / '+k.subcat:'');
-  var locOpts=['Manchester','London','ABC'].map(function(l){return '<option'+(l===k.loc?' selected':'')+'>'+l+'</option>';}).join('');
+  /* same trap as the panel: with no location set this showed the first
+     option, so an item filed nowhere claimed to be in Manchester */
+  var _locSet=['Manchester','London','ABC'].indexOf(k.loc)>-1;
+  var locOpts=(_locSet?'':'<option value="" selected>\u2014 Not set</option>')
+    +['Manchester','London','ABC'].map(function(l){return '<option'+(l===k.loc?' selected':'')+'>'+l+'</option>';}).join('');
   var locCol={Manchester:'#2d7dd2',London:'#e63946',ABC:'#2d7dd2'}[k.loc]||'#888';
   document.getElementById('drwSubtitle').innerHTML=
     '<span style="font-family:var(--cond);font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em">'+catLine+'</span>'
@@ -14147,9 +14250,17 @@ function vsKitDet(k){
     return f(label,'<input class="fi vsk-i" value="'+esc(k[field]).replace(/"/g,'&quot;')+'" '
       +'placeholder="'+esc(ph||'\u2014')+'" onchange="vsKitSet('+k.id+',\''+field+'\',this.value)"/>');
   };
+  /* A select whose value is not in its list shows the first option, which
+     made an item with no location read as Manchester and an unset status
+     read as Available. Anything unset says so instead. */
   var sel=function(label,field,list,blank){
-    return f(label,'<select class="fi vsk-i" onchange="vsKitSet('+k.id+',\''+field+'\',this.value)">'
-      +(blank?'<option value="">\u2014</option>':'')+opt(list,k[field])+'</select>');
+    var cur=(k[field]==null?'':String(k[field]));
+    var unset=(!cur)||list.indexOf(cur)<0;
+    return f(label,'<select class="fi vsk-i'+(unset?' vsk-unset':'')+'" '
+      +'onchange="vsKitSet('+k.id+',\''+field+'\',this.value)">'
+      +(unset?'<option value=""'+(cur?'':' selected')+'>\u2014 Not set</option>':'')
+      +(cur&&list.indexOf(cur)<0?'<option selected>'+esc(cur)+'</option>':'')
+      +opt(list,cur)+'</select>');
   };
 
   return '<div class="vsk">'
@@ -14164,6 +14275,7 @@ function vsKitDet(k){
       +'</div>'
     +'</div>'
     +'<div class="vsk-main">'
+      +vsKitNow(k)
       +'<div class="vsk-grid">'
         +txt('Name','name')
         +txt('Manufacturer','make','Sony')
