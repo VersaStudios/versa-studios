@@ -2533,20 +2533,35 @@ html[data-theme="softdark"] #kitPageTitle + div{margin-left:auto}
   .vsk-cat,.vsk-tag,.vsk-loc{display:none}
 }
 
+/* Compact: the boxes carry a role and a name, so they do not need the
+   padding of a field you type a paragraph into. */
+html[data-theme="soft"]  #jdContent .jd-hodcard .jd-hod-row,
+html[data-theme="softdark"] #jdContent .jd-hodcard .jd-hod-row{
+  padding:3px 8px!important;border-radius:6px!important;gap:6px!important;
+}
+html[data-theme="soft"]  #jdContent .jd-hodcard .jd-hod-row .vs-seltrig,
+html[data-theme="softdark"] #jdContent .jd-hodcard .jd-hod-row .vs-seltrig{
+  font-size:8px!important;letter-spacing:.09em!important;padding:0 9px 0 0!important;
+}
+html[data-theme="soft"]  #jdContent .jd-hodcard .jd-hod-row input,
+html[data-theme="softdark"] #jdContent .jd-hodcard .jd-hod-row input{
+  font-size:12.5px!important;
+}
+
 /* Heads of department, grouped ─────────────────────────────────────── */
 html[data-theme="soft"]  #jdContent .jd-hodcard,
 html[data-theme="softdark"] #jdContent .jd-hodcard{display:block!important}
 /* A group of two was taking a whole line and leaving the rest of it empty.
    The groups pack side by side instead, each as wide as it needs, and a
    long one takes the room it needs. */
-.jd-hodgroups{display:flex;flex-wrap:wrap;gap:6px 22px;align-items:flex-start}
+.jd-hodgroups{display:flex;flex-wrap:wrap;gap:3px 18px;align-items:flex-start}
 .jd-hodgrp{flex:0 1 auto;min-width:0;max-width:100%}
 .jd-hodgh{
-  display:flex;align-items:baseline;gap:7px;margin-bottom:5px;
-  font-size:9px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);
+  display:flex;align-items:baseline;gap:6px;margin:6px 0 3px;
+  font-size:8.5px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);
 }
 .jd-hodgh em{font-style:normal;font-size:10px;font-weight:800;color:var(--ink)}
-.jd-hodgb{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.jd-hodgb{display:flex;flex-wrap:wrap;gap:3px;align-items:center}
 html[data-theme="soft"]  #jdContent .jd-hodcard > .jd-card-hd,
 html[data-theme="softdark"] #jdContent .jd-hodcard > .jd-card-hd{
   display:flex!important;align-items:baseline;justify-content:space-between;margin-bottom:9px;
@@ -5335,7 +5350,10 @@ function _getDataMap() {
     opsPlanner: Object.assign({}, _opsD), opsBrk: _opsBrk.slice(), job_access: _jobAccessGrants.slice(),
     patTesters: patTesters, suppliers: suppliers, freelanceCrew: VERSA_FREELANCE, kitPreppers: KIT_PREPPERS, kitTransports: KIT_TRANSPORTS,
     kitSubcats: JSON.parse(JSON.stringify(KIT_SUBCATS)), catColors: Object.assign({}, CAT_COLORS),
-    jobTemplates: jobTemplates, longTermHired: longTermHired
+    jobTemplates: jobTemplates, longTermHired: longTermHired,
+    /* the models you can pick from on the plans \u2014 without this, anything
+       added to a list was gone on the next load */
+    camPlanOpts: JSON.parse(JSON.stringify(CAM_PLAN_OPTS))
   };
 }
 
@@ -5443,6 +5461,9 @@ async function loadData() {
           }
           else if(row.key==='bank_holidays'&&Array.isArray(v)){
             window._opsHolidays=v.filter(function(h){return h&&typeof h.date==='string'&&typeof h.name==='string';});
+          }
+          else if(row.key==='camPlanOpts'&&v&&typeof v==='object'){
+            Object.keys(v).forEach(function(kk){ if(Array.isArray(v[kk])) CAM_PLAN_OPTS[kk]=v[kk]; });
           }
           else if(row.key==='kitSubcats'&&v&&typeof v==='object'){Object.keys(v).forEach(function(k){KIT_SUBCATS[k]=v[k];});cats=Object.keys(KIT_SUBCATS);
             // Ensure required Audio subcats exist (Mics + Playout needed for Audio tab pickers)
@@ -6533,40 +6554,59 @@ function vsCamPick(jid,ci,fkey,btn){
   if(!own||!own.none) first.push({label:'None on this camera',kind:'none',act:'none'});
   if(first.length) groups.push({items:first});
 
-  /* Only kit that could actually go in this field. Body used to fall back
-     to everything in the Camera category, which put viewfinders, pedestals
-     and CCUs in a list of camera bodies. */
-  var _live=(typeof kit!=='undefined'?kit:[]).filter(function(k){return k&&k.status!=='Bin';});
-  var _match=function(k){
-    var sc=(k.subcat||'').trim();
+  /* One list of models to choose from, whoever owns them. The plan says
+     what the camera has; Sourcing says where it comes from. So the
+     inventory, the hired catalogue and the field's own list are folded into
+     a single catalogue with each model named once. */
+  var seen={}, models=[];
+  var add=function(nm){
+    nm=String(nm||'').trim();
+    if(!nm||nm==='-') return;
+    var kk=nm.toLowerCase();
+    if(seen[kk]) return;
+    seen[kk]=true; models.push(nm);
+  };
+  var fits=function(sc){
+    sc=String(sc||'').trim();
     if(sc&&sc===f.sub) return true;
     if(f.key==='lens') return sc==='Lens Range'||sc==='Lens';
-    if(f.key==='body') return k.cat==='Camera'&&/camera|body/i.test(sc);
+    if(f.key==='body') return /camera|body/i.test(sc);
     return false;
   };
-  var invItems=_live.filter(_match);
-  invItems.sort(function(a,b){return (a.name||'').localeCompare(b.name||'');});
-  if(invItems.length) groups.push({head:'Inventory',items:invItems.map(function(k){
-    return {label:k.name,kitId:k.id,note:k.status==='Available'?'':k.status};
-  })});
-
-  var listOpts=(typeof CAM_PLAN_OPTS!=='undefined'?(CAM_PLAN_OPTS[f.opts]||[]):[]).filter(function(x){return x&&x!=='-';});
-  if(listOpts.length) groups.push({head:f.label+' list',items:listOpts.map(function(x){return {label:x};})});
-
-  var hired=(typeof hiredCatalogue!=='undefined'?hiredCatalogue:[]).filter(function(h){
-    return h.subcat===f.sub || (f.key==='lens'&&h.subcat==='Lens Range');
-  }).sort(function(a,b){return (a.name||'').localeCompare(b.name||'');});
-  if(hired.length) groups.push({head:'Hired',items:hired.map(function(h){
-    return {label:h.name,hiredCatId:h.id,kind:'hired',note:'hired'};
-  })});
+  (typeof CAM_PLAN_OPTS!=='undefined'?(CAM_PLAN_OPTS[f.opts]||[]):[]).forEach(add);
+  (typeof kit!=='undefined'?kit:[]).forEach(function(x){
+    if(!x||x.status==='Bin'||!fits(x.subcat)) return;
+    if(f.key==='body'&&(x.cat||'')!=='Camera') return;
+    add(_vsKitModelName(x));
+  });
+  (typeof hiredCatalogue!=='undefined'?hiredCatalogue:[]).forEach(function(h){
+    if(!h||!fits(h.subcat)) return;
+    add(h.name);
+  });
+  models.sort(function(a,b){return a.localeCompare(b);});
+  if(models.length) groups.push({head:f.label,items:models.map(function(m){return {label:m};})});
+  groups.push({items:[{label:'+ Add a '+f.label.toLowerCase()+' to the list',kind:'std',act:'addopt'}]});
 
   vsPickOpen(btn,groups,function(it){
     if(it.act==='clear') return vsCamPicked(jid,ci,fkey,{clear:true});
     if(it.act==='none')  return vsCamPicked(jid,ci,fkey,{none:true});
-    if(it.kitId)         return vsCamPicked(jid,ci,fkey,{kitId:it.kitId});
-    if(it.hiredCatId&&f.key==='lens') return vsCamPicked(jid,ci,fkey,{hiredCatId:it.hiredCatId});
-    return vsCamPicked(jid,ci,fkey,{name:it.label,hired:it.kind==='hired'});
-  },'Search or type…');
+    if(it.act==='addopt') return vsCamAddOpt(jid,ci,fkey,btn);
+    return vsCamPicked(jid,ci,fkey,{name:it.label});
+  },'Search the list, or type a new one…');
+}
+/* A model that is not on the list yet. It joins the list, is saved, and is
+   chosen for this camera in one go. */
+function vsCamAddOpt(jid,ci,fkey,btn){
+  var f=_vsCamField(fkey); if(!f) return;
+  vsAsk({label:'Add a '+f.label.toLowerCase(),hint:'It joins the list for every job',
+    placeholder:'e.g. Sony HDC-3500',anchor:btn,okLabel:'Add',onOk:function(v){
+      v=(v||'').trim(); if(!v) return;
+      if(typeof CAM_PLAN_OPTS==='undefined') return;
+      if(!CAM_PLAN_OPTS[f.opts]) CAM_PLAN_OPTS[f.opts]=[];
+      if(CAM_PLAN_OPTS[f.opts].indexOf(v)<0) CAM_PLAN_OPTS[f.opts].push(v);
+      try{ saveData(); }catch(e){}
+      vsCamPicked(jid,ci,fkey,{name:v});
+    }});
 }
 function vsCamPickWall(jid,ci,btn){
   var opts=(typeof CAM_PLAN_OPTS!=='undefined'?(CAM_PLAN_OPTS['Wallbox']||[]):[]);
@@ -12818,6 +12858,7 @@ function _vsKitLive(){
   return (typeof kit!=='undefined'?kit:[]).filter(function(k){return k&&k.status!=='Bin';});
 }
 function vsKitSelect(type,value){
+  try{ value=decodeURIComponent(value||''); }catch(e){}
   _vsKitSel={type:type,value:value||'',sub:''};
   if(type==='logistics'){
     try{ showKitTab(type); }catch(e){}
@@ -12843,7 +12884,7 @@ function vsKitRail(){
   });
   var row=function(type,value,label,count,cls){
     var on=(_vsKitSel.type===type&&_vsKitSel.value===value&&!_vsKitSel.sub);
-    var v=String(value).replace(/'/g,"\\'");
+    var v=encodeURIComponent(String(value));
     var drop=(type==='cat'||type==='loc')
       ? ' ondragover="vsKitOver(event)" ondragleave="vsKitOut(event)" ondrop="vsKitDrop(event,\''+type+'\',\''+v+'\')"'
       : '';
@@ -12853,7 +12894,7 @@ function vsKitRail(){
   };
   var subRow=function(cat,sc,n){
     var on=(_vsKitSel.type==='cat'&&_vsKitSel.value===cat&&_vsKitSel.sub===sc);
-    var c2=String(cat).replace(/'/g,"\\'"), s2=String(sc).replace(/'/g,"\\'");
+    var c2=encodeURIComponent(String(cat)), s2=encodeURIComponent(String(sc));
     return '<button class="vsk-sub'+(on?' on':'')+'" '
       +'ondragover="vsKitOver(event)" ondragleave="vsKitOut(event)" '
       +'ondrop="vsKitDrop(event,\'sub\',\''+c2+'\',\''+s2+'\')" '
@@ -12875,7 +12916,7 @@ function vsKitRail(){
       names.sort(function(a,b){ return (sc[b]||0)-(sc[a]||0) || String(a).localeCompare(String(b)); });
       out+='<div class="vsk-subs">'
         +names.map(function(n){return subRow(c,n,sc[n]||0);}).join('')
-        +'<button class="vsk-addsub" onclick="vsKitAddSub(\''+String(c).replace(/'/g,"\\'")+'\',this)">+ Sub-category</button>'
+        +'<button class="vsk-addsub" onclick="vsKitAddSub(\''+encodeURIComponent(String(c))+'\',this)">+ Sub-category</button>'
       +'</div>';
     }
     return out;
@@ -12893,6 +12934,7 @@ function vsKitRail(){
 }
 /* a sub-category narrows what is already showing */
 function vsKitSelectSub(cat,sub){
+  try{ cat=decodeURIComponent(cat); sub=decodeURIComponent(sub); }catch(e){}
   if(_vsKitSel.type==='cat'&&_vsKitSel.value===cat&&_vsKitSel.sub===sub) _vsKitSel.sub='';
   else _vsKitSel={type:'cat',value:cat,sub:sub};
   vsKitRail(); vsKitList();
@@ -12948,11 +12990,11 @@ function vsKitList(){
     var first=g.items[0];
     return '<div class="vsk-gwrap'+(open?' open':'')+'">'
       +'<button class="vsk-card vsk-gcard" draggable="true" '
-        +'ondragstart="vsKitDrag(event,\'group\',\''+g.key.replace(/'/g,"\\'")+'\')" '
-        +'onclick="vsKitToggleGroup(\''+g.key.replace(/'/g,"\\'")+'\')">'
+        +'ondragstart="vsKitDrag(event,\'group\',\''+encodeURIComponent(g.key)+'\')" '
+        +'onclick="vsKitToggleGroup(\''+encodeURIComponent(g.key)+'\')">'
         +_vsKitThumb(g.items)
         +'<span class="vsk-ctext">'
-          +'<span class="vsk-cnm">'+_vsEsc(g.label)+'</span>'
+          +'<span class="vsk-cnm">'+_vsEsc(_vsKitShortName(g.label,first.subcat))+'</span>'
           +'<span class="vsk-cwhat">'+_vsEsc(_vsKitWhat(first))
             +(first.isHired?'<b class="vsk-hired">Hired</b>':'')+'</span>'
           +'<span class="vsk-cfoot">'
@@ -13000,7 +13042,7 @@ function _vsKitCard(k){
     +'onclick="openDrawer('+k.id+')">'
     +_vsKitThumb(k)
     +'<span class="vsk-ctext">'
-      +'<span class="vsk-cnm">'+_vsEsc(k.name||'')+'</span>'
+      +'<span class="vsk-cnm">'+_vsEsc(_vsKitShortName(k.name,k.subcat))+'</span>'
       +'<span class="vsk-cwhat">'+_vsEsc(_vsKitWhat(k))+(k.tag?('  \u00b7  '+_vsEsc(k.tag)):'')
         +(k.isHired?'<b class="vsk-hired">Hired</b>':'')+'</span>'
       +'<span class="vsk-cfoot"><span class="vsk-dot k-'+kind+'"></span>'
@@ -13032,6 +13074,24 @@ function _vsKitSplitName(k){
     if(end&&end[1].trim()){ no=end[2]; n=end[1].trim(); }
   }
   return {model:n||String((k&&k.name)||''), no:no};
+}
+/* "Camera Pedestal \u2014 Quattro L" is a sub-category and a model stuck
+   together. The card already says Pedestal underneath, so it shows the
+   model: Quattro L. Only the part before the dash goes, and only when it
+   repeats what the sub-category already says \u2014 a name with no dash, or one
+   whose prefix says something else, is left alone. The record keeps its
+   full name either way. */
+function _vsKitShortName(name,subcat){
+  var n=String(name||'').trim();
+  var sc=String(subcat||'').trim();
+  if(!n||!sc) return n;
+  var m=n.match(/^(.*?)\s+[\u2014\u2013]\s+(.+)$/);
+  if(!m) return n;
+  var prefix=m[1].toLowerCase(), rest=m[2].trim();
+  if(!rest) return n;
+  var words=sc.toLowerCase().split(/[^a-z0-9]+/).filter(function(w){return w.length>=3;});
+  var echoes=words.some(function(w){ return prefix.indexOf(w)>-1; });
+  return echoes?rest:n;
 }
 function _vsKitModelKey(k){
   return (_vsKitModelName(k)+'|'+(k.cat||'')+'|'+(k.subcat||'')+'|'+(k.loc||'')).toLowerCase();
@@ -13069,6 +13129,7 @@ function vsKitOver(e){
 function vsKitOut(e){ e.currentTarget.classList.remove('vsk-drop'); }
 function vsKitDrop(e,what,value,sub){
   e.preventDefault(); e.stopPropagation();
+  try{ value=decodeURIComponent(value); if(sub!=null) sub=decodeURIComponent(sub); }catch(_e){}
   e.currentTarget.classList.remove('vsk-drop');
   var raw='';
   try{ raw=e.dataTransfer.getData(VS_KIT_DRAG)||e.dataTransfer.getData('text/plain')||''; }catch(_){}
@@ -13079,7 +13140,8 @@ function vsKitDrop(e,what,value,sub){
     var k=kit.find(function(x){return String(x.id)===String(val);});
     if(k) items=[k];
   } else if(kind==='group'){
-    items=_vsKitLive().filter(function(k){ return _vsKitModelKey(k)===val; });
+    var want=val; try{ want=decodeURIComponent(val); }catch(e){}
+    items=_vsKitLive().filter(function(k){ return _vsKitModelKey(k)===want; });
   }
   if(!items.length) return;
   items.forEach(function(k){
@@ -13094,6 +13156,7 @@ function vsKitDrop(e,what,value,sub){
 }
 /* A sub-category can be made before there is anything to put in it. */
 function vsKitAddSub(cat,el){
+  try{ cat=decodeURIComponent(cat); }catch(e){}
   vsAsk({label:'New sub-category',hint:'In '+cat,placeholder:'e.g. Shotgun Mic',anchor:el,okLabel:'Add',
     onOk:function(v){
       v=(v||'').trim(); if(!v) return;
@@ -13108,6 +13171,9 @@ function vsKitAddSub(cat,el){
 }
 var _vsKitOpen='';
 function vsKitToggleGroup(key){
+  /* the key arrives encoded, because a model name can hold a quote \u2014
+     7" OLED Viewfinder used to end the attribute and kill the click */
+  try{ key=decodeURIComponent(key); }catch(e){}
   _vsKitOpen=(_vsKitOpen===key)?'':key;
   vsKitList();
 }
@@ -13976,22 +14042,42 @@ function _vsKitHiredMerge(){
   kit.forEach(function(k){
     if(k&&k.isHired) have[String(k.name||'').trim().toLowerCase()]=true;
   });
+  var byName={};
+  kit.forEach(function(k){ if(k&&k.isHired) byName[String(k.name||'').trim().toLowerCase()]=k; });
   var maxId=kit.reduce(function(m,k){return Math.max(m,Number(k&&k.id)||0);},0);
-  var added=0;
+  var added=0, filled=0;
   hiredCatalogue.forEach(function(c){
     var nm=String((c&&c.name)||'').trim();
-    if(!nm||have[nm.toLowerCase()]) return;
-    kit.push({id:++maxId,name:nm,cat:c.cat||'',subcat:c.subcat||'',
-      make:c.make||'',model:c.model||'',serial:'',tag:'',
-      status:'Available',cond:c.cond||'',loc:'',notes:c.notes||'',
-      isHired:true,hireSupplier:c.supplier||'',inUse:false,photos:c.photos||[]});
+    if(!nm) return;
+    /* the catalogue carries more than a name: what it is compatible with,
+       who hires it out, a rate and a photo. All of it comes across. */
+    var carry={cat:c.cat||'',subcat:c.subcat||'',make:c.make||'',model:c.model||'',
+      notes:c.notes||'',compat:c.compat||'',
+      hireSuppliers:Array.isArray(c.suppliers)?c.suppliers.slice():(c.supplier?[c.supplier]:[]),
+      dailyRate:c.dailyRate||'',photos:Array.isArray(c.photos)?c.photos.slice():[]};
+    var ex=byName[nm.toLowerCase()];
+    if(ex){
+      /* an earlier pass copied only the name — put the rest on */
+      Object.keys(carry).forEach(function(f){
+        var v=carry[f], cur=ex[f];
+        var curEmpty=(cur==null||cur===''||(Array.isArray(cur)&&!cur.length));
+        var hasVal=(v!=null&&v!==''&&(!Array.isArray(v)||v.length));
+        if(curEmpty&&hasVal){ ex[f]=v; filled++; }
+      });
+      return;
+    }
+    var row={id:++maxId,name:nm,serial:'',tag:'',status:'Available',cond:'',loc:'',
+      isHired:true,inUse:false};
+    Object.keys(carry).forEach(function(f){ row[f]=carry[f]; });
+    kit.push(row);
+    byName[nm.toLowerCase()]=row;
     have[nm.toLowerCase()]=true; added++;
   });
-  if(added){
+  if(added||filled){
     try{ saveData(); }catch(e){}
-    try{ console.info('Hired catalogue merged into the kit list:',added); }catch(e){}
+    try{ console.info('Hired catalogue merged:',added,'added,',filled,'fields filled in'); }catch(e){}
   }
-  return added;
+  return added+filled;
 }
 
 /* ── Categories that were two things ─────────────────────────────────
@@ -15897,7 +15983,7 @@ function flAddPerson(){
 
 
 var _CAM_OPTS_SUBCAT={'Grip':'Grip & Track','Body':'Camera Body','Lens Range':'Lens','Support':'Support','Matte Box':'Matte Box','Filters':'Filters','Iris Control':'Iris Control','Focus Motor':'Focus Motor','Zoom':'Zoom','Remote Panel':'Remote Panel','Power':'Power','Conenction':'Video Connection','Timecode':'Timecode','Data Bridge':'Data Bridge','Control':'RCP / Control','Frame':'Frame Rate','Codec':'Codec','SENSOR':'Sensor Resolution','Look / LUT':'Look / LUT','Monitor':'Monitor','coms':'Comms','SDI':'SDI Output','Processing':'Processing','Plug':'Camera Plug'};
-const CAM_PLAN_OPTS = {"Grip": ["HD1", "HD2", "Baby Legs", "250 tripod", "250 head flat", "250 head bowl", "430 head", "750 head", "Osprey", "SL Quattro", "OB Quattro", "Static Quattro", "Skquattro", "Monopod", "Moose bars", "Easirig", "Ergo rig", "TCS Special base", "Meercat v1 (0.9-1.5m)", "Meercat v3 (1-2m)", "Starcam", "Towercam", "Railcam", "Steadicam", "Steadicam Trinity", "Agito", "Furio", "Jib", "Helicopter", "Drone", "Mini tripod", "Waterbird", "Handheld", "Autopod S (0.6-1.3m)", "Autopod D (1.2-2.6m)", "Scaff slug", "Ronford Scaff", "Newton Stabilised", "G1 Shotover", "Trinity", "PeePod", "Rolling Base", "Floor Spreader", "Mid Spreader", "HiHat on base", "Vinten HiHat Risor", "World Cup", "Tracking Skid", "Technocrane", "X-Trak", "MOY 2ft", "MOY 4ft", "MOY 8ft", "MOY 16ft", "MOY 24ft", "MOY 32ft", "MOY 40ft", "MagTrax", "Jib Track", "MOY Track", "Rail Track", "Drum Stool", "Script Holder", "Magic Arm", "Sachtler 18", "Ronford 3-way leveller", "4 bolt to Mitchell adapter", "Track connectors", "Wedges", "PTZ Unicol Stand", "TCS Bazuka", "Vinten Quick Release Mount", "3D Cable Cam"], "Body": ["Amira", "Alexa Mini", "Sony FX9", "Sony FX6", "ZCam", "Venice 2 8K", "Venice 2 6K", "Sony FR7", "Sony 3500", "Sony 3100", "Sony 1700", "PL w/ Hirose", "B4 Mount", "WOW US - Blackmagic URSA G1", "WOW UK - Blackmagic URSA G2"], "Lens Range": ["Angenieux 15-40", "Angenieux 45-120", "Angenieux 17-80", "Angenieux 19.5-94", "Angenieux 24-290", "Angenieux 28-340", "Angenieux 28-76", "Angenieux 44-440", "Angenieux 30-90 EZ1", "Angenieux 15-40 EZ2", "Angenieux 21-56", "Canon 11-55 CN5", "Canon 15-120 CN8", "Canon 17-120 CN7", "Canon 25-250 CN10", "Canon 50-1000 CN20", "Fujinon 14-100", "Fujinon 14-35", "Fujinon 19-90", "Fujinon 24-300", "Fujinon 85-300", "Fujinon 20-120", "Fujinon 25-1000", "Tokina 11-20", "Tokina 11-16", "Tokina 50-130", "DZO 12-25", "DZO 14-30", "DZO 20-55", "DZO 50-125", "Xeen PL Prime", "Prime 12mm", "Prime 135mm", "Prime 16mm", "Prime 18mm", "Prime 24mm", "Prime 35mm", "Prime 50mm", "Prime 85mm", "Prime 8mm", "Sony E 16-35 T3.1", "Sony E 16-35 f4", "Sony E 28-135 T4", "Sony E 12-24 f2.8", "Chrosziel E To PL", "Arri B4 to PL", "Canon CJ14", "Canon CJ24", "Canon CJ25", "Canon HJ14", "Canon HJ22", "Canon HJ24", "Canon XJ122", "Canon XJ86", "Pana 14-42 MFT", "Meike 8mm", "Meike 12mm", "Meike 16mm", "Meike 24mm", "Meike 35mm", "2x PL Extender", "1.4x PL Extender"], "Support": ["-", "MAP-1", "MAP-2", "BPA-3", "BP-8", "UAP-2", "WPA-1", "Dovetail plate", "Blackmagic Tripod Mount For Studio Camera 4K"], "Matte Box": ["-", "6x6 LMB", "4x5.65 LMB", "4x5.65 MB-T15", "4x5.65 MB-T12", "80mm", "100mm", "104mm", "110mm", "114mm", "162mm", "Lens Hood"], "Filters": ["-", "6x6", "4x5.65", "72mm", "77mm", "82mm", "95mm", "ND", "Black Pro Mist", "Glimmer Glass", "Black Satin", "Black Pro Mist", "White Pro Mist", "1 / 8", "1 / 4", "1 / 2", "1", "2", "Full Set"], "Iris Control": ["-", "Camin", "k2.0015759", "cforce RF Mini", "cforce Mini", "Lens internal motor", "Preset"], "Monitor": ["-", "SmallHD 703", "SmallHD 1303", "SmallHD 702", "SmallHD Ultra 5", "Sony PVM 14", "Sony PVM 17", "Arri VMM-1", "Eye EVF", "Sony 5\" viewfinder", "Steadicam", "Jib Monitor", "Return video", "(Shared Monitor)"], "Control": ["Cyanview RCP", "RCP-1500", "RCP-3500", "CNA-1", "BoxIO"], "Conenction": ["CCU", "CamRacer", "Clipon RF", "Nano RF", "HDMI \u2192 SDI", "Stage Racer", "Stage Racer", "Gimbal Head", "Blackmagic CCU"], "Zoom": ["-", "Mini Zoom", "hand", "ZSD-300D", "cforce Mini", "Jib Rocker", "Lens internal motor", "Chrosziel CDM-SFR"], "Remote Panel": ["-", "RM-IP500", "(Sharing other PTZ)", "AW Panel", "AutoPod Pedals"], "Question": ["No", "Yes"], "Focus Motor": ["-", "cforce RF Mini", "WCU-4", "Preston motor", "Preston FIZ", "hand", "FPD-400D", "FF4", "cforce Mini", "Jib Focus wheel", "Lens internal motor", "CineRT Tape", "Preset"], "Tally": ["-", "CamRacer", "PVM GPI", "Tally box", "Arri overlay", "Jib Tally"], "Timecode": ["-", "UltraSync One", "via CamRacer", "Alexa Lemo DIN", "Alexa Lemo BNC"], "Data Bridge": ["Domo Mesh", "via CamRacer", "Rocket + Bullet", "VisSys", "Other network", "Alexa Lemo RJ45"], "SENSOR": ["HD", "2K", "3.2K", "UHD"], "Frame": ["-", "23.976p", "24p", "25p", "25 PsF", "29.97p", "30p", "48p", "50p", "59.94p", "60p", "50i", "59.94i", "60i"], "coms": ["Bolero", "via Camera", "Desktop panel", "Roameo", "Walkie Talkie"], "SDI": ["-", "422 1.5G HD", "422 3G HD", "422 6G UHD", "HDMI HD", "HDMI UHD"], "Processing": ["-", "Clean", "Processed", "Char"], "Image": ["-", "Log-C", "Look", "Alexa Classic 709", "SDR (BT.709)"], "Colour Space": ["-", "Rec709", "Rec 2020"], "Look / LUT": ["-", "Rec709 Multicam", "Custom", "Rec709", "Vivid FR7-->Arri"], "Plug": ["-", "Cam Racer 12G -1", "Cam Racer 12G-2", "Cam Racer 3G-1", "Cam Racer 3G-2", "Cam Racer 12G-3", "Cam Racer 12G-4", "Cam Racer HDMI", "RF TX SDI In", "Operator monitor", "Other thing"], "Codec": ["ProRes LT", "ProRes", "ProRes HQ", "XAVC-Intra", "XAVC-L"], "Power": ["Vlock Batts", "CamRacer", "Block Battery", "Hotswap plate", "PoE", "D-tap to Sony cable", "Sony 240v PSU", "Gimbal Powered"], "Excludes": ["-", "hand", "Lens internal motor", "handheld", "Return video", "(Sharing other PTZ)", "AutoPod Pedals", "via CamRacer", "(Shared Monitor)", "Preset", "Other thing"], "EVS System": ["XT3", "XT-VIA", "XS-VIA", "XT4K", "XT-GO", "VMIX", "Blackmagic Replay"], "EVS Software": ["LSM 12.x", "LSM 14.x", "LSM 15.x", "Multicam 16", "Multicam 21", "VIA 21.x", "VIA 22.x"], "EVS Channels": ["2in/2out", "4in/4out", "6in/6out", "8in/8out", "12ch", "16ch"], "EVS Codec": ["XDCAM HD422", "DNxHD 120", "DNxHD 185", "DNxHD 220", "ProRes 422", "ProRes HQ", "XAVC-Intra", "AVC-Intra"], "EVS Extra Kit": ["IPDirector", "IPLink", "XT-Access", "XFile", "XHub", "CleanEdit", "IPWeb", "Multicam Go"], "GFX System": ["VizRT", "Chyron", "Ross XPression", "Unreal Engine", "Vmix", "CasparCG", "Brainstorm", "Zero Density"], "GFX Engine Version": ["Viz Engine 3.x", "Viz Engine 4.x", "Viz Engine 5.x", "Chyron Prime", "Chyron LyricX", "Ross XPression 9.x", "Unreal 5.x"], "GFX Engines": ["1 (Main only)", "2 (Main + Backup)", "3 (Main + Backup + Dev)", "4+"], "OLED Position": ["Lighting Desk", "Vision Desk 1", "Vision Desk 2", "Vision Desk 3", "Director", "Producer", "PA", "Sound Desk", "Production Gallery", "Lighting Room", "VT Area", "GFX Desk", "EVS Desk", "Comms Desk", "Edit Suite", "MCR", "Ingest"], "Wallbox": ["1-1","1-2","1-3","2-1","2-2","2-3","3-1","3-2","3-3","4-1","4-2","4-3","5-1","5-2","5-3","6-1","6-2","6-3","7-1","7-2","7-3","8-1","8-2","8-3"]};
+var CAM_PLAN_OPTS = {"Grip": ["HD1", "HD2", "Baby Legs", "250 tripod", "250 head flat", "250 head bowl", "430 head", "750 head", "Osprey", "SL Quattro", "OB Quattro", "Static Quattro", "Skquattro", "Monopod", "Moose bars", "Easirig", "Ergo rig", "TCS Special base", "Meercat v1 (0.9-1.5m)", "Meercat v3 (1-2m)", "Starcam", "Towercam", "Railcam", "Steadicam", "Steadicam Trinity", "Agito", "Furio", "Jib", "Helicopter", "Drone", "Mini tripod", "Waterbird", "Handheld", "Autopod S (0.6-1.3m)", "Autopod D (1.2-2.6m)", "Scaff slug", "Ronford Scaff", "Newton Stabilised", "G1 Shotover", "Trinity", "PeePod", "Rolling Base", "Floor Spreader", "Mid Spreader", "HiHat on base", "Vinten HiHat Risor", "World Cup", "Tracking Skid", "Technocrane", "X-Trak", "MOY 2ft", "MOY 4ft", "MOY 8ft", "MOY 16ft", "MOY 24ft", "MOY 32ft", "MOY 40ft", "MagTrax", "Jib Track", "MOY Track", "Rail Track", "Drum Stool", "Script Holder", "Magic Arm", "Sachtler 18", "Ronford 3-way leveller", "4 bolt to Mitchell adapter", "Track connectors", "Wedges", "PTZ Unicol Stand", "TCS Bazuka", "Vinten Quick Release Mount", "3D Cable Cam"], "Body": ["Amira", "Alexa Mini", "Sony FX9", "Sony FX6", "ZCam", "Venice 2 8K", "Venice 2 6K", "Sony FR7", "Sony 3500", "Sony 3100", "Sony 1700", "PL w/ Hirose", "B4 Mount", "WOW US - Blackmagic URSA G1", "WOW UK - Blackmagic URSA G2"], "Lens Range": ["Angenieux 15-40", "Angenieux 45-120", "Angenieux 17-80", "Angenieux 19.5-94", "Angenieux 24-290", "Angenieux 28-340", "Angenieux 28-76", "Angenieux 44-440", "Angenieux 30-90 EZ1", "Angenieux 15-40 EZ2", "Angenieux 21-56", "Canon 11-55 CN5", "Canon 15-120 CN8", "Canon 17-120 CN7", "Canon 25-250 CN10", "Canon 50-1000 CN20", "Fujinon 14-100", "Fujinon 14-35", "Fujinon 19-90", "Fujinon 24-300", "Fujinon 85-300", "Fujinon 20-120", "Fujinon 25-1000", "Tokina 11-20", "Tokina 11-16", "Tokina 50-130", "DZO 12-25", "DZO 14-30", "DZO 20-55", "DZO 50-125", "Xeen PL Prime", "Prime 12mm", "Prime 135mm", "Prime 16mm", "Prime 18mm", "Prime 24mm", "Prime 35mm", "Prime 50mm", "Prime 85mm", "Prime 8mm", "Sony E 16-35 T3.1", "Sony E 16-35 f4", "Sony E 28-135 T4", "Sony E 12-24 f2.8", "Chrosziel E To PL", "Arri B4 to PL", "Canon CJ14", "Canon CJ24", "Canon CJ25", "Canon HJ14", "Canon HJ22", "Canon HJ24", "Canon XJ122", "Canon XJ86", "Pana 14-42 MFT", "Meike 8mm", "Meike 12mm", "Meike 16mm", "Meike 24mm", "Meike 35mm", "2x PL Extender", "1.4x PL Extender"], "Support": ["-", "MAP-1", "MAP-2", "BPA-3", "BP-8", "UAP-2", "WPA-1", "Dovetail plate", "Blackmagic Tripod Mount For Studio Camera 4K"], "Matte Box": ["-", "6x6 LMB", "4x5.65 LMB", "4x5.65 MB-T15", "4x5.65 MB-T12", "80mm", "100mm", "104mm", "110mm", "114mm", "162mm", "Lens Hood"], "Filters": ["-", "6x6", "4x5.65", "72mm", "77mm", "82mm", "95mm", "ND", "Black Pro Mist", "Glimmer Glass", "Black Satin", "Black Pro Mist", "White Pro Mist", "1 / 8", "1 / 4", "1 / 2", "1", "2", "Full Set"], "Iris Control": ["-", "Camin", "k2.0015759", "cforce RF Mini", "cforce Mini", "Lens internal motor", "Preset"], "Monitor": ["-", "SmallHD 703", "SmallHD 1303", "SmallHD 702", "SmallHD Ultra 5", "Sony PVM 14", "Sony PVM 17", "Arri VMM-1", "Eye EVF", "Sony 5\" viewfinder", "Steadicam", "Jib Monitor", "Return video", "(Shared Monitor)"], "Control": ["Cyanview RCP", "RCP-1500", "RCP-3500", "CNA-1", "BoxIO"], "Conenction": ["CCU", "CamRacer", "Clipon RF", "Nano RF", "HDMI \u2192 SDI", "Stage Racer", "Stage Racer", "Gimbal Head", "Blackmagic CCU"], "Zoom": ["-", "Mini Zoom", "hand", "ZSD-300D", "cforce Mini", "Jib Rocker", "Lens internal motor", "Chrosziel CDM-SFR"], "Remote Panel": ["-", "RM-IP500", "(Sharing other PTZ)", "AW Panel", "AutoPod Pedals"], "Question": ["No", "Yes"], "Focus Motor": ["-", "cforce RF Mini", "WCU-4", "Preston motor", "Preston FIZ", "hand", "FPD-400D", "FF4", "cforce Mini", "Jib Focus wheel", "Lens internal motor", "CineRT Tape", "Preset"], "Tally": ["-", "CamRacer", "PVM GPI", "Tally box", "Arri overlay", "Jib Tally"], "Timecode": ["-", "UltraSync One", "via CamRacer", "Alexa Lemo DIN", "Alexa Lemo BNC"], "Data Bridge": ["Domo Mesh", "via CamRacer", "Rocket + Bullet", "VisSys", "Other network", "Alexa Lemo RJ45"], "SENSOR": ["HD", "2K", "3.2K", "UHD"], "Frame": ["-", "23.976p", "24p", "25p", "25 PsF", "29.97p", "30p", "48p", "50p", "59.94p", "60p", "50i", "59.94i", "60i"], "coms": ["Bolero", "via Camera", "Desktop panel", "Roameo", "Walkie Talkie"], "SDI": ["-", "422 1.5G HD", "422 3G HD", "422 6G UHD", "HDMI HD", "HDMI UHD"], "Processing": ["-", "Clean", "Processed", "Char"], "Image": ["-", "Log-C", "Look", "Alexa Classic 709", "SDR (BT.709)"], "Colour Space": ["-", "Rec709", "Rec 2020"], "Look / LUT": ["-", "Rec709 Multicam", "Custom", "Rec709", "Vivid FR7-->Arri"], "Plug": ["-", "Cam Racer 12G -1", "Cam Racer 12G-2", "Cam Racer 3G-1", "Cam Racer 3G-2", "Cam Racer 12G-3", "Cam Racer 12G-4", "Cam Racer HDMI", "RF TX SDI In", "Operator monitor", "Other thing"], "Codec": ["ProRes LT", "ProRes", "ProRes HQ", "XAVC-Intra", "XAVC-L"], "Power": ["Vlock Batts", "CamRacer", "Block Battery", "Hotswap plate", "PoE", "D-tap to Sony cable", "Sony 240v PSU", "Gimbal Powered"], "Excludes": ["-", "hand", "Lens internal motor", "handheld", "Return video", "(Sharing other PTZ)", "AutoPod Pedals", "via CamRacer", "(Shared Monitor)", "Preset", "Other thing"], "EVS System": ["XT3", "XT-VIA", "XS-VIA", "XT4K", "XT-GO", "VMIX", "Blackmagic Replay"], "EVS Software": ["LSM 12.x", "LSM 14.x", "LSM 15.x", "Multicam 16", "Multicam 21", "VIA 21.x", "VIA 22.x"], "EVS Channels": ["2in/2out", "4in/4out", "6in/6out", "8in/8out", "12ch", "16ch"], "EVS Codec": ["XDCAM HD422", "DNxHD 120", "DNxHD 185", "DNxHD 220", "ProRes 422", "ProRes HQ", "XAVC-Intra", "AVC-Intra"], "EVS Extra Kit": ["IPDirector", "IPLink", "XT-Access", "XFile", "XHub", "CleanEdit", "IPWeb", "Multicam Go"], "GFX System": ["VizRT", "Chyron", "Ross XPression", "Unreal Engine", "Vmix", "CasparCG", "Brainstorm", "Zero Density"], "GFX Engine Version": ["Viz Engine 3.x", "Viz Engine 4.x", "Viz Engine 5.x", "Chyron Prime", "Chyron LyricX", "Ross XPression 9.x", "Unreal 5.x"], "GFX Engines": ["1 (Main only)", "2 (Main + Backup)", "3 (Main + Backup + Dev)", "4+"], "OLED Position": ["Lighting Desk", "Vision Desk 1", "Vision Desk 2", "Vision Desk 3", "Director", "Producer", "PA", "Sound Desk", "Production Gallery", "Lighting Room", "VT Area", "GFX Desk", "EVS Desk", "Comms Desk", "Edit Suite", "MCR", "Ingest"], "Wallbox": ["1-1","1-2","1-3","2-1","2-2","2-3","3-1","3-2","3-3","4-1","4-2","4-3","5-1","5-2","5-3","6-1","6-2","6-3","7-1","7-2","7-3","8-1","8-2","8-3"]};
 const CAM_FORMATS = ['HD 1080i','HD 1080p','4K UHD','HD 720p','SD','RAW'];
 const CAM_RESOLUTIONS = ['720p','1080i','1080p','2K','UHD','4K DCI','8K'];
 const CAM_FRAMERATES  = ['23.98','24.00','25.00','29.97','30.00','50.00','59.94','60.00'];
@@ -15980,6 +16066,7 @@ function renderJobDet(j) {
     {id:'crew',label:'Crew'},
     {id:'monitors',label:'Monitors'},
     {id:'ip',label:'IP Addresses'},
+    {id:'kit',label:'Kit List'},
     {id:'source',label:'Sourcing'},
     {id:'improve',label:'Improvements'},
     {id:'todo',label:'To Do'}
@@ -16001,7 +16088,7 @@ function renderJobDet(j) {
   }
   /* Tabs that arrived after jobs had already picked their tabs. Without
      this a job configured last year never sees a page built this week. */
-  var VS_TABS_ADDED_LATE=['todo','mv','notes','source','mlsched','gfx'];
+  var VS_TABS_ADDED_LATE=['todo','mv','notes','source','mlsched','gfx','kit'];
   // Per-job visibility — j.visibleTabs is an array of tab ids. Null/undefined = show all.
   // Info is always included regardless of what's stored.
   var _vtSet = null;
@@ -16034,7 +16121,7 @@ function renderJobDet(j) {
   const JD_TAB_GROUPS={
     technical: ['info','camspec','audio','comms','lv','gfx','set','gallery','mv','monitors','tech'],
     media:     ['ingest','evs','post'],
-    logistics: ['mlsched','notes','crew','todo','improve','ip','source']
+    logistics: ['mlsched','notes','crew','todo','improve','ip','kit','source']
   };
   const JD_GROUP_COLS={
     technical: 'var(--nav-kit)',
@@ -17436,6 +17523,7 @@ var _mtAllTabs = [
   {id:'crew',label:'Crew',col:'rgba(50,105,80,.85)'},
   {id:'monitors',label:'Monitors',col:'rgba(35,95,145,.85)'},
   {id:'ip',label:'IP Addresses',col:'rgba(40,105,105,.85)'},
+  {id:'kit',label:'Kit List',col:'rgba(120,95,45,.85)'},
   {id:'source',label:'Sourcing',col:'rgba(135,75,35,.85)'},
   {id:'notes',label:'Notes',col:'rgba(55,85,155,.85)'},
   {id:'improve',label:'Improvements',col:'rgba(75,115,55,.85)'},
