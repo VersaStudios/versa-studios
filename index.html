@@ -5342,7 +5342,18 @@ function _getDataMap() {
 var _saveTimer = null;
 var _appReady = false; // prevents saveData firing before loadData completes
 function saveData() {
-  if (!_appReady) return; // not loaded yet — don't overwrite DB with defaults
+  if (!_appReady) {
+    /* Not loaded yet, so writing now would put defaults over the real data.
+       Dropping it silently is what made an edit look as though it had been
+       taken when it had not, so say so. */
+    try{
+      if(window._vsSaveWarned!==true){
+        window._vsSaveWarned=true;
+        if(typeof toast==='function') toast('Still loading \u2014 that change was not saved. Reload and try again.');
+      }
+    }catch(e){}
+    return;
+  }
   // Debounce — batch rapid consecutive saves into one request
   clearTimeout(_saveTimer);
   _saveTimer = setTimeout(async function() {
@@ -5449,7 +5460,7 @@ async function loadData() {
       });
     }
     setBar(100); setMsg('Ready'); _appReady = true;
-    _vsKitCatTidy();
+    _vsKitCatTidy(); _vsKitHiredMerge(); _vsBullseyeHods();
     // One-time cleanup: remove dummy maintenance/fault records
     if(maintenance.length&&maintenance[0].item==='Aputure 300D MkII'&&maintenance[0].id===1){
       maintenance.length=0;nextMid=1;
@@ -5483,7 +5494,7 @@ async function loadData() {
     dismissLoading();
   } catch(e) {
     console.error('loadData error:', e);
-    setMsg('Could not connect — working offline'); _appReady = true; _vsKitCatTidy(); dismissLoading();
+    setMsg('Could not connect — working offline'); _appReady = true; _vsKitCatTidy(); _vsKitHiredMerge(); _vsBullseyeHods(); dismissLoading();
   }
 }
 
@@ -12749,7 +12760,7 @@ function openKitAllocModal(kid) {
   
   // Available jobs (not already allocated, not cancelled)
   var availJobs = jobs.filter(function(j){
-    return j.status !== 'Cancelled' && !(j.prep||[]).some(function(p){ return p.kid === kid; });
+    return _vsJobAllocatable(j) && !(j.prep||[]).some(function(p){ return p.kid === kid; });
   });
   
   var allocHtml = allocJobs.length
@@ -13145,6 +13156,7 @@ function kitRenderLanding() {
   /* wherever the data came from, the duplicate categories get folded in
      before anything counts them */
   try{ _vsKitCatTidy(); }catch(e){}
+  try{ _vsKitHiredMerge(); }catch(e){}
   if(typeof _vsIsSoft==='function'&&_vsIsSoft()){
     var _l=document.getElementById('kitLanding'), _lv=document.getElementById('kitListView');
     if(_l) _l.style.display='';
@@ -13888,6 +13900,100 @@ function doSearch(q) {
 }
 
 // ── KIT DRAWER ────────────────────────────────────────────────────────────────
+/* ── Bullseye's heads of department ───────────────────────────────────
+   Typed up from the production's own crew list on 23 September 2026. It
+   runs here rather than being written to the database directly, because a
+   tab holding an older copy of the jobs list saves it straight back over
+   anything written behind it — which is exactly what happened twice.
+
+   It fills the rows already there before adding any, so nobody is listed
+   twice, and does nothing once the names are in. */
+var VS_BULLSEYE_HODS=[
+ ['Helena Taylor','Script Supervisor'],['Chris Stubbs','Vision Mixer'],
+ ['Leah Gardiner','Autocue'],['Alan Conley','Floor Manager'],['Sam Spencer','AFM'],
+ ['Mark Gardiner','Gaffer'],['Seb Williams','Console Op - Moving Lights'],
+ ['Marc Nicholson','Console Op - Generic'],['Ian Reith','Media Server Operator'],
+ ['Phil White','Media Technician - Hippo'],['Heather Winn','Grams Op'],
+ ['Ed Barbour','Floor Sound'],['Tom Bell','Floor Sound'],
+ ['George Campbell','Jib Assistant'],['Richard Bacon','Camera Op'],
+ ['Rishi Issar','Camera Op'],['Luke Bellamore','Camera Op'],['Emma Moate','Camera Op'],
+ ['Matt Meir','Camera Op'],['Dave Collier','Camera Op'],['Lawrence Sweeting','Camera Op'],
+ ['Kunal Haveliwala','Camera Assistant'],['Dan Brown','Camera Assistant'],
+ ['Amy Ashley-Mather','Camera Assistant'],
+ ['Kirk Brightwell','Managing Director - Lumina'],['Colin Tracey','Programmer - Lumina'],
+ ['Ben Brightwell','Software Engineer - Lumina'],
+ ['Natalie Light','Production Manager'],['Keshia Agnew','Junior Production Manager'],
+ ['Sophie Davis','Snr Production Coordinator'],['Heather Wake','Production Coordinator'],
+ ['Danielle McIntosh','H&S Advisor'],['Sarah Thomson-Woolley','Series Editor'],
+ ['Tom Farmer','Studio Producer']
+];
+/* rows already on the job that these people belong in */
+var VS_BULLSEYE_FILL={
+ 'Director':'John L Spencer',
+ 'Sound Supervisor':'Adrian Harding-Jones',
+ 'Lighting Supervisor':'Gurdip Mahal',
+ 'Camera Supervisor':'Matt Ingham'
+};
+function _vsBullseyeHods(){
+  if(typeof jobs==='undefined'||!Array.isArray(jobs)) return 0;
+  var j=jobs.find(function(x){return x&&String(x.name||'').trim().toLowerCase()==='bullseye';});
+  if(!j) return 0;
+  if(!Array.isArray(j.hods)) j.hods=[];
+  var changed=0;
+  j.hods.forEach(function(h){
+    var want=VS_BULLSEYE_FILL[(h.role||'').trim()];
+    if(want&&(h.name||'').trim()!==want){ h.name=want; changed++; }
+  });
+  var have={};
+  j.hods.forEach(function(h){
+    have[((h.name||'').trim().toLowerCase())+'|'+((h.role||'').trim().toLowerCase())]=true;
+  });
+  VS_BULLSEYE_HODS.forEach(function(p){
+    var k=p[0].trim().toLowerCase()+'|'+p[1].trim().toLowerCase();
+    if(have[k]) return;
+    j.hods.push({role:p[1],name:p[0]});
+    have[k]=true; changed++;
+  });
+  if(changed){
+    try{ saveData(); }catch(e){}
+    try{ console.info('Bullseye heads of department restored:',changed); }catch(e){}
+  }
+  return changed;
+}
+
+/* ── The hired catalogue joins the kit list ───────────────────────────
+   The catalogue was a second inventory. Its entries belong in the one kit
+   list, marked as hired rather than owned.
+
+   This runs in the browser with the data that browser has loaded, rather
+   than being written to the database behind an open tab — a tab holding an
+   older copy would otherwise save it straight back over the top. It only
+   writes when it finds something missing, so it settles after one pass. */
+function _vsKitHiredMerge(){
+  if(typeof kit==='undefined'||!Array.isArray(kit)) return 0;
+  if(typeof hiredCatalogue==='undefined'||!Array.isArray(hiredCatalogue)) return 0;
+  var have={};
+  kit.forEach(function(k){
+    if(k&&k.isHired) have[String(k.name||'').trim().toLowerCase()]=true;
+  });
+  var maxId=kit.reduce(function(m,k){return Math.max(m,Number(k&&k.id)||0);},0);
+  var added=0;
+  hiredCatalogue.forEach(function(c){
+    var nm=String((c&&c.name)||'').trim();
+    if(!nm||have[nm.toLowerCase()]) return;
+    kit.push({id:++maxId,name:nm,cat:c.cat||'',subcat:c.subcat||'',
+      make:c.make||'',model:c.model||'',serial:'',tag:'',
+      status:'Available',cond:c.cond||'',loc:'',notes:c.notes||'',
+      isHired:true,hireSupplier:c.supplier||'',inUse:false,photos:c.photos||[]});
+    have[nm.toLowerCase()]=true; added++;
+  });
+  if(added){
+    try{ saveData(); }catch(e){}
+    try{ console.info('Hired catalogue merged into the kit list:',added); }catch(e){}
+  }
+  return added;
+}
+
 /* ── Categories that were two things ─────────────────────────────────
    The inventory grew a Convertors beside its Converters and a Record
    beside its Record/Playback, and Offair lost its space somewhere. Those
@@ -14347,6 +14453,9 @@ function vsKitSet(kid,field,val){
   if(field==='cat') k.subcat='';
   saveData();
   if(field==='cat'||field==='name'){ try{ openDrawer(kid); }catch(e){} }
+  /* the card behind the panel has to redraw too, or the change looks as
+     though it never happened */
+  try{ if(document.getElementById('vsKitWrap')){ vsKitRail(); vsKitList(); } }catch(e){}
   try{ if(typeof renderKit==='function') renderKit(); }catch(e){}
 }
 function renderDet(k) {
@@ -14662,13 +14771,7 @@ function openAllocModal() {
   }
   // Active jobs (for new allocations) — current operational filter
   var _today=(typeof today==='function')?today():new Date().toISOString().slice(0,10);
-  var isActive=function(j){
-    if(j.archived)return false;
-    if(j.end && j.end < _today)return false;
-    var st=(j.status||'').toLowerCase();
-    if(st==='finished'||st==='archived'||st==='complete'||st==='completed'||st==='past'||st==='cancelled')return false;
-    return true;
-  };
+  var isActive=_vsJobAllocatable;
   // Build the visible list: every active job, plus any inactive job that *currently* has this kit allocated
   // (so the user can deallocate from archived/finished jobs too — that's where stale "On Job" tiles come from)
   var visibleJobs=jobs.filter(function(j){return isActive(j)||hasKitAllocated(j);});
@@ -14700,7 +14803,23 @@ function openAllocModal() {
   if(!visibleJobs.length) el.innerHTML='<div style="color:var(--muted);font-size:14px;padding:10px 0">No current jobs to allocate to.</div>';
   om('mAlloc');
 }
+/* Kit goes on a job that is running or still to come. A job that has
+   finished, been archived or been cancelled can have kit taken off it, but
+   nothing new put on. */
+function _vsJobAllocatable(j){
+  if(!j||j.archived) return false;
+  var st=String(j.status||'').toLowerCase();
+  if(st==='finished'||st==='archived'||st==='complete'||st==='completed'||st==='past'||st==='cancelled') return false;
+  var t=(typeof today==='function')?today():new Date().toISOString().slice(0,10);
+  if(j.end && String(j.end).slice(0,10) < t) return false;
+  return true;
+}
 function allocKitToJob(jid,kid) {
+  var _j0=jobs.find(function(x){return x.id==jid;});
+  if(_j0&&!_vsJobAllocatable(_j0)){
+    if(typeof toast==='function') toast((_j0.name||'That job')+' has finished \u2014 nothing new can go on it');
+    return;
+  }
   /* the same item cannot be in two places over the same days */
   var _cl=vsKitClashes(kid,jid);
   if(_cl.length){
