@@ -2,143 +2,484 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ML Reports Archive">
-<meta name="theme-color" content="#0a0a0a">
+<meta name="theme-color" content="#dedcd6">
 <title>Morning Live — Reports Archive</title>
-<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script>
+/* Theme bootstrap. Standalone this page is light; the Dashboard frames it in
+   its All Reports tab and passes ?theme=soft|softdark, and may flip it later
+   with postMessage({vsTheme:'softdark'}). Runs before paint so there is no flash. */
+(function(){
+  function apply(t){
+    document.documentElement.setAttribute('data-theme', t==='softdark'||t==='dark'?'softdark':'soft');
+  }
+  var q=new URLSearchParams(location.search).get('theme');
+  apply(q||'soft');
+  window.addEventListener('message',function(e){
+    if(e.data&&typeof e.data.vsTheme==='string') apply(e.data.vsTheme);
+  });
+})();
+</script>
 <style>
+/* ══════════════════════════════════════════════════════════════════════════
+   MORNING LIVE — REPORTS ARCHIVE
+   The docket, read back. Same sheet, same letterhead, same ruled rows as the
+   report form: one line per report, date on the left where the step label sits
+   on the form. Small labels are text with a dot, never a filled shape.
+   Light (data-theme="soft") and dark (data-theme="softdark").
+   ══════════════════════════════════════════════════════════════════════════ */
+
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{background:#0a0a0a;color:#f2f2f2;font-family:'Barlow',sans-serif;min-height:100vh;overflow-y:auto;-webkit-font-smoothing:antialiased}
 
-/* ── TOP BAR (same as engreport) ── */
-.sa-bar{background:#111;border-bottom:1px solid #222;padding:10px 20px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100}
-.sa-bar img{height:24px;opacity:.8;filter:brightness(0) invert(1)}
-.sa-bar-lbl{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#aaa}
-.sa-link{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:rgba(128,208,160,.1);border:1px solid rgba(128,208,160,.35);border-radius:4px;padding:5px 12px;color:#80d0a0;text-decoration:none;margin-left:auto;transition:all .15s}
-.sa-link:hover{background:rgba(128,208,160,.2);color:#a0e0c0}
-.sa-wrap{max-width:680px;margin:0 auto;padding:20px 16px 60px}
+html[data-theme="soft"]{
+  --ground:#dedcd6; --sheet:#fbfaf7; --surface:#ffffff; --surface-2:#f4f3f0;
+  --ink:#0d0d0d; --subtle:#4a4a4a; --muted:#8b8b8b;
+  --tab:#eeece7; --tab-hover:#e4e1da;
+  --border:rgba(13,13,13,.10); --border-l:rgba(13,13,13,.16);
+  --field-edge:rgba(13,13,13,.45); --field-edge-hi:rgba(13,13,13,.75);
+  --on-ink:#0d0d0d; --on-mute:rgba(13,13,13,.46);
 
-/* ── DEVICE SHELL ── */
-.er-device{background:#EFEFED;border-radius:10px;max-width:620px;margin:0 auto;box-shadow:0 0 0 1px rgba(0,0,0,.1),0 4px 20px rgba(0,0,0,.15);overflow:hidden;padding-bottom:24px}
-.er-face{background:#111;padding:16px 22px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.er-face-left .er-brand{font-size:9px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:3px}
-.er-face-left .er-title{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#fff}
-.er-leds{display:flex;gap:5px;align-items:center}
-.er-led{width:7px;height:7px;border-radius:50%}
-.er-led.or{background:#FF4D1C;box-shadow:0 0 5px rgba(255,77,28,.8)}
-.er-led.gn{background:#00C472;box-shadow:0 0 5px rgba(0,196,114,.8)}
-.er-led.of{background:#222}
-.er-logo{width:60px;filter:brightness(0) invert(1);opacity:.6}
+  --st-confirmed:#b5c3a0; --st-likely:#e5c48f; --st-possible:#dda58c;
+  --st-urgent:#c8492b; --st-cancelled:#d3cdc6;
+  --dot-ntr:#708C69; --dot-str:#c99a3d; --dot-urgent:#c8492b;
 
-/* ── SECTIONS ── */
-.er-pbody{padding:16px 20px 0;font-size:16px}
-.er-sec{background:#F8F8F6;border-radius:7px;margin-bottom:10px;border:1px solid #C8C7C3;overflow:hidden;box-shadow:0 1px 0 rgba(255,255,255,.9),0 -1px 0 rgba(0,0,0,.06),0 2px 4px rgba(0,0,0,.1)}
-.er-shead{background:#E0DFDC;border-bottom:1px solid #AEADA9;padding:7px 14px;display:flex;align-items:center;gap:8px}
-.er-snum{font-size:10px;font-weight:700;letter-spacing:.14em;color:#777770;font-family:"IBM Plex Mono",monospace;background:#C8C7C3;padding:2px 5px;border-radius:2px}
-.er-stitle{font-size:10px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:#333;font-family:"IBM Plex Mono",monospace;flex:1}
-.er-sbadge{font-size:9px;font-weight:700;letter-spacing:.08em;color:#777770;font-family:"IBM Plex Mono",monospace}
-.er-sbody{padding:12px 14px}
+  --r-panel:24px; --r-card:20px; --r-block:16px; --r-ctl:12px; --r-sm:10px;
+  --logo-filter:brightness(0); --logo-op:.88; --showlogo-filter:none;
+}
+html[data-theme="softdark"]{
+  --ground:#0e0e10; --sheet:#18181b; --surface:#18181b; --surface-2:#221f26;
+  --ink:#f4f4f5; --subtle:#c8c8cf; --muted:#8d8d95;
+  --tab:#0e0e10; --tab-hover:#26262b;
+  --border:rgba(255,255,255,.09); --border-l:rgba(255,255,255,.15);
+  --field-edge:rgba(255,255,255,.4); --field-edge-hi:rgba(255,255,255,.75);
+  --on-ink:#0d0d0d; --on-mute:rgba(13,13,13,.46);
 
-/* ── HW BUTTONS ── */
-.er-btnrow{display:flex;flex-wrap:wrap;gap:7px}
-.er-hwbtn{display:inline-flex;align-items:center;justify-content:center;padding:11px 18px;border-radius:5px;font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:600;cursor:pointer;transition:all .08s;border:1px solid #AEADA9;background:#EFEFED;color:#333;box-shadow:0 1px 0 rgba(255,255,255,.9),0 -1px 0 rgba(0,0,0,.07),0 2px 3px rgba(0,0,0,.1);user-select:none;position:relative}
-.er-hwbtn:hover{background:#F8F8F6;color:#111}
-.er-hwbtn:active{box-shadow:inset 0 1px 3px rgba(0,0,0,.15);transform:translateY(1px)}
-.er-hwbtn.er-active{background:#111;color:#FFD000;border-color:#111;box-shadow:inset 0 1px 3px rgba(0,0,0,.2)}
-.er-hwbtn.er-active::before{content:"";position:absolute;top:5px;right:5px;width:4px;height:4px;border-radius:50%;background:#00C472;box-shadow:0 0 4px rgba(0,196,114,.9)}
-.er-hwbtn-sm{padding:7px 12px;font-size:10px;border-radius:4px}
-.er-hwbtn-red.er-active{color:#FFD000}
-.er-hwbtn-red.er-active::before{background:#E8002A;box-shadow:0 0 4px rgba(232,0,42,.9)}
+  --st-confirmed:#9daa88; --st-likely:#ccac78; --st-possible:#c48f77;
+  --st-urgent:#b03f24; --st-cancelled:#b9b3ac;
+  --dot-ntr:#9db394; --dot-str:#ccac78; --dot-urgent:#e0613d;
 
-/* Search input */
-.er-ksearch{width:100%;border:1px solid #AEADA9;border-radius:4px;padding:10px 12px;font-family:"IBM Plex Mono",monospace;font-size:12px;background:#E0DFDC;color:#111;outline:none;transition:all .15s}
-.er-ksearch:focus{border-color:#111;background:#fff}
-.er-ksearch::placeholder{color:#C8C7C3}
-
-/* ── REPORT TILES ── */
-.er-rlist{display:flex;flex-direction:column;gap:8px}
-.er-rcard{background:#F8F8F6;border:1px solid #C8C7C3;border-radius:5px;cursor:pointer;transition:all .1s;overflow:hidden;box-shadow:0 1px 0 rgba(255,255,255,.9),0 2px 3px rgba(0,0,0,.06)}
-.er-rcard:hover{border-color:#111;transform:translateY(-1px);box-shadow:0 1px 0 rgba(255,255,255,.9),0 4px 8px rgba(0,0,0,.1)}
-.er-rcard:active{transform:translateY(0)}
-.er-rhead{background:#E0DFDC;border-bottom:1px solid #C8C7C3;padding:6px 12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.er-rled{width:6px;height:6px;border-radius:50%;background:#C8C7C3;flex-shrink:0}
-.er-rled.gn{background:#00C472;box-shadow:0 0 4px rgba(0,196,114,.7)}
-.er-rled.amb{background:#FFD000;box-shadow:0 0 4px rgba(255,208,0,.7)}
-.er-rled.red{background:#E8002A;box-shadow:0 0 4px rgba(232,0,42,.7)}
-.er-rdate{font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:700;letter-spacing:.06em;color:#111;flex:1;min-width:0}
-.er-rref{font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:600;color:#777770;letter-spacing:.06em}
-.er-rbody{padding:10px 12px}
-.er-rpeople{font-family:"IBM Plex Mono",monospace;font-size:10px;color:#555;line-height:1.6;margin-bottom:6px}
-.er-rpeople .er-rlbl{font-size:9px;font-weight:700;letter-spacing:.1em;color:#999;text-transform:uppercase;margin-right:3px}
-.er-rsum{font-family:'Barlow',sans-serif;font-size:13px;color:#111;line-height:1.45;display:flex;align-items:flex-start;gap:8px}
-.er-rmode{flex-shrink:0;display:inline-block;padding:1px 6px;font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;border-radius:2px;margin-top:2px;line-height:1.5}
-.er-rmode.ntr{background:#111;color:#fff}
-.er-rmode.str{background:#FFD000;color:#111;border:1px solid #cc9900}
-.er-rsum-txt{flex:1;min-width:0;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;text-overflow:ellipsis}
-.er-rtags{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
-.er-rtag{font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:600;letter-spacing:.06em;padding:2px 7px;background:#E0DFDC;color:#555;border-radius:2px;text-transform:uppercase}
-.er-rtag.urgent{background:#E8002A;color:#fff}
-.er-rtag.amber{background:#FFD000;color:#111;border:1px solid #cc9900}
-
-/* ── EMPTY / LOADING ── */
-.er-empty{padding:40px 20px;text-align:center}
-.er-emp-icon{font-family:"IBM Plex Mono",monospace;font-size:32px;color:#C8C7C3;font-weight:700;margin-bottom:10px;letter-spacing:.1em}
-.er-emp-title{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#333;margin-bottom:4px}
-.er-emp-sub{font-family:"IBM Plex Mono",monospace;font-size:10px;color:#777770;letter-spacing:.04em}
-.er-loading{padding:30px 20px;text-align:center;font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#777770}
-
-/* Status bar mimicking the report submit status */
-.er-statusbar{background:#F8F8F6;border:1px solid #C8C7C3;border-radius:6px;padding:9px 14px;display:flex;align-items:center;gap:9px;margin:0 20px 10px;box-shadow:0 1px 0 rgba(255,255,255,.9),0 2px 4px rgba(0,0,0,.08)}
-.er-statusled{width:7px;height:7px;border-radius:50%;background:#00C472;box-shadow:0 0 5px rgba(0,196,114,.8);flex-shrink:0}
-.er-statustxt{font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#111}
-
-/* ── MODAL ── */
-.er-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;padding:24px 16px;overflow-y:auto;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
-.er-modal.open{display:block}
-.er-modal-inner{max-width:620px;margin:0 auto}
-.er-mclose{position:absolute;top:18px;right:18px;width:30px;height:30px;border:none;background:rgba(255,255,255,.1);color:#FFD000;font-size:18px;cursor:pointer;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:"IBM Plex Mono",monospace;transition:background .15s;z-index:10}
-.er-mclose:hover{background:rgba(255,208,0,.2)}
-
-/* Modal: value styles */
-.er-mval-name{display:inline-block;padding:8px 16px;background:#111;color:#FFD000;font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:600;border-radius:5px;letter-spacing:.04em}
-.er-mval-date{display:inline-block;padding:10px 14px;background:#E0DFDC;border:1px solid #AEADA9;border-radius:4px;font-family:"IBM Plex Mono",monospace;font-size:11px;color:#111;letter-spacing:.04em}
-.er-mval-mode{display:inline-block;padding:8px 18px;font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;border-radius:5px}
-.er-mval-mode.ntr{background:#111;color:#fff}
-.er-mval-mode.str{background:#FFD000;color:#111;border:1px solid #cc9900}
-.er-mval-summary{font-family:"IBM Plex Mono",monospace;font-size:11px;color:#111;line-height:1.7;background:#E0DFDC;border:1px solid #AEADA9;padding:12px 14px;border-radius:4px;margin-top:9px;white-space:pre-wrap}
-.er-mval-kit{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
-.er-mval-kit-chip{font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:600;padding:3px 9px;background:#111;color:#FFD000;border-radius:3px;letter-spacing:.04em}
-.er-mval-urgent{display:inline-block;padding:8px 16px;border-radius:5px;font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;position:relative;padding-left:30px}
-.er-mval-urgent::before{content:"";position:absolute;left:13px;top:50%;transform:translateY(-50%);width:7px;height:7px;border-radius:50%}
-.er-mval-urgent.no{background:#F8F8F6;color:#333;border:1px solid #00C472}
-.er-mval-urgent.no::before{background:#00C472;box-shadow:0 0 4px rgba(0,196,114,.9)}
-.er-mval-urgent.yes{background:#F8F8F6;color:#333;border:1px solid #E8002A}
-.er-mval-urgent.yes::before{background:#E8002A;box-shadow:0 0 4px rgba(232,0,42,.9)}
-.er-mval-urgent.other{background:#F8F8F6;color:#333;border:1px solid #cc9900}
-.er-mval-urgent.other::before{background:#FFD000;box-shadow:0 0 4px rgba(255,208,0,.9)}
-.er-mval-urgent-text{margin-top:9px;font-family:"IBM Plex Mono",monospace;font-size:11px;color:#111;line-height:1.7;background:rgba(232,0,42,.06);border:1px solid rgba(232,0,42,.3);padding:12px 14px;border-radius:4px;white-space:pre-wrap}
-
-.er-mfoot{margin:10px 20px 0;background:#1A1A1A;border-radius:6px;padding:9px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px}
-.er-mfoot-meta{font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5)}
-.er-mfoot-btn{padding:7px 14px;background:#FFD000;border:none;color:#111;font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;border-radius:4px;transition:opacity .15s}
-.er-mfoot-btn:hover{opacity:.85}
-
-@media(max-width:560px){
-  .sa-wrap{padding:14px 10px 40px}
-  .er-pbody{padding:14px 14px 0}
-  .er-statusbar{margin:0 14px 10px}
-  .er-mfoot{margin:10px 14px 0}
+  --logo-filter:brightness(0) invert(1); --logo-op:.82; --showlogo-filter:invert(1);
 }
 
-::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:#0a0a0a}::-webkit-scrollbar-thumb{background:#2e2e2e;border-radius:3px}
+html,body{
+  background:var(--ground);color:var(--ink);min-height:100vh;overflow-y:auto;
+  font-family:'Inter',-apple-system,'Helvetica Neue',Arial,sans-serif;
+  letter-spacing:-.011em;-webkit-font-smoothing:antialiased;
+}
+
+/* ── top bar ──────────────────────────────────────────────────────────── */
+.sa-bar{
+  background:var(--sheet);border-bottom:1px solid var(--border);
+  padding:11px 20px;display:flex;align-items:center;gap:14px;
+  position:sticky;top:0;z-index:100;
+}
+/* the sheet carries the wordmark, so the bar does not repeat it */
+.sa-bar img{display:none}
+.sa-bar-lbl{font-size:13px;font-weight:700;letter-spacing:-.02em;text-transform:none;color:var(--muted)}
+.sa-link{
+  margin-left:auto;background:none;border:none;border-radius:0;padding:0;
+  font-size:13px;font-weight:700;letter-spacing:-.015em;text-transform:none;
+  color:var(--ink);text-decoration:none;
+}
+.sa-link:hover{background:none;color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.sa-wrap{max-width:720px;margin:0 auto;padding:20px 16px 60px}
+
+/* ── the sheet ────────────────────────────────────────────────────────── */
+.er-device{
+  background:var(--sheet);border-radius:var(--r-panel);max-width:none;margin:0;
+  padding:8px 28px 28px;overflow:visible;
+  box-shadow:0 1px 3px rgba(13,13,13,.07),0 8px 24px rgba(13,13,13,.05);
+}
+
+/* ── letterhead: the show on the left, Versa on the right ─────────────── */
+.er-face{background:none;padding:24px 0 16px;border-bottom:2px solid var(--ink);
+  display:flex;align-items:flex-start;justify-content:space-between;gap:24px}
+.er-face-left .er-brand{display:none}
+.er-showlogo{display:block;height:36px;width:auto;margin:0 0 9px;filter:var(--showlogo-filter)}
+.er-showname{display:none;font-size:23px;font-weight:800;letter-spacing:-.04em;color:var(--ink);margin-bottom:5px}
+.er-face-left .er-title{font-size:15px;font-weight:600;letter-spacing:-.02em;text-transform:none;color:var(--muted)}
+.er-logo{display:block;width:84px;filter:var(--logo-filter);opacity:var(--logo-op);flex-shrink:0;margin:2px 0 0}
+
+/* ── count line under the letterhead ──────────────────────────────────── */
+.er-statusbar{
+  background:none;border:none;border-radius:0;box-shadow:none;
+  margin:0;padding:14px 2px 4px;display:flex;align-items:center;gap:10px;
+}
+.er-statusled{width:8px;height:8px;border-radius:50%;background:var(--dot-ntr);box-shadow:none;flex-shrink:0}
+.er-statustxt{font-size:13px;font-weight:600;letter-spacing:-.015em;text-transform:none;color:var(--muted)}
+
+.er-pbody{padding:0;font-size:16px}
+
+/* ── ruled rows, the same rhythm as the form ──────────────────────────── */
+.er-sec{
+  background:none;border:none;border-radius:0;box-shadow:none;margin:0;overflow:visible;
+  padding:16px 0;border-bottom:1px solid var(--border);display:flex;gap:26px;align-items:flex-start;
+}
+.er-sec:last-of-type{border-bottom:none;padding-bottom:0}
+.er-shead{
+  background:none;border-bottom:none;flex-direction:column;align-items:flex-start;gap:3px;
+  margin:6px 0 0;padding:0;width:152px;flex-shrink:0;display:flex;
+}
+.er-snum{
+  background:none;border-radius:0;padding:0;
+  font-size:10px;font-weight:800;letter-spacing:.16em;color:var(--muted);font-variant-numeric:tabular-nums;
+}
+.er-stitle{font-size:13.5px;font-weight:700;letter-spacing:-.02em;text-transform:none;color:var(--ink);line-height:1.25;flex:none}
+.er-sbadge{font-size:11.5px;font-weight:600;letter-spacing:-.01em;color:var(--muted);font-variant-numeric:tabular-nums}
+.er-sbody{padding:0;flex:1;min-width:0}
+
+/* ── filters and search ───────────────────────────────────────────────── */
+.er-btnrow{display:flex;flex-wrap:wrap;gap:7px}
+.er-hwbtn{
+  display:inline-flex;align-items:center;justify-content:center;
+  background:none;border:1px solid var(--border-l);border-radius:8px;
+  padding:9px 11px;cursor:pointer;transition:background .1s,border-color .1s;
+  font-family:inherit;font-size:13px;font-weight:600;letter-spacing:-.015em;
+  color:var(--ink);user-select:none;position:relative;box-shadow:none;
+}
+.er-hwbtn:hover{background:var(--tab);border-color:var(--ink);color:var(--ink)}
+.er-hwbtn:active{transform:none;box-shadow:none}
+.er-hwbtn.er-active{background:var(--ink);color:var(--ground);border-color:var(--ink);font-weight:700;box-shadow:none}
+/* the console's indicator lamp on the selected filter */
+.er-hwbtn.er-active::before{display:none}
+.er-hwbtn-sm{padding:9px 13px;font-size:13px;border-radius:8px}
+/* the urgent filter keeps its colour when it is on */
+.er-hwbtn-red.er-active{background:var(--st-urgent);border-color:var(--st-urgent);color:#fff}
+
+.er-ksearch{
+  width:100%;background:var(--surface);color:var(--ink);
+  border:1px solid var(--border-l);border-radius:8px;
+  padding:10px 13px;font-family:inherit;font-size:13.5px;letter-spacing:-.011em;
+  outline:none;transition:border-color .12s;
+}
+.er-ksearch:focus{border-color:var(--field-edge-hi);background:var(--surface)}
+.er-ksearch::placeholder{color:var(--muted)}
+
+/* ── the log: one ruled line per report ───────────────────────────────── */
+
+/* state is a dot, not a lamp */
+.er-rled.gn{background:var(--dot-ntr)}
+.er-rled.amb{background:var(--dot-str)}
+.er-rled.red{background:var(--dot-urgent)}
+/* NTR / STR is a word, not a badge */
+.er-rmode.ntr{color:var(--muted)}
+.er-rmode.str{color:var(--dot-str)}
+/* tags are text with a dot */
+.er-rtag.urgent{color:var(--dot-urgent);font-weight:800}
+.er-rtag.amber{color:var(--dot-str);font-weight:800}
+.er-rtag.urgent::before,.er-rtag.amber::before{
+  content:"";width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0;
+}
+
+/* ── empty and loading ────────────────────────────────────────────────── */
+.er-empty{padding:26px 2px;text-align:left}
+.er-emp-icon{display:none}
+.er-emp-title{font-size:15px;font-weight:800;letter-spacing:-.03em;text-transform:none;color:var(--ink);margin-bottom:3px}
+.er-emp-sub{font-size:12.5px;font-weight:500;letter-spacing:-.01em;color:var(--muted)}
+.er-loading{padding:22px 2px;text-align:left;font-size:12.5px;font-weight:500;letter-spacing:-.01em;text-transform:none;color:var(--muted)}
+
+/* ── the report, opened ───────────────────────────────────────────────── */
+.er-modal{display:none;position:fixed;inset:0;z-index:1000;overflow-y:auto;
+  background:rgba(13,13,13,.55);padding:24px 16px;
+  -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.er-modal.open{display:block}
+html[data-theme="softdark"] .er-modal{background:rgba(0,0,0,.72)}
+.er-modal-inner{max-width:720px;margin:0 auto}
+/* the letterhead's third column is empty in the modal, so the close button has
+   its corner already — no extra padding, which would throw the wordmark off centre */
+#modalDoc .er-face{padding-right:0}
+.er-mclose{
+  position:absolute;top:12px;right:14px;width:auto;height:auto;border-radius:0;
+  background:none;border:none;color:var(--muted);font-family:inherit;font-size:26px;
+  line-height:1;cursor:pointer;z-index:10;padding:2px 4px;
+}
+.er-mclose:hover{background:none;color:var(--ink)}
+
+/* values read as plain type on the sheet, never as filled shapes */
+.er-mval-name{
+  background:none;border-radius:0;padding:0;
+  font-size:17px;font-weight:700;letter-spacing:-.03em;color:var(--ink);display:block;
+}
+.er-mval-date{
+  background:none;border:none;border-radius:0;padding:0;
+  font-size:15.5px;font-weight:700;letter-spacing:-.025em;color:var(--ink);display:block;
+}
+.er-mval-mode{
+  background:none;border:none;border-radius:0;padding:0;
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:13.5px;font-weight:800;letter-spacing:-.015em;text-transform:none;
+}
+.er-mval-mode::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor;flex-shrink:0}
+.er-mval-mode.ntr{color:var(--dot-ntr)}
+.er-mval-mode.str{color:var(--dot-str)}
+.er-mval-summary{
+  font-family:inherit;font-size:13.5px;font-weight:400;color:var(--ink);line-height:1.6;
+  background:var(--surface-2);border:1px solid var(--border);border-radius:10px;
+  padding:13px 14px;margin-top:10px;white-space:pre-wrap;
+}
+.er-mval-kit{display:flex;flex-direction:column;gap:5px;margin-top:2px}
+/* a tagged item is a line in a list, not a chip */
+.er-mval-kit-chip{
+  background:none;border-radius:0;padding:0;color:var(--ink);
+  font-family:inherit;font-size:13px;font-weight:500;letter-spacing:-.015em;
+  display:flex;align-items:center;gap:9px;
+}
+.er-mval-kit-chip::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--muted);flex-shrink:0}
+.er-mval-urgent{
+  background:none!important;border:none!important;border-radius:0!important;padding:0!important;
+  display:inline-flex;align-items:center;gap:8px;position:static;
+  font-size:13.5px;font-weight:800;letter-spacing:-.015em;text-transform:none;
+}
+.er-mval-urgent::before{
+  content:"";position:static;transform:none;width:8px;height:8px;border-radius:50%;
+  background:currentColor;box-shadow:none;flex-shrink:0;
+}
+.er-mval-urgent.no{color:var(--dot-ntr)}
+.er-mval-urgent.yes{color:var(--dot-urgent)}
+.er-mval-urgent.other{color:var(--dot-str)}
+.er-mval-urgent-text{
+  margin-top:10px;font-family:inherit;font-size:13.5px;font-weight:400;color:var(--ink);line-height:1.6;
+  background:var(--surface-2);border:1px solid var(--border);border-left:3px solid var(--st-urgent);
+  border-radius:10px;padding:13px 14px;white-space:pre-wrap;
+}
+
+.er-mfoot{
+  margin:0;background:none;border-radius:0;border-top:2px solid var(--ink);
+  padding:14px 0 0;display:flex;justify-content:space-between;align-items:center;gap:12px;
+}
+.er-mfoot-meta{font-size:11.5px;font-weight:500;letter-spacing:-.005em;text-transform:none;color:var(--muted)}
+.er-mfoot-btn{
+  background:var(--ink);border:none;color:var(--ground);border-radius:10px;
+  padding:11px 18px;font-family:inherit;font-size:13.5px;font-weight:700;letter-spacing:-.02em;
+  text-transform:none;cursor:pointer;transition:opacity .15s;
+}
+.er-mfoot-btn:hover{opacity:.88}
+
+@media(max-width:620px){
+  .sa-wrap{padding:12px 10px 40px}
+  .er-device{padding:8px 18px 22px;border-radius:18px}
+  .er-face{padding:20px 0 14px;gap:14px}
+  .er-showlogo{height:29px}
+  .er-showname{font-size:20px}
+  .er-logo{width:66px}
+  .er-sec{flex-direction:column;gap:11px;align-items:stretch}
+  .er-shead{width:auto;flex-direction:row;align-items:baseline;gap:9px;margin-top:0}
+  .er-modal{padding:14px 10px}
+}
+
+
+
+/* ── wide screens: the sheet grows, and the label column with it ──────── */
+@media(min-width:1000px){
+  .sa-wrap{max-width:1100px;padding-left:28px;padding-right:28px}
+  .er-device{padding:10px 38px 34px}
+  .er-shead{width:190px}
+  .er-sec{gap:34px}
+  .er-face-left .er-title{font-size:16px}
+  .er-showlogo{height:42px}
+  .er-logo{width:96px}
+}
+
+
+/* ── the top bar is gone; its links live in the letterhead ────────────── */
+.sa-bar{display:none}
+.er-nav{display:flex;align-items:baseline;gap:20px;margin-left:auto;align-self:flex-end;padding-bottom:2px}
+.er-nav .sa-link{margin-left:0}
+.er-logo{margin-left:26px}
+@media(max-width:620px){
+  .er-nav{gap:14px;padding-bottom:0}
+  .er-logo{margin-left:14px}
+}
+/* narrow: the links drop under the title rather than squeezing the wordmark */
+@media(max-width:480px){
+  .er-face{flex-wrap:wrap}
+  .er-nav{order:3;width:100%;margin:10px 0 0;align-self:auto;padding:0}
+}
+
+
+/* ── the way across: one button, sitting left of the wordmark ─────────── */
+.er-nav{margin-left:auto;align-self:center;padding:0;gap:0}
+.vs-cross{
+  display:inline-flex;align-items:center;gap:10px;
+  background:var(--tab);border:none;border-radius:11px;
+  padding:10px 15px 10px 12px;font-family:inherit;
+  font-size:13.5px;font-weight:700;letter-spacing:-.02em;
+  color:var(--ink);text-decoration:none;white-space:nowrap;
+  transition:background .12s,transform .09s;
+}
+.vs-cross:hover{background:var(--tab-hover);color:var(--ink);text-decoration:none}
+.vs-cross:active{transform:scale(.985)}
+.vs-cross .vs-go{
+  width:24px;height:24px;border-radius:50%;background:rgba(13,13,13,.10);
+  display:flex;align-items:center;justify-content:center;font-size:12.5px;flex-shrink:0;
+}
+html[data-theme="softdark"] .vs-cross .vs-go{background:rgba(255,255,255,.12)}
+@media(max-width:560px){
+  .vs-cross{padding:9px 13px 9px 10px;font-size:12.5px;gap:8px}
+  .vs-cross .vs-go{width:21px;height:21px;font-size:11.5px}
+}
+
+
+/* the wordmark sits next to the title; the button takes the outside edge */
+.er-logo{order:2;margin-left:auto;margin-right:0}
+.er-nav{order:3;margin-left:26px}
+@media(max-width:620px){.er-nav{margin-left:14px}}
+@media(max-width:480px){.er-logo{margin-left:auto}}
+
+
+/* ── letterhead: title left, wordmark centred, button on the outside ──── */
+@media(min-width:620px){
+  .er-face{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:18px}
+  .er-face-left{grid-column:1;min-width:0}
+  .er-logo{grid-column:2;justify-self:center;margin:0}
+  .er-nav{grid-column:3;justify-self:end;margin:0;align-self:center}
+}
+/* a smaller button: it is a way out, not the main action on the page */
+.vs-cross{padding:7px 12px 7px 8px;font-size:12.5px;gap:8px;border-radius:10px}
+.vs-cross .vs-go{width:20px;height:20px;font-size:11px}
+@media(max-width:560px){
+  .vs-cross{padding:6px 10px 6px 7px;font-size:12px;gap:7px}
+  .vs-cross .vs-go{width:18px;height:18px;font-size:10.5px}
+}
+
+/* the bar can carry more than one link */
+.sa-link+.sa-link{margin-left:18px}
+.sa-link-2{color:var(--muted)}
+.sa-link-2:hover{color:var(--ink)}
+@media(max-width:620px){.sa-link-2{display:none}}
+
+/* ── BIG CALENDAR ─────────────────────────────────────────────────────────
+   The chrome folded into two tight rows: filters and search share a line, the
+   months sit on a strip you click straight into. Everything below that is the
+   month itself, at a size you can actually read. */
+
+@media(min-width:900px){
+  .sa-wrap{max-width:1280px}
+  #vsMonthBar .er-mstrip{margin:0}
+  /* filters and search share one line; the calendar takes the full width */
+  .er-device > .er-pbody{display:flex;flex-wrap:wrap;align-items:center;gap:0 14px;padding-top:4px}
+  .er-device > .er-pbody > .er-sec:nth-of-type(1){order:1;flex:0 0 auto;display:block;padding:10px 0;border-bottom:none}
+  #vsMonthBar{order:2;flex:1 1 220px;min-width:0;padding:10px 0}
+  .er-device > .er-pbody > .er-sec:nth-of-type(2){order:3;flex:0 1 210px;min-width:140px;display:block;padding:10px 0;border-bottom:none}
+  .er-device > .er-pbody > .er-sec:nth-of-type(3){order:4;flex:0 0 100%;display:block;padding:13px 0 0;margin-top:2px;border-top:1px solid var(--border);border-bottom:none}
+  /* the numbered labels earn their place on the report, not on a toolbar */
+  .er-device > .er-pbody > .er-sec:nth-of-type(1) .er-shead,
+  .er-device > .er-pbody > .er-sec:nth-of-type(2) .er-shead,
+  .er-device > .er-pbody > .er-sec:nth-of-type(3) .er-shead{display:none}
+}
+/* the page's count line is replaced by the month strip; the modal keeps its ref */
+.er-device > .er-statusbar{display:none}
+.er-face{padding:18px 0 12px}
+.er-hwbtn{padding:7px 12px;font-size:12.5px}
+.er-ksearch{padding:8px 12px;font-size:13px}
+
+/* ── month strip ──────────────────────────────────────────────────────── */
+/* a recessed tray, with the chosen month lifted out of it */
+.er-mstrip{
+  display:flex;align-items:stretch;gap:1px;overflow-x:auto;
+  background:var(--tab);border-radius:12px;padding:4px;margin:0 0 13px;
+  scrollbar-width:none;-ms-overflow-style:none;
+}
+.er-mstrip::-webkit-scrollbar{display:none}
+.er-mopt{
+  background:none;border:none;border-radius:9px;cursor:pointer;
+  padding:7px 10px;font-family:inherit;font-size:12.5px;font-weight:600;
+  letter-spacing:-.015em;color:var(--muted);white-space:nowrap;
+  display:flex;align-items:center;gap:6px;transition:background .1s,color .1s;
+}
+.er-mopt:hover{color:var(--ink);background:rgba(13,13,13,.05)}
+html[data-theme="softdark"] .er-mopt:hover{background:rgba(255,255,255,.06)}
+.er-mopt.is-on{
+  background:var(--sheet);color:var(--ink);font-weight:800;
+  box-shadow:0 1px 2px rgba(13,13,13,.10);
+}
+.er-mopt.is-on:hover{background:var(--sheet)}
+.er-mopt i{width:5px;height:5px;border-radius:50%;background:var(--dot-urgent);flex-shrink:0}
+/* the year shows only where it changes, on the month that starts it */
+.er-mopt em{font-style:normal;font-size:9.5px;font-weight:800;letter-spacing:.04em;
+  color:var(--muted);margin-left:3px}
+.er-mopt.is-on em{color:var(--muted)}
+.er-mhead2{display:flex;align-items:baseline;gap:12px;margin-bottom:11px;flex-wrap:wrap}
+.er-calname{font-size:17px;font-weight:800;letter-spacing:-.035em;color:var(--ink)}
+.er-calcount{font-size:12px;font-weight:500;color:var(--muted);font-variant-numeric:tabular-nums}
+.er-calkey{display:flex;flex-wrap:wrap;gap:14px;margin-left:auto}
+.er-calkey span{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--muted)}
+.er-calkey i{width:10px;height:10px;border-radius:3px;display:inline-block}
+
+/* ── the month ────────────────────────────────────────────────────────── */
+.er-dgrid{display:grid;grid-template-columns:repeat(5,1fr) .38fr .38fr;gap:6px}
+/* if a weekend ever carries a report, that month goes back to even columns
+   so nothing is squeezed out of sight */
+.er-dgrid.vs-weekend{grid-template-columns:repeat(7,1fr)}
+/* the 7 headings come first, so every 7n+6 / 7n+7 child is a Sat / Sun */
+.er-dgrid > :nth-child(7n+6),
+.er-dgrid > :nth-child(7n+7){background:none}
+.er-dgrid.vs-weekend > :nth-child(7n+6),
+.er-dgrid.vs-weekend > :nth-child(7n+7){background:var(--surface-2)}
+.er-dgrid.vs-weekend > .er-dcell.empty{background:none}
+.er-dgrid > :nth-child(6).er-ddow,
+.er-dgrid > :nth-child(7).er-ddow{font-size:12px;color:var(--muted)}
+.er-dgrid > :nth-child(7n+6) .er-dnum,
+.er-dgrid > :nth-child(7n+7) .er-dnum{font-size:11.5px;opacity:.65}
+/* a weekend cell that does carry a report keeps its colour and stays clickable */
+.er-dcell.has{background:var(--surface-2)}
+.er-ddow{font-size:16px;font-weight:800;letter-spacing:-.03em;color:var(--subtle);
+  padding:0 0 9px 4px}
+.er-dcell{
+  min-height:112px;border-radius:12px;background:var(--surface-2);padding:9px 10px;
+  display:flex;flex-direction:column;gap:5px;overflow:hidden;
+}
+.er-dcell.empty{background:none}
+.er-dnum{font-size:13px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums;line-height:1}
+.er-dcell.has .er-dnum{color:var(--on-ink);font-weight:800}
+.er-dcell.ntr{background:var(--st-confirmed)}
+.er-dcell.str,.er-dcell.mixed{background:var(--st-likely)}
+.er-dcell.urgent{background:var(--st-possible);box-shadow:inset 0 0 0 2px var(--st-urgent)}
+.er-dcell.today .er-dnum::after{content:"";display:inline-block;width:5px;height:5px;border-radius:50%;
+  background:currentColor;margin-left:5px;vertical-align:middle}
+
+.er-dentry{cursor:pointer;border-radius:7px;margin:0 -4px;padding:4px;transition:background .08s;min-width:0}
+.er-dentry:hover{background:rgba(13,13,13,.09)}
+html[data-theme="softdark"] .er-dentry:hover{background:rgba(13,13,13,.14)}
+.er-dmeta{display:flex;align-items:center;gap:6px;font-size:9.5px;font-weight:800;
+  letter-spacing:.08em;color:rgba(13,13,13,.5);text-transform:uppercase;margin-bottom:2px}
+.er-dmeta .er-durg{color:#8f2f16}
+.er-dtxt{font-size:11.5px;font-weight:500;line-height:1.35;color:var(--on-ink);
+  overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical}
+.er-dcell.multi .er-dtxt{-webkit-line-clamp:2}
+/* beyond the first two, a day's reports fold away until asked for */
+.er-dcell.multi .er-dentry:nth-child(n+4){display:none}
+.er-dcell.multi.open{min-height:0}
+.er-dcell.multi.open .er-dentry{display:block}
+.er-dmore{background:none;border:none;padding:2px 0 0;cursor:pointer;text-align:left;font-family:inherit;
+  font-size:9.5px;font-weight:800;color:rgba(13,13,13,.5);letter-spacing:.06em}
+.er-dmore:hover{color:var(--on-ink);text-decoration:underline;text-underline-offset:2px}
+
+/* ── below 900px the month is a list, not a grid ──────────────────────── */
+.er-dlist{display:none}
+@media(max-width:900px){
+  .er-dgrid{display:none}
+  .er-dlist{display:block}
+  .er-calkey{display:none}
+  .er-dcell.multi .er-dentry:nth-child(n+4){display:block}
+  .er-dmore{display:none}
+  .er-dday{display:flex;gap:12px;padding:11px 2px;border-bottom:1px solid var(--border)}
+  .er-dday:last-child{border-bottom:none}
+  .er-ddate{flex:0 0 64px;font-size:12.5px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+  .er-dbody{flex:1;min-width:0}
+  .er-dbody .er-dentry{margin:0;padding:0 0 6px}
+  .er-dbody .er-dentry:last-child{padding-bottom:0}
+  .er-dbody .er-dmeta{color:var(--muted)}
+  .er-dbody .er-dtxt{color:var(--ink);-webkit-line-clamp:2}
+}
+
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border-l);border-radius:3px}
 </style>
 </head>
 <body>
 
-<div class="sa-bar">
-<img src="data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMzY2IDk2Mi45MiI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiNmZmY7fTwvc3R5bGU+PC9kZWZzPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTE5NC4xNiw1MDcuMzN2LTE0LjdjOS4wOSw0LjQ1LDIzLjQsOS42NywzOC42Nyw5LjY3LDE4LjE3LDAsMzIuMDktOC4xMiwzMi4wOS0yMi4yM3MtNy41NC0yMS42NS0zMi4wOS0zMC4zNWMtMjcuNjQtOS44Ni0zOS4wNS0yMS42Ni0zOS4wNS00MS43NiwwLTIzLDE5LjcyLTM2LjE1LDQ0LjY2LTM2LjE1QTg2LjYsODYuNiwwLDAsMSwyNzIuMjcsMzc5djE0LjMxYy03LjU0LTMuODctMjAuODgtOC4xMy0zMy4yNS04LjEzLTE3Ljc5LDAtMzAuNzQsOC43MS0zMC43NCwyMi4yNCwwLDEyLjU3LDYuNzcsMjEuMjYsMzEuNywzMC4zNSwyNy44NCw5Ljg2LDM5LjQ0LDIxLjA3LDM5LjQ0LDQxLjM3LDAsMjMtMTguNTYsMzYuNTQtNDUuODIsMzYuNTRBOTkuMiw5OS4yLDAsMCwxLDE5NC4xNiw1MDcuMzNaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMzcxLjgzLDM4Ni41VjUxMy4zMkgzNTcuMTRWMzg2LjVIMzE0LjQyVjM3NC4xM0g0MTQuNzVWMzg2LjVaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNNTY1Ljc1LDQ2NS4zOGMwLDMxLjUxLTE5LjUzLDUwLjI2LTUyLjIsNTAuMjYtMzIuNDgsMC01Mi0xOC43NS01Mi01MC4yNlYzNzQuMTNoMTQuNjlWNDY0LjZjMCwyMy40LDEzLjkyLDM3LjMyLDM3LjMyLDM3LjMyczM3LjUtMTMuOTIsMzcuNS0zNy4zMlYzNzQuMTNoMTQuN1oiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik02MjguNTgsNTEzLjMyVjM3NC4xM2gzOC40N2M0MS41NiwwLDczLjQ2LDI2LjY4LDczLjQ2LDY5LjZTNzA5LDUxMy4zMiw2NjcuODIsNTEzLjMyWk02NDMuMjcsMzg2LjVWNTAxaDI0LjU1YzMyLjY4LDAsNTcuNjEtMjIuMjMsNTcuNjEtNTcuMjJTNzAwLjMsMzg2LjUsNjY2Ljg2LDM4Ni41WiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTc5NS4yMyw1MTMuMzJWMzc0LjEzaDE0LjY5VjUxMy4zMloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik05MzguMSwzNzEuODFjNDAsMCw3MC43NiwzMS43LDcwLjc2LDcxLjkyLDAsNDAuNC0zMC4zNiw3MS45MS03MC43Niw3MS45MS00MC4yMSwwLTcwLjc2LTMxLjUxLTcwLjc2LTcxLjkxQzg2Ny4zNCw0MDMuOSw4OTcuODksMzcxLjgxLDkzOC4xLDM3MS44MVptMCwxMzAuMTFjMzIuNDgsMCw1NS42OC0yNS4xNCw1NS42OC01OC4xOXMtMjMuMi01OC4yLTU1LjY4LTU4LjJjLTMyLjI5LDAtNTUuODcsMjUuMTQtNTUuODcsNTguMlM5MDUuODEsNTAxLjkyLDkzOC4xLDUwMS45MloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0xMDU1LjI1LDUwNy4zM3YtMTQuN2M5LjA5LDQuNDUsMjMuNCw5LjY3LDM4LjY3LDkuNjcsMTguMTcsMCwzMi4wOS04LjEyLDMyLjA5LTIyLjIzcy03LjU0LTIxLjY1LTMyLjA5LTMwLjM1Yy0yNy42NC05Ljg2LTM5LjA1LTIxLjY2LTM5LjA1LTQxLjc2LDAtMjMsMTkuNzItMzYuMTUsNDQuNjYtMzYuMTVhODYuNiw4Ni42LDAsMCwxLDMzLjgzLDcuMTV2MTQuMzFjLTcuNTQtMy44Ny0yMC44OC04LjEzLTMzLjI1LTguMTMtMTcuNzksMC0zMC43NCw4LjcxLTMwLjc0LDIyLjI0LDAsMTIuNTcsNi43NywyMS4yNiwzMS43LDMwLjM1LDI3Ljg0LDkuODYsMzkuNDQsMjEuMDcsMzkuNDQsNDEuMzcsMCwyMy0xOC41NiwzNi41NC00NS44MiwzNi41NEE5OS4yLDk5LjIsMCwwLDEsMTA1NS4yNSw1MDcuMzNaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMTMxLjIzLDI3MC44MmgtMi4xOEwwLDUuMDlINjEuMDdMOTUuMjQsODAuN2MxMy40NSwzMC4xNywyNS40NCw1NiwzNC41Myw4MS40M0MxMzcuNCwxNDMuNTgsMTUzLjQsMTA2LjUxLDE2NSw4MC43TDE5OS4yLDUuMDloNjAuNzFaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMzM0Ljc3LDI2Ni44MlY1LjA5SDUwMy4wOFY1MkgzOTAuNzVWMTExLjZINDg2djQ1LjA3SDM5MC43NXY2My4yNUg1MDguNTN2NDYuOVoiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik02OTEuMzYsNS4wOWM2MC43MSwwLDEwMSwzMC4xNywxMDEsODYuMTUsMCwzOC4xNy0yMS40NCw2My4yNS00OS44LDc0LjUyTDc5Ny41LDI2Ni44Mkg3MzguMjVsLTQ2LjE2LTkxLjYxSDY1NC4yOHY5MS42MUg1OTkuMzlWNS4wOVpNNjU0LjI4LDUydjc4LjE2aDQwYzI0LjcyLDAsNDEuOC0xMi4zNiw0MS44LTM4LjksMC0yNi4xNy0xNy44MS0zOS4yNi00My4yNi0zOS4yNloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik04NzUuNjQsMjU3VjIwMy4yYzE4LjE4LDkuNDUsNDIuMTcsMTcuNDUsNjUuOCwxOC45MWE5NS4wOCw5NS4wOCwwLDAsMCwyMy4yNi0xLjQ2YzIwLTIuOTEsMzEuNjMtMTAuNTQsMzEuNjMtMjMuMjYsMC0xNy40NS0xNS42My0yNi41NC01MS42Mi0zOS42My00NS44LTE2LjcyLTcyLjctMzYtNzIuNy04MS40MkM4NzIsMjkuODEsOTEwLjU0LDAsOTY2Ljg4LDBjMjYuMTgsMCw1Miw1LjgyLDY4LjM0LDEzLjA5VjY0LjcxYy0xNS4yNi05LjA5LTQwLTE2LTY0LTE2LTI2LjksMC00NC4zNSwxMC41NC00NC4zNSwyNy4yNywwLDE1LjI2LDE0LjE3LDI1LjgsNDkuOCwzOS4yNSw0NS44LDE3LjgxLDc0LjE1LDM3LjA4LDc0LjE1LDgxLjA3LDAsNDcuMjUtMzUuNjIsNzUuNjEtOTcuNDIsNzUuNjFDOTIzLjYzLDI3MS45MSw4OTQuNTQsMjY1LjM2LDg3NS42NCwyNTdaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMTIzOC43NywxLjA5aC0yLjE4TDExMDkuNzMsMjY2LjgyaDU4LjUybDEyLTI3LjIyYzExLTI0LjgxLDUwLjE3LTExNy44NCw1Ny43OS0xMzYsOCwyMi45LDQ4LjgxLDExNy4wNiw2MC44MSwxNDQuMzJoMGw4LjYyLDE4LjlIMTM2NloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik03NzQuNDYsNzA2Ljc4bC0zMS44OS02NS42NWgtMi42NGwtODYuMjIsMTc4LTUuNCwxMS4xNmMtMTEtMzAuNTEtMjUuMzUtNjEuNDktNDEuNDctOTcuNjVsLTQxLjM4LTkxLjU2aC03NEw2MTUuOSw4OTcuMjdsMzEuODgsNjUuNjVoMi42NGw4Ni4yMi0xNzgsNS40MS0xMS4xNmMxMSwzMC41LDI1LjM1LDYxLjQ5LDQxLjQ2LDk3LjY1bDQxLjM4LDkxLjU2aDc0WiIvPjwvc3ZnPg==" alt="Versa Studios"/>
-<span class="sa-bar-lbl">Morning Live &middot; Reports Archive</span>
-<a href="versa-engreport.html" class="sa-link">&#8594; Submit Report</a>
-</div>
 
 <div class="sa-wrap">
 <div class="er-device">
@@ -147,16 +488,13 @@ html,body{background:#0a0a0a;color:#f2f2f2;font-family:'Barlow',sans-serif;min-h
   <div class="er-face">
     <div class="er-face-left">
       <div class="er-brand">Versa Studios</div>
-      <div class="er-title">Morning Live &middot; Reports Archive</div>
+      <img class="er-showlogo" src="logos/morning-live.png" alt="Morning Live" onerror="this.style.display='none';var n=this.parentNode.querySelector('.er-showname');if(n)n.style.display='block'"/><div class="er-showname">Morning Live</div>
+      <div class="er-title">Reports Archive</div>
     </div>
-    <div style="display:flex;align-items:center;gap:12px">
-      <div class="er-leds">
-        <div class="er-led of"></div>
-        <div class="er-led of"></div>
-        <div class="er-led gn"></div>
-      </div>
-      <img class="er-logo" src="data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMzY2IDk2Mi45MiI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiNmZmY7fTwvc3R5bGU+PC9kZWZzPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTE5NC4xNiw1MDcuMzN2LTE0LjdjOS4wOSw0LjQ1LDIzLjQsOS42NywzOC42Nyw5LjY3LDE4LjE3LDAsMzIuMDktOC4xMiwzMi4wOS0yMi4yM3MtNy41NC0yMS42NS0zMi4wOS0zMC4zNWMtMjcuNjQtOS44Ni0zOS4wNS0yMS42Ni0zOS4wNS00MS43NiwwLTIzLDE5LjcyLTM2LjE1LDQ0LjY2LTM2LjE1QTg2LjYsODYuNiwwLDAsMSwyNzIuMjcsMzc5djE0LjMxYy03LjU0LTMuODctMjAuODgtOC4xMy0zMy4yNS04LjEzLTE3Ljc5LDAtMzAuNzQsOC43MS0zMC43NCwyMi4yNCwwLDEyLjU3LDYuNzcsMjEuMjYsMzEuNywzMC4zNSwyNy44NCw5Ljg2LDM5LjQ0LDIxLjA3LDM5LjQ0LDQxLjM3LDAsMjMtMTguNTYsMzYuNTQtNDUuODIsMzYuNTRBOTkuMiw5OS4yLDAsMCwxLDE5NC4xNiw1MDcuMzNaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMzcxLjgzLDM4Ni41VjUxMy4zMkgzNTcuMTRWMzg2LjVIMzE0LjQyVjM3NC4xM0g0MTQuNzVWMzg2LjVaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNNTY1Ljc1LDQ2NS4zOGMwLDMxLjUxLTE5LjUzLDUwLjI2LTUyLjIsNTAuMjYtMzIuNDgsMC01Mi0xOC43NS01Mi01MC4yNlYzNzQuMTNoMTQuNjlWNDY0LjZjMCwyMy40LDEzLjkyLDM3LjMyLDM3LjMyLDM3LjMyczM3LjUtMTMuOTIsMzcuNS0zNy4zMlYzNzQuMTNoMTQuN1oiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik02MjguNTgsNTEzLjMyVjM3NC4xM2gzOC40N2M0MS41NiwwLDczLjQ2LDI2LjY4LDczLjQ2LDY5LjZTNzA5LDUxMy4zMiw2NjcuODIsNTEzLjMyWk02NDMuMjcsMzg2LjVWNTAxaDI0LjU1YzMyLjY4LDAsNTcuNjEtMjIuMjMsNTcuNjEtNTcuMjJTNzAwLjMsMzg2LjUsNjY2Ljg2LDM4Ni41WiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTc5NS4yMyw1MTMuMzJWMzc0LjEzaDE0LjY5VjUxMy4zMloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik05MzguMSwzNzEuODFjNDAsMCw3MC43NiwzMS43LDcwLjc2LDcxLjkyLDAsNDAuNC0zMC4zNiw3MS45MS03MC43Niw3MS45MS00MC4yMSwwLTcwLjc2LTMxLjUxLTcwLjc2LTcxLjkxQzg2Ny4zNCw0MDMuOSw4OTcuODksMzcxLjgxLDkzOC4xLDM3MS44MVptMCwxMzAuMTFjMzIuNDgsMCw1NS42OC0yNS4xNCw1NS42OC01OC4xOXMtMjMuMi01OC4yLTU1LjY4LTU4LjJjLTMyLjI5LDAtNTUuODcsMjUuMTQtNTUuODcsNTguMlM5MDUuODEsNTAxLjkyLDkzOC4xLDUwMS45MloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0xMDU1LjI1LDUwNy4zM3YtMTQuN2M5LjA5LDQuNDUsMjMuNCw5LjY3LDM4LjY3LDkuNjcsMTguMTcsMCwzMi4wOS04LjEyLDMyLjA5LTIyLjIzcy03LjU0LTIxLjY1LTMyLjA5LTMwLjM1Yy0yNy42NC05Ljg2LTM5LjA1LTIxLjY2LTM5LjA1LTQxLjc2LDAtMjMsMTkuNzItMzYuMTUsNDQuNjYtMzYuMTVhODYuNiw4Ni42LDAsMCwxLDMzLjgzLDcuMTV2MTQuMzFjLTcuNTQtMy44Ny0yMC44OC04LjEzLTMzLjI1LTguMTMtMTcuNzksMC0zMC43NCw4LjcxLTMwLjc0LDIyLjI0LDAsMTIuNTcsNi43NywyMS4yNiwzMS43LDMwLjM1LDI3Ljg0LDkuODYsMzkuNDQsMjEuMDcsMzkuNDQsNDEuMzcsMCwyMy0xOC41NiwzNi41NC00NS44MiwzNi41NEE5OS4yLDk5LjIsMCwwLDEsMTA1NS4yNSw1MDcuMzNaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMTMxLjIzLDI3MC44MmgtMi4xOEwwLDUuMDlINjEuMDdMOTUuMjQsODAuN2MxMy40NSwzMC4xNywyNS40NCw1NiwzNC41Myw4MS40M0MxMzcuNCwxNDMuNTgsMTUzLjQsMTA2LjUxLDE2NSw4MC43TDE5OS4yLDUuMDloNjAuNzFaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMzM0Ljc3LDI2Ni44MlY1LjA5SDUwMy4wOFY1MkgzOTAuNzVWMTExLjZINDg2djQ1LjA3SDM5MC43NXY2My4yNUg1MDguNTN2NDYuOVoiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik02OTEuMzYsNS4wOWM2MC43MSwwLDEwMSwzMC4xNywxMDEsODYuMTUsMCwzOC4xNy0yMS40NCw2My4yNS00OS44LDc0LjUyTDc5Ny41LDI2Ni44Mkg3MzguMjVsLTQ2LjE2LTkxLjYxSDY1NC4yOHY5MS42MUg1OTkuMzlWNS4wOVpNNjU0LjI4LDUydjc4LjE2aDQwYzI0LjcyLDAsNDEuOC0xMi4zNiw0MS44LTM4LjksMC0yNi4xNy0xNy44MS0zOS4yNi00My4yNi0zOS4yNloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik04NzUuNjQsMjU3VjIwMy4yYzE4LjE4LDkuNDUsNDIuMTcsMTcuNDUsNjUuOCwxOC45MWE5NS4wOCw5NS4wOCwwLDAsMCwyMy4yNi0xLjQ2YzIwLTIuOTEsMzEuNjMtMTAuNTQsMzEuNjMtMjMuMjYsMC0xNy40NS0xNS42My0yNi41NC01MS42Mi0zOS42My00NS44LTE2LjcyLTcyLjctMzYtNzIuNy04MS40MkM4NzIsMjkuODEsOTEwLjU0LDAsOTY2Ljg4LDBjMjYuMTgsMCw1Miw1LjgyLDY4LjM0LDEzLjA5VjY0LjcxYy0xNS4yNi05LjA5LTQwLTE2LTY0LTE2LTI2LjksMC00NC4zNSwxMC41NC00NC4zNSwyNy4yNywwLDE1LjI2LDE0LjE3LDI1LjgsNDkuOCwzOS4yNSw0NS44LDE3LjgxLDc0LjE1LDM3LjA4LDc0LjE1LDgxLjA3LDAsNDcuMjUtMzUuNjIsNzUuNjEtOTcuNDIsNzUuNjFDOTIzLjYzLDI3MS45MSw4OTQuNTQsMjY1LjM2LDg3NS42NCwyNTdaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMTIzOC43NywxLjA5aC0yLjE4TDExMDkuNzMsMjY2LjgyaDU4LjUybDEyLTI3LjIyYzExLTI0LjgxLDUwLjE3LTExNy44NCw1Ny43OS0xMzYsOCwyMi45LDQ4LjgxLDExNy4wNiw2MC44MSwxNDQuMzJoMGw4LjYyLDE4LjlIMTM2NloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik03NzQuNDYsNzA2Ljc4bC0zMS44OS02NS42NWgtMi42NGwtODYuMjIsMTc4LTUuNCwxMS4xNmMtMTEtMzAuNTEtMjUuMzUtNjEuNDktNDEuNDctOTcuNjVsLTQxLjM4LTkxLjU2aC03NEw2MTUuOSw4OTcuMjdsMzEuODgsNjUuNjVoMi42NGw4Ni4yMi0xNzgsNS40MS0xMS4xNmMxMSwzMC41LDI1LjM1LDYxLjQ5LDQxLjQ2LDk3LjY1bDQxLjM4LDkxLjU2aDc0WiIvPjwvc3ZnPg==" alt="VS"/>
-    </div>
+    <nav class="er-nav">
+      <a class="vs-cross" href="versa-engreport.html" data-keep-theme><span class="vs-go">&#8594;</span>Submit Report</a>
+    </nav>
+    <img class="er-logo" src="data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMzY2IDk2Mi45MiI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiNmZmY7fTwvc3R5bGU+PC9kZWZzPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTE5NC4xNiw1MDcuMzN2LTE0LjdjOS4wOSw0LjQ1LDIzLjQsOS42NywzOC42Nyw5LjY3LDE4LjE3LDAsMzIuMDktOC4xMiwzMi4wOS0yMi4yM3MtNy41NC0yMS42NS0zMi4wOS0zMC4zNWMtMjcuNjQtOS44Ni0zOS4wNS0yMS42Ni0zOS4wNS00MS43NiwwLTIzLDE5LjcyLTM2LjE1LDQ0LjY2LTM2LjE1QTg2LjYsODYuNiwwLDAsMSwyNzIuMjcsMzc5djE0LjMxYy03LjU0LTMuODctMjAuODgtOC4xMy0zMy4yNS04LjEzLTE3Ljc5LDAtMzAuNzQsOC43MS0zMC43NCwyMi4yNCwwLDEyLjU3LDYuNzcsMjEuMjYsMzEuNywzMC4zNSwyNy44NCw5Ljg2LDM5LjQ0LDIxLjA3LDM5LjQ0LDQxLjM3LDAsMjMtMTguNTYsMzYuNTQtNDUuODIsMzYuNTRBOTkuMiw5OS4yLDAsMCwxLDE5NC4xNiw1MDcuMzNaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMzcxLjgzLDM4Ni41VjUxMy4zMkgzNTcuMTRWMzg2LjVIMzE0LjQyVjM3NC4xM0g0MTQuNzVWMzg2LjVaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNNTY1Ljc1LDQ2NS4zOGMwLDMxLjUxLTE5LjUzLDUwLjI2LTUyLjIsNTAuMjYtMzIuNDgsMC01Mi0xOC43NS01Mi01MC4yNlYzNzQuMTNoMTQuNjlWNDY0LjZjMCwyMy40LDEzLjkyLDM3LjMyLDM3LjMyLDM3LjMyczM3LjUtMTMuOTIsMzcuNS0zNy4zMlYzNzQuMTNoMTQuN1oiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik02MjguNTgsNTEzLjMyVjM3NC4xM2gzOC40N2M0MS41NiwwLDczLjQ2LDI2LjY4LDczLjQ2LDY5LjZTNzA5LDUxMy4zMiw2NjcuODIsNTEzLjMyWk02NDMuMjcsMzg2LjVWNTAxaDI0LjU1YzMyLjY4LDAsNTcuNjEtMjIuMjMsNTcuNjEtNTcuMjJTNzAwLjMsMzg2LjUsNjY2Ljg2LDM4Ni41WiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTc5NS4yMyw1MTMuMzJWMzc0LjEzaDE0LjY5VjUxMy4zMloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik05MzguMSwzNzEuODFjNDAsMCw3MC43NiwzMS43LDcwLjc2LDcxLjkyLDAsNDAuNC0zMC4zNiw3MS45MS03MC43Niw3MS45MS00MC4yMSwwLTcwLjc2LTMxLjUxLTcwLjc2LTcxLjkxQzg2Ny4zNCw0MDMuOSw4OTcuODksMzcxLjgxLDkzOC4xLDM3MS44MVptMCwxMzAuMTFjMzIuNDgsMCw1NS42OC0yNS4xNCw1NS42OC01OC4xOXMtMjMuMi01OC4yLTU1LjY4LTU4LjJjLTMyLjI5LDAtNTUuODcsMjUuMTQtNTUuODcsNTguMlM5MDUuODEsNTAxLjkyLDkzOC4xLDUwMS45MloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0xMDU1LjI1LDUwNy4zM3YtMTQuN2M5LjA5LDQuNDUsMjMuNCw5LjY3LDM4LjY3LDkuNjcsMTguMTcsMCwzMi4wOS04LjEyLDMyLjA5LTIyLjIzcy03LjU0LTIxLjY1LTMyLjA5LTMwLjM1Yy0yNy42NC05Ljg2LTM5LjA1LTIxLjY2LTM5LjA1LTQxLjc2LDAtMjMsMTkuNzItMzYuMTUsNDQuNjYtMzYuMTVhODYuNiw4Ni42LDAsMCwxLDMzLjgzLDcuMTV2MTQuMzFjLTcuNTQtMy44Ny0yMC44OC04LjEzLTMzLjI1LTguMTMtMTcuNzksMC0zMC43NCw4LjcxLTMwLjc0LDIyLjI0LDAsMTIuNTcsNi43NywyMS4yNiwzMS43LDMwLjM1LDI3Ljg0LDkuODYsMzkuNDQsMjEuMDcsMzkuNDQsNDEuMzcsMCwyMy0xOC41NiwzNi41NC00NS44MiwzNi41NEE5OS4yLDk5LjIsMCwwLDEsMTA1NS4yNSw1MDcuMzNaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMTMxLjIzLDI3MC44MmgtMi4xOEwwLDUuMDlINjEuMDdMOTUuMjQsODAuN2MxMy40NSwzMC4xNywyNS40NCw1NiwzNC41Myw4MS40M0MxMzcuNCwxNDMuNTgsMTUzLjQsMTA2LjUxLDE2NSw4MC43TDE5OS4yLDUuMDloNjAuNzFaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMzM0Ljc3LDI2Ni44MlY1LjA5SDUwMy4wOFY1MkgzOTAuNzVWMTExLjZINDg2djQ1LjA3SDM5MC43NXY2My4yNUg1MDguNTN2NDYuOVoiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik02OTEuMzYsNS4wOWM2MC43MSwwLDEwMSwzMC4xNywxMDEsODYuMTUsMCwzOC4xNy0yMS40NCw2My4yNS00OS44LDc0LjUyTDc5Ny41LDI2Ni44Mkg3MzguMjVsLTQ2LjE2LTkxLjYxSDY1NC4yOHY5MS42MUg1OTkuMzlWNS4wOVpNNjU0LjI4LDUydjc4LjE2aDQwYzI0LjcyLDAsNDEuOC0xMi4zNiw0MS44LTM4LjksMC0yNi4xNy0xNy44MS0zOS4yNi00My4yNi0zOS4yNloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik04NzUuNjQsMjU3VjIwMy4yYzE4LjE4LDkuNDUsNDIuMTcsMTcuNDUsNjUuOCwxOC45MWE5NS4wOCw5NS4wOCwwLDAsMCwyMy4yNi0xLjQ2YzIwLTIuOTEsMzEuNjMtMTAuNTQsMzEuNjMtMjMuMjYsMC0xNy40NS0xNS42My0yNi41NC01MS42Mi0zOS42My00NS44LTE2LjcyLTcyLjctMzYtNzIuNy04MS40MkM4NzIsMjkuODEsOTEwLjU0LDAsOTY2Ljg4LDBjMjYuMTgsMCw1Miw1LjgyLDY4LjM0LDEzLjA5VjY0LjcxYy0xNS4yNi05LjA5LTQwLTE2LTY0LTE2LTI2LjksMC00NC4zNSwxMC41NC00NC4zNSwyNy4yNywwLDE1LjI2LDE0LjE3LDI1LjgsNDkuOCwzOS4yNSw0NS44LDE3LjgxLDc0LjE1LDM3LjA4LDc0LjE1LDgxLjA3LDAsNDcuMjUtMzUuNjIsNzUuNjEtOTcuNDIsNzUuNjFDOTIzLjYzLDI3MS45MSw4OTQuNTQsMjY1LjM2LDg3NS42NCwyNTdaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMTIzOC43NywxLjA5aC0yLjE4TDExMDkuNzMsMjY2LjgyaDU4LjUybDEyLTI3LjIyYzExLTI0LjgxLDUwLjE3LTExNy44NCw1Ny43OS0xMzYsOCwyMi45LDQ4LjgxLDExNy4wNiw2MC44MSwxNDQuMzJoMGw4LjYyLDE4LjlIMTM2NloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik03NzQuNDYsNzA2Ljc4bC0zMS44OS02NS42NWgtMi42NGwtODYuMjIsMTc4LTUuNCwxMS4xNmMtMTEtMzAuNTEtMjUuMzUtNjEuNDktNDEuNDctOTcuNjVsLTQxLjM4LTkxLjU2aC03NEw2MTUuOSw4OTcuMjdsMzEuODgsNjUuNjVoMi42NGw4Ni4yMi0xNzgsNS40MS0xMS4xNmMxMSwzMC41LDI1LjM1LDYxLjQ5LDQxLjQ2LDk3LjY1bDQxLjM4LDkxLjU2aDc0WiIvPjwvc3ZnPg==" alt="VS"/>
   </div>
 
   <!-- STATUS BAR -->
@@ -169,31 +507,30 @@ html,body{background:#0a0a0a;color:#f2f2f2;font-family:'Barlow',sans-serif;min-h
 
     <!-- CH 01 Filters -->
     <div class="er-sec">
-      <div class="er-shead"><span class="er-snum">CH 01</span><span class="er-stitle">Filter Set</span></div>
+      <div class="er-shead"><span class="er-snum">01</span><span class="er-stitle">Filters</span></div>
       <div class="er-sbody">
         <div class="er-btnrow">
-          <div class="er-hwbtn er-hwbtn-sm er-active" data-filter="all" onclick="setFilter('all')">All Reports</div>
-          <div class="er-hwbtn er-hwbtn-sm" data-filter="str" onclick="setFilter('str')">STR Only</div>
-          <div class="er-hwbtn er-hwbtn-sm" data-filter="ntr" onclick="setFilter('ntr')">NTR Only</div>
+          <div class="er-hwbtn er-hwbtn-sm er-active" data-filter="all" onclick="setFilter('all')">All</div>
+          <div class="er-hwbtn er-hwbtn-sm" data-filter="str" onclick="setFilter('str')">STR</div>
+          <div class="er-hwbtn er-hwbtn-sm" data-filter="ntr" onclick="setFilter('ntr')">NTR</div>
           <div class="er-hwbtn er-hwbtn-sm er-hwbtn-red" data-filter="urgent" onclick="setFilter('urgent')">Urgent</div>
-          <div class="er-hwbtn er-hwbtn-sm" data-filter="month" onclick="setFilter('month')">Past 30d</div>
         </div>
       </div>
     </div>
 
     <!-- CH 02 Search -->
     <div class="er-sec">
-      <div class="er-shead"><span class="er-snum">CH 02</span><span class="er-stitle">Search Index</span></div>
+      <div class="er-shead"><span class="er-snum">02</span><span class="er-stitle">Search</span></div>
       <div class="er-sbody">
-        <input class="er-ksearch" id="searchInput" placeholder="Tech name, equipment, summary text&hellip;" oninput="renderList()"/>
+        <input class="er-ksearch" id="searchInput" placeholder="Search reports&hellip;" oninput="renderList()"/>
       </div>
     </div>
 
     <!-- CH 03 Reports List -->
     <div class="er-sec">
-      <div class="er-shead"><span class="er-snum">CH 03</span><span class="er-stitle">Archive Log</span><span class="er-sbadge" id="repCount">&mdash;</span></div>
+      <div class="er-shead"><span class="er-snum">03</span><span class="er-stitle">Reports</span><span class="er-sbadge" id="repCount">&mdash;</span></div>
       <div class="er-sbody">
-        <div class="er-rlist" id="repList"></div>
+        <div id="repList"></div>
         <div class="er-empty" id="emptyState" style="display:none">
           <div class="er-emp-icon">CH&mdash;</div>
           <div class="er-emp-title">No Reports Match</div>
@@ -252,14 +589,13 @@ async function loadReports(){
     if(!r.ok)throw new Error('HTTP '+r.status);
     var rows=await r.json();
     ALL_REPORTS=(rows||[]).filter(function(x){return (x.show_name||'').toLowerCase()!=='shopon tv';});
-    document.getElementById('statusTxt').textContent=ALL_REPORTS.length+' Reports Indexed';
+    document.getElementById('statusTxt').textContent=ALL_REPORTS.length+(ALL_REPORTS.length===1?' report':' reports');
     document.getElementById('loadingState').style.display='none';
     renderList();
   }catch(e){
     console.error(e);
-    document.getElementById('statusTxt').textContent='Load Failed — '+e.message;
-    document.getElementById('statusLed').style.background='#E8002A';
-    document.getElementById('statusLed').style.boxShadow='0 0 5px rgba(232,0,42,.8)';
+    document.getElementById('statusTxt').textContent='Could not load — '+e.message;
+    document.getElementById('statusLed').style.background='var(--dot-urgent)';
     document.getElementById('loadingState').textContent='Error: '+e.message;
   }
 }
@@ -272,66 +608,16 @@ function setFilter(f){
 
 function applyFilters(rows){
   var q=(document.getElementById('searchInput').value||'').toLowerCase().trim();
-  var now=new Date();
-  var thirty=new Date(now.getTime()-30*864e5);
   return rows.filter(function(r){
     if(FILTER==='str'&&(r.summary_mode||'').toLowerCase()!=='str')return false;
     if(FILTER==='ntr'&&(r.summary_mode||'').toLowerCase()!=='ntr')return false;
     if(FILTER==='urgent'){var u=(r.urgent_action||'').toLowerCase();if(u==='no'||u==='')return false;}
-    if(FILTER==='month'){var d=new Date((r.show_date||r.submitted_at||'').slice(0,10)+'T12:00:00');if(isNaN(d.getTime())||d<thirty)return false;}
     if(q){var blob=[r.versa_tech_manager,r.bbc_tech_manager,r.summary_text,r.urgent_details,(r.tagged_kit_names||[]).join(' ')].join(' ').toLowerCase();if(blob.indexOf(q)<0)return false;}
     return true;
   });
 }
 
-function ledFor(r){
-  var u=(r.urgent_action||'').toLowerCase();
-  if(u==='yes')return 'red';
-  var m=(r.summary_mode||'').toLowerCase();
-  if(m==='str')return 'amb';
-  return 'gn';
-}
 
-function renderList(){
-  var listEl=document.getElementById('repList');
-  var emptyEl=document.getElementById('emptyState');
-  var countEl=document.getElementById('repCount');
-  var filtered=applyFilters(ALL_REPORTS);
-  countEl.textContent=filtered.length+'/'+ALL_REPORTS.length;
-  if(!filtered.length){listEl.innerHTML='';emptyEl.style.display='';return;}
-  emptyEl.style.display='none';
-  listEl.innerHTML=filtered.map(function(r,i){
-    var isUrgent=(r.urgent_action||'').toLowerCase()==='yes';
-    var isOther=(r.urgent_action||'').toLowerCase()==='other';
-    var mode=(r.summary_mode||'').toLowerCase();
-    var summary=r.summary_text||(mode==='ntr'?'Nothing to report':'');
-    var kitCount=(r.tagged_kit_names||[]).length;
-    var led=ledFor(r);
-    return '<div class="er-rcard" onclick="openReport('+i+')">'
-      +'<div class="er-rhead">'
-        +'<div class="er-rled '+led+'"></div>'
-        +'<div class="er-rdate">'+esc(fmtDate(r.show_date))+'</div>'
-        +'<div class="er-rref">'+esc(refOf(r))+'</div>'
-      +'</div>'
-      +'<div class="er-rbody">'
-        +'<div class="er-rpeople">'
-          +'<span class="er-rlbl">VTM</span>'+esc(r.versa_tech_manager||'—')
-          +'<span style="margin:0 7px;color:#C8C7C3">·</span>'
-          +'<span class="er-rlbl">BTM</span>'+esc(r.bbc_tech_manager||'—')
-        +'</div>'
-        +(summary?'<div class="er-rsum">'
-          +(mode?'<span class="er-rmode '+mode+'">'+mode.toUpperCase()+'</span>':'')
-          +'<span class="er-rsum-txt">'+esc(summary)+'</span>'
-        +'</div>':'')
-        +((isUrgent||isOther||kitCount)?'<div class="er-rtags">'
-          +(isUrgent?'<span class="er-rtag urgent">⚠ Urgent</span>':'')
-          +(isOther?'<span class="er-rtag amber">Note</span>':'')
-          +(kitCount?'<span class="er-rtag">'+kitCount+' Kit '+(kitCount===1?'Item':'Items')+'</span>':'')
-        +'</div>':'')
-      +'</div>'
-    +'</div>';
-  }).join('');
-}
 
 function openReport(idx){
   var filtered=applyFilters(ALL_REPORTS);
@@ -347,7 +633,8 @@ function openReport(idx){
   var html='<div class="er-face">'
     +'<div class="er-face-left">'
       +'<div class="er-brand">Versa Studios</div>'
-      +'<div class="er-title">Morning Live &middot; Engineering Report</div>'
+      +'<img class="er-showlogo" src="logos/morning-live.png" alt="Morning Live" onerror="this.style.display=\'none\';var n=this.parentNode.querySelector(\'.er-showname\');if(n)n.style.display=\'block\'"/><div class="er-showname">Morning Live</div>'
+      +'<div class="er-title">Engineering Report</div>'
     +'</div>'
     +'<div style="display:flex;align-items:center;gap:12px">'
       +'<div class="er-leds">'
@@ -360,19 +647,19 @@ function openReport(idx){
   +'</div>'
   +'<div class="er-statusbar" style="margin-top:10px"><div class="er-statusled"></div><div class="er-statustxt">'+esc(refOf(r))+'</div></div>'
   +'<div class="er-pbody">'
-    +'<div class="er-sec"><div class="er-shead"><span class="er-snum">CH 01</span><span class="er-stitle">Versa Tech Manager</span></div>'
+    +'<div class="er-sec"><div class="er-shead"><span class="er-snum">01</span><span class="er-stitle">Versa Tech Manager</span></div>'
     +'<div class="er-sbody"><span class="er-mval-name">'+esc(r.versa_tech_manager||'Not specified')+'</span></div></div>'
-    +'<div class="er-sec"><div class="er-shead"><span class="er-snum">CH 02</span><span class="er-stitle">Show Date</span></div>'
+    +'<div class="er-sec"><div class="er-shead"><span class="er-snum">02</span><span class="er-stitle">Show Date</span></div>'
     +'<div class="er-sbody"><span class="er-mval-date">'+esc(fmtDateLong(r.show_date))+'</span></div></div>'
-    +'<div class="er-sec"><div class="er-shead"><span class="er-snum">CH 03</span><span class="er-stitle">BBC Tech Manager</span></div>'
+    +'<div class="er-sec"><div class="er-shead"><span class="er-snum">03</span><span class="er-stitle">BBC Tech Manager</span></div>'
     +'<div class="er-sbody"><span class="er-mval-name">'+esc(r.bbc_tech_manager||'Not specified')+'</span></div></div>'
-    +'<div class="er-sec"><div class="er-shead"><span class="er-snum">CH 04</span><span class="er-stitle">Daily Summary</span></div>'
+    +'<div class="er-sec"><div class="er-shead"><span class="er-snum">04</span><span class="er-stitle">Daily Summary</span></div>'
     +'<div class="er-sbody"><span class="er-mval-mode '+modeClass+'">'+esc(modeLabel)+'</span>'
     +(r.summary_text?'<div class="er-mval-summary">'+esc(r.summary_text)+'</div>':'')
     +'</div></div>'
-    +(kitNames.length?'<div class="er-sec"><div class="er-shead"><span class="er-snum">CH 0'+(++chNum)+'</span><span class="er-stitle">Tagged Kit</span></div>'
+    +(kitNames.length?'<div class="er-sec"><div class="er-shead"><span class="er-snum">0'+(++chNum)+'</span><span class="er-stitle">Tagged Kit</span></div>'
     +'<div class="er-sbody"><div class="er-mval-kit">'+kitNames.map(function(k){return '<span class="er-mval-kit-chip">'+esc(k)+'</span>';}).join('')+'</div></div></div>':'')
-    +'<div class="er-sec"><div class="er-shead"><span class="er-snum">CH 0'+(++chNum)+'</span><span class="er-stitle">Urgent Action Required</span></div>'
+    +'<div class="er-sec"><div class="er-shead"><span class="er-snum">0'+(++chNum)+'</span><span class="er-stitle">Urgent Action Required</span></div>'
     +'<div class="er-sbody"><span class="er-mval-urgent '+(urgentLow==='yes'?'yes':urgentLow==='other'?'other':'no')+'">'+esc(urgent)+'</span>'
     +(r.urgent_details?'<div class="er-mval-urgent-text">'+esc(r.urgent_details)+'</div>':'')
     +'</div></div>'
@@ -389,6 +676,156 @@ function closeModal(){
 }
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
 
+(function(){
+  var MONTHS=[], idx=null, DATA={};   /* null until the first render picks the newest month */
+
+  function initials(n){
+    return String(n||'').trim().split(/\s+/).map(function(w){return w[0]||'';}).join('').slice(0,3).toUpperCase()||'—';
+  }
+  function stateOf(items){
+    if(items.some(function(x){return (x.r.urgent_action||'').toLowerCase()==='yes';})) return 'urgent';
+    return items.some(function(x){return (x.r.summary_mode||'').toLowerCase()==='str';})?'str':'ntr';
+  }
+  function entry(x){
+    var mode=(x.r.summary_mode||'').toLowerCase();
+    var urgent=(x.r.urgent_action||'').toLowerCase()==='yes';
+    var txt=x.r.summary_text||(mode==='ntr'?'Nothing to report':'');
+    var kit=(x.r.tagged_kit_names||[]).length;
+    return '<div class="er-dentry" onclick="event.stopPropagation();openReport('+x.i+')">'
+      +'<div class="er-dmeta">'
+        +'<span>'+mode.toUpperCase()+'</span>'
+        +'<span>'+esc(initials(x.r.versa_tech_manager))+'</span>'
+        +(kit?'<span>'+kit+' kit</span>':'')
+        +(urgent?'<span class="er-durg">Urgent</span>':'')
+      +'</div>'
+      +'<div class="er-dtxt">'+esc(txt)+'</div>'
+    +'</div>';
+  }
+  function urgentIn(k){
+    var days=DATA[k]||{},n=0;
+    Object.keys(days).forEach(function(d){
+      n+=days[d].filter(function(x){return (x.r.urgent_action||'').toLowerCase()==='yes';}).length;});
+    return n;
+  }
+
+  window.renderList=function(){
+    var listEl=document.getElementById('repList');
+    var emptyEl=document.getElementById('emptyState');
+    var countEl=document.getElementById('repCount');
+    var filtered=applyFilters(ALL_REPORTS);
+    countEl.textContent=filtered.length+'/'+ALL_REPORTS.length;
+    if(!filtered.length){listEl.innerHTML='';emptyEl.style.display='';return;}
+    emptyEl.style.display='none';
+
+    DATA={}; MONTHS=[];
+    filtered.forEach(function(r,i){
+      var ds=(r.show_date||'').slice(0,10); if(!ds) return;
+      var k=ds.slice(0,7);
+      if(!DATA[k]){DATA[k]={};MONTHS.push(k);}
+      var d=parseInt(ds.slice(8,10),10);
+      (DATA[k][d]=DATA[k][d]||[]).push({r:r,i:i});
+    });
+    if(!MONTHS.length){listEl.innerHTML='';emptyEl.style.display='';return;}
+    MONTHS.sort();                     /* oldest first, so the strip reads as a timeline */
+    if(idx===null) idx=MONTHS.length-1;   /* open on the newest month */
+    if(idx>=MONTHS.length) idx=MONTHS.length-1;
+    if(idx<0) idx=0;
+
+    /* month strip: every month one click away, with a dot where urgent landed */
+    var lastYear=null;
+    var strip=MONTHS.map(function(k,n){
+      var d=new Date(k+'-01T12:00:00');
+      var yr=k.slice(0,4), newYear=(yr!==lastYear); lastYear=yr;
+      var u=urgentIn(k);
+      return '<button class="er-mopt'+(n===idx?' is-on':'')+'" type="button" onclick="vsCalGo('+n+')">'
+        +d.toLocaleDateString('en-GB',{month:'short'}).replace('Sept','Sep')
+        +(newYear?'<em>'+yr.slice(2)+'</em>':'')
+        +(u?'<i title="'+u+' urgent"></i>':'')
+      +'</button>';
+    }).join('');
+
+    var k=MONTHS[idx], days=DATA[k];
+    var y=+k.slice(0,4), m=+k.slice(5,7);
+    var first=new Date(y,m-1,1), lead=(first.getDay()+6)%7, last=new Date(y,m,0).getDate();
+    var n=Object.keys(days).reduce(function(a,d){return a+days[d].length;},0);
+    var urg=urgentIn(k);
+    var today=new Date(), todayKey=today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0');
+
+    /* the strip belongs to the toolbar row, so it is rendered outside the results */
+    var bar=document.getElementById('vsMonthBar');
+    if(!bar){
+      bar=document.createElement('div'); bar.id='vsMonthBar';
+      var pb=document.querySelector('.er-device > .er-pbody');
+      if(pb) pb.appendChild(bar);
+    }
+    bar.innerHTML='<div class="er-mstrip">'+strip+'</div>';
+
+    var head='<div class="er-mhead2">'
+        +'<span class="er-calname">'+esc(first.toLocaleDateString('en-GB',{month:'long',year:'numeric'}))+'</span>'
+        +'<span class="er-calcount">'+n+' report'+(n===1?'':'s')+(urg?' &middot; '+urg+' urgent':'')+'</span>'
+        +'<span class="er-calkey">'
+          +'<span><i style="background:var(--st-confirmed)"></i>Nothing to report</span>'
+          +'<span><i style="background:var(--st-likely)"></i>Something to report</span>'
+          +'<span><i style="background:var(--st-possible);box-shadow:inset 0 0 0 2px var(--st-urgent)"></i>Urgent</span>'
+        +'</span>'
+      +'</div>';
+
+    var dow=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+    var grid=dow.map(function(d){return '<div class="er-ddow">'+d+'</div>';}).join('');
+    for(var p=0;p<lead;p++) grid+='<div class="er-dcell empty"></div>';
+    var weekendUsed=false;
+    for(var d=1;d<=last;d++){
+      var items=days[d];
+      if(items){ var wd=new Date(y,m-1,d).getDay(); if(wd===0||wd===6) weekendUsed=true; }
+      var isToday=(k===todayKey && d===today.getDate())?' today':'';
+      if(!items){ grid+='<div class="er-dcell'+isToday+'"><div class="er-dnum">'+d+'</div></div>'; continue; }
+      grid+='<div class="er-dcell has '+stateOf(items)+(items.length>1?' multi':'')+isToday+'">'
+        +'<div class="er-dnum">'+d+'</div>'
+        +items.map(entry).join('')
+        +(items.length>2?'<button class="er-dmore" type="button" onclick="vsCalMore(this)">+'+(items.length-2)+' more</button>':'')
+      +'</div>';
+    }
+
+    var list=Object.keys(days).map(Number).sort(function(a,b){return a-b;}).map(function(d){
+      var dt=new Date(y,m-1,d);
+      return '<div class="er-dday">'
+        +'<div class="er-ddate">'+dt.toLocaleDateString('en-GB',{weekday:'short',day:'2-digit'}).replace(',','')+'</div>'
+        +'<div class="er-dbody">'+days[d].map(entry).join('')+'</div>'
+      +'</div>';
+    }).join('');
+
+    listEl.innerHTML=head+'<div class="er-dgrid'+(weekendUsed?' vs-weekend':'')+'">'+grid
+      +'</div><div class="er-dlist">'+list+'</div>';
+
+    /* keep the chosen month in view on the strip */
+    var on=bar.querySelector('.er-mopt.is-on');
+    if(on&&on.scrollIntoView) on.scrollIntoView({block:'nearest',inline:'nearest'});
+  };
+
+  window.vsCalGo=function(n){ idx=n; renderList(); };
+  window.vsCalMore=function(btn){
+    var cell=btn.closest('.er-dcell');
+    var open=cell.classList.toggle('open');
+    btn.textContent = open ? 'Show less' : '+'+(cell.querySelectorAll('.er-dentry').length-2)+' more';
+  };
+
+  /* a new filter can change which months exist — land on the newest one */
+  var origSetFilter=window.setFilter;
+  if(typeof origSetFilter==='function') window.setFilter=function(f){ idx=null; origSetFilter(f); };
+})();
+
 loadReports();
+</script>
+
+<script>
+/* Carry ?theme= across the links between these pages, so a dark archive opens
+   a dark form. Marked links only; nothing else on the page is rewritten. */
+document.addEventListener('DOMContentLoaded',function(){
+  var t=new URLSearchParams(location.search).get('theme');
+  if(!t) return;
+  document.querySelectorAll('a[data-keep-theme]').forEach(function(a){
+    try{ var u=new URL(a.getAttribute('href'),location.href); u.searchParams.set('theme',t); a.setAttribute('href',u.pathname.split('/').pop()+u.search); }catch(e){}
+  });
+});
 </script>
 </body></html>
