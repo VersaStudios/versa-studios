@@ -743,7 +743,30 @@ async function erSubmit(){
   const det=document.getElementById('erSucDet');if(isUrgent){det.style.display='block';det.textContent='Urgent action required';}else det.style.display='none';
 }
 async function erSaveReport(d){try{const r=await fetch(_ER_SB_URL+'/rest/v1/engineering_reports',{method:'POST',headers:{..._ER_SB_HDR,'Prefer':'return=minimal'},body:JSON.stringify(d)});return r.ok;}catch(e){return false;}}
-async function erSendEmail(p){try{if(window.emailjs){emailjs.init({publicKey:_ER_EJS_KEY});await emailjs.send(_ER_EJS_SVC,_ER_EJS_TPL,p);}}catch(e){}}
+/* This page never loaded the EmailJS library, so the guard below was always
+   false and no STR email was ever sent from here. Fetch it on demand at send
+   time — the Dashboard does the same — rather than on every page load. */
+function _erEnsureEmailJS(){
+  if(window.emailjs) return Promise.resolve(true);
+  if(window._erEjsLoading) return window._erEjsLoading;
+  window._erEjsLoading=new Promise(function(resolve){
+    var t=setTimeout(function(){resolve(false);},8000);
+    var sc=document.createElement('script');
+    sc.src='https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
+    sc.onload=function(){clearTimeout(t);resolve(!!window.emailjs);};
+    sc.onerror=function(){clearTimeout(t);resolve(false);};
+    document.head.appendChild(sc);
+  });
+  return window._erEjsLoading;
+}
+async function erSendEmail(p){
+  try{
+    if(!(await _erEnsureEmailJS())) return false;
+    emailjs.init({publicKey:_ER_EJS_KEY});
+    await emailjs.send(_ER_EJS_SVC,_ER_EJS_TPL,p);
+    return true;
+  }catch(e){ return false; }
+}
 async function erLoadKit(){
   try{
     const r=await fetch(_ER_SB_URL+'/rest/v1/app_data?key=eq.kit&select=value',{headers:_ER_SB_HDR});
@@ -751,12 +774,18 @@ async function erLoadKit(){
     if(rows&&rows[0]&&Array.isArray(rows[0].value)){
       /* only 11 of the 445 items carry an asset tag, so make and model do the
          identifying — that is what the Dashboard's kit page shows too */
+      /* The Dashboard records allocation in each item's history, as an event
+         carrying the job name. There are no de-allocation events, so an item
+         that has ever been allocated to this show counts as this show's. */
+      const show=(document.getElementById('erShowSel')||{}).value||'Morning Live';
+      const allocated=k=>(k.history||[]).some(h=>h&&h.job===show);
       const mapped=rows[0].value.map(k=>({
         id:k.id,
         name:k.name,
         cat:k.cat||'',
         tag:k.tag||[k.make,k.model].filter(Boolean).join(' '),
-        loc:k.loc||''
+        loc:k.loc||'',
+        mine:allocated(k)
       }));
       /* 51 items share a name with another unit — ten Sony RX0 IIs and so on.
          Numbering them keeps the rows tellable apart; the report stores the
@@ -823,17 +852,23 @@ function erPickUrgent(val){
   document.getElementById('erUrgDet').classList.toggle('open',val==='Yes'||val==='Other');
   erUpdateStatus();
 }
+/* this show's kit only — an item counts once the Dashboard has allocated it */
+function erKitInScope(){return _erKitData.filter(k=>k.mine);}
 function erInitCatBtns(){
   const wrap=document.getElementById('erCatBtns');if(!wrap)return;
-  const cats=[...new Set(_erKitData.map(k=>k.cat))].sort(),cur=window._erCatFilter||'';
+  const cur=window._erCatFilter||'';
   wrap.innerHTML='';
-  const mk=(label,val)=>{const b=document.createElement('button');b.textContent=label;b.className='er-catbtn'+(cur===val?' er-active':'');b.onclick=()=>{window._erCatFilter=val;erInitCatBtns();erRenderKit();};return b;};
-  wrap.appendChild(mk('All',''));cats.forEach(c=>wrap.appendChild(mk(c,c)));
+  const mk=(label,val,on,fn)=>{const b=document.createElement('button');b.textContent=label;
+    b.className='er-catbtn'+(on?' er-active':'');b.onclick=fn;return b;};
+  const cats=[...new Set(erKitInScope().map(k=>k.cat))].filter(Boolean).sort();
+  const setCat=v=>()=>{window._erCatFilter=v;erInitCatBtns();erRenderKit();};
+  wrap.appendChild(mk('All','',cur==='',setCat('')));
+  cats.forEach(c=>wrap.appendChild(mk(c,c,cur===c,setCat(c))));
 }
 function erRenderKit(){
   const q=(document.getElementById('erKitSearch')||{}).value||'';const ql=q.toLowerCase();
   const cf=window._erCatFilter||'';
-  const data=_erKitData.length?_erKitData:[];
+  const data=erKitInScope();
   const filtered=data.filter(k=>(!ql||k.name.toLowerCase().includes(ql)||k.tag.toLowerCase().includes(ql))&&(!cf||k.cat===cf));
   const picker=document.getElementById('erKitPicker');if(!picker)return;
   picker.innerHTML=filtered.map(k=>{
@@ -842,7 +877,11 @@ function erRenderKit(){
       +'<div class="er-kchk"></div><div class="er-kname">'+k.name+'</div>'
       +'<span class="er-kpill">'+k.cat+'</span><div class="er-ktag">'
       +k.tag+(k.unit?'<b>'+k.unit+'</b>':'')+'</div></div>';
-  }).join('')||'<div class="er-kempty">No items</div>';
+  }).join('')||(erKitInScope().length
+      ? '<div class="er-kempty">No matching kit</div>'
+      : '<div class="er-kempty">No kit allocated to '
+        +(((document.getElementById('erShowSel')||{}).value)||'this show')
+        +' yet</div>');
 }
 function erToggleTag(id){
   const i=_erTags.indexOf(id);if(i>=0)_erTags.splice(i,1);else _erTags.push(id);
