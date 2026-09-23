@@ -1878,7 +1878,7 @@ html[data-theme="softdark"] #jdContent .jd-link-row.vs-unset input + input{
 .vs-camhire{font-style:normal;font-size:8.5px;font-weight:900;letter-spacing:.1em;color:var(--accent);margin-left:5px}
 
 .vs-camwrap{overflow-x:auto}
-.vs-cammx{width:100%;border-collapse:separate;border-spacing:3px}
+.vs-cammx{width:100%;border-collapse:separate;border-spacing:4px}
 .vs-cammx th{
   font-size:9px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
   text-align:left;padding:0 6px 3px;white-space:nowrap;position:relative;
@@ -1900,9 +1900,14 @@ html[data-theme="softdark"] #jdContent .jd-link-row.vs-unset input + input{
 }
 .vs-camsame button{color:rgba(13,13,13,.18);font-size:15px;font-weight:600}
 .vs-camsame button:hover{background:var(--surface-2);color:var(--muted)}
-.vs-camval{background:var(--chip3,#c9d6c3)}
-.vs-camval-h{background:var(--chip,#eec0b4)}
-.vs-camnone{background:none}
+/* A value sits in a box with a solid edge, the same as the ingest sheet,
+   rather than in a block of colour. Hired is said by the H, not by pink. */
+.vs-camval,.vs-camnone{
+  background:var(--surface);border:1.5px solid var(--field-edge);border-radius:7px;
+}
+/* Where a thing comes from is the Sourcing page's business, so a hire
+   looks no different here. */
+.vs-camval:hover,.vs-camnone:hover{border-color:var(--field-edge-hi)}
 .vs-camnone button{color:var(--muted);font-weight:600;font-size:11.5px;letter-spacing:.04em;text-transform:uppercase}
 .vs-camn{font-size:16px;font-weight:900;letter-spacing:-.05em;width:26px;padding:0 2px!important;color:var(--ink)}
 .vs-camop{text-align:left!important;min-width:120px}
@@ -1923,7 +1928,11 @@ html[data-theme="softdark"] #jdContent .jd-link-row.vs-unset input + input{
   font-family:var(--font);font-size:12.5px;font-weight:700;letter-spacing:-.02em;color:var(--ink);
 }
 .vs-camtxt input::placeholder{color:rgba(13,13,13,.22);font-weight:600}
-.vs-camtxt input:hover,.vs-camtxt input:focus{background:var(--surface-2)}
+.vs-camtxt input:not(:placeholder-shown),.vs-camop input:not(:placeholder-shown){
+  background:var(--surface);border:1.5px solid var(--field-edge);border-radius:7px;padding:4px 8px;
+}
+.vs-camtxt input:hover,.vs-camtxt input:focus{border-color:var(--field-edge-hi)}
+.vs-camop input:hover,.vs-camop input:focus{border-color:var(--field-edge-hi)}
 .vs-camtxt-w input{max-width:34ch}
 @supports not (field-sizing:content){ .vs-camtxt input{width:14ch} }
 .vs-camnum{
@@ -2406,6 +2415,515 @@ html[data-theme="softdark"] #jdContent .vsn-new{
 .vs-stripbar{display:flex;align-items:baseline;gap:12px;margin-bottom:8px}
 .vs-striphint{font-size:9px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--muted)}
 .vs-stripspan{margin-left:auto;font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--ink)}
+/* the month as weeks, each line starting on a Monday */
+.vs-stripreach{display:inline-flex;gap:13px;margin-left:14px}
+.vs-stripreach button{
+  background:none;border:none;cursor:pointer;padding:0;
+  font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);border-bottom:1.5px solid transparent;
+}
+.vs-stripreach button:hover{color:var(--ink);border-bottom-color:currentColor}
+.vs-stripdows{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin-bottom:5px}
+.vs-stripdows > div{font-size:9px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--muted);text-align:center}
+.vs-stripweeks{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.vs-stripweeks .vs-stripday{width:auto}
+.vs-stripgap{border:none;background:none}
+/* ── The Kit page: a rail, and a line per item ────────────────────── */
+#vsKitWrap{display:flex;gap:20px;align-items:flex-start}
+.vsk-rail{flex:0 0 184px;position:sticky;top:0}
+/* each category is a box, like every other thing you can pick */
+.vsk-r{
+  display:flex;align-items:baseline;justify-content:space-between;gap:8px;width:100%;
+  background:var(--surface);border:1.5px solid var(--field-edge);border-radius:7px;
+  cursor:pointer;text-align:left;padding:5px 10px;margin-bottom:4px;
+  font-family:var(--font);font-size:12.5px;font-weight:800;letter-spacing:-.01em;color:var(--ink);
+}
+.vsk-r span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vsk-r em{font-style:normal;font-size:11px;font-weight:700;color:var(--muted);flex:0 0 auto}
+.vsk-r:hover{border-color:var(--field-edge-hi)}
+.vsk-r.on{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.vsk-r.on em{color:rgba(255,255,255,.55)}
+.vsk-rs{font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);
+  margin:14px 0 5px 2px}
+/* what is inside the one you are in */
+.vsk-subs{margin:-1px 0 6px 11px;padding-left:9px;border-left:1.5px solid var(--border-l,rgba(13,13,13,.14))}
+.vsk-sub{
+  display:flex;align-items:baseline;justify-content:space-between;gap:8px;width:100%;
+  background:none;border:none;cursor:pointer;text-align:left;padding:3px 4px;border-radius:5px;
+  font-family:var(--font);font-size:11.5px;font-weight:700;color:var(--muted);
+}
+.vsk-sub span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vsk-sub em{font-style:normal;font-size:10px;font-weight:700;flex:0 0 auto}
+.vsk-sub:hover{color:var(--ink)}
+.vsk-sub.on{color:var(--ink);font-weight:800;background:var(--surface-2)}
+.vsk-main2{flex:1;min-width:0}
+.vsk-bar{display:flex;align-items:center;gap:16px;margin-bottom:11px}
+.vsk-q{
+  flex:1;min-width:0;background:var(--surface)!important;border:1.5px solid var(--field-edge)!important;
+  border-radius:9px!important;padding:8px 13px!important;
+  font-family:var(--font)!important;font-size:14px!important;font-weight:700!important;color:var(--ink)!important;
+}
+.vsk-q:focus{border-color:var(--ink)!important;outline:none}
+.vsk-q::placeholder{color:var(--muted)!important;font-weight:600!important}
+.vsk-count{font-size:10px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);
+  white-space:nowrap}
+/* three or four across, rather than one item to a line */
+.vsk-grid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:7px}
+.vsk-card{
+  display:flex;flex-direction:column;gap:3px;text-align:left;cursor:pointer;
+  background:var(--surface);border:1.5px solid var(--field-edge);border-radius:9px;
+  padding:9px 11px 8px;font-family:var(--font);min-width:0;
+}
+.vsk-card:hover{border-color:var(--field-edge-hi)}
+.vsk-cnm{font-size:13px;font-weight:800;letter-spacing:-.02em;color:var(--ink);line-height:1.25;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.vsk-cwhat{font-size:11px;font-weight:700;color:var(--muted);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vsk-cfoot{display:flex;align-items:center;gap:7px;margin-top:3px;min-width:0}
+.vsk-dot{width:8px;height:8px;border-radius:2px;flex:0 0 auto}
+.vsk-dot.k-ok{background:var(--nav-studio,#c9d6c3)}
+.vsk-dot.k-busy{background:var(--nav-kit,#eec0b4)}
+.vsk-dot.k-maint{background:var(--st-likely,#e5c48f)}
+.vsk-cst{flex:1;min-width:0;font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vsk-cloc{font-size:10px;font-weight:700;color:var(--muted);flex:0 0 auto}
+/* a model with several of it */
+.vsk-gwrap{display:contents}
+.vsk-gwrap.open{display:block;grid-column:1/-1}
+.vsk-gcard{width:100%}
+.vsk-gwrap.open .vsk-gcard{border-color:var(--ink);border-bottom-left-radius:0;border-bottom-right-radius:0}
+.vsk-gn{font-size:12px;font-weight:900;letter-spacing:-.03em;color:var(--ink);flex:0 0 auto}
+.vsk-units{
+  border:1.5px solid var(--ink);border-top:none;border-radius:0 0 9px 9px;
+  padding:8px 10px 9px;display:flex;flex-wrap:wrap;gap:5px;background:var(--surface-2);
+}
+.vsk-unit{
+  display:inline-flex;align-items:center;gap:7px;cursor:pointer;
+  background:var(--surface);border:1.5px solid var(--field-edge);border-radius:7px;
+  padding:4px 9px;font-family:var(--font);font-size:12px;font-weight:800;letter-spacing:-.02em;color:var(--ink);
+}
+.vsk-unit:hover{border-color:var(--field-edge-hi)}
+.vsk-un{white-space:nowrap}
+.vsk-ut{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;font-weight:700;color:var(--muted)}
+.vsk-none{padding:34px 10px;text-align:center;font-size:13.5px;font-weight:600;color:var(--muted)}
+@media (max-width:900px){
+  #vsKitWrap{flex-direction:column}
+  .vsk-rail{flex:none;width:100%;position:static;display:flex;flex-wrap:wrap;gap:4px}
+  .vsk-r{width:auto}
+  .vsk-rs{width:100%;margin-left:0}
+  .vsk-cat,.vsk-tag,.vsk-loc{display:none}
+}
+
+/* ── A kit item, information first ────────────────────────────────── */
+html[data-theme="soft"]  #kitDrawer .drw-hero,
+html[data-theme="softdark"] #kitDrawer .drw-hero,
+html[data-theme="soft"]  #kitDrawer .drw-hero-empty,
+html[data-theme="softdark"] #kitDrawer .drw-hero-empty{display:none!important}
+html[data-theme="soft"]  #kitDrawer,
+html[data-theme="softdark"] #kitDrawer{background:var(--surface)!important}
+html[data-theme="soft"]  .drw-title,
+html[data-theme="softdark"] .drw-title{
+  font-family:var(--font)!important;font-size:21px!important;font-weight:900!important;
+  letter-spacing:-.03em!important;text-transform:none!important;color:var(--ink)!important;
+}
+html[data-theme="soft"]  .drw-tab,
+html[data-theme="softdark"] .drw-tab{
+  font-family:var(--font)!important;font-size:11px!important;font-weight:800!important;
+  letter-spacing:.09em!important;text-transform:uppercase!important;color:var(--muted)!important;
+  border-bottom:2px solid transparent!important;
+}
+html[data-theme="soft"]  .drw-tab.active,
+html[data-theme="softdark"] .drw-tab.active{color:var(--ink)!important;border-bottom-color:var(--ink)!important}
+/* the subtitle still wore the old badges: a filled capsule for the status
+   and another for where it lives */
+html[data-theme="soft"]  .drw-subtitle .badge,
+html[data-theme="softdark"] .drw-subtitle .badge,
+html[data-theme="soft"]  .drw-subtitle .stat-badge,
+html[data-theme="softdark"] .drw-subtitle .stat-badge,
+html[data-theme="soft"]  .drw-subtitle span[style*="border-radius"],
+html[data-theme="softdark"] .drw-subtitle span[style*="border-radius"]{
+  background:none!important;border:none!important;border-radius:0!important;padding:0!important;
+  font-family:var(--font)!important;font-size:11px!important;font-weight:800!important;
+  letter-spacing:.08em!important;text-transform:uppercase!important;
+}
+html[data-theme="soft"]  .drw-subtitle select,
+html[data-theme="softdark"] .drw-subtitle select{
+  background:none!important;color:var(--muted)!important;border:none!important;
+  border-bottom:1.5px solid var(--border-l,rgba(13,13,13,.14))!important;border-radius:0!important;
+  padding:1px 2px!important;font-family:var(--font)!important;font-size:11px!important;
+  font-weight:800!important;letter-spacing:.08em!important;
+}
+html[data-theme="soft"]  .drw-subtitle select:hover,
+html[data-theme="softdark"] .drw-subtitle select:hover{color:var(--ink)!important;border-bottom-color:var(--ink)!important}
+html[data-theme="soft"]  .drw-subtitle,
+html[data-theme="softdark"] .drw-subtitle{gap:14px!important;align-items:center}
+.vsk{display:flex;gap:22px;align-items:flex-start}
+.vsk-side{flex:0 0 152px}
+.vsk-photo{
+  width:152px;height:112px;border-radius:9px;overflow:hidden;margin-bottom:13px;cursor:pointer;
+  background:var(--surface-2);border:1.5px solid var(--field-edge);
+  display:flex;align-items:center;justify-content:center;
+}
+.vsk-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.vsk-photo-none{font-size:10px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--muted);border-style:dashed}
+.vsk-photo-none:hover{border-color:var(--ink);color:var(--ink)}
+.vsk-qr{text-align:center}
+.vsk-qrbox{
+  width:152px;height:152px;border:1.5px solid var(--field-edge);border-radius:9px;background:#fff;
+  display:flex;align-items:center;justify-content:center;padding:10px;
+}
+.vsk-qrbox svg{width:100%;height:100%;display:block}
+.vs-qr-fail{font-size:10px;font-weight:700;color:var(--muted);padding:0 8px;line-height:1.4}
+.vsk-qrbtn{
+  margin-top:8px;background:none;border:none;cursor:pointer;padding:2px 0;
+  font-family:var(--cond);font-size:11px;font-weight:900;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink);border-bottom:2px solid var(--ink);
+}
+.vsk-qrbtn:hover{color:var(--accent);border-bottom-color:var(--accent)}
+.vsk-qrhint{margin-top:6px;font-size:10px;font-weight:700;color:var(--muted)}
+.vsk-main{flex:1;min-width:0}
+.vsk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:11px 14px}
+.vsk-f{display:flex;flex-direction:column;gap:3px;min-width:0}
+.vsk-l{font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+html[data-theme="soft"]  #kitDrawer .vsk-i,
+html[data-theme="softdark"] #kitDrawer .vsk-i{
+  width:100%;box-sizing:border-box;
+  background:var(--surface)!important;border:1.5px solid var(--field-edge)!important;
+  border-radius:7px!important;padding:6px 9px!important;
+  font-family:var(--font)!important;font-size:13.5px!important;font-weight:800!important;
+  letter-spacing:-.02em!important;color:var(--ink)!important;
+}
+html[data-theme="soft"]  #kitDrawer .vsk-i:hover,
+html[data-theme="softdark"] #kitDrawer .vsk-i:hover{border-color:var(--field-edge-hi)!important}
+html[data-theme="soft"]  #kitDrawer .vsk-i:focus,
+html[data-theme="softdark"] #kitDrawer .vsk-i:focus{border-color:var(--ink)!important;outline:none}
+html[data-theme="soft"]  #kitDrawer .vsk-i::placeholder,
+html[data-theme="softdark"] #kitDrawer .vsk-i::placeholder{color:var(--faint,#b9b9b9)!important;font-weight:600!important}
+.vsk-hire{display:inline-flex;align-items:center;gap:9px;margin-top:13px;cursor:pointer;
+  font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.vsk-hire.on{color:var(--ink)}
+.vsk-hire input{width:15px;height:15px;accent-color:var(--ink);cursor:pointer}
+/* what the item is out on, and what it has been out on */
+.vsk-diary{margin-top:16px;padding-top:13px;border-top:1.5px solid var(--border-l,rgba(13,13,13,.14))}
+.vsk-dh{display:flex;align-items:baseline;gap:8px;font-size:9px;font-weight:800;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);margin:0 0 6px}
+.vsk-dh:not(:first-child){margin-top:14px}
+.vsk-dh em{font-style:normal;font-size:10px;font-weight:800;color:var(--ink)}
+.vsk-bk{
+  display:flex;align-items:baseline;gap:11px;width:100%;text-align:left;cursor:pointer;
+  background:var(--surface);border:1.5px solid var(--field-edge);border-radius:7px;
+  padding:6px 10px;margin-bottom:4px;font-family:var(--font);
+}
+.vsk-bk:hover{border-color:var(--field-edge-hi)}
+.vsk-bk.old{background:none;border-color:transparent;padding:4px 10px;opacity:.75}
+.vsk-bk.old:hover{background:var(--surface-2);opacity:1}
+.vsk-bk.clash{border-color:#b23b3b}
+.vsk-bkn{flex:1;min-width:0;font-size:13px;font-weight:800;letter-spacing:-.02em;color:var(--ink);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vsk-bkd{font-size:11px;font-weight:700;color:var(--muted);flex:0 0 auto}
+.vsk-bkx{font-size:9px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#b23b3b;flex:0 0 auto}
+.vsk-dnone{font-size:12px;font-weight:600;color:var(--muted);padding:2px 2px 4px}
+/* making a sub-category, and dropping kit into one */
+.vsk-addsub{
+  display:block;width:100%;text-align:left;background:none;border:1.5px dashed var(--field-edge);
+  border-radius:6px;cursor:pointer;padding:3px 7px;margin-top:3px;
+  font-family:var(--cond);font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--muted);
+}
+.vsk-addsub:hover{border-color:var(--ink);color:var(--ink)}
+.vsk-drop{outline:2px solid var(--accent);outline-offset:1px}
+.vsk-r.vsk-drop,.vsk-sub.vsk-drop{background:var(--accent)!important;color:#fff!important;border-color:var(--accent)!important}
+.vsk-r.vsk-drop em,.vsk-sub.vsk-drop em{color:rgba(255,255,255,.7)!important}
+.vsk-card[draggable="true"],.vsk-unit[draggable="true"]{cursor:grab}
+.vsk-card[draggable="true"]:active,.vsk-unit[draggable="true"]:active{cursor:grabbing}
+
+.vsk-notes{margin-top:14px}
+.vsk-notes textarea{min-height:70px;resize:vertical;line-height:1.5;font-weight:700!important}
+@media (max-width:640px){
+  .vsk{flex-direction:column}
+  .vsk-side{flex:none;display:flex;gap:14px;align-items:flex-start}
+  .vsk-photo{margin-bottom:0}
+}
+
+/* ── Modals ───────────────────────────────────────────────────────────
+   These were still wearing the old shell: condensed capitals at 17px for a
+   field label, hairline borders, a 5px corner. Same language as the rest of
+   the app now — one surface, field boxes with a solid edge, and the labels
+   small where labels belong. */
+html[data-theme="soft"]  .modal,
+html[data-theme="softdark"] .modal{
+  background:var(--surface)!important;border:1.5px solid var(--field-edge)!important;
+  border-radius:16px!important;width:560px;box-shadow:0 22px 60px rgba(13,13,13,.22);
+}
+html[data-theme="soft"]  .modal-hdr,
+html[data-theme="softdark"] .modal-hdr{
+  padding:16px 20px 12px!important;border-bottom:1.5px solid var(--ink)!important;margin:0 20px;
+}
+html[data-theme="soft"]  .modal-title,
+html[data-theme="softdark"] .modal-title{
+  font-family:var(--font)!important;font-size:19px!important;font-weight:900!important;
+  letter-spacing:-.02em!important;text-transform:none!important;color:var(--ink)!important;
+}
+html[data-theme="soft"]  .modal-body,
+html[data-theme="softdark"] .modal-body{padding:16px 20px 18px!important}
+html[data-theme="soft"]  .modal-foot,
+html[data-theme="softdark"] .modal-foot{
+  padding:12px 20px 16px!important;border-top:none!important;gap:18px!important;align-items:center;
+}
+html[data-theme="soft"]  .x-btn,
+html[data-theme="softdark"] .x-btn{
+  background:none!important;border:none!important;color:var(--muted)!important;font-size:19px;
+}
+html[data-theme="soft"]  .x-btn:hover,
+html[data-theme="softdark"] .x-btn:hover{color:var(--ink)!important}
+html[data-theme="soft"]  .fg,
+html[data-theme="softdark"] .fg{gap:13px!important}
+html[data-theme="soft"]  .flbl,
+html[data-theme="softdark"] .flbl{
+  font-family:var(--font)!important;font-size:9px!important;font-weight:800!important;
+  letter-spacing:.12em!important;text-transform:uppercase!important;color:var(--muted)!important;
+}
+html[data-theme="soft"]  .modal .fi,
+html[data-theme="softdark"] .modal .fi,
+html[data-theme="soft"]  .modal .fta,
+html[data-theme="softdark"] .modal .fta{
+  background:var(--surface)!important;border:1.5px solid var(--field-edge)!important;
+  border-radius:7px!important;padding:7px 10px!important;
+  font-family:var(--font)!important;font-size:14px!important;font-weight:700!important;
+  letter-spacing:-.02em!important;color:var(--ink)!important;
+}
+html[data-theme="soft"]  .modal .fi:hover,
+html[data-theme="softdark"] .modal .fi:hover{border-color:var(--field-edge-hi)!important}
+html[data-theme="soft"]  .modal .fi:focus,
+html[data-theme="softdark"] .modal .fi:focus,
+html[data-theme="soft"]  .modal .fta:focus,
+html[data-theme="softdark"] .modal .fta:focus{border-color:var(--ink)!important;outline:none}
+html[data-theme="soft"]  .modal .fi::placeholder,
+html[data-theme="softdark"] .modal .fi::placeholder{color:var(--muted)!important;font-weight:600!important}
+/* the footer: one thing to do, the rest plain words */
+html[data-theme="soft"]  .modal-foot .btn-s,
+html[data-theme="softdark"] .modal-foot .btn-s{
+  background:none!important;border:none!important;padding:2px 0!important;flex:none!important;
+  font-family:var(--cond)!important;font-size:11.5px!important;font-weight:900!important;
+  letter-spacing:.09em!important;text-transform:uppercase!important;
+  color:var(--muted)!important;border-bottom:2px solid transparent!important;border-radius:0!important;
+}
+html[data-theme="soft"]  .modal-foot .btn-s:hover,
+html[data-theme="softdark"] .modal-foot .btn-s:hover{color:var(--ink)!important;border-bottom-color:var(--ink)!important}
+html[data-theme="soft"]  .modal-foot .btn-p,
+html[data-theme="softdark"] .modal-foot .btn-p{
+  margin-left:auto;background:var(--ink)!important;color:var(--surface)!important;
+  border:none!important;border-radius:8px!important;padding:9px 20px!important;flex:none!important;
+  font-family:var(--cond)!important;font-size:11.5px!important;font-weight:900!important;
+  letter-spacing:.09em!important;text-transform:uppercase!important;
+}
+html[data-theme="soft"]  .modal-foot .btn-p:hover,
+html[data-theme="softdark"] .modal-foot .btn-p:hover{background:var(--accent)!important}
+/* a card takes its colour from its status or its show, so choosing one here
+   has had no effect since the theme changed */
+html[data-theme="soft"]  #mAddJob .ff:has(#njColorPicker),
+html[data-theme="softdark"] #mAddJob .ff:has(#njColorPicker){display:none}
+
+/* ── Where the kit comes from ─────────────────────────────────────────
+   The grid is the camera page's, with one difference that earns its keep:
+   the colour of the box says where the item is coming from. */
+.src-tbl{width:100%;border-collapse:separate;border-spacing:4px}
+.src-tbl th{
+  text-align:left;font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);padding:0 9px 5px;white-space:nowrap;
+}
+.src-tbl td{padding:0;vertical-align:middle}
+.src-tbl th.src-q,.src-tbl td.src-q{text-align:center;width:44px;padding:0 2px}
+.src-q{font-size:16px;font-weight:900;letter-spacing:-.05em;color:var(--ink)}
+.src-depth{
+  font-size:10px;font-weight:900;letter-spacing:.13em;text-transform:uppercase;color:var(--ink);
+  padding:12px 3px 2px!important;background:none!important;
+}
+.src-dept:first-of-type .src-depth{padding-top:1px!important}
+/* the grid cells, which are the camera page's cells wearing an answer */
+.src-mx td{padding:0;border-radius:7px;text-align:center;vertical-align:middle}
+.src-mx th{text-align:center!important;padding:0 8px 5px!important}
+.src-mx th.n{text-align:center!important}
+/* the camera table strips its buttons bare, so these say it louder */
+.vs-cammx td .src-cell,.src-cell{
+  width:100%;background:var(--surface);border:1.5px solid var(--field-edge);border-radius:7px;
+  cursor:pointer;padding:6px 8px;font-family:var(--font);
+  font-size:12.5px;font-weight:800;letter-spacing:-.02em;color:#0d0d0d;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:190px;
+}
+.vs-cammx td .src-cell:hover,.src-cell:hover{border-color:var(--field-edge-hi)}
+.vs-cammx td .src-cell.k-inv,.src-cell.k-inv{background:var(--nav-studio,#c9d6c3);border-color:var(--ink)}
+.vs-cammx td .src-cell.k-hire,.src-cell.k-hire{background:var(--nav-kit,#eec0b4);border-color:var(--ink)}
+.src-mx .vs-camsame span{color:rgba(13,13,13,.18);font-size:15px;font-weight:600}
+.src-legend{
+  font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
+  margin-bottom:9px;display:flex;align-items:center;gap:5px;flex-wrap:wrap;
+}
+.src-sw{width:13px;height:13px;border-radius:3px;display:inline-block;vertical-align:-2px;
+  border:1.5px solid var(--field-edge);background:var(--surface);margin:0 1px 0 6px}
+.src-sw.k-inv{background:var(--nav-studio,#c9d6c3);border-color:var(--ink)}
+.src-sw.k-hire{background:var(--nav-kit,#eec0b4);border-color:var(--ink)}
+/* cameras on the left, everything else in a column beside them */
+.src-top{display:flex;gap:26px;align-items:flex-start;flex-wrap:wrap}
+.src-cams{flex:1 1 520px;min-width:0}
+.src-rest{flex:0 1 250px;min-width:200px;padding-top:19px}
+.src-restdept{font-size:9px;font-weight:900;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 5px}
+.src-restdept:not(:first-child){margin-top:13px}
+.src-restrow{display:flex;align-items:center;gap:9px;margin-bottom:4px}
+.src-restrow .src-q{flex:0 0 22px;text-align:center}
+.src-restrow .src-cell{flex:1 1 auto;min-width:0;max-width:none}
+.src-foot-note{margin-top:11px;font-size:11.5px;font-weight:600;color:var(--muted)}
+/* an item typed in by hand */
+.src-exq{
+  flex:0 0 38px;width:38px!important;text-align:center;
+  background:none!important;border:none!important;border-bottom:1.2px solid var(--border-l,rgba(13,13,13,.14))!important;
+  border-radius:0!important;padding:2px 0!important;
+  font-family:var(--font)!important;font-size:14px!important;font-weight:900!important;
+  letter-spacing:-.04em;color:var(--ink)!important;-moz-appearance:textfield;
+}
+.src-exq::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.src-exq:focus{border-bottom-color:var(--ink)!important;outline:none}
+.src-exx{
+  flex:0 0 auto;background:none!important;border:none!important;cursor:pointer;
+  color:var(--muted)!important;font-size:14px;padding:0 0 0 3px!important;opacity:0;transition:opacity .12s;
+}
+.src-restrow:hover .src-exx{opacity:.7}
+.src-exx:hover{color:var(--accent)!important;opacity:1!important}
+.src-exadd{
+  margin-top:6px;background:none;border:1.5px dashed var(--field-edge);border-radius:7px;
+  width:100%;padding:6px 10px;cursor:pointer;
+  font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--muted);
+}
+.src-exadd:hover{border-color:var(--ink);color:var(--ink)}
+/* the note that travels with a hire */
+.src-sup .src-list td:nth-child(4){width:280px}
+.src-in-note{width:280px!important}
+.src-sup{max-width:920px}
+.src-nm{
+  background:var(--surface);border:1.5px solid var(--field-edge);border-radius:7px;
+  padding:6px 10px;font-size:13px;font-weight:800;letter-spacing:-.02em;color:#0d0d0d;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:240px;
+}
+/* ours is green, hired is terracotta, undecided is still an empty box */
+.src-nm.k-inv{background:var(--nav-studio,#c9d6c3);border-color:var(--ink)}
+.src-nm.k-hire{background:var(--nav-kit,#eec0b4);border-color:var(--ink)}
+.src-nm.k-short{box-shadow:inset 3px 0 0 #b23b3b}
+.src-row:hover .src-nm{border-color:var(--field-edge-hi)}
+.src-lb,.src-wh{font-size:12px;font-weight:700;color:var(--muted);padding:0 9px!important}
+.src-pick{white-space:nowrap;width:1%;padding:0 9px!important}
+.src-opt{
+  background:none;border:none;cursor:pointer;padding:2px 0;margin-right:12px;
+  font-family:var(--cond);font-size:11px;font-weight:900;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--muted);border-bottom:2px solid transparent;
+}
+.src-opt:hover{color:var(--ink)}
+.src-opt.on{color:var(--ink);border-bottom-color:currentColor}
+.src-in{
+  width:100%!important;box-sizing:border-box;background:none!important;
+  border:1.5px solid transparent!important;border-radius:7px!important;padding:5px 9px!important;
+  font-family:var(--font)!important;font-size:12.5px!important;font-weight:700!important;color:var(--ink)!important;
+}
+.src-in::placeholder{color:var(--muted);font-weight:600}
+.src-in:not(:placeholder-shown){background:var(--surface)!important;border-color:var(--field-edge)!important}
+.src-in:hover,.src-in:focus{border-color:var(--field-edge-hi)!important;outline:none}
+.src-stock,.src-ask{font-size:11.5px;font-weight:700;padding:0 9px;display:inline-block}
+.src-stock{color:var(--muted)}
+.src-ask{color:var(--accent);font-weight:800}
+.src-short{color:#b23b3b!important;font-weight:800}
+.src-units .src-short{white-space:nowrap;margin-left:6px;font-size:11.5px}
+.src-left b{color:var(--accent)}
+.src-key-inv b{color:#4a6b4f}
+.src-key-hire b{color:#a35a3c}
+
+/* ── the two lists underneath ─────────────────────────────────────── */
+.src-sec{margin-top:26px}
+.src-sech{display:flex;align-items:baseline;gap:10px;padding-bottom:6px;margin-bottom:8px;
+  border-bottom:1.5px solid var(--ink)}
+.src-sech b{font-size:15px;font-weight:900;letter-spacing:-.02em}
+.src-sech span{font-size:9.5px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--muted)}
+.src-list{width:100%;border-collapse:collapse;table-layout:fixed}
+.src-list td:nth-child(1),.src-list th:nth-child(1){width:46px}
+.src-list td:nth-child(2),.src-list th:nth-child(2){width:240px}
+/* A hire list is three short columns. Left to fill the card it stretched
+   the supplier field across a thousand pixels of nothing. */
+.src-sup .src-list{width:auto;table-layout:auto}
+.src-sup .src-list td:nth-child(2){width:auto;min-width:200px;padding-right:22px}
+.src-sup .src-list td:nth-child(3){width:250px}
+.src-sup .src-in{width:250px!important}
+.src-list th{text-align:left;font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);padding:0 9px 5px;white-space:nowrap}
+.src-list td{padding:6px 9px;border-bottom:1px solid var(--border-l,rgba(13,13,13,.1));vertical-align:middle}
+.src-list td.src-q{text-align:center;width:44px}
+.src-lnm{font-size:13px;font-weight:800;letter-spacing:-.02em;color:var(--ink)}
+.src-units{line-height:1.9}
+.src-unit{
+  display:inline-flex;align-items:baseline;gap:6px;margin:0 4px 2px 0;
+  background:var(--surface);border:1.5px solid var(--field-edge);border-radius:7px;padding:3px 9px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;font-weight:700;color:var(--ink);
+}
+.src-unit i{font-style:normal;font-family:var(--font);font-size:9px;font-weight:800;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.src-unit-busy{border-style:dashed;color:var(--muted)}
+.src-sup{margin-bottom:18px;max-width:620px}
+.src-suph{display:flex;align-items:baseline;gap:9px;margin-bottom:4px}
+.src-suph b{font-size:13.5px;font-weight:900;letter-spacing:-.02em}
+.src-suph span{font-size:9.5px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--muted)}
+.src-copy{margin-left:auto;background:none;border:none;cursor:pointer;padding:2px 0;
+  font-family:var(--cond);font-size:11px;font-weight:900;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink);border-bottom:2px solid var(--ink)}
+.src-copy:hover{color:var(--accent);border-bottom-color:var(--accent)}
+.src-copy-2{margin-left:13px;color:var(--muted);border-bottom-color:transparent}
+.src-copy-2:hover{color:var(--ink);border-bottom-color:var(--ink)}
+.vs-camfoot{display:flex;gap:9px;flex-wrap:wrap}
+/* asking for one thing, beside the thing itself */
+.vs-ask{
+  position:absolute;z-index:10050;min-width:240px;max-width:320px;
+  background:var(--surface);border:1.5px solid var(--field-edge-hi);border-radius:11px;
+  padding:12px 13px 11px;box-shadow:0 10px 30px rgba(13,13,13,.18);
+  font-family:var(--font);
+}
+.vs-ask-lb{font-size:10px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:6px}
+.vs-ask-hint{font-size:11.5px;font-weight:600;color:var(--muted);margin:-2px 0 7px;line-height:1.4}
+.vs-ask-in{
+  width:100%;box-sizing:border-box;background:var(--surface);color:var(--ink);
+  border:none;border-bottom:1.5px solid var(--field-edge);border-radius:0;
+  padding:4px 2px;outline:none;
+  font-family:var(--font);font-size:15px;font-weight:700;letter-spacing:-.02em;
+}
+.vs-ask-in:focus{border-bottom-color:var(--ink)}
+.vs-ask-in::placeholder{color:var(--muted);font-weight:600}
+.vs-ask-row{display:flex;align-items:center;gap:16px;margin-top:11px}
+.vs-ask-row button{
+  background:none;border:none;cursor:pointer;padding:2px 0;
+  font-family:var(--cond);font-size:11.5px;font-weight:900;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--muted);border-bottom:2px solid transparent;
+}
+.vs-ask-row button:hover{color:var(--ink)}
+.vs-ask-ok{margin-left:auto;color:var(--ink)!important;border-bottom-color:var(--ink)!important}
+.vs-ask-ok:hover{color:var(--accent)!important;border-bottom-color:var(--accent)!important}
+/* picking one month out of a long run */
+.vs-stripmonths{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:14px}
+.vs-stripmonbtn{
+  background:none;border:none;cursor:pointer;padding:2px 0;
+  font-family:var(--cond);font-size:12px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);border-bottom:2px solid transparent;
+}
+.vs-stripmonbtn span{font-weight:700;opacity:.6}
+.vs-stripmonbtn:hover{color:var(--ink)}
+.vs-stripmonbtn.on{color:var(--ink);border-bottom-color:currentColor}
+.vs-striphol .vs-stripnone{color:#a82020;font-weight:800;font-size:10px;
+  letter-spacing:.06em;text-transform:uppercase}
+.vs-stripempty{
+  border:1.5px dashed var(--field-edge);border-radius:9px;padding:28px 20px;text-align:center;
+  color:var(--muted);font-size:14px;font-weight:700;margin-top:8px;
+}
+.vs-stripempty > div{font-family:var(--cond);font-weight:900;letter-spacing:.08em;
+  text-transform:uppercase;margin-bottom:11px}
 .vs-stripmonblk + .vs-stripmonblk{margin-top:16px}
 .vs-stripmonth{
   font-size:26px;font-weight:900;letter-spacing:-.025em;text-transform:uppercase;color:var(--ink);
@@ -2568,12 +3086,16 @@ html[data-theme="softdark"] #jdContent .jd-hod-row{
 /* the role becomes the chip's key */
 html[data-theme="soft"]  #jdContent .jd-hod-row .vs-sel,
 html[data-theme="softdark"] #jdContent .jd-hod-row .vs-sel{flex:0 0 auto}
+/* The role took a fixed column whatever it said, so every box carried a
+   truncated word and a stretch of nothing. It takes the width of its own
+   text now. */
 html[data-theme="soft"]  #jdContent .jd-hod-row .vs-seltrig,
 html[data-theme="softdark"] #jdContent .jd-hod-row .vs-seltrig{
   font-size:9px!important;font-weight:800!important;letter-spacing:.11em!important;
   text-transform:uppercase!important;color:rgba(13,13,13,.62)!important;
   border:none!important;background-color:transparent!important;
-  padding:0 12px 0 0!important;max-width:16ch;
+  padding:0 11px 0 0!important;max-width:none!important;width:auto!important;
+  white-space:nowrap;overflow:visible!important;text-overflow:clip!important;
 }
 /* the name becomes the chip's value, sized to the name */
 html[data-theme="soft"]  #jdContent .jd-hod-row input,
@@ -3143,8 +3665,8 @@ html[data-theme="soft"] #dServiceAlerts .panel-title,html[data-theme="softdark"]
   </div>
 </div>
 
-<div id="offlineBanner" style="display:none;position:fixed;top:0;left:0;right:0;z-index:9999;background:#e05050;color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;text-align:center;padding:8px 16px;box-shadow:0 2px 8px rgba(0,0,0,.3)">&#9888; No internet connection — changes will not be saved</div>
-<div id="unsavedBanner" style="display:none;position:fixed;top:0;left:0;right:0;z-index:9998;background:#f59e0b;color:#000;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;text-align:center;padding:8px 16px;box-shadow:0 2px 8px rgba(0,0,0,.2)">&#9679; Saving&#8230;</div>
+<div id="offlineBanner" style="display:none;position:fixed;top:0;left:0;right:0;z-index:9999;background:#e05050;color:#fff;font-family:var(--cond);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;text-align:center;padding:8px 16px;box-shadow:0 2px 8px rgba(0,0,0,.3)">&#9888; No internet connection — changes will not be saved</div>
+<div id="unsavedBanner" style="display:none;position:fixed;top:0;left:0;right:0;z-index:9998;background:#f59e0b;color:#000;font-family:var(--cond);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;text-align:center;padding:8px 16px;box-shadow:0 2px 8px rgba(0,0,0,.2)">&#9679; Saving&#8230;</div>
 <div class="app">
   <div class="sb" id="sideBar">
     <div class="sb-logo" onclick="vsGoHome()" role="button" tabindex="0" title="Back to the Dashboard" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();vsGoHome();}"><img src="data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMzY2IDk2Mi45MiI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiNmZmY7fTwvc3R5bGU+PC9kZWZzPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTE5NC4xNiw1MDcuMzN2LTE0LjdjOS4wOSw0LjQ1LDIzLjQsOS42NywzOC42Nyw5LjY3LDE4LjE3LDAsMzIuMDktOC4xMiwzMi4wOS0yMi4yM3MtNy41NC0yMS42NS0zMi4wOS0zMC4zNWMtMjcuNjQtOS44Ni0zOS4wNS0yMS42Ni0zOS4wNS00MS43NiwwLTIzLDE5LjcyLTM2LjE1LDQ0LjY2LTM2LjE1QTg2LjYsODYuNiwwLDAsMSwyNzIuMjcsMzc5djE0LjMxYy03LjU0LTMuODctMjAuODgtOC4xMy0zMy4yNS04LjEzLTE3Ljc5LDAtMzAuNzQsOC43MS0zMC43NCwyMi4yNCwwLDEyLjU3LDYuNzcsMjEuMjYsMzEuNywzMC4zNSwyNy44NCw5Ljg2LDM5LjQ0LDIxLjA3LDM5LjQ0LDQxLjM3LDAsMjMtMTguNTYsMzYuNTQtNDUuODIsMzYuNTRBOTkuMiw5OS4yLDAsMCwxLDE5NC4xNiw1MDcuMzNaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMzcxLjgzLDM4Ni41VjUxMy4zMkgzNTcuMTRWMzg2LjVIMzE0LjQyVjM3NC4xM0g0MTQuNzVWMzg2LjVaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNNTY1Ljc1LDQ2NS4zOGMwLDMxLjUxLTE5LjUzLDUwLjI2LTUyLjIsNTAuMjYtMzIuNDgsMC01Mi0xOC43NS01Mi01MC4yNlYzNzQuMTNoMTQuNjlWNDY0LjZjMCwyMy40LDEzLjkyLDM3LjMyLDM3LjMyLDM3LjMyczM3LjUtMTMuOTIsMzcuNS0zNy4zMlYzNzQuMTNoMTQuN1oiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik02MjguNTgsNTEzLjMyVjM3NC4xM2gzOC40N2M0MS41NiwwLDczLjQ2LDI2LjY4LDczLjQ2LDY5LjZTNzA5LDUxMy4zMiw2NjcuODIsNTEzLjMyWk02NDMuMjcsMzg2LjVWNTAxaDI0LjU1YzMyLjY4LDAsNTcuNjEtMjIuMjMsNTcuNjEtNTcuMjJTNzAwLjMsMzg2LjUsNjY2Ljg2LDM4Ni41WiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTc5NS4yMyw1MTMuMzJWMzc0LjEzaDE0LjY5VjUxMy4zMloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik05MzguMSwzNzEuODFjNDAsMCw3MC43NiwzMS43LDcwLjc2LDcxLjkyLDAsNDAuNC0zMC4zNiw3MS45MS03MC43Niw3MS45MS00MC4yMSwwLTcwLjc2LTMxLjUxLTcwLjc2LTcxLjkxQzg2Ny4zNCw0MDMuOSw4OTcuODksMzcxLjgxLDkzOC4xLDM3MS44MVptMCwxMzAuMTFjMzIuNDgsMCw1NS42OC0yNS4xNCw1NS42OC01OC4xOXMtMjMuMi01OC4yLTU1LjY4LTU4LjJjLTMyLjI5LDAtNTUuODcsMjUuMTQtNTUuODcsNTguMlM5MDUuODEsNTAxLjkyLDkzOC4xLDUwMS45MloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0xMDU1LjI1LDUwNy4zM3YtMTQuN2M5LjA5LDQuNDUsMjMuNCw5LjY3LDM4LjY3LDkuNjcsMTguMTcsMCwzMi4wOS04LjEyLDMyLjA5LTIyLjIzcy03LjU0LTIxLjY1LTMyLjA5LTMwLjM1Yy0yNy42NC05Ljg2LTM5LjA1LTIxLjY2LTM5LjA1LTQxLjc2LDAtMjMsMTkuNzItMzYuMTUsNDQuNjYtMzYuMTVhODYuNiw4Ni42LDAsMCwxLDMzLjgzLDcuMTV2MTQuMzFjLTcuNTQtMy44Ny0yMC44OC04LjEzLTMzLjI1LTguMTMtMTcuNzksMC0zMC43NCw4LjcxLTMwLjc0LDIyLjI0LDAsMTIuNTcsNi43NywyMS4yNiwzMS43LDMwLjM1LDI3Ljg0LDkuODYsMzkuNDQsMjEuMDcsMzkuNDQsNDEuMzcsMCwyMy0xOC41NiwzNi41NC00NS44MiwzNi41NEE5OS4yLDk5LjIsMCwwLDEsMTA1NS4yNSw1MDcuMzNaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMTMxLjIzLDI3MC44MmgtMi4xOEwwLDUuMDlINjEuMDdMOTUuMjQsODAuN2MxMy40NSwzMC4xNywyNS40NCw1NiwzNC41Myw4MS40M0MxMzcuNCwxNDMuNTgsMTUzLjQsMTA2LjUxLDE2NSw4MC43TDE5OS4yLDUuMDloNjAuNzFaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMzM0Ljc3LDI2Ni44MlY1LjA5SDUwMy4wOFY1MkgzOTAuNzVWMTExLjZINDg2djQ1LjA3SDM5MC43NXY2My4yNUg1MDguNTN2NDYuOVoiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik02OTEuMzYsNS4wOWM2MC43MSwwLDEwMSwzMC4xNywxMDEsODYuMTUsMCwzOC4xNy0yMS40NCw2My4yNS00OS44LDc0LjUyTDc5Ny41LDI2Ni44Mkg3MzguMjVsLTQ2LjE2LTkxLjYxSDY1NC4yOHY5MS42MUg1OTkuMzlWNS4wOVpNNjU0LjI4LDUydjc4LjE2aDQwYzI0LjcyLDAsNDEuOC0xMi4zNiw0MS44LTM4LjksMC0yNi4xNy0xNy44MS0zOS4yNi00My4yNi0zOS4yNloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik04NzUuNjQsMjU3VjIwMy4yYzE4LjE4LDkuNDUsNDIuMTcsMTcuNDUsNjUuOCwxOC45MWE5NS4wOCw5NS4wOCwwLDAsMCwyMy4yNi0xLjQ2YzIwLTIuOTEsMzEuNjMtMTAuNTQsMzEuNjMtMjMuMjYsMC0xNy40NS0xNS42My0yNi41NC01MS42Mi0zOS42My00NS44LTE2LjcyLTcyLjctMzYtNzIuNy04MS40MkM4NzIsMjkuODEsOTEwLjU0LDAsOTY2Ljg4LDBjMjYuMTgsMCw1Miw1LjgyLDY4LjM0LDEzLjA5VjY0LjcxYy0xNS4yNi05LjA5LTQwLTE2LTY0LTE2LTI2LjksMC00NC4zNSwxMC41NC00NC4zNSwyNy4yNywwLDE1LjI2LDE0LjE3LDI1LjgsNDkuOCwzOS4yNSw0NS44LDE3LjgxLDc0LjE1LDM3LjA4LDc0LjE1LDgxLjA3LDAsNDcuMjUtMzUuNjIsNzUuNjEtOTcuNDIsNzUuNjFDOTIzLjYzLDI3MS45MSw4OTQuNTQsMjY1LjM2LDg3NS42NCwyNTdaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMTIzOC43NywxLjA5aC0yLjE4TDExMDkuNzMsMjY2LjgyaDU4LjUybDEyLTI3LjIyYzExLTI0LjgxLDUwLjE3LTExNy44NCw1Ny43OS0xMzYsOCwyMi45LDQ4LjgxLDExNy4wNiw2MC44MSwxNDQuMzJoMGw4LjYyLDE4LjlIMTM2NloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik03NzQuNDYsNzA2Ljc4bC0zMS44OS02NS42NWgtMi42NGwtODYuMjIsMTc4LTUuNCwxMS4xNmMtMTEtMzAuNTEtMjUuMzUtNjEuNDktNDEuNDctOTcuNjVsLTQxLjM4LTkxLjU2aC03NEw2MTUuOSw4OTcuMjdsMzEuODgsNjUuNjVoMi42NGw4Ni4yMi0xNzgsNS40MS0xMS4xNmMxMSwzMC41LDI1LjM1LDYxLjQ5LDQxLjQ2LDk3LjY1bDQxLjM4LDkxLjU2aDc0WiIvPjwvc3ZnPg==" alt="Versa Studios"/></div>
@@ -4868,6 +5390,7 @@ async function loadData() {
       });
     }
     setBar(100); setMsg('Ready'); _appReady = true;
+    _vsKitCatTidy();
     // One-time cleanup: remove dummy maintenance/fault records
     if(maintenance.length&&maintenance[0].item==='Aputure 300D MkII'&&maintenance[0].id===1){
       maintenance.length=0;nextMid=1;
@@ -4901,7 +5424,7 @@ async function loadData() {
     dismissLoading();
   } catch(e) {
     console.error('loadData error:', e);
-    setMsg('Could not connect — working offline'); _appReady = true; dismissLoading();
+    setMsg('Could not connect — working offline'); _appReady = true; _vsKitCatTidy(); dismissLoading();
   }
 }
 
@@ -5547,7 +6070,8 @@ var _VS_SHOWS = {
   /* globe lifted off its white square; colours taken from the ocean tones.
      Round badge, so the name is set in type with the mark after it — at card
      size the lettering inside the globe is too small to read. */
-  'mockthe':     {src:'logos/mock-the-week.png', markAfter:true, tint:'#BCC8DD', tintDark:'#96A5C0',
+  'mockthe':     {src:'logos/mock-the-week.png', markAfter:true, heroLogo:true, centre:true,
+                  tint:'#BCC8DD', tintDark:'#96A5C0',
                   full:'#3A5F96', grad:'linear-gradient(135deg,#5A7FB5 0%,#26406B 100%)',
                   bg:'#5A7FB5', bg2:'#26406B',
                   ink:'#ffffff'}
@@ -5939,9 +6463,19 @@ function vsCamPick(jid,ci,fkey,btn){
   if(!own||!own.none) first.push({label:'None on this camera',kind:'none',act:'none'});
   if(first.length) groups.push({items:first});
 
-  var invItems=(typeof kit!=='undefined'?kit:[]).filter(function(k){
-    return k.status!=='Bin' && (k.subcat===f.sub || (f.key==='lens'&&k.subcat==='Lens Range') || (f.key==='body'&&k.cat==='Camera'));
-  }).sort(function(a,b){return (a.name||'').localeCompare(b.name||'');});
+  /* Only kit that could actually go in this field. Body used to fall back
+     to everything in the Camera category, which put viewfinders, pedestals
+     and CCUs in a list of camera bodies. */
+  var _live=(typeof kit!=='undefined'?kit:[]).filter(function(k){return k&&k.status!=='Bin';});
+  var _match=function(k){
+    var sc=(k.subcat||'').trim();
+    if(sc&&sc===f.sub) return true;
+    if(f.key==='lens') return sc==='Lens Range'||sc==='Lens';
+    if(f.key==='body') return k.cat==='Camera'&&/camera|body/i.test(sc);
+    return false;
+  };
+  var invItems=_live.filter(_match);
+  invItems.sort(function(a,b){return (a.name||'').localeCompare(b.name||'');});
   if(invItems.length) groups.push({head:'Inventory',items:invItems.map(function(k){
     return {label:k.name,kitId:k.id,note:k.status==='Available'?'':k.status};
   })});
@@ -5999,7 +6533,7 @@ function vsCamGrid(j){
     var set=!!(v&&!v.none);
     return '<button class="vs-camstd'+(set?'':' vs-camstd-un')+'" onclick="vsCamPick('+jid+',-1,\''+key+'\',this)">'
       +'<k>'+f.label+'</k><v>'+(set?_vsEsc(v.name):'--')+'</v>'
-      +(set&&v.hired?'<em class="vs-camhire">hired</em>':'')
+
       +'</button>';
   }).join('');
 
@@ -6021,7 +6555,7 @@ function vsCamGrid(j){
       if(!opts.spec) exceptions++;
       if(v.none) return '<td class="vs-camnone"><button onclick="vsCamPick('+jid+','+ci+',\''+key+'\',this)">None</button></td>';
       return '<td class="vs-camval'+(v.hired?' vs-camval-h':'')+'"><button onclick="vsCamPick('+jid+','+ci+',\''+key+'\',this)">'
-        +_vsEsc(v.name)+(v.hired?'<em class="vs-camhire">H</em>':'')+'</button></td>';
+        +_vsEsc(v.name)+'</button></td>';
     }).join('');
     return '<tr'+(opts.spec?' class="vs-camspecrow"':'')+'>'
       +'<td class="vs-camn">'
@@ -7105,8 +7639,16 @@ function _vsTintTabs(){
   });
 }
 (function(){
-  var t=localStorage.getItem('vsTheme')||'light';
-  if(!localStorage.getItem('vsThemeMigrated2')){t='light';localStorage.setItem('vsTheme','light');localStorage.setItem('vsThemeMigrated2','1');}
+  var t=localStorage.getItem('vsTheme')||'soft';
+  /* The soft theme is what the app looks like now, not something you have to
+     ask for. Anyone still carrying the old default is moved across once, and
+     a dark preference stays dark. ?theme=classic still goes back, and sticks. */
+  if(!localStorage.getItem('vsThemeSoft')){
+    if(t==='light') t='soft';
+    else if(t==='dark') t='softdark';
+    localStorage.setItem('vsTheme',t);
+    localStorage.setItem('vsThemeSoft','1');
+  }
   try{
     var fq=new URLSearchParams(location.search).get('font');
     if(fq) localStorage.setItem('vsFont',fq);
@@ -12194,8 +12736,339 @@ function _doKitAlloc(kid) {
   saveData();
   openKitAllocModal(kid); // refresh modal
 }
+/* ── The Kit page, as a rail ──────────────────────────────────────────────
+   It used to be a landing of tiles, then a category page, then a list, then
+   the item — three clicks to see a piece of kit, and a tile each for
+   categories holding nothing. Categories, locations and the hired lists go
+   down one narrow rail with their counts; the kit itself takes the rest of
+   the width, a line each.                                                  */
+var _vsKitSel={type:'all',value:''}, _vsKitQ='';
+
+function _vsKitLive(){
+  return (typeof kit!=='undefined'?kit:[]).filter(function(k){return k&&k.status!=='Bin';});
+}
+function vsKitSelect(type,value){
+  _vsKitSel={type:type,value:value||'',sub:''};
+  if(type==='hired'||type==='lth'||type==='logistics'){
+    try{ showKitTab(type); }catch(e){}
+    vsKitRail();
+    return;
+  }
+  try{ showKitTab('inv'); }catch(e){}
+  vsKitPage();
+}
+function vsKitSearch(v){ _vsKitQ=v||''; vsKitList(); }
+
+/* what the rail says, and which of it is lit */
+function vsKitRail(){
+  var el=document.getElementById('vsKitRail'); if(!el) return;
+  var live=_vsKitLive(), cats={}, locs={}, subs={};
+  live.forEach(function(k){
+    var c=k.cat||'Uncategorised';
+    cats[c]=(cats[c]||0)+1;
+    locs[k.loc||'Unknown']=(locs[k.loc||'Unknown']||0)+1;
+    if(!subs[c]) subs[c]={};
+    var sc=(k.subcat||'').trim();
+    if(sc) subs[c][sc]=(subs[c][sc]||0)+1;
+  });
+  var row=function(type,value,label,count,cls){
+    var on=(_vsKitSel.type===type&&_vsKitSel.value===value&&!_vsKitSel.sub);
+    var v=String(value).replace(/'/g,"\\'");
+    var drop=(type==='cat'||type==='loc')
+      ? ' ondragover="vsKitOver(event)" ondragleave="vsKitOut(event)" ondrop="vsKitDrop(event,\''+type+'\',\''+v+'\')"'
+      : '';
+    return '<button class="vsk-r'+(cls?' '+cls:'')+(on?' on':'')+'"'+drop+' '
+      +'onclick="vsKitSelect(\''+type+'\',\''+v+'\')">'
+      +'<span>'+_vsEsc(label)+'</span>'+(count==null?'':'<em>'+count+'</em>')+'</button>';
+  };
+  var subRow=function(cat,sc,n){
+    var on=(_vsKitSel.type==='cat'&&_vsKitSel.value===cat&&_vsKitSel.sub===sc);
+    var c2=String(cat).replace(/'/g,"\\'"), s2=String(sc).replace(/'/g,"\\'");
+    return '<button class="vsk-sub'+(on?' on':'')+'" '
+      +'ondragover="vsKitOver(event)" ondragleave="vsKitOut(event)" '
+      +'ondrop="vsKitDrop(event,\'sub\',\''+c2+'\',\''+s2+'\')" '
+      +'onclick="vsKitSelectSub(\''+c2+'\',\''+s2+'\')">'
+      +'<span>'+_vsEsc(sc)+'</span><em>'+n+'</em></button>';
+  };
+  var sec=function(t){ return '<div class="vsk-rs">'+t+'</div>'; };
+
+  var catRows=Object.keys(cats).sort(function(a,b){return cats[b]-cats[a];}).map(function(c){
+    var out=row('cat',c,c,cats[c]);
+    /* the sub-categories of whichever one you are in, and only that one */
+    if(_vsKitSel.type==='cat'&&_vsKitSel.value===c){
+      var sc=subs[c]||{};
+      /* the ones in use, and the ones the category knows about but has
+         nothing in yet, so a sub-category can be made before it is filled */
+      var known=(typeof KIT_SUBCATS!=='undefined'&&KIT_SUBCATS[c])?KIT_SUBCATS[c]:[];
+      var names=Object.keys(sc);
+      known.forEach(function(n){ if(names.indexOf(n)<0) names.push(n); });
+      names.sort(function(a,b){ return (sc[b]||0)-(sc[a]||0) || String(a).localeCompare(String(b)); });
+      out+='<div class="vsk-subs">'
+        +names.map(function(n){return subRow(c,n,sc[n]||0);}).join('')
+        +'<button class="vsk-addsub" onclick="vsKitAddSub(\''+String(c).replace(/'/g,"\\'")+'\',this)">+ Sub-category</button>'
+      +'</div>';
+    }
+    return out;
+  }).join('');
+
+  el.innerHTML=row('all','','All kit',live.length)
+    +sec('Categories')+catRows
+    +sec('Where')
+    +Object.keys(locs).sort().map(function(l){return row('loc',l,l,locs[l]);}).join('')
+    +sec('Hired')
+    +row('hired','','Hired catalogue',null)
+    +row('lth','','Long term hired',null)
+    +sec('Other')
+    +row('logistics','','Logistics',null);
+}
+/* a sub-category narrows what is already showing */
+function vsKitSelectSub(cat,sub){
+  if(_vsKitSel.type==='cat'&&_vsKitSel.value===cat&&_vsKitSel.sub===sub) _vsKitSel.sub='';
+  else _vsKitSel={type:'cat',value:cat,sub:sub};
+  vsKitRail(); vsKitList();
+}
+/* one line per item */
+function vsKitList(){
+  var el=document.getElementById('vsKitRows'); if(!el) return;
+  var live=_vsKitLive();
+  if(_vsKitSel.type==='cat'){
+    live=live.filter(function(k){return (k.cat||'Uncategorised')===_vsKitSel.value;});
+    if(_vsKitSel.sub) live=live.filter(function(k){return (k.subcat||'').trim()===_vsKitSel.sub;});
+  }
+  else if(_vsKitSel.type==='loc') live=live.filter(function(k){return (k.loc||'Unknown')===_vsKitSel.value;});
+  var q=_vsKitQ.trim().toLowerCase();
+  if(q){
+    live=live.filter(function(k){
+      return ((k.name||'')+' '+(k.make||'')+' '+(k.model||'')+' '+(k.tag||'')+' '+(k.serial||'')
+        +' '+(k.cat||'')+' '+(k.subcat||'')).toLowerCase().indexOf(q)>-1;
+    });
+  }
+  var cnt=document.getElementById('vsKitCount');
+  if(cnt) cnt.textContent=live.length+(live.length===1?' item':' items');
+  if(!live.length){
+    el.innerHTML='<div class="vsk-none">'+(q?'Nothing matches that.':'Nothing in here yet.')+'</div>';
+    return;
+  }
+  live.sort(function(a,b){return String(a.name||'').localeCompare(String(b.name||''));});
+  /* Twenty batteries are one line of kit, not twenty. Items whose names
+     differ only by their number collate into a group that says the model
+     and how many; clicking one opens its units. */
+  var groups=[], byKey={};
+  live.forEach(function(k){
+    var key=_vsKitModelKey(k);
+    if(!byKey[key]){ byKey[key]={key:key,label:_vsKitModelName(k),items:[],k:k}; groups.push(byKey[key]); }
+    byKey[key].items.push(k);
+  });
+
+  el.innerHTML='<div class="vsk-grid2">'+groups.map(function(g){
+    if(g.items.length===1) return _vsKitCard(g.items[0]);
+    var open=(_vsKitOpen===g.key);
+    var free=0,out=0,down=0;
+    g.items.forEach(function(k){
+      var job=_vsKitJobName(k);
+      if(k.status==='Maintenance'||k.status==='Fault') down++;
+      else if(job||k.inUse) out++; else free++;
+    });
+    var bits=[];
+    if(free) bits.push(free+' free');
+    if(out) bits.push(out+' out');
+    if(down) bits.push(down+' down');
+    var first=g.items[0];
+    return '<div class="vsk-gwrap'+(open?' open':'')+'">'
+      +'<button class="vsk-card vsk-gcard" draggable="true" '
+        +'ondragstart="vsKitDrag(event,\'group\',\''+g.key.replace(/'/g,"\\'")+'\')" '
+        +'onclick="vsKitToggleGroup(\''+g.key.replace(/'/g,"\\'")+'\')">'
+        +'<span class="vsk-cnm">'+_vsEsc(g.label)+'</span>'
+        +'<span class="vsk-cwhat">'+_vsEsc(first.subcat||first.cat||'')+'</span>'
+        +'<span class="vsk-cfoot">'
+          +'<span class="vsk-gn">\u00d7'+g.items.length+'</span>'
+          +'<span class="vsk-cst">'+_vsEsc(bits.join(' \u00b7 '))+'</span>'
+          +'<span class="vsk-cloc">'+_vsEsc(first.loc||'')+'</span></span>'
+      +'</button>'
+      +(open?('<div class="vsk-units">'+g.items.map(function(k){
+          var job=_vsKitJobName(k);
+          var kind=job?'busy':(k.status==='Maintenance'||k.status==='Fault'?'maint':'ok');
+          return '<button class="vsk-unit" draggable="true" '
+            +'ondragstart="vsKitDrag(event,\'item\','+k.id+')" '
+            +'onclick="openDrawer('+k.id+')">'
+            +'<span class="vsk-dot k-'+kind+'"></span>'
+            +'<span class="vsk-un">'+_vsEsc(_vsKitUnitLabel(k,g.label))+'</span>'
+            +(k.tag?'<span class="vsk-ut">'+_vsEsc(k.tag)+'</span>':'')
+          +'</button>';
+        }).join('')+'</div>'):'')
+    +'</div>';
+  }).join('')+'</div>';
+}
+/* one item, on its own */
+function _vsKitCard(k){
+  var job=_vsKitJobName(k);
+  var st=job?('On job \u00b7 '+job):(k.status||'');
+  var kind=job?'busy':(k.status==='Maintenance'||k.status==='Fault'?'maint':'ok');
+  return '<button class="vsk-card" draggable="true" '
+    +'ondragstart="vsKitDrag(event,\'item\','+k.id+')" '
+    +'onclick="openDrawer('+k.id+')">'
+    +'<span class="vsk-cnm">'+_vsEsc(k.name||'')+'</span>'
+    +'<span class="vsk-cwhat">'+_vsEsc(k.subcat||k.cat||'')+(k.tag?('  \u00b7  '+_vsEsc(k.tag)):'')+'</span>'
+    +'<span class="vsk-cfoot"><span class="vsk-dot k-'+kind+'"></span>'
+      +'<span class="vsk-cst">'+_vsEsc(st)+'</span>'
+      +'<span class="vsk-cloc">'+_vsEsc(k.loc||'')+'</span></span>'
+  +'</button>';
+}
+/* "BA61 Batteries 07" and "BA61 Batteries 12" are the same model. The
+   number on the end is which one, not what it is. */
+function _vsKitModelName(k){
+  return _vsKitSplitName(k).model;
+}
+/* Which one it is, for the chips inside a group. */
+function _vsKitUnitNo(k){
+  return _vsKitSplitName(k).no;
+}
+/* Split "7" OLED Viewfinder 1 \u2014 HDVF-EL75" into the model and the 1.
+   A unit number sits either at the end of the name or just before a dash,
+   and is a number on its own \u2014 so HDC-1500R keeps its 1500, 7" keeps its
+   7, and "JBL Control 1 Pro" keeps its 1, because that is part of what the
+   thing is called rather than which one it is. */
+function _vsKitSplitName(k){
+  var n=String((k&&k.name)||'').trim(), no='';
+  var mid=n.match(/^(.*?)[\s]+(\d{1,3})[\s]*([\u2014\u2013-]\s.*)$/);
+  if(mid){ no=mid[2]; n=(mid[1]+' '+mid[3]).replace(/\s+/g,' ').trim(); }
+  else {
+    var end=n.match(/^(.*?)[\s\u2014\u2013-]+(?:no\.?\s*)?(\d{1,3})$/i);
+    if(end&&end[1].trim()){ no=end[2]; n=end[1].trim(); }
+  }
+  return {model:n||String((k&&k.name)||''), no:no};
+}
+function _vsKitModelKey(k){
+  return (_vsKitModelName(k)+'|'+(k.cat||'')+'|'+(k.subcat||'')+'|'+(k.loc||'')).toLowerCase();
+}
+function _vsKitUnitLabel(k,groupLabel){
+  var sp=_vsKitSplitName(k);
+  if(sp.no) return sp.no;
+  var n=String(k.name||'').trim();
+  if(groupLabel&&n.toLowerCase().indexOf(groupLabel.toLowerCase())===0){
+    var rest=n.slice(groupLabel.length).replace(/^[\s\u2014\u2013-]+/,'').trim();
+    if(rest) return rest;
+  }
+  return n;
+}
+/* ── Moving kit about ─────────────────────────────────────────────────
+   Drag a card, a group or one unit onto a category, a sub-category or a
+   location in the rail and it goes there. A group takes everything in it,
+   which is the point of a group.                                         */
+var VS_KIT_DRAG='application/x-versa-kit';
+function vsKitDrag(e,kind,val){
+  try{
+    e.dataTransfer.setData(VS_KIT_DRAG,kind+':'+val);
+    e.dataTransfer.setData('text/plain',kind+':'+val);
+    e.dataTransfer.effectAllowed='move';
+  }catch(_){}
+  e.stopPropagation();
+}
+function vsKitOver(e){
+  var t=(e.dataTransfer&&e.dataTransfer.types)||[];
+  if([].indexOf.call(t,VS_KIT_DRAG)<0&&[].indexOf.call(t,'text/plain')<0) return;
+  e.preventDefault();
+  e.dataTransfer.dropEffect='move';
+  e.currentTarget.classList.add('vsk-drop');
+}
+function vsKitOut(e){ e.currentTarget.classList.remove('vsk-drop'); }
+function vsKitDrop(e,what,value,sub){
+  e.preventDefault(); e.stopPropagation();
+  e.currentTarget.classList.remove('vsk-drop');
+  var raw='';
+  try{ raw=e.dataTransfer.getData(VS_KIT_DRAG)||e.dataTransfer.getData('text/plain')||''; }catch(_){}
+  if(!raw) return;
+  var bits=raw.split(':'), kind=bits.shift(), val=bits.join(':');
+  var items=[];
+  if(kind==='item'){
+    var k=kit.find(function(x){return String(x.id)===String(val);});
+    if(k) items=[k];
+  } else if(kind==='group'){
+    items=_vsKitLive().filter(function(k){ return _vsKitModelKey(k)===val; });
+  }
+  if(!items.length) return;
+  items.forEach(function(k){
+    if(what==='cat'){ k.cat=value; k.subcat=''; }
+    else if(what==='sub'){ k.cat=value; k.subcat=sub||''; }
+    else if(what==='loc'){ k.loc=value; }
+  });
+  saveData();
+  var where=(what==='sub')?(value+' / '+sub):value;
+  if(typeof toast==='function') toast((items.length>1?(items.length+' items moved to '):'Moved to ')+where);
+  vsKitRail(); vsKitList();
+}
+/* A sub-category can be made before there is anything to put in it. */
+function vsKitAddSub(cat,el){
+  vsAsk({label:'New sub-category',hint:'In '+cat,placeholder:'e.g. Shotgun Mic',anchor:el,okLabel:'Add',
+    onOk:function(v){
+      v=(v||'').trim(); if(!v) return;
+      if(typeof KIT_SUBCATS==='undefined') return;
+      if(!KIT_SUBCATS[cat]) KIT_SUBCATS[cat]=[];
+      if(KIT_SUBCATS[cat].indexOf(v)<0) KIT_SUBCATS[cat].push(v);
+      saveData();
+      _vsKitSel={type:'cat',value:cat,sub:v};
+      vsKitRail(); vsKitList();
+      if(typeof toast==='function') toast('Added \u2014 drag kit onto it to fill it');
+    }});
+}
+var _vsKitOpen='';
+function vsKitToggleGroup(key){
+  _vsKitOpen=(_vsKitOpen===key)?'':key;
+  vsKitList();
+}
+/* which job has it, if any */
+function _vsKitJobName(k){
+  if(!k||!k.inUse) return '';
+  try{
+    var j=(typeof jobs!=='undefined'?jobs:[]).find(function(x){
+      return (x.kitIds&&x.kitIds.indexOf(k.id)>-1)||(x.prep&&x.prep.some(function(p){return p.kid===k.id;}));
+    });
+    return j?(j.name||''):'';
+  }catch(e){ return ''; }
+}
+
+/* build the page once, then keep it in step */
+function vsKitPage(){
+  var host=document.getElementById('kitTabPanelInv'); if(!host) return;
+  if(!document.getElementById('vsKitWrap')){
+    ['kitMainTiles','kitSubcatView','kitSearchResults'].forEach(function(id){
+      var e=document.getElementById(id); if(e) e.style.display='none';
+    });
+    var oldSearch=document.getElementById('kitSearch');
+    if(oldSearch&&oldSearch.parentNode) oldSearch.parentNode.style.display='none';
+    var tabs=document.getElementById('kitTabInv');
+    if(tabs&&tabs.parentNode) tabs.parentNode.style.display='none';
+    var wrap=document.createElement('div');
+    wrap.id='vsKitWrap';
+    wrap.innerHTML='<div id="vsKitRail" class="vsk-rail"></div>'
+      +'<div class="vsk-main2">'
+        +'<div class="vsk-bar">'
+          +'<input class="fi vsk-q" placeholder="Search by name, model, tag or serial…" '
+            +'oninput="vsKitSearch(this.value)"/>'
+          +'<span class="vsk-count" id="vsKitCount"></span>'
+        +'</div>'
+        +'<div id="vsKitRows"></div>'
+      +'</div>';
+    host.insertBefore(wrap,host.firstChild);
+  }
+  document.getElementById('vsKitWrap').style.display='flex';
+  vsKitRail();
+  vsKitList();
+}
+
 function kitRenderLanding() {
   _vsApplyShowColours();
+  /* wherever the data came from, the duplicate categories get folded in
+     before anything counts them */
+  try{ _vsKitCatTidy(); }catch(e){}
+  if(typeof _vsIsSoft==='function'&&_vsIsSoft()){
+    var _l=document.getElementById('kitLanding'), _lv=document.getElementById('kitListView');
+    if(_l) _l.style.display='';
+    if(_lv) _lv.style.display='none';
+    kitUpdateInUse();
+    vsKitPage();
+    return;
+  }
   window._kitSubcatFilter=''; window._kitSubsubcatFilter='';
   kitUpdateInUse();
   var landing=document.getElementById('kitLanding'), lv=document.getElementById('kitListView');
@@ -12931,6 +13804,254 @@ function doSearch(q) {
 }
 
 // ── KIT DRAWER ────────────────────────────────────────────────────────────────
+/* ── Categories that were two things ─────────────────────────────────
+   The inventory grew a Convertors beside its Converters and a Record
+   beside its Record/Playback, and Offair lost its space somewhere. Those
+   are the same category twice, so the tiles, the counts and the pickers
+   all disagreed with each other. This folds each pair into one name.
+
+   It runs on every load rather than once, because it only writes when it
+   finds something to fix \u2014 which also means a record typed the old way
+   tomorrow is quietly put right. */
+var VS_CAT_MERGE={
+  'Convertors':'Converters',
+  'Record':'Record/Playback',
+  'Offair':'Off Air',
+  'Off air':'Off Air',
+  'OffAir':'Off Air'
+};
+function _vsKitCatTidy(){
+  if(typeof kit==='undefined'||!Array.isArray(kit)) return;
+  var moved=0;
+  kit.forEach(function(k){
+    if(!k) return;
+    var to=VS_CAT_MERGE[(k.cat||'').trim()];
+    if(to&&to!==k.cat){ k.cat=to; moved++; }
+  });
+  /* the pickers keep their own list of category names */
+  try{
+    if(typeof KIT_SUBCATS!=='undefined'&&KIT_SUBCATS){
+      Object.keys(VS_CAT_MERGE).forEach(function(from){
+        var to=VS_CAT_MERGE[from];
+        if(!KIT_SUBCATS[from]) return;
+        KIT_SUBCATS[to]=(KIT_SUBCATS[to]||[]).concat(
+          KIT_SUBCATS[from].filter(function(x){return (KIT_SUBCATS[to]||[]).indexOf(x)<0;}));
+        delete KIT_SUBCATS[from];
+        moved++;
+      });
+    }
+  }catch(e){}
+  if(moved){
+    try{ saveData(); }catch(e){}
+    try{ console.info('Kit categories merged:',moved); }catch(e){}
+  }
+  return moved;
+}
+
+/* ── What an item is booked for ───────────────────────────────────────────
+   Nothing new is stored. A job already carries the kit on it and the dates
+   that kit is needed, so an item's diary is those jobs read the other way
+   round. Two jobs wanting the same item over the same days is a clash, and
+   the allocation refuses rather than quietly double-booking it.          */
+function _vsToday(){
+  var d=new Date();
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function vsKitBookings(kid){
+  var out=[];
+  (typeof jobs!=='undefined'?jobs:[]).forEach(function(j){
+    if(!j||j.status==='Cancelled') return;
+    (j.prep||[]).forEach(function(p){
+      if(!p||String(p.kid)!==String(kid)) return;
+      var from=String(p.ks||j.start||'').slice(0,10);
+      var to=String(p.ke||j.end||from||'').slice(0,10);
+      out.push({job:j,from:from,to:to||from});
+    });
+  });
+  out.sort(function(a,b){ return String(a.from||'').localeCompare(String(b.from||'')); });
+  return out;
+}
+/* Two ranges clash when neither finishes before the other starts. A booking
+   with no dates on it cannot be reasoned about, so it never blocks. */
+function _vsOverlap(aFrom,aTo,bFrom,bTo){
+  if(!aFrom||!bFrom) return false;
+  var aEnd=aTo||aFrom, bEnd=bTo||bFrom;
+  return !(aEnd<bFrom || bEnd<aFrom);
+}
+function vsKitClashes(kid,jid){
+  var j=(typeof jobs!=='undefined'?jobs:[]).find(function(x){return x.id==jid;});
+  if(!j) return [];
+  var from=String(j.start||'').slice(0,10), to=String(j.end||'').slice(0,10);
+  return vsKitBookings(kid).filter(function(b){
+    return String(b.job.id)!==String(jid) && _vsOverlap(from,to,b.from,b.to);
+  });
+}
+function _vsDateShort(iso){
+  if(!iso) return '';
+  var d=new Date(iso+'T00:00:00');
+  if(isNaN(d.getTime())) return iso;
+  var o={day:'numeric',month:'short'};
+  if(d.getFullYear()!==new Date().getFullYear()) o.year='numeric';
+  return d.toLocaleDateString('en-GB',o);
+}
+function _vsRange(b){
+  var f=_vsDateShort(b.from), t=_vsDateShort(b.to);
+  if(!f) return 'No dates set';
+  return (t&&t!==f)?(f+' – '+t):f;
+}
+
+/* The block on the item's own page: what it is out on, and what it has
+   been out on. */
+function vsKitDiary(k){
+  var all=vsKitBookings(k.id), today=_vsToday();
+  var soon=all.filter(function(b){ return !b.to || b.to>=today; });
+  var past=all.filter(function(b){ return b.to && b.to<today; }).reverse();
+  var line=function(b,cls){
+    var clash=(soon.filter(function(o){
+      return o!==b && _vsOverlap(b.from,b.to,o.from,o.to);
+    }).length>0);
+    return '<button class="vsk-bk'+(cls?' '+cls:'')+(clash?' clash':'')+'" '
+      +'onclick="vsKitGoJob('+b.job.id+')">'
+      +'<span class="vsk-bkn">'+_vsEsc(b.job.name||'Job')+'</span>'
+      +'<span class="vsk-bkd">'+_vsEsc(_vsRange(b))+'</span>'
+      +(clash?'<span class="vsk-bkx">Clash</span>':'')
+    +'</button>';
+  };
+  return '<div class="vsk-diary">'
+    +'<div class="vsk-dh">Booked'+(soon.length?'<em>'+soon.length+'</em>':'')+'</div>'
+    +(soon.length?soon.map(function(b){return line(b,'up');}).join('')
+      :'<div class="vsk-dnone">Not booked on anything.</div>')
+    +'<div class="vsk-dh">Been used on'+(past.length?'<em>'+past.length+'</em>':'')+'</div>'
+    +(past.length?past.slice(0,8).map(function(b){return line(b,'old');}).join('')
+      +(past.length>8?'<div class="vsk-dnone">and '+(past.length-8)+' more</div>':'')
+      :'<div class="vsk-dnone">Nothing yet.</div>')
+  +'</div>';
+}
+function vsKitGoJob(jid){
+  var j=(typeof jobs!=='undefined'?jobs:[]).find(function(x){return x.id==jid;});
+  if(!j) return;
+  try{ closeDrawer(); openJobDet(j.id,j.name); }catch(e){}
+}
+
+/* ── QR codes for kit ─────────────────────────────────────────────────────
+   Every item carries a code you can print and stick on it. Scanning opens
+   this dashboard at that item, so a camera pointed at a flight case answers
+   "what is this and where should it be" without anyone typing a tag.
+
+   The encoder is fetched the first time a code is drawn and cached after.
+   If it cannot be fetched the label falls back to the asset tag in type,
+   which is still scannable by a human.                                    */
+var _vsQrLib=null, _vsQrPending=null;
+function _vsQrLoad(){
+  if(_vsQrLib) return Promise.resolve(_vsQrLib);
+  if(_vsQrPending) return _vsQrPending;
+  _vsQrPending=new Promise(function(res,rej){
+    var s=document.createElement('script');
+    s.src='https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js';
+    s.onload=function(){ _vsQrLib=window.qrcode||null; _vsQrLib?res(_vsQrLib):rej(); };
+    s.onerror=function(){ rej(); };
+    document.head.appendChild(s);
+  }).catch(function(){ return null; });
+  return _vsQrPending;
+}
+/* What the code says. A link, so a phone camera does something useful with
+   it rather than showing a number nobody can act on. */
+function vsKitQrUrl(k){
+  if(!k) return '';
+  var base=location.origin+location.pathname;
+  return base+'?kit='+encodeURIComponent(k.id);
+}
+/* Draw one, as an SVG path so it prints sharp at any size. */
+function _vsQrSvg(text,px){
+  if(!_vsQrLib) return '';
+  var qr=_vsQrLib(0,'M');
+  qr.addData(String(text||''));
+  qr.make();
+  var n=qr.getModuleCount(), d='';
+  for(var r=0;r<n;r++) for(var c=0;c<n;c++){
+    if(qr.isDark(r,c)) d+='M'+c+' '+r+'h1v1h-1z';
+  }
+  return '<svg viewBox="0 0 '+n+' '+n+'" width="'+px+'" height="'+px+'" shape-rendering="crispEdges" '
+    +'xmlns="http://www.w3.org/2000/svg"><rect width="'+n+'" height="'+n+'" fill="#fff"/>'
+    +'<path d="'+d+'" fill="#0d0d0d"/></svg>';
+}
+/* Fill any placeholder already in the document. */
+function vsQrPaint(){
+  var slots=document.querySelectorAll('[data-qr]:not([data-qr-done])');
+  if(!slots.length) return;
+  _vsQrLoad().then(function(lib){
+    slots.forEach(function(el){
+      el.setAttribute('data-qr-done','1');
+      var px=parseInt(el.getAttribute('data-qr-size'),10)||120;
+      var svg=lib?_vsQrSvg(el.getAttribute('data-qr'),px):'';
+      el.innerHTML=svg||'<span class="vs-qr-fail">Code unavailable offline</span>';
+    });
+  });
+}
+
+/* ── A label to print and stick on ───────────────────────────────────── */
+function vsKitLabel(kid){
+  var k=kit.find(function(x){return x.id==kid;}); if(!k) return;
+  _vsQrLoad().then(function(lib){
+    var qr=lib?_vsQrSvg(vsKitQrUrl(k),300):'';
+    var tag=(k.tag||'').trim(), ser=(k.serial||'').trim();
+    var html='<!doctype html><html><head><meta charset="utf-8"><title>'+_vsEsc(k.name)+' — label</title>'
+      +'<link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800;900&display=swap" rel="stylesheet">'
+      +'<style>'
+      +'*{box-sizing:border-box}'
+      +'body{margin:0;padding:22px;background:#fff;color:#0d0d0d;font-family:Inter,-apple-system,Arial,sans-serif}'
+      +'.lbl{width:62mm;border:1.5px solid #0d0d0d;border-radius:4mm;padding:5mm;display:flex;gap:5mm;align-items:center}'
+      +'.lbl svg{flex:0 0 auto;width:26mm;height:26mm;display:block}'
+      +'.t{flex:1;min-width:0}'
+      +'.brand{font-size:7pt;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:rgba(13,13,13,.5)}'
+      +'.nm{font-size:11pt;font-weight:900;letter-spacing:-.02em;line-height:1.15;margin:1mm 0 1.5mm}'
+      +'.mt{font-size:8pt;font-weight:700;color:rgba(13,13,13,.55);line-height:1.5}'
+      +'.mt b{color:#0d0d0d;font-weight:900;font-family:ui-monospace,Menlo,monospace}'
+      +'.hint{margin-top:7mm;font-size:8pt;color:rgba(13,13,13,.5);font-weight:600}'
+      +'@media print{body{padding:0}.hint{display:none}}'
+      +'</style></head><body>'
+      +'<div class="lbl">'+(qr||'<div style="width:26mm;height:26mm;border:1px dashed #999"></div>')
+        +'<div class="t"><div class="brand">Versa Studios</div>'
+        +'<div class="nm">'+_vsEsc(k.name)+'</div>'
+        +'<div class="mt">'+(tag?('Tag <b>'+_vsEsc(tag)+'</b><br>'):'')
+          +(ser?('Serial <b>'+_vsEsc(ser)+'</b><br>'):'')
+          +_vsEsc(k.loc||'')+'</div></div>'
+      +'</div>'
+      +'<div class="hint">Scanning this opens the item in the dashboard. Print at 100% — the label is 62mm wide.</div>'
+      +'</body></html>';
+    var w=window.open('','_blank');
+    if(!w){ if(typeof toast==='function') toast('Allow pop-ups to print a label.'); return; }
+    w.document.write(html); w.document.close();
+  });
+}
+
+/* ── Scanning one ────────────────────────────────────────────────────── */
+/* A scan lands on the dashboard with ?kit=<id>. Wait for the kit list to
+   exist, then open that item. */
+function _vsKitFromUrl(){
+  var id;
+  try{ id=new URLSearchParams(location.search).get('kit'); }catch(e){ return; }
+  if(!id) return;
+  var tries=0;
+  (function go(){
+    if(typeof kit!=='undefined'&&Array.isArray(kit)&&kit.length){
+      var k=kit.find(function(x){return String(x.id)===String(id);})
+           || kit.find(function(x){return String(x.tag||'').trim()===String(id).trim();});
+      if(k){
+        try{
+          nav('kit',document.querySelector('.nav-item[data-pg="kit"]'));
+          setTimeout(function(){ openDrawer(k.id); },220);
+        }catch(e){}
+        return;
+      }
+      if(typeof toast==='function') toast('Nothing in the inventory with that code.');
+      return;
+    }
+    if(tries++<40) setTimeout(go,250);
+  })();
+}
+document.addEventListener('DOMContentLoaded',function(){ setTimeout(_vsKitFromUrl,1200); });
+
 function openDrawer(id) {
   id=isNaN(+id)?id:+id; currentKid=id; currentDrwTab='det';
   const k=kit.find(x=>x.id==id); if(!k) return;
@@ -12969,7 +14090,12 @@ function openDrawer(id) {
     if(el) el.classList.toggle('active',t==='det');
   });
   document.getElementById('drwFoot').style.display='flex';
-  renderDet(k);
+  if(typeof _vsIsSoft==='function'&&_vsIsSoft()){
+    document.getElementById('drwBody').innerHTML=vsKitDet(k);
+    vsQrPaint();
+  } else {
+    renderDet(k);
+  }
 }
 function closeDrawer() {
   var ov=document.getElementById('drwOv'); if(ov) ov.classList.remove('open');
@@ -12987,10 +14113,104 @@ function switchTab(t) {
   });
   const k=kit.find(x=>x.id==currentKid); if(!k) return;
   const foot=document.getElementById('drwFoot');
-  if(t==='det') { renderDet(k); foot.style.display='flex'; }
+  if(t==='det') {
+    if(typeof _vsIsSoft==='function'&&_vsIsSoft()){
+      document.getElementById('drwBody').innerHTML=vsKitDet(k);
+      vsQrPaint();
+    } else { renderDet(k); }
+    foot.style.display='flex';
+  }
   else if(t==='tl') { renderTl(k); foot.style.display='none'; }
   else if(t==='jbs') { renderKitJobs(k); foot.style.display='flex'; }
   else if(t==='hist') { renderKitHist(k); foot.style.display='flex'; }
+}
+/* ── The item, information first ──────────────────────────────────────
+   The old panel gave a letterboxed photo the top third of the screen and
+   then put each fact in a box of its own, so six short facts filled a
+   page. This puts the photo and the code down one side and the item's own
+   information where the room is. Jobs, faults and history keep their tabs.  */
+function vsKitDet(k){
+  var esc=function(v){return _vsEsc(v==null?'':String(v));};
+  var set=function(f,v){return 'vsKitSet('+k.id+',\''+f+'\',this.value)';};
+  var photo=(k.photos&&k.photos[0])||'';
+
+  var opt=function(list,cur){
+    return list.map(function(o){return '<option'+(o===cur?' selected':'')+'>'+esc(o)+'</option>';}).join('');
+  };
+  var catList=Object.keys(typeof KIT_SUBCATS!=='undefined'?KIT_SUBCATS:{}).sort();
+  var subList=(typeof KIT_SUBCATS!=='undefined'?KIT_SUBCATS[k.cat]:null)||[];
+
+  var f=function(label,html){
+    return '<div class="vsk-f"><div class="vsk-l">'+esc(label)+'</div>'+html+'</div>';
+  };
+  var txt=function(label,field,ph){
+    return f(label,'<input class="fi vsk-i" value="'+esc(k[field]).replace(/"/g,'&quot;')+'" '
+      +'placeholder="'+esc(ph||'\u2014')+'" onchange="vsKitSet('+k.id+',\''+field+'\',this.value)"/>');
+  };
+  var sel=function(label,field,list,blank){
+    return f(label,'<select class="fi vsk-i" onchange="vsKitSet('+k.id+',\''+field+'\',this.value)">'
+      +(blank?'<option value="">\u2014</option>':'')+opt(list,k[field])+'</select>');
+  };
+
+  return '<div class="vsk">'
+    +'<div class="vsk-side">'
+      +(photo
+        ? '<div class="vsk-photo" onclick="openLb('+k.id+',0)"><img src="'+esc(photo)+'" alt=""></div>'
+        : '<label class="vsk-photo vsk-photo-none">+ Photo'
+          +'<input type="file" accept="image/*" style="display:none" onchange="addPhoto('+k.id+',this);openDrawer('+k.id+')"/></label>')
+      +'<div class="vsk-qr"><div class="vsk-qrbox" data-qr="'+esc(vsKitQrUrl(k))+'" data-qr-size="128"></div>'
+        +'<button class="vsk-qrbtn" onclick="vsKitLabel('+k.id+')">Print label</button>'
+        +'<div class="vsk-qrhint">Scan to open this item</div>'
+      +'</div>'
+    +'</div>'
+    +'<div class="vsk-main">'
+      +'<div class="vsk-grid">'
+        +txt('Name','name')
+        +txt('Manufacturer','make','Sony')
+        +txt('Model','model')
+        +sel('Category','cat',catList,true)
+        +sel('Sub-category','subcat',subList,true)
+        +txt('Asset tag','tag','Not recorded')
+        +txt('Serial','serial','Not recorded')
+        +sel('Status','status',['Available','In Use','Maintenance','Fault'])
+        +sel('Condition','cond',['New','Good','Fair','Poor','Damaged'])
+        +sel('Location','loc',['Manchester','London','ABC'])
+        +f('Last PAT','<input type="date" class="fi vsk-i" value="'+esc(k.patLastDate||k.patDate||'')+'" '
+          +'onchange="vsKitSet('+k.id+',\'patLastDate\',this.value)"/>')
+        +f('PAT due','<input type="date" class="fi vsk-i" value="'+esc(k.patNextDate||'')+'" '
+          +'onchange="vsKitSet('+k.id+',\'patNextDate\',this.value)"/>')
+        +f('Purchased','<input type="date" class="fi vsk-i" value="'+esc(k.purchaseDate||'')+'" '
+          +'onchange="vsKitSet('+k.id+',\'purchaseDate\',this.value)"/>')
+        +f('Warranty until','<input type="date" class="fi vsk-i" value="'+esc(k.warrantyExpiry||'')+'" '
+          +'onchange="vsKitSet('+k.id+',\'warrantyExpiry\',this.value)"/>')
+        +f('Last service','<input type="date" class="fi vsk-i" value="'+esc(k.serviceDate||'')+'" '
+          +'onchange="vsKitSet('+k.id+',\'serviceDate\',this.value)"/>')
+        +txt('Value','value','\u2014')
+      +'</div>'
+      +'<label class="vsk-hire'+(k.isHired?' on':'')+'">'
+        +'<input type="checkbox"'+(k.isHired?' checked':'')+' onchange="vsKitSetHired('+k.id+',this.checked)"/>'
+        +'<span>Long-term hired kit</span></label>'
+      +vsKitDiary(k)
+      +'<div class="vsk-f vsk-notes"><div class="vsk-l">Notes</div>'
+        +'<textarea class="fta vsk-i" placeholder="Anything worth knowing about this one\u2026" '
+        +'onchange="vsKitSet('+k.id+',\'notes\',this.value)">'+esc(k.notes||'')+'</textarea></div>'
+    +'</div>'
+  +'</div>';
+}
+function vsKitSetHired(kid,on){
+  var k=kit.find(function(x){return x.id==kid;}); if(!k) return;
+  k.isHired=!!on;
+  saveData();
+  try{ openDrawer(kid); }catch(e){}
+}
+/* One field, saved as it is typed. */
+function vsKitSet(kid,field,val){
+  var k=kit.find(function(x){return x.id==kid;}); if(!k) return;
+  k[field]=val;
+  if(field==='cat') k.subcat='';
+  saveData();
+  if(field==='cat'||field==='name'){ try{ openDrawer(kid); }catch(e){} }
+  try{ if(typeof renderKit==='function') renderKit(); }catch(e){}
 }
 function renderDet(k) {
   var allCatOpts=Object.keys(KIT_SUBCATS).sort().map(function(c){return '<option'+(c===k.cat?' selected':'')+'>'+c+'</option>';}).join('');
@@ -13344,6 +14564,14 @@ function openAllocModal() {
   om('mAlloc');
 }
 function allocKitToJob(jid,kid) {
+  /* the same item cannot be in two places over the same days */
+  var _cl=vsKitClashes(kid,jid);
+  if(_cl.length){
+    var c=_cl[0];
+    if(typeof toast==='function') toast('Already on '+(c.job.name||'another job')+', '+_vsRange(c));
+    return;
+  }
+
   const j=jobs.find(x=>x.id==jid); if(!j) return;
   if(j.prep.some(p=>p.kid===kid)) { toast('Already on this job'); return; }
   j.prep.push({kid,done:false,ks:'',ke:'',area:''});
@@ -14496,8 +15724,7 @@ function renderJobDet(j) {
     {id:'crew',label:'Crew'},
     {id:'monitors',label:'Monitors'},
     {id:'ip',label:'IP Addresses'},
-    {id:'kit',label:'Prep List'},
-    {id:'englog',label:'Eng Log'},
+    {id:'source',label:'Sourcing'},
     {id:'improve',label:'Improvements'},
     {id:'todo',label:'To Do'}
   ];
@@ -14516,6 +15743,9 @@ function renderJobDet(j) {
       return ai-bi;
     });
   }
+  /* Tabs that arrived after jobs had already picked their tabs. Without
+     this a job configured last year never sees a page built this week. */
+  var VS_TABS_ADDED_LATE=['todo','mv','notes','source','mlsched','gfx'];
   // Per-job visibility — j.visibleTabs is an array of tab ids. Null/undefined = show all.
   // Info is always included regardless of what's stored.
   var _vtSet = null;
@@ -14523,8 +15753,15 @@ function renderJobDet(j) {
     _vtSet = {};
     j.visibleTabs.forEach(function(id){_vtSet[id]=true;});
     _vtSet['info']=true; // info is required
-    _vtSet['todo']=true; // To Do always available (added after some jobs were configured)
-    _vtSet['mv']=true; // Multiviewers always available (added after some jobs were configured)
+    /* A job that chose its tabs before a tab existed cannot have chosen to
+       hide it, but an absent id looks the same either way. So a saved list
+       carries the set of tabs that existed when it was saved, and anything
+       added since is shown until the job says otherwise. Lists saved before
+       this was recorded get every later tab switched on. */
+    var _known=Array.isArray(j.visibleTabsKnown)?j.visibleTabsKnown:[];
+    allTabs.forEach(function(t){
+      if(_known.length ? _known.indexOf(t.id)<0 : VS_TABS_ADDED_LATE.indexOf(t.id)>-1) _vtSet[t.id]=true;
+    });
   }
   const tabs = _vtSet ? allTabs.filter(function(t){return t.required || _vtSet[t.id];}) : allTabs;
   // If the currently-active tab was just hidden, fall back to info
@@ -14541,7 +15778,7 @@ function renderJobDet(j) {
   const JD_TAB_GROUPS={
     technical: ['info','camspec','audio','comms','lv','gfx','set','gallery','mv','monitors','tech'],
     media:     ['ingest','evs','post'],
-    logistics: ['mlsched','notes','crew','todo','improve','ip','kit','englog']
+    logistics: ['mlsched','notes','crew','todo','improve','ip','source']
   };
   const JD_GROUP_COLS={
     technical: 'var(--nav-kit)',
@@ -14700,7 +15937,7 @@ function renderJobDet(j) {
                   +_fs('techScan',_scan,typeof CAM_SCANTYPES!=='undefined'?CAM_SCANTYPES:[],'Scan')))
               +'</div></div>';
           }())
-          +'<div>'+_lbl('Codec')+'<select class="fi" style="width:100%;font-size:15px;font-weight:600;padding:4px 9px;border-radius:5px;border:1.5px solid var(--border);background:var(--near-black);color:var(--pure)" onchange="techHandleCodecSel('+j.id+',this.value)">'+codecSel+'</select></div>'
+          +'<div>'+_lbl('Codec')+'<select class="fi" style="width:100%;font-size:15px;font-weight:600;padding:4px 9px;border-radius:5px;border:1.5px solid var(--border);background:var(--near-black);color:var(--pure)" onchange="techHandleCodecSel('+j.id+',this.value,this)">'+codecSel+'</select></div>'
           +'<div>'+_lbl('Vision Mixer')+vmPicker+'</div>'
           +vsExtraField(j,'tech')
           +'</div>'
@@ -15788,6 +17025,7 @@ function renderJobDet(j) {
   else if(_jdTab==='improve'){content=renderImproveTab(j);}
   else if(_jdTab==='todo'){content=renderTodoTab(j);}
   else if(_jdTab==='kit'){content=renderKitPrepTab(j);}
+  else if(_jdTab==='source'){content=vsSourcingTab(j);}
 
 
   const _JP=window._JOB_PALETTE||[{bg:'#2A5B5B',bg2:'#1D4040'}];
@@ -15940,9 +17178,10 @@ var _mtAllTabs = [
   {id:'crew',label:'Crew',col:'rgba(50,105,80,.85)'},
   {id:'monitors',label:'Monitors',col:'rgba(35,95,145,.85)'},
   {id:'ip',label:'IP Addresses',col:'rgba(40,105,105,.85)'},
-  {id:'kit',label:'Prep List',col:'rgba(135,75,35,.85)'},
-  {id:'englog',label:'Eng Log',col:'rgba(55,85,155,.85)'},
-  {id:'improve',label:'Improvements',col:'rgba(75,115,55,.85)'}
+  {id:'source',label:'Sourcing',col:'rgba(135,75,35,.85)'},
+  {id:'notes',label:'Notes',col:'rgba(55,85,155,.85)'},
+  {id:'improve',label:'Improvements',col:'rgba(75,115,55,.85)'},
+  {id:'todo',label:'To Do',col:'rgba(95,95,105,.85)'}
 ];
 
 /* ── HOD <-> Tab mapping ─────────────────────────────────────────────────
@@ -16119,8 +17358,13 @@ function mtSave(){
     if(boxes[i].checked) visible.push(boxes[i].closest('.mt-row').getAttribute('data-tid'));
   }
   // If all are visible, clear the field so defaults apply (null = show all)
-  if(visible.length === _mtAllTabs.length) j.visibleTabs = null;
-  else j.visibleTabs = visible;
+  if(visible.length === _mtAllTabs.length) { j.visibleTabs = null; j.visibleTabsKnown = null; }
+  else {
+    j.visibleTabs = visible;
+    /* what existed when this choice was made, so a tab added later is not
+       mistaken for one that was switched off */
+    j.visibleTabsKnown = _mtAllTabs.map(function(t){return t.id;});
+  }
   var order=[];
   Array.prototype.forEach.call(document.querySelectorAll('#mtList .mt-row'),function(row){
     order.push(row.getAttribute('data-tid'));
@@ -16379,14 +17623,18 @@ function _celebCommsMigration(){
     if(added>0){ saveData(); console.log("I'm a Celeb comms: added "+added+" role rows"); }
   } catch(e){ console.warn('_celebCommsMigration error:', e); }
 }
-function techHandleCodecSel(jid,val){
+function techHandleCodecSel(jid,val,el){
   var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   if(val==='__add__'){
-    var v=prompt('Enter codec name:');if(!v||!v.trim())return;
-    v=v.trim();if(!j.techCodecExtra)j.techCodecExtra=[];
-    if(!j.techCodecExtra.includes(v))j.techCodecExtra.push(v);
-    j.techCodec=v;
-  } else { j.techCodec=val; }
+    vsAsk({label:'Codec',placeholder:'e.g. XAVC-I',anchor:el,onOk:function(v){
+      v=(v||'').trim(); if(!v){ renderJobDet(j); return; }
+      if(!j.techCodecExtra)j.techCodecExtra=[];
+      if(!j.techCodecExtra.includes(v))j.techCodecExtra.push(v);
+      j.techCodec=v; renderJobDet(j);
+    }});
+    return;
+  }
+  j.techCodec=val;
   renderJobDet(j);
 }
 function jdContAdd(jid){var j=jobs.find(function(x){return x.id==jid;});if(!j)return;if(!j.contacts)j.contacts=[];j.contacts.push({name:'',company:'',email:'',tel:''});saveData();renderJobDet(j);}
@@ -16499,18 +17747,21 @@ function lvOledHiredSelect(jid,i,sel){
   var j=jobs.find(function(x){return x.id==jid;});
   if(!j||!j.lvSpec||!j.lvSpec.oleds[i])return;
   if(sel.value==='__custom__'){
-    var v=prompt('Type monitor model:',j.lvSpec.oleds[i].hiredModel||'');
-    if(v===null){sel.value=j.lvSpec.oleds[i].hiredModel||'';return;}
-    v=(v||'').trim();
-    j.lvSpec.oleds[i].hiredModel=v;
-    // Optionally add to CAM_PLAN_OPTS so it appears next time
-    if(v && (CAM_PLAN_OPTS['Monitor']||[]).indexOf(v)<0){
-      if(!CAM_PLAN_OPTS['Monitor'])CAM_PLAN_OPTS['Monitor']=[];
-      CAM_PLAN_OPTS['Monitor'].push(v);
-    }
-  } else {
-    j.lvSpec.oleds[i].hiredModel=sel.value;
+    var cur=j.lvSpec.oleds[i].hiredModel||'';
+    sel.value=cur;
+    vsAsk({label:'Monitor model',value:cur,placeholder:'e.g. Sony PVM-A250',anchor:sel,onOk:function(v){
+      v=(v||'').trim();
+      j.lvSpec.oleds[i].hiredModel=v;
+      /* a model typed once is on the list next time */
+      if(v && (CAM_PLAN_OPTS['Monitor']||[]).indexOf(v)<0){
+        if(!CAM_PLAN_OPTS['Monitor'])CAM_PLAN_OPTS['Monitor']=[];
+        CAM_PLAN_OPTS['Monitor'].push(v);
+      }
+      saveData();renderJobDet(j);
+    }});
+    return;
   }
+  j.lvSpec.oleds[i].hiredModel=sel.value;
   saveData();renderJobDet(j);
 }
 function lvOledPickKit(jid,idx){
@@ -16695,10 +17946,12 @@ function lvRcpSet(jid,ci,field,val){
 function lvRcpHiredPick(jid,ci,sel){
   var val=sel.value;
   if(val==='__custom__'){
-    var custom=prompt('RCP model / supplier:','');
-    if(custom&&custom.trim()){ lvRcpSet(jid,ci,'hiredVal',custom.trim()); }
-    else { sel.value=''; return; }
-    var j=jobs.find(function(x){return x.id==jid;}); if(j) renderJobDet(j);
+    vsAsk({label:'RCP model or supplier',placeholder:'e.g. Cyanview RCP',anchor:sel,onOk:function(c){
+      c=(c||'').trim(); if(!c) return;
+      lvRcpSet(jid,ci,'hiredVal',c);
+      var j=jobs.find(function(x){return x.id==jid;}); if(j) renderJobDet(j);
+    }});
+    sel.value='';
     return;
   }
   lvRcpSet(jid,ci,'hiredVal',val);
@@ -16957,9 +18210,12 @@ function auSetRadioSys(jid,val){var j=jobs.find(function(x){return x.id==jid;});
 function auRadioMicPick(jid,mi,sel){
   var val=sel.value;
   if(val==='__custom__'){
-    var c=prompt('Radio mic model:','');
-    if(c&&c.trim()){ auRadioSet(jid,mi,'radioMic',c.trim()); var j=jobs.find(function(x){return x.id==jid;}); if(j) renderJobDet(j); }
-    else { sel.value=''; }
+    vsAsk({label:'Radio mic model',placeholder:'e.g. DPA 6060',anchor:sel,onOk:function(c){
+      c=(c||'').trim(); if(!c) return;
+      auRadioSet(jid,mi,'radioMic',c);
+      var j=jobs.find(function(x){return x.id==jid;}); if(j) renderJobDet(j);
+    }});
+    sel.value='';
     return;
   }
   auRadioSet(jid,mi,'radioMic',val);
@@ -17044,13 +18300,14 @@ function renderCamRolesBadges(j) {
 }
 
 // Gallery layout helpers
-function jdGalAddSeat(jid) {
+function jdGalAddSeat(jid,_el) {
   const j=jobs.find(x=>x.id==jid);if(!j)return;
   if(!j.galLayout)j.galLayout={seats:[],notes:''};
-  const pos=prompt('Position name (e.g. Camera 1, Vision Mixer, Director):');
-  if(!pos)return;
-  j.galLayout.seats.push({pos,person:''});
-  _jdTab='gallery'; renderJobDet(j);
+  vsAsk({label:'Position',placeholder:'e.g. Camera 1, Vision Mixer, Director',anchor:_el,onOk:function(pos){
+    if(!pos||!pos.trim())return;
+    j.galLayout.seats.push({pos:pos.trim(),person:''});
+    _jdTab='gallery'; renderJobDet(j);
+  }});
 }
 function jdGalSetPerson(jid,idx,val){const j=jobs.find(x=>x.id==jid);if(!j||!j.galLayout)return;j.galLayout.seats[idx].person=val;
   saveData();
@@ -18144,6 +19401,27 @@ function _vsNoteCountLabel(scope){
   return open+' open'+(rows.length>open?' · '+(rows.length-open)+' done':'');
 }
 
+/* Which jobs are worth offering. A finished or archived show is not
+   something you write a new note against, so the composer only lists what
+   is running or still to come; the filter also lists anything older that
+   already has notes on it, so they stay reachable. */
+function _vsNoteJobs(keepWithNotes){
+  var all=(typeof jobs!=='undefined'?jobs:[]).filter(function(j){
+    if(!j||!j.name) return false;
+    var cat=(typeof _jobCat==='function')?_jobCat(j):'active';
+    if(cat==='active'||cat==='upcoming') return true;
+    return !!(keepWithNotes&&Array.isArray(j.noteItems)&&j.noteItems.length);
+  });
+  var rank=function(j){
+    var c=(typeof _jobCat==='function')?_jobCat(j):'active';
+    return c==='active'?0:c==='upcoming'?1:2;
+  };
+  return all.sort(function(a,b){
+    var d=rank(a)-rank(b);
+    return d||String(a.name||'').localeCompare(String(b.name||''));
+  });
+}
+
 /* ── the board ───────────────────────────────────────────────────────── */
 /* opts.areas  — offer a department against each note (job boards)
    opts.dest   — offer a destination: your notes, or one of the jobs
@@ -18157,8 +19435,7 @@ function vsNotesBoard(scope,opts){
 
   var destSel='';
   if(opts.dest){
-    var jobOpts=(typeof jobs!=='undefined'?jobs:[]).slice()
-      .sort(function(a,b){return String(a.name||'').localeCompare(String(b.name||''));})
+    var jobOpts=_vsNoteJobs(false)
       .map(function(j){return '<option value="job:'+j.id+'">'+_vsEsc(j.name||('Job '+j.id))+'</option>';}).join('');
     destSel='<label class="vsn-pick"><span>Against</span>'
       +'<select class="fi" id="vsnArea_'+k+'"><option value="">My notes</option>'+jobOpts+'</select></label>';
@@ -18170,8 +19447,7 @@ function vsNotesBoard(scope,opts){
 
   var fromSel='';
   if(opts.fromPicker){
-    var fo=(typeof jobs!=='undefined'?jobs:[]).slice()
-      .sort(function(a,b){return String(a.name||'').localeCompare(String(b.name||''));})
+    var fo=_vsNoteJobs(true)
       .map(function(j){return '<option value="job:'+j.id+'"'+(s.from==='job:'+j.id?' selected':'')+'>'+_vsEsc(j.name||('Job '+j.id))+'</option>';}).join('');
     fromSel='<select class="fi vsn-from" onchange="vsNoteFilter(\''+scope+'\',\'from\',this.value)">'
       +'<option value="">Everything</option>'
@@ -18338,7 +19614,7 @@ function _vsCalHue(e){
   if(k&&k!=='other') return k;
   var t=String((e&&e.label)||'').toLowerCase();
   if(/de-?rig|strike|clear|get.?out|wrap.?out/.test(t)) return 'derig';
-  if(/\brig\b|\blx\b|s ?& ?l|sound ?& ?light|build|floor ?plan|recce|prep|rigging/.test(t)) return 'rig';
+  if(/\brig\b|\blx\b|s ?& ?l|sound ?& ?light|build|floor ?(plan|paint)|paint|recce|prep|rigging|set ?build/.test(t)) return 'rig';
   if(/reh|block|camera ?script|dry ?run|run.?through|tech ?run/.test(t)) return 'reh';
   if(/\btx\b|\brx\b|record|show|live|transmission/.test(t)) return 'tx';
   return 'other';
@@ -18455,21 +19731,22 @@ function vsScheduleCal(j){
     var kind=ents.length?_vsCalHue(ents[0]):'';
     return '<div class="vs-stripday'+(ents.length?' has k-'+kind:'')+(wknd&&!ents.length?' wknd':'')+(editing?' editing':'')+'" '
       +'onclick="vsCalOpen('+jid+',&quot;'+d+'&quot;)">'
-      +'<div class="vs-stripdow">'+dt.toLocaleDateString('en-GB',{weekday:'short'})+'</div>'
       +'<div class="vs-stripnum">'+dt.getDate()+'</div>'
       +body+'</div>';
   };
 
-  var earlier='<button class="vs-stripmore" title="Show an earlier day" onclick="event.stopPropagation();vsStripPad('+jid+',\'before\')">+</button>';
-  var later='<button class="vs-stripmore" title="Show a later day" onclick="event.stopPropagation();vsStripPad('+jid+',\'after\')">+</button>';
-  var blocks=groups.map(function(g,gi){
+  /* A week to a line, Monday first: the first day of each block is pushed
+     along to its own weekday, so the same weekday reads down the column.
+     The two ways of reaching another day move up beside the range, since
+     they are not days and should not sit in the grid as though they were. */
+  var blocks=groups.map(function(g){
+    var lead=(g.days[0].getDay()+6)%7, pad='';
+    for(var b=0;b<lead;b++) pad+='<div class="vs-stripgap"></div>';
     return '<div class="vs-stripmonblk">'
       +'<div class="vs-stripmonth">'+g.label+' <span class="yr">'+g.year+'</span></div>'
-      +'<div class="vs-stripdays">'
-        +(gi===0?earlier:'')
-        +g.days.map(dayHtml).join('')
-        +(gi===groups.length-1?later:'')
-      +'</div>'
+      +'<div class="vs-stripdows">'+['Mon','Tue','Wed','Thu','Fri','Sat','Sun']
+        .map(function(d){return '<div>'+d+'</div>';}).join('')+'</div>'
+      +'<div class="vs-stripweeks">'+pad+g.days.map(dayHtml).join('')+'</div>'
     +'</div>';
   }).join('');
 
@@ -18483,6 +19760,10 @@ function vsScheduleCal(j){
   return '<div class="vs-strip">'
     +'<div class="vs-stripbar">'
       +'<span class="vs-striphint">Click a day and type what happens on it</span>'
+      +'<span class="vs-stripreach">'
+        +'<button onclick="vsStripPad('+jid+',\'before\')">+ earlier</button>'
+        +'<button onclick="vsStripPad('+jid+',\'after\')">+ later</button>'
+      +'</span>'
       +(span?'<span class="vs-stripspan">'+_vsEsc(span)+'</span>':'')
     +'</div>'
     +blocks
@@ -18742,6 +20023,754 @@ function jdScheduleExportICS(jid){
   out.push('END:VCALENDAR');
   _jdSchedDownload(_jdSchedSlug(j)+'_Schedule.ics','text/calendar;charset=utf-8;',out.join('\r\n'));
 }
+
+/* ── Where the kit is coming from ─────────────────────────────────────────
+   The spec pages choose a model — a Focus Demand, a pedestal, a radio mic.
+   They do not say where it comes from. This gathers everything the job has
+   chosen, once per model rather than once per camera, and asks the one
+   question that matters: ours, or hired? What comes out is a document you
+   can send — a hire list by supplier, and a pull list for the store.      */
+
+function _vsSrcKey(dept,label,name){
+  return (dept+'|'+label+'|'+name).toLowerCase().replace(/[^a-z0-9|]+/g,'-');
+}
+function vsSourcing(j){
+  if(!j.sourcing||typeof j.sourcing!=='object') j.sourcing={};
+  return j.sourcing;
+}
+
+/* Everything this job has picked, gathered by model. */
+function vsSourceItems(j){
+  var out={}, add=function(dept,label,name,where,hiredHint,kitId){
+    name=String(name||'').trim();
+    if(!name||name==='–'||name==='-') return;
+    var k=_vsSrcKey(dept,label,name);
+    if(!out[k]) out[k]={key:k,dept:dept,label:label,name:name,where:[],qty:0,hiredHint:false,kitIds:[]};
+    out[k].qty++;
+    if(where) out[k].where.push(where);
+    if(hiredHint) out[k].hiredHint=true;
+    if(kitId&&out[k].kitIds.indexOf(kitId)<0) out[k].kitIds.push(kitId);
+  };
+
+  /* cameras — read through the same accessor the grid uses */
+  (j.camDetails||[]).forEach(function(cd,ci){
+    var no=(cd.camNum!==undefined&&cd.camNum!=='')?cd.camNum:(ci+1);
+    (typeof VS_CAM_FIELDS!=='undefined'?VS_CAM_FIELDS:[]).forEach(function(f){
+      if(f.txt) return;                        /* a typed label is not kit */
+      var v=null;
+      try{ v=_vsCamRead(cd,f); }catch(e){}
+      if(!v||v.none||!v.name) return;
+      add('Camera',f.label,v.name,'Cam '+no,v.hired,v.kitId);
+    });
+  });
+
+  /* lighting and vision */
+  var lv=j.lvSpec||{};
+  (lv.camRcp||[]).forEach(function(r,ci){
+    if(!r||r.mode!=='rcp') return;
+    var k=r.kitId?(kit.find(function(x){return x.id===r.kitId;})||{}).name:null;
+    add('Lighting / Vision','RCP',k||r.hiredVal,'Cam '+(ci+1),!r.kitId&&!!r.hiredVal,r.kitId);
+  });
+  if(lv.mcsGlobal&&lv.mcsGlobal.enabled){
+    var m=lv.mcsGlobal;
+    var mk=m.kitId?(kit.find(function(x){return x.id===m.kitId;})||{}).name:null;
+    add('Lighting / Vision','MCS',mk||m.hiredVal,'Gallery',m.mode==='hired',m.kitId);
+  }
+  (lv.oleds||[]).forEach(function(o,oi){
+    if(!o) return;
+    var ok=o.kitId?(kit.find(function(x){return x.id===o.kitId;})||{}).name:null;
+    add('Lighting / Vision','Monitor',ok||o.hiredModel,o.position||('Monitor '+(oi+1)),!o.kitId&&!!o.hiredModel,o.kitId);
+  });
+
+  /* audio */
+  var au=j.audio||{};
+  (au.radioMics||[]).forEach(function(r,ri){
+    if(!r) return;
+    add('Audio','Radio Mic',r.radioMic,(r.name||r.label||('RM '+(ri+1))),false,null);
+  });
+
+  return Object.keys(out).map(function(k){return out[k];});
+}
+
+/* What the store already holds. The inventory names kit its own way —
+   "Camera Pedestal — Osprey Elite 2" against a spec that says "Osprey
+   Elite" — so a match is every word of the chosen model turning up
+   somewhere in the record, not an exact string. */
+function _vsSrcStock(name){
+  if(typeof kit==='undefined'||!Array.isArray(kit)) return null;
+  var n=String(name||'').toLowerCase().trim();
+  if(!n) return null;
+  var toks=n.split(/[\s—–_-]+/).filter(function(t){return t.length>1;});
+  if(!toks.length) return null;
+  var hits=kit.filter(function(k){
+    if(!k||k.status==='Bin') return false;
+    var hay=((k.name||'')+' '+(k.make||'')+' '+(k.model||'')+' '+(k.subcat||'')).toLowerCase();
+    if(hay.indexOf(n)>-1) return true;
+    return toks.every(function(t){return hay.indexOf(t)>-1;});
+  });
+  var free=hits.filter(function(k){
+    return !k.inUse && k.status!=='Maintenance' && k.status!=='Out';
+  });
+  return {total:hits.length, free:free.length, units:free.concat(hits.filter(function(k){
+    return free.indexOf(k)<0;
+  }))};
+}
+/* What to call one unit on a pull list: its serial if it has one, its asset
+   tag if not, and failing both the record number. */
+function _vsSrcUnit(k){
+  if(!k) return '';
+  return (k.serial||'').trim() || (k.tag||'').trim() || ('#'+k.id);
+}
+
+/* "Cam 1 – Cam 10" rather than ten separate cameras — the table and
+   the sheet say it the same way. */
+function _vsSrcWhere(it){
+  var w=(it&&it.where)||[];
+  if(w.length>3) return w[0]+' \u2013 '+w[w.length-1];
+  return w.join(', ');
+}
+function vsSourceSet(jid,key,field,val){
+  var j=jobs.find(function(x){return x.id==jid;}); if(!j) return;
+  var src=vsSourcing(j);
+  if(!src[key]) src[key]={};
+  src[key][field]=val;
+  saveData();
+  renderJobDet(j);
+}
+function vsSourceSetQuiet(jid,key,field,val){
+  var j=jobs.find(function(x){return x.id==jid;}); if(!j) return;
+  var src=vsSourcing(j);
+  if(!src[key]) src[key]={};
+  src[key][field]=val;
+  saveData();
+}
+/* Anything the spec already flagged as hired starts as hired; the rest
+   starts undecided rather than guessing it is ours. */
+function _vsSrcOf(j,it){
+  var s=vsSourcing(j)[it.key]||{};
+  if(s.source) return s.source;
+  return it.hiredHint?'hire':'';
+}
+
+/* Every camera field with something in it, whether or not the camera page
+   is currently showing that column. */
+/* An RCP comes as part of a camera channel, so it is not a thing to hire
+   or pull on its own \u2014 the body line already covers it. It stays on the
+   Camera and Lighting / Vision pages, where it is a spec, not a purchase. */
+function _vsSrcSkip(key){ return key==='rcp'; }
+function _vsSrcCamCols(j){
+  var cols=_vsCamCols(j).filter(function(key){ return !_vsCamField(key).txt && !_vsSrcSkip(key); });
+  (typeof VS_CAM_FIELDS!=='undefined'?VS_CAM_FIELDS:[]).forEach(function(f){
+    if(f.txt||_vsSrcSkip(f.key)||cols.indexOf(f.key)>-1) return;
+    var used=(j.camDetails||[]).some(function(cd){
+      var v=_vsCamRead(cd,f); return !!(v&&!v.none&&v.name);
+    });
+    if(used) cols.push(f.key);
+  });
+  return cols;
+}
+/* A cell is one camera's one item: "cam:3:ped". Kept per cell rather than
+   per model because a job can own three pedestals and hire four more, and
+   a page that can only say "ours" or "hired" about a model cannot say that. */
+function _vsSrcCell(ci,key){ return 'cam:'+ci+':'+key; }
+function _vsSrcCellOf(j,ci,key,v){
+  var s=vsSourcing(j)[_vsSrcCell(ci,key)];
+  if(s&&s.source) return s.source;
+  return (v&&v.hired)?'hire':'';
+}
+/* Undecided, then ours, then hired, then back. */
+function vsSrcCycle(jid,ci,key){
+  var j=jobs.find(function(x){return x.id==jid;}); if(!j) return;
+  var k=_vsSrcCell(ci,key), src=vsSourcing(j);
+  var cur=(src[k]&&src[k].source)||'';
+  var cd=(j.camDetails||[])[ci];
+  if(!cur){ var f=_vsCamField(key), v=cd?_vsCamRead(cd,f):null; cur=(v&&v.hired)?'hire':''; }
+  var next=(cur==='')?'inv':(cur==='inv'?'hire':'');
+  if(!src[k]) src[k]={};
+  src[k].source=next;
+  saveData(); renderJobDet(j);
+}
+function vsSrcAllCams(jid,what){
+  var j=jobs.find(function(x){return x.id==jid;}); if(!j) return;
+  var src=vsSourcing(j), cols=_vsSrcCamCols(j);
+  (j.camDetails||[]).forEach(function(cd,ci){
+    cols.forEach(function(key){
+      var f=_vsCamField(key); if(f.txt) return;
+      var v=_vsCamRead(cd,f); if(!v||v.none||!v.name) return;
+      if(_vsSrcCellOf(j,ci,key,v)) return;
+      var k=_vsSrcCell(ci,key);
+      if(!src[k]) src[k]={};
+      src[k].source=what;
+    });
+  });
+  saveData(); renderJobDet(j);
+}
+/* The camera cells, gathered by model and answer, for the lists below. */
+function _vsSrcCamLines(j){
+  var out={}, cols=_vsSrcCamCols(j);
+  (j.camDetails||[]).forEach(function(cd,ci){
+    var no=(cd.camNum!==undefined&&cd.camNum!=='')?cd.camNum:(ci+1);
+    cols.forEach(function(key){
+      var f=_vsCamField(key); if(f.txt) return;
+      var v=_vsCamRead(cd,f); if(!v||v.none||!v.name) return;
+      var src=_vsSrcCellOf(j,ci,key,v);
+      var gk=(src||'todo')+'|'+f.label+'|'+v.name;
+      if(!out[gk]) out[gk]={key:gk,src:src,label:f.label,name:v.name,dept:'Camera',where:[],qty:0,cells:[]};
+      out[gk].qty++; out[gk].where.push('Cam '+no); out[gk].cells.push(_vsSrcCell(ci,key));
+    });
+  });
+  return out;
+}
+/* Everything that is not a camera keeps its own simple row. */
+function _vsSrcOtherLines(j){
+  var out={};
+  vsSourceItems(j).forEach(function(it){
+    if(it.dept==='Camera') return;
+    if(it.label==='RCP') return;   /* part of the camera channel */
+    var src=_vsSrcOf(j,it);
+    var gk=(src||'todo')+'|'+it.label+'|'+it.name;
+    out[gk]={key:gk,src:src,label:it.label,name:it.name,dept:it.dept,where:it.where,qty:it.qty,item:it};
+  });
+  return out;
+}
+/* Not everything on a hire sheet comes off a spec page \u2014 a drum of BNC,
+   a genny, a second monitor someone asked for on the day. These are typed
+   in here and behave like any other line. */
+function vsSrcExtras(j){
+  if(!Array.isArray(j.sourceExtra)) j.sourceExtra=[];
+  return j.sourceExtra;
+}
+function vsSrcExtraAdd(jid,el){
+  var j=jobs.find(function(x){return x.id==jid;}); if(!j) return;
+  vsAsk({label:'Add an item',placeholder:'e.g. 50m BNC drum',anchor:el,okLabel:'Add',onOk:function(v){
+    v=(v||'').trim(); if(!v) return;
+    vsSrcExtras(j).push({id:Date.now(),name:v,qty:1,source:''});
+    saveData(); renderJobDet(j);
+  }});
+}
+function vsSrcExtraSet(jid,id,field,val){
+  var j=jobs.find(function(x){return x.id==jid;}); if(!j) return;
+  var e=vsSrcExtras(j).find(function(x){return String(x.id)===String(id);});
+  if(!e) return;
+  e[field]=(field==='qty')?(Math.max(1,parseInt(val,10)||1)):val;
+  saveData();
+  if(field==='qty') renderJobDet(j);
+}
+function vsSrcExtraCycle(jid,id){
+  var j=jobs.find(function(x){return x.id==jid;}); if(!j) return;
+  var e=vsSrcExtras(j).find(function(x){return String(x.id)===String(id);});
+  if(!e) return;
+  e.source=(e.source==='')?'inv':(e.source==='inv'?'hire':'');
+  saveData(); renderJobDet(j);
+}
+function vsSrcExtraDel(jid,id){
+  var j=jobs.find(function(x){return x.id==jid;}); if(!j) return;
+  j.sourceExtra=vsSrcExtras(j).filter(function(x){return String(x.id)!==String(id);});
+  saveData(); renderJobDet(j);
+}
+function _vsSrcAllLines(j){
+  var a=_vsSrcCamLines(j), b=_vsSrcOtherLines(j), out=[];
+  Object.keys(a).forEach(function(k){out.push(a[k]);});
+  Object.keys(b).forEach(function(k){out.push(b[k]);});
+  vsSrcExtras(j).forEach(function(e){
+    out.push({key:'extra|'+e.id,supKey:'extra|'+e.id,src:e.source||'',label:'',
+      name:e.name,dept:'Added by hand',where:[],qty:e.qty||1,extra:e});
+  });
+  return out;
+}
+/* The supplier is a property of the hire, so it is set on the list below and
+   keyed by what is being hired rather than by which camera wants it. */
+function _vsSrcSupKey(line){ return line.supKey||('sup|'+line.label+'|'+line.name); }
+function vsSrcSupSet(jid,key,field,val){
+  var j=jobs.find(function(x){return x.id==jid;}); if(!j) return;
+  var src=vsSourcing(j);
+  if(!src[key]) src[key]={};
+  src[key][field]=val;
+  saveData();
+}
+
+function vsSourcingTab(j){
+  var jid=j.id;
+  var n=parseInt(j.cameras)||0;
+  if(!j.camDetails) j.camDetails=[];
+  var cols=_vsSrcCamCols(j);
+  var lines=_vsSrcAllLines(j);
+  if(!lines.length){
+    return '<div class="det-sec" style="padding:26px 20px;text-align:center">'
+      +'<div class="jd-card-ti" style="margin-bottom:6px">Nothing chosen yet</div>'
+      +'<div style="font-size:13.5px;font-weight:600;color:var(--muted);max-width:52ch;margin:0 auto;line-height:1.55">'
+      +'Pick the kit on the Camera, Lighting / Vision and Audio pages first. Everything chosen there turns up here to be marked ours or hired.</div>'
+      +'</div>';
+  }
+  var cOurs=0,cHire=0,cTodo=0;
+  lines.forEach(function(l){ if(l.src==='inv')cOurs+=l.qty; else if(l.src==='hire')cHire+=l.qty; else cTodo+=l.qty; });
+
+  /* ── the grid, exactly as the camera page lays it out ── */
+  var headCells=cols.map(function(key){return '<th>'+_vsEsc(_vsCamField(key).label)+'</th>';}).join('');
+  var rows=(j.camDetails||[]).map(function(cd,ci){
+    var no=(cd.camNum!==undefined&&cd.camNum!=='')?cd.camNum:(ci+1);
+    var cells=cols.map(function(key){
+      var f=_vsCamField(key), v=_vsCamRead(cd,f);
+      if(!v||v.none||!v.name) return '<td class="vs-camsame"><span>\u00b7</span></td>';
+      var src=_vsSrcCellOf(j,ci,key,v);
+      return '<td><button class="src-cell'+(src?' k-'+src:'')+'" '
+        +'title="'+(src==='inv'?'Versa kit':(src==='hire'?'Hired in':'Not decided'))+' \u2014 click to change" '
+        +'onclick="vsSrcCycle('+jid+','+ci+',\''+key+'\')">'+_vsEsc(v.name)+'</button></td>';
+    }).join('');
+    return '<tr><td class="vs-camn">'+_vsEsc(String(no))+'</td>'+cells+'</tr>';
+  }).join('');
+
+  /* ── anything that is not a camera ── */
+  /* Everything that is not a camera stands beside the grid rather than
+     under it: one line each, same colours, same click. */
+  /* extras have their own block below, and no spec item behind them */
+  var others=lines.filter(function(l){return l.dept!=='Camera' && !l.extra;});
+  var otherDepts=[];
+  others.forEach(function(l){ if(otherDepts.indexOf(l.dept)<0) otherDepts.push(l.dept); });
+  var otherRows=otherDepts.map(function(dept){
+    return '<div class="src-restdept">'+_vsEsc(dept)+'</div>'
+      +others.filter(function(l){return l.dept===dept;}).map(function(l){
+        var it=l.item;
+        return '<div class="src-restrow">'
+          +'<span class="src-q">'+l.qty+'</span>'
+          +'<button class="src-cell'+(l.src?' k-'+l.src:'')+'" '
+            +'title="'+(l.src==='inv'?'Versa kit':(l.src==='hire'?'Hired in':'Not decided'))+' \u2014 click to change" '
+            +'onclick="vsSourceSet('+jid+',\''+it.key+'\',\'source\',\''+(l.src==='inv'?'hire':(l.src==='hire'?'':'inv'))+'\')">'+_vsEsc(l.name)+'</button>'
+        +'</div>';
+      }).join('');
+  }).join('');
+
+  /* ── list one: ours, with the units ── */
+  var invRows=lines.filter(function(l){return l.src==='inv';}).map(function(l){
+    var st=_vsSrcStock(l.name);
+    var units=(st&&st.units||[]).slice(0,l.qty);
+    var shortBy=l.qty-units.length;
+    var tags=units.map(function(k){
+      return '<span class="src-unit'+(k.inUse||k.status==='Maintenance'?' src-unit-busy':'')+'">'
+        +_vsEsc(_vsSrcUnit(k))+(k.loc?'<i>'+_vsEsc(k.loc)+'</i>':'')+'</span>';
+    }).join('');
+    return '<tr><td class="src-q">'+l.qty+'</td><td class="src-lnm">'+_vsEsc(l.name)+'</td>'
+      +'<td class="src-units">'+(tags||'<span class="src-short">Nothing matching in the inventory</span>')
+        +(shortBy>0&&units.length?'<span class="src-short">'+shortBy+' short</span>':'')+'</td></tr>';
+  }).join('');
+
+  /* ── list two: hired, by supplier ── */
+  var hireLines=lines.filter(function(l){return l.src==='hire';});
+  var bySup={};
+  hireLines.forEach(function(l){
+    var saved=vsSourcing(j)[_vsSrcSupKey(l)]||{};
+    var k=(saved.supplier||'').trim()||'Supplier not set';
+    (bySup[k]=bySup[k]||[]).push(l);
+  });
+  var hireBlocks=Object.keys(bySup).sort().map(function(sup){
+    var list=bySup[sup], tot=list.reduce(function(a,x){return a+x.qty;},0);
+    return '<div class="src-sup">'
+      +'<div class="src-suph"><b>'+_vsEsc(sup)+'</b><span>'+tot+' item'+(tot===1?'':'s')+'</span>'
+        +'<button class="src-copy" onclick="vsSrcQuote('+jid+',\''+sup.replace(/'/g,"\\'")+'\')">Email for a quote</button>'
+        +'<button class="src-copy src-copy-2" onclick="vsSourceCopy('+jid+',\''+sup.replace(/'/g,"\\'")+'\')">Copy</button></div>'
+      +'<table class="src-list">'+list.map(function(l){
+          var sk=_vsSrcSupKey(l), saved=vsSourcing(j)[sk]||{};
+          return '<tr><td class="src-q">'+l.qty+'</td>'
+            +'<td class="src-lnm">'+_vsEsc(l.name)+'</td>'
+            +'<td><input class="fi src-in" list="vsSuppliers" value="'+_vsEsc(saved.supplier||'').replace(/"/g,'&quot;')+'" placeholder="Supplier\u2026" '
+              +'onchange="vsSrcSupSet('+jid+',\''+sk+'\',\'supplier\',this.value)"/></td>'
+            +'<td><input class="fi src-in src-in-note" value="'+_vsEsc(saved.notes||'').replace(/"/g,'&quot;')+'" '
+              +'placeholder="Anything they need to know\u2026" '
+              +'onchange="vsSrcSupSet('+jid+',\''+sk+'\',\'notes\',this.value)"/></td></tr>';
+        }).join('')+'</table>'
+    +'</div>';
+  }).join('');
+
+  /* The suppliers already on file, so a name is picked rather than spelt
+     again — and anything typed here still stands. */
+  var supList='<datalist id="vsSuppliers">'
+    +(typeof suppliers!=='undefined'?suppliers:[]).slice()
+      .sort(function(a,b){return String(a.name||'').localeCompare(String(b.name||''));})
+      .map(function(sp){return '<option value="'+_vsEsc(sp.name||'')+'">'
+        +_vsEsc([sp.spec,sp.contact].filter(Boolean).join(' \u00b7 '))+'</option>';}).join('')
+    +'</datalist>';
+
+  return '<div class="det-sec" style="padding:14px 16px">'
+    +supList
+    +'<div class="vs-camhd" style="margin-bottom:10px">'
+      +'<div class="jd-card-ti" style="margin:0">Where the kit comes from</div>'
+      +'<div class="vs-camstats">'
+        +'<span class="src-key-inv"><b>'+cOurs+'</b> Versa</span>'
+        +'<span class="src-key-hire"><b>'+cHire+'</b> hired</span>'
+        +(cTodo?'<span class="src-left"><b>'+cTodo+'</b> to decide</span>':'')
+      +'</div>'
+    +'</div>'
+    +'<div class="src-legend">Click an item to change it \u2014 '
+      +'<span class="src-sw k-inv"></span> Versa, '
+      +'<span class="src-sw k-hire"></span> hired, '
+      +'<span class="src-sw"></span> not decided</div>'
+    +'<div class="src-top">'
+      +(rows?('<div class="src-cams"><div class="vs-camwrap"><table class="vs-cammx src-mx">'
+        +'<tr><th class="n">Cam</th>'+headCells+'</tr>'+rows+'</table></div></div>'):'')
+      +'<div class="src-rest">'+otherRows
+        +(function(){
+            var ex=vsSrcExtras(j);
+            return '<div class="src-restdept">Added by hand</div>'
+              +ex.map(function(e){
+                  var src=e.source||'';
+                  return '<div class="src-restrow">'
+                    +'<input class="fi src-exq" type="number" min="1" value="'+(e.qty||1)+'" '
+                      +'onchange="vsSrcExtraSet('+jid+','+e.id+',\'qty\',this.value)"/>'
+                    +'<button class="src-cell'+(src?' k-'+src:'')+'" '
+                      +'title="'+(src==='inv'?'Versa kit':(src==='hire'?'Hired in':'Not decided'))+' \u2014 click to change" '
+                      +'onclick="vsSrcExtraCycle('+jid+','+e.id+')">'+_vsEsc(e.name)+'</button>'
+                    +'<button class="src-exx" title="Remove" onclick="vsSrcExtraDel('+jid+','+e.id+')">\u00d7</button>'
+                  +'</div>';
+                }).join('')
+              +'<button class="src-exadd" onclick="vsSrcExtraAdd('+jid+',this)">+ Add an item</button>';
+          }())
+      +'</div>'
+    +'</div>'
+    +'<div class="src-foot-note">RCPs come as part of a camera channel, so they are not listed here.</div>'
+    +'<div class="vs-camfoot" style="margin-top:12px">'
+      +(cTodo?'<button class="ibtn" onclick="vsSrcAllCams('+jid+',\'inv\');vsSourceAll('+jid+',\'inv\')">Mark the rest Versa</button>':'')
+      +'<button class="ibtn" onclick="vsSourceDoc('+jid+')">\u2193 Printable sheet</button>'
+    +'</div>'
+    +(invRows?('<div class="src-sec"><div class="src-sech"><b>Versa kit</b>'
+        +'<span>pull these</span></div>'
+        +'<table class="src-list"><thead><tr><th class="src-q">Qty</th><th>Item</th>'
+          +'<th>Units</th></tr></thead><tbody>'+invRows+'</tbody></table></div>'):'')
+    +(hireLines.length?('<div class="src-sec"><div class="src-sech"><b>To send to a supplier</b>'
+        +'<span>'+hireLines.length+' line'+(hireLines.length===1?'':'s')+'</span></div>'+hireBlocks+'</div>'):'')
+  +'</div>';
+}
+
+/* The same list, addressed to that supplier and asking for a price. The
+   address comes from the supplier record if we hold one, so an enquiry is
+   one click rather than a copy, a paste and a search for the email. */
+function vsSrcQuote(jid,sup){
+  var j=jobs.find(function(x){return x.id==jid;}); if(!j) return;
+  var rec=(typeof suppliers!=='undefined'?suppliers:[]).find(function(sp){
+    return String(sp.name||'').trim().toLowerCase()===String(sup||'').trim().toLowerCase();
+  });
+  var lines=[];
+  var who=(rec&&rec.contact)?rec.contact.split(/\s+/)[0]:'';
+  lines.push(who?('Hi '+who+','):'Hello,');
+  lines.push('');
+  var dates=(typeof _vsCalAllDates==='function')?_vsCalAllDates(j):[];
+  var when='';
+  if(dates.length){
+    var fm=function(iso){var d=new Date(iso+'T00:00:00');
+      return isNaN(d.getTime())?iso:d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});};
+    when=dates.length>1?(fm(dates[0])+' \u2013 '+fm(dates[dates.length-1])):fm(dates[0]);
+  }
+  lines.push('Could we have a quote for the following, for '+j.name
+    +(when?(', '+when):'')+(j.loc?(', at our '+j.loc+' studios'):'')+'?');
+  lines.push('');
+  var n=0;
+  _vsSrcAllLines(j).forEach(function(l){
+    if(l.src!=='hire') return;
+    var saved=vsSourcing(j)[_vsSrcSupKey(l)]||{};
+    var k=(saved.supplier||'').trim()||'Supplier not set';
+    if(k!==sup) return;
+    n++;
+    lines.push(l.qty+' \u00d7 '+l.name+(saved.notes?('  \u2014 '+saved.notes):''));
+  });
+  if(!n){ if(typeof toast==='function') toast('Nothing against that supplier yet.'); return; }
+  lines.push('');
+  lines.push('Happy to talk through anything that is easier on the phone.');
+  lines.push('');
+  lines.push('Thanks,');
+  var me=(function(){ try{ return _vsNoteWho((CU&&(CU.name||CU.email))||''); }catch(e){ return ''; } })();
+  lines.push(me||'Versa Studios');
+
+  var subject=j.name+' \u2014 hire enquiry'+(when?(', '+when):'');
+  var to=(rec&&rec.email)?rec.email:'';
+  var href='mailto:'+encodeURIComponent(to)
+    +'?subject='+encodeURIComponent(subject)
+    +'&body='+encodeURIComponent(lines.join('\n'));
+  var a=document.createElement('a');
+  a.href=href; a.style.display='none';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  if(!to && typeof toast==='function') toast('No address on file for '+sup+' \u2014 add one in Admin \u203a Suppliers');
+}
+
+/* One supplier's list, as plain text ready to paste into an email. */
+function vsSourceCopy(jid,sup){
+  var j=jobs.find(function(x){return x.id==jid;}); if(!j) return;
+  var lines=[j.name+' \u2014 kit hire'];
+  var where=[j.loc,j.studio].filter(Boolean).join(', ');
+  if(where) lines.push(where);
+  lines.push('');
+  /* the same lines the page shows, so a camera's hire is not left behind */
+  _vsSrcAllLines(j).forEach(function(l){
+    if(l.src!=='hire') return;
+    var saved=vsSourcing(j)[_vsSrcSupKey(l)]||{};
+    var k=(saved.supplier||'').trim()||'Supplier not set';
+    if(k!==sup) return;
+    lines.push(l.qty+' × '+l.name+(saved.notes?('  — '+saved.notes):''));
+  });
+  var txt=lines.join('\n');
+  var done=function(){ if(typeof toast==='function') toast('Copied \u2014 '+sup); };
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(done,function(){});
+  } else {
+    var ta=document.createElement('textarea'); ta.value=txt; document.body.appendChild(ta);
+    ta.select(); try{ document.execCommand('copy'); done(); }catch(e){}
+    document.body.removeChild(ta);
+  }
+}
+
+/* Everything still undecided becomes ours — the common case, since a job is
+   mostly our own kit with a few hires on top. */
+function vsSourceAll(jid,what){
+  var j=jobs.find(function(x){return x.id==jid;}); if(!j) return;
+  var src=vsSourcing(j);
+  vsSourceItems(j).forEach(function(it){
+    if(_vsSrcOf(j,it)) return;
+    if(!src[it.key]) src[it.key]={};
+    src[it.key].source=what;
+  });
+  saveData(); renderJobDet(j);
+}
+
+/* ── The document ────────────────────────────────────────────────────────
+   Two lists on one sheet: what we are hiring, grouped by who from, and what
+   we are pulling from our own store. Printable, and the same sheet whether
+   it goes to a supplier or to the prep bench. */
+function vsSourceDoc(jid){
+  var j=jobs.find(function(x){return x.id==jid;}); if(!j) return;
+  var items=vsSourceItems(j), src=vsSourcing(j);
+  var hires=[], ours=[], undecided=[];
+  items.forEach(function(it){
+    var s=_vsSrcOf(j,it), saved=src[it.key]||{};
+    var row={name:it.name,label:it.label,dept:it.dept,qty:it.qty,
+             where:_vsSrcWhere(it),supplier:(saved.supplier||'').trim(),notes:(saved.notes||'').trim(),
+             stock:(function(){var st=_vsSrcStock(it.name);return (st&&st.total)?(st.free+' of '+st.total+' free'):'Not in the inventory';}()),
+             short:(function(){var st=_vsSrcStock(it.name);return !st||!st.total||st.free<it.qty;}())};
+    if(s==='hire') hires.push(row);
+    else if(s==='inv') ours.push(row);
+    else undecided.push(row);
+  });
+
+  var esc=function(v){return _vsEsc(v);};
+  var bySupplier={};
+  hires.forEach(function(r){
+    var k=r.supplier||'Supplier not set';
+    (bySupplier[k]=bySupplier[k]||[]).push(r);
+  });
+
+  var tbl=function(rows,showStock){
+    return '<table><thead><tr><th class="q">Qty</th><th>Item</th><th>What it is</th>'
+      +'<th>Where</th>'+(showStock?'<th>In the store</th>':'')+'<th>Notes</th></tr></thead><tbody>'
+      +rows.map(function(r){
+        return '<tr><td class="q">'+r.qty+'</td><td class="nm">'+esc(r.name)+'</td>'
+          +'<td>'+esc(r.label)+'</td><td class="w">'+esc(r.where)+'</td>'
+          +(showStock?'<td class="'+(r.short?'short':'w')+'">'+esc(r.stock||'')+'</td>':'')
+          +'<td class="w">'+esc(r.notes||'')+'</td></tr>';
+      }).join('')+'</tbody></table>';
+  };
+
+  var hireBlocks=Object.keys(bySupplier).sort().map(function(sup){
+    var rows=bySupplier[sup];
+    var n=rows.reduce(function(a,r){return a+r.qty;},0);
+    return '<h3>'+esc(sup)+' <em>'+n+' item'+(n===1?'':'s')+'</em></h3>'+tbl(rows,false);
+  }).join('');
+
+  var dateStr=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  var where=[j.loc,j.studio].filter(Boolean).join(' · ');
+  var html='<!doctype html><html><head><meta charset="utf-8"><title>'+esc(j.name)+' — Kit sourcing</title>'
+    +'<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">'
+    +'<style>'
+    +'*{box-sizing:border-box}'
+    +'body{margin:0;padding:34px 38px 60px;background:#fff;color:#0d0d0d;'
+      +'font-family:Inter,-apple-system,"Helvetica Neue",Arial,sans-serif;font-size:11pt}'
+    +'.mast{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;'
+      +'padding-bottom:12px;border-bottom:2px solid #0d0d0d;margin-bottom:22px}'
+    +'.mast h1{margin:0;font-size:27px;font-weight:900;letter-spacing:-.03em;line-height:1}'
+    +'.mast .sub{margin-top:5px;font-size:11px;font-weight:800;letter-spacing:.12em;'
+      +'text-transform:uppercase;color:rgba(13,13,13,.5)}'
+    +'.mast .rt{text-align:right;font-size:11px;font-weight:800;letter-spacing:.1em;'
+      +'text-transform:uppercase;color:rgba(13,13,13,.5)}'
+    +'h2{font-size:15px;font-weight:900;letter-spacing:-.01em;margin:26px 0 3px;'
+      +'padding-bottom:5px;border-bottom:1.5px solid #0d0d0d}'
+    +'h2 em{font-style:normal;font-size:10px;font-weight:800;letter-spacing:.12em;'
+      +'text-transform:uppercase;color:rgba(13,13,13,.45);margin-left:8px}'
+    +'h3{font-size:12.5px;font-weight:900;margin:15px 0 4px;letter-spacing:-.01em}'
+    +'h3 em{font-style:normal;font-size:9.5px;font-weight:800;letter-spacing:.1em;'
+      +'text-transform:uppercase;color:rgba(13,13,13,.45);margin-left:7px}'
+    +'table{width:100%;border-collapse:collapse;margin-bottom:6px}'
+    +'th{text-align:left;font-size:8.5px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;'
+      +'color:rgba(13,13,13,.5);padding:5px 8px 4px;border-bottom:1px solid rgba(13,13,13,.25)}'
+    +'td{padding:5px 8px;border-bottom:1px solid rgba(13,13,13,.09);font-size:10.5pt;vertical-align:top}'
+    +'td.nm{font-weight:800}'
+    +'.q{width:44px;text-align:center;font-weight:900}'
+    +'.w{color:rgba(13,13,13,.55);font-size:9.5pt}'
+    +'.short{color:#b23b3b;font-weight:800;font-size:9.5pt}'
+    +'.none{font-size:10.5pt;color:rgba(13,13,13,.5);padding:8px 2px}'
+    +'.warn{margin-top:22px;padding-top:10px;border-top:1.5px solid #b23b3b}'
+    +'.warn h2{color:#b23b3b;border-color:#b23b3b}'
+    +'@media print{body{padding:0}h2,h3{break-after:avoid}tr{break-inside:avoid}}'
+    +'</style></head><body>'
+    +'<div class="mast"><div><h1>'+esc(j.name)+'</h1>'
+      +'<div class="sub">Kit sourcing'+(where?' · '+esc(where):'')+'</div></div>'
+      +'<div class="rt">'+esc(dateStr)+'<br>Versa Studios</div></div>'
+    +'<h2>Hiring in <em>'+hires.length+' line'+(hires.length===1?'':'s')+'</em></h2>'
+    +(hireBlocks||'<div class="none">Nothing is being hired for this job.</div>')
+    +'<h2>From our own store <em>'+ours.length+' line'+(ours.length===1?'':'s')+'</em></h2>'
+    +(ours.length?tbl(ours,true):'<div class="none">Nothing marked as ours yet.</div>')
+    +(undecided.length
+      ? '<div class="warn"><h2>Still to decide <em>'+undecided.length+'</em></h2>'+tbl(undecided,false)+'</div>'
+      : '')
+    +'</body></html>';
+
+  var w=window.open('','_blank');
+  if(!w){ if(typeof toast==='function') toast('Allow pop-ups to see the sheet.'); return; }
+  w.document.write(html); w.document.close();
+}
+
+/* ── Asking for one thing ─────────────────────────────────────────────────
+   The browser's own prompt() is a grey slab in the middle of the screen
+   with no idea what you clicked. This asks in the app's own type, in a box
+   beside the thing you are changing. Enter saves, Escape or a click
+   elsewhere leaves it alone.
+
+   vsAsk({label, value, placeholder, anchor, hint, onOk})                   */
+function vsAsk(o){
+  o=o||{};
+  vsAskClose();
+  var wrap=document.createElement('div');
+  wrap.className='vs-ask';
+  wrap.innerHTML='<div class="vs-ask-lb">'+_vsEsc(o.label||'')+'</div>'
+    +(o.hint?'<div class="vs-ask-hint">'+_vsEsc(o.hint)+'</div>':'')
+    +'<input class="vs-ask-in" value="'+_vsEsc(o.value==null?'':String(o.value)).replace(/"/g,'&quot;')+'" '
+      +'placeholder="'+_vsEsc(o.placeholder||'')+'"/>'
+    +'<div class="vs-ask-row"><button class="vs-ask-x">Cancel</button>'
+      +'<button class="vs-ask-ok">'+_vsEsc(o.okLabel||'Save')+'</button></div>';
+  document.body.appendChild(wrap);
+
+  /* beside what you clicked, and never off the edge */
+  var a=o.anchor&&o.anchor.getBoundingClientRect?o.anchor.getBoundingClientRect():null;
+  if(a){
+    var w=wrap.offsetWidth, h=wrap.offsetHeight;
+    var left=Math.min(Math.max(8,a.left), window.innerWidth-w-8);
+    var top=(a.bottom+h+10>window.innerHeight&&a.top-h-6>0)?(a.top-h-6):(a.bottom+6);
+    wrap.style.left=Math.round(left+window.scrollX)+'px';
+    wrap.style.top=Math.round(top+window.scrollY)+'px';
+  } else {
+    wrap.style.left=Math.round(window.scrollX+(window.innerWidth-wrap.offsetWidth)/2)+'px';
+    wrap.style.top=Math.round(window.scrollY+Math.min(160,window.innerHeight*0.2))+'px';
+  }
+
+  var input=wrap.querySelector('.vs-ask-in');
+  var done=function(ok){
+    var v=input.value;
+    vsAskClose();
+    if(ok&&typeof o.onOk==='function') o.onOk(v);
+  };
+  wrap.querySelector('.vs-ask-ok').onclick=function(){done(true);};
+  wrap.querySelector('.vs-ask-x').onclick=function(){done(false);};
+  input.onkeydown=function(e){
+    if(e.key==='Enter'){e.preventDefault();done(true);}
+    else if(e.key==='Escape'){e.preventDefault();done(false);}
+  };
+  setTimeout(function(){ input.focus(); input.select(); },0);
+  /* a click anywhere else is a cancel, but not the click that opened it */
+  setTimeout(function(){
+    window._vsAskAway=function(e){ if(!wrap.contains(e.target)) done(false); };
+    document.addEventListener('mousedown',window._vsAskAway);
+  },0);
+  return wrap;
+}
+function vsAskClose(){
+  if(window._vsAskAway){ document.removeEventListener('mousedown',window._vsAskAway); window._vsAskAway=null; }
+  var el=document.querySelector('.vs-ask');
+  if(el&&el.parentNode) el.parentNode.removeChild(el);
+}
+
+/* ── A long run, as months ────────────────────────────────────────────────
+   Morning Live is the same show every weekday for years, so a month grid of
+   near-identical cells is hard to find anything in. This is the strip the
+   job Overviews use: the month named large, every day of it underneath,
+   weekends and dark days included so the shape of the week still reads. */
+function vsSchedStrip(j){
+  if(!j) return '';
+  var byDate=_jdSchedEntriesByDate(j);
+  var dates=Object.keys(byDate).sort();
+  if(!dates.length){
+    return '<div class="vs-stripempty">'
+      +'<div>No dates added yet</div>'
+      +'<button class="ibtn" style="font-size:12px;padding:6px 14px;font-weight:800" onclick="jdScheduleAddDate('+j.id+')">+ Add First Date</button>'
+      +'</div>';
+  }
+
+  /* every month the run touches */
+  var firstD=new Date(dates[0]+'T00:00:00'), lastD=new Date(dates[dates.length-1]+'T00:00:00');
+  var months=[], cM=new Date(firstD.getFullYear(),firstD.getMonth(),1);
+  var lMo=new Date(lastD.getFullYear(),lastD.getMonth(),1);
+  while(cM.getTime()<=lMo.getTime()){
+    months.push({y:cM.getFullYear(),m:cM.getMonth(),
+      ym:cM.getFullYear()+'-'+String(cM.getMonth()+1).padStart(2,'0')});
+    cM.setMonth(cM.getMonth()+1);
+  }
+
+  /* a run of years is too much at once, so past three months you pick one */
+  var usePicker=months.length>=3, shown=months;
+  window._jdSchedMonth=window._jdSchedMonth||{};
+  var sel=window._jdSchedMonth[j.id];
+  if(usePicker){
+    if(!sel||!months.some(function(m){return m.ym===sel;})){
+      var now=new Date().getFullYear()+'-'+String(new Date().getMonth()+1).padStart(2,'0');
+      sel=months.some(function(m){return m.ym===now;})?now:months[0].ym;
+      window._jdSchedMonth[j.id]=sel;
+    }
+    shown=months.filter(function(m){return m.ym===sel;});
+  }
+
+  var hols={};
+  (window._opsHolidays||[]).forEach(function(h){ if(h&&h.date) hols[h.date]=h; });
+
+  var picker='';
+  if(usePicker){
+    picker='<div class="vs-stripmonths">'+months.map(function(mo){
+      var on=(mo.ym===sel);
+      return '<button class="vs-stripmonbtn'+(on?' on':'')+'" onclick="jdSchedSetMonth('+j.id+',\''+mo.ym+'\')">'
+        +MONTH_NAMES[mo.m].slice(0,3)+' <span>'+String(mo.y).slice(2)+'</span></button>';
+    }).join('')+'</div>';
+  }
+
+  var blocks=shown.map(function(mo){
+    var days='', dim=new Date(mo.y,mo.m+1,0).getDate();
+    for(var dn=1;dn<=dim;dn++){
+      var dt=new Date(mo.y,mo.m,dn);
+      var iso=mo.ym+'-'+String(dn).padStart(2,'0');
+      var ents=byDate[iso]||[];
+      var wknd=(dt.getDay()===0||dt.getDay()===6);
+      var hol=hols[iso];
+      var body, cls='', style='';
+      if(ents.length){
+        cls=' has k-'+_vsCalHue({kind:ents[0].type,label:ents[0].label});
+        if(ents[0].color) style=' style="background:'+ents[0].color+'"';
+        body=ents.map(function(e){ return '<div class="vs-striplab">'+_vsEsc(e.label||'')+'</div>'; }).join('');
+      } else {
+        if(wknd) cls=' wknd';
+        body='<div class="vs-stripnone">'+(hol?'Bank hol':'—')+'</div>';
+      }
+      days+='<div class="vs-stripday'+cls+(hol&&!ents.length?' vs-striphol':'')+'"'+style+'>'
+        +'<div class="vs-stripnum">'+dn+'</div>'
+        +body+'</div>';
+    }
+    /* Weeks run Monday to Sunday, so every line starts on a Monday and the
+       columns stack — the first of the month is pushed along to its day. */
+    var lead=(new Date(mo.y,mo.m,1).getDay()+6)%7, pad='';
+    for(var b=0;b<lead;b++) pad+='<div class="vs-stripgap"></div>';
+    return '<div class="vs-stripmonblk">'
+      +'<div class="vs-stripmonth">'+MONTH_NAMES[mo.m]+' <span class="yr">'+mo.y+'</span></div>'
+      +'<div class="vs-stripdows">'+['Mon','Tue','Wed','Thu','Fri','Sat','Sun']
+        .map(function(d){return '<div>'+d+'</div>';}).join('')+'</div>'
+      +'<div class="vs-stripweeks">'+pad+days+'</div>'
+    +'</div>';
+  }).join('');
+
+  return '<div class="vs-strip">'+picker+blocks+'</div>';
+}
+var MONTH_NAMES=['January','February','March','April','May','June','July',
+  'August','September','October','November','December'];
 
 function renderProdScheduleCal(j){
   if(!j)return'';
@@ -20378,7 +22407,7 @@ function renderGalleryTab(j) {
       +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'
       +'<div style="font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)">'+rlabel+'</div>'
       +'<div style="display:flex;gap:6px">'
-      +'<button class="ibtn" style="font-size:12px" onclick="galRoomAddSeat('+j.id+',\''+rkey+'\')">+ Position</button>'
+      +'<button class="ibtn" style="font-size:12px" onclick="galRoomAddSeat('+j.id+',\''+rkey+'\',this)">+ Position</button>'
       +'<label style="cursor:pointer" title="Upload room image"><span class="ibtn" style="font-size:12px">+ Photo</span><input type="file" accept="image/*" multiple style="display:none" onchange="galRoomUpload(event,'+j.id+',\''+rkey+'\')"></label>'
       +'</div></div>'
       +seatGrid
@@ -20398,14 +22427,15 @@ function galRoomSetName(jid,rkey,si,val){
   if(!j.galleryRooms[rkey])j.galleryRooms[rkey]={seats:[],photos:[]};
   if(j.galleryRooms[rkey].seats[si])j.galleryRooms[rkey].seats[si].name=val;
 }
-function galRoomAddSeat(jid,rkey){
+function galRoomAddSeat(jid,rkey,_el){
   var j=jobs.find(function(x){return x.id==jid;});if(!j)return;
   if(!j.galleryRooms)j.galleryRooms={};
   if(!j.galleryRooms[rkey])j.galleryRooms[rkey]={seats:[],photos:[]};
-  var pos=prompt('Position / role (e.g. Director, Vision Mixer, Sound Supervisor):');
-  if(!pos||!pos.trim())return;
-  j.galleryRooms[rkey].seats.push({pos:pos.trim(),name:'',role:''});
-  renderJobDet(j);
+  vsAsk({label:'Position or role',placeholder:'e.g. Director, Vision Mixer, Sound Supervisor',anchor:_el,onOk:function(pos){
+    if(!pos||!pos.trim())return;
+    j.galleryRooms[rkey].seats.push({pos:pos.trim(),name:'',role:''});
+    renderJobDet(j);
+  }});
 }
 function galRoomRmSeat(jid,rkey,si){
   var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.galleryRooms||!j.galleryRooms[rkey])return;
@@ -21965,7 +23995,7 @@ function renderCommsTab(j) {
   var deviceCell=function(checked,id,color,pi,field){
     var box='<span style="display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border:1.5px solid '+(checked?color:'var(--border)')+';border-radius:3px;background:'+(checked?color:'transparent')+';flex-shrink:0">'+(checked?'<span style="color:#fff;font-size:11px;font-weight:900;line-height:1">&check;</span>':'')+'</span>';
     var idPill=checked && id
-      ? '<button onclick="event.stopPropagation();commsEditDevNum('+j.id+','+pi+',\''+field+'\')" title="Click to set a custom number" style="background:transparent;border:none;cursor:pointer;font-family:var(--cond);font-size:10px;font-weight:800;color:'+color+';letter-spacing:.05em;margin-left:4px;padding:0">#'+id+'</button>'
+      ? '<button onclick="event.stopPropagation();commsEditDevNum('+j.id+','+pi+',\''+field+'\',this)" title="Click to set a custom number" style="background:transparent;border:none;cursor:pointer;font-family:var(--cond);font-size:10px;font-weight:800;color:'+color+';letter-spacing:.05em;margin-left:4px;padding:0">#'+id+'</button>'
       : '';
     return box+idPill;
   };
@@ -22165,22 +24195,26 @@ function commsToggleDev(jid,pi,field){
   saveData();renderJobDet(j);
 }
 // Prompt for a manual device number (e.g. walkie #28). Blank clears the override and reverts to auto-numbering.
-function commsEditDevNum(jid,pi,field){
+function commsEditDevNum(jid,pi,field,el){
   var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.comms||!j.comms.people||!j.comms.people[pi])return;
   var p=j.comms.people[pi];
   var numField=field+'Num';
-  var cur=p[numField]||'';
   var who=(p.name||p.role||'this row').trim()||'this row';
-  var v=prompt('Set '+field+' number for '+who+'\n(leave blank for auto-numbering):', cur);
-  if(v===null)return;
-  v=(v||'').trim();
-  if(!v){ delete p[numField]; }
-  else {
-    var n=parseInt(v,10);
-    if(!(n>0)){ alert('Number must be a positive integer.'); return; }
-    p[numField]=n;
-  }
-  saveData();renderJobDet(j);
+  vsAsk({
+    label:field+' number \u2014 '+who,
+    hint:'Leave it blank to go back to automatic numbering.',
+    value:p[numField]||'', placeholder:'e.g. 28', anchor:el,
+    onOk:function(v){
+      v=(v||'').trim();
+      if(!v){ delete p[numField]; }
+      else {
+        var num=parseInt(v,10);
+        if(!(num>0)){ if(typeof toast==='function') toast('That needs to be a whole number.'); return; }
+        p[numField]=num;
+      }
+      saveData();renderJobDet(j);
+    }
+  });
 }
 function commsToggleRig(jid,pi){
   var j=jobs.find(function(x){return x.id==jid;});if(!j||!j.comms||!j.comms.people||!j.comms.people[pi])return;
@@ -22310,7 +24344,10 @@ function renderMLScheduleTab(j){
   });
   var summary=Object.keys(counts).sort().map(function(p){
     var col=(typeof opsMlColor==='function')?opsMlColor(p):'#5e564f';
-    return '<span style="display:inline-flex;align-items:center;gap:6px;padding:5px 11px;background:'+col+';color:#fff;border-radius:5px;font-family:var(--cond);font-size:12px;font-weight:900;letter-spacing:.06em;text-transform:uppercase">'+p+' &middot; '+counts[p]+'</span>';
+    /* a name and a count is text, not something in a box */
+    return '<span style="display:inline-flex;align-items:baseline;gap:7px;font-family:var(--cond);font-size:12px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:var(--ink)">'
+      +'<i style="width:9px;height:9px;border-radius:2px;background:'+col+';display:inline-block;align-self:center"></i>'
+      +p+' <b style="font-weight:800;color:var(--muted)">'+counts[p]+'</b></span>';
   }).join(' ');
 
   var html='';
@@ -22324,12 +24361,12 @@ function renderMLScheduleTab(j){
   +'</div>';
   // Per-TM summary chips
   if(summary){
-    html+='<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;align-items:center">'
+    html+='<div style="display:flex;flex-wrap:wrap;gap:18px;margin-bottom:16px;align-items:center">'
       +'<span style="font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:rgba(48,47,44,.55);margin-right:6px">Upcoming:</span>'
       +summary+'</div>';
   }
   // The combined calendar — each TX cell shows the episode label + the Tech Manager band underneath
-  html+=renderProdScheduleCal(j);
+  html+=(_vsIsSoft()?vsSchedStrip(j):renderProdScheduleCal(j));
   return html;
 }
 
