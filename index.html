@@ -2536,7 +2536,11 @@ html[data-theme="softdark"] #kitPageTitle + div{margin-left:auto}
 /* Heads of department, grouped ─────────────────────────────────────── */
 html[data-theme="soft"]  #jdContent .jd-hodcard,
 html[data-theme="softdark"] #jdContent .jd-hodcard{display:block!important}
-.jd-hodgrp + .jd-hodgrp{margin-top:11px}
+/* A group of two was taking a whole line and leaving the rest of it empty.
+   The groups pack side by side instead, each as wide as it needs, and a
+   long one takes the room it needs. */
+.jd-hodgroups{display:flex;flex-wrap:wrap;gap:6px 22px;align-items:flex-start}
+.jd-hodgrp{flex:0 1 auto;min-width:0;max-width:100%}
 .jd-hodgh{
   display:flex;align-items:baseline;gap:7px;margin-bottom:5px;
   font-size:9px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);
@@ -16732,10 +16736,12 @@ function renderJobDet(j) {
     var au=j.audio;
     // Initialise new fields lazily (preserves existing data)
     if(!au.hydras)au.hydras=[];
-    // MADI: 3 streams, each carrying 48 input channels
+    // MADI: 3 streams, each carrying VS_MADI_CH input channels
     if(!Array.isArray(au.madi)) au.madi=[];
     while(au.madi.length<3) au.madi.push({name:'',inputs:[],collapsed:true});
-    au.madi.forEach(function(s){ if(!Array.isArray(s.inputs)) s.inputs=[]; while(s.inputs.length<48) s.inputs.push(''); });
+    /* Growing the count only ever appends, so a channel already named keeps
+       its number and nothing written before is lost. */
+    au.madi.forEach(function(s){ if(!Array.isArray(s.inputs)) s.inputs=[]; while(s.inputs.length<VS_MADI_CH) s.inputs.push(''); });
     // Hydra: derive in/out counts + ensure I/O allocation arrays
     au.hydras.forEach(function(h){
       var nm = h.mode==='hired' ? (h.hiredVal||'') : (h.kitId?((kit.find(function(k){return k.id===h.kitId;})||{}).name||''):'');
@@ -16960,14 +16966,14 @@ function renderJobDet(j) {
           +hydraRowsNew
         :'<div style="color:var(--muted);font-size:13px;padding:2px 0">No hydras yet.</div>')
       +'</div>';
-    // ── MADI (3 streams × 48 inputs; named inputs feed the Ingest MADI dropdown) ──
+    // ── MADI (3 streams × VS_MADI_CH inputs; named inputs feed the Ingest MADI dropdown) ──
     var _qm=function(s){return (s||'').toString().replace(/"/g,'&quot;');};
     var madiRows=(au.madi||[]).map(function(s,si){
       var filled=(s.inputs||[]).filter(function(x){return x;}).length;
       var head='<div style="display:flex;align-items:center;gap:8px;padding:6px 0;flex-wrap:wrap">'
         +'<span style="font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:.06em;color:var(--accent);min-width:62px">MADI '+(si+1)+'</span>'
-        +'<span style="font-size:11px;color:var(--muted)">'+filled+'/48 allocated</span>'
-        +'<button class="ibtn" style="font-size:11px;padding:3px 8px;margin-left:auto" onclick="auMadiToggle('+j.id+','+si+')">'+(s.collapsed===false?'Hide inputs':'Edit 48 inputs')+'</button>'
+        +'<span style="font-size:11px;color:var(--muted)">'+filled+'/'+VS_MADI_CH+' allocated</span>'
+        +'<button class="ibtn" style="font-size:11px;padding:3px 8px;margin-left:auto" onclick="auMadiToggle('+j.id+','+si+')">'+(s.collapsed===false?'Hide inputs':('Edit '+VS_MADI_CH+' inputs'))+'</button>'
         +'</div>';
       var list='';
       if(s.collapsed===false){
@@ -16982,7 +16988,7 @@ function renderJobDet(j) {
       return '<div style="border-bottom:1px solid rgba(255,255,255,.07)">'+head+list+'</div>';
     }).join('');
     var madiCard='<div class="det-sec" style="padding:8px 12px;width:100%;max-width:1100px;margin-bottom:0">'
-      +'<div style="display:flex;align-items:baseline;gap:10px;margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid var(--border)"><div class="det-sec-lbl" style="margin:0;padding:0;border:none;font-size:12px">MADI</div><span class="jd-card-ct">3</span><span style="font-size:11px;color:var(--muted);margin-left:6px">3 streams \u00b7 48 inputs each \u00b7 named inputs appear in the Ingest MADI dropdown</span></div>'
+      +'<div style="display:flex;align-items:baseline;gap:10px;margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid var(--border)"><div class="det-sec-lbl" style="margin:0;padding:0;border:none;font-size:12px">MADI</div><span class="jd-card-ct">3</span><span style="font-size:11px;color:var(--muted);margin-left:6px">3 streams \u00b7 '+VS_MADI_CH+' inputs each \u00b7 named inputs appear in the Ingest MADI dropdown</span></div>'
       +madiRows
       +'</div>';
     var equipCard = '<div class="det-sec" style="padding:8px 12px;flex:1 1 560px;max-width:900px;margin-bottom:0">'
@@ -17559,12 +17565,12 @@ function hodSection(j){
       var d=_vsHodDept(h.role);
       (buckets[d]=buckets[d]||[]).push(i);
     });
-    grouped=order.filter(function(d){return buckets[d]&&buckets[d].length;}).map(function(d){
+    grouped='<div class="jd-hodgroups">'+order.filter(function(d){return buckets[d]&&buckets[d].length;}).map(function(d){
       return '<div class="jd-hodgrp"><div class="jd-hodgh">'+_vsEsc(d)
         +'<em>'+buckets[d].length+'</em></div>'
         +'<div class="jd-hodgb">'+buckets[d].map(function(i){return rowAt(i);}).join('')+'</div>'
       +'</div>';
-    }).join('');
+    }).join('')+'</div>';
   }
   return '<div class="jd-card'+(grouped?' jd-hodcard':'')+'">'
     +'<div class="jd-card-hd">'
@@ -17592,6 +17598,9 @@ function _vsHodDept(role){
   return 'Everyone else';
 }
 
+/* How many channels a MADI stream carries. Raising this appends empty
+   channels to every stream; nothing already named is touched. */
+var VS_MADI_CH=60;
 function _hodRow(j,h,i){
   if(!h) return '';
   var allRoles=HOD_ROLES.slice();
