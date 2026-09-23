@@ -1690,7 +1690,10 @@ html.ns-show-crew .ops-tbl .ops-cell .ns-crew-tag::before{display:none!important
 .ns-sf label{display:flex;flex-direction:column;gap:6px;font:600 12px var(--ns-body);letter-spacing:.08em;text-transform:uppercase;color:var(--ns-soft,#8f8d88)}
 .ns-sf input{border:none;border-bottom:1px solid rgba(128,128,128,.4);background:none;color:inherit;font:600 19px var(--ns-body);padding:6px 2px;border-radius:0;-webkit-appearance:none}
 .ns-sf input:focus{outline:none;border-bottom-color:var(--ns-orange,#f04b23)}
-.ns-sf-go{width:100%;margin-top:8px;border:none;border-radius:14px;background:var(--ns-orange,#f04b23);color:#fff;font:700 17px var(--ns-body);padding:15px 0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.ns-sf-rule{width:100%;height:1px;background:rgba(128,128,128,.35);margin:18px 0 0}
+.ns-sf-rule + .ns-sf{margin-top:20px}
+.ns-sf-go{width:100%;margin-top:8px;border:none;border-radius:14px;background:#f2f1ee;color:#111110;font:700 17px var(--ns-body);padding:15px 0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+html.ns-light .ns-sf-go{background:#111110;color:#f7f7f5}
 .ns-sf-go:active{transform:scale(.99)}
 .ns-pin-msg.ns-msg-ok{color:var(--ns-soft,#8f8d88)}
 body.ns-ro #nsUndo,body.ns-ro .ns-undo{display:none!important}
@@ -3669,7 +3672,7 @@ function opsCk(td,dayOverride){
 }
 // Position the cell editor popup next to the given cell, picking the side
 // (below / above / pinned-top) that best fits in the visible viewport.
-var OPS_BUILD='2026-09-22 · b132';
+var OPS_BUILD='2026-09-23 · b135';
 console.log('%cOps Planner build '+OPS_BUILD,'color:#d85a61;font-weight:bold');
 document.addEventListener('DOMContentLoaded',function(){
   var b=document.createElement('div');
@@ -6966,7 +6969,7 @@ async function bootstrap(){
 // Who is who, and who may write, is held in the database and read after
 // sign-in. Nothing here lists an address, and if that check can't be made the
 // session stays view-only rather than guessing.
-var _nsAdmins=[],_nsPeople={},_nsPermFail=false;
+var _nsAdmins=[],_nsPeople={},_nsMembers=[],_nsPermFail=false;
 var _nsSess=null,_nsAuthBusy=false,_nsAuthStage='in',_nsResetTok='';
 function _nsSessRead(){try{var s=JSON.parse(localStorage.getItem('opsSess')||'null');return(s&&s.access&&s.email)?s:null;}catch(e){return null;}}
 function _nsSessWrite(s){_nsSess=s;try{localStorage.setItem('opsSess',JSON.stringify(s));localStorage.setItem('opsLastEmail',s.email||'');}catch(e){}}
@@ -7020,18 +7023,25 @@ function _nsAuthLost(){
   _nsAuthStage='in';_nsShowLock();
 }
 async function _nsLoadPeople(){
-  _nsAdmins=[];_nsPeople={};_nsPermFail=true;
+  _nsAdmins=[];_nsPeople={};_nsMembers=[];_nsPermFail=true;
   try{
     var r=await _nsRawFetch(_SB_URL+'/rest/v1/planner_people?select=email,row,can_edit',{headers:_sbGet()});
     if(!r.ok)return;
     var rows=await r.json();if(!rows)return;
     rows.forEach(function(x){
       var e=String(x.email||'').trim().toLowerCase();if(!e)return;
-      if(x.row)_nsPeople[e]=String(x.row);
+      _nsMembers.push(e);                      // listed at all = allowed in
+      if(x.row)_nsPeople[e]=String(x.row);     // row is optional
       if(x.can_edit)_nsAdmins.push(e);
     });
     _nsPermFail=false;
   }catch(e){}
+}
+// An account on this Supabase project isn't the same as being on the planner:
+// other Versa apps share it. Only people on the planner's own list get in.
+function _nsOnPlanner(){
+  if(_nsPermFail)return true;                  // couldn't check: let them in, view-only
+  return _nsMembers.indexOf(_nsEmail())>=0;
 }
 function _nsAuthMsg(t,quiet){
   var m=document.querySelector('.ns-pin-msg');if(!m)return;
@@ -7051,6 +7061,10 @@ async function _nsDoSignIn(){
   }
   _nsSessWrite(_nsSessOf(r.j,em));
   await _nsLoadPeople();
+  if(!_nsOnPlanner()){
+    _nsSessDrop();
+    return _nsAuthMsg('That account doesn\u2019t have access to the planner');
+  }
   _nsEnter();
 }
 async function _nsForgot(){
@@ -7075,7 +7089,7 @@ async function _nsSetPassword(){
 function _nsRenderAuth(){
   var el=document.getElementById('nsPinStage');if(!el)return;
   if(_nsAuthStage==='reset'){
-    el.innerHTML='<h1 id="nsLockTitle">Choose <span>a new password</span></h1>'
+    el.innerHTML='<h1 id="nsLockTitle">Choose <span>a new password</span></h1><div class="ns-sf-rule" aria-hidden="true"></div>'
       +'<div class="ns-sf">'
       +'<label>New password<input id="nsPw1" type="password" autocomplete="new-password"></label>'
       +'<label>Type it again<input id="nsPw2" type="password" autocomplete="new-password" onkeydown="if(event.key===\'Enter\')_nsSetPassword()"></label>'
@@ -7084,7 +7098,7 @@ function _nsRenderAuth(){
     return;
   }
   var last='';try{last=localStorage.getItem('opsLastEmail')||'';}catch(e){}
-  el.innerHTML='<h1 id="nsLockTitle">Sign in <span>to the planner</span></h1>'
+  el.innerHTML='<h1 id="nsLockTitle">Ops Planner</h1><div class="ns-sf-rule" aria-hidden="true"></div>'
     +'<div class="ns-sf">'
     +'<label>Email<input id="nsEmail" type="email" inputmode="email" autocomplete="username" autocapitalize="off" spellcheck="false" value="'+_rdEsc(last)+'" onkeydown="if(event.key===\'Enter\')document.getElementById(\'nsPw\').focus()"></label>'
     +'<label>Password<input id="nsPw" type="password" autocomplete="current-password" onkeydown="if(event.key===\'Enter\')_nsDoSignIn()"></label>'
@@ -7181,7 +7195,12 @@ document.addEventListener('DOMContentLoaded',async function(){
     return _nsShowLock();
   }
   _nsSess=_nsSessRead();
-  if(_nsSess&&await _nsAuthFresh()){await _nsLoadPeople();return _nsEnter();}
+  if(_nsSess&&await _nsAuthFresh()){
+    await _nsLoadPeople();
+    if(_nsOnPlanner())return _nsEnter();
+    _nsSessDrop();_nsShowLock();
+    return _nsAuthMsg('That account doesn\u2019t have access to the planner');
+  }
   _nsSessDrop();_nsShowLock();
 });
 
