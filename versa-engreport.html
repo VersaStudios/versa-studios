@@ -564,17 +564,13 @@ html[data-theme="softdark"] .vs-cross .vs-go{background:rgba(255,255,255,.12)}
         <div class="er-shead"><span class="er-snum">01</span><span class="er-stitle">Versa Tech Manager</span></div>
         <div class="er-sbody">
           <input type="hidden" id="erVTM" value="Andrew Rowell"/>
-          <div class="er-btnrow">
-            <div class="er-hwbtn er-hwbtn-xl er-active" id="erVersaMain" onclick="erPickVersa('Andrew Rowell')">Andrew Rowell</div>
-            <div class="er-hwbtn er-hwbtn-sm" onclick="erToggleVersaSub()">Other &#9662;</div>
-          </div>
-          <div class="er-subexp" id="erVersaSub">
-            <div class="er-hwbtn er-hwbtn-sm" onclick="erPickVersa('Ian Curry')">Ian Curry</div>
-            <div class="er-hwbtn er-hwbtn-sm" onclick="erPickVersa('Marcus Lamb')">Marcus Lamb</div>
-            <div class="er-hwbtn er-hwbtn-sm" onclick="erPickVersa('Andy McLannahan')">Andy McLannahan</div>
-            <div class="er-hwbtn er-hwbtn-sm" onclick="erPickVersa('James Laishley')">James Laishley</div>
-            <div class="er-hwbtn er-hwbtn-sm" onclick="erPickVersa('James Forshaw')">James Forshaw</div>
-            <div class="er-hwbtn er-hwbtn-sm" onclick="erPickVersa('__other__')">… Other</div>
+          <div class="er-btnrow" id="erVersaPicker">
+            <div class="er-hwbtn" onclick="erPickVersa('Andrew Rowell')">Andrew Rowell</div>
+            <div class="er-hwbtn" onclick="erPickVersa('Ian Curry')">Ian Curry</div>
+            <div class="er-hwbtn" onclick="erPickVersa('Marcus Lamb')">Marcus Lamb</div>
+            <div class="er-hwbtn" onclick="erPickVersa('James Laishley')">James Laishley</div>
+            <div class="er-hwbtn" onclick="erPickVersa('James Forshaw')">James Forshaw</div>
+            <div class="er-hwbtn" onclick="erPickVersa('__other__')">Other</div>
           </div>
           <input class="er-oinput" id="erVersaOther" placeholder="Enter name…" style="display:none" oninput="erVersaTyped()"/>
         </div>
@@ -607,7 +603,7 @@ html[data-theme="softdark"] .vs-cross .vs-go{background:rgba(255,255,255,.12)}
           <div class="er-subexp" id="erBBCSub">
             <div class="er-hwbtn er-hwbtn-sm" onclick="erPickBBC('James Laishley')">James Laishley</div>
             <div class="er-hwbtn er-hwbtn-sm" onclick="erPickBBC('Trevor Bishop')">Trevor Bishop</div>
-            <div class="er-hwbtn er-hwbtn-sm" onclick="erPickBBC('__other__')">… Other</div>
+            <div class="er-hwbtn er-hwbtn-sm" onclick="erPickBBC('__other__')">Other</div>
           </div>
           <input class="er-oinput" id="erBBCOther" placeholder="Enter name…" style="display:none" oninput="erBBCTyped()"/>
         </div>
@@ -827,22 +823,48 @@ function erSetSummary(mode){
   else{document.getElementById('erBtnSTR').classList.add('er-str');document.getElementById('erStrFields').classList.add('open');document.getElementById('erSec5').style.display='';erRenderKit();}
   erUpdateStatus();
 }
-function erPickVersa(name){
-  if(name==='__other__'){document.getElementById('erVersaOther').style.display='block';document.getElementById('erVersaOther').focus();document.getElementById('erVersaMain').classList.remove('er-active');document.getElementById('erVTM').value='';erUpdateStatus();return;}
-  document.getElementById('erVTM').value=name;document.getElementById('erVersaOther').style.display='none';
-  const mb=document.getElementById('erVersaMain');mb.textContent=name;
-  document.querySelectorAll('#erVersaSub .er-hwbtn').forEach(e=>e.classList.remove('er-active'));mb.classList.add('er-active');
-  document.getElementById('erVersaSub').classList.remove('open');erUpdateStatus();
+function erPick(kind,name){
+  const P={versa:{picker:'erVersaPicker',other:'erVersaOther',field:'erVTM'}}[kind];
+  const picker=document.getElementById(P.picker),other=document.getElementById(P.other);
+  const btns=[...picker.querySelectorAll('.er-hwbtn')];
+  btns.forEach(b=>b.classList.remove('er-active'));
+  const mark=t=>{const b=btns.find(x=>x.textContent.trim()===t);if(b)b.classList.add('er-active');};
+  if(name==='__other__'){
+    other.style.display='block';other.focus();
+    mark('Other');
+    document.getElementById(P.field).value=other.value.trim();
+    erUpdateStatus();return;
+  }
+  other.style.display='none';other.value='';
+  document.getElementById(P.field).value=name;
+  mark(name);
+  erUpdateStatus();
 }
-function erToggleVersaSub(){document.getElementById('erVersaSub').classList.toggle('open');}
+function erPickVersa(name){erPick('versa',name);}
+/* the BBC side keeps the original shape: one standing name, the rest behind
+   a dropdown */
 function erPickBBC(name){
-  if(name==='__other__'){document.getElementById('erBBCOther').style.display='block';document.getElementById('erBBCOther').focus();document.getElementById('erBBCMain').classList.remove('er-active');document.getElementById('erBBC').value='';erUpdateStatus();return;}
-  document.getElementById('erBBC').value=name;document.getElementById('erBBCOther').style.display='none';
-  const mb=document.getElementById('erBBCMain');mb.textContent=name;
-  document.querySelectorAll('#erBBCSub .er-hwbtn').forEach(e=>e.classList.remove('er-active'));mb.classList.add('er-active');
-  document.getElementById('erBBCSub').classList.remove('open');erUpdateStatus();
+  const other=document.getElementById('erBBCOther'),mb=document.getElementById('erBBCMain');
+  if(name==='__other__'){
+    other.style.display='block';other.focus();
+    mb.classList.remove('er-active');
+    document.getElementById('erBBC').value=other.value.trim();
+    erUpdateStatus();return;
+  }
+  other.style.display='none';other.value='';
+  document.getElementById('erBBC').value=name;
+  mb.textContent=name;
+  document.querySelectorAll('#erBBCSub .er-hwbtn').forEach(e=>e.classList.remove('er-active'));
+  mb.classList.add('er-active');
+  document.getElementById('erBBCSub').classList.remove('open');
+  erUpdateStatus();
 }
 function erToggleBBCSub(){document.getElementById('erBBCSub').classList.toggle('open');}
+/* The markup has always called these on the "Other" box, but they were never
+   defined — so a typed-in name never reached the hidden field and the form
+   stayed stuck on "Still needed". */
+function erVersaTyped(){document.getElementById('erVTM').value=document.getElementById('erVersaOther').value.trim();erUpdateStatus();}
+function erBBCTyped(){document.getElementById('erBBC').value=document.getElementById('erBBCOther').value.trim();erUpdateStatus();}
 function erPickUrgent(val){
   document.getElementById('erUrgent').value=val;
   document.querySelectorAll('#erUrgPicker .er-urgbtn').forEach(e=>e.classList.remove('er-urg-no','er-urg-yes','er-urg-oth'));
@@ -914,8 +936,11 @@ function erReset(){
   document.getElementById('erStrFields').classList.remove('open');document.getElementById('erTaggedWrap').style.display='none';
   document.getElementById('erBtnNTR').classList.remove('er-ntr','er-str');document.getElementById('erBtnSTR').classList.remove('er-ntr','er-str');
   _erSummaryMode=null;_erTags=[];window._erCatFilter='';
-  document.getElementById('erVersaMain').textContent='Andrew Rowell';document.getElementById('erVersaMain').classList.add('er-active');document.getElementById('erVersaSub').classList.remove('open');document.getElementById('erVersaOther').style.display='none';
-  document.getElementById('erBBCMain').textContent='Andy McLannahan';document.getElementById('erBBCMain').classList.add('er-active');document.getElementById('erBBCSub').classList.remove('open');document.getElementById('erBBCOther').style.display='none';
+  document.getElementById('erVersaOther').style.display='none';document.getElementById('erVersaOther').value='';
+  document.getElementById('erBBCOther').style.display='none';document.getElementById('erBBCOther').value='';
+  document.getElementById('erBBCSub').classList.remove('open');
+  erPickVersa('Andrew Rowell');
+  erPickBBC('Andy McLannahan');
   erSetDateToday();erInitCatBtns();erRenderKit();erUpdateStatus();
 }
 function erFmtDate(d){return d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});}
