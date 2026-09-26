@@ -863,6 +863,32 @@ function erToggleBBCSub(){document.getElementById('erBBCSub').classList.toggle('
 /* The markup has always called these on the "Other" box, but they were never
    defined — so a typed-in name never reached the hidden field and the form
    stayed stuck on "Still needed". */
+/* Extra tech managers are added on the Dashboard and kept under app_data key
+   'ml_tech_managers'. Read them so a name added there turns up here without
+   this file needing an edit. Anything already on the row is skipped, and a
+   failed fetch just leaves the built-in names. */
+async function erLoadVersaNames(){
+  try{
+    const r=await fetch(_ER_SB_URL+'/rest/v1/app_data?key=eq.ml_tech_managers&select=value',{headers:_ER_SB_HDR});
+    const rows=await r.json();
+    const extra=(rows&&rows[0]&&Array.isArray(rows[0].value))?rows[0].value:[];
+    const picker=document.getElementById('erVersaPicker');
+    if(!picker||!extra.length)return;
+    const btns=[...picker.querySelectorAll('.er-hwbtn')];
+    const otherBtn=btns.find(b=>b.textContent.trim()==='Other')||null;
+    const have={};btns.forEach(b=>{have[b.textContent.trim().toLowerCase()]=true;});
+    extra.forEach(function(n){
+      const name=String(n||'').trim();
+      if(!name||have[name.toLowerCase()])return;
+      have[name.toLowerCase()]=true;
+      const b=document.createElement('div');
+      b.className='er-hwbtn';
+      b.textContent=name;
+      b.addEventListener('click',function(){erPickVersa(name);});
+      picker.insertBefore(b,otherBtn);
+    });
+  }catch(e){}
+}
 function erVersaTyped(){document.getElementById('erVTM').value=document.getElementById('erVersaOther').value.trim();erUpdateStatus();}
 function erBBCTyped(){document.getElementById('erBBC').value=document.getElementById('erBBCOther').value.trim();erUpdateStatus();}
 function erPickUrgent(val){
@@ -1014,6 +1040,7 @@ document.addEventListener('DOMContentLoaded',function(){
   erUpdateStatus();
   erPickVersa('Andrew Rowell');
   erPickBBC('Andy McLannahan');
+  erLoadVersaNames();
   setTimeout(erLoadKit,100);
 });</script>
 
