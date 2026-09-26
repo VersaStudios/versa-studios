@@ -295,7 +295,8 @@ body.ops-drag-active .ops-chip::before,body.ops-drag-active .ops-chip::after{poi
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
 
 /* Stacked-month layout */
-.ops-ms2{padding:8px 0 14px;overflow-x:auto;-webkit-overflow-scrolling:touch;scroll-margin-top:12px}
+.ops-ms2{padding:8px 0 14px;overflow-x:auto;-webkit-overflow-scrolling:touch;scroll-margin-top:12px;contain:layout style;content-visibility:auto;contain-intrinsic-size:auto 900px}
+@media print{.ops-ms2{content-visibility:visible}}
 .ops-ms2:first-of-type{padding-top:0}
 
 /* Mobile */
@@ -2877,7 +2878,7 @@ function opsUndo(){
   try{Object.keys(tx.prev).forEach(function(k){var p=k.split('|');os(p[0],+p[1],p.slice(2).join('|'),tx.prev[k]||[]);});}
   finally{_nsUndoing=false;}
   if(typeof opsCloseCed==='function')opsCloseCed();
-  if(typeof opsReRender==='function')opsReRender();
+  if(typeof opsReRender==='function')opsReRenderDirty();
   toast('Undone');
 }
 document.addEventListener('keydown',function(e){
@@ -2894,7 +2895,8 @@ var NS_TEAM=[
   {row:'ian',name:'Ian',full:'Ian Curry'},
   {row:'lily',name:'Lily',full:'Lily Britten'},
   {row:'nik',name:'Nik',full:'Nik Qerimi'},
-  {row:'sam',name:'Sam',full:'Sam Pickford'}
+  {row:'sam',name:'Sam',full:'Sam Pickford'},
+  {row:'zoe',name:'Zoe',full:'Zoe Evans'}
 ];
 function _nsIsTeam(r){return NS_TEAM.some(function(t){return t.row===r;});}
 var _opsHidTeam=new Set();
@@ -2929,7 +2931,7 @@ function _opsReconcileMLG(){
         if(want.length&&kept.some(function(x){return _opsTextOf(x).toLowerCase()==='morning live guarantee';}))want=[];
         if(JSON.stringify(ex.filter(_nsIsMlgMirror))===JSON.stringify(want))return;
         if(!Array.isArray(_opsD[key])&&!want.length)return;
-        _opsD[key]=kept.concat(want);changed=true;
+        _opsD[key]=kept.concat(want);changed=true;_opsMarkMonth(m.month);   // mark only what really moved
       });
     });
   });
@@ -2942,8 +2944,12 @@ function opsMlgPick(name){
   os(ed.month,ed.day,ed.row,next);
   opsCloseCed();opsReRender();
 }
+// Which months an edit has touched, so a redraw can be confined to them.
+var _opsDirtyM={};
+function _opsMarkMonth(month){if(month)_opsDirtyM[month]=1;}
 function os(m,d,r,v){
   if(_nsRO())return;
+  _opsMarkMonth(m);
   var key=m+'|'+d+'|'+r,prev=_opsD[key];
   _nsUndoRecord(key);
   _opsD[key]=v;
@@ -3523,9 +3529,10 @@ function versaFitText(el){
 // Add new ones here to opt them into auto-fit; harmless if a selector matches
 // nothing on a given page.
 var VERSA_FIT_SEL='.ops-chip,.cal-bar,.drw-title,.td';
-function versaFitAll(){
-  document.querySelectorAll(VERSA_FIT_SEL).forEach(versaFitText);
+function versaFitIn(root){
+  (root||document).querySelectorAll(VERSA_FIT_SEL).forEach(versaFitText);
 }
+function versaFitAll(){versaFitIn(document);}
 // Back-compat aliases — keep old call sites working.
 function opsFitChip(el){versaFitText(el);}
 function opsFitAllChips(){versaFitAll();}
@@ -3541,10 +3548,22 @@ function opsFitAllChips(){versaFitAll();}
 // doesn't fire it back, avoiding loops. Debounced at 180ms.
 (function(){
   if(!('MutationObserver' in window))return;
-  var t=null;
-  var schedule=function(){
+  var t=null,hits=[],all=false;
+  var flush=function(){
+    var roots=hits;hits=[];var everything=all;all=false;
+    if(everything||!roots.length||roots.length>3)return versaFitAll();
+    roots.forEach(function(r){if(r&&r.isConnected)versaFitIn(r);});
+  };
+  var schedule=function(muts){
+    if(muts&&muts.length){
+      for(var i=0;i<muts.length;i++){
+        var tg=muts[i].target,sec=tg&&tg.closest&&tg.closest('.ops-ms2');
+        if(!sec){all=true;break;}
+        if(hits.indexOf(sec)<0)hits.push(sec);
+      }
+    }else all=true;
     if(t)clearTimeout(t);
-    t=setTimeout(versaFitAll,180);
+    t=setTimeout(flush,180);
   };
   var go=function(){
     if(!document.body)return;
@@ -3672,7 +3691,7 @@ function opsCk(td,dayOverride){
 }
 // Position the cell editor popup next to the given cell, picking the side
 // (below / above / pinned-top) that best fits in the visible viewport.
-var OPS_BUILD='2026-09-23 · b135';
+var OPS_BUILD='2026-09-24 · b139';
 console.log('%cOps Planner build '+OPS_BUILD,'color:#d85a61;font-weight:bold');
 document.addEventListener('DOMContentLoaded',function(){
   var b=document.createElement('div');
@@ -3769,7 +3788,7 @@ function opsToggleLoc(){
   if(!_opsEd)return;
   var ed=_opsEd,k=ed.row+'_loc',on=og(ed.month,ed.day,k).length;
   os(ed.month,ed.day,k,on?[]:['London']);
-  if(typeof opsReRender==='function')opsReRender();
+  if(typeof opsReRender==='function')opsReRenderDirty();
   opsCloseCed();
 }
 function opsToggleLondon(idx){
@@ -4039,7 +4058,7 @@ function opsAddOnSpanDay(idx){
   if(cur.indexOf(txt)<0)cur.push(txt);
   os(month,addDay,row,cur);
   opsCloseCed();
-  if(typeof opsReRender==='function')opsReRender();
+  if(typeof opsReRender==='function')opsReRenderDirty();
 }
 // Notes on an entry (b77): stored as entry.note; shown in the editor and as a marker on the box
 // Add panel: the Auto circle previews the colour the typed entry will get
@@ -4162,7 +4181,7 @@ function opsCrewMove(idx,ci,val){
   if(!tcrew.some(function(c){return c.name.toLowerCase()===person.name.toLowerCase();}))tcrew.push(person);
   tv.crew=tcrew;tcur[ti]=tv;
   os(tm,tday,trow,tcur);
-  if(typeof opsReRender==='function')opsReRender();
+  if(typeof opsReRender==='function')opsReRenderDirty();
   toast(person.name+' moved to '+_mlUtc(_nsIsoOf(tm,tday)).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',timeZone:'UTC'}));
   _nsReopenEntry(id,idx,day);
 }
@@ -4187,7 +4206,7 @@ function _nsCrewMoveBetween(src,name,tgt){
   os(src.month,src.day,src.row,scur);
   if(!sameCell)os(tgt.month,tgt.day,tgt.row,tcur);
   opsCloseCed();
-  if(typeof opsReRender==='function')opsReRender();
+  if(typeof opsReRender==='function')opsReRenderDirty();
   toast(person.name+' moved to '+_mlUtc(_nsIsoOf(tgt.month,tgt.day)).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',timeZone:'UTC'})+' · '+tgt.text);
   return true;
 }
@@ -4472,7 +4491,7 @@ function opsCrewSetAll(k,field,val){
 }
 function opsCrewRm(k,ci){
   _nsOfferUndo('Crew removed');
-  if(_nsCrewMutate(k,function(v){if(!v.crew[ci])return false;v.crew.splice(ci,1);})){opsReRender();_nsCrewReopen();}
+  if(_nsCrewMutate(k,function(v){if(!v.crew[ci])return false;v.crew.splice(ci,1);})){opsReRenderDirty();_nsCrewReopen();}
 }
 // Pickers: one window per section, tick people to book or unbook them
 function opsCrewOpenPick(k,type){
@@ -4519,7 +4538,7 @@ function opsCrewPickDone(){
   var el=document.getElementById('nsCrewPick');if(!el||el.hidden)return;
   el.hidden=true;document.body.style.overflow='';
   _nsCrewPickCtx=null;
-  opsReRender();_nsCrewReopen();
+  opsReRenderDirty();_nsCrewReopen();
 }
 function opsCrewPickManage(){
   var el=document.getElementById('nsCrewPick');el.hidden=true;
@@ -4529,7 +4548,7 @@ function opsCrewManageFromPopup(){opsCloseCed();_nsCrewMgrReturn='popup';opsOpen
 function _nsCrewMgrClosed(){
   var r=_nsCrewMgrReturn;_nsCrewMgrReturn=null;
   if(r==='pick'&&_nsCrewPickCtx){_nsRenderCrewPick();var el=document.getElementById('nsCrewPick');el.hidden=false;document.body.style.overflow='hidden';}
-  else if(r==='popup'||r==='pick'){opsReRender();_nsCrewReopen();}
+  else if(r==='popup'||r==='pick'){opsReRenderDirty();_nsCrewReopen();}
 }
 document.addEventListener('click',function(e){var el=document.getElementById('nsCrewPick');if(el&&!el.hidden&&e.target===el)opsCrewPickDone();});
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){var el=document.getElementById('nsCrewPick');if(el&&!el.hidden)opsCrewPickDone();}});
@@ -4660,7 +4679,7 @@ function opsMoveEntry(idx,iso){
   tgt.push(v);
   os(mn,nd,row,tgt);
   opsCloseCed();
-  if(typeof opsReRender==='function')opsReRender();
+  if(typeof opsReRender==='function')opsReRenderDirty();
 }
 function opsRemoveItem(idx){if(!_opsEd)return;_nsOfferUndo('Entry removed');const{month,day,row,id}=_opsEd;const cur=og(month,day,row).slice();if(idx<0||idx>=cur.length)return;cur.splice(idx,1);os(month,day,row,cur);opsRefCell(id,month,day,row);opsCk(document.getElementById(id));}
 // Set an entry's span to an absolute number of days. Called from the days
@@ -4705,7 +4724,7 @@ function opsSetSpan(idx,newSpanRaw){
     }
   }
   os(month,day,row,cur);
-  if(typeof opsReRender==='function')opsReRender();
+  if(typeof opsReRender==='function')opsReRenderDirty();
   if(typeof toast==='function')toast('Span set to '+newSpan+' day'+(newSpan===1?'':'s'));
   // Reopen the CHIP editor so the user can keep adjusting
   var el=document.getElementById(id);
@@ -4775,17 +4794,27 @@ function _opsDragMouseDown(ev){
   var isHandle=false;
   var handleSide=null,fromLeft=-1,fromRight=-1,hz=0;
   if(chipEl){
-    var cr=_opsCellRect(chipEl);   // corrected for zoom in every browser
-    fromRight=cr.right-ev.clientX;
-    fromLeft=ev.clientX-cr.left;
+    var cw=chipEl.offsetWidth||0;
+    var tgt=ev.target;
+    // offsetX is in the target's own layout pixels; chips are positioned, so a
+    // descendant's offsetLeft is measured from the chip. Either way this never
+    // touches viewport coordinates, so zoom and scrolling cannot skew it.
+    var off=(tgt===chipEl)?0:((tgt&&tgt.offsetParent===chipEl)?tgt.offsetLeft:null);
+    if(cw>0&&off!==null&&typeof ev.offsetX==='number'){
+      fromLeft=off+ev.offsetX;fromRight=cw-fromLeft;
+    }else{
+      var cr=_opsCellRect(chipEl);
+      fromRight=cr.right-ev.clientX;
+      fromLeft=ev.clientX-cr.left;
+    }
     // Detection zone: 18px or 30% of chip width, whichever is smaller. On wide chips this
     // stays a narrow band at each edge; on narrow single-cell chips it expands so the handle
     // is hittable without trackpad-precision.
-    hz=Math.min(48,Math.max(18,cr.width*0.3));
-    if(ev.clientY>=cr.top&&ev.clientY<=cr.bottom){
-      if(fromRight>=0&&fromRight<hz){isHandle=true;handleSide='right';}
-      else if(fromLeft>=0&&fromLeft<hz){isHandle=true;handleSide='left';}
-    }
+    hz=Math.min(48,Math.max(18,(cw||chipEl.offsetWidth||0)*0.3));
+    // The pointer is inside the chip by definition — it is what was clicked —
+    // so there is no vertical test to get wrong.
+    if(fromRight>=0&&fromRight<hz){isHandle=true;handleSide='right';}
+    else if(fromLeft>=0&&fromLeft<hz){isHandle=true;handleSide='left';}
   }
   var clickVDay=(typeof _opsVirtualDayAt==='function')?_opsVirtualDayAt(cell,ev.clientX):dataDay;
   _opsDrag={
@@ -4812,6 +4841,43 @@ function _opsDragMouseDown(ev){
 // Horizontal gestures (resize / span paint) don't hit-test at all: at drag
 // start we capture the row's cells with their X ranges once, then map the
 // cursor's X straight to a day. Nothing to drift, overlay, or mis-hit.
+// Find a cell's true left/right edge in pointer coordinates by asking the
+// browser what is under a point and closing in on the boundary. Works whatever
+// the engine does with rects under CSS zoom, and whatever the page is scrolled to.
+function _nsProbeEdge(cell,y,startX,dir){
+  // elementsFromPoint, not elementFromPoint: the hotel/London overlay sits on
+  // top of the grid, and the topmost element at a point is often not the cell.
+  var inside=function(x){
+    if(x<0||x>window.innerWidth)return false;
+    var st=document.elementsFromPoint?document.elementsFromPoint(x,y):[document.elementFromPoint(x,y)];
+    for(var i=0;i<st.length;i++)if(st[i]===cell)return true;
+    return false;
+  };
+  if(!inside(startX))return null;
+  var x=startX,step=8,outX=null,guard=0;
+  while(guard++<300){
+    var nx=x+dir*step;
+    if(nx<0||nx>window.innerWidth)break;
+    if(!inside(nx)){outX=nx;break;}
+    x=nx;step=Math.min(step*1.6,64);
+  }
+  if(outX===null)return null;
+  var lo=x,hi=outX;
+  for(var i=0;i<16;i++){var mid=(lo+hi)/2;if(inside(mid))lo=mid;else hi=mid;}
+  return lo;
+}
+// Two edges give an exact straight-line mapping from rect coordinates to
+// pointer coordinates: no zoom value is consulted and none needs to be right.
+function _nsCalibrate(cell,x,y){
+  try{
+    var r=cell.getBoundingClientRect();if(!(r.width>0))return null;
+    var vL=_nsProbeEdge(cell,y,x,-1),vR=_nsProbeEdge(cell,y,x,1);
+    if(vL==null||vR==null)return null;
+    var k=(vR-vL)/r.width;
+    if(!isFinite(k)||k<0.2||k>5)return null;
+    return {k:k,b:vL-k*r.left};
+  }catch(e){return null;}
+}
 function _opsCaptureRowMap(){
   // The map is stored in RAW rect coordinates, and incoming cursor X gets
   // divided by a scale factor calibrated from the start cell: the app knows
@@ -4838,6 +4904,13 @@ function _opsCaptureRowMap(){
   }
   if(!isFinite(scale)||scale<=0)scale=1;
   _opsDrag.mapScale=scale;
+  // Prefer the measured mapping; fall back to the calculated one if the probe
+  // couldn't find both edges (cell off screen, say).
+  var cal=sc?_nsCalibrate(sc,_opsDrag.startX,_opsDrag.startY):null;
+  if(cal){
+    map.forEach(function(m){m.left=m.left*cal.k+cal.b;m.right=m.right*cal.k+cal.b;});
+    _opsDrag.mapScale=1;_opsDrag.cal=cal;
+  }
 }
 function _opsDayFromX(x){
   var map=_opsDrag&&_opsDrag.rowMap;
@@ -5041,7 +5114,7 @@ function _opsDragSpanAdjust(drag){
   for(var d=clearLo;d<=clearHi;d++){_nsUndoRecord(month+'|'+d+'|'+row);_opsD[month+'|'+d+'|'+row]=[];}
   os(month,newLeft,row,[newEntry]);
   console.log('[opsDrag] resized',leftmost,'..',curHi,'→',newLeft,'..',newRight);
-  if(typeof opsReRender==='function')opsReRender();
+  if(typeof opsReRender==='function')opsReRenderDirty();
 }
 // SAME-ROW (ML): breaks/person-names span via repeated identical strings in
 // consecutive cells. Drag-to-extend replicates the text; shrink clears extras.
@@ -5086,7 +5159,7 @@ function _opsDragSpanAdjustML(drag){
   for(var d=clearLo;d<=clearHi;d++){_nsUndoRecord(month+'|'+d+'|'+row);_opsD[month+'|'+d+'|'+row]=[];}
   for(var d=newLeft;d<=newRight;d++)os(month,d,row,[text]);
   console.log('[opsDrag-ml] adjusted',runStart,'..',runEnd,'→',newLeft,'..',newRight,'text=',text);
-  if(typeof opsReRender==='function')opsReRender();
+  if(typeof opsReRender==='function')opsReRenderDirty();
 }
 // b59: Morning Live TM move — drag a TM to another day. Moves the single day
 // that was grabbed (inside a merged run, the day under the pointer).
@@ -5108,7 +5181,7 @@ function _opsDragMoveML(drag){
   os(dM.month,dDay,'ml',[person]);
   os(drag.month,srcDay,'ml',(srcInfo&&opsIsWk(srcInfo.dow))?['Break / Off Air']:[]);
   console.log('[opsDrag-ml] moved',person,drag.month,srcDay,'→',dM.month,dDay);
-  if(typeof opsReRender==='function')opsReRender();
+  if(typeof opsReRender==='function')opsReRenderDirty();
 }
 // CROSS-ROW / CROSS-MONTH: move the source cell's entries to the destination.
 // Span attribute is stripped — destination just gets plain entries appended.
@@ -5163,7 +5236,7 @@ function _opsDragMove(drag){
     }
   }
   console.log('[opsDrag] moved',moveVals.length,'entries',drag.row,drag.startDay,'→',destRow,destDay,'(replaced)');
-  if(typeof opsReRender==='function')opsReRender();
+  if(typeof opsReRender==='function')opsReRenderDirty();
 }
 // Block the cell-click that fires immediately after a drag-merge mouseup.
 // Important: must NOT block clicks on actual buttons (×, ◀, ▶, swatches).
@@ -5396,7 +5469,7 @@ function _rdAddCommit(){
 }
 
 // ── REF + RX NUM ─────────────────────────────────────────────────────────────
-function opsRefCell(id,month,day,row){const el=document.getElementById(id);if(!el)return;if(el.colSpan>1&&typeof opsReRender==='function'){opsReRender();return;}const vals=og(month,day,row);const fc={andrew:'ops-andrew',chris:'ops-chris',ian:'ops-ian',shopon:'ops-so'}[row]||null;if(row==='ml'){if(!vals.length)el.innerHTML='<div class="ops-mt"></div>';else if(vals[0]==='Break / Off Air')el.innerHTML='<div class="ops-chip ops-brk">Break</div>';else el.innerHTML='<div class="ops-chip ops-ml" style="background:'+opsMlColor(vals[0])+'">'+String(vals[0])+'</div>';}else{const htl=og(month,day,row+'_htl').length?'<span class="ops-htl" title="Hotel booked overnight">Hotel</span>':'';el.innerHTML=opsRChips(vals,fc)+htl;}}
+function opsRefCell(id,month,day,row){const el=document.getElementById(id);if(!el)return;if(el.colSpan>1&&typeof opsReRender==='function'){_opsMarkMonth(month);opsReRenderDirty();return;}const vals=og(month,day,row);const fc={andrew:'ops-andrew',chris:'ops-chris',ian:'ops-ian',shopon:'ops-so'}[row]||null;if(row==='ml'){if(!vals.length)el.innerHTML='<div class="ops-mt"></div>';else if(vals[0]==='Break / Off Air')el.innerHTML='<div class="ops-chip ops-brk">Break</div>';else el.innerHTML='<div class="ops-chip ops-ml" style="background:'+opsMlColor(vals[0])+'">'+String(vals[0])+'</div>';}else{const htl=og(month,day,row+'_htl').length?'<span class="ops-htl" title="Hotel booked overnight">Hotel</span>':'';el.innerHTML=opsRChips(vals,fc)+htl;}}
 function opsRxNum(mi,currentDay,row){const m=OPS_CAL[mi];if(!m)return 1;let n=0;m.days.forEach(d=>{if(d.day<currentDay)og(m.month,d.day,row).forEach(v=>{if(/^RX\s*\d+$/i.test(v.trim()))n++;});});return n+1;}
 document.addEventListener('click',e=>{const ced=document.getElementById('opsCed');if(ced&&ced.style.display==='block'&&!ced.contains(e.target)&&!e.target.closest('.ops-cell'))opsCloseCed();});
 // Keep the cell-editor popup tracking its anchor cell when the planner scrolls
@@ -6262,9 +6335,23 @@ function _saBuildStackedMonths(){
     body.appendChild(sec);
   });
   // Set up scroll observer to track which month is in view → updates planLbl
-  _saSetupScrollObserver();
+  _saSetupScrollObserver();_nsSetupNearObserver();
 }
 
+var _nsNearObs=null,_nsNearReady=false;
+function _nsSecNear(sec){return !_nsNearReady||!sec||sec.dataset.near==='1';}
+function _nsSetupNearObserver(){
+  if(!('IntersectionObserver' in window))return;
+  if(_nsNearObs)_nsNearObs.disconnect();
+  _nsNearObs=new IntersectionObserver(function(es){
+    _nsNearReady=true;
+    es.forEach(function(e){
+      if(e.isIntersecting)e.target.dataset.near='1';
+      else if(e.target.dataset.near)delete e.target.dataset.near;
+    });
+  },{rootMargin:'900px 0px'});
+  document.querySelectorAll('#opsBody2 .ops-ms2').forEach(function(sec){_nsNearObs.observe(sec);});
+}
 function _saSetupScrollObserver(){
   if(!('IntersectionObserver' in window))return;
   if(_saScrollObs)_saScrollObs.disconnect();
@@ -6320,6 +6407,7 @@ var _opsZoomVal=100;
 try{var el0=document.getElementById('opsScroll2');if(el0)el0.style.zoom='';}catch(e){}
 function opsSetZoom(v){
   v=Math.max(60,Math.min(140,Math.round((+v||100)/5)*5));
+  if(v!==_opsZoomVal&&typeof _rdFitClear==='function')_rdFitClear();   // sizes are per zoom level
   _opsZoomVal=v;
   var el=document.getElementById('opsScroll2');if(el){el.style.zoom=(v===100?'':String(v/100));el.style.setProperty('--ns-zoom',String(v/100));}
   try{localStorage.setItem('opsZoom2',String(v));}catch(e){}
@@ -6370,7 +6458,40 @@ function opsReRender(){
   window.scrollTo(0,winY);
   // Re-observe (new DOM nodes inside sections don't need re-observation, but
   // be defensive in case sections got replaced)
-  _saSetupScrollObserver();
+  _saSetupScrollObserver();_nsSetupNearObserver();
+}
+// Redraw only the months an edit touched. Falls back to the full rebuild when
+// nothing was marked (a display change rather than an edit) or when so many
+// months changed that doing them one at a time saves nothing.
+function opsReRenderDirty(){
+  var months=Object.keys(_opsDirtyM);_opsDirtyM={};
+  if(!_saMonthsRendered)return;
+  if(!months.length)return opsReRender();
+  var idx=[];
+  months.forEach(function(mn){
+    var i=OPS_CAL.findIndex(function(m){return m.month===mn;});
+    if(i>=0)idx.push(i);
+  });
+  if(!idx.length||idx.length>3)return opsReRender();
+  var winY=window.pageYOffset,secs=document.querySelectorAll('#opsBody2 .ops-ms2');
+  var drawn=[];
+  idx.forEach(function(i){
+    var sec=secs[i];if(!sec||sec.style.display==='none')return;
+    var sl=sec.scrollLeft;
+    sec.innerHTML=opsRenderMonth(OPS_CAL[i],i);
+    sec.scrollLeft=sl;drawn.push(sec);
+  });
+  if(winY!==window.pageYOffset)window.scrollTo(0,winY);
+  _saSetupScrollObserver();_nsSetupNearObserver();
+  // Finish this month off now — the hotel and London markers and the label
+  // fitting, for these sections only, instead of the whole year.
+  requestAnimationFrame(function(){
+    drawn.forEach(function(sec){
+      if(typeof versaFitIn==='function')versaFitIn(sec);
+      var tbl=sec.querySelector('table.ops-tbl');
+      if(tbl&&typeof _nsDrawLines==='function')_nsDrawLines(tbl);
+    });
+  });
 }
 function opsReRenderAll(){opsReRender();}
 
@@ -6593,16 +6714,28 @@ function _rdGroupOf(tr){
   if(r.indexOf('st_')===0)return 'studio';
   return 'other:'+r;
 }
+// Shrinking a row name to fit means setting a size, measuring, shrinking and
+// measuring again — a forced layout per step. The names are identical in every
+// month, so the answer is worked out once per set of names and reused.
+var _rdFitCache={};
+function _rdFitClear(){_rdFitCache={};}
 function _rdFitTable(tbl){
   var compact=document.body.classList.contains('rd-compact');
   var max=compact?(window.innerWidth<=640?17:20):(window.innerWidth<=640?20:28),min=12,groups={};var hmax=compact?40:58;
   tbl.querySelectorAll('td.ops-rlbl .nm').forEach(function(el){var g=_rdGroupOf(el.closest('tr'));(groups[g]=groups[g]||[]).push(el);});
   Object.keys(groups).forEach(function(k){
-    var size=max;
-    groups[k].forEach(function(el){var f=max;el.style.fontSize=f+'px';
-      while(f>min&&!(el.scrollWidth<=el.clientWidth+1&&el.scrollHeight<=hmax)){f--;el.style.fontSize=f+'px';}
-      if(f<size)size=f;});
-    groups[k].forEach(function(el){el.style.fontSize=size+'px';});
+    var els=groups[k];
+    var key=k+'|'+(compact?1:0)+'|'+max+'|'+hmax+'|'+Math.round(els[0].clientWidth||0)+'|'+
+            els.map(function(e){return e.textContent;}).join('~');
+    var size=_rdFitCache[key];
+    if(size==null){
+      size=max;
+      els.forEach(function(el){var f=max;el.style.fontSize=f+'px';
+        while(f>min&&!(el.scrollWidth<=el.clientWidth+1&&el.scrollHeight<=hmax)){f--;el.style.fontSize=f+'px';}
+        if(f<size)size=f;});
+      _rdFitCache[key]=size;
+    }
+    els.forEach(function(el){el.style.fontSize=size+'px';});
   });
   tbl.dataset.rdFit='1';
 }
@@ -6649,6 +6782,7 @@ function _rdPass(force){
     if(!force&&t.dataset.rdFit)return;
     var sec=t.closest('.ops-ms2');
     if(sec&&sec.style.display==='none')return;   // no layout read for hidden months
+    if(sec&&!_nsSecNear(sec))return;             // nor for months far off screen
     _rdFitTable(t);
     _nsDrawLines(t);
     _nsPlaceDayChips(t);
@@ -6694,11 +6828,11 @@ function _rdSchedule(force){
     _rdSchedule(false);
   };
   if(document.body)go();else document.addEventListener('DOMContentLoaded',go);
-  var t=null;window.addEventListener('resize',function(){clearTimeout(t);t=setTimeout(function(){_rdPass(true);},150);});
+  var t=null;window.addEventListener('resize',function(){clearTimeout(t);t=setTimeout(function(){_rdFitClear();_rdPass(true);},150);});
   window.addEventListener('scroll',function(){if(!_opsDrag)_rdSchedule(false);},{passive:true});
   document.addEventListener('mouseup',function(){_rdSchedule(false);setTimeout(function(){_rdSchedule(false);},60);},true);
   document.addEventListener('touchend',function(){setTimeout(function(){_rdSchedule(false);},60);},{capture:true,passive:true});
-  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){_rdPass(true);});
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){_rdFitClear();_rdPass(true);});
 })();
 
 // ── Settings sheet (studios live here) ──────────────────────────────────────
@@ -6879,7 +7013,7 @@ function _nsClip(sec){
   var cut=sec.scrollLeft+parseFloat(box.dataset.lw||0)+10;
   Array.prototype.forEach.call(box.children,function(ln){ln.style.visibility=(+ln.dataset.x<cut)?'hidden':'';});
 }
-function _nsRedrawAll(){document.querySelectorAll('table.ops-tbl').forEach(function(t){var s=t.closest('.ops-ms2');if(s&&s.style.display!=='none')_nsDrawLines(t);});}
+function _nsRedrawAll(){document.querySelectorAll('table.ops-tbl').forEach(function(t){var s=t.closest('.ops-ms2');if(s&&s.style.display!=='none'&&_nsSecNear(s))_nsDrawLines(t);});}
 window.addEventListener('resize',function(){clearTimeout(window._nsLT);window._nsLT=setTimeout(_nsRedrawAll,180);});
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){setTimeout(_nsRedrawAll,50);});
 
