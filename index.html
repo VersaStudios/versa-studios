@@ -2365,9 +2365,15 @@ html[data-theme="softdark"] #jdContent .lv-grid td.lv-off{color:var(--faint,#b9b
 .vsn-count{margin-left:auto;font-size:10px;font-family:var(--cond);font-weight:800;
   letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 
+/* Notes used to be one full-width row each, so a three-word note took the
+   same height as a rig schedule and the page was mostly margin. They flow
+   into columns now, and each card is exactly as tall as what is in it. */
+/* column-width rather than a count, so it fills whatever room the to-do
+   rail leaves rather than guessing from the window */
+.vsn-list{column-width:250px;column-gap:8px}
 /* one note */
-.vsn-note{background:var(--surface);border:1.5px solid var(--field-edge);border-radius:9px;
-  padding:9px 13px 10px;margin-bottom:8px}
+.vsn-note{background:var(--surface);border:1px solid var(--field-edge);border-radius:8px;
+  padding:8px 11px 9px;margin:0 0 7px;break-inside:avoid;-webkit-column-break-inside:avoid}
 .vsn-note:hover{border-color:var(--field-edge-hi)}
 .vsn-done{opacity:.5}
 .vsn-done .vsn-txt{text-decoration:line-through}
@@ -2554,14 +2560,413 @@ html[data-theme="softdark"] #jdContent .jd-hodcard{display:block!important}
 /* A group of two was taking a whole line and leaving the rest of it empty.
    The groups pack side by side instead, each as wide as it needs, and a
    long one takes the room it needs. */
-.jd-hodgroups{display:flex;flex-wrap:wrap;gap:3px 18px;align-items:flex-start}
-.jd-hodgrp{flex:0 1 auto;min-width:0;max-width:100%}
-.jd-hodgh{
-  display:flex;align-items:baseline;gap:6px;margin:6px 0 3px;
-  font-size:8.5px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);
+/* Thirty-nine people, each formerly in its own outlined box at whatever
+   width its name happened to need. The boxes are gone and the names sit on
+   a shared grid, so the eye runs down a column instead of picking its way
+   through a wall of rectangles. The fields are still fields — they just do
+   not announce it until you are on them. */
+.jd-hodgroups{display:block}
+.jd-hodgrp{margin:0 0 10px}
+.jd-hodgrp:last-child{margin-bottom:0}
+.jd-hodshelf{display:flex;flex-wrap:wrap;gap:0 12px;align-items:flex-start}
+/* ── the kit list ── one screen: categories down the side, models in a table */
+.vsc-wrap{display:grid;grid-template-columns:186px 1fr;gap:20px;align-items:start}
+.vsc-rail{display:flex;flex-direction:column;gap:1px;position:sticky;top:8px}
+.vsc-main{min-width:0}
+.vsc-top{display:flex;gap:10px;align-items:center;margin-bottom:10px}
+.vsc-q{flex:1;min-width:0;font-family:var(--font);font-size:14px;padding:8px 12px;
+  border:1.5px solid var(--field-edge);border-radius:8px;background:var(--surface);color:var(--ink)}
+.vsc-q:focus{outline:0;border-color:var(--accent)}
+.vsc-add{white-space:nowrap;font-size:12px;padding:7px 13px}
+.vsc-count{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 6px}
+.vsc-hd,.vsc-row{display:grid;grid-template-columns:1.4fr 130px 140px 1.4fr 1.4fr 22px;gap:9px;align-items:center}
+.vsc-hd{font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--muted);padding:0 8px 5px;border-bottom:1px solid var(--field-edge)}
+.vsc-row{padding:2px 8px;border-bottom:1px solid var(--hairline,rgba(0,0,0,.06))}
+.vsc-row:hover{background:var(--surface)}
+.vsc-row input,.vsc-row select{font-family:var(--font);font-size:13px;color:var(--ink);
+  background:transparent;border:0;border-radius:4px;padding:5px 4px;width:100%;min-width:0}
+.vsc-row .vsc-nm{font-weight:600}
+.vsc-row input::placeholder{color:var(--muted)}
+.vsc-row input:hover,.vsc-row select:hover{background:var(--bg)}
+.vsc-row input:focus,.vsc-row select:focus{outline:0;background:var(--bg);box-shadow:inset 0 0 0 1.5px var(--accent)}
+.vsc-row .vsc-sub{font-size:12px;color:var(--muted);appearance:none;-webkit-appearance:none;cursor:pointer}
+.vsc-rm{opacity:.35;background:none;border:0;color:var(--muted);font-size:14px;cursor:pointer;padding:0;
+  width:22px;height:22px;line-height:1}
+.vsc-row:hover .vsc-rm{opacity:1}
+.vsc-rm:hover{color:var(--ink)}
+.vsc-row.vsc-unfiled .vsc-nm{color:var(--muted)}
+.vsc-row.vsc-unfiled{background:rgba(180,120,0,.05)}
+.vsc-railsec{font-size:9px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--muted);margin:14px 0 4px;padding:0 2px}
+.vsc-empty{color:var(--muted);font-size:14px;padding:18px 2px}
+/* \u2500\u2500 Eng Report header \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+.er-tabs{display:flex;gap:8px;align-items:stretch;flex-wrap:wrap;margin-bottom:18px}
+.er-tab{display:flex;flex-direction:column;gap:6px;align-items:flex-start;
+  background:var(--surface);border:1px solid var(--field-edge);border-radius:9px;
+  padding:9px 11px 10px;cursor:pointer;text-align:left;font-family:var(--font);
+  transition:border-color .12s}
+/* the logo stays its own colour either way — fading it made ShopOn look
+   broken rather than unselected. The border says which one you are on. */
+.er-tab .er-tabw{opacity:.62}
+.er-tab:hover{border-color:var(--field-edge-hi,var(--ink))}
+.er-tab.on{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.er-tab.on .er-tabw{opacity:1;color:var(--ink)}
+.er-tablogo{display:flex;align-items:center;justify-content:center;
+  width:118px;height:36px;border-radius:6px;overflow:hidden;padding:5px 9px}
+.er-tablogo img{max-width:100%;max-height:100%;object-fit:contain;display:block}
+.er-tabn{font-size:14px;font-weight:700;color:var(--ink);line-height:1.2}
+.er-tabw{font-size:9px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--muted)}
+.er-viewrow{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.er-viewlbl{font-size:9.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+/* not .er-submit — the report form already owns that name, with width:100%,
+   which is why this ran the width of the page */
+.er-viewbtn{margin-left:auto;flex:0 0 auto;width:auto;font:700 13px var(--font);
+  padding:9px 18px;border:0;border-radius:8px;background:var(--ink);color:var(--surface);
+  cursor:pointer;letter-spacing:0;text-transform:none}
+.er-viewbtn:hover{opacity:.88}
+/* ── Notes and the to-do list, side by side ───────────────────────── */
+/* The notes had three quarters of the page and the to-do list a sliver.
+   Closer to three-fifths and two-fifths: the notes still take columns,
+   the list is wide enough to read a whole line without wrapping. */
+/* Notes, to do, to print \u2014 three columns, each its own box. The notes get
+   the extra width because a note is a paragraph and a to-do is a line. */
+.vsn-split{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) minmax(0,1fr);
+  gap:10px;align-items:start;max-width:100%}
+.vsn-panel{background:var(--surface);border:1px solid var(--field-edge);border-radius:12px;
+  padding:14px 16px 16px;min-width:0;max-width:100%}
+.vsn-ph{margin:0 0 12px;font-size:9.5px;font-weight:800;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted)}
+@media(max-width:1150px){
+  .vsn-split{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .vsn-col{grid-column:1/3}
 }
-.jd-hodgh em{font-style:normal;font-size:10px;font-weight:800;color:var(--ink)}
-.jd-hodgb{display:flex;flex-wrap:wrap;gap:3px;align-items:center}
+@media(max-width:740px){
+  .vsn-split{grid-template-columns:1fr}
+  .vsn-col{grid-column:auto}
+}
+.vsn-col{min-width:0}
+/* A select will not shrink below the width of its widest option, and a
+   grid child defaults to min-width:auto, so the panel was pushing past
+   the right edge of the page. Both have to be told they may shrink. */
+.vstd{min-width:0;max-width:100%}
+.vstd-add{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px;margin-bottom:12px;max-width:100%}
+.vstd-add input{grid-column:1/3;width:100%;box-sizing:border-box;font:14px var(--font);
+  padding:9px 12px;border:1.5px solid var(--field-edge);border-radius:8px;
+  background:var(--surface);color:var(--ink)}
+.vstd-add input:focus{outline:0;border-color:var(--accent)}
+.vstd-add select{font:12.5px var(--font);padding:6px 8px;border:1.5px solid var(--field-edge);
+  border-radius:7px;background:var(--surface);color:var(--muted);min-width:0;width:100%;
+  max-width:100%;text-overflow:ellipsis}
+.vstd-addbtn{font:700 12.5px var(--font);padding:6px 15px;border:0;border-radius:7px;
+  background:var(--ink);color:var(--surface);cursor:pointer}
+.vstd-meta{display:flex;justify-content:space-between;align-items:baseline;gap:10px;
+  font-size:9.5px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--muted);padding:0 2px 7px;border-bottom:1px solid var(--field-edge)}
+.vstd-toggle{background:none;border:0;padding:0;font:inherit;color:var(--muted);
+  cursor:pointer;text-decoration:underline}
+.vstd-toggle:hover{color:var(--ink)}
+/* Everything was auto-placed and landed where it liked — the wording ended
+   up on the right with the job under it on the left. Every cell is now
+   named, so the row reads: tick, wording, cross / job, date. */
+.vstd-row{display:grid;gap:2px 9px;padding:9px 2px;max-width:100%;
+  grid-template-columns:auto minmax(0,1fr) auto;
+  grid-template-areas:'tick text rm' '. job when';
+  align-items:center;border-bottom:1px solid var(--hairline,rgba(0,0,0,.07))}
+.vstd-tick{grid-area:tick;width:17px;height:17px;border:1.5px solid var(--field-edge);border-radius:5px;
+  background:var(--surface);cursor:pointer;font-size:11px;line-height:1;color:var(--ink);
+  padding:0;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.vstd-tick:hover{border-color:var(--accent)}
+/* the wording is editable, so it is an input — drawn as text until you
+   are in it */
+.vstd-txt{grid-area:text;font:14px/1.4 var(--font);color:var(--ink);background:none;border:0;
+  text-align:left;
+  border-bottom:1.5px solid transparent;padding:0;width:100%;min-width:0}
+.vstd-txt:hover{border-bottom-color:var(--field-edge)}
+.vstd-txt:focus{outline:0;border-bottom-color:var(--accent)}
+.vstd-when{grid-area:when;justify-self:end;font-size:10.5px;color:var(--faint,#b4b4b8);white-space:nowrap}
+.vstd-where{grid-area:job;justify-self:start;max-width:100%;appearance:none;
+  -webkit-appearance:none;background:none;border:0;padding:0;cursor:pointer;
+  font:700 10.5px var(--font);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.vstd-where:hover{color:var(--ink)}
+.vstd-where:focus{outline:0;color:var(--ink)}
+.vstd-rm{grid-area:rm;opacity:0;background:none;border:0;color:var(--muted);font-size:15px;
+  cursor:pointer;padding:0;width:18px;height:18px;line-height:1}
+.vstd-row:hover .vstd-rm{opacity:1}
+.vstd-rm:hover{color:#b3261e}
+.vstd-row.done .vstd-txt{text-decoration:line-through;color:var(--muted)}
+.vstd-row.done .vstd-tick{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.vstd-none{font-size:13.5px;color:var(--muted);padding:14px 2px}
+
+/* ── the inventory's way in ───────────────────────────────────── */
+.vsh{max-width:1080px;margin:0 auto}
+/* the page says what it is, and says it as a heading rather than as one
+   more small-caps label among the small-caps labels */
+/* ── the dashboard ────────────────────────────────────────────── */
+.vsd{max-width:1180px}
+/* the job cards, in this layout's widths */
+.vsd-jobrow{display:grid;grid-template-columns:repeat(auto-fill,minmax(186px,1fr));gap:8px;
+  margin-bottom:22px}
+.vsd-job{display:flex;flex-direction:column;justify-content:space-between;gap:8px;min-height:146px;
+  border:0;border-radius:12px;padding:12px 14px 13px;cursor:pointer;text-align:left;
+  font-family:var(--font);color:#fff;overflow:hidden}
+.vsd-jtop{display:flex;align-items:baseline;justify-content:space-between;gap:8px;
+  font-size:9.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(255,255,255,.82)}
+.vsd-jtop i{font-style:normal;color:rgba(255,255,255,.62)}
+.vsd-jlogo{max-width:100%;max-height:52px;object-fit:contain;align-self:center;display:block}
+.vsd-jname{font-size:16px;font-weight:800;line-height:1.2;align-self:flex-start}
+.vsd-jfoot{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:rgba(255,255,255,.72)}
+/* A black bar across the page was shouting whether or not there was
+   anything to shout about. It is a box like the rest; when something is
+   late the line under it says so in red rather than the whole thing. */
+.vsd-day{display:flex;flex-direction:column;gap:3px;background:var(--surface);
+  border:1px solid var(--field-edge);border-radius:10px;padding:12px 15px 14px;margin-bottom:20px}
+.vsd-day.late{border-color:rgba(154,53,53,.45)}
+.vsd-date{font-size:9.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted)}
+.vsd-head{font-size:16px;font-weight:700;line-height:1.35;color:var(--ink)}
+.vsd-day.late .vsd-head{color:#9a3535}
+.vsd-sec{font-size:9.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 8px}
+.vsd-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px;
+  margin-bottom:22px;align-items:stretch}
+.vsd-needs,.vsd-jobs{grid-template-columns:repeat(auto-fill,minmax(212px,1fr))}
+.vsd-rep,.vsd-todo,.vsd-bx{display:flex;flex-direction:column;gap:5px;background:var(--surface);
+  border:1px solid var(--field-edge);border-radius:10px;padding:11px 13px 12px;text-align:left;
+  font-family:var(--font);min-width:0;cursor:pointer}
+.vsd-todo{cursor:default;grid-column:span 2}
+.vsd-rep:hover,.vsd-bx:hover{border-color:var(--ink)}
+.vsd-rep.stale{border-color:rgba(154,53,53,.45)}
+.vsd-logo{display:flex;align-items:center;justify-content:center;height:30px;width:108px;
+  border-radius:6px;padding:4px 8px;overflow:hidden}
+.vsd-logo img{max-width:100%;max-height:100%;object-fit:contain;display:block}
+.vsd-logotext{font-size:14px;font-weight:800}
+.vsd-when{font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.vsd-rep.stale .vsd-when{color:#9a3535}
+.vsd-say{font-size:13px;line-height:1.35;overflow-wrap:anywhere}
+.vsd-by{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--muted)}
+.vsd-flag{font-style:normal;font-size:8.5px;font-weight:800;letter-spacing:.07em;padding:2px 5px;
+  border-radius:3px;color:#fff;background:var(--muted)}
+.vsd-flag.ntr{background:#3d6b4c} .vsd-flag.str{background:#8a5a22}
+.vsd-l{font-size:9px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.vsd-m{font-size:14px;font-weight:700;line-height:1.25;overflow-wrap:anywhere}
+.vsd-w{font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--faint,#b4b4b8)}
+.vsd-todo ol{list-style:none;margin:4px 0 0;padding:0}
+.vsd-todo li{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:9px;align-items:baseline;
+  padding:6px 0;border-bottom:1px solid var(--hairline,rgba(0,0,0,.07))}
+.vsd-todo li:last-child{border-bottom:0}
+.vsd-n{font-size:10px;font-weight:800;color:var(--faint,#b4b4b8)}
+.vsd-t{font-size:13px;line-height:1.3}
+.vsd-todo em{font-style:normal;font-size:9px;font-weight:700;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--faint,#b4b4b8);white-space:nowrap}
+.vsd-empty{font-size:13px;color:var(--muted);padding:6px 0}
+@media(max-width:820px){ .vsd-todo{grid-column:auto} }
+.vsh-title{font-size:30px;font-weight:800;letter-spacing:-.015em;line-height:1.1;
+  color:var(--ink);margin:2px 0 18px}
+@media(max-width:760px){.vsh-title{font-size:24px}}
+.vsh-seek{max-width:620px;margin:6px auto 30px;text-align:center}
+.vsh-q{width:100%;box-sizing:border-box;font:18px var(--font);padding:14px 4px;text-align:center;
+  border:0;border-bottom:2px solid var(--ink);background:none;color:var(--ink)}
+.vsh-q::placeholder{color:var(--muted);font-weight:500}
+.vsh-q:focus{outline:0;border-bottom-color:var(--accent)}
+.vsh-qn{margin-top:10px;font-size:10.5px;font-weight:700;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--faint,#b4b4b8)}
+.vsh-sec{font-size:9.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 9px}
+.vsh-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:8px;margin-bottom:28px}
+.vsh-s{display:flex;flex-direction:column;gap:1px;background:var(--surface);
+  border:1px solid var(--field-edge);border-radius:9px;padding:11px 13px 12px;
+  text-align:left;cursor:pointer;font-family:var(--font);min-width:0}
+.vsh-s:hover{border-color:var(--ink)}
+.vsh-s.warn{border-color:rgba(154,53,53,.4)}
+.vsh-sn{font-size:22px;font-weight:800;line-height:1;letter-spacing:-.01em}
+.vsh-sl{font-size:11px;color:var(--muted);line-height:1.3}
+.vsh-wbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(152px,1fr));gap:8px;margin-bottom:28px}
+.vsh-wb{display:flex;flex-direction:column;gap:2px;background:var(--surface);
+  border:1px solid var(--field-edge);border-radius:9px;padding:10px 12px 11px;
+  text-align:left;cursor:pointer;font-family:var(--font);min-width:0}
+.vsh-wb:hover{border-color:var(--ink)}
+.vsh-empty .vsh-wl{color:var(--muted)}
+.vsh-empty .vsh-wn{text-transform:none;letter-spacing:0;font-weight:500}
+.vsh-wl{font-size:13.5px;font-weight:700;line-height:1.2;overflow-wrap:anywhere}
+.vsh-wn{font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--faint,#b4b4b8)}
+/* a job box carries its logo where it has one */
+.vsh-job{gap:7px}
+.vsh-jl{display:flex;align-items:center;justify-content:center;height:30px;border-radius:6px;
+  padding:4px 8px;overflow:hidden}
+.vsh-jl img{max-width:100%;max-height:100%;object-fit:contain;display:block}
+.vsh-jn{font-size:13.5px;font-weight:700;line-height:1.2;overflow-wrap:anywhere}
+.vsh-past{opacity:.72}
+.vsh-past:hover{opacity:1}
+/* what is on a job, by department */
+.vsk-jobhd{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin:0 0 18px;
+  padding-bottom:11px;border-bottom:1px solid var(--field-edge)}
+.vsk-back{background:none;border:0;padding:0;cursor:pointer;font:700 12px var(--font);color:var(--muted)}
+.vsk-back:hover{color:var(--ink)}
+.vsk-jobn{font-size:19px;font-weight:800;letter-spacing:-.01em}
+.vsk-jobdone{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--muted)}
+.vsk-jobc{font-size:10px;font-weight:700;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--faint,#b4b4b8)}
+/* Each category is a box, open or shut — a rule with a word on it read as
+   a gap in the page rather than something you could click. */
+.vsk-jobcat{margin:0 0 8px;background:var(--surface);border:1px solid var(--field-edge);
+  border-radius:10px;padding:0;overflow:hidden}
+.vsk-jobcat[open]{padding-bottom:12px}
+.vsk-jobch{display:flex;align-items:center;gap:9px;margin:0;cursor:pointer;padding:12px 14px;
+  font-size:11px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--ink);
+  list-style:none}
+.vsk-jobcat[open] .vsk-jobch{border-bottom:1px solid var(--field-edge);margin-bottom:12px}
+.vsk-jobch:hover{background:var(--bg)}
+.vsk-jobch::-webkit-details-marker{display:none}
+.vsk-jobch::before{content:'\25be';font-size:9px;color:var(--muted);transition:transform .12s}
+.vsk-jobcat:not([open]) .vsk-jobch::before{transform:rotate(-90deg)}
+.vsk-jobch em{font-style:normal;font-weight:700;color:var(--muted)}
+.vsk-jobch i{font-style:normal;margin-left:auto;font-size:9px;font-weight:700;
+  letter-spacing:.08em;color:var(--faint,#b4b4b8)}
+.vsk-jobsub{margin:0 0 12px;padding:0 14px}
+.vsk-jobsh{display:flex;align-items:baseline;gap:7px;margin:0 0 6px;
+  font-size:9px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--muted)}
+.vsk-jobsh em{font-style:normal;font-weight:700;color:var(--faint,#b4b4b8)}
+.vsk-joblogo{display:flex;align-items:center;justify-content:center;height:34px;
+  border-radius:7px;padding:5px 10px;overflow:hidden;flex:0 0 auto}
+.vsk-joblogo img{max-width:118px;max-height:100%;object-fit:contain;display:block}
+.vsk-jobacts{display:flex;gap:6px;margin-left:14px}
+.vsk-exp{font:700 11px var(--font);padding:6px 12px;border:1px solid var(--field-edge);
+  border-radius:7px;background:var(--surface);color:var(--ink);cursor:pointer}
+.vsk-exp:hover{border-color:var(--ink)}
+.vsk-joblist{display:grid;grid-template-columns:repeat(auto-fill,minmax(196px,1fr));gap:7px;
+  padding:0 14px}
+.vsk-jobsub .vsk-joblist{padding:0}
+.vsk-jobitem{display:flex;flex-direction:column;gap:1px;background:var(--surface);
+  border:1px solid var(--field-edge);border-radius:8px;padding:8px 11px 9px;
+  text-align:left;cursor:pointer;font-family:var(--font);min-width:0}
+.vsk-jobitem:hover{border-color:var(--ink)}
+.vsk-hire{cursor:default;border-style:dashed}
+/* ── maintenance, in the inventory's style ─────────────────────────── */
+.vsm-none{font-size:14px;color:var(--muted);padding:26px 2px;line-height:1.5}
+.vsm-list{display:flex;flex-direction:column;gap:7px}
+.vsk-jobcat .vsm-list{padding:0 14px}
+.vsm-row{display:grid;grid-template-columns:1.2fr 1.6fr auto auto;gap:4px 14px;align-items:baseline;
+  background:var(--surface);border:1px solid var(--field-edge);border-radius:9px;padding:10px 13px 11px}
+.vsm-main{font-size:14px;font-weight:700}
+.vsm-sub{font-size:13px;color:var(--muted)}
+.vsm-meta{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--faint,#b4b4b8)}
+.vsm-when{font-size:11px;color:var(--muted);white-space:nowrap}
+.vsm-patlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:7px;
+  padding:0 14px}
+.vsm-pat{display:grid;grid-template-columns:minmax(0,1fr) 136px 118px;gap:8px;align-items:center;
+  background:var(--surface);border:1px solid var(--field-edge);border-radius:9px;padding:8px 11px 9px}
+.vsm-patn{background:none;border:0;padding:0;text-align:left;cursor:pointer;min-width:0;
+  font-family:var(--font);font-size:13px;font-weight:600;color:var(--ink);line-height:1.25}
+.vsm-patn i{font-style:normal;display:block;font-size:9.5px;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--faint,#b4b4b8);margin-top:1px}
+.vsm-patn:hover{text-decoration:underline}
+.vsm-patd,.vsm-patt{font:12px var(--font);padding:5px 7px;border:1px solid var(--field-edge);
+  border-radius:6px;background:var(--surface);color:var(--ink);min-width:0;width:100%}
+.vsm-patd:focus,.vsm-patt:focus{outline:0;border-color:var(--accent)}
+@media(max-width:700px){
+  .vsm-patlist{grid-template-columns:1fr}
+  .vsm-row{grid-template-columns:1fr}
+}
+.vsk-hire:hover{border-color:var(--field-edge)}
+.vsk-jin b{font-weight:800}
+.vsk-jin{font-size:13px;font-weight:600;line-height:1.25;overflow-wrap:anywhere}
+.vsk-jis{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--faint,#b4b4b8)}
+@media(max-width:760px){
+  .vsh-stats{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
+  .vsh-wbs{grid-template-columns:repeat(auto-fill,minmax(124px,1fr))}
+}
+.vsc-new input{width:100%;font-family:var(--font);font-size:13px;font-weight:600;color:var(--ink);
+  background:var(--surface);border:1.5px dashed var(--field-edge);border-radius:6px;padding:7px 10px}
+.vsc-new input:focus{outline:0;border-style:solid;border-color:var(--accent)}
+.vsc-new input:disabled{opacity:.55;cursor:not-allowed;font-weight:500}
+.vsc-new input::placeholder{color:var(--muted);font-weight:500}
+.vsc-nag{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:0 0 12px;
+  padding:11px 14px;background:rgba(180,120,0,.08);border-radius:8px;font-size:13px;color:var(--ink)}
+.vsc-nag button{font-family:var(--font);font-size:12px;font-weight:700;padding:6px 13px;border:0;
+  border-radius:6px;background:var(--ink);color:var(--surface);cursor:pointer;white-space:nowrap}
+/* the cross stays put, because deleting ten in a row should not be a hunt */
+.vsc-rm{opacity:.35}
+.vsc-row:hover .vsc-rm{opacity:1}
+.vs-undobar{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:99996;
+  display:flex;gap:16px;align-items:center;background:#1b1b1f;color:#fff;border-radius:9px;
+  padding:12px 18px;font:14px/1.4 var(--font);box-shadow:0 6px 22px rgba(0,0,0,.24)}
+.vs-undobar button{background:none;border:0;color:#ffd9b0;font:700 14px var(--font);
+  cursor:pointer;text-decoration:underline}
+@media(max-width:900px){
+  .vsc-wrap{grid-template-columns:1fr}
+  .vsc-rail{position:static;flex-direction:row;flex-wrap:wrap}
+  .vsc-hd{display:none}
+  .vsc-row{grid-template-columns:1fr 110px 110px;gap:4px 8px;padding:7px 8px}
+}
+.jd-hodshelf .jd-hodsm{flex:0 0 auto;min-width:0}
+/* narrow columns so a ten-person department fits on one line of a wide
+   screen instead of leaving three empty columns after it */
+.jd-hodgb{display:grid;grid-template-columns:repeat(auto-fill,minmax(203px,1fr));gap:6px 11px;align-items:start}
+/* Back in boxes, but small ones: the box goes round the pair, not round
+   the role and the name separately, and it is drawn just firmly enough
+   to group them. */
+.vs-hodc{display:block;min-width:0;position:relative;
+  background:var(--surface);border:1px solid var(--field-edge);border-radius:6px;padding:4px 8px 5px}
+.vs-hodc select{
+  appearance:none;-webkit-appearance:none;border:0;background:transparent;padding:0;width:100%;
+  font-family:var(--font);font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--muted);cursor:pointer;line-height:1.3;text-overflow:ellipsis
+}
+/* the app swaps every select for its own trigger, which carries the box we
+   are trying to get rid of — so the role reads as a label here too */
+.vs-hodc .vs-sel{display:block;width:100%}
+html[data-theme="soft"]  #jdContent .vs-hodc .vs-seltrig,
+html[data-theme="softdark"] #jdContent .vs-hodc .vs-seltrig,
+html[data-theme="soft"]  .vs-hodc .vs-seltrig,
+html[data-theme="softdark"] .vs-hodc .vs-seltrig,
+.vs-hodc .vs-seltrig{
+  background:transparent!important;border:0!important;border-radius:0!important;
+  padding:0 12px 0 0!important;width:100%!important;min-height:0!important;
+  font-size:9.5px!important;font-weight:700!important;letter-spacing:.05em!important;
+  text-transform:uppercase!important;color:var(--muted)!important;line-height:1.3!important;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:none!important
+}
+html[data-theme="soft"]  #jdContent .vs-hodc:hover .vs-seltrig,
+html[data-theme="softdark"] #jdContent .vs-hodc:hover .vs-seltrig{color:var(--ink)!important}
+/* the name is the thing being read, so it stays ink-dark against the label */
+html[data-theme="soft"]  #jdContent .vs-hodc input,
+html[data-theme="softdark"] #jdContent .vs-hodc input{
+  background:transparent!important;border:0!important;border-radius:0!important;
+  padding:0!important;
+  font-size:13.5px!important;font-weight:600!important;color:var(--ink)!important;box-shadow:none!important
+}
+html[data-theme="soft"]  #jdContent .vs-hodc:focus-within,
+html[data-theme="softdark"] #jdContent .vs-hodc:focus-within{border-color:var(--accent)}
+/* the caret only when you are on the row */
+.vs-hodc .vs-seltrig::after{opacity:0;transition:opacity .12s}
+.vs-hodc:hover .vs-seltrig::after{opacity:.6}
+.vs-hodc input{
+  border:0;background:transparent;padding:1px 0;width:100%;
+  font-family:var(--font);font-size:13.5px;font-weight:600;color:var(--ink);line-height:1.25;
+}
+.vs-hodc input::placeholder{color:var(--muted);font-weight:500}
+.vs-hodc:focus-within{border-color:var(--accent)}
+.vs-hodc select:hover{color:var(--ink)}
+.vs-hodc .rm-btn{
+  position:absolute;right:2px;top:3px;opacity:0;font-size:12px;padding:0;
+  width:16px;height:16px;line-height:1;background:none;border:0;color:var(--muted);cursor:pointer
+}
+.vs-hodc:hover .rm-btn{opacity:1}
+.vs-hodc .rm-btn:hover{color:var(--ink)}
+.jd-hodgh{
+  display:flex;align-items:baseline;gap:7px;margin:0 0 5px;
+  font-size:9px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);
+}
+.jd-hodgh em{font-style:normal;font-size:9px;font-weight:700;color:var(--muted)}
 html[data-theme="soft"]  #jdContent .jd-hodcard > .jd-card-hd,
 html[data-theme="softdark"] #jdContent .jd-hodcard > .jd-card-hd{
   display:flex!important;align-items:baseline;justify-content:space-between;margin-bottom:9px;
@@ -2586,7 +2991,36 @@ html[data-theme="softdark"] .drw-tab{
   border-bottom:2px solid transparent!important;
 }
 html[data-theme="soft"]  .drw-tab.active,
-html[data-theme="softdark"] .drw-tab.active{color:var(--ink)!important;border-bottom-color:var(--ink)!important}
+html[data-theme="softdark"] .drw-tab.active{color:var(--ink)!important;border-bottom-color:transparent!important}
+/* The tabs are boxes and the actions sit above them, under the item's name,
+   rather than at the foot of however long the page happens to be. */
+html[data-theme="soft"]  .drw-tabs,
+html[data-theme="softdark"] .drw-tabs{
+  display:flex!important;gap:6px;padding:0 16px 12px!important;border-bottom:0!important;
+  background:none!important;flex-wrap:wrap}
+html[data-theme="soft"]  .drw-tab,
+html[data-theme="softdark"] .drw-tab{
+  flex:0 0 auto!important;padding:7px 14px!important;border-radius:8px!important;
+  border:1px solid var(--field-edge)!important;background:var(--surface)!important;
+  font-family:var(--font)!important;font-size:11px!important;font-weight:700!important;
+  letter-spacing:.06em!important;text-transform:uppercase!important;color:var(--muted)!important}
+html[data-theme="soft"]  .drw-tab:hover,
+html[data-theme="softdark"] .drw-tab:hover{border-color:var(--ink)!important}
+html[data-theme="soft"]  .drw-tab.active,
+html[data-theme="softdark"] .drw-tab.active{
+  background:var(--ink)!important;border-color:var(--ink)!important;color:var(--surface)!important}
+html[data-theme="soft"]  .drw-foot,
+html[data-theme="softdark"] .drw-foot{
+  border-top:0!important;border-bottom:1px solid var(--field-edge)!important;
+  padding:0 16px 13px!important;background:none!important;flex-shrink:0;margin-bottom:13px}
+html[data-theme="soft"]  .drw-foot .btn-s,
+html[data-theme="softdark"] .drw-foot .btn-s{
+  font-family:var(--font)!important;font-size:12px!important;font-weight:700!important;
+  letter-spacing:0!important;text-transform:none!important;padding:8px 14px!important;
+  border-radius:8px!important;border:1px solid var(--field-edge)!important;
+  background:var(--surface)!important;color:var(--ink)!important}
+html[data-theme="soft"]  .drw-foot .btn-s:hover,
+html[data-theme="softdark"] .drw-foot .btn-s:hover{border-color:var(--ink)!important}
 /* the subtitle still wore the old badges: a filled capsule for the status
    and another for where it lives */
 html[data-theme="soft"]  .drw-subtitle .badge,
@@ -2667,7 +3101,10 @@ html[data-theme="softdark"] #kitDrawer .vsk-i::placeholder{color:var(--faint,#b9
 button.vsk-now{cursor:pointer}
 button.vsk-now:hover{border-color:var(--field-edge-hi)}
 .vsk-now.on{background:var(--nav-kit,#eec0b4);border-color:var(--ink)}
-.vsk-now.free{background:var(--nav-studio,#c9d6c3);border-color:var(--ink)}
+/* free is the absence of news, so it gets no block and no colour — just
+   the word, out of the way of what matters */
+.vsk-now.free{background:none;border:0;padding:0;box-shadow:none}
+.vsk-now.free .vsk-nowl{color:var(--muted);background:none;padding:0}
 .vsk-now.warn{background:var(--surface);border-color:#b23b3b}
 .vsk-nowl{font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;
   color:rgba(13,13,13,.55);flex:0 0 auto}
@@ -3367,26 +3804,28 @@ html[data-theme="soft"] #dServiceAlerts .panel-title,html[data-theme="softdark"]
     </div>
     <div class="drw-subtitle" id="drwSubtitle"></div>
   </div>
-  <div class="drw-tabs">
-    <div class="drw-tab active" id="tab-det" onclick="switchTab('det')">Details</div>
-    <div class="drw-tab" id="tab-tl" onclick="switchTab('tl')">Fault Log</div>
-    <div class="drw-tab" id="tab-jbs" onclick="switchTab('jbs')">Jobs</div>
-    <div class="drw-tab" id="tab-hist" onclick="switchTab('hist')">History</div>
-  </div>
-  <div class="drw-body" id="drwBody"></div>
+  <!-- What you can do with the item sits under its name, not at the foot of
+       a scroll. The tabs are boxes, like everything else. -->
   <div class="drw-foot" id="drwFoot">
-    <button class="btn-s" onclick="drawerFault()">Log Fault</button>
-    <button class="btn-s" onclick="openAllocModal()">Allocate to Job</button>
+    <button class="btn-s" onclick="drawerFault()">Log a fault</button>
+    <button class="btn-s" onclick="openAllocModal()">Allocate to a job</button>
     <div class="drw-foot-spacer"></div>
     <div class="drw-more-wrap" id="drwMoreWrap">
       <button class="ibtn" style="font-size:13px;padding:5px 10px" onclick="toggleDrwMore(event)">&#8943;</button>
       <div class="drw-more-menu" id="drwMoreMenu">
-        <button class="drw-more-item" onclick="copyKitToHired(currentKid);closeDrwMore()">&#128203; Copy to Hired Catalogue</button>
-        <button class="drw-more-item" onclick="sendToRepair(currentKid);closeDrwMore()">&#128295; Send to Repair</button>
-        <button class="drw-more-item danger" onclick="confirmDelKit(currentKid);closeDrwMore()">&#128465; Move to Bin</button>
+        <button class="drw-more-item" onclick="copyKitToHired(currentKid);closeDrwMore()">Copy to the kit list</button>
+        <button class="drw-more-item" onclick="sendToRepair(currentKid);closeDrwMore()">Send for repair</button>
+        <button class="drw-more-item danger" onclick="confirmDelKit(currentKid);closeDrwMore()">Move to the bin</button>
       </div>
     </div>
   </div>
+  <div class="drw-tabs">
+    <div class="drw-tab active" id="tab-det" onclick="switchTab('det')">Details</div>
+    <div class="drw-tab" id="tab-tl" onclick="switchTab('tl')">Fault log</div>
+    <div class="drw-tab" id="tab-jbs" onclick="switchTab('jbs')">Jobs</div>
+    <div class="drw-tab" id="tab-hist" onclick="switchTab('hist')">History</div>
+  </div>
+  <div class="drw-body" id="drwBody"></div>
 </div>
 
 <div class="photo-full-ov" id="photoLb" onclick="this.classList.remove('open')">
@@ -3751,8 +4190,10 @@ html[data-theme="soft"] #dServiceAlerts .panel-title,html[data-theme="softdark"]
       <div class="nav-item" data-pg="jobs" onclick="nav('jobs',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="12" height="11" rx="1"/><path d="M5 3V2M11 3V2M2 7h12"/></svg>Jobs</div>
       <div class="nav-item" data-pg="notes" onclick="nav('notes',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 1.5h7L13 4.5V14a.5.5 0 01-.5.5h-9A.5.5 0 013 14V2a.5.5 0 010-.5z"/><path d="M9.5 1.5V5h3.5"/><path d="M5.5 8h5M5.5 11h3"/></svg>Notes</div>
       <div class="nav-lbl" data-lbl="kit">Kit</div>
-      <div class="nav-item" data-pg="kit" onclick="nav('kit',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12v9a1 1 0 01-1 1H3a1 1 0 01-1-1V4z"/><path d="M5 4V3a1 1 0 011-1h4a1 1 0 011 1v1"/></svg>Kit List</div>
-      <div class="nav-item" data-pg="maintenance" onclick="nav('maintenance',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><path d="M11 11l3 3"/></svg>Maintenance</div>
+      <div class="nav-item" data-pg="kit" onclick="nav('kit',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12v9a1 1 0 01-1 1H3a1 1 0 01-1-1V4z"/><path d="M5 4V3a1 1 0 011-1h4a1 1 0 011 1v1"/></svg>Inventory</div>
+      <div class="nav-item" data-pg="kitlist" onclick="nav('kitlist',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 4h9M5 8h9M5 12h9"/><circle cx="2.5" cy="4" r=".8" fill="currentColor" stroke="none"/><circle cx="2.5" cy="8" r=".8" fill="currentColor" stroke="none"/><circle cx="2.5" cy="12" r=".8" fill="currentColor" stroke="none"/></svg>Kit List</div>
+      <!-- Maintenance, In repair, PAT testing and Suppliers are reached from
+           the Inventory rail now; they are all questions about the kit. -->
       <!-- Bin hidden from nav, accessible via admin -->
       <div class="nav-lbl" data-lbl="studio-log">Studio Log</div>
       <div class="nav-item" data-pg="engreport" onclick="nav('engreport',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 2h10a1 1 0 011 1v10a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1z"/><path d="M5 5h6M5 8h6M5 11h3"/><circle cx="11.5" cy="11" r="2" fill="none"/><path d="M13 12.5l1.5 1.5"/></svg>Eng Reports</div>
@@ -3803,17 +4244,27 @@ html[data-theme="soft"] #dServiceAlerts .panel-title,html[data-theme="softdark"]
     </div>
     <div class="content">
       <div class="page active" id="page-dashboard">
-        
         <div class="dash-grid">
           <div class="panel"><div class="panel-hdr"><div class="panel-title">Jobs</div><button class="panel-act" onclick="nav('jobs',document.querySelector('[data-pg=jobs]'))">View All</button></div><div id="dJobsCurrent"></div></div>
           <div id="dJobsUpcoming" style="display:none"></div>
           <div id="dServiceAlerts" style="display:none"><div class="panel" style="border-left:3px solid #f59e0b"><div class="panel-hdr"><div class="panel-title" style="color:#f59e0b">&#9888; Service Due</div></div><div id="dServiceList"></div></div></div>
 <div class="panel"><div class="panel-hdr"><div class="panel-title">Recent Activity</div></div><div id="dActivity"></div></div>
 <div id="dRecentKit" style="display:none"><div class="panel"><div class="panel-hdr"><div class="panel-title">Recently Viewed Kit</div></div><div id="dRecentKitList"></div></div></div>
+        </div>
+        <!-- The soft themes draw the rest of the dashboard here, under the
+             job cards, which stay as they were. -->
+        <div id="vsDash"></div>
+        <div style="display:none">
           
         </div>
       </div>
 
+      <!-- The models you can put on a plan. Not the inventory — that is
+           the physical items, with serial numbers and a location. This is
+           just the list you choose a model from. -->
+      <div class="page" id="page-kitlist">
+        <div id="vsCatHost"></div>
+      </div>
       <div class="page" id="page-kit">
         <!-- Landing -->
         <div id="kitLanding">
@@ -3825,7 +4276,7 @@ html[data-theme="soft"] #dServiceAlerts .panel-title,html[data-theme="softdark"]
           </div>
           <div style="display:flex;gap:2px;border-bottom:1px solid var(--border);margin-bottom:18px;padding-bottom:0">
             <button id="kitTabInv" onclick="showKitTab('inv')" style="padding:9px 18px;font-size:12px;font-family:var(--cond);font-weight:900;letter-spacing:.1em;text-transform:uppercase;background:none;border:none;border-bottom:2px solid var(--accent);color:var(--accent);cursor:pointer;margin-bottom:-1px;transition:color .12s">Inventory</button>
-            <button id="kitTabHired" onclick="showKitTab('hired')" style="padding:9px 18px;font-size:12px;font-family:var(--cond);font-weight:900;letter-spacing:.1em;text-transform:uppercase;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer;margin-bottom:-1px;transition:color .12s">Hired Catalogue</button>
+            <button id="kitTabHired" style="display:none" onclick="showKitTab('hired')" style="padding:9px 18px;font-size:12px;font-family:var(--cond);font-weight:900;letter-spacing:.1em;text-transform:uppercase;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer;margin-bottom:-1px;transition:color .12s">Kit List</button>
             <button id="kitTabLth" onclick="showKitTab('lth')" style="padding:9px 18px;font-size:12px;font-family:var(--cond);font-weight:900;letter-spacing:.1em;text-transform:uppercase;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer;margin-bottom:-1px;transition:color .12s">Long Term Hired</button>
             <button id="kitTabLogistics" onclick="showKitTab('logistics')" style="padding:9px 18px;font-size:12px;font-family:var(--cond);font-weight:900;letter-spacing:.1em;text-transform:uppercase;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer;margin-bottom:-1px;transition:color .12s">Logistics</button>
           </div>
@@ -4102,10 +4553,13 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
      a full-height iframe. Clicking "Submit Report" hides the iframe and shows
      the form; a "Back to Archive" button on the form returns. State sits on
      window._erView (string: 'archive' | 'form'). -->
-<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;border-bottom:2px solid rgba(216,90,97,.2);padding-bottom:12px">
+<!-- The Submit a report button used to live here and opened an older form.
+     The archive below carries its own, which is the current one, so this row
+     is down to the label. erSetView still finds the elements it looks for. -->
+<div class="er-viewrow">
   <div id="erNavLabel" style="display:none"></div>
-  <div id="erViewLbl" style="font-family:var(--cond);font-size:14px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)">Archive</div>
-  <button id="erViewToggle" onclick="erToggleView()" style="margin-left:auto;padding:8px 18px;font-size:13px;font-family:var(--cond);font-weight:900;letter-spacing:.08em;text-transform:uppercase;background:var(--accent);border:none;border-radius:4px;color:#fff;cursor:pointer">Submit Report</button>
+  <div id="erViewLbl" class="er-viewlbl">Archive</div>
+  <button id="erViewToggle" onclick="erToggleView()" class="er-viewbtn" style="display:none"></button>
 </div>
 
 <!-- Archive iframe — default view -->
@@ -5332,18 +5786,65 @@ const _SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsIn
 function _sbHeaders(){
   return {'Content-Type':'application/json','apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY,'Prefer':'resolution=merge-duplicates'};
 }
-function _sbGet(){
+/* The backup rows are kept in the same table as the live ones, so a plain
+   select was pulling them down on every load \u2014 7.4 MB of it, most of it one
+   backup. Past the timeout the load failed, the page fell back to its demo
+   data, and the next save put that demo data over the real thing. Ask for
+   the live keys only, and give a big table time to answer. */
+/* Four NOT LIKE filters made Postgres scan the table four times and it
+   started returning 57014, statement timeout. One filter keeps the 5.7 MB
+   backup row out, which is the only one that matters, and the rest are
+   small enough to carry.
+
+   A timeout is also just a bad moment rather than a broken database, so it
+   is worth asking again before telling somebody their data is unreachable
+   and going read-only. */
+function _sbGetOnce(q){
   const ctrl=new AbortController();
-  const timer=setTimeout(()=>ctrl.abort(),12000);
-  return fetch(_SB_URL+'/rest/v1/app_data?select=key,value',{headers:_sbHeaders(),signal:ctrl.signal})
+  const timer=setTimeout(()=>ctrl.abort(),45000);
+  return fetch(_SB_URL+q,{headers:_sbHeaders(),signal:ctrl.signal})
     .then(r=>r.json()).finally(()=>clearTimeout(timer));
+}
+/* The old combined jobs row is still in the table beside the new job:N rows,
+   so the load was fetching the whole slate twice \u2014 12.7 MB, and Postgres
+   started timing out on it. Leave it out; it is only wanted if the split
+   never happened, and then it is asked for on its own. */
+var VS_MAIN_QUERY='/rest/v1/app_data?select=key,value,updated_at'
+                + '&key=not.like.*backup*&key=neq.jobs';
+async function _sbGet(){
+  var rows=null;
+  for(var attempt=1; attempt<=3; attempt++){
+    try{ rows=await _sbGetOnce(VS_MAIN_QUERY); }catch(e){ console.warn('load attempt '+attempt+' failed', e); }
+    if(Array.isArray(rows)&&rows.length) break;
+    if(rows&&rows.code) console.warn('load attempt '+attempt+': '+rows.code+' '+(rows.message||''));
+    rows=null;
+    if(attempt<3) await new Promise(function(r){ setTimeout(r, attempt*900); });
+  }
+  if(!rows) return null;
+  /* no job rows means the split has not run here yet, so fall back to the
+     combined record, on its own rather than alongside */
+  if(!rows.some(function(r){ return typeof r.key==='string' && r.key.indexOf('job:')===0; })){
+    try{
+      var legacy=await _sbGetOnce('/rest/v1/app_data?select=key,value,updated_at&key=eq.jobs');
+      if(Array.isArray(legacy)&&legacy.length) rows=rows.concat(legacy);
+    }catch(e){ console.warn('legacy jobs row unreadable', e); }
+  }
+  return rows;
 }
 function _sbSet(rows){return fetch(_SB_URL+'/rest/v1/app_data',{method:'POST',headers:_sbHeaders(),body:JSON.stringify(rows)});}
 
 // Data map — key → getter function for current value
+/* Jobs get a row each. All thirteen used to live in one record of 5.7 MB,
+   four of which were Dragons Den, so changing a name on Morning Live
+   rewrote every multiviewer and camera photo on the whole slate \u2014 and two
+   people on entirely different jobs counted as touching the same thing. */
 function _getDataMap() {
-  return {
-    jobs: jobs, kit: kit, hiredCatalogue: hiredCatalogue, users: users,
+  var m = {
+    /* Lost when the jobs were split out, because the edit that took `jobs`
+       off this line took kit, hiredCatalogue and users with it. Nothing in
+       those three saved for a day, silently, which is the worst way for it
+       to happen — see _vsMapCheck below. */
+    kit: kit, hiredCatalogue: hiredCatalogue, users: users,
     maintenance: maintenance, faults: faults, binItems: binItems,
     repairItems: repairItems, holidays: holidays, activity: activity,
     slogData: slogData, studioInfo: studioInfo, camPlans: camPlans, jobNotes: jobNotes,
@@ -5355,7 +5856,40 @@ function _getDataMap() {
        added to a list was gone on the next load */
     camPlanOpts: JSON.parse(JSON.stringify(CAM_PLAN_OPTS))
   };
+  jobs.forEach(function(j){ if(j && j.id != null) m[_vsJobKey(j.id)] = j; });
+  return m;
 }
+function _vsJobKey(id){ return 'job:' + id; }
+function _vsIsJobKey(k){ return typeof k === 'string' && k.indexOf('job:') === 0; }
+
+/* Everything the page loads, it must also be able to save. Drop a key from
+   the map and the edits to it simply stop going anywhere — no error, no
+   warning, the screen looks right and the work is gone. That is what
+   happened to the kit list. So on every load, check that each key the
+   database handed us is one we could write back, and say so loudly if not. */
+function _vsMapCheck(rows){
+  try{
+    var map = _getDataMap(), missing = [];
+    rows.forEach(function(r){
+      if(!r || !r.key) return;
+      if(_vsIsJobKey(r.key)) return;
+      if(r.key in map) return;
+      if(!VS_READ_ONLY_KEYS[r.key]) missing.push(r.key);
+    });
+    if(missing.length){
+      console.error('These load but cannot be saved: ' + missing.join(', '));
+      if(typeof toast === 'function') toast('Changes to ' + missing.join(', ') + ' will not save — tell Andrew');
+    }
+    return missing;
+  }catch(e){ console.warn('map check failed', e); return []; }
+}
+/* Rows the page reads but deliberately never writes back. */
+var VS_READ_ONLY_KEYS = {
+  jobs:1, crew_contacts:1, ml_tech_managers:1, bank_holidays:1, crew_list:1,
+  team_pins:1, networking:1, trello_config:1, trello_cards:1, control_minutes:1,
+  vault_versa_studios:1, tech_log_abc:1, tech_log_london:1, tech_log_manchester:1,
+  notes_andrew_rowell_versastudios_com:1
+};
 
 var _saveTimer = null;
 var _appReady = false; // prevents saveData firing before loadData completes
@@ -5377,27 +5911,393 @@ function saveData() {
   _saveTimer = setTimeout(async function() {
     try {
       const map = _getDataMap();
-      const rows = Object.keys(map).map(k => ({ key: k, value: map[k], updated_at: new Date().toISOString() }));
-      await _sbSet(rows);
+      /* Only the keys that actually changed. Every save used to send all 27,
+         so a tab left open since the morning would stamp its whole stale copy
+         over everything the moment its owner typed one character. Now it
+         writes the one thing that person touched, and two people working on
+         different parts of the dashboard never meet. */
+      const json = {}, dirty = [];
+      Object.keys(map).forEach(function(k){
+        var t; try { t = JSON.stringify(map[k]); } catch(e){ return; }
+        json[k] = t;
+        if (_vsLastSaved[k] !== t) dirty.push(k);
+      });
+      if (!dirty.length) return;
+      for (var i = 0; i < dirty.length; i++) {
+        var k = dirty[i];
+        var ok = await _sbPut(k, map[k]);
+        if (ok) {
+          _vsLastSaved[k] = json[k];
+          delete _vsConflicts[k];
+          if (_vsIsJobKey(k)) _vsJobRowKeys[k] = true;
+        }
+        else _vsConflict(k);
+      }
+      /* a deleted job has to lose its row, or it walks back in on the next
+         load looking like nothing happened */
+      var goneKeys = Object.keys(_vsJobRowKeys).filter(function(k){ return !(k in map); });
+      for (var g = 0; g < goneKeys.length; g++) {
+        var gk = goneKeys[g];
+        var done = await _sbDel(gk);
+        if (done) {
+          delete _vsJobRowKeys[gk];
+          delete _vsLastSaved[gk];
+          delete _vsRowVer[gk];
+        }
+      }
     } catch(e) { console.warn('saveData error:', e); }
   }, 800);
 }
 
-async function loadData() {
-  const setMsg = m => { const el=document.getElementById('appLoadingMsg'); if(el) el.textContent=m; };
-  const setBar = p => { const el=document.getElementById('appLoadingBar'); if(el) el.style.width=p+'%'; };
-  // Store logo for PDF use before overlay hides
-  var _loImg=document.querySelector('#appLoadingOverlay img');
-  if(_loImg)window._versaLogoSrc=_loImg.src;
-  const dismissLoading = () => { setTimeout(()=>{ const ov=document.getElementById('appLoadingOverlay'); if(ov) ov.style.display='none'; }, 300); };
+/* ── Two people at once ─────────────────────────────────────────────────────
+   _vsRowVer holds the updated_at we last saw for each row, _vsLastSaved the
+   value we last agreed with the server on. Between them a tab can tell what
+   it has changed and whether anyone has changed it underneath. */
+var _vsRowVer = {}, _vsLastSaved = {}, _vsConflicts = {}, _vsJobRowKeys = {};
+
+function _sbDel(key){
+  return fetch(_SB_URL + '/rest/v1/app_data?key=eq.' + encodeURIComponent(key),
+    {method: 'DELETE', headers: _sbHeaders()})
+    .then(function(r){ return r.ok; })
+    .catch(function(){ return false; });
+}
+
+/* Runs once, the first time a page loads while the jobs are still all in one
+   record: writes each of them out as its own row. Idempotent \u2014 the next load
+   finds the rows and never comes back here. The old combined record is left
+   alone, as the thing to fall back on. */
+async function _vsSplitJobRows(){
+  if(!window._vsJobsNeedSplit) return;
+  window._vsJobsNeedSplit = false;
+  var done = 0;
+  for (var i = 0; i < jobs.length; i++){
+    var j = jobs[i];
+    if(!j || j.id == null) continue;
+    var k = _vsJobKey(j.id);
+    delete _vsRowVer[k];                       // no row yet, so create it
+    var ok = false;
+    try { ok = await _sbPut(k, j); } catch(e){ console.warn('split failed on ' + k, e); }
+    if(ok){
+      _vsJobRowKeys[k] = true;
+      try { _vsLastSaved[k] = JSON.stringify(j); } catch(e){}
+      done++;
+    } else {
+      /* Dragons Den is four megabytes and did not make it first time, which
+         left the slate one job short with nothing said about it. Try once
+         more, then leave it to the next load rather than pretending. */
+      console.warn('split: ' + k + ' did not take, retrying');
+      try { ok = await _sbPut(k, j); } catch(e){}
+      if(ok){ _vsJobRowKeys[k] = true; try { _vsLastSaved[k] = JSON.stringify(j); } catch(e){} done++; }
+      else { window._vsJobsNeedSplit = true; console.warn('split: ' + k + ' still missing'); }
+    }
+  }
+  if(done) console.log('Jobs split into ' + done + ' rows');
+}
+
+function _vsSnapshot(){
+  var m = _getDataMap();
+  Object.keys(m).forEach(function(k){
+    try { _vsLastSaved[k] = JSON.stringify(m[k]); } catch(e){}
+  });
+}
+
+/* Write one row, and only if nobody has touched it since we read it. The
+   check is the updated_at in the filter: a row someone else has saved no
+   longer matches, so PostgREST writes nothing and hands back an empty list.
+   That refusal is the whole point — the alternative is silently erasing
+   somebody's afternoon. */
+function _sbPut(key, value){
+  var now = new Date().toISOString();
+  var ver = _vsRowVer[key];
+  if (ver === undefined) {
+    // never seen this row; create it, and let an existing one win
+    return fetch(_SB_URL + '/rest/v1/app_data', {
+      method: 'POST',
+      headers: Object.assign({}, _sbHeaders(), {Prefer: 'resolution=merge-duplicates,return=representation'}),
+      body: JSON.stringify([{key: key, value: value, updated_at: now}])
+    }).then(function(r){ return r.json(); })
+      .then(function(d){
+        if (Array.isArray(d) && d.length) { _vsRowVer[key] = d[0].updated_at || now; return true; }
+        return false;
+      });
+  }
+  var q = '/rest/v1/app_data?key=eq.' + encodeURIComponent(key)
+        + '&updated_at=eq.' + encodeURIComponent(ver);
+  return fetch(_SB_URL + q, {
+    method: 'PATCH',
+    headers: Object.assign({}, _sbHeaders(), {Prefer: 'return=representation'}),
+    body: JSON.stringify({key: key, value: value, updated_at: now})
+  }).then(function(r){ return r.json(); })
+    .then(function(d){
+      if (Array.isArray(d) && d.length) { _vsRowVer[key] = d[0].updated_at || now; return true; }
+      return false;   // somebody got there first
+    });
+}
+
+var VS_KEY_LABEL = {jobs:'the job list', kit:'the kit list', hiredCatalogue:'the kit list',
+  camPlans:'a camera plan', jobNotes:'the notes', opsPlanner:'the planner', users:'the users',
+  faults:'the faults', maintenance:'the maintenance log', suppliers:'the suppliers'};
+
+/* A refused write is not automatically a disagreement. The page does its own
+   housekeeping on load, so two people opening the dashboard at the same time
+   both write the same tidy-up and one of them gets refused over a change
+   neither of them made. So read their row first: if it already says what we
+   were trying to say, take their version number and carry on quietly. Only a
+   real difference is worth interrupting someone for. */
+function _vsConflict(key){
+  if (_vsConflicts[key]) return;
+  _vsConflicts[key] = true;
+  fetch(_SB_URL + '/rest/v1/app_data?select=value,updated_at&key=eq.' + encodeURIComponent(key), {headers: _sbHeaders()})
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if (!Array.isArray(d) || !d.length) { _vsConflictBanner(key); return; }
+      var theirs = d[0].value;
+      if (typeof theirs === 'string') { try { theirs = JSON.parse(theirs); } catch(e){} }
+      var mine;
+      try { mine = JSON.stringify(_getDataMap()[key]); } catch(e){ mine = null; }
+      var mirror; try { mirror = JSON.stringify(theirs); } catch(e){ mirror = null; }
+      if (mine !== null && mine === mirror) {
+        _vsRowVer[key] = d[0].updated_at;
+        _vsLastSaved[key] = mine;
+        delete _vsConflicts[key];
+        return;                       // same answer, no argument
+      }
+      _vsConflictBanner(key);
+    })
+    .catch(function(){ _vsConflictBanner(key); });
+}
+function _vsConflictBanner(key){
+  var what = VS_KEY_LABEL[key] || key;
+  var b = document.createElement('div');
+  b.style.cssText = 'position:fixed;left:0;right:0;top:0;z-index:99997;background:#8C4A00;color:#fff;'
+    + 'font:15px/1.5 -apple-system,BlinkMacSystemFont,Segoe UI,sans-serif;padding:13px 22px;'
+    + 'display:flex;align-items:center;gap:14px;justify-content:center;flex-wrap:wrap';
+  var t = document.createElement('span');
+  t.textContent = 'Someone else saved ' + what + ' while you had it open, so your last change to it was not saved.';
+  var reload = document.createElement('button');
+  reload.textContent = 'Reload and take theirs';
+  reload.style.cssText = 'background:#fff;color:#8C4A00;border:0;border-radius:7px;padding:7px 14px;font:600 14px inherit;cursor:pointer';
+  reload.onclick = function(){ location.reload(); };
+  var force = document.createElement('button');
+  force.textContent = 'Keep mine, overwrite theirs';
+  force.style.cssText = 'background:transparent;color:#ffd9b0;border:0;font:14px inherit;cursor:pointer;text-decoration:underline';
+  force.onclick = function(){
+    /* take their version number, not their data, so the next write passes */
+    fetch(_SB_URL + '/rest/v1/app_data?select=updated_at&key=eq.' + encodeURIComponent(key), {headers: _sbHeaders()})
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        if (Array.isArray(d) && d.length) _vsRowVer[key] = d[0].updated_at;
+        delete _vsConflicts[key];
+        b.remove(); document.body.style.paddingTop = '';
+        saveData();
+      });
+  };
+  b.appendChild(t); b.appendChild(reload); b.appendChild(force);
+  document.body.appendChild(b);
+  document.body.style.paddingTop = '52px';
+}
+
+/* \u2500\u2500 Live \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+   Postgres tells us the moment a row changes, so a change made on one desk
+   is on the other in under a second. The polling below stays as the safety
+   net for a dropped socket, and slows down while this is connected.
+
+   This needs app_data to be in the supabase_realtime publication. If it is
+   not, the socket connects and simply never delivers anything \u2014 which is why
+   the poll is still there, and why _vsLiveState says what is actually
+   happening rather than assuming. */
+var _vsLive = null, _vsLiveState = 'off', _vsLiveSeen = 0;
+
+function _vsStartLive(){
+  if(_vsLive || _vsLiveState === 'loading') return;
+  _vsLiveState = 'loading';
+  var src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js';
+  var el = document.createElement('script');
+  el.src = src;
+  el.onload = function(){ try { _vsOpenLive(); } catch(e){ _vsLiveState = 'failed'; console.warn('live failed', e); } };
+  el.onerror = function(){ _vsLiveState = 'failed'; console.warn('live: could not load the client, staying on the poll'); };
+  document.head.appendChild(el);
+}
+
+function _vsOpenLive(){
+  var lib = window.supabase;
+  if(!lib || !lib.createClient){ _vsLiveState = 'failed'; return; }
+  var client = lib.createClient(_SB_URL, _SB_KEY, {auth:{persistSession:false}});
+  _vsLive = client.channel('app_data_live')
+    .on('postgres_changes', {event:'*', schema:'public', table:'app_data'}, function(payload){
+      try { _vsLiveRow(payload); } catch(e){ console.warn('live row failed', e); }
+    })
+    .subscribe(function(status){
+      if(status === 'SUBSCRIBED'){ _vsLiveState = 'on'; console.log('live: connected'); }
+      else if(status === 'CHANNEL_ERROR' || status === 'TIMED_OUT'){ _vsLiveState = 'failed'; }
+      else if(status === 'CLOSED'){ _vsLiveState = 'closed'; }
+    });
+}
+
+/* One row, as it changed on somebody else's screen. */
+function _vsLiveRow(payload){
+  var row = payload['new'] || payload.old;
+  if(!row || !row.key) return;
+  if(payload.eventType === 'DELETE'){
+    if(_vsIsJobKey(row.key)){
+      var gi = jobs.findIndex(function(x){ return _vsJobKey(x.id) === row.key; });
+      if(gi > -1){ jobs.splice(gi, 1); delete _vsJobRowKeys[row.key]; delete _vsRowVer[row.key]; delete _vsLastSaved[row.key]; _vsLiveRedraw(row.key, 'removed'); }
+    }
+    return;
+  }
+  /* our own save coming back to us \u2014 nothing to do */
+  var incoming; try { incoming = JSON.stringify(row.value); } catch(e){ return; }
+  if(_vsLastSaved[row.key] === incoming){ _vsRowVer[row.key] = row.updated_at; return; }
+  /* something we have changed and not yet saved stays ours; the conflict is
+     dealt with when the save is refused, not by pulling it out from under
+     whoever is typing */
+  var mine; try { mine = JSON.stringify(_getDataMap()[row.key]); } catch(e){ mine = null; }
+  if(mine !== null && _vsLastSaved[row.key] !== undefined && mine !== _vsLastSaved[row.key]) return;
+  _vsApplyRow({key: row.key, value: row.value});
+  _vsRowVer[row.key] = row.updated_at;
+  _vsLastSaved[row.key] = incoming;
+  if(_vsIsJobKey(row.key)) _vsJobRowKeys[row.key] = true;
+  _vsLiveSeen++;
+  _vsLiveRedraw(row.key, 'changed');
+}
+
+/* Put it on the screen \u2014 but not while somebody is mid-sentence in a field.
+   A redraw would take the half-typed word with it. */
+function _vsLiveRedraw(key, what){
+  var a = document.activeElement;
+  var typing = a && (a.tagName === 'INPUT' || a.tagName === 'TEXTAREA' || a.isContentEditable);
+  if(typing){
+    if(!window._vsLivePending) window._vsLivePending = {};
+    window._vsLivePending[key] = what;
+    if(!window._vsLiveWatch){
+      window._vsLiveWatch = setInterval(function(){
+        var b = document.activeElement;
+        if(b && (b.tagName === 'INPUT' || b.tagName === 'TEXTAREA' || b.isContentEditable)) return;
+        clearInterval(window._vsLiveWatch); window._vsLiveWatch = null;
+        var keys = Object.keys(window._vsLivePending || {});
+        window._vsLivePending = {};
+        if(keys.length) _vsRedrawFor(keys[0]);
+      }, 600);
+    }
+    return;
+  }
+  _vsRedrawFor(key);
+}
+
+function _vsRedrawFor(key){
   try {
-    setMsg('Connecting...'); setBar(15);
-    const rows = await _sbGet();
-    setBar(70); setMsg('Loading data...');
-    if (Array.isArray(rows) && rows.length) {
-      rows.forEach(function(row) {
-        try {
-          const v = row.value;
+    var page = document.querySelector('.page.active');
+    var id = page ? page.id : '';
+    if(_vsIsJobKey(key)){
+      /* the job that is open, if it is the one that moved */
+      if(id === 'page-jobdet' && _jdCurrentJob){
+        var j = jobs.find(function(x){ return _vsJobKey(x.id) === key; });
+        if(j && String(j.id) === String(_jdCurrentJob.id)) { renderJobDet(j); return; }
+      }
+      if(id === 'page-jobs' && typeof setJobsView === 'function'){ setJobsView(_jobsView || 'list'); return; }
+      if(id === 'page-dashboard' && typeof renderDash === 'function'){ renderDash(); return; }
+      return;
+    }
+    if((key === 'kit' || key === 'kitSubcats') && id === 'page-kit' && typeof vsKitPage === 'function'){ vsKitPage(); return; }
+    if(key === 'hiredCatalogue' && id === 'page-kitlist' && typeof vsCatPage === 'function'){ vsCatPage(); return; }
+  } catch(e){ console.warn('redraw failed', e); }
+}
+
+/* A tab that has been open all afternoon is the dangerous one, because it is
+   holding a copy from hours ago. Ask every 25 seconds which rows have moved
+   and take the new version of anything we are not in the middle of changing
+   ourselves, so the copy in memory never drifts far from the real one. */
+var _vsPollTimer = null;
+function _vsStartPolling(){
+  if (_vsPollTimer) return;
+  /* the socket does the work; this is the net under it, and it checks
+     less often while the socket is up */
+  var beat = 0;
+  _vsPollTimer = setInterval(function(){
+    beat++;
+    if(_vsLiveState === 'on' && (beat % 4)) return;   // every fourth turn is enough
+    _vsPoll();
+  }, 25000);
+  document.addEventListener('visibilitychange', function(){ if (!document.hidden) _vsPoll(); });
+}
+async function _vsPoll(){
+  if (!_appReady || document.hidden) return;
+  try {
+    var r = await fetch(_SB_URL + '/rest/v1/app_data?select=key,updated_at'
+      + '&key=not.like.*backup*&key=not.like.*_test*&key=not.like.*_seeded*&key=not.like.*_hist_*',
+      {headers: _sbHeaders()});
+    var rows = await r.json();
+    if (!Array.isArray(rows)) return;
+    var moved = rows.filter(function(x){
+      return _vsRowVer[x.key] !== undefined && x.updated_at !== _vsRowVer[x.key];
+    }).map(function(x){ return x.key; });
+    if (!moved.length) return;
+    var map = _getDataMap();
+    /* anything we have changed and not yet saved stays ours — taking their
+       copy here would wipe what is on screen in front of somebody */
+    var take = moved.filter(function(k){
+      if (!(k in map)) return true;
+      var t; try { t = JSON.stringify(map[k]); } catch(e){ return false; }
+      return _vsLastSaved[k] === t;
+    });
+    if (!take.length) return;
+    var q = _SB_URL + '/rest/v1/app_data?select=key,value,updated_at&key=in.('
+      + take.map(function(k){ return '"' + k + '"'; }).join(',') + ')';
+    var r2 = await fetch(q, {headers: _sbHeaders()});
+    var fresh = await r2.json();
+    if (!Array.isArray(fresh) || !fresh.length) return;
+    fresh.forEach(function(row){
+      _vsApplyRow(row);
+      _vsRowVer[row.key] = row.updated_at;
+      try { _vsLastSaved[row.key] = JSON.stringify(_getDataMap()[row.key]); } catch(e){}
+    });
+    var what = fresh.map(function(x){ return VS_KEY_LABEL[x.key] || x.key; });
+    what = what.filter(function(x, i){ return what.indexOf(x) === i; }).join(', ');
+    try { toast('Someone else updated ' + what + ' — reload to see it'); } catch(e){}
+  } catch(e){ console.warn('poll failed', e); }
+}
+
+/* Shown when the page is holding demo data. It has to be impossible to
+   miss: the records on screen look real, and the danger is that someone
+   works on them for an hour. */
+function _vsLoadFailed(msg){
+  try{
+    _appReady=false;
+    var ov=document.getElementById('appLoadingOverlay');
+    if(ov)ov.style.display='none';
+    if(document.getElementById('vsLoadFailBar'))return;
+    var b=document.createElement('div');
+    b.id='vsLoadFailBar';
+    b.style.cssText='position:fixed;left:0;right:0;top:0;z-index:99999;background:#B3261E;color:#fff;'
+      +'font:600 14px/1.45 -apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif;padding:14px 20px;text-align:center';
+    b.textContent=msg;
+    var r=document.createElement('button');
+    r.textContent='Reload';
+    r.style.cssText='margin-left:14px;background:#fff;color:#B3261E;border:0;border-radius:6px;'
+      +'padding:5px 14px;font:600 13px inherit;cursor:pointer';
+    r.onclick=function(){location.reload();};
+    b.appendChild(r);
+    document.body.appendChild(b);
+    document.body.style.paddingTop='52px';
+  }catch(e){ console.error('load failed:',msg,e); }
+}
+
+/* One row from the table into the matching array or object. It used to be
+   buried inside loadData, which meant the only way to take a fresh copy of
+   anything was to reload the whole page. The polling below applies single
+   rows through it. */
+function _vsApplyRow(row){
+  try {
+    const v = row.value;
+    /* a job on its own, from the load or from the polling */
+    if(_vsIsJobKey(row.key)){
+      if(!v || typeof v !== 'object') return;
+      var at = jobs.findIndex(function(x){ return String(x.id) === String(v.id); });
+      if(at > -1) jobs[at] = v; else jobs.push(v);
+      if(typeof _vsApplyShowColours === 'function') _vsApplyShowColours();
+      try { nextJid = Math.max(nextJid, (typeof v.id === 'number' ? v.id : 0) + 1); } catch(e){}
+      return;
+    }
           if (row.key==='jobs'&&Array.isArray(v)){jobs.length=0;v.forEach(x=>jobs.push(x));if(typeof _vsApplyShowColours==='function')_vsApplyShowColours();
             // Fix duplicate IDs
             var _seenIds={};var _dupFixed=false;
@@ -5477,11 +6377,127 @@ async function loadData() {
           else if(row.key==='job_access'&&Array.isArray(v)){_jobAccessGrants.length=0;v.forEach(function(x){_jobAccessGrants.push(x);});}
           else if(row.key==='patTesters'&&Array.isArray(v)){patTesters.length=0;v.forEach(function(x){patTesters.push(x);});}
           else if(row.key==='suppliers'&&Array.isArray(v)){suppliers.length=0;v.forEach(function(x){suppliers.push(x);});nextSid=suppliers.reduce(function(m,s){return Math.max(m,s.id||0);},0)+1;}
-        } catch(e){ console.warn('Error loading key:', row.key, e); }
+  } catch(e){ console.warn('Error loading key:', row.key, e); }
+}
+
+/* The job list was replaced by the page's own example records after a failed
+   load on 23 Sep. The real 13 jobs are still in that morning's backup row, so
+   offer to put them back. It only speaks up when what is on screen really is
+   the example set — four jobs, those four names, and a backup holding more —
+   so it stays quiet once the list is right. ?restore=jobs forces the check. */
+var VS_DEMO_JOB_NAMES = ['Morning Live','ShopOn','Dragons Den','Cooking with the Stars'];
+function _vsLooksLikeDemoJobs(){
+  if(!Array.isArray(jobs) || jobs.length !== 4) return false;
+  var names = jobs.map(function(j){ return String(j && j.name || ''); }).sort();
+  return names.join('|') === VS_DEMO_JOB_NAMES.slice().sort().join('|');
+}
+function _vsOfferJobRestore(){
+  var forced = /[?&]restore=jobs/.test(location.search);
+  if(!forced && !_vsLooksLikeDemoJobs()) return;
+  if(window._vsRestoreAsked) return;
+  window._vsRestoreAsked = true;
+  fetch(_SB_URL+'/rest/v1/app_data?select=value&key=eq.jobs_backup_20260923',{headers:_sbHeaders()})
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      var v = d && d[0] && d[0].value;
+      if(typeof v === 'string') v = JSON.parse(v);
+      if(!Array.isArray(v) || !v.length) return;
+      /* nothing to put back if the list already has as much as the backup —
+         ?restore=jobs forces the check, not the offer */
+      if(v.length <= jobs.length) return;
+      _vsRestoreBanner(v);
+    })
+    .catch(function(e){ console.warn('restore check failed', e); });
+}
+function _vsRestoreBanner(backup){
+  var b = document.createElement('div');
+  b.id = 'vsRestoreBar';
+  b.style.cssText = 'position:fixed;left:0;right:0;top:0;z-index:99998;background:#1b1b1f;color:#fff;'
+    + 'font:15px/1.5 -apple-system,BlinkMacSystemFont,Segoe UI,sans-serif;padding:14px 22px;'
+    + 'display:flex;align-items:center;gap:16px;justify-content:center;flex-wrap:wrap';
+  var t = document.createElement('span');
+  t.textContent = 'The job list is showing ' + jobs.length + ' jobs. The backup from this morning has '
+    + backup.length + '. Put them back?';
+  var yes = document.createElement('button');
+  yes.textContent = 'Restore ' + backup.length + ' jobs';
+  yes.style.cssText = 'background:#fff;color:#1b1b1f;border:0;border-radius:7px;padding:8px 16px;font:600 14px inherit;cursor:pointer';
+  var no = document.createElement('button');
+  no.textContent = 'Leave it';
+  no.style.cssText = 'background:transparent;color:#c9c9d1;border:0;font:14px inherit;cursor:pointer;text-decoration:underline';
+  no.onclick = function(){ b.remove(); document.body.style.paddingTop = ''; };
+  yes.onclick = function(){
+    yes.disabled = true; yes.textContent = 'Restoring…';
+    jobs.length = 0; backup.forEach(function(x){ jobs.push(x); });
+    try{ if(typeof _vsApplyShowColours==='function') _vsApplyShowColours(); }catch(e){}
+    try{ nextJid = Math.max(nextJid, ...jobs.map(function(j){ return (typeof j.id==='number'?j.id:0)+1; })); }catch(e){}
+    /* the jobs row only, and through the same version check as everything
+       else — a restore has no business rewriting the kit list, and no
+       business winning against someone who is mid-edit either */
+    _sbPut('jobs', jobs)
+      .then(function(ok){
+        if(!ok) throw new Error('someone else saved the jobs while this was open — reload and try again');
+        try{ _vsLastSaved.jobs = JSON.stringify(jobs); }catch(e){}
+        t.textContent = backup.length + ' jobs restored. Reload to see them.';
+        yes.remove(); no.textContent = 'Reload';
+        no.onclick = function(){ location.href = location.pathname + '?theme=soft'; };
+      })
+      .catch(function(e){
+        t.textContent = 'Restore failed: ' + e.message;
+        yes.disabled = false; yes.textContent = 'Try again';
       });
+  };
+  b.appendChild(t); b.appendChild(yes); b.appendChild(no);
+  document.body.appendChild(b);
+  document.body.style.paddingTop = '56px';
+}
+
+async function loadData() {
+  const setMsg = m => { const el=document.getElementById('appLoadingMsg'); if(el) el.textContent=m; };
+  const setBar = p => { const el=document.getElementById('appLoadingBar'); if(el) el.style.width=p+'%'; };
+  // Store logo for PDF use before overlay hides
+  var _loImg=document.querySelector('#appLoadingOverlay img');
+  if(_loImg)window._versaLogoSrc=_loImg.src;
+  const dismissLoading = () => { setTimeout(()=>{ const ov=document.getElementById('appLoadingOverlay'); if(ov) ov.style.display='none'; }, 300); };
+  try {
+    setMsg('Connecting...'); setBar(15);
+    const rows = await _sbGet();
+    setBar(70); setMsg('Loading data...');
+    if (Array.isArray(rows) && rows.length) {
+      /* Once the jobs have rows of their own the old combined record is
+         only history. Applying it after them would put the whole slate back
+         over what we just read, so it is dropped while they exist. */
+      var _jobRows = rows.filter(function(r){ return _vsIsJobKey(r.key); });
+      var _toApply = rows;
+      if(_jobRows.length){
+        jobs.length = 0;
+        _toApply = rows.filter(function(r){ return r.key !== 'jobs'; });
+      }
+      _toApply.forEach(_vsApplyRow);
+      _vsJobRowKeys = {};
+      _jobRows.forEach(function(r){ _vsJobRowKeys[r.key] = true; });
+      window._vsJobsNeedSplit = !_jobRows.length && jobs.length > 0;
+      _vsMapCheck(rows);
     }
+    /* Only now is it safe to write. If the rows never arrived, the page is
+       sitting on its built-in demo data, and marking it ready would let the
+       next save replace the real records with that demo data \u2014 which is
+       exactly how the job list was lost. Stay read-only and say so. */
+    if(!(Array.isArray(rows)&&rows.length)){
+      setMsg('Could not read your data \u2014 nothing will be saved. Reload the page.');
+      _vsLoadFailed('The dashboard could not read your data, so it is showing example records. Nothing you change will be saved. Reload the page to try again.');
+      return;
+    }
+    /* Remember which version of each row we are holding, and what its value
+       was, before anything else runs. Every later write is checked against
+       these, so a save can only replace a row that is still the one we read. */
+    rows.forEach(function(row){ if(row && row.key) _vsRowVer[row.key] = row.updated_at; });
+    _vsSnapshot();
     setBar(100); setMsg('Ready'); _appReady = true;
     _vsKitCatTidy(); _vsKitHiredMerge(); _vsBullseyeHods();
+    try{ _vsOfferJobRestore(); }catch(e){ console.warn('restore offer failed', e); }
+    try{ _vsSplitJobRows(); }catch(e){ console.warn('job split failed', e); }
+    try{ _vsStartPolling(); }catch(e){ console.warn('polling failed to start', e); }
+    try{ _vsStartLive(); }catch(e){ console.warn('live failed to start', e); }
     // One-time cleanup: remove dummy maintenance/fault records
     if(maintenance.length&&maintenance[0].item==='Aputure 300D MkII'&&maintenance[0].id===1){
       maintenance.length=0;nextMid=1;
@@ -5515,7 +6531,10 @@ async function loadData() {
     dismissLoading();
   } catch(e) {
     console.error('loadData error:', e);
-    setMsg('Could not connect — working offline'); _appReady = true; _vsKitCatTidy(); _vsKitHiredMerge(); _vsBullseyeHods(); dismissLoading();
+    /* "Working offline" used to mean "carry on and save", and what it saved
+       was the demo data. A failed load now stays read-only. */
+    setMsg('Could not connect — nothing will be saved. Reload the page.');
+    _vsLoadFailed('The dashboard could not reach the database, so it is showing example records. Nothing you change will be saved. Reload the page to try again.');
   }
 }
 
@@ -9256,7 +10275,270 @@ function setStudioInfoExtra(loc,studioKey,fi,field,val){
   saveData();
 }
 /* Wrapped so the soft theme adapts the tiles whichever branch returns. */
-function renderHiredCatalogue(){ _vsHiredCatalogueInner.apply(null,arguments); _vsSoftenTiles(document.getElementById('hiredCatalogueList')); }
+/* ── The kit list ──────────────────────────────────────────────
+   Every model you can put on a plan, whether Versa owns one or it gets hired
+   in. It was called the Hired Catalogue and you reached it by clicking a
+   category tile, then a sub-category tile, then the item — which is why it
+   could not be found. It is now one list with a search box. */
+/* These are things the camera plan offers in a dropdown \u2014 a frame rate, a
+   codec, a LUT. They are not kit and nobody hires one. They live in
+   CAM_PLAN_OPTS in their own right, so taking them out of the catalogue
+   costs the plan nothing. */
+/* The same eight the inventory uses, and for the same reason: their
+   contents are settings, not kit. The longer list this used to carry swept
+   up Comms, Timecode and Video Connection, which hold Bolero, UltraSync One
+   and CCUs \u2014 real boxes. Two lists that disagreed about what counts as kit
+   is how the frame rates survived in one and not the other. */
+
+function _vsIsPlanSetting(h){
+  /* read the list when asked \u2014 it is declared further down the file, so a
+     copy taken up here would be undefined */
+  var L = (typeof VS_NOT_KIT_INV !== 'undefined') ? VS_NOT_KIT_INV : [];
+  return L.indexOf((h.subcat||'').trim()) > -1;
+}
+
+/* Anything removed waits here until the bar goes, so a slip costs a click
+   rather than an afternoon. */
+var _vsCatTrash = [];
+function _vsUndoBar(msg, undo){
+  var old = document.getElementById('vsUndoBar');
+  if(old) old.remove();
+  var b = document.createElement('div');
+  b.id = 'vsUndoBar';
+  b.className = 'vs-undobar';
+  var t = document.createElement('span'); t.textContent = msg;
+  var u = document.createElement('button'); u.textContent = 'Undo';
+  u.onclick = function(){ b.remove(); undo(); };
+  b.appendChild(t); b.appendChild(u);
+  document.body.appendChild(b);
+  setTimeout(function(){ if(b.parentNode) b.remove(); }, 9000);
+}
+
+/* One key, one model. Enter keeps the field so the next one can be typed
+   straight after \u2014 a list of forty is forty words, not forty dialogs. */
+function vsCatQuickAdd(ev, el){
+  if(ev.key !== 'Enter') return;
+  var name = (el.value||'').trim();
+  if(!name) return;
+  var cat = _vsCatSel.cat, sub = _vsCatSel.sub;
+  if(!cat || cat === '\u2014unfiled'){
+    el.placeholder = 'Choose a category on the left first';
+    el.value = '';
+    return;
+  }
+  var id = hiredCatalogue.reduce(function(m,x){ return Math.max(m, x.id||0); }, 0) + 1;
+  hiredCatalogue.push({id:id, cat:cat, subcat:sub, name:name, notes:'', compat:''});
+  saveData(); vsCatRail(); vsCatList();
+  var again = document.getElementById('vsCatNew');
+  if(again){ again.value = ''; again.focus(); }
+}
+
+/* Take the plan settings out in one go. */
+function vsCatDropSettings(){
+  var going = hiredCatalogue.filter(_vsIsPlanSetting);
+  if(!going.length){ try{ toast('Nothing to remove'); }catch(e){} return; }
+  var keep = hiredCatalogue.filter(function(h){ return !_vsIsPlanSetting(h); });
+  hiredCatalogue.length = 0; keep.forEach(function(h){ hiredCatalogue.push(h); });
+  saveData(); vsCatRail(); vsCatList();
+  _vsUndoBar(going.length + ' plan settings removed from the kit list', function(){
+    going.forEach(function(h){ hiredCatalogue.push(h); });
+    saveData(); vsCatRail(); vsCatList();
+  });
+}
+
+var _vsCatSel = {cat:'', sub:''}, _vsCatQ = '';
+
+function vsCatPage(){
+  /* its own page when there is one, the old tab otherwise */
+  var el = document.getElementById('vsCatHost') || document.getElementById('hiredCatalogueList');
+  if(!el) return;
+  var hdr = document.getElementById('hiredCatHeader'); if(hdr) hdr.style.display='none';
+  el.innerHTML =
+    '<div class="vsc-wrap">'
+    + '<aside class="vsc-rail" id="vsCatRail"></aside>'
+    + '<div class="vsc-main">'
+      + '<div class="vsc-top">'
+        + '<input id="vsCatQ" class="vsc-q" placeholder="Search the kit list\u2026" '
+        + 'value="' + _vsEsc(_vsCatQ) + '" oninput="vsCatSearch(this.value)">'
+        + '<button class="ibtn vsc-add" onclick="vsCatAdd(this)">+ Add a model</button>'
+      + '</div>'
+      + '<div id="vsCatRows"></div>'
+    + '</div></div>';
+  vsCatRail(); vsCatList();
+}
+
+function _vsCatMatch(h){
+  if(_vsCatSel.cat === '\u2014unfiled') return !_vsCatFiled(h) && _vsCatQMatch(h);
+  if(!_vsCatSel.cat && !_vsCatQ && !_vsCatFiled(h)) return false;   // unfiled has its own place
+  if(_vsCatSel.cat && (h.cat||'') !== _vsCatSel.cat) return false;
+  if(_vsCatSel.sub && (h.subcat||'').trim() !== _vsCatSel.sub) return false;
+  return _vsCatQMatch(h);
+}
+function _vsCatQMatch(h){
+  if(!_vsCatQ) return true;
+  var q = _vsCatQ.toLowerCase();
+  return [h.name, h.subcat, h.cat, h.notes, h.compat].join(' ').toLowerCase().indexOf(q) > -1;
+}
+
+/* Is this a place the inventory recognises? Anything else is unfiled \u2014 it
+   is still in the list, it just has nowhere to sit yet. */
+function _vsInvHas(cat, sub){
+  if(typeof KIT_SUBCATS === 'undefined' || !KIT_SUBCATS[cat]) return false;
+  if(!sub) return false;
+  return KIT_SUBCATS[cat].indexOf(sub) > -1;
+}
+function _vsCatFiled(h){ return _vsInvHas(h.cat, (h.subcat||'').trim()); }
+
+function vsCatRail(){
+  var el = document.getElementById('vsCatRail'); if(!el) return;
+  /* Counts come from the catalogue, but the shape comes from the inventory.
+     A category with nothing in it yet still shows, because that is where the
+     thing you are about to add belongs. */
+  var cats = {}, subs = {}, unfiled = 0;
+  Object.keys(KIT_SUBCATS).forEach(function(c){
+    cats[c] = 0; subs[c] = {};
+    (KIT_SUBCATS[c]||[]).forEach(function(sc){ subs[c][sc] = 0; });
+  });
+  hiredCatalogue.forEach(function(h){
+    var c = h.cat || '', sc = (h.subcat||'').trim();
+    if(!_vsInvHas(c, sc)){ unfiled++; return; }
+    cats[c] = (cats[c]||0) + 1;
+    subs[c][sc] = (subs[c][sc]||0) + 1;
+  });
+  var row = function(cat, label, n, on){
+    return '<button class="vsk-r' + (on?' on':'') + '" onclick="vsCatSelect(\''
+      + encodeURIComponent(String(cat)) + '\')"><span>' + _vsEsc(label) + '</span><em>' + n + '</em></button>';
+  };
+  var filed = hiredCatalogue.length - unfiled;
+  var html = row('', 'All models', filed, !_vsCatSel.cat && _vsCatSel.cat !== '\u2014unfiled');
+  Object.keys(cats).forEach(function(c){
+    html += row(c, c, cats[c], _vsCatSel.cat===c && !_vsCatSel.sub);
+    if(_vsCatSel.cat === c){
+      var sc = subs[c] || {};
+      /* the inventory's own order, so the two pages read the same */
+      var names = (KIT_SUBCATS[c]||[]).slice();
+      html += '<div class="vsk-subs">' + names.map(function(n){
+        var on = (_vsCatSel.sub === n);
+        return '<button class="vsk-sub' + (on?' on':'') + '" onclick="vsCatSelectSub(\''
+          + encodeURIComponent(String(c)) + '\',\'' + encodeURIComponent(String(n)) + '\')">'
+          + '<span>' + _vsEsc(n) + '</span><em>' + sc[n] + '</em></button>';
+      }).join('') + '</div>';
+    }
+  });
+  if(unfiled) html += '<div class="vsc-railsec">Needs filing</div>'
+    + row('\u2014unfiled', 'Unfiled', unfiled, _vsCatSel.cat === '\u2014unfiled');
+  el.innerHTML = html;
+}
+
+function vsCatSelect(cat){
+  try{ cat = decodeURIComponent(cat); }catch(e){}
+  if(_vsCatSel.cat === cat && !_vsCatSel.sub) _vsCatSel = {cat:'', sub:''};
+  else _vsCatSel = {cat:cat, sub:''};
+  vsCatRail(); vsCatList();
+}
+function vsCatSelectSub(cat, sub){
+  try{ cat = decodeURIComponent(cat); sub = decodeURIComponent(sub); }catch(e){}
+  if(_vsCatSel.cat === cat && _vsCatSel.sub === sub) _vsCatSel.sub = '';
+  else _vsCatSel = {cat:cat, sub:sub};
+  vsCatRail(); vsCatList();
+}
+function vsCatSearch(v){ _vsCatQ = v || ''; vsCatList(); }
+
+function vsCatList(){
+  var el = document.getElementById('vsCatRows'); if(!el) return;
+  var list = hiredCatalogue.filter(_vsCatMatch);
+  list.sort(function(a,b){
+    return String(a.cat||'').localeCompare(String(b.cat||''))
+        || String(a.subcat||'').localeCompare(String(b.subcat||''))
+        || String(a.name||'').localeCompare(String(b.name||''));
+  });
+  var empty = !list.length;
+  var where = _vsCatSel.cat && _vsCatSel.cat !== '\u2014unfiled'
+    ? _vsCatSel.cat + (_vsCatSel.sub ? ' \u00b7 ' + _vsCatSel.sub : '')
+    : '';
+  var adder = '<div class="vsc-new">'
+    + '<input id="vsCatNew" placeholder="'
+    + (where ? 'Add to ' + _vsEsc(where) + ' \u2014 type and press Enter' : 'Choose a category on the left to add')
+    + '" onkeydown="vsCatQuickAdd(event,this)"' + (where ? '' : ' disabled') + '>'
+    + '</div>';
+  var settings = hiredCatalogue.filter(_vsIsPlanSetting).length;
+  var nag = (settings && (_vsCatSel.cat === '\u2014unfiled' || !_vsCatSel.cat))
+    ? '<div class="vsc-nag"><span>' + settings + ' of these are camera plan settings \u2014 frame rates, '
+      + 'codecs, LUTs. They are not kit, and the plan keeps its own copy.</span>'
+      + '<button onclick="vsCatDropSettings()">Remove them</button></div>'
+    : '';
+  var head = '<div class="vsc-hd"><span>Model</span><span>Category</span><span>Sub-category</span><span>Notes</span><span>Works with</span><span></span></div>';
+  el.innerHTML = nag
+    + '<div class="vsc-count">' + list.length + ' of ' + hiredCatalogue.length + '</div>'
+    + adder
+    + head
+    + (empty ? '<div class="vsc-empty">Nothing here yet'
+        + (_vsCatQ ? ' for \u201c' + _vsEsc(_vsCatQ) + '\u201d' : '') + '.</div>' : '')
+    + list.map(function(h){
+      var subOpts = ((typeof KIT_SUBCATS!=='undefined' && KIT_SUBCATS[h.cat]) ? KIT_SUBCATS[h.cat] : []).slice();
+      var stray = h.subcat && subOpts.indexOf(h.subcat) < 0;
+      var filed = _vsCatFiled(h);
+      return '<div class="vsc-row' + (filed ? '' : ' vsc-unfiled') + '">'
+        + '<input class="vsc-nm" value="' + String(h.name||'').replace(/"/g,'&quot;') + '" '
+          + 'onchange="vsCatSet(' + h.id + ',\'name\',this.value)">'
+        + '<select class="vsc-sub" onchange="vsCatSet(' + h.id + ',\'cat\',this.value)">'
+          + '<option value="">\u2014</option>'
+          + Object.keys(KIT_SUBCATS).map(function(o){ return '<option' + (o===h.cat?' selected':'') + '>' + _vsEsc(o) + '</option>'; }).join('')
+          + '</select>'
+        + '<select class="vsc-sub" onchange="vsCatSet(' + h.id + ',\'subcat\',this.value)">'
+          + '<option value="">\u2014</option>'
+          + subOpts.map(function(o){ return '<option' + (o===h.subcat?' selected':'') + '>' + _vsEsc(o) + '</option>'; }).join('')
+          + (stray ? '<option selected disabled>' + _vsEsc(h.subcat) + ' \u2014 not in the inventory</option>' : '')
+          + '</select>'
+        + '<input value="' + String(h.notes||'').replace(/"/g,'&quot;') + '" placeholder="\u2014" '
+          + 'onchange="vsCatSet(' + h.id + ',\'notes\',this.value)">'
+        + '<input value="' + String(h.compat||'').replace(/"/g,'&quot;') + '" placeholder="\u2014" '
+          + 'onchange="vsCatSet(' + h.id + ',\'compat\',this.value)">'
+        + '<button class="vsc-rm" title="Remove" onclick="vsCatRemove(' + h.id + ')">\u00d7</button>'
+      + '</div>';
+    }).join('');
+}
+
+function vsCatSet(id, field, val){
+  var h = hiredCatalogue.find(function(x){ return x.id === id; }); if(!h) return;
+  h[field] = val;
+  /* a sub-category belongs to one category; moving the category drops it */
+  if(field === 'cat' && h.subcat && !_vsInvHas(val, h.subcat)) h.subcat = '';
+  saveData();
+  if(field === 'cat' || field === 'subcat'){ vsCatRail(); vsCatList(); }
+}
+function vsCatRemove(id){
+  var i = hiredCatalogue.findIndex(function(x){ return x.id === id; }); if(i < 0) return;
+  var gone = hiredCatalogue.splice(i, 1)[0];
+  saveData(); vsCatRail(); vsCatList();
+  /* no "are you sure": the undo is the safety, and it does not stop you
+     clearing out ten in a row */
+  _vsUndoBar('Removed ' + (gone.name || 'it'), function(){
+    hiredCatalogue.splice(Math.min(i, hiredCatalogue.length), 0, gone);
+    saveData(); vsCatRail(); vsCatList();
+  });
+}
+function vsCatAdd(el){
+  var cat = _vsCatSel.cat || 'Camera', sub = _vsCatSel.sub || '';
+  var go = function(name){
+    name = (name||'').trim(); if(!name) return;
+    var id = hiredCatalogue.reduce(function(m,x){ return Math.max(m, x.id||0); }, 0) + 1;
+    hiredCatalogue.push({id:id, cat:cat, subcat:sub, name:name, notes:'', compat:''});
+    saveData(); vsCatRail(); vsCatList();
+    try{ toast('Added to ' + cat + (sub ? ' \u00b7 ' + sub : '')); }catch(e){}
+  };
+  if(typeof vsAsk === 'function'){
+    vsAsk({label:'Model', value:'', placeholder:'Canon CJ25ex7.6B\u2026', anchor:el, okLabel:'Add',
+      hint:'Goes into ' + cat + (sub ? ' \u00b7 ' + sub : ''), onOk:go});
+  } else go(prompt('Model name:'));
+}
+
+function renderHiredCatalogue(){
+  /* the tile drill-down is the old way in; the soft themes get the list */
+  if(typeof _vsIsSoft==='function' && _vsIsSoft()){ vsCatPage(); return; }
+  _vsHiredCatalogueInner.apply(null,arguments);
+  _vsSoftenTiles(document.getElementById('hiredCatalogueList'));
+}
 function _vsHiredCatalogueInner(catFilter, subcatFilter){
   var el=document.getElementById('hiredCatalogueList');if(!el)return;
   catFilter=catFilter||''; subcatFilter=subcatFilter||'';
@@ -9858,35 +11140,52 @@ function erRenderJobTabs() {
   // when another continuous job comes online.
   var tabs = [
     {id:'ml',label:'Morning Live'},
-    {id:'shopon',label:'ShopOn TV'},
-    {id:'all',label:'All Reports'}
+    {id:'shopon',label:'ShopOn TV'}
   ];
   // Try to attach the jobs[] record to each reserved tab so we can pull loc/studio
+  /* the tab reads ShopOn TV and the job is called ShopOn, so an exact match
+     found nothing and the tab lost its studio line */
   function findJobByName(name){
-    var n=(name||'').toLowerCase();
-    if(typeof jobs==='undefined')return null;
-    return jobs.find(function(j){ return (j.name||'').toLowerCase()===n; });
+    var n=(name||'').toLowerCase().trim();
+    if(typeof jobs==='undefined'||!n)return null;
+    var exact=jobs.find(function(j){ return (j.name||'').toLowerCase().trim()===n; });
+    if(exact) return exact;
+    return jobs.find(function(j){
+      var jn=(j.name||'').toLowerCase().trim();
+      return jn && (n.indexOf(jn)===0 || jn.indexOf(n)===0);
+    });
   }
   tabs.forEach(function(t){ if(!t.jobObj) t.jobObj = findJobByName(t.label); });
 
-  // Render as a responsive grid of show-coloured cards (matches Job List page style)
+  /* Two shows and an archive do not need three gradient cards. The name,
+     where it is underneath, and a rule under the one you are on \u2014 the same
+     treatment as the rest of the app. */
   wrap.innerHTML='';
-  wrap.style.cssText='display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:6px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border)';
+  wrap.className='er-tabs';
+  wrap.style.cssText='';
 
   tabs.forEach(function(t){
     var isAct=_erActiveJob===t.id;
     var j=t.jobObj;
-    // Resolve colour: prefer the job's saved palette (bg+bg2), else showColor() with a slight darker bg2
-    var col=(j&&j.color&&j.color.bg)||showColor(t.label);
-    var col2=(j&&j.color&&j.color.bg2)||col;
     var loc=j?(j.loc||''):'';
     var studio=j?(j.studio||''):'';
-
     var btn=document.createElement('button');
-    btn.style.cssText='display:block;text-align:left;padding:8px 12px;border-radius:5px;cursor:pointer;border:'+(isAct?'2.5px solid #302f2c':'1.5px solid transparent')+';background:linear-gradient(135deg,'+col+' 0%,'+col2+' 100%);color:#fff;min-height:50px;transition:transform .12s,box-shadow .12s;'+(isAct?'box-shadow:0 2px 8px rgba(48,47,44,.22);transform:translateY(-1px)':'');
-    var html='<div style="font-family:var(--cond);font-weight:900;font-size:13px;color:#fff;letter-spacing:.02em;text-transform:uppercase;line-height:1.05;margin-bottom:'+((loc||studio)?'2px':'0')+'">'+(t.label||'').replace(/</g,'&lt;')+'</div>';
+    btn.className='er-tab'+(isAct?' on':'');
+    /* The logos are white knockouts, so they need their own colour behind
+       them \u2014 a small chip of the show's gradient inside an otherwise white
+       box, which keeps the box treatment used everywhere else. */
+    var sh=(typeof _vsLogoFor==='function')?_vsLogoFor(t.label):null;
+    var html='';
+    if(sh&&sh.src){
+      html+='<span class="er-tablogo" style="background:'+(sh.grad||sh.full||'#333')+'">'
+        +'<img src="'+sh.src+'" alt="'+(t.label||'').replace(/"/g,'&quot;')+'">'
+      +'</span>';
+    } else {
+      html+='<span class="er-tabn">'+(t.label||'').replace(/</g,'&lt;')+'</span>';
+    }
     if(loc||studio){
-      html+='<div style="font-family:var(--cond);font-weight:800;font-size:9px;color:rgba(255,255,255,.85);letter-spacing:.08em;text-transform:uppercase;line-height:1.1">'+(loc||'').replace(/</g,'&lt;')+(studio?' &middot; '+(studio||'').replace(/</g,'&lt;'):'')+'</div>';
+      html+='<span class="er-tabw">'+(loc||'').replace(/</g,'&lt;')
+        +(studio?' \u00b7 '+(studio||'').replace(/</g,'&lt;'):'')+'</span>';
     }
     btn.innerHTML=html;
     btn.dataset.tabId=t.id;
@@ -9984,8 +11283,9 @@ function erSetView(v){
     if(typeof allCalInit==='function')setTimeout(allCalInit,30);
     return;
   }
-  // Restore Submit/Archive toggle button visibility for ML/ShopOn
-  if(btn)btn.style.display='';
+  /* the button stays gone \u2014 the archive has its own, and this one opened
+     the older form */
+  if(btn)btn.style.display='none';
   if(allrp)allrp.style.display='none';
 
   if(v==='form'){
@@ -11312,7 +12612,7 @@ function uname() { return CU ? CU.fn+' '+CU.ln : 'Unknown'; }
 function today() { return new Date().toISOString().split('T')[0]; }
 
 // ── NAVIGATION ────────────────────────────────────────────────────────────────
-const titles = {dashboard:'Dashboard',kit:'Kit List',maintenance:'Maintenance',holidays:'Staff Holidays',
+const titles = {dashboard:'Dashboard',kit:'Versa Inventory',kitlist:'Kit List',maintenance:'Maintenance',holidays:'Staff Holidays',
   faults:'Fault Log',bin:'Bin',studios:'Tech Log',jobs:'Jobs',crew:'Crew',
   jobdet:'Job Detail',calendar:'Planner',admin:'Admin',ops:'Ops Planner',tools:'Tools',
   engreport:'Eng Report',allcal:'All Reports',notes:'Notes',meetings:'Team Meetings',vault:'Vault'};
@@ -11331,8 +12631,10 @@ function nav(page, el) {
   // nav('allcal') call (dashboard quick links, etc) so it lands on engreport
   // with the All Reports tab active.
   if(page==='allcal'){
+    /* All Reports is gone \u2014 a month of coloured bars for two shows told you
+       less than the two shows do. Old links land on Morning Live. */
     page='engreport';
-    setTimeout(function(){if(typeof erSwitchJob==='function')erSwitchJob('all');},80);
+    setTimeout(function(){if(typeof erSwitchJob==='function')erSwitchJob('ml','Morning Live');},80);
   }
   if(page==='engreport') setTimeout(erInitPage, 50);
   if(page==='studios') setTimeout(renderAbcLastReport, 200);
@@ -11343,8 +12645,12 @@ function nav(page, el) {
   if(el) el.classList.add('active');
   else { const ni = document.querySelector('[data-pg="'+page+'"]'); if(ni) ni.classList.add('active'); }
   document.getElementById('topTitle').textContent = titles[page]||page;
-  if(page==='dashboard') renderDash();
+  if(page==='dashboard'){
+    if(typeof _vsIsSoft==='function' && _vsIsSoft()) vsDashboard();
+    else renderDash();
+  }
   if(page==='kit') { kitRenderLanding(); populateCatSelect('fCat'); }
+  if(page==='kitlist') vsCatPage();
   if(page==='tools') { initToolsPage(); }
   if(page==='maintenance') { renderMaint(); renderPat(); renderSupp(); }
   if(page==='faults') renderFaults();
@@ -12558,6 +13864,184 @@ function opsShareLink(){
 
 
 // ── DASHBOARD ─────────────────────────────────────────────────────────────────
+/* \u2500\u2500 The dashboard \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+   What is not ordinary about today, the last report from each running show,
+   what wants doing, and the jobs. Morning Live being on is not news; its
+   report not being in is. */
+var _vsDashReports=null;
+
+async function vsDashboard(){
+  var el=document.getElementById('vsDash'); if(!el) return;
+  /* The classic grid steps aside entirely. It had a different width to
+     everything below it, so the page read as two layouts fighting. The
+     job cards are kept — they are drawn in this one. */
+  var grid=document.querySelector('#page-dashboard .dash-grid');
+  if(grid) grid.style.display='none';
+  el.innerHTML=_vsDashBody();
+  if(_vsDashReports===null){
+    _vsDashReports={};
+    try{
+      var r=await fetch(_SB_URL+'/rest/v1/engineering_reports'
+        +'?select=show_name,show_date,summary_mode,summary_text,versa_tech_manager,urgent_action'
+        +'&order=show_date.desc&limit=400',{headers:_sbHeaders()});
+      var rows=await r.json();
+      if(Array.isArray(rows)){
+        rows.forEach(function(x){
+          var n=x.show_name; if(!n) return;
+          if(!_vsDashReports[n]) _vsDashReports[n]={last:x, dates:{}};
+          _vsDashReports[n].dates[x.show_date]=
+            (x.urgent_action==='Yes'?'urgent':(x.summary_mode||'').toLowerCase());
+        });
+      }
+    }catch(e){ console.warn('reports lookup failed', e); }
+    el.innerHTML=_vsDashBody();
+  }
+}
+
+function _vsDashDay(){
+  var d=new Date();
+  return d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
+}
+function _vsDashRunning(){
+  var t=(typeof today==='function')?today():new Date().toISOString().slice(0,10);
+  return (typeof jobs!=='undefined'?jobs:[]).filter(function(j){
+    return !j.archived && j.start<=t && (typeof _vsJobEnded!=='function' || !_vsJobEnded(j,t));
+  });
+}
+/* Only the shows that file a report, in the order the report page lists them. */
+function _vsDashShows(){
+  return [{name:'Morning Live', key:'Morning Live'},{name:'ShopOn TV', key:'ShopOn TV'}];
+}
+function _vsDashDaysSince(iso){
+  if(!iso) return null;
+  var a=new Date(iso+'T00:00:00'), b=new Date(); b.setHours(0,0,0,0);
+  return Math.round((b-a)/864e5);
+}
+
+/* The job cards as they were, drawn in this layout rather than in a panel
+   of their own \u2014 pinned shows first, then by when filming starts. */
+function _vsDashJobs(){
+  var t=(typeof today==='function')?today():new Date().toISOString().slice(0,10);
+  var PINNED=['morninglive','shopon'];
+  var rank=function(j){
+    var k=(typeof _vsLogoKey==='function')?_vsLogoKey(j.name):'';
+    for(var i=0;i<PINNED.length;i++){ if(k===PINNED[i]||k.indexOf(PINNED[i])===0) return i; }
+    return PINNED.length;
+  };
+  var list=(typeof jobs!=='undefined'?jobs:[]).filter(function(j){
+    if(j.archived) return false;
+    var c=(typeof _jobCat==='function')?_jobCat(j):'active';
+    return c==='active'||c==='upcoming';
+  }).sort(function(a,b){
+    var d=rank(a)-rank(b);
+    return d || String(a.start||'').localeCompare(String(b.start||''));
+  });
+  if(!list.length) return '';
+  return '<div class="vsd-sec">Jobs</div><div class="vsd-jobrow">'
+    + list.map(function(j){
+        var sh=(typeof _vsLogoFor==='function')?_vsLogoFor(j.name):null;
+        var bg=(sh&&(sh.grad||sh.full)) || (j.color&&j.color.bg) || '#484149';
+        var when=(typeof _vsJobOngoing==='function'&&_vsJobOngoing(j)) ? 'Ongoing'
+               : (j.start&&j.start>t) ? _vsEsc(j.start) : (j.end?_vsEsc(j.end):'');
+        return '<button class="vsd-job" style="background:'+bg+'" onclick="openJobDet('+j.id+')">'
+          + '<span class="vsd-jtop">'+_vsEsc(j.studio||j.loc||'')
+            + (when?'<i>'+when+'</i>':'')+'</span>'
+          + (sh&&sh.src
+              ? '<img class="vsd-jlogo" src="'+sh.src+'" alt="'+_vsEsc(j.name)+'">'
+              : '<span class="vsd-jname">'+_vsEsc(j.name)+'</span>')
+          + '<span class="vsd-jfoot">'+_vsEsc(j.loc||'')+'</span>'
+        + '</button>';
+      }).join('')
+    + '</div>';
+}
+
+function _vsDashBody(){
+  var running=_vsDashRunning();
+  var late=[];
+  _vsDashShows().forEach(function(sh){
+    var rec=_vsDashReports && _vsDashReports[sh.key];
+    var n=rec?_vsDashDaysSince(rec.last.show_date):null;
+    if(n!==null && n>=2) late.push(sh.name+' \u2014 '+n+' days');
+  });
+  var headline = late.length
+    ? 'No report from '+late.join(', ')+'.'
+    : (running.length ? running.map(function(j){ return j.name; }).join(' and ')+' running. Nothing out of the ordinary.'
+                      : 'Nothing running today.');
+
+  var html='<div class="vsd">'
+    + _vsDashJobs()
+    + '<div class="vsd-day'+(late.length?' late':'')+'">'
+      + '<span class="vsd-date">'+_vsDashDay()+'</span>'
+      + '<span class="vsd-head">'+_vsEsc(headline)+'</span>'
+    + '</div>';
+
+  /* reports */
+  var cards=_vsDashShows().map(function(sh){
+    var logo=(typeof _vsLogoFor==='function')?_vsLogoFor(sh.name):null;
+    var rec=_vsDashReports && _vsDashReports[sh.key];
+    var last=rec&&rec.last;
+    var since=last?_vsDashDaysSince(last.show_date):null;
+    var stale=(since!==null && since>=2);
+    var mode=last?String(last.summary_mode||'').toUpperCase():'';
+    return '<button class="vsd-rep'+(stale?' stale':'')+'" onclick="nav(\'engreport\')">'
+      + (logo&&logo.src
+          ? '<span class="vsd-logo" style="background:'+(logo.grad||logo.full||'#333')+'">'
+            + '<img src="'+logo.src+'" alt="'+_vsEsc(sh.name)+'"></span>'
+          : '<span class="vsd-logotext">'+_vsEsc(sh.name)+'</span>')
+      + '<span class="vsd-when">'
+        + (last ? (since===0?'Filed today':since===1?'Filed yesterday':since+' days since the last one') : 'No reports')
+      + '</span>'
+      + (last ? '<span class="vsd-say">'+_vsEsc((last.summary_text||'Nothing to report').slice(0,110))+'</span>'
+              + '<span class="vsd-by">'+(mode?'<i class="vsd-flag '+mode.toLowerCase()+'">'+mode+'</i>':'')
+                + _vsEsc(last.versa_tech_manager||'')+'</span>'
+            : '')
+    + '</button>';
+  }).join('');
+
+  /* to do */
+  var todos=(typeof _vsTodoAll==='function')?_vsTodoAll('action').filter(function(t){return !t.n.done;}):[];
+  var todoBox='<div class="vsd-todo">'
+    + '<span class="vsd-l">To do'+(todos.length?' \u2014 '+todos.length:'')+'</span>'
+    + (todos.length
+        ? '<ol>'+todos.slice(0,6).map(function(t,i){
+            return '<li><span class="vsd-n">'+(i+1)+'</span>'
+              + '<span class="vsd-t">'+_vsEsc(t.n.text||'')+'</span>'
+              + (t.where?'<em>'+_vsEsc(t.where)+'</em>':'')+'</li>';
+          }).join('')+'</ol>'
+        : '<span class="vsd-empty">Nothing on the list.</span>')
+  + '</div>';
+
+  html+='<div class="vsd-sec">Reports</div><div class="vsd-row">'+cards+todoBox+'</div>';
+
+  /* needs you */
+  var needs=[];
+  running.forEach(function(j){
+    var gaps=(j.hods||[]).filter(function(h){ return !h.name; }).length;
+    if(gaps) needs.push({l:'Crew', m:j.name+' \u2014 '+gaps+' heads of department empty', go:"nav('jobs')"});
+  });
+  try{
+    var strays=_vsKitLive().filter(function(k){ return !_vsKitFiled(k); }).length;
+    if(strays) needs.push({l:'Inventory', m:strays+' item'+(strays===1?'':'s')+' without a category', go:"nav('kit')"});
+    var noPat=_vsKitLive().filter(function(k){
+      if(k.patNA) return false;
+      return (typeof kitPatStatus==='function') && kitPatStatus(k).label==='NO DATE';
+    }).length;
+    if(noPat) needs.push({l:'PAT', m:noPat+' never tested', go:"nav('kit')"});
+  }catch(e){}
+  if(needs.length){
+    html+='<div class="vsd-sec">Outstanding</div><div class="vsd-row vsd-needs">'
+      + needs.map(function(n){
+          return '<button class="vsd-bx" onclick="'+n.go+'">'
+            + '<span class="vsd-l">'+n.l+'</span>'
+            + '<span class="vsd-m">'+_vsEsc(n.m)+'</span>'
+          + '</button>';
+        }).join('')
+      + '</div>';
+  }
+
+  return html+'</div>';
+}
+
 function renderDash() {
   _vsApplyShowColours();
   loadDashEngReports();
@@ -12565,8 +14049,12 @@ function renderDash() {
   const now = new Date();
   /* sidebar count badges removed — the nav is a list of places, not a tally */
   const todayStr = now.toISOString().slice(0,10);
-  const activeJobs  = jobs.filter(j=>j.start<=todayStr && new Date(j.end)>=now).sort((a,b)=>new Date(a.start)-new Date(b.start));
-  const futureJobs  = jobs.filter(j=>j.start>todayStr).sort((a,b)=>new Date(a.start)-new Date(b.start));
+  /* started, not finished, not put away. An Ongoing show never finishes;
+     an archived one is not active whatever its dates say. */
+  const activeJobs  = jobs.filter(j=>!j.archived && j.start<=todayStr && !_vsJobEnded(j, todayStr))
+    .sort((a,b)=>new Date(a.start)-new Date(b.start));
+  const futureJobsRaw = jobs.filter(j=>!j.archived && j.start>todayStr);
+  const futureJobs  = futureJobsRaw.sort((a,b)=>new Date(a.start)-new Date(b.start));
 
   const DASH_PALETTE = window._JOB_PALETTE || [
     {bg:'#5B5F8D', bg2:'#454868'},{bg:'#7A9A80', bg2:'#5E7A64'},{bg:'#DA6B51', bg2:'#B85A42'},
@@ -12852,28 +14340,108 @@ function _doKitAlloc(kid) {
    categories holding nothing. Categories, locations and the hired lists go
    down one narrow rail with their counts; the kit itself takes the rest of
    the width, a line each.                                                  */
-var _vsKitSel={type:'all',value:''}, _vsKitQ='';
+/* Opens on Versa's own kit. The inventory also holds models hired in for
+   a show — real kit, but not stock — and having those in the first screen
+   made it look like the inventory was full of things Versa does not own.
+   They are one click away under Hired in. */
+/* Opens on the landing. Four hundred and thirty-three cards is a list, not
+   a way in \u2014 you arrive wanting a category, a search, or a sense of what is
+   out. The cards are one click away and the search jumps straight to them. */
+var _vsKitSel={type:'home',value:''}, _vsKitQ='';
 
 function _vsKitLive(){
   return (typeof kit!=='undefined'?kit:[]).filter(function(k){return k&&k.status!=='Bin';});
 }
+/* Maintenance borrows a page of its own, so anything else picked from the
+   rail has to put the kit page back first. */
+function _vsBackToKitPage(){
+  try{
+    var kp=document.getElementById('page-kit');
+    if(kp && !kp.classList.contains('active')){
+      document.querySelectorAll('.page').forEach(function(pg){ pg.classList.remove('active'); });
+      kp.classList.add('active');
+      var ti=document.getElementById('topTitle');
+      if(ti) ti.textContent='Versa Inventory';
+    }
+  }catch(e){}
+}
 function vsKitSelect(type,value){
   try{ value=decodeURIComponent(value||''); }catch(e){}
+  /* These four live on their own page in the markup, but they are questions
+     about the kit, so they are reached from here rather than from a nav item
+     of their own. The rail stays lit on Inventory. */
+  if(type==='maint'){
+    _vsBackToKitPage();
+    _vsKitSel={type:'maint',value:value||'rec',sub:''};
+    _vsKitQ='';
+    try{ showKitTab('inv'); }catch(e){}
+    vsKitPage();
+    return;
+  }
+  if(type==='home'){ _vsKitSel={type:'home',value:'',sub:''}; _vsKitQ='';
+    var qb=document.querySelector('.vsk-q'); if(qb) qb.value='';
+    _vsBackToKitPage();
+    try{ showKitTab('inv'); }catch(e){}
+    vsKitPage(); return; }
+  /* clicking the category you are already in shuts it again, so the long
+     list of sub-categories folds away instead of having to scroll past it */
+  if(type==='cat'&&_vsKitSel.type==='cat'&&_vsKitSel.value===value){
+    _vsKitSel={type:'all',value:'',sub:''};
+    try{ showKitTab('inv'); }catch(e){}
+    vsKitPage();
+    return;
+  }
+  _vsBackToKitPage();
   _vsKitSel={type:type,value:value||'',sub:''};
-  if(type==='logistics'){
-    try{ showKitTab(type); }catch(e){}
-    vsKitRail();
+  if(type==='logistics'){   /* old route, kept so nothing that still calls it breaks */
+    vsKitSelect('maint','log');
     return;
   }
   try{ showKitTab('inv'); }catch(e){}
   vsKitPage();
 }
-function vsKitSearch(v){ _vsKitQ=v||''; vsKitList(); }
+function vsKitSearch(v){
+  _vsKitQ=v||'';
+  /* typing is a way out of the landing, and clearing it is the way back */
+  var bar=document.querySelector('#vsKitWrap .vsk-bar');
+  if(_vsKitSel.type==='home' && !_vsKitQ){
+    if(bar) bar.style.display='none';
+    vsKitHome();
+    var mid=document.getElementById('vsKitSeek'); if(mid) mid.focus();
+    return;
+  }
+  if(bar) bar.style.display='';
+  var q=document.querySelector('#vsKitWrap .vsk-q');
+  if(q && q.value!==_vsKitQ) q.value=_vsKitQ;
+  vsKitList();
+  if(document.activeElement!==q){ /* keep the caret where the typing started */ }
+}
 
 /* what the rail says, and which of it is lit */
+/* The order the rail puts the categories in: most of the inventory first.
+   Shared, so a job's breakdown reads in the same order as the rail. */
+/* Everywhere Versa keeps kit, not only where something happens to be sitting
+   today. London had nothing in it, so it was missing from the list entirely,
+   which reads as though the place does not exist rather than as an empty
+   store. studiosByLoc is the list of places the app already knows. */
+function _vsKitLocs(){
+  var out={};
+  try{
+    if(typeof studiosByLoc!=='undefined')
+      Object.keys(studiosByLoc).forEach(function(l){ out[l]=0; });
+  }catch(e){}
+  return out;
+}
+function _vsKitCatOrder(){
+  var n={};
+  _vsKitLive().forEach(function(k){ var c=k.cat||'Uncategorised'; n[c]=(n[c]||0)+1; });
+  var keys=(typeof KIT_SUBCATS!=='undefined')?Object.keys(KIT_SUBCATS):[];
+  Object.keys(n).forEach(function(c){ if(keys.indexOf(c)<0) keys.push(c); });
+  return keys.sort(function(a,b){ return (n[b]||0)-(n[a]||0); });
+}
 function vsKitRail(){
   var el=document.getElementById('vsKitRail'); if(!el) return;
-  var live=_vsKitLive(), cats={}, locs={}, subs={};
+  var live=_vsKitLive(), cats={}, locs=_vsKitLocs(), subs={};
   live.forEach(function(k){
     var c=k.cat||'Uncategorised';
     cats[c]=(cats[c]||0)+1;
@@ -12903,7 +14471,8 @@ function vsKitRail(){
   };
   var sec=function(t){ return '<div class="vsk-rs">'+t+'</div>'; };
 
-  var catRows=Object.keys(cats).sort(function(a,b){return cats[b]-cats[a];}).map(function(c){
+  /* one ordering, shared with a job's breakdown, so ties cannot drift apart */
+  var catRows=_vsKitCatOrder().filter(function(c){return cats[c]!=null;}).map(function(c){
     var out=row('cat',c,c,cats[c]);
     /* the sub-categories of whichever one you are in, and only that one */
     if(_vsKitSel.type==='cat'&&_vsKitSel.value===c){
@@ -12922,15 +14491,161 @@ function vsKitRail(){
     return out;
   }).join('');
 
-  el.innerHTML=row('all','','All kit',live.length)
+  el.innerHTML=row('home','','Overview',null,'')
+    +row('own','','Versa\u2019s own kit',live.filter(function(k){return !k.isHired;}).length,'')
+    +row('hire','','Hired in for a show',live.filter(function(k){return !!k.isHired;}).length,'')
+    +row('all','','Everything',live.length)
     +sec('Categories')+catRows
     +sec('Where')
     +Object.keys(locs).sort().map(function(l){return row('loc',l,l,locs[l]);}).join('')
-    +sec('Ours or hired')
-    +row('own','','Versa owns',live.filter(function(k){return !k.isHired;}).length)
-    +row('hire','','Hired in',live.filter(function(k){return !!k.isHired;}).length)
-    +sec('Other')
-    +row('logistics','','Logistics',null);
+    +(function(){
+      var n=live.filter(function(k){return !_vsKitFiled(k);}).length;
+      return n ? sec('Not in the inventory tree')+row('stray','','Needs a category',n) : '';
+     })()
+    +sec('Maintenance')
+    +row('maint','rec','Service records',null)
+    +row('maint','repair','In repair',null)
+    +row('maint','pat','PAT testing',null)
+    +row('maint','sup','Suppliers',null)
+    +sec('Movements')
+    +row('maint','log','Logistics',null);
+}
+
+/* Does this sit somewhere the inventory recognises? */
+function _vsKitFiled(k){
+  if(typeof KIT_SUBCATS==='undefined') return true;
+  var c=k.cat, sc=(k.subcat||'').trim();
+  if(!c || !KIT_SUBCATS[c]) return false;
+  /* no sub-category is not the same as the wrong one \u2014 fifty-one bits of
+     Glue sit happily under Glue and need no further breakdown */
+  if(!sc) return true;
+  return KIT_SUBCATS[c].indexOf(sc)>-1;
+}
+
+/* Frame rates, codecs, sensor sizes, LUTs and image profiles. Not kit under
+   any reading, none of them allocated to a job \u2014 checked before offering. */
+/* Read their contents before believing the names: Processing holds Clean,
+   Processed and Char; SDI Output holds 422 1.5G HD. Settings, both. The
+   likes of Comms and Timecode are left alone because Bolero and UltraSync
+   One are real boxes sitting on a shelf. */
+var VS_NOT_KIT_INV = ['Frame Rate','Sensor Resolution','Sensor','Codec','Image Profile',
+  'Look / LUT','Processing','SDI Output'];
+function _vsKitPlanSetting(k){ return VS_NOT_KIT_INV.indexOf((k.subcat||'').trim())>-1; }
+/* The inventory tree was missing homes for kit that genuinely exists \u2014 no
+   Filters, no Matte Box, no Camera Body \u2014 so seventy Vinten legs and every
+   filter counted as misfiled. Rather than push them into a category I have
+   guessed at, the tree learns the sub-category they already carry, under the
+   category they are already in. Nothing moves; the shelf just gets a label. */
+function _vsKitTidyPlan(){
+  var drop = kit.filter(_vsKitPlanSetting);
+  var add = {};                       // category -> [sub-categories to teach]
+  kit.forEach(function(k){
+    if(_vsKitPlanSetting(k)) return;
+    if(_vsKitFiled(k)) return;
+    var c = k.cat, sc = (k.subcat||'').trim();
+    if(!c || !sc || !KIT_SUBCATS[c]) return;
+    if(!add[c]) add[c] = [];
+    if(add[c].indexOf(sc) < 0) add[c].push(sc);
+  });
+  var left = kit.filter(function(k){
+    if(_vsKitPlanSetting(k)) return false;
+    if(_vsKitFiled(k)) return false;
+    var c = k.cat, sc = (k.subcat||'').trim();
+    return !(c && sc && KIT_SUBCATS[c]);
+  });
+  return {drop: drop, add: add, left: left};
+}
+
+/* Hired entries no job points at. Nothing breaks, nothing is referenced,
+   and the inventory goes back to being mostly Versa's own. */
+function vsKitDropUnusedHired(){
+  var used={};
+  jobs.forEach(function(j){
+    (j.prep||[]).forEach(function(pp){ if(pp) used[pp.kid]=true; });
+    (j.kitIds||[]).forEach(function(id){ used[id]=true; });
+  });
+  var going=kit.filter(function(k){ return k.isHired && !used[k.id]; });
+  if(!going.length){ try{ toast('Nothing to remove'); }catch(e){} return; }
+  var keep=kit.filter(function(k){ return !(k.isHired && !used[k.id]); });
+  kit.length=0; keep.forEach(function(k){ kit.push(k); });
+  saveData(); vsKitRail(); vsKitList();
+  if(typeof _vsUndoBar==='function'){
+    _vsUndoBar(going.length + ' hired entries removed \u2014 no job was using them', function(){
+      going.forEach(function(k){ kit.push(k); });
+      saveData(); vsKitRail(); vsKitList();
+    });
+  }
+}
+
+function vsKitTidy(){
+  var plan = _vsKitTidyPlan();
+  var newSubs = 0;
+  Object.keys(plan.add).forEach(function(c){ newSubs += plan.add[c].length; });
+  if(!plan.drop.length && !newSubs){ try{ toast('Nothing left to tidy'); }catch(e){} return; }
+
+  /* nothing a job is relying on gets removed, whatever it is called */
+  var ids = {}; plan.drop.forEach(function(k){ ids[k.id] = true; });
+  var held = [];
+  jobs.forEach(function(j){
+    (j.kitIds||[]).forEach(function(id){ if(ids[id]) held.push(j.name); });
+    (j.prep||[]).forEach(function(pp){ if(pp && ids[pp.kid]) held.push(j.name); });
+  });
+  var dropping = held.length ? [] : plan.drop;
+  if(held.length){
+    try{ toast('Kept the settings \u2014 ' + held[0] + ' is using some'); }catch(e){}
+  }
+
+  var beforeSubs = JSON.parse(JSON.stringify(KIT_SUBCATS));
+  Object.keys(plan.add).forEach(function(c){
+    plan.add[c].forEach(function(sc){
+      if(KIT_SUBCATS[c].indexOf(sc) < 0) KIT_SUBCATS[c].push(sc);
+    });
+  });
+  if(dropping.length){
+    var keep = kit.filter(function(k){ return !_vsKitPlanSetting(k); });
+    kit.length = 0; keep.forEach(function(k){ kit.push(k); });
+  }
+  try{ cats = Object.keys(KIT_SUBCATS); }catch(e){}
+  saveData(); vsKitRail(); vsKitList();
+
+  var msg = [];
+  if(dropping.length) msg.push(dropping.length + ' plan settings removed');
+  if(newSubs) msg.push(newSubs + ' sub-categories added');
+  var stillLeft = kit.filter(function(k){ return !_vsKitFiled(k); }).length;
+  if(stillLeft) msg.push(stillLeft + ' still need a home');
+  if(typeof _vsUndoBar === 'function'){
+    _vsUndoBar(msg.join(', '), function(){
+      Object.keys(beforeSubs).forEach(function(c){ KIT_SUBCATS[c] = beforeSubs[c]; });
+      dropping.forEach(function(k){ kit.push(k); });
+      try{ cats = Object.keys(KIT_SUBCATS); }catch(e){}
+      saveData(); vsKitRail(); vsKitList();
+    });
+  }
+}
+
+function vsKitDropSettings(){
+  var going=kit.filter(_vsKitPlanSetting);
+  if(!going.length){ try{ toast('Nothing to remove'); }catch(e){} return; }
+  /* never remove something a job is relying on, whatever it is called */
+  var ids={}; going.forEach(function(k){ ids[k.id]=true; });
+  var held=[];
+  jobs.forEach(function(j){
+    (j.kitIds||[]).forEach(function(id){ if(ids[id]) held.push(j.name); });
+    (j.prep||[]).forEach(function(pp){ if(pp&&ids[pp.kid]) held.push(j.name); });
+  });
+  if(held.length){
+    try{ toast('Left alone \u2014 ' + held[0] + ' is using some of these'); }catch(e){}
+    return;
+  }
+  var keep=kit.filter(function(k){ return !_vsKitPlanSetting(k); });
+  kit.length=0; keep.forEach(function(k){ kit.push(k); });
+  saveData(); vsKitRail(); vsKitList();
+  if(typeof _vsUndoBar==='function'){
+    _vsUndoBar(going.length + ' plan settings removed from the inventory', function(){
+      going.forEach(function(k){ kit.push(k); });
+      saveData(); vsKitRail(); vsKitList();
+    });
+  }
 }
 /* a sub-category narrows what is already showing */
 function vsKitSelectSub(cat,sub){
@@ -12940,8 +14655,42 @@ function vsKitSelectSub(cat,sub){
   vsKitRail(); vsKitList();
 }
 /* one line per item */
-function vsKitList(){
-  var el=document.getElementById('vsKitRows'); if(!el) return;
+/* What the list you are looking at is called. */
+function _vsKitSelLabel(){
+  var t=_vsKitSel.type, v=_vsKitSel.value;
+  if(t==='cat')  return v+(_vsKitSel.sub?(' \u00b7 '+_vsKitSel.sub):'');
+  if(t==='loc')  return v;
+  if(t==='own')  return 'Versa\u2019s own kit';
+  if(t==='hire') return 'Hired in for a show';
+  if(t==='stray')return 'Not in the inventory tree';
+  if(t==='gap')  return 'Needs filling in';
+  return 'Everything';
+}
+/* The list as it stands, whatever it has been narrowed to. */
+function vsKitViewCsv(){
+  var live=_vsKitListFiltered();
+  var q=function(x){ return '"'+String(x==null?'':x).replace(/"/g,'""')+'"'; };
+  var rows=[['Category','Sub-category','Item','Make','Model','Location','Asset number','Status'].map(q).join(',')];
+  live.slice().sort(function(a,b){
+    return String(a.cat||'').localeCompare(String(b.cat||''))
+        || String(a.subcat||'').localeCompare(String(b.subcat||''))
+        || String(a.name||'').localeCompare(String(b.name||''),undefined,{numeric:true});
+  }).forEach(function(k){
+    rows.push([k.cat||'',(k.subcat||'').trim(),k.name||'',k.make||'',k.model||'',
+               k.loc||'',k.tag||k.serial||'',k.status||''].map(q).join(','));
+  });
+  var blob=new Blob(['\ufeff'+rows.join('\r\n')],{type:'text/csv;charset=utf-8'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='versa-'+_vsKitSelLabel().replace(/[^\w\-]+/g,'-').toLowerCase()+'.csv';
+  document.body.appendChild(a); a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },400);
+  if(typeof toast==='function') toast('Downloaded');
+}
+
+/* The list as the rail and the search box have narrowed it. Pulled out so
+   the export sends exactly what is on screen. */
+function _vsKitListFiltered(){
   var live=_vsKitLive();
   if(_vsKitSel.type==='cat'){
     live=live.filter(function(k){return (k.cat||'Uncategorised')===_vsKitSel.value;});
@@ -12950,6 +14699,111 @@ function vsKitList(){
   else if(_vsKitSel.type==='loc') live=live.filter(function(k){return (k.loc||'Unknown')===_vsKitSel.value;});
   else if(_vsKitSel.type==='own') live=live.filter(function(k){return !k.isHired;});
   else if(_vsKitSel.type==='hire') live=live.filter(function(k){return !!k.isHired;});
+  else if(_vsKitSel.type==='stray') live=live.filter(function(k){return !_vsKitFiled(k);});
+  else if(_vsKitSel.type==='job'){
+    var jb=(typeof jobs!=='undefined'?jobs:[]).find(function(x){ return String(x.id)===String(_vsKitSel.value); });
+    var jids=jb?_vsJobKitIds(jb):{};
+    live=live.filter(function(k){ return jids[k.id]; });
+  }
+  else if(_vsKitSel.type==='gap'){
+    var g=_vsKitSel.value;
+    live=live.filter(function(k){
+      if(g==='tag')   return !String(k.tag||'').trim() && !String(k.serial||'').trim();
+      if(g==='make')  return !String(k.make||'').trim() && !String(k.model||'').trim();
+      if(g==='photo') return !(k.photos&&k.photos.length) && !k.photo;
+      if(k.patNA) return false;
+      var ps=(typeof kitPatStatus==='function')?kitPatStatus(k):{label:'NO DATE'};
+      if(g==='patover') return ps.label==='OVERDUE';
+      if(g==='patsoon') return ps.label==='DUE SOON';
+      if(g==='patnone') return ps.label==='NO DATE';
+      return true;
+    });
+  }
+  var q=_vsKitQ.trim().toLowerCase();
+  if(q){
+    live=live.filter(function(k){
+      return ((k.name||'')+' '+(k.make||'')+' '+(k.model||'')+' '+(k.tag||'')+' '+(k.serial||'')
+        +' '+(k.cat||'')+' '+(k.subcat||'')).toLowerCase().indexOf(q)>-1;
+    });
+  }
+  return live;
+}
+
+function vsKitList(){
+  var el=document.getElementById('vsKitRows'); if(!el) return;
+  var live=_vsKitLive();
+  var _strayNote='';
+  if(_vsKitSel.type==='hire'){
+    /* These are catalogue models the old merge poured in, not Versa stock.
+       The ones no job points at can go for nothing; the rest are holding up
+       Morning Live's prep list and are not mine to take away. */
+    var _h=live.filter(function(k){ return !!k.isHired; });
+    var _used={};
+    jobs.forEach(function(j){
+      (j.prep||[]).forEach(function(pp){ if(pp) _used[pp.kid]=(_used[pp.kid]||[]).concat(j.name||'a job'); });
+      (j.kitIds||[]).forEach(function(id){ _used[id]=(_used[id]||[]).concat(j.name||'a job'); });
+    });
+    var _free=_h.filter(function(k){ return !_used[k.id]; });
+    var _held=_h.length-_free.length;
+    var _jn={}; _h.forEach(function(k){ (_used[k.id]||[]).forEach(function(n){ _jn[n]=1; }); });
+    var _names=Object.keys(_jn);
+    if(_h.length){
+      _strayNote='<div class="vsc-nag"><span>'
+        + _h.length + ' of these came from the kit list rather than Versa stock. '
+        + (_free.length ? _free.length + ' are on no job at all. ' : '')
+        + (_held ? 'The other ' + _held + ' are on ' + (_names.join(' and ') || 'a job') + '\u2019s prep list, so they stay.' : '')
+        + '</span>'
+        + (_free.length ? '<button onclick="vsKitDropUnusedHired()">Remove the ' + _free.length + '</button>' : '')
+        + '</div>';
+    }
+  }
+  if(_vsKitSel.type==='stray'){
+    /* count the strays, not the whole inventory — live has not been
+       narrowed yet at this point */
+    var _stray=live.filter(function(k){ return !_vsKitFiled(k); });
+    var settings=_stray.filter(_vsKitPlanSetting).length;
+    var plan = _vsKitTidyPlan();
+    var adds = 0; Object.keys(plan.add).forEach(function(c){ adds += plan.add[c].length; });
+    _strayNote='<div class="vsc-nag"><span>'
+      + 'These sit under a sub-category the inventory does not have. '
+      + (settings ? settings + ' are camera plan settings \u2014 frame rates, codecs, sensor sizes, '
+          + 'LUTs \u2014 and can go. ' : '')
+      + (adds ? 'The other ' + (_stray.length - settings) + ' are real kit under ' + adds
+          + ' sub-categories the tree has never been told about; nothing needs moving, '
+          + 'the tree just needs to learn them.' : '')
+      + '</span>'
+      + ((settings || adds) ? '<button onclick="vsKitTidy()">Tidy all of it</button>' : '')
+      + '</div>';
+  }
+  if(_vsKitSel.type==='cat'){
+    live=live.filter(function(k){return (k.cat||'Uncategorised')===_vsKitSel.value;});
+    if(_vsKitSel.sub) live=live.filter(function(k){return (k.subcat||'').trim()===_vsKitSel.sub;});
+  }
+  else if(_vsKitSel.type==='loc') live=live.filter(function(k){return (k.loc||'Unknown')===_vsKitSel.value;});
+  else if(_vsKitSel.type==='own') live=live.filter(function(k){return !k.isHired;});
+  else if(_vsKitSel.type==='hire') live=live.filter(function(k){return !!k.isHired;});
+  else if(_vsKitSel.type==='stray') live=live.filter(function(k){return !_vsKitFiled(k);});
+  else if(_vsKitSel.type==='job'){
+    var jb=(typeof jobs!=='undefined'?jobs:[]).find(function(x){ return String(x.id)===String(_vsKitSel.value); });
+    var jids=jb?_vsJobKitIds(jb):{};
+    live=live.filter(function(k){ return jids[k.id]; });
+  }
+  else if(_vsKitSel.type==='gap'){
+    /* the gaps the overview counts, so a number on the landing is a way in
+       rather than something to write down and go looking for */
+    var g=_vsKitSel.value;
+    live=live.filter(function(k){
+      if(g==='tag')   return !String(k.tag||'').trim() && !String(k.serial||'').trim();
+      if(g==='make')  return !String(k.make||'').trim() && !String(k.model||'').trim();
+      if(g==='photo') return !(k.photos&&k.photos.length) && !k.photo;
+      if(k.patNA) return false;
+      var ps=(typeof kitPatStatus==='function')?kitPatStatus(k):{label:'NO DATE'};
+      if(g==='patover') return ps.label==='OVERDUE';
+      if(g==='patsoon') return ps.label==='DUE SOON';
+      if(g==='patnone') return ps.label==='NO DATE';
+      return true;
+    });
+  }
   var q=_vsKitQ.trim().toLowerCase();
   if(q){
     live=live.filter(function(k){
@@ -12960,7 +14814,7 @@ function vsKitList(){
   var cnt=document.getElementById('vsKitCount');
   if(cnt) cnt.textContent=live.length+(live.length===1?' item':' items');
   if(!live.length){
-    el.innerHTML='<div class="vsk-none">'+(q?'Nothing matches that.':'Nothing in here yet.')+'</div>';
+    el.innerHTML=_strayNote+'<div class="vsk-none">'+(q?'Nothing matches that.':'Nothing in here yet.')+'</div>';
     return;
   }
   live.sort(function(a,b){return String(a.name||'').localeCompare(String(b.name||''));});
@@ -12974,7 +14828,73 @@ function vsKitList(){
     byKey[key].items.push(k);
   });
 
-  el.innerHTML='<div class="vsk-grid2">'+groups.map(function(g){
+  /* On a job the question is what is on it by department, not what model it
+     is \u2014 so the cards are grouped under their category with a count. */
+  if(_vsKitSel.type==='job'){
+    var jb2=(typeof jobs!=='undefined'?jobs:[]).find(function(x){ return String(x.id)===String(_vsKitSel.value); });
+    /* A hundred and sixty-nine bits of Audio in one grid is a wall. Category,
+       then sub-category inside it, so the eye has somewhere to stop. */
+    var tree={}, order=[];
+    live.forEach(function(k){
+      var c=k.cat||'Uncategorised', sc=(k.subcat||'').trim()||'Everything else';
+      if(!tree[c]){ tree[c]={subs:{}, order:[], n:0}; order.push(c); }
+      if(!tree[c].subs[sc]){ tree[c].subs[sc]=[]; tree[c].order.push(sc); }
+      tree[c].subs[sc].push(k);
+      tree[c].n++;
+    });
+    var sh=(typeof _vsLogoFor==='function'&&jb2)?_vsLogoFor(jb2.name):null;
+    el.innerHTML='<div class="vsk-jobhd">'
+      + (sh&&sh.src
+          ? '<span class="vsk-joblogo" style="background:'+(sh.grad||sh.full||'#333')+'">'
+            + '<img src="'+sh.src+'" alt="'+_vsEsc(jb2.name||'')+'"></span>'
+          : '')
+        + '<button class="vsk-back" onclick="vsKitSelect(\'home\',\'\')">\u2190 Overview</button>'
+        + '<span class="vsk-jobn">'+_vsEsc(jb2?(jb2.name||''):'')+'</span>'
+        + ((jb2 && typeof _vsJobHoldsKit==='function' && !_vsJobHoldsKit(jb2))
+            ? '<span class="vsk-jobdone">Finished'+(jb2.end?' '+_vsEsc(jb2.end):'')
+              +' \u2014 this kit has been given back</span>' : '')
+        + '<span class="vsk-jobc">'+live.length+' Versa'
+          + (function(){ var n=_vsJobHiredGrouped(jb2).reduce(function(a,h){return a+h.n;},0);
+                         return n?(' \u00b7 '+n+' hired'):''; })()
+          + '</span>'
+        + '<span class="vsk-jobacts">'
+          + '<button class="vsk-exp" onclick="vsJobKitCopy()">Copy</button>'
+          + '<button class="vsk-exp" onclick="vsJobKitCsv()">Export CSV</button>'
+        + '</span>'
+      + '</div>'
+      + _vsKitGrouped(live)
+      + (function(){
+          var hired=_vsJobHiredGrouped(jb2);
+          if(!hired.length) return '';
+          var n=hired.reduce(function(a,h){ return a+h.n; }, 0);
+          return '<details class="vsk-jobcat" open>'
+            + '<summary class="vsk-jobch">Hired in<em>'+n+'</em>'
+              + '<i>not Versa stock</i></summary>'
+            + '<div class="vsk-joblist">'
+              + hired.map(function(h){
+                  return '<div class="vsk-jobitem vsk-hire">'
+                    + '<span class="vsk-jin">'+(h.n>1?'<b>'+h.n+'\u00d7</b> ':'')+_vsEsc(h.name)+'</span>'
+                    + '<span class="vsk-jis">'+_vsEsc(h.supplier||'supplier not set')
+                      + (h.arrives?' \u00b7 '+_vsEsc(h.arrives):'')+'</span>'
+                  + '</div>';
+                }).join('')
+            + '</div>'
+          + '</details>';
+        })();
+    return;
+  }
+  /* Narrowed to a sub-category, or short enough to read \u2014 the cards are
+     fine. Anything broader gets grouped, or it is the wall again. */
+  if(!_vsKitSel.sub && (_vsKitSel.type==='cat' ? live.length>24 : live.length>60)){
+    el.innerHTML=_strayNote
+      + '<div class="vsk-jobhd"><span class="vsk-jobn">'+_vsEsc(_vsKitSelLabel())+'</span>'
+      + '<span class="vsk-jobc">'+live.length+' items</span>'
+      + '<span class="vsk-jobacts"><button class="vsk-exp" onclick="vsKitViewCsv()">Export CSV</button></span>'
+      + '</div>'
+      + _vsKitGrouped(live, {bySubOnly:_vsKitSel.type==='cat'});
+    return;
+  }
+  el.innerHTML=_strayNote+'<div class="vsk-grid2">'+groups.map(function(g){
     if(g.items.length===1) return _vsKitCard(g.items[0]);
     var open=(_vsKitOpen===g.key);
     var free=0,out=0,down=0;
@@ -13182,6 +15102,7 @@ function _vsKitJobName(k){
   if(!k||!k.inUse) return '';
   try{
     var j=(typeof jobs!=='undefined'?jobs:[]).find(function(x){
+      if(typeof _vsJobHoldsKit==='function' && !_vsJobHoldsKit(x)) return false;
       return (x.kitIds&&x.kitIds.indexOf(k.id)>-1)||(x.prep&&x.prep.some(function(p){return p.kid===k.id;}));
     });
     return j?(j.name||''):'';
@@ -13213,8 +15134,535 @@ function vsKitPage(){
     host.insertBefore(wrap,host.firstChild);
   }
   document.getElementById('vsKitWrap').style.display='flex';
+  /* the landing has its own search in the middle of it, so the one in the
+     bar would be the second box on screen asking the same question */
+  var atHome=(_vsKitSel.type==='home' && !_vsKitQ);
+  var bar=document.querySelector('#vsKitWrap .vsk-bar');
+  if(bar) bar.style.display=atHome?'none':'';
   vsKitRail();
-  vsKitList();
+  if(atHome) vsKitHome();
+  else if(_vsKitSel.type==='maint') vsKitMaint();
+  else vsKitList();
+}
+
+/* \u2500\u2500 The way in \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+   What there is, where it is, what is out today, and the categories as
+   blocks you can hit. Everything here is a shortcut into the same list. */
+/* for categories the colour map has never been told about */
+var VS_BLOCK_FALLBACK=['#5B5F8D','#7A9A80','#DA6B51','#484149','#C8923A','#6A8A72','#7B614D','#B89868'];
+/* Everything a job is holding, whether it was allocated outright or put on
+   its prep list. Both name the item by id, so the two are one question. */
+/* The list as it reads on screen, for an email. Category, sub-category,
+   then the items under it. */
+/* What is being hired in for a job. Same shape wherever it came from, so
+   the list and both exports read it the same way. */
+function _vsJobHired(j){
+  if(!j || !Array.isArray(j.hireIns)) return [];
+  return j.hireIns.filter(function(h){ return h && String(h.item||'').trim(); })
+    .map(function(h){
+      return {name:String(h.item).trim(), supplier:String(h.supplier||'').trim(),
+              arrives:String(h.arrives||'').trim(), notes:String(h.notes||'').trim()};
+    });
+}
+/* Ten of the same lens is one line with a ten against it, not ten lines. */
+function _vsJobHiredGrouped(j){
+  var by={}, order=[];
+  _vsJobHired(j).forEach(function(h){
+    var key=h.name+'|'+h.supplier;
+    if(!by[key]){ by[key]={name:h.name, supplier:h.supplier, arrives:h.arrives, notes:h.notes, n:0}; order.push(key); }
+    by[key].n++;
+    if(!by[key].arrives && h.arrives) by[key].arrives=h.arrives;
+    if(!by[key].notes && h.notes) by[key].notes=h.notes;
+  });
+  return order.map(function(k){ return by[k]; })
+    .sort(function(a,b){ return String(a.name).localeCompare(String(b.name),undefined,{numeric:true}); });
+}
+
+function _vsJobKitText(){
+  var j=(typeof jobs!=='undefined'?jobs:[]).find(function(x){ return String(x.id)===String(_vsKitSel.value); });
+  if(!j) return '';
+  var items=_vsJobKit(j);
+  var tree={}, order=[];
+  items.forEach(function(k){
+    var c=k.cat||'Uncategorised', sc=(k.subcat||'').trim()||'Everything else';
+    if(!tree[c]){ tree[c]={subs:{},order:[],n:0}; order.push(c); }
+    if(!tree[c].subs[sc]){ tree[c].subs[sc]=[]; tree[c].order.push(sc); }
+    tree[c].subs[sc].push(k); tree[c].n++;
+  });
+  order.sort(function(a,b){ return tree[b].n-tree[a].n; });
+  var out=[(j.name||'Job')+' \u2014 kit list', items.length+' items, '+order.length+' categories', ''];
+  order.forEach(function(c){
+    out.push(c.toUpperCase()+'  ('+tree[c].n+')');
+    tree[c].order.sort(function(a,b){ return tree[c].subs[b].length-tree[c].subs[a].length; });
+    tree[c].order.forEach(function(sc){
+      out.push('  '+sc+'  ('+tree[c].subs[sc].length+')');
+      tree[c].subs[sc].slice().sort(function(a,b){
+        return String(a.name||'').localeCompare(String(b.name||''),undefined,{numeric:true});
+      }).forEach(function(k){
+        out.push('    '+(k.name||'')+(k.loc?'   ['+k.loc+']':''));
+      });
+    });
+    out.push('');
+  });
+  var hired=_vsJobHiredGrouped(j);
+  if(hired.length){
+    out.push('HIRED IN  ('+hired.reduce(function(n,h){return n+h.n;},0)+')');
+    hired.forEach(function(h){
+      out.push('    '+(h.n>1?h.n+' \u00d7 ':'')+h.name
+        + (h.supplier?'   \u2014 '+h.supplier:'')
+        + (h.arrives?'   arrives '+h.arrives:'')
+        + (h.notes?'   ('+h.notes+')':''));
+    });
+    out.push('');
+  }
+  return out.join('\n');
+}
+function vsJobKitCopy(){
+  var t=_vsJobKitText();
+  if(!t) return;
+  try{
+    navigator.clipboard.writeText(t).then(function(){
+      if(typeof toast==='function') toast('Kit list copied');
+    });
+  }catch(e){
+    if(typeof toast==='function') toast('Could not copy \u2014 try Export CSV');
+  }
+}
+function vsJobKitCsv(){
+  var j=(typeof jobs!=='undefined'?jobs:[]).find(function(x){ return String(x.id)===String(_vsKitSel.value); });
+  if(!j) return;
+  var q=function(v){ return '"'+String(v==null?'':v).replace(/"/g,'""')+'"'; };
+  var rows=[['Source','Category','Sub-category','Item','Qty','Make','Model',
+             'Location','Asset number','Supplier','Arrives','Notes'].map(q).join(',')];
+  _vsJobKit(j).slice().sort(function(a,b){
+    return String(a.cat||'').localeCompare(String(b.cat||''))
+        || String(a.subcat||'').localeCompare(String(b.subcat||''))
+        || String(a.name||'').localeCompare(String(b.name||''),undefined,{numeric:true});
+  }).forEach(function(k){
+    rows.push(['Versa',k.cat||'',(k.subcat||'').trim(),k.name||'',1,k.make||'',k.model||'',
+               k.loc||'',k.tag||k.serial||'','','',k.notes||''].map(q).join(','));
+  });
+  /* the hired kit on the same sheet, because the client is getting both and
+     does not care which van it came out of */
+  _vsJobHiredGrouped(j).forEach(function(h){
+    rows.push(['Hired','','',h.name,h.n,'','','','',h.supplier,h.arrives,h.notes].map(q).join(','));
+  });
+  var blob=new Blob(['\ufeff'+rows.join('\r\n')],{type:'text/csv;charset=utf-8'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=String(j.name||'job').replace(/[^\w\-]+/g,'-').toLowerCase()+'-kit-list.csv';
+  document.body.appendChild(a); a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 400);
+  if(typeof toast==='function') toast('Downloaded');
+}
+
+/* Category, then sub-category inside it, every group foldable. Four hundred
+   cards in one grid is the thing we were getting away from, and it is the
+   same wall whether you reached it from a job or from Everything. */
+function _vsKitGrouped(list, opts){
+  opts=opts||{};
+  var tree={}, order=[];
+  list.forEach(function(k){
+    var c=opts.bySubOnly ? ((k.subcat||'').trim()||'Everything else') : (k.cat||'Uncategorised');
+    var sc=opts.bySubOnly ? '' : ((k.subcat||'').trim()||'Everything else');
+    if(!tree[c]){ tree[c]={subs:{}, order:[], n:0}; order.push(c); }
+    if(!tree[c].subs[sc]){ tree[c].subs[sc]=[]; tree[c].order.push(sc); }
+    tree[c].subs[sc].push(k);
+    tree[c].n++;
+  });
+  if(opts.bySubOnly){
+    order.sort(function(a,b){ return tree[b].n-tree[a].n || String(a).localeCompare(String(b)); });
+  } else {
+    var railOrder=_vsKitCatOrder();
+    order.sort(function(a,b){
+      var ia=railOrder.indexOf(a), ib=railOrder.indexOf(b);
+      if(ia<0) ia=999; if(ib<0) ib=999;
+      return ia-ib || String(a).localeCompare(String(b));
+    });
+  }
+  /* open when there is little enough to take in at once */
+  var openAll = list.length<=80;
+  return order.map(function(c){
+    var t=tree[c];
+    t.order.sort(function(a,b){ return t.subs[b].length-t.subs[a].length
+      || String(a).localeCompare(String(b)); });
+    var subCount=t.order.filter(function(x){return x;}).length;
+    return '<details class="vsk-jobcat"'+(openAll?' open':'')+'>'
+      + '<summary class="vsk-jobch">'+_vsEsc(c)+'<em>'+t.n+'</em>'
+        + (subCount>1 ? '<i>'+subCount+' sub-categories</i>' : '')
+      + '</summary>'
+      + t.order.map(function(sc){
+          return '<div class="vsk-jobsub">'
+            + (sc ? '<div class="vsk-jobsh">'+_vsEsc(sc)+'<em>'+t.subs[sc].length+'</em></div>' : '')
+            + '<div class="vsk-joblist">'
+              + t.subs[sc].slice().sort(function(a,b){
+                  return String(a.name||'').localeCompare(String(b.name||''),undefined,{numeric:true});
+                }).map(function(k){
+                  return '<button class="vsk-jobitem" onclick="openDrawer('+k.id+')">'
+                    + '<span class="vsk-jin">'+_vsEsc(_vsKitShortName(k.name,k.subcat))+'</span>'
+                    + '<span class="vsk-jis">'+_vsEsc(k.loc||'')
+                      + (k.tag?' \u00b7 '+_vsEsc(k.tag):'')+'</span>'
+                  + '</button>';
+                }).join('')
+            + '</div>'
+          + '</div>';
+        }).join('')
+    + '</details>';
+  }).join('');
+}
+
+function _vsJobKitIds(j){
+  var ids={};
+  (j.kitIds||[]).forEach(function(id){ if(id!=null) ids[id]=true; });
+  (j.prep||[]).forEach(function(p){ if(p&&p.kid!=null) ids[p.kid]=true; });
+  return ids;
+}
+function _vsJobKit(j){
+  if(!j) return [];
+  var ids=_vsJobKitIds(j);
+  return _vsKitLive().filter(function(k){ return ids[k.id]; });
+}
+/* A job that has finished gives its kit back. Nobody walks round the store
+   releasing four hundred items one at a time, and until it happens the kit
+   reads as out when it is sitting on a shelf. The prep list is left alone \u2014
+   it is the record of what the show used, and the item's own history still
+   shows it. */
+function _vsJobHoldsKit(j){
+  if(!j || j.archived) return false;
+  var c=(typeof _jobCat==='function')?_jobCat(j):'active';
+  return c==='active'||c==='upcoming';
+}
+function _vsJobsWithKit(){
+  return (typeof jobs!=='undefined'?jobs:[]).filter(_vsJobHoldsKit)
+    .map(function(j){ return {job:j, items:_vsJobKit(j)}; })
+    .filter(function(x){ return x.items.length; })
+    .sort(function(a,b){ return b.items.length-a.items.length; });
+}
+
+/* \u2500\u2500 Maintenance, in the Inventory's own hand \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+   These used to be a page of their own in the old dark styling. Same four
+   jobs, drawn the way the rest of the kit pages are drawn. */
+var VS_MAINT_TITLES={rec:'Service records',repair:'In repair',pat:'PAT testing',
+  sup:'Suppliers',log:'Logistics'};
+
+function vsKitMaint(){
+  var el=document.getElementById('vsKitRows'); if(!el) return;
+  var w=_vsKitSel.value||'rec';
+  var head='<div class="vsk-jobhd">'
+    + '<button class="vsk-back" onclick="vsKitSelect(\'home\',\'\')">\u2190 Overview</button>'
+    + '<span class="vsk-jobn">'+(VS_MAINT_TITLES[w]||'Maintenance')+'</span>'
+    + '<span class="vsk-jobacts">'+_vsMaintActions(w)+'</span>'
+  + '</div>';
+  el.innerHTML = head + (
+      w==='pat'    ? _vsMaintPat()
+    : w==='repair' ? _vsMaintRepair()
+    : w==='sup'    ? _vsMaintSuppliers()
+    : w==='log'    ? _vsMaintLogistics()
+    :                _vsMaintRecords());
+}
+
+function _vsMaintActions(w){
+  if(w==='rec') return '<button class="vsk-exp" onclick="vsMaintAdd(this)">+ Record</button>';
+  if(w==='sup') return '<button class="vsk-exp" onclick="vsSuppAdd(this)">+ Supplier</button>';
+  if(w==='pat') return '<button class="vsk-exp" onclick="vsPatCsv()">Export CSV</button>';
+  return '';
+}
+
+function _vsMaintNone(msg){
+  return '<div class="vsm-none">'+msg+'</div>';
+}
+
+/* ── service records ─────────────────────────────────────────────────── */
+function _vsMaintRecords(){
+  if(!maintenance.length) return _vsMaintNone('No service records yet. Add one when something is looked at.');
+  return '<div class="vsm-list">'
+    + maintenance.slice().sort(function(a,b){ return String(b.date||'').localeCompare(String(a.date||'')); })
+        .map(function(m,i){
+          return '<div class="vsm-row">'
+            + '<span class="vsm-main">'+_vsEsc(m.item||'\u2014')+'</span>'
+            + '<span class="vsm-sub">'+_vsEsc(m.notes||'')+'</span>'
+            + '<span class="vsm-meta">'+_vsEsc(m.techType||'')+(m.tech?' \u00b7 '+_vsEsc(m.tech):'')+'</span>'
+            + '<span class="vsm-when">'+_vsEsc(m.date||'')+'</span>'
+          + '</div>';
+        }).join('')
+    + '</div>';
+}
+function vsMaintAdd(el){
+  var go=function(name){
+    name=(name||'').trim(); if(!name) return;
+    maintenance.unshift({id:Date.now(), item:name, date:(typeof today==='function'?today():''),
+      tech:_vsNoteAuthor?_vsNoteAuthor():'', techType:'Internal', status:'Open', notes:''});
+    saveData(); vsKitMaint();
+  };
+  if(typeof vsAsk==='function') vsAsk({label:'What was looked at', value:'', anchor:el, okLabel:'Add', onOk:go});
+  else go(prompt('What was looked at?'));
+}
+
+/* ── in repair ───────────────────────────────────────────────────────── */
+function _vsMaintRepair(){
+  var out=_vsKitLive().filter(function(k){ return k.status==='In Repair'||k.status==='Fault'; });
+  if(!out.length && !repairItems.length)
+    return _vsMaintNone('Nothing is in for repair. An item goes here when its status is set to In Repair.');
+  return '<div class="vsk-joblist">'
+    + out.map(function(k){
+        return '<button class="vsk-jobitem" onclick="openDrawer('+k.id+')">'
+          + '<span class="vsk-jin">'+_vsEsc(_vsKitShortName(k.name,k.subcat))+'</span>'
+          + '<span class="vsk-jis">'+_vsEsc(k.cat||'')+(k.loc?' \u00b7 '+_vsEsc(k.loc):'')+'</span>'
+        + '</button>';
+      }).join('')
+    + '</div>';
+}
+
+/* ── PAT testing ─────────────────────────────────────────────────────── */
+function _vsMaintPat(){
+  var groups={OVERDUE:[], 'DUE SOON':[], 'NO DATE':[], OK:[]};
+  _vsKitLive().forEach(function(k){
+    if(k.patNA) return;
+    var ps=(typeof kitPatStatus==='function')?kitPatStatus(k):{label:'NO DATE'};
+    (groups[ps.label]||groups['NO DATE']).push(k);
+  });
+  var labels={OVERDUE:'Overdue','DUE SOON':'Due within a month','NO DATE':'Never tested',OK:'In date'};
+  var testers=(typeof patTesters!=='undefined'?patTesters:[]);
+  var out='';
+  ['OVERDUE','DUE SOON','NO DATE','OK'].forEach(function(g){
+    var list=groups[g];
+    if(!list.length) return;
+    out+='<details class="vsk-jobcat"'+(g==='OK'?'':' open')+'>'
+      + '<summary class="vsk-jobch">'+labels[g]+'<em>'+list.length+'</em></summary>'
+      + '<div class="vsm-patlist">'
+        + list.slice().sort(function(a,b){
+            return String(a.name||'').localeCompare(String(b.name||''),undefined,{numeric:true});
+          }).map(function(k){
+            return '<div class="vsm-pat">'
+              + '<button class="vsm-patn" onclick="openDrawer('+k.id+')">'
+                + _vsEsc(_vsKitShortName(k.name,k.subcat))
+                + '<i>'+_vsEsc(k.cat||'')+(k.loc?' \u00b7 '+_vsEsc(k.loc):'')+'</i>'
+              + '</button>'
+              + '<input type="date" class="vsm-patd" value="'+_vsEsc(k.patLastDate||k.patDate||'')+'" '
+                + 'title="Date tested" onchange="vsPatSet('+k.id+',this.value,this.parentNode.querySelector(\'select\').value)">'
+              + '<select class="vsm-patt" onchange="vsPatSet('+k.id+',this.parentNode.querySelector(\'input\').value,this.value)">'
+                + testers.map(function(t){
+                    return '<option'+(t===(k.patTestedBy||testers[0])?' selected':'')+'>'+_vsEsc(t)+'</option>';
+                  }).join('')
+              + '</select>'
+            + '</div>';
+          }).join('')
+      + '</div>'
+    + '</details>';
+  });
+  return out || _vsMaintNone('Nothing to test.');
+}
+/* Recording a test sets the next one a year on, which is what makes the
+   overdue and due-soon counts work without anybody doing sums. */
+function vsPatSet(id, date, tester){
+  var k=kit.find(function(x){ return x.id===id; }); if(!k) return;
+  if(!date){ k.patLastDate=''; k.patNextDate=''; saveData(); vsKitMaint(); return; }
+  k.patLastDate=date;
+  k.patTestedBy=tester||'';
+  var d=new Date(date+'T00:00:00');
+  d.setFullYear(d.getFullYear()+1);
+  k.patNextDate=d.toISOString().slice(0,10);
+  saveData();
+  vsKitRail(); vsKitMaint();
+  if(typeof toast==='function') toast('Next test '+k.patNextDate);
+}
+function vsPatCsv(){
+  var q=function(v){ return '"'+String(v==null?'':v).replace(/"/g,'""')+'"'; };
+  var rows=[['Item','Category','Sub-category','Location','Asset number','Last tested','Next due','Tested by','Status'].map(q).join(',')];
+  _vsKitLive().slice().sort(function(a,b){
+    return String(a.name||'').localeCompare(String(b.name||''),undefined,{numeric:true});
+  }).forEach(function(k){
+    var ps=(typeof kitPatStatus==='function')?kitPatStatus(k):{label:''};
+    rows.push([k.name||'',k.cat||'',(k.subcat||'').trim(),k.loc||'',k.tag||k.serial||'',
+               k.patLastDate||k.patDate||'',k.patNextDate||'',k.patTestedBy||'',
+               k.patNA?'Not applicable':ps.label].map(q).join(','));
+  });
+  var blob=new Blob(['\ufeff'+rows.join('\r\n')],{type:'text/csv;charset=utf-8'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download='versa-pat-testing.csv';
+  document.body.appendChild(a); a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },400);
+  if(typeof toast==='function') toast('Downloaded');
+}
+
+/* \u2500\u2500 logistics \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+   Kit going somewhere: planned, prepped, on the road, delivered. Same four
+   stages the old page kept, drawn like the rest of the Inventory. */
+var VS_TRANSPORT_STAGES=[
+  {key:'planned',    label:'Planned'},
+  {key:'prepped',    label:'Prepped, ready to go'},
+  {key:'in-transit', label:'On the road'},
+  {key:'delivered',  label:'Delivered'}
+];
+function _vsMaintLogistics(){
+  var all=(typeof KIT_TRANSPORTS!=='undefined'?KIT_TRANSPORTS:[]);
+  if(!all.length){
+    return _vsMaintNone('Nothing is moving. A run is created from a job\u2019s kit list '
+      + 'when it is ready to go out, and shows here until it has been delivered.');
+  }
+  return VS_TRANSPORT_STAGES.map(function(st){
+    var list=all.filter(function(t){ return (t.status||'planned')===st.key; });
+    if(!list.length) return '';
+    list.sort(function(a,b){ return String(a.transportDate||'9').localeCompare(String(b.transportDate||'9')); });
+    return '<details class="vsk-jobcat" open>'
+      + '<summary class="vsk-jobch">'+st.label+'<em>'+list.length+'</em></summary>'
+      + '<div class="vsm-list">'
+        + list.map(function(t){
+            var n=(t.items&&t.items.length)||t.itemCount||0;
+            return '<div class="vsm-row">'
+              + '<span class="vsm-main">'+_vsEsc(t.jobName||t.job||'\u2014')+'</span>'
+              + '<span class="vsm-sub">'+_vsEsc([t.from,t.to].filter(Boolean).join(' \u2192 ')||'')
+                + (n?('  \u00b7  '+n+' item'+(n===1?'':'s')):'')+'</span>'
+              + '<span class="vsm-meta">'+_vsEsc(t.driver||t.preppedBy||'')+'</span>'
+              + '<span class="vsm-when">'+_vsEsc(t.transportDate||'')+'</span>'
+            + '</div>';
+          }).join('')
+      + '</div>'
+    + '</details>';
+  }).join('') || _vsMaintNone('Nothing is moving.');
+}
+
+/* ── suppliers ───────────────────────────────────────────────────────── */
+function _vsMaintSuppliers(){
+  if(!suppliers.length) return _vsMaintNone('No suppliers yet.');
+  return '<div class="vsk-joblist">'
+    + suppliers.slice().sort(function(a,b){ return String(a.name||'').localeCompare(String(b.name||'')); })
+        .map(function(sp){
+          return '<div class="vsk-jobitem">'
+            + '<span class="vsk-jin">'+_vsEsc(sp.name||'')+'</span>'
+            + '<span class="vsk-jis">'+_vsEsc([sp.tel,sp.email].filter(Boolean).join(' \u00b7 ')||'\u2014')+'</span>'
+          + '</div>';
+        }).join('')
+    + '</div>';
+}
+function vsSuppAdd(el){
+  var go=function(name){
+    name=(name||'').trim(); if(!name) return;
+    suppliers.push({id:(typeof nextSid!=='undefined'?nextSid++:Date.now()), name:name, tel:'', email:'', notes:''});
+    saveData(); vsKitMaint();
+  };
+  if(typeof vsAsk==='function') vsAsk({label:'Supplier', value:'', anchor:el, okLabel:'Add', onOk:go});
+  else go(prompt('Supplier name?'));
+}
+
+function vsKitHome(){
+  var el=document.getElementById('vsKitRows'); if(!el) return;
+  var live=_vsKitLive();
+
+  /* What the records are like, rather than what the kit is doing. These are
+     the questions you cannot answer by scrolling: how much is tagged, how
+     much has never been PAT tested, how much has no make against it. */
+  var noTag=0, noPhoto=0, noMakeModel=0, patOver=0, patSoon=0, patNone=0, patOk=0;
+  live.forEach(function(k){
+    if(!String(k.tag||'').trim() && !String(k.serial||'').trim()) noTag++;
+    if(!(k.photos&&k.photos.length) && !k.photo) noPhoto++;
+    if(!String(k.make||'').trim() && !String(k.model||'').trim()) noMakeModel++;
+    if(k.patNA) return;
+    var ps=(typeof kitPatStatus==='function')?kitPatStatus(k):{label:'NO DATE'};
+    if(ps.label==='OVERDUE') patOver++;
+    else if(ps.label==='DUE SOON') patSoon++;
+    else if(ps.label==='NO DATE') patNone++;
+    else patOk++;
+  });
+
+  var cats={}, locs=_vsKitLocs();
+  live.forEach(function(k){
+    cats[k.cat||'Uncategorised']=(cats[k.cat||'Uncategorised']||0)+1;
+    var l=k.loc||'No location';
+    locs[l]=(locs[l]||0)+1;
+  });
+
+  /* Only say it when it is worth saying \u2014 a count of nought is not news. */
+  var stat=function(n,label,act){
+    if(!n) return '';
+    return '<button class="vsh-s'+(act?' warn':'')+'" onclick="'+(act||'')+'">'
+      +'<span class="vsh-sn">'+n+'</span><span class="vsh-sl">'+label+'</span></button>';
+  };
+
+  var html='<div class="vsh">'
+    + '<div class="vsh-title">Overview</div>'
+    + '<div class="vsh-seek">'
+      + '<input id="vsKitSeek" class="vsh-q" placeholder="Search by name, model, tag or serial\u2026" '
+        + 'value="'+_vsEsc(_vsKitQ||'')+'" oninput="vsKitSearch(this.value)">'
+      + '<div class="vsh-qn">'+live.length+' items \u00b7 '
+        + Object.keys(locs).sort(function(a,b){return locs[b]-locs[a];})
+            .map(function(l){ return _vsEsc(l)+' '+locs[l]; }).join(' \u00b7 ')
+      + '</div>'
+    + '</div>';
+
+  var checks = stat(noTag,'without an asset number','vsKitSelect(\'gap\',\'tag\')')
+             + stat(patOver,'PAT overdue','vsKitSelect(\'gap\',\'patover\')')
+             + stat(patSoon,'PAT due within a month','vsKitSelect(\'gap\',\'patsoon\')')
+             + stat(patNone,'never PAT tested','vsKitSelect(\'gap\',\'patnone\')')
+             + stat(noMakeModel,'no make or model','vsKitSelect(\'gap\',\'make\')')
+             + stat(noPhoto,'no photograph','vsKitSelect(\'gap\',\'photo\')');
+  if(checks) html+='<div class="vsh-sec">Worth a look</div><div class="vsh-stats">'+checks+'</div>';
+
+  html+='<div class="vsh-sec">Categories</div><div class="vsh-wbs">'
+    + Object.keys(cats).sort(function(a,b){ return cats[b]-cats[a]; }).map(function(c){
+        return '<button class="vsh-wb" onclick="vsKitSelect(\'cat\',\''+encodeURIComponent(String(c))+'\')">'
+          +'<span class="vsh-wl">'+_vsEsc(c)+'</span>'
+          +'<span class="vsh-wn">'+cats[c]+'</span>'
+        +'</button>';
+      }).join('')
+    +'</div>';
+
+  /* Allocation is what is out now or going out. A finished show has given
+     its kit back, but what it had is still worth being able to look up \u2014 so
+     it goes below, as a record rather than a holding. */
+  var jobBox=function(x, past){
+    var sh=(typeof _vsLogoFor==='function')?_vsLogoFor(x.job.name):null;
+    var badge = (sh&&sh.src)
+      ? '<span class="vsh-jl" style="background:'+(sh.grad||sh.full||'#333')+'">'
+        + '<img src="'+sh.src+'" alt="'+_vsEsc(x.job.name)+'"></span>'
+      : '<span class="vsh-jn">'+_vsEsc(x.job.name)+'</span>';
+    return '<button class="vsh-wb vsh-job'+(past?' vsh-past':'')+'" '
+      + 'onclick="vsKitSelect(\'job\',\''+x.job.id+'\')">'
+      + badge
+      + '<span class="vsh-wn">'+x.items.length+' item'+(x.items.length===1?'':'s')+'</span>'
+    + '</button>';
+  };
+  var onJobs=_vsJobsWithKit();
+  if(onJobs.length){
+    html+='<div class="vsh-sec">Allocation</div><div class="vsh-wbs vsh-jobs">'
+      + onJobs.map(function(x){ return jobBox(x,false); }).join('')
+      + '</div>';
+  }
+  var doneJobs=(typeof jobs!=='undefined'?jobs:[])
+    .filter(function(j){ return !_vsJobHoldsKit(j); })
+    .map(function(j){ return {job:j, items:_vsJobKit(j)}; })
+    .filter(function(x){ return x.items.length; })
+    .sort(function(a,b){ return String(b.job.end||'').localeCompare(String(a.job.end||'')); });
+  if(doneJobs.length){
+    html+='<div class="vsh-sec">Previous allocations</div><div class="vsh-wbs vsh-jobs">'
+      + doneJobs.map(function(x){ return jobBox(x,true); }).join('')
+      + '</div>';
+  }
+
+  html+='<div class="vsh-sec">Where it is</div><div class="vsh-wbs">'
+    + Object.keys(locs).sort(function(a,b){ return locs[b]-locs[a]
+        || String(a).localeCompare(String(b)); }).map(function(l){
+        /* an empty store says so rather than showing a nought */
+        return '<button class="vsh-wb'+(locs[l]?'':' vsh-empty')+'" '
+          +'onclick="vsKitSelect(\'loc\',\''+encodeURIComponent(String(l))+'\')">'
+          +'<span class="vsh-wl">'+_vsEsc(l)+'</span>'
+          +'<span class="vsh-wn">'+(locs[l]||'Nothing here')+'</span>'
+        +'</button>';
+      }).join('')
+    +'</div>';
+
+  var strays=live.filter(function(k){ return !_vsKitFiled(k); }).length;
+  if(strays){
+    html+='<div class="vsh-sec">Needs a category</div><div class="vsh-wbs">'
+      +'<button class="vsh-wb" onclick="vsKitSelect(\'stray\',\'\')">'
+      +'<span class="vsh-wl">Not in the inventory tree</span>'
+      +'<span class="vsh-wn">'+strays+'</span></button></div>';
+  }
+
+  html+='</div>';
+  el.innerHTML=html;
+  var cnt=document.getElementById('vsKitCount');
+  if(cnt) cnt.textContent='';
 }
 
 function kitRenderLanding() {
@@ -14035,7 +16483,13 @@ function _vsBullseyeHods(){
    than being written to the database behind an open tab — a tab holding an
    older copy would otherwise save it straight back over the top. It only
    writes when it finds something missing, so it settles after one pass. */
-function _vsKitHiredMerge(){
+/* This poured the whole catalogue into the inventory, which is how 24p and
+   ProRes came to be listed as kit you could allocate. The two are separate
+   pages now \u2014 the inventory is what Versa has, the kit list is what you can
+   pick from \u2014 so it has done its job and stops here. What it already
+   brought across stays, because Morning Live's prep list points at it. */
+function _vsKitHiredMerge(){ return 0; }
+function _vsKitHiredMergeLegacy(){
   if(typeof kit==='undefined'||!Array.isArray(kit)) return 0;
   if(typeof hiredCatalogue==='undefined'||!Array.isArray(hiredCatalogue)) return 0;
   var have={};
@@ -14137,6 +16591,9 @@ function vsKitBookings(kid){
   var out=[];
   (typeof jobs!=='undefined'?jobs:[]).forEach(function(j){
     if(!j||j.status==='Cancelled') return;
+    /* a wrapped show is not holding anything \u2014 the booking stays in its prep
+       list as history, but it no longer speaks for where the item is */
+    if(typeof _vsJobHoldsKit==='function' && !_vsJobHoldsKit(j)) return;
     (j.prep||[]).forEach(function(p){
       if(!p||String(p.kid)!==String(kid)) return;
       var from=String(p.ks||j.start||'').slice(0,10);
@@ -14210,10 +16667,9 @@ function vsKitNow(k){
       +'<span class="vsk-nowd">'+_vsEsc(_vsRange(n))+'</span>'
     +'</button>';
   }
-  return '<div class="vsk-now free">'
-    +'<span class="vsk-nowl">Free</span>'
-    +'<span class="vsk-nowj">not on anything</span>'
-  +'</div>';
+  /* nothing on it and nothing coming. That is the quietest thing the
+     panel can say, so it says it quietly and without a box. */
+  return '<div class="vsk-now free"><span class="vsk-nowl">Free</span></div>';
 }
 
 /* The block on the item's own page: what it is out on, and what it has
@@ -14272,15 +16728,22 @@ function _vsQrLoad(){
 }
 /* What the code says. A link, so a phone camera does something useful with
    it rather than showing a number nobody can act on. */
+/* The live site, always. This used to take the address of whatever page
+   drew the label, so a code printed from localhost said
+   http://localhost:8785/index.html?kit=123 — dead on anyone's phone, and you
+   would not find out until the labels were on the kit. */
+var VS_LIVE_URL='https://versastudios.github.io/versa-studios/';
 function vsKitQrUrl(k){
   if(!k) return '';
-  var base=location.origin+location.pathname;
-  return base+'?kit='+encodeURIComponent(k.id);
+  return VS_LIVE_URL+'?kit='+encodeURIComponent(k.id);
 }
 /* Draw one, as an SVG path so it prints sharp at any size. */
 function _vsQrSvg(text,px){
   if(!_vsQrLib) return '';
-  var qr=_vsQrLib(0,'M');
+  /* Q tolerates a quarter of the code being lost. These go on kit that gets
+     gaffered over, scuffed in flight cases and handled wet — M's fifteen per
+     cent is for a page in a folder. */
+  var qr=_vsQrLib(0,'Q');
   qr.addData(String(text||''));
   qr.make();
   var n=qr.getModuleCount(), d='';
@@ -14720,14 +17183,17 @@ function lbDel() {
 function renderKitJobs(k) {
   const el=document.getElementById('drwBody');
   const jbs=jobs.filter(j=>(j.prep||[]).some(p=>p.kid===k.id));
-  const allocOpts=jobs.filter(j=>!(j.prep||[]).some(p=>p.kid===k.id)&&j.status!=='Cancelled').map(j=>'<option value="'+j.id+'">'+j.name+'</option>').join('');
+  /* only jobs that have not finished — this list was offering Dragons Den
+     and Cooking with the Stars months after they wrapped */
+  const allocOpts=jobs.filter(j=>!(j.prep||[]).some(p=>p.kid===k.id)&&_vsJobAllocatable(j))
+    .map(j=>'<option value="'+j.id+'">'+j.name+'</option>').join('');
   let html='<div class="det-sec-lbl" style="margin-bottom:8px">Jobs using this item</div>';
   if(!jbs.length){html+='<div style="font-size:14px;color:var(--muted);margin-bottom:12px">Not allocated to any job.</div>';}
   else{html+=jbs.map(j=>{const p=(j.prep||[]).find(x=>x.kid===k.id);return '<div style="display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--border)"><div style="flex:1;cursor:pointer" onclick="closeDrawer();openJobDet('+j.id+')"><div style="font-family:var(--cond);font-size:15px;font-weight:800;color:var(--pure)">'+j.name+'</div><div style="font-size:12px;color:var(--muted)">'+fmtD(j.start)+' – '+fmtD(j.end)+'</div></div>'+(p&&p.done?'<span class="badge b-ok">Prepped</span>':'<span class="badge b-gen">Pending</span>')+'<button onclick="kitDeallocate('+k.id+','+j.id+')" class="rm-btn" style="font-size:11px" title="Remove from job">×</button></div>';}).join('');}
   html+='<div style="margin-top:12px"><div class="dfl" style="font-size:11px;margin-bottom:4px">Allocate to job</div>'+(allocOpts?'<div style="display:flex;gap:6px"><select class="fi" style="font-size:13px;flex:1" id="kitAllocSel_'+k.id+'"><option value="">-- select job --</option>'+allocOpts+'</select><button class="btn-p" style="font-size:13px;padding:4px 12px" onclick="kitAllocate('+k.id+')">Add</button></div>':'<div style="font-size:13px;color:var(--muted)">All active jobs already have this item.</div>')+'</div>';
   el.innerHTML=html;
 }
-function kitAllocate(kid){var sel=document.getElementById('kitAllocSel_'+kid);if(!sel)return;var jid=parseInt(sel.value);if(!jid)return;var j=jobs.find(function(x){return x.id==jid;});if(!j)return;if(!j.prep)j.prep=[];if(!j.prep.find(function(p){return p.kid===kid;}))j.prep.push({kid:kid,done:false,ks:j.start||'',ke:j.end||'',area:'',supplier:'Versa Inventory'});saveData();var k=kit.find(function(x){return x.id===kid;});if(k)renderKitJobs(k);}
+function kitAllocate(kid){var sel=document.getElementById('kitAllocSel_'+kid);if(!sel)return;var jid=parseInt(sel.value);if(!jid)return;var j=jobs.find(function(x){return x.id==jid;});if(!j)return;if(!_vsJobAllocatable(j)){ if(typeof toast==='function') toast((j.name||'That job')+' has finished'); return; }if(!j.prep)j.prep=[];if(!j.prep.find(function(p){return p.kid===kid;}))j.prep.push({kid:kid,done:false,ks:j.start||'',ke:j.end||'',area:'',supplier:'Versa Inventory'});saveData();var k=kit.find(function(x){return x.id===kid;});if(k)renderKitJobs(k);}
 function kitDeallocate(kid,jid){
   var j=jobs.find(function(x){return x.id==jid;});
   if(!j)return;
@@ -14892,12 +17358,25 @@ function openAllocModal() {
 /* Kit goes on a job that is running or still to come. A job that has
    finished, been archived or been cancelled can have kit taken off it, but
    nothing new put on. */
+/* A show marked Ongoing has no finish date \u2014 ShopOn has run since December
+   and the date in its end field is only the last one anybody typed. Judging
+   it by that date dropped it out of the active list and out of every kit
+   allocation menu, which is not what Ongoing means. */
+function _vsJobOngoing(j){
+  return !!j && String(j.status||'').toLowerCase() === 'ongoing';
+}
+function _vsJobEnded(j, onDate){
+  if(!j) return true;
+  if(_vsJobOngoing(j)) return false;
+  var t = onDate || ((typeof today==='function') ? today() : new Date().toISOString().slice(0,10));
+  return !!(j.end && String(j.end).slice(0,10) < t);
+}
 function _vsJobAllocatable(j){
   if(!j||j.archived) return false;
   var st=String(j.status||'').toLowerCase();
   if(st==='finished'||st==='archived'||st==='complete'||st==='completed'||st==='past'||st==='cancelled') return false;
   var t=(typeof today==='function')?today():new Date().toISOString().slice(0,10);
-  if(j.end && String(j.end).slice(0,10) < t) return false;
+  if(_vsJobEnded(j, t)) return false;
   return true;
 }
 function allocKitToJob(jid,kid) {
@@ -15467,7 +17946,9 @@ function submitSlog() {
 function _jobCat(j){
   if(j.archived) return 'archived';
   var t = today();
-  if(j.end && j.end < t) return 'past';
+  /* the same rule the dashboard and the kit allocation use: an Ongoing show
+     has not finished, whatever date happens to be in its end field */
+  if(_vsJobEnded(j, t)) return 'past';
   if(j.start && j.start > t) return 'upcoming';
   return 'active';
 }
@@ -17750,6 +20231,9 @@ function hodSection(j){
   var defaults=['Director','Executive Producer','Lighting Supervisor','Sound Supervisor'];
   defaults.forEach(function(r){if(!j.hods.find(function(h){return h.role===r;}))j.hods.push({role:r,name:''});});
   var rowAt=function(i){ return _hodRow(j,j.hods[i],i); };
+  /* the grouped view has its own cell — role above, name below, nothing
+     drawn around either of them */
+  var cellAt=function(i){ return _vsHodCell(j,j.hods[i],i); };
   var rows=j.hods.map(function(h,i){
     /* Merge saved custom roles into options */
     var allRoles=HOD_ROLES.slice();
@@ -17757,7 +20241,7 @@ function hodSection(j){
     j.hods.forEach(function(hh){if(hh.role&&allRoles.indexOf(hh.role)<0)allRoles.push(hh.role);});
     var roleOpts=allRoles.map(function(r){return '<option'+(r===h.role?' selected':'')+'>'+r+'</option>';}).join('');
     return '<div class="jd-hod-row">'
-      +'<select onchange="hodSetRole('+j.id+','+i+',this.value)"><option value="">-- Role --</option>'+roleOpts+'<option value="__custom__" style="color:var(--accent);font-style:italic">+ Custom...</option></select>'
+      +'<select onchange="hodSetRole('+j.id+','+i+',this.value,this)"><option value="">-- Role --</option>'+roleOpts+'<option value="__custom__" style="color:var(--accent);font-style:italic">+ Custom...</option></select>'
       +'<input value="'+((h.name||'').replace(/"/g,'&quot;'))+'" placeholder="Name..." onchange="hodSetName('+j.id+','+i+',this.value)"/>'
       +'<button class="rm-btn" onclick="hodRemove('+j.id+','+i+')">×</button>'
       +'</div>';
@@ -17772,12 +20256,30 @@ function hodSection(j){
       var d=_vsHodDept(h.role);
       (buckets[d]=buckets[d]||[]).push(i);
     });
-    grouped='<div class="jd-hodgroups">'+order.filter(function(d){return buckets[d]&&buckets[d].length;}).map(function(d){
-      return '<div class="jd-hodgrp"><div class="jd-hodgh">'+_vsEsc(d)
+    var present=order.filter(function(d){return buckets[d]&&buckets[d].length;});
+    var block=function(d,fixed){
+      return '<div class="jd-hodgrp'+(fixed?' jd-hodsm':'')+'"><div class="jd-hodgh">'+_vsEsc(d)
         +'<em>'+buckets[d].length+'</em></div>'
-        +'<div class="jd-hodgb">'+buckets[d].map(function(i){return rowAt(i);}).join('')+'</div>'
+        +'<div class="jd-hodgb"'+(fixed?' style="grid-template-columns:repeat('+Math.min(buckets[d].length,5)+',203px)"':'')+'>'
+        +buckets[d].map(function(i){return cellAt(i);}).join('')+'</div>'
       +'</div>';
-    }).join('')+'</div>';
+    };
+    /* A department of two used to take a whole row and leave the rest of it
+       empty. The big ones still get a row to themselves; the small ones stand
+       side by side on a shelf, on the same column width, so nothing is out of
+       line and nothing is wasted. */
+    var out='', shelf=[];
+    var flush=function(){
+      if(!shelf.length) return;
+      out+='<div class="jd-hodshelf">'+shelf.map(function(d){return block(d,true);}).join('')+'</div>';
+      shelf=[];
+    };
+    present.forEach(function(d){
+      if(buckets[d].length<=5) shelf.push(d);
+      else { flush(); out+=block(d,false); }
+    });
+    flush();
+    grouped='<div class="jd-hodgroups">'+out+'</div>';
   }
   return '<div class="jd-card'+(grouped?' jd-hodcard':'')+'">'
     +'<div class="jd-card-hd">'
@@ -17808,6 +20310,25 @@ function _vsHodDept(role){
 /* How many channels a MADI stream carries. Raising this appends empty
    channels to every stream; nothing already named is touched. */
 var VS_MADI_CH=60;
+/* One person in the grouped view: the role reads as a quiet label, the name
+   as the thing you came to read. Both are still editable — the select and
+   the input are simply not drawn until you touch them. */
+function _vsHodCell(j,h,i){
+  if(!h) return '';
+  var allRoles=HOD_ROLES.slice();
+  if(h.role&&allRoles.indexOf(h.role)<0)allRoles.push(h.role);
+  j.hods.forEach(function(hh){if(hh.role&&allRoles.indexOf(hh.role)<0)allRoles.push(hh.role);});
+  allRoles.sort(function(a,b){return String(a).localeCompare(String(b));});
+  var roleOpts=allRoles.map(function(r){return '<option'+(r===h.role?' selected':'')+'>'+_vsEsc(r)+'</option>';}).join('');
+  return '<div class="vs-hodc">'
+    +'<select title="'+_vsEsc(h.role||'')+'" onchange="hodSetRole('+j.id+','+i+',this.value,this)">'
+      +'<option value="">— Role</option>'+roleOpts
+      +'<option value="__custom__">+ Add a role…</option></select>'
+    +'<input value="'+((h.name||'').replace(/"/g,'&quot;'))+'" placeholder="Name…" '
+      +'onchange="hodSetName('+j.id+','+i+',this.value)"/>'
+    +'<button class="rm-btn" title="Remove" onclick="hodRemove('+j.id+','+i+')">×</button>'
+  +'</div>';
+}
 function _hodRow(j,h,i){
   if(!h) return '';
   var allRoles=HOD_ROLES.slice();
@@ -17815,7 +20336,7 @@ function _hodRow(j,h,i){
   j.hods.forEach(function(hh){if(hh.role&&allRoles.indexOf(hh.role)<0)allRoles.push(hh.role);});
   var roleOpts=allRoles.map(function(r){return '<option'+(r===h.role?' selected':'')+'>'+r+'</option>';}).join('');
   return '<div class="jd-hod-row">'
-    +'<select onchange="hodSetRole('+j.id+','+i+',this.value)"><option value="">-- Role --</option>'+roleOpts
+    +'<select onchange="hodSetRole('+j.id+','+i+',this.value,this)"><option value="">-- Role --</option>'+roleOpts
       +'<option value="__custom__" style="color:var(--accent);font-style:italic">+ Custom...</option></select>'
     +'<input value="'+((h.name||'').replace(/"/g,'&quot;'))+'" placeholder="Name..." onchange="hodSetName('+j.id+','+i+',this.value)"/>'
     +'<button class="rm-btn" onclick="hodRemove('+j.id+','+i+')">\u00d7</button>'
@@ -17846,9 +20367,26 @@ function infoInlineMeetingNotes(j){
     +(rows||'<div style="color:var(--muted);font-size:13px;padding:4px 0">No notes yet.</div>')
     +'</div>';
 }
-function hodSetRole(jid,idx,val){
+function hodSetRole(jid,idx,val,el){
   var j=jobs.find(function(x){return x.id===jid;});if(!j||!j.hods[idx])return;
-  if(val==='__custom__'){var c=prompt('Enter custom role:');if(c){j.hods[idx].role=c;if(HOD_ROLES.indexOf(c)<0)HOD_ROLES.push(c);}else return;}
+  if(val==='__custom__'){
+    /* asked where you are standing, not in a box in the middle of the screen */
+    var was=j.hods[idx].role||'';
+    if(typeof vsAsk==='function'){
+      vsAsk({label:'Role',value:'',placeholder:'Camera Trainee…',anchor:el,okLabel:'Add',
+        onOk:function(c){
+          c=(c||'').trim();
+          if(!c){ if(el) el.value=was; return; }
+          j.hods[idx].role=c;
+          if(HOD_ROLES.indexOf(c)<0)HOD_ROLES.push(c);
+          saveData();renderJobDet(j);
+        }});
+      if(el) el.value=was;
+      return;
+    }
+    var p=prompt('Enter custom role:');
+    if(p){j.hods[idx].role=p;if(HOD_ROLES.indexOf(p)<0)HOD_ROLES.push(p);}else return;
+  }
   else j.hods[idx].role=val;
   saveData();renderJobDet(j);
 }
@@ -19577,7 +22115,10 @@ var VS_NOTE_KINDS=[
   {key:'note',     label:'Note',     col:'#4f5a67', dark:'#9fb0c2'},
   {key:'action',   label:'Action',   col:'#8a5a22', dark:'#e0a860'},
   {key:'decision', label:'Decision', col:'#3d6b4c', dark:'#7fc296'},
-  {key:'issue',    label:'Issue',    col:'#9a3535', dark:'#f08a8a'}
+  {key:'issue',    label:'Issue',    col:'#9a3535', dark:'#f08a8a'},
+  /* things to 3D print \u2014 a list of its own on the Notes page, but the same
+     record underneath, so it ticks off and files against a job like the rest */
+  {key:'print',    label:'To print',  col:'#4a5d6b', dark:'#9ab6c8'}
 ];
 function _vsNoteKind(k){
   return VS_NOTE_KINDS.find(function(x){return x.key===k;})||VS_NOTE_KINDS[0];
@@ -19784,6 +22325,7 @@ function vsNotesList(scope){
 function vsNotesRender(scope){
   var el=document.getElementById('vsnList_'+_vsNoteKey(scope));
   if(!el) return;
+  el.classList.add('vsn-list');
   el.innerHTML=vsNotesList(scope);
   el.querySelectorAll('.vsn-txt').forEach(_vsNoteGrow);
   var c=document.getElementById('vsnCount_'+_vsNoteKey(scope));
@@ -19899,6 +22441,152 @@ function vsNoteGoJob(jid){
 }
 
 /* ── the Notes page ──────────────────────────────────────────────────── */
+/* \u2500\u2500 To do \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+   Notes already had an Action kind and a done flag, so the list is the
+   actions themselves rather than a second place to write things down. An
+   action put against Bullseye turns up here on its own, and ticking it here
+   ticks it there \u2014 one item, two views of it, never two copies to reconcile. */
+function _vsTodoAll(kind){
+  kind=kind||'action';
+  var out=[];
+  (window._notes||[]).forEach(function(n){
+    if(n && n.kind===kind) out.push({n:n, where:'', scope:'me'});
+  });
+  (typeof jobs!=='undefined'?jobs:[]).forEach(function(j){
+    if(!Array.isArray(j.noteItems)) return;
+    j.noteItems.forEach(function(n){
+      if(n && n.kind===kind) out.push({n:n, where:j.name||'', scope:'job:'+j.id, job:j});
+    });
+  });
+  out.sort(function(a,b){
+    if(!!a.n.done !== !!b.n.done) return a.n.done ? 1 : -1;     // open first
+    return String(b.n.createdAt||'').localeCompare(String(a.n.createdAt||''));
+  });
+  return out;
+}
+
+function vsTodoSetText(scope, id, val){
+  var st=_vsNoteStore(scope);
+  var n=(st.list||[]).find(function(x){ return String(x.id)===String(id); });
+  if(!n) return;
+  val=(val||'').trim();
+  if(!val) return;                       // emptying it is not how you delete it
+  if(n.text===val) return;
+  n.text=val;
+  st.save();
+}
+function vsTodoRemove(scope, id){
+  var st=_vsNoteStore(scope);
+  var i=(st.list||[]).findIndex(function(x){ return String(x.id)===String(id); });
+  if(i<0) return;
+  var gone=st.list.splice(i,1)[0];
+  st.save(); vsTodoRender();
+  if(typeof _vsUndoBar==='function'){
+    _vsUndoBar('Removed \u201c'+(gone.text||'it')+'\u201d', function(){
+      st.list.splice(Math.min(i, st.list.length), 0, gone);
+      st.save(); vsTodoRender();
+    });
+  }
+}
+/* Move it to another job, or off the jobs and onto you. */
+function vsTodoMove(scope, id, dest){
+  if(!dest || dest===scope) return;
+  var from=_vsNoteStore(scope), to=_vsNoteStore(dest);
+  var i=(from.list||[]).findIndex(function(x){ return String(x.id)===String(id); });
+  if(i<0) return;
+  var n=from.list.splice(i,1)[0];
+  to.list.unshift(n);
+  from.save(); if(to.save!==from.save) to.save();
+  vsTodoRender();
+}
+
+function vsTodoToggle(scope, id){
+  var st=_vsNoteStore(scope);
+  var n=(st.list||[]).find(function(x){ return String(x.id)===String(id); });
+  if(!n) return;
+  n.done = !n.done;
+  n.doneAt = n.done ? new Date().toISOString() : '';
+  st.save();
+  vsTodoRender();
+}
+
+function vsTodoAdd(kind){
+  kind=kind||'action';
+  var sfx=(kind==='print'?'Print':'');
+  var box=document.getElementById('vsTodo'+sfx+'New');
+  var dest=document.getElementById('vsTodo'+sfx+'Where');
+  if(!box) return;
+  var text=(box.value||'').trim();
+  if(!text){ box.focus(); return; }
+  var scope=(dest&&dest.value)||'me';
+  var st=_vsNoteStore(scope);
+  st.list.unshift({id:Date.now(), kind:kind, text:text, area:'',
+    pinned:false, done:false, author:_vsNoteAuthor(), createdAt:new Date().toISOString()});
+  st.save();
+  box.value='';
+  vsTodoRender();
+  var again=document.getElementById('vsTodo'+sfx+'New'); if(again) again.focus();
+}
+function vsTodoKey(ev, kind){ if(ev && ev.key==='Enter'){ ev.preventDefault(); vsTodoAdd(kind); } }
+
+var _vsTodoShowDone=false;
+function vsTodoShowDone(v){ _vsTodoShowDone=!!v; vsTodoRender(); }
+
+function vsTodoRender(){
+  _vsTodoList('action','vsTodoBody','');
+  _vsTodoList('print','vsTodoPrintBody','Print');
+}
+function _vsTodoList(kind, hostId, sfx){
+  var el=document.getElementById(hostId); if(!el) return;
+  var all=_vsTodoAll(kind);
+  var open=all.filter(function(t){ return !t.n.done; });
+  var done=all.filter(function(t){ return !!t.n.done; });
+  var show=_vsTodoShowDone ? all : open;
+  var ph=(kind==='print') ? 'Something to 3D print\u2026' : 'Something to do\u2026';
+  var none=(kind==='print') ? 'Nothing to print.' : 'Nothing to do.';
+
+  var jobOpts='<option value="me">Just me</option>'
+    + (typeof jobs!=='undefined'?jobs:[]).filter(function(j){
+        return typeof _vsJobAllocatable!=='function' || _vsJobAllocatable(j);
+      }).map(function(j){
+        return '<option value="job:'+j.id+'">'+_vsEsc(j.name||'')+'</option>';
+      }).join('');
+
+  /* Written down is not the same as final \u2014 the wording is an input, the
+     job it belongs to is a picker, and there is a cross to remove it. */
+  var rows = show.length ? show.map(function(t){
+    var n=t.n;
+    return '<div class="vstd-row'+(n.done?' done':'')+'">'
+      + '<button class="vstd-tick" role="checkbox" aria-checked="'+(n.done?'true':'false')+'" '
+        + 'onclick="vsTodoToggle(\''+t.scope+'\',\''+n.id+'\')">'
+        + (n.done?'\u2713':'') + '</button>'
+      + '<input class="vstd-txt" value="'+String(n.text||'').replace(/"/g,'&quot;')+'" '
+        + 'onchange="vsTodoSetText(\''+t.scope+'\',\''+n.id+'\',this.value)" '
+        + 'onkeydown="if(event.key===\'Enter\')this.blur()">'
+      + '<button class="vstd-rm" title="Remove" onclick="vsTodoRemove(\''+t.scope+'\',\''+n.id+'\')">\u00d7</button>'
+      + '<select class="vstd-where" onchange="vsTodoMove(\''+t.scope+'\',\''+n.id+'\',this.value)">'
+        + jobOpts.replace('value="'+t.scope+'"', 'value="'+t.scope+'" selected')
+        + '</select>'
+      + '<span class="vstd-when">'+_vsNoteDate(n.createdAt)+'</span>'
+    + '</div>';
+  }).join('') : '<div class="vstd-none">'+none+'</div>';
+
+  el.innerHTML=
+      '<div class="vstd-add">'
+    +   '<input id="vsTodo'+sfx+'New" placeholder="'+ph+'" onkeydown="vsTodoKey(event,\''+kind+'\')">'
+    +   '<select id="vsTodo'+sfx+'Where">'+jobOpts+'</select>'
+    +   '<button class="vstd-addbtn" onclick="vsTodoAdd(\''+kind+'\')">Add</button>'
+    + '</div>'
+    + '<div class="vstd-meta">'
+    +   '<span>'+open.length+(kind==='print'?' to print':' to do')+'</span>'
+    +   (done.length
+        ? '<button class="vstd-toggle" onclick="vsTodoShowDone('+(!_vsTodoShowDone)+')">'
+          + (_vsTodoShowDone ? 'Hide the '+done.length+' done' : 'Show the '+done.length+' done') + '</button>'
+        : '')
+    + '</div>'
+    + rows;
+}
+
 async function vsNotesPage(){
   var el=document.getElementById('notesPageBody');
   if(!el) return;
@@ -19906,10 +22594,25 @@ async function vsNotesPage(){
   try{ await notesLoad(); }catch(e){}
   _vsNoteNormalise();
   _vsNoteMigrateAll();
-  el.innerHTML='<div class="vsn-page">'
-    +'<div class="vsn-hdr"><span class="vsn-sub">Your own notes, and everything written against the jobs</span></div>'
-    +vsNotesBoard('all',{dest:true,fromPicker:true,ph:'Write a note…'})
-    +'</div>';
+  /* notes on the left, what you have to do on the right — they are read
+     together, so they sit together */
+  /* Three columns, each in its own box: what has been written down, what
+     has to be done, and what is waiting to be printed. */
+  el.innerHTML='<div class="vsn-split">'
+    +'<section class="vsn-panel vsn-col">'
+      +'<h3 class="vsn-ph">Notes</h3>'
+      +vsNotesBoard('all',{dest:true,fromPicker:true,ph:'Write a note…'})
+    +'</section>'
+    +'<section class="vsn-panel vstd">'
+      +'<h3 class="vsn-ph">To do</h3>'
+      +'<div id="vsTodoBody"></div>'
+    +'</section>'
+    +'<section class="vsn-panel vstd">'
+      +'<h3 class="vsn-ph">To 3D print</h3>'
+      +'<div id="vsTodoPrintBody"></div>'
+    +'</section>'
+  +'</div>';
+  vsTodoRender();
   vsNotesAfterPaint('all');
 }
 /* The first notes module called a note a type and a job a tag. Same notes,
