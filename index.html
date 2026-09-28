@@ -12732,7 +12732,7 @@ function nav(page, el) {
   if(page==='holidays') { initHolSelectors(); renderHolidays(); }
   if(page==='ops') opsInit();
   if(page==='info') renderInfoPage();
-  if(page==='notes') vsNotesPage();
+  if(page==='notes') _vsNotesFrame();
   if(page==='meetings') mtgInitPage();
   if(page==='networking') (async function(){ try{ if(!_netLoaded) await netLoad(); renderNetworking(); }catch(e){console.warn('renderNetworking failed:',e);} })();
   if(page==='trello') trelloInit();
@@ -22657,6 +22657,19 @@ function _vsTodoList(kind, hostId, sfx){
     + rows;
 }
 
+/* The Notes entry opens the separate Notes page (versa-notes.html), shown here
+   so the sidebar stays, the same way the planner is. It is a private board with
+   its own record (notesboard_*), kept apart from the Dashboard's data; the old
+   in-app Notes page below stays in the file but is no longer opened. The path
+   is relative, so a local copy of the Dashboard shows the local copy of the
+   page, which runs in its test mode and saves nothing to the database. */
+function _vsNotesFrame(){
+  var pg=document.getElementById('page-notes');
+  if(!pg||document.getElementById('notesFrame')) return;
+  pg.style.overflow='hidden';
+  pg.innerHTML='<iframe id="notesFrame" src="versa-notes.html?embed=1" title="Notes"'
+    +' style="width:100%;height:calc(100vh - 80px);min-height:480px;border:0;display:block;background:transparent"></iframe>';
+}
 async function vsNotesPage(){
   var el=document.getElementById('notesPageBody');
   if(!el) return;
