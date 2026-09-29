@@ -145,7 +145,7 @@ textarea:focus-visible,input:focus-visible,select:focus-visible{outline:none}
 .top{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;margin-bottom:6px}
 .top h1{min-width:0;font-size:26px;line-height:32px;font-weight:800;letter-spacing:-.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .today{margin-left:6px;color:var(--muted);font-weight:700}
-.today .ds{display:none}
+.today .ds,.today .dx{display:none}
 .theme{flex:none;height:44px;margin-right:-2px;padding:0 2px 0 12px;font-size:14px;font-weight:600;color:var(--muted)}
 /* the header's quiet links: the Dashboard, and the theme */
 .top-r{flex:none;display:flex;align-items:center}
@@ -946,6 +946,11 @@ html.kb .np.fp{--fpb:8px}
   .np.fp .np-h{font-size:17px}
   .np.fp .np-ta,.np.fp #npText{font-size:17px;line-height:28px;padding:10px 16px 20px}
 }
+/* the narrowest phones: the header's date without its weekday, beside Dashboard and Dark */
+@media (max-width:359px){
+  .today .ds{display:none}
+  .today .dx{display:inline}
+}
 /* on the narrowest phones the bar reads "● Morning Live": "notes" is still there for a screen
    reader, so the whole name fits beside "Exit full page" */
 @media (max-width:359px){
@@ -966,13 +971,24 @@ html.fp .snack.show{transform:translate(-50%,-100%)}
      focusable) at the instant the page opens and hands it focus */
   .pg,.pg *,html.layer .pg,.page,html.layer .page{transition:none!important}
 }
+
+/* ── inside the Dashboard ───────────────────────────────────────────────── */
+/* The Dashboard's Notes entry shows this page in a frame (versa-notes.html?embed=1). Its own
+   header already says "Notes" and carries the light/dark switch, so this page's header row
+   (title, date, Dashboard link, Dark) goes, and the Notepad starts at the top. */
+html.embed .top{display:none}
+html.embed .page{padding-top:calc(2px + env(safe-area-inset-top))}
 </style>
+<script>
+/* set before the page draws, so the header row never flashes up inside the Dashboard */
+if (/[?&]embed=1(&|$)/.test(location.search) || window.self !== window.top) document.documentElement.classList.add('embed');
+</script>
 </head>
 <body>
 <div class="page" id="main">
 
   <header class="top">
-    <h1>Notes<span class="today"><span class="dl" id="dl"></span><span class="ds" id="ds"></span></span></h1>
+    <h1>Notes<span class="today"><span class="dl" id="dl"></span><span class="ds" id="ds"></span><span class="dx" id="dx"></span></span></h1>
     <span class="top-r">
       <a class="toplink" id="dashLink" href="index.html">Dashboard</a>
       <button type="button" class="theme" data-act="theme" aria-label="Switch to dark">Dark</button>
@@ -1174,41 +1190,85 @@ html.fp .snack.show{transform:translate(-50%,-100%)}
   /* Merge this device's board (local) with the saved one (remote). base is the saved board this
      device last agreed with; with it, a pad or the set of cards changed on both sides is combined
      rather than one side dropped. opts.now is the merge's own moment (later than both). */
+  /* what a record says, leaving out when it was said */
+  const body = x => { if (!x) return null; const o = Object.assign({}, x); delete o.updatedAt; delete o.edited; return JSON.stringify(o); };
+  /* the parts of a record two devices can change independently (grouped where they go together) */
+  const ITEM_FIELDS = [['kind'], ['text'], ['scope', 'order'], ['pinned'], ['done', 'doneAt']];
+  const SECTION_FIELDS = [['name'], ['tint']];
+
   function mergeDocs(local, remote, opts){
     opts = opts || {};
     const L = normDoc(local), R = normDoc(remote), B = opts.base ? normDoc(opts.base) : null;
     const now = iso(opts.now) || new Date().toISOString();
+    const at = (l, r) => later(now, bump(l && l.updatedAt), bump(r && r.updatedAt));
     const out = empty();
-    const merge = (a, b) => { const m = new Map(a.map(x => [x.id, x])); b.forEach(x => m.set(x.id, pick(m.get(x.id), x))); return Array.from(m.values()); };
-    out.items = merge(L.items, R.items);
-    out.sections = merge(L.sections, R.sections);
-    const padText = p => p && !p.deleted ? p.text : '';
-    const bothChanged = (l, r, b) => l !== r && l !== b && r !== b;
-    Array.from(new Set(Object.keys(L.pages).concat(Object.keys(R.pages)))).sort().forEach(k => {
-      const l = L.pages[k], r = R.pages[k];
-      if (B && l && r && !l.deleted && !r.deleted){
-        const bt = padText(B.pages[k]);
-        if (bothChanged(l.text, r.text, bt)){
-          const at = later(now, bump(l.updatedAt), bump(r.updatedAt));
-          out.pages[k] = {text: mergePadText(bt, l.text, r.text, opts.label), edited: at, updatedAt: at};
-          return;
+    /* One record from both copies. Against what they last agreed (b): a copy that has not changed
+       it gives way to one that has, whatever the stamps say (an Undo back to the saved words must
+       not override the other device's edit); both changed it: part by part, each part from the
+       copy that changed it, a part both changed from the newer copy (a reorder here and new words
+       there both stand). With nothing agreed, or a deletion involved, the newer copy wins. */
+    function one(l, r, b, fields){
+      if (!l || !r) return l || r;
+      const lb = body(l), rb = body(r);
+      if (lb === rb) return pick(l, r);
+      if (b){
+        const bb = body(b);
+        if (lb === bb) return r;
+        if (rb === bb) return l;
+        if (fields && !l.deleted && !r.deleted && !b.deleted){
+          const newer = pick(l, r), o = Object.assign({}, newer);
+          fields.forEach(g => {
+            const v = x => JSON.stringify(g.map(f => x[f] === undefined ? null : x[f]));
+            const src = v(l) === v(b) ? r : v(r) === v(b) ? l : newer;
+            g.forEach(f => { if (src[f] === undefined) delete o[f]; else o[f] = src[f]; });
+          });
+          o.updatedAt = at(l, r);
+          return o;
         }
       }
-      out.pages[k] = pick(l, r);
+      return pick(l, r);
+    }
+    const merge = (a, b, c, fields) => {
+      const A = new Map(a.map(x => [x.id, x])), Bm = new Map(b.map(x => [x.id, x])), Cm = new Map((c || []).map(x => [x.id, x]));
+      return Array.from(new Set([...A.keys(), ...Bm.keys()])).map(id => one(A.get(id), Bm.get(id), c ? Cm.get(id) || null : null, fields));
+    };
+    out.items = merge(L.items, R.items, B && B.items, ITEM_FIELDS);
+    out.sections = merge(L.sections, R.sections, B && B.sections, SECTION_FIELDS);
+    /* a pad (a notes page, or the Notepad) both copies changed keeps this copy's words and adds the
+       other's new lines; a notes page one copy deleted (its section went) while the other wrote on
+       it keeps the words (the page then brings them to General) */
+    const pad = (l, r, b) => {
+      if (!l || !r) return l || r;
+      const lb = body(l), rb = body(r);
+      if (lb === rb) return pick(l, r);
+      if (!b) return pick(l, r);
+      const bb = body(b.deleted ? b : {text: b.text});
+      if (lb === bb) return r;
+      if (rb === bb) return l;
+      const t = at(l, r);
+      if (!l.deleted && !r.deleted) return {text: mergePadText(b.deleted ? '' : b.text, l.text, r.text, opts.label), edited: t, updatedAt: t};
+      return Object.assign({}, l.deleted ? r : l, {edited: t, updatedAt: t});
+    };
+    Array.from(new Set(Object.keys(L.pages).concat(Object.keys(R.pages)))).sort().forEach(k => {
+      // a page the copies had not agreed on counts as blank, so two new pages combine
+      const p = pad(L.pages[k], R.pages[k], B ? (B.pages[k] || {text: ''}) : null);
+      if (p) out.pages[k] = p;
     });
-    if (B && bothChanged(L.notepad.text, R.notepad.text, B.notepad.text))
-      out.notepad = {text: mergePadText(B.notepad.text, L.notepad.text, R.notepad.text, opts.label),
-        updatedAt: later(now, bump(L.notepad.updatedAt), bump(R.notepad.updatedAt))};
-    else out.notepad = pick(L.notepad, R.notepad);
-    out.cardOrder = pick(L.cardOrder, R.cardOrder);
-    // the cards on the board: added or removed on either side since they agreed, both count
+    out.notepad = pad(L.notepad, R.notepad, B ? B.notepad : null);
+    // the arranged order: the copy that changed it; both, the newer
     const key = x => x.list.join('\n');
-    if (B && bothChanged(key(L.shown), key(R.shown), key(B.shown))){
+    const lists = (l, r, b) => key(l) === key(r) ? pick(l, r) : b && key(l) === key(b) ? r : b && key(r) === key(b) ? l : null;
+    out.cardOrder = lists(L.cardOrder, R.cardOrder, B && B.cardOrder) || pick(L.cardOrder, R.cardOrder);
+    // the cards on the board: added or removed on either side since they agreed, both count (and
+    // the result is stamped as the newest, so the other device takes it rather than its own)
+    out.shown = lists(L.shown, R.shown, B && B.shown);
+    if (!out.shown && B){
       const b = new Set(B.shown.list), set = new Set(b);
       [L, R].forEach(d => { d.shown.list.forEach(s => { if (!b.has(s)) set.add(s); }); });
       [L, R].forEach(d => { const h = new Set(d.shown.list); b.forEach(s => { if (!h.has(s)) set.delete(s); }); });
-      out.shown = {list: Array.from(set).sort(), updatedAt: later(L.shown.updatedAt, R.shown.updatedAt)};
-    } else out.shown = pick(L.shown, R.shown);
+      out.shown = {list: Array.from(set).sort(), updatedAt: at(L.shown, R.shown)};
+    }
+    if (!out.shown) out.shown = pick(L.shown, R.shown);
     // names: every show's last known name, from both; where they disagree the saved board's stands
     // (a device updates a name only when its own job list changes, so they settle rather than trade)
     out.names = Object.assign({}, L.names, R.names);
@@ -1304,11 +1364,15 @@ const boardKeyFor = email => 'notesboard_' + String(email).toLowerCase().replace
 const USER = {email: null, name: ''};
 
 /* Every request to the database goes through here. A test copy may only read from the live
-   database, and never a notes board there: anything else is refused before it leaves the page. */
+   database, and never a notes board there: anything else is refused before it leaves the page.
+   The test copy's rule is kept by where a request may write, not by recognising the live address
+   (which a spelling such as a trailing dot or another port would slip past): outside the live page
+   the only place anything but a read may go is the local mock named by ?mock=. */
+const MOCK_ORIGIN = MOCK ? new URL(MOCK).origin : null;
 function net(url, opts){
   opts = opts || {};
   const u = new URL(url, location.href), method = String(opts.method || 'GET').toUpperCase();
-  if (u.origin === SB_ORIGIN && MODE !== 'live'){
+  if (MODE !== 'live' && u.origin !== MOCK_ORIGIN){
     if (method !== 'GET') return Promise.reject(new Error('Refused: a test copy never writes to the live database'));
     let h = u.href;
     try { h = decodeURIComponent(h); } catch (e) {}
@@ -4291,6 +4355,21 @@ function applyDoc(doc){
   // an item whose section has gone (deleted on one device as it was moved there on another), or
   // whose place is unreadable, comes to General; the next save records the move
   items.forEach(it => { if (!(it.scope === 'me' || isJob(it.scope) || secOf(it.scope))) it.scope = 'me'; });
+  // likewise a section's notes page written on one device as the section was deleted on another:
+  // the lines General's page does not already have come to it under "From <section>" (nothing is
+  // left on a page no card can open); the next save records both
+  Object.keys(PAGES).forEach(s => {
+    if (!isSec(s) || secOf(s)) return;
+    const text = String(PAGES[s].text || '');
+    delete PAGES[s];
+    const g = pageOf('me'), gt = String(g.text || '');
+    const have = new Set(gt.split('\n').map(l => l.trim()).filter(Boolean));
+    const add = text.split('\n').filter(l => l.trim() && !have.has(l.trim()));
+    if (!add.length) return;
+    const was = secs.get(s.slice(4));
+    g.text = (gt.trim() ? gt.replace(/\s+$/, '') + '\n\n' : '') + 'From ' + (was && was.name ? was.name : 'a deleted section') + '\n' + add.join('\n');
+    g.edited = new Date();
+  });
 }
 /* the working copy emptied, before a fresh load (a read-only copy on screen is simply replaced) */
 function resetWorking(){
@@ -4313,7 +4392,8 @@ function resetWorking(){
    put(value, base, ver) → {ok, ver} when written, {conflict} when someone else saved first. */
 function restAdapter(origin, key){
   // enforced here, not just by habit: only the live page keeps its board in the live database
-  if (origin === SB_URL && MODE !== 'live') throw new Error('Refused: a test copy never keeps its board in the live database');
+  // (outside the live page, only the local mock named by ?mock=)
+  if (MODE !== 'live' && (!MOCK || origin !== MOCK)) throw new Error('Refused: a test copy never keeps its board in the live database');
   if (!/^notesboard_[a-z0-9_]+$/.test(key)) throw new Error('Refused: not a notes board');
   const hdr = extra => Object.assign({apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY}, extra || {});
   const K = 'key=eq.' + encodeURIComponent(key);
@@ -4524,13 +4604,20 @@ async function save(o){
    and adds the other's new lines. */
 function mergeRemote(row){
   const value = row.value;
+  // what has been typed here is stamped (and kept in this browser) before anything else happens
+  stamp();
   if (value && typeof value === 'object' && (+value.v || 0) > 1){
     // saved by a newer version of this page: stop, rather than save over what it cannot read
     SYNC.loaded = false;
     loadFailed(Object.assign(new Error('newer'), {newer: true}));
     throw Object.assign(new Error('newer'), {refused: true});
   }
-  stamp();
+  if (!value || typeof value !== 'object' || Array.isArray(value)){
+    // not a board this page can read (as at load): stop saving rather than write over it
+    SYNC.loaded = false;
+    loadFailed(new Error('The saved board is not readable'));
+    throw Object.assign(new Error('The saved board is not readable'), {refused: true});
+  }
   const local = buildDoc(), remote = NotesCore.normDoc(value);
   const merged = NotesCore.mergeDocs(local, remote, {base: SYNC.base, now: clockISO(), label: fromLabel()});
   SYNC.ver = row.updated_at; seen(row.updated_at);
@@ -4545,7 +4632,13 @@ function mergeRemote(row){
 function afterRemote(){
   if (S.openId){
     const it = get(S.openId), ta = document.querySelector('.it[data-id="' + S.openId + '"] .edit');
-    if (!it) S.openId = null;
+    if (!it){
+      // deleted on another device while open here: the editor closes, so nothing more is typed
+      // into an item that no longer exists
+      S.openId = null;
+      if (ta && document.activeElement === ta) ta.blur();
+      snack('An item open here was deleted on another device');
+    }
     // an item open for editing, not yet typed in, takes the other device's words where it stands
     else if (ta && ta.value === S.openOrig && it.text !== ta.value){ ta.value = it.text; S.openOrig = it.text; autosize(ta); }
   }
@@ -4581,10 +4674,15 @@ async function pull(){
   if (!SYNC.loaded || SYNC.ro) return;
   if (SYNC.saving || SYNC.pulling){ SYNC.pullAgain = true; return; }
   SYNC.pulling = true;
+  const ver0 = SYNC.ver;
   try {
     const row = await SYNC.adapter.get();
     reached();
-    if (!row){
+    // a save that ran meanwhile has moved this copy on, so this reply may be older than what it now
+    // holds: merging it would put this copy back on an old version (and an old base, which can bring
+    // back lines and cards already removed). Read again once the save is done.
+    if (SYNC.saving || !sameVer(SYNC.ver, ver0)) SYNC.pullAgain = true;
+    else if (!row){
       // the saved board has gone: this copy writes it again with its next save
       if (SYNC.ver != null){ SYNC.ver = null; SYNC.base = NotesCore.empty(); refreshDirty(); }
     } else if (!sameVer(row.updated_at, SYNC.ver)) mergeRemote(row);
@@ -4990,6 +5088,7 @@ function paintDate(){
   DAY0 = d.getDate();
   $('#dl').textContent = WDAYS[d.getDay()] + ' ' + d.getDate() + ' ' + MONTHS[d.getMonth()];
   $('#ds').textContent = WDAYS[d.getDay()].slice(0, 3) + ' ' + d.getDate() + ' ' + MON[d.getMonth()];
+  $('#dx').textContent = d.getDate() + ' ' + MON[d.getMonth()];
 }
 setInterval(() => {
   if (new Date().getDate() === DAY0) return;
@@ -5025,6 +5124,16 @@ padLoad(pads.main);
 // light unless dark was chosen here (remembered), or asked for with ?theme=dark
 const theme0 = PARAMS.get('theme');
 setTheme(theme0 === 'dark' || theme0 === 'light' ? theme0 : ls.get('vsNotes_theme') === 'dark' ? 'dark' : 'light');
+/* inside the Dashboard its own switch decides, and a change there shows here straight away:
+   'soft' and 'light' are light; 'softdark' and the classic theme (no attribute) are dark */
+if (document.documentElement.classList.contains('embed')){
+  try {
+    const pd = window.parent.document.documentElement;
+    const follow = () => { const t = pd.getAttribute('data-theme') || ''; setTheme(t === 'soft' || t === 'light' ? 'light' : 'dark'); };
+    follow();
+    new MutationObserver(follow).observe(pd, {attributes: true, attributeFilter: ['data-theme']});
+  } catch (e) {}   // not framed by the Dashboard (or not the same site): keep this page's own choice
+}
 paintDate();
 $('#dashLink').href = LIVE ? 'index.html' : LIVE_DASHBOARD;
 if (MODE !== 'live'){
