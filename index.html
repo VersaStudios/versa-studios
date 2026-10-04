@@ -2927,14 +2927,14 @@ html[data-theme="softdark"] #jdContent .jd-hodcard{display:block!important}
    sidebar. Everything is under .vsw, so nothing here reaches another page. */
 .vsw{max-width:1260px;font-size:13.5px;line-height:1.4;letter-spacing:-.011em;color:var(--ink);
   --w-muted:#666666;--w-subtle:#4a4a4a;--w-tile:#f3f3f3;--w-tile-h:#eaeaea;--w-row:#f4f4f4;
-  --w-red:#9a3535;--w-red-t:#f2d3ce;--w-red-th:#eecbc5;--w-ntr:#376245;--w-str:#784c1a;
+  --w-red:#9a3535;--w-red-t:#f2d3ce;--w-red-th:#eecbc5;--w-ntr:#376245;--w-str:#784c1a;--w-line:rgba(13,13,13,.2);
   --w-jobs:#013D5A;--w-jobs-t:#cad7df;--w-jobs-th:#c5d2db;--w-jobs-row:#e8edf1;--w-jobs-l:#36525f;
   --w-studio:#708C69;--w-studio-t:#d4decf;--w-studio-th:#cedac9;--w-studio-row:#eef2ec;--w-studio-l:#455b40;
   --w-kit:#DA6B51;--w-kit-t:#f5d9d2;--w-kit-th:#f3d3cb;--w-kit-row:#faebe7;--w-kit-l:#8a4636;
   --w-over:#5B5F8D;--w-over-t:#dcddee;--w-over-th:#d6d7ec;--w-over-row:#ededf6;--w-over-l:#4f5278}
 html[data-theme="softdark"] .vsw{
   --w-muted:#8d8d95;--w-subtle:#c8c8cf;--w-tile:#232327;--w-tile-h:#262629;--w-row:#202024;
-  --w-red:#e58a82;--w-red-t:#3e2321;--w-red-th:#452825;--w-ntr:#7cc497;--w-str:#dcaa66;
+  --w-red:#e58a82;--w-red-t:#3e2321;--w-red-th:#452825;--w-ntr:#7cc497;--w-str:#dcaa66;--w-line:rgba(120,120,130,.55);
   --w-jobs:#8ba3b5;--w-jobs-t:#283541;--w-jobs-th:#2c3a47;--w-jobs-row:#24262a;--w-jobs-l:#a2b5c4;
   --w-studio:#9db394;--w-studio-t:#2e3b2c;--w-studio-th:#334231;--w-studio-row:#252827;--w-studio-l:#b1c2a9;
   --w-kit:#c99280;--w-kit-t:#3d3230;--w-kit-th:#433634;--w-kit-row:#2a2425;--w-kit-l:#d4a899;
@@ -2983,12 +2983,23 @@ html[data-theme="softdark"] .vsw .vsw-tab{box-shadow:inset 0 0 0 1px rgba(255,25
   background:var(--cn,var(--w-tile));color:#0d0d0d;font-size:13px;font-weight:700;letter-spacing:-.015em;line-height:1.2}
 .vsw .vsw-bh.m{display:none}
 .vsw .vsw-tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:6px}
-/* engineering reports: a small box for each show, side by side, with small tiles */
-.vsw .vsw-reps{display:flex;flex-wrap:wrap;align-items:flex-start;gap:8px}
-.vsw .vsw-rep{flex:none;width:348px;max-width:100%}
+/* engineering reports: a box for each show, sharing the row between them and
+   the same height, so the two line up. Four small tiles in a line where there
+   is room, each value on one line, with the detail underneath in full; two by
+   two where there is not. */
+.vsw .vsw-reps{display:grid;grid-template-columns:repeat(auto-fit,minmax(400px,1fr));gap:8px;align-items:stretch}
+.vsw .vsw-rep{min-width:0}
 .vsw .vsw-rep .vsw-bh{margin-bottom:6px}
 .vsw .vsw-rep .vsw-bh h3{font-size:13px}
-.vsw .vsw-rep .vsw-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+.vsw .vsw-rep .vsw-tiles{grid-template-columns:max-content max-content minmax(0,1fr) minmax(0,1fr);align-content:start}
+.vsw .vsw-rep .vsw-t:not(.wide) .vsw-v{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media(min-width:1360px){ .vsw .vsw-rep .vsw-t.fill{grid-column:3 / -1} }
+@media(max-width:1359px){ .vsw .vsw-rep .vsw-tiles{grid-template-columns:repeat(2,minmax(0,1fr))} }
+/* a report's details, whole: a line for each line it was written in, and a dash before each point of a list */
+.vsw .vsw-ln{display:block}
+.vsw .vsw-ln + .vsw-ln{margin-top:3px}
+.vsw .vsw-ln.li{display:flex;gap:6px}
+.vsw .vsw-ln.li::before{content:"\2013";flex:none}
 /* the same small tiles for what is outstanding and the to-do list */
 .vsw .vsw-rep,.vsw .vsw-box.sm{padding:8px 10px 10px}
 .vsw .vsw-box.sm .vsw-tiles{grid-template-columns:repeat(auto-fill,minmax(164px,1fr))}
@@ -3021,7 +3032,8 @@ html[data-theme="softdark"] .vsw .vsw-tab{box-shadow:inset 0 0 0 1px rgba(255,25
 .vsw .vsw-box.wk{padding:8px 10px 9px}
 .vsw .vsw-box.wk .vsw-bh{margin-bottom:5px}
 .vsw .vsw-box.wk .vsw-hd{min-height:22px;padding:2px 8px;font-size:12px}
-.vsw .vsw-wk{display:grid;grid-template-columns:118px repeat(7,minmax(0,1fr));gap:2px;align-items:stretch}
+.vsw .vsw-wk{position:relative;display:grid;grid-template-columns:118px repeat(7,minmax(0,1fr));gap:2px;align-items:stretch}
+.vsw .vsw-vl{position:absolute;top:0;bottom:0;left:-1.5px;width:1px;background:var(--w-line);pointer-events:none}
 .vsw .vsw-dh{align-self:center;font-size:11px;font-weight:600;color:var(--w-muted);padding:0 2px;white-space:nowrap}
 .vsw .vsw-dh.now{color:var(--c);font-weight:800}
 .vsw .vsw-rl{align-self:center;min-width:0;padding-right:8px;font-size:12px;font-weight:600;line-height:1.15}
@@ -3069,9 +3081,127 @@ html[data-theme="softdark"] .vsw .vsw-tab{box-shadow:inset 0 0 0 1px rgba(255,25
   .vsw .vsw-wk{display:none}
   .vsw .vsw-wkl{display:block}
   .vsw .vsw-bh.m{display:flex}
-  .vsw .vsw-rep{width:100%}
+  .vsw .vsw-reps{grid-template-columns:minmax(0,1fr)}
 }
 @media(max-width:339px){ .vsw .vsw-tab{width:calc((100% - 6px) / 2)} }
+/* ── kit categories in Admin, 4 Oct 2026 ─────────────────────────────────
+   The category editor, on Admin's Kit Categories tab. Everything is
+   under .vce, so nothing here reaches another page, and its colours fall back
+   to the older themes' own. Boxes, with a headline block in Admin's colour;
+   a small label is plain text with a dot, never a capsule. */
+.vce{--e-surface:var(--surface,var(--near-black,#fff));--e-ink:var(--ink,var(--white,#0d0d0d));--e-edge:var(--field-edge,var(--border-l,rgba(13,13,13,.45)));
+  --e-edge-hi:var(--field-edge-hi,var(--muted,rgba(13,13,13,.75)));--e-muted:var(--muted,#666);--e-row:rgba(128,128,128,.14);--e-care:#b87400;--e-care-t:rgba(184,116,0,.14);--e-new:#3d8a55;
+  max-width:1520px;font-family:var(--font);font-size:13px;line-height:1.35;color:var(--e-ink);letter-spacing:-.011em}
+html[data-theme="soft"] .vce{--e-muted:#666;--e-row:#f4f4f4;--e-care:#784c1a;--e-care-t:#f6ead8;--e-new:#376245}
+html[data-theme="softdark"] .vce{--e-muted:#8d8d95;--e-row:#202024;--e-care:#dcaa66;--e-care-t:#33291c;--e-new:#7cc497}
+.vce p,.vce h3,.vce ol,.vce ul{margin:0;padding:0}
+.vce button,.vce select,.vce input{font:inherit;color:inherit;letter-spacing:inherit;margin:0}
+.vce button{cursor:pointer}
+.vce button:disabled{cursor:default}
+.vce button:focus-visible,.vce select:focus-visible,.vce input:focus-visible{outline:2px solid var(--e-ink);outline-offset:1px}
+.vce-top{display:flex;align-items:center;justify-content:space-between;gap:8px 16px;flex-wrap:wrap}
+.vce-lead{color:var(--e-muted)}
+.vce-acts{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.vce-msg{min-height:20px;margin:4px 0 6px;font-weight:600;color:var(--e-care)}
+.vce-btn{background:var(--e-surface);border:1.5px solid var(--e-edge);border-radius:7px;padding:5px 10px;min-height:30px;font-weight:700;font-size:12.5px;white-space:nowrap}
+.vce-btn:hover:not(:disabled){border-color:var(--e-edge-hi)}
+.vce-btn:disabled{opacity:.42}
+.vce-btn.go{background:var(--e-ink);border-color:var(--e-ink);color:var(--e-surface)}
+.vce-btn.sm{min-height:28px;padding:3px 8px}
+/* the changes across the top, so Apply is always to hand; under them the list of categories and the one chosen */
+.vce-cols{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start}
+.vce-box{background:var(--e-surface);border:1px solid var(--border);border-radius:12px;padding:10px;min-width:0}
+.vce-rail{flex:0 0 240px}
+.vce-main{flex:1 1 664px}
+.vce-chg{margin-bottom:8px}
+.vce-bh{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+/* a box's headline is a block in Admin's colour, as a row of the sidebar is */
+.vce-hd{display:flex;align-items:center;min-height:26px;padding:3px 10px;border-radius:7px;background:var(--nav-admin,#d3d0d4);color:#0d0d0d;font-size:13px;font-weight:700}
+.vce-sum{font-size:12.5px;color:var(--e-muted);text-align:right}
+.vce-ch,.vce-cat{display:grid;grid-template-columns:minmax(0,1fr) 52px 44px;gap:6px;align-items:center}
+.vce-ch,.vce-sh{font-size:11px;font-weight:600;color:var(--e-muted);padding:0 9px 3px}
+.vce-ch span:nth-child(n+2){text-align:right}
+.vce-cat{width:100%;background:var(--e-surface);border:1.5px solid var(--e-edge);border-radius:7px;padding:4px 8px;min-height:30px;margin-bottom:4px;text-align:left}
+.vce-cat:hover{border-color:var(--e-edge-hi)}
+.vce-cat.on{background:var(--e-ink);border-color:var(--e-ink);color:var(--e-surface)}
+.vce-cn{font-weight:800;font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vce-n{font-size:12.5px;font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
+.vce-0{font-weight:500;color:var(--e-muted)}
+.vce-cat.on .vce-0{color:inherit;opacity:.55}
+.vce-crow{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:4px}
+.vce-name{background:var(--e-surface);border:1.5px solid var(--e-edge);border-radius:7px;padding:3px 8px;min-height:28px;width:100%;min-width:0;font-weight:700;font-size:12.5px}
+.vce-name.big{flex:1 1 200px;width:auto;min-height:30px;font-size:14px;font-weight:800}
+.vce-name:hover{border-color:var(--e-edge-hi)}
+/* a name the job pages look for cannot be typed over */
+.vce-name[readonly]{border-color:transparent;background:var(--e-row);cursor:default}
+.vce-sh,.vce-row{display:grid;grid-template-columns:40px minmax(150px,1.6fr) 58px 50px minmax(92px,.7fr) minmax(98px,.8fr) 140px;gap:6px;align-items:center}
+.vce-sh{padding:8px 0 3px}
+.vce-sh span:nth-child(3),.vce-sh span:nth-child(4){text-align:right}
+.vce-row{padding:3px 0;border-top:1px solid var(--border)}
+.vce-row.own .vce-nm{font-weight:600;color:var(--e-muted);padding-left:9px}
+/* a sub-category inside a sub-category sits a step in, on a line down from its parent */
+.vce-row.in{border-top:0;padding:2px 0}
+.vce-row.in .vce-nm{margin-left:18px;padding-left:10px;border-left:2px solid var(--border-l,var(--border))}
+.vce-row.in.own .vce-nm{padding-left:19px}
+.vce-ac{display:flex;gap:4px;justify-content:flex-end}
+.vce-into{background:var(--e-surface);border:1.5px solid var(--e-edge);border-radius:7px;padding:3px 6px;min-height:30px;max-width:150px;font-size:12.5px;font-weight:700}
+.vce-into:disabled{opacity:.42}
+/* what has been cut, waiting to be pasted */
+.vce-clip{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--nav-admin,#d3d0d4);color:#0d0d0d;border-radius:7px;padding:5px 10px;margin:6px 0 2px;font-weight:700;
+  position:sticky;top:6px;z-index:5}
+.vce-clip .vce-btn{background:#fff;color:#0d0d0d;border-color:rgba(13,13,13,.45)}
+.vce-nm{min-width:0}
+.vce-ud{display:flex;gap:2px}
+.vce-ud button{width:19px;height:28px;border:0;background:none;border-radius:5px;font-size:9px;color:var(--e-muted);padding:0}
+.vce-ud button:hover:not(:disabled){background:var(--e-row);color:var(--e-ink)}
+.vce-ud button:disabled{opacity:.25}
+.vce-row button.vce-n{background:none;border:0;border-radius:5px;padding:5px 4px;min-height:28px}
+.vce-row button.vce-n:hover{background:var(--e-row)}
+.vce-row select{background:var(--e-surface);border:1.5px solid var(--e-edge);border-radius:7px;padding:3px 6px;min-height:28px;width:100%;min-width:0;font-size:12px;color:var(--e-muted)}
+.vce-row select:hover:not(:disabled){border-color:var(--e-edge-hi);color:var(--e-ink)}
+.vce-row select:disabled{opacity:.42}
+.vce-fl{display:flex;flex-wrap:wrap;gap:2px 12px;padding:2px 9px 0}
+.vce-f{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--e-muted)}
+.vce-f.used{color:var(--e-care)}
+.vce-f.new{color:var(--e-new)}
+.vce-f.used::before,.vce-f.new::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.vce-in{background:var(--e-row);border-radius:7px;padding:7px 9px 8px;margin:0 0 5px 46px;font-size:12px;line-height:1.4}
+.vce-inh{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.vce-inh .vce-sum{text-align:left;font-size:12px}
+.vce-tl{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1px 12px;max-height:300px;overflow:auto}
+.vce-th{display:flex;align-items:baseline;gap:6px;padding:2px 0;min-width:0;cursor:pointer}
+.vce-th input{flex:none;margin:0;position:relative;top:1.5px}
+.vce-th span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.vce-th small{flex:none;font-size:11px;color:var(--e-muted)}
+.vce-th.cut{opacity:.5}
+.vce-new{display:flex;gap:6px;margin-bottom:8px}
+.vce-new.sub{margin:8px 0 0 46px;max-width:420px}
+.vce-new.in{margin:3px 0 5px 74px;max-width:470px}
+.vce-new input{flex:1;min-width:0;background:var(--e-surface);border:1.5px solid var(--e-edge);border-radius:7px;padding:3px 8px;min-height:30px;font-size:12.5px}
+.vce-calm{color:var(--e-muted);padding:4px 0}
+.vce-tot{font-weight:700;margin-bottom:6px}
+.vce-care{background:var(--e-care-t);color:var(--e-care);border-radius:7px;padding:6px 9px;margin-bottom:6px;font-size:12px;font-weight:600}
+.vce-care p + p{margin-top:4px}
+.vce-care ul{margin:4px 0 6px 16px}
+.vce .vce-list{padding:0 0 0 20px;font-size:12.5px;columns:3 300px;column-gap:28px}
+.vce-list li{padding:2px 0;break-inside:avoid}
+/* Apply, and what it will do, in one line under the changes */
+.vce-foot{display:flex;align-items:center;gap:6px 10px;flex-wrap:wrap;margin-top:8px}
+.vce-foot.ask{background:var(--e-row);border-radius:7px;padding:6px 9px;font-weight:600}
+.vce-foot.ask p{margin-right:4px}
+.vce-note{font-size:12px;color:var(--e-muted)}
+.vce-chg > .vce-note{margin-top:6px}
+@media(max-width:760px){
+  .vce-rail{flex-basis:100%}
+  .vce-main{flex-basis:100%}
+  .vce-sh{display:none}
+  .vce-row{grid-template-columns:40px minmax(0,1fr) 44px 44px;row-gap:4px}
+  .vce-row select{grid-column:2 / -1}
+  .vce-row > .vce-ac{grid-column:2 / -1;justify-content:flex-start}
+  .vce-in,.vce-new.sub,.vce-new.in{margin-left:0}
+  .vce-btn,.vce-cat,.vce-name,.vce-row select,.vce-new input{min-height:40px}
+}
+/* ── end of kit categories in Admin ── */
 .vsh-title{font-size:30px;font-weight:800;letter-spacing:-.015em;line-height:1.1;
   color:var(--ink);margin:2px 0 18px}
 @media(max-width:760px){.vsh-title{font-size:24px}}
@@ -6284,9 +6414,14 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
       </div>
 
       <div class="page" id="page-admin">
-        <div style="display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:18px;overflow-x:auto">
-          <div class="jd-tab active" id="admTab-users" onclick="admSwitch('users')" style="color:#302f2c;opacity:1;border-color:#302f2c">Users</div>
-          <div class="jd-tab" id="admTab-cats" onclick="admSwitch('cats')" style="color:#302f2c;opacity:.5">Kit Categories</div>
+        <!-- Admin's tabs. Kit Categories is the only one for now (4 Oct 2026); more will be added beside it.
+             The older tabs and their panels are still here, switched off, because other pages call their
+             functions; none can be reached. -->
+        <div style="display:flex;gap:6px;margin-bottom:12px;padding:3px;overflow-x:auto">
+          <div class="jd-tab active" id="admTab-cats" onclick="admSwitch('cats')" style="background:var(--nav-admin,#d3d0d4);color:#302f2c;opacity:1;border-color:#302f2c">Kit Categories</div>
+        </div>
+        <div style="display:none">
+          <div class="jd-tab" id="admTab-users" onclick="admSwitch('users')" style="color:#302f2c;opacity:.5">Users</div>
           <div class="jd-tab" id="admTab-dv" onclick="admSwitch('dv')" style="color:#302f2c;opacity:.5">Data Validation Lists</div>
           <div class="jd-tab" id="admTab-suppliers" onclick="admSwitch('suppliers')" style="color:#302f2c;opacity:.5">Suppliers</div>
           <div class="jd-tab" id="admTab-pat" onclick="admSwitch('pat')" style="color:#302f2c;opacity:.5">PAT Emails</div>
@@ -6295,15 +6430,13 @@ input[type="date"].er-dinput::-webkit-calendar-picker-indicator{opacity:.4;curso
           <div class="jd-tab" id="admTab-holidays" onclick="admSwitch('holidays')" style="color:#302f2c;opacity:.5">Bank Holidays</div>
           
         </div>
-        <div id="admContent-users">
+        <div id="admContent-users" style="display:none">
           <div class="adm-grid">
             <div class="adm-sec full"><div class="adm-sec-hdr"><div class="adm-sec-title">User Accounts</div><button class="btn-add" style="margin-left:0" onclick="openAddUser()">+ Add User</button></div><div id="userList"></div></div>
           </div>
         </div>
-        <div id="admContent-cats" style="display:none">
-          <div class="adm-grid">
-            <div class="adm-sec full"><div class="adm-sec-hdr"><div class="adm-sec-title">Kit Categories</div><button class="btn-add" style="margin-left:0" onclick="openAddCat()">+ Add</button></div><div id="catList"></div></div>
-          </div>
+        <div id="admContent-cats">
+          <div id="vce" class="vce"></div>
         </div>
         <div id="admContent-dv" style="display:none">
           <div class="adm-sec full" style="background:var(--panel);border-radius:6px;border:1px solid var(--border);margin-bottom:14px">
@@ -7138,6 +7271,9 @@ function _getDataMap() {
     opsPlanner: Object.assign({}, _opsD), opsBrk: _opsBrk.slice(), job_access: _jobAccessGrants.slice(),
     patTesters: patTesters, suppliers: suppliers, freelanceCrew: VERSA_FREELANCE, kitPreppers: KIT_PREPPERS, kitTransports: KIT_TRANSPORTS,
     kitSubcats: JSON.parse(JSON.stringify(KIT_SUBCATS)), catColors: Object.assign({}, CAT_COLORS),
+    /* which sub-categories sit inside another, and the order of the categories
+       (the kit categories block, above renderCats) */
+    kitSubgroups: _vsKcGroupsOut(), kitCatOrder: Object.keys(KIT_SUBCATS),
     /* a template made from a job carries that job's pictures: saved as
        stand-ins too, so the templates record stays small */
     jobTemplates: _vsPicPack(jobTemplates), longTermHired: longTermHired,
@@ -7697,7 +7833,7 @@ function _vsApplyRow(row){
           else if(row.key==='camPlanOpts'&&v&&typeof v==='object'){
             Object.keys(v).forEach(function(kk){ if(Array.isArray(v[kk])) CAM_PLAN_OPTS[kk]=v[kk]; });
           }
-          else if(row.key==='kitSubcats'&&v&&typeof v==='object'){Object.keys(v).forEach(function(k){KIT_SUBCATS[k]=v[k];});cats=Object.keys(KIT_SUBCATS);
+          else if(row.key==='kitSubcats'&&v&&typeof v==='object'){_vsKcLoaded(v);
             // Ensure required Audio subcats exist (Mics + Playout needed for Audio tab pickers)
             if(!KIT_SUBCATS.Audio)KIT_SUBCATS.Audio=[];
             ['Desks','Hydras','Mics','Radio Mics','Playout'].forEach(function(sub){
@@ -7705,6 +7841,8 @@ function _vsApplyRow(row){
             });
           }
           else if(row.key==='catColors'&&v&&typeof v==='object'){Object.keys(v).forEach(function(k){CAT_COLORS[k]=v[k];});}
+          else if(row.key==='kitSubgroups'){_vsKcGroupsLoaded(v);}
+          else if(row.key==='kitCatOrder'){_vsKcOrderLoaded(v);}
           else if(row.key==='jobTemplates'&&Array.isArray(v)){jobTemplates=v;}
           else if(row.key==='job_access'&&Array.isArray(v)){_jobAccessGrants.length=0;v.forEach(function(x){_jobAccessGrants.push(x);});}
           else if(row.key==='patTesters'&&Array.isArray(v)){patTesters.length=0;v.forEach(function(x){patTesters.push(x);});}
@@ -9053,14 +9191,18 @@ function vsCamPick(jid,ci,fkey,btn){
     if(seen[kk]) return;
     seen[kk]=true; models.push(nm);
   };
+  /* A specialist camera's body is picked from the Specialist Camera and Mini
+     Camera sub-categories, and from nowhere else. */
+  var specBody=(ci>=1000&&f.key==='body');
   var fits=function(sc){
     sc=String(sc||'').trim();
+    if(specBody) return sc==='Specialist Camera'||sc==='Mini Camera';
     if(sc&&sc===f.sub) return true;
     if(f.key==='lens') return sc==='Lens Range'||sc==='Lens';
     if(f.key==='body') return /camera|body/i.test(sc);
     return false;
   };
-  (typeof CAM_PLAN_OPTS!=='undefined'?(CAM_PLAN_OPTS[f.opts]||[]):[]).forEach(add);
+  (specBody?[]:(typeof CAM_PLAN_OPTS!=='undefined'?(CAM_PLAN_OPTS[f.opts]||[]):[])).forEach(add);
   (typeof kit!=='undefined'?kit:[]).forEach(function(x){
     if(!x||x.status==='Bin'||!fits(x.subcat)) return;
     if(f.key==='body'&&(x.cat||'')!=='Camera') return;
@@ -9068,11 +9210,13 @@ function vsCamPick(jid,ci,fkey,btn){
   });
   (typeof hiredCatalogue!=='undefined'?hiredCatalogue:[]).forEach(function(h){
     if(!h||!fits(h.subcat)) return;
+    if(specBody&&(h.cat||'')!=='Camera') return;
     add(h.name);
   });
   models.sort(function(a,b){return a.localeCompare(b);});
-  if(models.length) groups.push({head:f.label,items:models.map(function(m){return {label:m};})});
-  groups.push({items:[{label:'+ Add a '+f.label.toLowerCase()+' to the list',kind:'std',act:'addopt'}]});
+  if(models.length) groups.push({head:specBody?'Specialist and mini cameras':f.label,items:models.map(function(m){return {label:m};})});
+  /* a specialist's list is the Kit List's own, so a new one is added there; a name can still be typed */
+  if(!specBody) groups.push({items:[{label:'+ Add a '+f.label.toLowerCase()+' to the list',kind:'std',act:'addopt'}]});
 
   vsPickOpen(btn,groups,function(it){
     if(it.act==='clear') return vsCamPicked(jid,ci,fkey,{clear:true});
@@ -9184,7 +9328,7 @@ function vsCamGrid(j){
   var spec=Array.isArray(j.specCams)?j.specCams:[];
   var specRows=spec.map(function(sc,si){return mkRow(sc,1000+si,{spec:true});}).join('');
   if(specRows){
-    specRows='<tr class="vs-camsplit"><td colspan="'+(cols.length+4)+'">Specialist — these stand on their own, nothing inherited</td></tr>'+specRows;
+    specRows='<tr class="vs-camsplit"><td colspan="'+(cols.length+4)+'">Specialist cameras</td></tr>'+specRows;
   }
   rows+=specRows;
 
@@ -9709,7 +9853,7 @@ async function vsCamExportImage(jid){
   if(specCount){
     y+=8;
     x.fillStyle=C.mute; x.font=F(800,FS.lbl);
-    x.fillText('SPECIALIST — NOTHING INHERITED', PAD, y+8);
+    x.fillText('SPECIALIST CAMERAS', PAD, y+8);
     y+=18;
     rows.filter(function(r){return r.spec;}).forEach(drawRow);
   }
@@ -15947,10 +16091,18 @@ function _vsHomeParse(text){
   var s=String(text||''), temp='', delay='';
   var m=s.match(/\[\s*Temperature:\s*([^|\]]*?)\s*\|\s*Delay:\s*([^\]]*?)\s*\]/i);
   if(m){ temp=m[1]; delay=m[2]; s=s.slice(0,m.index)+' '+s.slice(m.index+m[0].length); }
+  /* the report as it was written: a line for each of its lines, and whether that line was a point in a list */
+  var lines=s.split(/\r?\n/).map(function(l){
+    var t=l.replace(/\s+/g,' ').replace(/^\s+|\s+$/g,''), li=/^[—–•*-]\s*\S/.test(t);
+    t=t.replace(/^[—–•*-]\s*/,'').replace(/\s*[—–-]$/,'');
+    return {t:t?t.charAt(0).toUpperCase()+t.slice(1):'', li:li};
+  }).filter(function(l){ return l.t; });
   s=s.replace(/\s+/g,' ').replace(/^\s+|\s+$/g,'').replace(/^[—–-]\s*/,'').replace(/\s*[—–-]$/,'');
-  if(/^nothing to report\.?$/i.test(s)) s='';
+  if(/^nothing to report\.?$/i.test(s)){ s=''; lines=[]; }
   if(s) s=s.charAt(0).toUpperCase()+s.slice(1);
-  return {temp:temp, delay:delay, msg:s};
+  /* one line on its own is not a list */
+  if(lines.length===1) lines[0].li=false;
+  return {temp:temp, delay:delay, msg:s, lines:lines};
 }
 /* A box for each show that files a report, holding what its last report
    said. Details, an action and tagged kit appear only when the report has
@@ -15968,12 +16120,14 @@ function _vsHomeReports(){
       h+=_vsHomeTile('Last report', _vsEsc(_vsHomeDay(r.show_date)), {go:go});
       h+=_vsHomeTile('Report', '<span class="vsw-mode '+(urgent?'urg':ntr?'ntr':'str')+'">'
             +(urgent?'Urgent':ntr?'Nothing to report':'Something to report')+'</span>', {go:go});
-      h+=_vsHomeTile('Filed by', _vsEsc(r.versa_tech_manager||'Not recorded'), {go:go});
+      h+=_vsHomeTile('Filed by', _vsEsc(r.versa_tech_manager||'Not recorded'), {go:go, cls:(r.bbc_tech_manager||p.temp||p.delay)?'':'fill'});
       if(r.bbc_tech_manager) h+=_vsHomeTile('BBC tech manager', _vsEsc(r.bbc_tech_manager), {go:go});
       else if(p.temp||p.delay) h+=_vsHomeTile('Temperature · Delay', _vsEsc([p.temp,p.delay].filter(Boolean).join(' · ')),
             {go:go, cls:(p.temp && !/^ok$/i.test(p.temp))?'red':''});
       if(stale) h+=_vsHomeTile('Late', _vsEsc(late.text.indexOf('show')>0 ? late.text : 'No report for '+late.text), {go:go, cls:'wide red'});
-      if(p.msg) h+=_vsHomeTile('Details', '<span class="vsw-clamp">'+_vsEsc(p.msg)+'</span>', {go:go, cls:'wide', title:p.msg});
+      /* the details in full, so the report can be read here without opening it */
+      if(p.msg) h+=_vsHomeTile('Details', p.lines.map(function(l){
+            return '<span class="vsw-ln'+(l.li?' li':'')+'">'+_vsEsc(l.t)+'</span>'; }).join(''), {go:go, cls:'wide'});
       if(urgent && r.urgent_details) h+=_vsHomeTile('Action', _vsEsc(r.urgent_details), {go:go, cls:'wide red'});
       var kit=(Array.isArray(r.tagged_kit_names)?r.tagged_kit_names:[]).filter(Boolean);
       if(kit.length) h+=_vsHomeTile('Kit', _vsEsc(kit.join(', ')), {go:go, cls:'wide'});
@@ -16304,6 +16458,8 @@ function _vsHomeWeekGrid(days, rows, head){
   var same=function(c){ return c.sub+'\n'+c.parts.map(function(p){ return p.t+'\t'+p.c; }).join('\n'); };
   var h='<div class="vsw-wk"><h3 class="vsw-hd">'+_vsEsc(head)+'</h3>'+days.map(function(d){
     return '<span class="vsw-dh'+(d===t?' now':'')+'">'+_vsHomeDayLabel(d)+'</span>'; }).join('');
+  /* a hairline down the start of each day, over the blocks, so the days can be told apart inside a long one */
+  for(var v=2; v<=8; v++) h+='<i class="vsw-vl" style="grid-column:'+v+'"></i>';
   rows.forEach(function(row){
     h+='<span class="vsw-rl">'+_vsEsc(row.name)+'</span>';
     for(var i=0;i<7;){
@@ -35225,7 +35381,7 @@ function revokeAccess(idx) {
   toast('Access revoked');
 }
 
-var _admTab = 'users';
+var _admTab = 'cats';
 function admSwitch(tab) {
   _admTab = tab;
   ['users','cats','dv','suppliers','pat','access','reminders','holidays','notes'].forEach(function(t) {
@@ -35441,8 +35597,1003 @@ function openAddUser(){editUid=null;document.getElementById('uMT').textContent='
 function editUser(id){const u=users.find(x=>x.id===id);if(!u)return;editUid=id;document.getElementById('uMT').textContent='Edit User';document.getElementById('uFN').value=u.fn;document.getElementById('uLN').value=u.ln;document.getElementById('uEmail').value=u.email;document.getElementById('uRole').value=u.role;document.getElementById('uPw').value='';renderPermToggles();om('mUser');}
 function saveUser(){const fn=document.getElementById('uFN').value.trim(),ln=document.getElementById('uLN').value.trim();if(!fn||!ln){toast('Enter name');return;}const role=document.getElementById('uRole').value;const perms=getModalPerms();if(editUid){const u=users.find(x=>x.id===editUid);u.fn=fn;u.ln=ln;u.email=document.getElementById('uEmail').value.trim();u.role=role;u.perms=perms;}else{users.push({id:nextUid++,fn,ln,email:document.getElementById('uEmail').value.trim(),role,pw:document.getElementById('uPw').value,mustChange:true,patEmail:false,perms});}cm('mUser');toast(editUid?'User updated':'User added');renderUsers();}
 function delUser(id){if(id===CU.id){toast('Cannot remove yourself');return;}if(!confirm('Remove this user?'))return;users=users.filter(u=>u.id!==id);toast('User removed');renderUsers();}
+/* ── Kit categories in Admin, 4 Oct 2026 ──────────────────────────────────
+   The category editor, on the Kit Categories tab of the Admin page. Categories and
+   sub-categories are renamed, added, removed, reordered, moved and merged, a
+   sub-category can be put inside another, and kit can be cut from one place
+   and pasted into another. It is all made as a plan first, and nothing
+   changes for anyone until Apply.
+
+   Three parts: the plan's rules (vceStart to vceReplay), the screen (VCE to
+   vceListen), and how it meets the dashboard (KIT_SUBGROUPS to vsKcAdmin).
+   The source and its tests are in _category-editor/ (node test.js, node app.test.js).
+   ──────────────────────────────────────────────────────────────────────── */
+/* Organising the kit categories: the plan, with no page attached.
+
+   Kit is filed under a category and a sub-category. A sub-category can sit
+   inside another one, which is only a way of grouping: what is filed under
+   "Studio Camera" stays filed under "Studio Camera" whether or not that sits
+   inside "Cameras". So the tree is three levels deep, and a sub-category's
+   name is its own within the whole category.
+
+   The plan starts as the structure the dashboard has now, with everything
+   that is filed under it. Each place in the tree remembers which of the
+   original filings it now holds (src), so a rename, a move or a merge never
+   loses track of an inventory item or a Kit List model. One item or model can
+   also be cut out of its place and pasted into another (moved), kept against
+   its own id. An inventory item linked to a Kit List model goes where its
+   model goes. At the end the plan says exactly what goes where.
+
+     data = { structure: {Category: [sub-category, ...]},     every sub-category, flat
+              groups:    {Category: {sub-category: [the sub-categories inside it]}},
+              items:  [{id, n: name, c: category, s: sub-category, m: its model's id}],   the inventory
+              models: [{id, n: name, c: category, s: sub-category}] }                    the Kit List
+
+     a place = { id, name, orig: {c, s} or null if new, src: [keys], listed, kids: [places] }
+     a thing = 'i' + an inventory item's id, or 'm' + a Kit List model's id                      */
+var VCE_SEP = String.fromCharCode(1), VCE_DEEP = 3;
+function vceNorm(s){ return String(s == null ? '' : s).replace(/\s+/g, ' ').replace(/^ | $/g, ''); }
+function vceKey(c, s){ return (c == null ? '' : String(c)) + VCE_SEP + (s == null ? '' : String(s)); }
+function vceSplit(k){ var p = String(k).split(VCE_SEP); return {c: p[0] || '', s: p[1] || ''}; }
+function vceSayPath(p){ return (p.c || 'No category') + (p.s ? ' › ' + p.s : ''); }
+function vceOk(){ return {ok: true}; }
+function vceNo(why){ return {ok: false, why: why}; }
+
+/* Names the job pages look for by name: the camera, lens, RCP, monitor, audio
+   and vision pickers on a job find their kit by these. A category among them
+   keeps its name and stays a category; a sub-category among them keeps its
+   name and stays in its category, though it can be put inside another
+   sub-category there. */
+var VCE_USED = {
+  cats: ['Camera', 'Audio', 'Vision', 'Monitors', 'Cables'],
+  subs: {
+    Camera: ['Studio Camera', 'Specialist Camera', 'Camera Body', 'Mini Camera', 'PTZ Camera', 'Head', 'Lens', 'Lens Range', 'Cine Lens', 'Lens Adapter', 'RCP', 'Control', 'Monitor'],
+    Audio: ['Desks', 'Hydras', 'Mics', 'Radio Mics', 'Radio TX', 'Playout', 'Spoton'],
+    Vision: ['Switchers', 'Vision Mixer', 'Monitor']
+  }
+};
+function vceUsed(kind, name, cat){
+  var n = vceNorm(name).toLowerCase(), list = kind === 'cats' ? VCE_USED.cats : (VCE_USED.subs[cat] || []);
+  return list.some(function(x){ return x.toLowerCase() === n; });
+}
+/* is this a place the job pages look for? */
+function vceUsedPlace(orig){
+  if(!orig) return false;
+  return orig.s ? vceUsed('subs', orig.s, orig.c) : vceUsed('cats', orig.c);
+}
+
+/* every inventory item and Kit List model, by the filing it has now */
+function vceCounts(data){
+  var out = {things: {}, keyOf: {}, nameOf: {}, kindOf: {}, leader: {}, followers: {}, total: {items: 0, models: 0}};
+  function put(kind, ref, k, name){
+    (out.things[k] = out.things[k] || []).push(ref);
+    out.keyOf[ref] = k; out.nameOf[ref] = name || 'Unnamed'; out.kindOf[ref] = kind; out.total[kind]++;
+  }
+  (data.models || []).forEach(function(x, i){ put('models', 'm' + (x.id == null ? 'n' + i : x.id), vceKey(x.c, vceNorm(x.s)), x.n); });
+  (data.items || []).forEach(function(x, i){
+    var ref = 'i' + (x.id == null ? 'n' + i : x.id), lead = (x.m == null || x.m === '') ? '' : 'm' + x.m;
+    /* an item linked to a model is filed wherever its model is */
+    if(lead && out.keyOf[lead] != null){
+      out.leader[ref] = lead; (out.followers[lead] = out.followers[lead] || []).push(ref);
+      put('items', ref, out.keyOf[lead], x.n);
+    } else put('items', ref, vceKey(x.c, vceNorm(x.s)), x.n);
+  });
+  return out;
+}
+/* what is filed directly in a place: what its filings hold, less anything cut
+   out of them, plus anything pasted in */
+function vceThings(st, place, counts){
+  var out = [], moved = st.moved || {};
+  place.src.forEach(function(k){ (counts.things[k] || []).forEach(function(ref){ if(!moved[ref]) out.push(ref); }); });
+  Object.keys(moved).forEach(function(ref){ if(moved[ref] === place.id && counts.keyOf[ref] != null) out.push(ref); });
+  return out;
+}
+function vceTally(refs, counts){
+  var t = {items: 0, models: 0};
+  refs.forEach(function(ref){ if(counts.kindOf[ref]) t[counts.kindOf[ref]]++; });
+  return t;
+}
+function vceHolds(st, place, counts){ return vceTally(vceThings(st, place, counts), counts); }
+function vceAllHolds(st, place, counts){
+  var t = vceHolds(st, place, counts);
+  (place.kids || []).forEach(function(k){ var x = vceAllHolds(st, k, counts); t.items += x.items; t.models += x.models; });
+  return t;
+}
+function vceSay(h){
+  var a = [];
+  if(h.items) a.push(h.items + (h.items === 1 ? ' inventory item' : ' inventory items'));
+  if(h.models) a.push(h.models + (h.models === 1 ? ' Kit List model' : ' Kit List models'));
+  return a.join(' and ') || 'nothing';
+}
+
+/* the plan as it starts: the structure and its groups, plus anything that is
+   filed under a name the structure does not list (listed: false) */
+function vceStart(data){
+  var st = {cats: [], next: 1, moved: {}}, at = {}, counts = vceCounts(data);
+  function place(list, c, s, listed){
+    var k = vceKey(c, s);
+    if(at[k]) return at[k];
+    var p = {id: 'p' + (st.next++), name: s || c, orig: {c: c, s: s || ''}, src: [k], listed: listed, kids: []};
+    list.push(p); at[k] = p; return p;
+  }
+  Object.keys(data.structure || {}).forEach(function(c){
+    var cat = place(st.cats, c, '', true), groups = (data.groups && data.groups[c]) || {}, parentOf = {}, names = {};
+    (data.structure[c] || []).forEach(function(s){ names[vceNorm(s)] = 1; });
+    Object.keys(groups).forEach(function(g){ if(names[g]) (groups[g] || []).forEach(function(s){ s = vceNorm(s); if(names[s] && s !== g && !parentOf[s] && !groups[s]) parentOf[s] = g; }); });
+    (data.structure[c] || []).forEach(function(s){
+      s = vceNorm(s); if(!s) return;
+      if(parentOf[s]) place(place(cat.kids, c, parentOf[s], true).kids, c, s, true);
+      else place(cat.kids, c, s, true);
+    });
+  });
+  Object.keys(counts.things).forEach(function(k){
+    if(at[k]) return;
+    var p = vceSplit(k), cat = place(st.cats, p.c, '', false);
+    if(p.s) place(cat.kids, p.c, p.s, false);
+  });
+  st.start = JSON.parse(JSON.stringify(st.cats));
+  return st;
+}
+
+/* a place in the tree, with where it sits and the category it is in */
+function vceFind(st, id){
+  var hit = null;
+  (function walk(list, parent, depth, cat){
+    for(var i = 0; i < list.length && !hit; i++){
+      var top = cat || list[i];
+      if(list[i].id === id) hit = {place: list[i], parent: parent, list: list, depth: depth, cat: top};
+      else walk(list[i].kids, list[i], depth + 1, top);
+    }
+  })(st.cats, null, 1, null);
+  return hit;
+}
+function vceWalk(list, fn, parent, depth, trail){
+  depth = depth || 1; trail = trail || [];
+  list.forEach(function(p){ var t = trail.concat([p.name]); fn(p, parent || null, depth, t); vceWalk(p.kids, fn, p, depth + 1, t); });
+}
+function vceTall(place){ var t = 0; place.kids.forEach(function(k){ t = Math.max(t, vceTall(k)); }); return t + 1; }
+function vceHas(place, id){ return place.kids.some(function(k){ return k.id === id || vceHas(k, id); }); }
+function vceTrail(st, id){ var out = null; vceWalk(st.cats, function(p, parent, depth, trail){ if(p.id === id) out = trail; }); return out || []; }
+function vceName(st, id){ var t = vceTrail(st, id); return t.map(function(n, i){ return n || (i ? '' : 'No category'); }).join(' › '); }
+function vceWord(depth){ return depth === 1 ? 'category' : 'sub-category'; }
+function vceSame(a, b){ return vceNorm(a).toLowerCase() === vceNorm(b).toLowerCase(); }
+/* every sub-category name in a category, at either depth, except those in skip */
+function vceNamesIn(cat, skip){
+  var out = [];
+  (function walk(list){ list.forEach(function(p){ if(skip && skip === p) return; out.push(p.name); walk(p.kids); }); })(cat.kids);
+  return out;
+}
+function vceClash(names, wanted){
+  for(var i = 0; i < wanted.length; i++) for(var j = 0; j < names.length; j++) if(vceSame(wanted[i], names[j])) return names[j];
+  return '';
+}
+/* the reasons a place the job pages use cannot be changed */
+function vceFixed(f){ return f && f.place.orig && vceUsedPlace(f.place.orig); }
+function vceWhy(f, what){
+  var n = f.place.orig.s || f.place.orig.c;
+  if(what === 'name') return 'The job pages look for ' + n + ' by name, so it keeps its name.';
+  if(what === 'gone') return 'The job pages look for ' + n + ' by name, so it cannot be removed. Merge the other one into it instead.';
+  return f.depth === 1 ? 'The job pages look for ' + n + ' by name, so it stays a category.'
+                       : 'The job pages look for ' + n + ' by name, so it stays in ' + f.place.orig.c + '. It can go inside another sub-category there.';
+}
+
+/* a new category (parentId '') or a new sub-category inside a place */
+function vceAdd(st, parentId, name){
+  var f = parentId ? vceFind(st, parentId) : null, depth = f ? f.depth + 1 : 1;
+  name = vceNorm(name);
+  if(parentId && !f) return vceNo('That is no longer there.');
+  if(depth > VCE_DEEP) return vceNo('Sub-categories go three levels deep and no further.');
+  if(!name) return vceNo('A ' + vceWord(depth) + ' needs a name.');
+  if(!f){ if(st.cats.some(function(c){ return vceSame(c.name, name); })) return vceNo('There is already a category called ' + name + '.'); }
+  else if(vceClash(vceNamesIn(f.cat), [name])) return vceNo((f.cat.name || 'This category') + ' already has a sub-category called ' + name + '.');
+  var p = {id: 'p' + (st.next++), name: name, orig: null, src: [], listed: true, kids: []};
+  (f ? f.place.kids : st.cats).push(p);
+  return {ok: true, id: p.id};
+}
+function vceRename(st, id, name){
+  var f = vceFind(st, id); name = vceNorm(name);
+  if(!f) return vceNo('That is no longer there.');
+  if(name === f.place.name) return vceOk();
+  if(vceFixed(f)) return vceNo(vceWhy(f, 'name'));
+  if(!name) return vceNo('A ' + vceWord(f.depth) + ' needs a name.');
+  if(f.depth === 1){ if(st.cats.some(function(c){ return c !== f.place && vceSame(c.name, name); })) return vceNo('There is already a category called ' + name + '.'); }
+  else if(vceClash(vceNamesIn(f.cat, f.place).concat(f.place.kids.map(function(k){ return k.name; })), [name]))
+    return vceNo((f.cat.name || 'This category') + ' already has a sub-category called ' + name + '. Merge them instead.');
+  f.place.name = name; return vceOk();
+}
+/* A place goes somewhere else, taking its name, what is filed in it and what
+   is inside it. toId '' makes it a category. */
+function vceMove(st, id, toId){
+  var f = vceFind(st, id), t = toId ? vceFind(st, toId) : null;
+  if(!f || (toId && !t)) return vceNo('That is no longer there.');
+  if(toId === id || (toId && vceHas(f.place, toId))) return vceNo('It cannot go inside itself.');
+  var dest = t ? t.place.kids : st.cats, depth = t ? t.depth : 0;
+  if(dest === f.list) return vceNo('It is already there.');
+  /* a name the job pages use stays in its category, and so does anything inside what is moving */
+  var held = []; (function walk(p, d){ var x = {place: p, depth: d}; if(vceFixed(x)) held.push(x); p.kids.forEach(function(k){ walk(k, d + 1); }); })(f.place, f.depth);
+  if(held.length && (!t || t.cat !== f.cat || f.depth === 1)) return vceNo(vceWhy(held[0], 'move'));
+  if(depth + vceTall(f.place) > VCE_DEEP) return vceNo(f.place.kids.length
+    ? f.place.name + ' has sub-categories of its own, so it cannot go that deep. Move or merge those first.'
+    : 'Sub-categories go three levels deep and no further.');
+  if(!t){ if(st.cats.some(function(c){ return vceSame(c.name, f.place.name); })) return vceNo('There is already a category called ' + f.place.name + '. Merge them instead.'); }
+  else if(t.cat !== f.cat || f.depth === 1){
+    var hit = vceClash(vceNamesIn(t.cat), [f.place.name].concat(vceNamesIn(f.place)));
+    if(hit) return vceNo((t.cat.name || 'That category') + ' already has a sub-category called ' + hit + '. Merge them instead.');
+  }
+  f.list.splice(f.list.indexOf(f.place), 1); dest.push(f.place);
+  return vceOk();
+}
+/* a thing that has been pasted back into the place its own filing lives in is no longer a move */
+function vceSettle(st, place, counts){
+  Object.keys(st.moved).forEach(function(ref){ if(st.moved[ref] === place.id && place.src.indexOf(counts.keyOf[ref]) >= 0) delete st.moved[ref]; });
+}
+/* What is filed in one place goes into another. The first place is then taken
+   off the list, unless only what is filed directly in it is being moved
+   (ownOnly), which is how the kit sitting in a category or sub-category with
+   nothing more specific is put somewhere. */
+function vceMerge(st, id, toId, ownOnly, counts){
+  var f = vceFind(st, id), t = vceFind(st, toId);
+  if(!f || !t) return vceNo('That is no longer there.');
+  if(f.place === t.place) return vceNo('That is the same place.');
+  if(!ownOnly && vceFixed(f)) return vceNo(vceWhy(f, 'gone'));
+  if(!ownOnly && f.place.kids.length) return vceNo(vceName(st, id) + ' has sub-categories of its own. Move or merge those first.');
+  f.place.src.forEach(function(k){ if(t.place.src.indexOf(k) < 0) t.place.src.push(k); });
+  f.place.src = [];
+  Object.keys(st.moved).forEach(function(ref){ if(st.moved[ref] === f.place.id) st.moved[ref] = t.place.id; });
+  if(counts) vceSettle(st, t.place, counts);
+  if(!ownOnly) f.list.splice(f.list.indexOf(f.place), 1);
+  return vceOk();
+}
+/* Cut and paste: these items and models go into that place, whatever becomes
+   of where they were. A model takes its linked items with it; a linked item
+   cannot be moved without its model. */
+function vcePut(st, refs, toId, counts){
+  var t = vceFind(st, toId), n = 0, tied = 0, all = [];
+  if(!t) return vceNo('That is no longer there.');
+  (refs || []).forEach(function(ref){
+    if(counts.keyOf[ref] == null) return;
+    if(counts.leader[ref] && refs.indexOf(counts.leader[ref]) < 0){ tied++; return; }
+    if(all.indexOf(ref) < 0) all.push(ref);
+    (counts.followers[ref] || []).forEach(function(x){ if(all.indexOf(x) < 0) all.push(x); });
+  });
+  all.forEach(function(ref){
+    if(t.place.src.indexOf(counts.keyOf[ref]) >= 0){ if(st.moved[ref]){ delete st.moved[ref]; n++; } }
+    else if(st.moved[ref] !== toId){ st.moved[ref] = toId; n++; }
+  });
+  if(!n) return vceNo(tied ? 'An inventory item linked to a Kit List model goes where its model goes. Move the model instead.' : 'They are already in ' + vceName(st, toId) + '.');
+  return {ok: true, n: n};
+}
+/* a place goes only when nothing at all is left in it; anything empty inside goes with it */
+function vceDelete(st, id, counts){
+  var f = vceFind(st, id);
+  if(!f) return vceNo('That is no longer there.');
+  var held = null; (function walk(p, d){ if(!held && vceFixed({place: p, depth: d})) held = {place: p, depth: d}; p.kids.forEach(function(k){ walk(k, d + 1); }); })(f.place, f.depth);
+  if(held) return vceNo(vceWhy(held, 'gone').replace(' Merge the other one into it instead.', ''));
+  var h = vceAllHolds(st, f.place, counts);
+  if(h.items || h.models) return vceNo(vceName(st, id) + ' still holds ' + vceSay(h) + '. Move or merge them first.');
+  f.list.splice(f.list.indexOf(f.place), 1);
+  return vceOk();
+}
+/* up or down among the places beside it; to: a position to go straight to */
+function vceShift(st, id, by, to){
+  var f = vceFind(st, id);
+  if(!f) return vceNo('That is no longer there.');
+  var i = f.list.indexOf(f.place), j = to == null ? i + by : to;
+  if(j < 0 || j >= f.list.length || j === i) return vceNo('It cannot go any further.');
+  f.list.splice(i, 1); f.list.splice(j, 0, f.place);
+  return vceOk();
+}
+
+/* What the plan comes to: the new structure and its groups, where every
+   original filing now goes (moves), the items and models moved one by one
+   (single), the changes in plain words, and the names that join the list only
+   because kit was already filed under them. */
+function vceResult(st, data){
+  var counts = vceCounts(data), where = {}, placeTo = {}, moves = [], single = [], changes = [], care = [], added = [];
+  var now = {}, moved = st.moved || {};
+  vceWalk(st.cats, function(p, parent, depth, trail){
+    now[p.id] = {place: p, parent: parent, depth: depth, trail: trail};
+    var to = {c: trail[0], s: depth === 1 ? '' : p.name};
+    placeTo[p.id] = to;
+    p.src.forEach(function(k){ where[k] = to; });
+  });
+  /* the structure as the dashboard keeps it: each category's sub-categories in one flat list, a group followed by what is inside it */
+  var structure = {}, groups = {}, tree = [];
+  st.cats.forEach(function(c){
+    var flat = [], g = {};
+    c.kids.forEach(function(s){ flat.push(s.name); if(s.kids.length){ g[s.name] = s.kids.map(function(x){ return x.name; }); flat = flat.concat(g[s.name]); } });
+    structure[c.name] = flat; if(Object.keys(g).length) groups[c.name] = g;
+    tree.push({name: c.name, subs: c.kids.map(function(s){ return {name: s.name, subs: s.kids.map(function(x){ return x.name; })}; })});
+  });
+  var refiled = {items: 0, models: 0}, lost = [], same = function(a, b){ return a.c === b.c && a.s === b.s; };
+  Object.keys(counts.things).forEach(function(k){
+    var from = vceSplit(k), to = where[k], t = {items: 0, models: 0};
+    counts.things[k].forEach(function(ref){
+      if(moved[ref]){
+        var dest = placeTo[moved[ref]];
+        if(!dest){ lost.push(k); return; }
+        if(!same(from, dest)){
+          single.push({kind: counts.kindOf[ref] === 'items' ? 'item' : 'model', id: ref.slice(1), name: counts.nameOf[ref], from: from, to: dest});
+          refiled[counts.kindOf[ref]]++;
+        }
+      } else t[counts.kindOf[ref]]++;
+    });
+    if(!t.items && !t.models) return;
+    if(!to){ lost.push(k); return; }
+    if(!same(from, to)){ moves.push({from: from, to: to, items: t.items, models: t.models}); refiled.items += t.items; refiled.models += t.models; }
+  });
+  var was = {}, gone = {};
+  vceWalk(st.start || [], function(p0, parent0, depth0, trail0){ was[p0.id] = {place: p0, parent: parent0, depth: depth0, trail: trail0}; });
+  var path = function(trail){ return trail.map(function(n, i){ return n || (i ? '' : 'No category'); }).join(' › '); };
+  vceWalk(st.start || [], function(p0, parent0, depth0, trail0){
+    var n = now[p0.id], k0 = p0.src[0], w = where[k0], from = path(trail0);
+    if(!n){
+      if(w) changes.push('Merged: ' + from + ' into ' + vceSayPath(w));
+      else {
+        /* what was inside a place that has been removed went with it, and is not said again */
+        gone[p0.id] = 1;
+        if(!(parent0 && gone[parent0.id])) changes.push((depth0 === 1 ? 'Category removed: ' : 'Sub-category removed: ') + from);
+      }
+      return;
+    }
+    var shifted = (n.parent ? n.parent.id : '') !== (parent0 ? parent0.id : ''), renamed = n.place.name !== p0.name;
+    if(shifted) changes.push((n.depth === 1 ? 'Made a category: ' + from : 'Moved: ' + from + ' into ' + path(n.trail.slice(0, -1))) + (renamed ? ', renamed ' + n.place.name : ''));
+    else if(renamed) changes.push((depth0 === 1 ? 'Category renamed: ' : 'Sub-category renamed: ') + from + ' to ' + n.place.name);
+    /* what was filed directly in it has gone somewhere else, though the place itself is still there */
+    if(w && n.place.src.indexOf(k0) < 0 && (counts.things[k0] || []).some(function(ref){ return !moved[ref]; }))
+      changes.push('Moved: everything filed directly under ' + from + ', into ' + vceSayPath(w));
+    /* kit was already filed under it without it being on the list: not a change anyone made, but it joins the list */
+    if(!p0.listed) added.push(path(n.trail));
+  });
+  vceWalk(st.cats, function(p, parent, depth, trail){
+    if(!was[p.id]) changes.push((depth === 1 ? 'New category: ' : 'New sub-category: ') + path(trail));
+  });
+  /* items and models moved one by one, said together where they went the same way */
+  var sets = {}, order = [];
+  single.forEach(function(x){
+    var g = vceSayPath(x.from) + VCE_SEP + vceSayPath(x.to);
+    if(!sets[g]){ sets[g] = {from: vceSayPath(x.from), to: vceSayPath(x.to), items: 0, models: 0, names: []}; order.push(g); }
+    sets[g][x.kind === 'item' ? 'items' : 'models']++; sets[g].names.push(x.name);
+  });
+  order.forEach(function(g){
+    var x = sets[g], names = x.names.slice(0, 3).join(', ') + (x.names.length > 3 ? ' and ' + (x.names.length - 3) + ' more' : '');
+    changes.push('Moved ' + vceSay(x) + ' from ' + x.from + ' into ' + x.to + ': ' + names);
+  });
+  /* order: what is left of each old list, in its new order */
+  var seq = function(list, keep){ return list.map(function(x){ return x.id; }).filter(keep).join(','); };
+  var beside = function(parentId){ return function(id){ return now[id] && was[id] && (now[id].parent ? now[id].parent.id : '') === parentId && (was[id].parent ? was[id].parent.id : '') === parentId; }; };
+  if(seq(st.start || [], beside('')) !== seq(st.cats, beside(''))) changes.push('Order changed: the categories');
+  vceWalk(st.cats, function(p, parent, depth, trail){
+    var p0 = was[p.id]; if(!p0 || !p.kids.length) return;
+    if(seq(p0.place.kids, beside(p.id)) !== seq(p.kids, beside(p.id))) changes.push('Order changed: the sub-categories of ' + path(trail));
+  });
+  lost = lost.filter(function(k, i){ return lost.indexOf(k) === i; });
+  if(lost.length) care.push('Some kit has nowhere to go: ' + lost.map(function(k){ return vceSayPath(vceSplit(k)); }).join(', ') + '.');
+  /* a category that has a new name takes its colour with it */
+  var renamedCats = [];
+  (st.start || []).forEach(function(c0){ var n = now[c0.id]; if(n && n.depth === 1 && n.place.name !== c0.name) renamedCats.push({from: c0.name, to: n.place.name}); });
+  return {tree: tree, structure: structure, groups: groups, order: st.cats.map(function(c){ return c.name; }), moves: moves, single: single, changes: changes, care: care,
+    added: added, refiled: refiled, renamedCats: renamedCats};
+}
+/* where one item or model ends up under a plan's result: its own move first, then its filing's, else where it was */
+function vceWhere(res){
+  var one = {}, by = {};
+  res.single.forEach(function(x){ one[(x.kind === 'item' ? 'i' : 'm') + x.id] = x.to; });
+  res.moves.forEach(function(m){ by[vceKey(m.from.c, m.from.s)] = m.to; });
+  return function(ref, c, s){ return one[ref] || by[vceKey(c, vceNorm(s))] || null; };
+}
+
+/* The plan is kept as the steps that made it, not as the tree they led to, so
+   it can be made again on the kit as it is now: an item added or re-filed by
+   someone else since is simply where it is when the steps are repeated. A step
+   names its places by something that does not change between readings: the
+   filing a place started as ('k' + its key), or the step that added it
+   ('n' + that step's number).
+
+     {a: 'add',    n, to: place or '', name}      a new place; to '' is a category
+     {a: 'rename', p, name}
+     {a: 'move',   p, to: place or ''}            to '' makes it a category
+     {a: 'merge',  p, to, own: true or false}
+     {a: 'put',    refs: [things], to}            cut and paste
+     {a: 'del',    p}
+     {a: 'shift',  p, by, at}                                                    */
+function vceStep(st, counts, step, idOf){
+  var gone = vceNo('That is no longer there.'), p = step.p == null ? '' : idOf[step.p], to = step.to ? idOf[step.to] : '';
+  if(step.p != null && !p) return gone;
+  if(step.to && !to) return gone;
+  if(step.a === 'add'){ var r = vceAdd(st, to, step.name); if(r.ok) idOf['n' + step.n] = r.id; return r; }
+  if(step.a === 'rename') return vceRename(st, p, step.name);
+  if(step.a === 'move') return vceMove(st, p, to);
+  if(step.a === 'merge') return to ? vceMerge(st, p, to, !!step.own, counts) : gone;
+  if(step.a === 'put') return to ? vcePut(st, step.refs || [], to, counts) : gone;
+  if(step.a === 'del') return vceDelete(st, p, counts);
+  if(step.a === 'shift') return vceShift(st, p, step.by, step.at);
+  return vceNo('That step is not understood.');
+}
+/* the plan made again from its steps; a step that no longer fits is left out and said (left) */
+function vceReplay(data, log){
+  var counts = vceCounts(data), st = vceStart(data), idOf = {}, left = [];
+  vceWalk(st.cats, function(p){ idOf['k' + vceKey(p.orig.c, p.orig.s)] = p.id; });
+  (log || []).forEach(function(step, i){
+    var r = vceStep(st, counts, step, idOf);
+    if(!r || r.ok === false) left.push({i: i, step: step, why: (r && r.why) || ''});
+  });
+  var addrOf = {};
+  Object.keys(idOf).forEach(function(a){ addrOf[idOf[a]] = a; });
+  return {st: st, counts: counts, idOf: idOf, addrOf: addrOf, left: left};
+}
+/* a step in plain words, for saying which ones were left out */
+function vceSayStep(step, log){
+  var name = function(a){
+    if(!a) return '';
+    if(a.charAt(0) === 'k') return vceSayPath(vceSplit(a.slice(1)));
+    var made = (log || []).filter(function(x){ return x.a === 'add' && 'n' + x.n === a; })[0];
+    return made ? made.name : 'a new place';
+  };
+  if(step.a === 'add') return 'Add ' + step.name + (step.to ? ' in ' + name(step.to) : '');
+  if(step.a === 'rename') return 'Rename ' + name(step.p) + ' to ' + step.name;
+  if(step.a === 'move') return step.to ? 'Move ' + name(step.p) + ' into ' + name(step.to) : 'Make ' + name(step.p) + ' a category';
+  if(step.a === 'merge') return (step.own ? 'Move what is filed directly under ' : 'Merge ') + name(step.p) + ' into ' + name(step.to);
+  if(step.a === 'put') return 'Paste ' + (step.refs || []).length + ((step.refs || []).length === 1 ? ' thing' : ' things') + ' into ' + name(step.to);
+  if(step.a === 'del') return 'Delete ' + name(step.p);
+  if(step.a === 'shift') return 'Reorder ' + name(step.p);
+  return 'A step';
+}
+
+/* The category editor's screen. The plan is kept as its steps, in this browser,
+   and is made again from the kit as it is each time anything is done, so what
+   is on screen is never an old reading. Nothing is changed for anyone until
+   Apply. What the editor sits in (VCE_HOST) gives it the kit and says what
+   Apply and Put back do. The plan's logic is above it (vceStart to vceReplay). */
+var VCE = {log: [], seq: 1, undone: null, sel: '', open: {}, tick: {}, clip: [], msg: '', gone: [], adding: false, addIn: '', asking: '', typed: {},
+  rp: null, st: null, counts: null, data: null, res: null, sig: '', read: false, due: 0};
+var VCE_HOST = {root: 'vce', store: 'vcePlan.v3', data: null, apply: null, last: null, back: null, sync: false};
+
+function vceEsc(v){ return String(v == null ? '' : v).replace(/[&<>"]/g, function(c){ return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]; }); }
+function vceCap(s){ return String(s).replace(/^(.)/, function(x){ return x.toUpperCase(); }); }
+function vceKeep(){
+  try{ localStorage.setItem(VCE_HOST.store, JSON.stringify({v: 3, log: VCE.log, seq: VCE.seq, sel: VCE.sel})); }catch(e){}
+}
+function vceRead(){
+  var kept = null;
+  try{ kept = JSON.parse(localStorage.getItem(VCE_HOST.store) || 'null'); }catch(e){}
+  if(!kept || kept.v !== 3 || !Array.isArray(kept.log)) return;
+  VCE.log = kept.log.filter(function(s){ return s && typeof s === 'object' && typeof s.a === 'string'; });
+  VCE.seq = 1 + VCE.log.reduce(function(m, s){ return Math.max(m, s.n | 0); }, kept.seq | 0);
+  VCE.sel = typeof kept.sel === 'string' ? kept.sel : '';
+}
+/* The plan made again from the kit as it is now. A step that no longer fits is
+   taken off the plan and handed back, so it can be said. */
+function vceMake(){
+  VCE.data = VCE_HOST.data();
+  var rp = vceReplay(VCE.data, VCE.log), left = rp.left;
+  if(left.length){
+    var out = left.map(function(x){ return x.step; });
+    VCE.log = VCE.log.filter(function(s){ return out.indexOf(s) < 0; });
+    rp = vceReplay(VCE.data, VCE.log);
+  }
+  VCE.rp = rp; VCE.st = rp.st; VCE.counts = rp.counts;
+  VCE.res = vceResult(rp.st, VCE.data);
+  /* the category on show: the one chosen, or the one it is now inside, or the first */
+  var f = rp.idOf[VCE.sel] ? vceFind(rp.st, rp.idOf[VCE.sel]) : null;
+  VCE.sel = f ? rp.addrOf[f.cat.id] : (rp.st.cats.length ? rp.addrOf[rp.st.cats[0].id] : '');
+  return left;
+}
+/* what the plan comes to, as a string: Apply goes ahead only if this is still what was on screen */
+function vceSig(){ var r = VCE.res; return JSON.stringify([r.changes, r.refiled, r.added, r.structure, r.groups, r.order]); }
+/* every change goes through here: one more step on the plan */
+function vceDo(step, said){
+  if(step.a === 'add') step.n = VCE.seq++;
+  var was = VCE.log.slice(), mine = null;
+  VCE.log.push(step);
+  vceMake().forEach(function(x){ if(x.step === step) mine = x; else VCE.gone.push(vceSayStep(x.step, was)); });
+  VCE.msg = mine ? mine.why : (said || '');
+  VCE.asking = '';
+  if(!mine) VCE.undone = null;
+  vceKeep(); vceShow();
+  return mine ? {ok: false, why: mine.why} : {ok: true, id: step.a === 'add' ? VCE.rp.idOf['n' + step.n] : ''};
+}
+function vceUndo(){
+  if(VCE.log.length) VCE.log.pop();
+  else if(VCE.undone){ VCE.log = VCE.undone; VCE.undone = null; }
+  else return;
+  VCE.msg = ''; VCE.asking = ''; VCE.clip = []; VCE.tick = {};
+  vceMake(); vceKeep(); vceShow();
+}
+/* the plan is cleared; Undo straight afterwards brings it back */
+function vceAgain(){
+  VCE.undone = VCE.log; VCE.log = [];
+  VCE.msg = 'The plan has been cleared. Undo brings it back.'; VCE.asking = ''; VCE.open = {}; VCE.clip = []; VCE.tick = {}; VCE.gone = [];
+  vceMake(); vceKeep(); vceShow();
+}
+/* Apply: the plan is made once more from the kit as it is this moment, and
+   goes ahead only if that is what was on screen when Apply was chosen. */
+function vceApply(){
+  var shown = VCE.sig, was = VCE.log.slice(), left = vceMake(), on = vceFind(VCE.st, VCE.rp.idOf[VCE.sel]);
+  left.forEach(function(x){ VCE.gone.push(vceSayStep(x.step, was)); });
+  VCE.asking = '';
+  if(left.length || vceSig() !== shown){
+    VCE.msg = 'The kit has changed since this was drawn. Check the changes, then choose Apply changes again.';
+    vceKeep(); vceShow(); return;
+  }
+  var r = VCE_HOST.apply ? VCE_HOST.apply(VCE.res, VCE.st, VCE.data) : null;
+  if(!r || r.ok === false){ VCE.msg = (r && r.why) || 'The changes could not be applied.'; vceShow(); return; }
+  /* the plan is now how things are, so there is nothing left of it */
+  VCE.log = []; VCE.undone = null; VCE.gone = []; VCE.clip = []; VCE.tick = {}; VCE.open = {};
+  if(on) VCE.sel = 'k' + vceKey(on.place.name, '');
+  vceMake(); vceKeep();
+  VCE.msg = r.said || 'The categories have been updated.';
+  vceShow();
+}
+function vceBack(){
+  var r = VCE_HOST.back ? VCE_HOST.back() : null, was = VCE.log.slice();
+  VCE.asking = '';
+  vceMake().forEach(function(x){ VCE.gone.push(vceSayStep(x.step, was)); });
+  VCE.msg = (r && (r.said || r.why)) || 'That could not be put back.';
+  vceKeep(); vceShow();
+}
+
+function vceNum(n){ return n ? String(n) : '<span class="vce-0">0</span>'; }
+/* a name to find a control by after the screen is drawn again, so the keyboard stays where it was */
+function vceK(k){ return ' data-k="' + vceEsc(k) + '"'; }
+function vceWhen(iso){
+  var d = new Date(iso); if(isNaN(d)) return '';
+  return d.getDate() + ' ' + ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][d.getMonth()]
+    + ' at ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+}
+function vceRail(){
+  var h = '<div class="vce-bh"><h3 class="vce-hd">Categories</h3><button type="button" class="vce-btn" data-vce="add-cat-open"' + vceK('add-cat-open') + '>Add category</button></div>';
+  if(VCE.adding) h += '<div class="vce-new"><input id="vceNewCat" type="text" placeholder="New category" aria-label="New category name" data-vce-enter="add-cat" data-vce-typed="cat" value="'
+    + vceEsc(VCE.typed.cat || '') + '"' + vceK('new-cat') + '><button type="button" class="vce-btn go" data-vce="add-cat"' + vceK('add-cat') + '>Add</button></div>';
+  h += '<div class="vce-ch"><span>Category</span><span>Inventory</span><span>Kit List</span></div>';
+  VCE.st.cats.forEach(function(c){
+    var n = vceAllHolds(VCE.st, c, VCE.counts), on = VCE.rp.addrOf[c.id] === VCE.sel;
+    h += '<button type="button" class="vce-cat' + (on ? ' on' : '') + '" data-vce="pick" data-id="' + c.id + '"' + (on ? ' aria-current="true"' : '') + vceK(c.id + '|pick') + '>'
+      + '<span class="vce-cn" title="' + vceEsc(c.name || 'No category') + '">' + vceEsc(c.name || 'No category') + '</span>'
+      + '<span class="vce-n">' + vceNum(n.items) + '</span><span class="vce-n">' + vceNum(n.models) + '</span></button>';
+  });
+  return h;
+}
+/* the two lists every row offers, made once for each drawing of the screen */
+function vceLists(){
+  var move = '<option value="">Choose</option><option value="@top">Make it a category</option>', merge = '<option value="">Choose</option>';
+  VCE.st.cats.forEach(function(c){
+    var cn = vceEsc(c.name || 'No category'), mv = '<option value="' + c.id + '">As a sub-category of ' + cn + '</option>', mg = '<option value="' + c.id + '">' + cn + ' (no sub-category)</option>';
+    c.kids.forEach(function(s){
+      mv += '<option value="' + s.id + '">Inside ' + vceEsc(s.name) + '</option>';
+      mg += '<option value="' + s.id + '">' + vceEsc(s.name) + '</option>';
+      s.kids.forEach(function(x){ mg += '<option value="' + x.id + '">' + vceEsc(s.name) + ' › ' + vceEsc(x.name) + '</option>'; });
+    });
+    move += '<optgroup label="' + cn + '">' + mv + '</optgroup>';
+    merge += '<optgroup label="' + cn + '">' + mg + '</optgroup>';
+  });
+  return {move: move, merge: merge};
+}
+/* what is filed in a place, each with a box to tick, ready to be cut */
+function vceInside(place){
+  var refs = vceThings(VCE.st, place, VCE.counts), c = VCE.counts;
+  if(!refs.length) return '<div class="vce-in"><p class="vce-calm">Nothing is filed directly here.</p></div>';
+  refs.sort(function(a, b){ return (c.kindOf[a] === c.kindOf[b] ? 0 : c.kindOf[a] === 'models' ? -1 : 1) || c.nameOf[a].localeCompare(c.nameOf[b]); });
+  var ticked = refs.filter(function(r){ return VCE.tick[r]; }).length;
+  var h = '<div class="vce-in"><div class="vce-inh"><button type="button" class="vce-btn sm" data-vce="tick-all" data-id="' + place.id + '"' + vceK(place.id + '|tick-all') + '>' + (ticked === refs.length ? 'Clear' : 'Select all') + '</button>'
+    + '<button type="button" class="vce-btn sm go" data-vce="cut" data-id="' + place.id + '"' + (ticked ? '' : ' disabled') + vceK(place.id + '|cut') + '>Cut' + (ticked ? ' ' + ticked : '') + '</button>'
+    + '<span class="vce-sum">Tick what should move, choose Cut, then Paste on the place it should go.</span></div><div class="vce-tl">';
+  refs.forEach(function(r){
+    var cut = VCE.clip.indexOf(r) >= 0;
+    h += '<label class="vce-th' + (cut ? ' cut' : '') + '"><input type="checkbox" data-vce-chg="tick" data-ref="' + vceEsc(r) + '"' + (VCE.tick[r] ? ' checked' : '') + (cut ? ' disabled' : '') + vceK(r + '|tick') + '>'
+      + '<span>' + vceEsc(c.nameOf[r]) + '</span><small>' + (c.kindOf[r] === 'models' ? 'Kit List' : 'Inventory') + (cut ? ', cut' : '') + '</small></label>';
+  });
+  return h + '</div></div>';
+}
+/* a small label is plain text, with a dot when it carries a state */
+function vceFlags(place){
+  var f = [];
+  if(!place.orig) f.push('<span class="vce-f new">New</span>');
+  if(vceUsedPlace(place.orig)) f.push('<span class="vce-f used">Used by the job pages</span>');
+  if(!place.listed) f.push('<span class="vce-f">Not on the list yet</span>');
+  if(place.src.length > 1) f.push('<span class="vce-f">Holds ' + (place.src.length - 1) + ' merged in</span>');
+  return f.length ? '<span class="vce-fl">' + f.join('') + '</span>' : '';
+}
+/* the name of a place: a box to type in, unless the job pages look for it by that name */
+function vceNameBox(place, big){
+  var fixed = vceUsedPlace(place.orig), what = big ? 'Category name' : 'Sub-category name';
+  return '<input class="vce-name' + (big ? ' big' : '') + '" type="text" value="' + vceEsc(place.name) + '" aria-label="' + what + '"'
+    + (fixed ? ' readonly title="The job pages look for this by name, so it keeps its name"' : ' data-vce-chg="rename" data-id="' + place.id + '"') + vceK(place.id + '|name') + '>';
+}
+function vceRow(place, depth, i, n, lists){
+  var own = vceHolds(VCE.st, place, VCE.counts), all = place.kids.length ? vceAllHolds(VCE.st, place, VCE.counts) : own, pasting = VCE.clip.length > 0;
+  var fixed = vceUsedPlace(place.orig), key = VCE.rp.addrOf[place.id], nm = vceEsc(place.name);
+  var h = '<div class="vce-row' + (depth === 3 ? ' in' : '') + '"><span class="vce-ud"><button type="button" data-vce="up" data-id="' + place.id + '"' + (i === 0 ? ' disabled' : '') + ' aria-label="Move ' + nm + ' up" title="Move up"' + vceK(place.id + '|up') + '>▲</button>'
+    + '<button type="button" data-vce="down" data-id="' + place.id + '"' + (i === n - 1 ? ' disabled' : '') + ' aria-label="Move ' + nm + ' down" title="Move down"' + vceK(place.id + '|down') + '>▼</button></span>'
+    + '<span class="vce-nm">' + vceNameBox(place, false) + vceFlags(place) + '</span>'
+    + '<button type="button" class="vce-n" data-vce="open" data-id="' + place.id + '" title="Show what is filed here" aria-label="' + all.items + ' inventory items in ' + nm + '"' + vceK(place.id + '|open-i') + '>' + vceNum(all.items) + '</button>'
+    + '<button type="button" class="vce-n" data-vce="open" data-id="' + place.id + '" title="Show what is filed here" aria-label="' + all.models + ' Kit List models in ' + nm + '"' + vceK(place.id + '|open-m') + '>' + vceNum(all.models) + '</button>'
+    + '<select aria-label="Move ' + nm + ' to" data-vce-chg="move" data-id="' + place.id + '"' + vceK(place.id + '|move') + '>' + lists.move + '</select>'
+    + '<select aria-label="Merge ' + nm + ' into" data-vce-chg="merge" data-id="' + place.id + '"'
+      + (place.kids.length ? ' disabled title="It has sub-categories of its own"' : fixed ? ' disabled title="The job pages look for this by name. Merge the other one into it instead"' : '') + vceK(place.id + '|merge') + '>' + lists.merge + '</select>'
+    + '<span class="vce-ac">' + (pasting ? '<button type="button" class="vce-btn sm go" data-vce="paste" data-id="' + place.id + '"' + vceK(place.id + '|paste') + '>Paste</button>'
+        : (depth === 2 ? '<button type="button" class="vce-btn sm" data-vce="add-in" data-id="' + place.id + '" title="Add a sub-category inside ' + nm + '"' + vceK(place.id + '|add-in') + '>Add inside</button>' : '')
+          + '<button type="button" class="vce-btn sm" data-vce="del" data-id="' + place.id + '"'
+          + ((all.items || all.models) ? ' disabled title="Move or merge what is in it first"' : fixed ? ' disabled title="The job pages look for this by name"' : '') + vceK(place.id + '|del') + '>Delete</button>') + '</span></div>';
+  if(VCE.open[key]) h += vceInside(place);
+  return h;
+}
+/* the kit that sits in a place with nothing more specific */
+function vceOwnRow(place, depth, lists, label){
+  var own = vceHolds(VCE.st, place, VCE.counts), key = VCE.rp.addrOf[place.id] + '#own';
+  var h = '<div class="vce-row own' + (depth === 2 ? ' in' : '') + '"><span></span><span class="vce-nm">' + vceEsc(label) + '</span>'
+    + '<button type="button" class="vce-n" data-vce="open" data-id="' + place.id + '#own" title="Show what is filed here"' + vceK(place.id + '#own|open-i') + '>' + vceNum(own.items) + '</button>'
+    + '<button type="button" class="vce-n" data-vce="open" data-id="' + place.id + '#own" title="Show what is filed here"' + vceK(place.id + '#own|open-m') + '>' + vceNum(own.models) + '</button>'
+    + '<span></span><select aria-label="Merge these into" data-vce-chg="merge-own" data-id="' + place.id + '"' + ((own.items || own.models) ? '' : ' disabled') + vceK(place.id + '#own|merge') + '>' + lists.merge + '</select>'
+    + '<span class="vce-ac">' + (VCE.clip.length ? '<button type="button" class="vce-btn sm go" data-vce="paste" data-id="' + place.id + '"' + vceK(place.id + '#own|paste') + '>Paste</button>' : '') + '</span></div>';
+  if(VCE.open[key]) h += vceInside(place);
+  return h;
+}
+function vceMain(){
+  var f = VCE.rp.idOf[VCE.sel] ? vceFind(VCE.st, VCE.rp.idOf[VCE.sel]) : null, c = f && f.place;
+  if(!c) return '<p class="vce-calm">Add a category to begin.</p>';
+  var all = vceAllHolds(VCE.st, c, VCE.counts), own = vceHolds(VCE.st, c, VCE.counts), i = VCE.st.cats.indexOf(c), lists = vceLists(), fixed = vceUsedPlace(c.orig);
+  var into = '<option value="">Move into</option>' + VCE.st.cats.filter(function(x){ return x !== c; }).map(function(x){
+    return '<optgroup label="' + vceEsc(x.name || 'No category') + '"><option value="' + x.id + '">As a sub-category of ' + vceEsc(x.name || 'No category') + '</option>'
+      + x.kids.map(function(s){ return '<option value="' + s.id + '">Inside ' + vceEsc(s.name) + '</option>'; }).join('') + '</optgroup>'; }).join('');
+  var h = '<div class="vce-bh"><h3 class="vce-hd">Category</h3><span class="vce-sum">' + (all.items || all.models ? vceCap(vceSay(all)) : 'Nothing filed here') + '</span></div>'
+    + '<div class="vce-crow">' + vceNameBox(c, true)
+    + '<button type="button" class="vce-btn" data-vce="up" data-id="' + c.id + '"' + (i === 0 ? ' disabled' : '') + vceK(c.id + '|up') + '>Move up</button>'
+    + '<button type="button" class="vce-btn" data-vce="down" data-id="' + c.id + '"' + (i === VCE.st.cats.length - 1 ? ' disabled' : '') + vceK(c.id + '|down') + '>Move down</button>'
+    + '<select class="vce-into" aria-label="Move this category into another" data-vce-chg="move" data-id="' + c.id + '"' + (fixed ? ' disabled title="The job pages look for this by name, so it stays a category"' : '') + vceK(c.id + '|move') + '>' + into + '</select>'
+    + '<button type="button" class="vce-btn" data-vce="del" data-id="' + c.id + '"'
+    + ((all.items || all.models) ? ' disabled title="Move or merge what is in it first"' : fixed ? ' disabled title="The job pages look for this by name"' : '') + vceK(c.id + '|del') + '>Delete</button></div>'
+    + vceFlags(c);
+  if(VCE.clip.length) h += '<div class="vce-clip"><span>' + vceCap(vceSay(vceTally(VCE.clip, VCE.counts))) + ' cut. Choose Paste on the place ' + (VCE.clip.length === 1 ? 'it' : 'they') + ' should go.</span>'
+    + '<button type="button" class="vce-btn sm" data-vce="clip-clear"' + vceK('clip-clear') + '>Cancel</button></div>';
+  h += '<div class="vce-sh"><span></span><span>Sub-category</span><span>Inventory</span><span>Kit List</span><span>Move to</span><span>Merge into</span><span></span></div>';
+  if(own.items || own.models || !c.kids.length || VCE.clip.length) h += vceOwnRow(c, 1, lists, 'No sub-category');
+  c.kids.forEach(function(s, si){
+    h += vceRow(s, 2, si, c.kids.length, lists);
+    if(s.kids.length){
+      var o = vceHolds(VCE.st, s, VCE.counts);
+      if(o.items || o.models || VCE.clip.length) h += vceOwnRow(s, 2, lists, 'Directly in ' + s.name);
+      s.kids.forEach(function(x, xi){ h += vceRow(x, 3, xi, s.kids.length, lists); });
+    }
+    if(VCE.addIn === VCE.rp.addrOf[s.id]) h += '<div class="vce-new in"><input id="vceNewIn" type="text" placeholder="New sub-category inside ' + vceEsc(s.name) + '" aria-label="New sub-category inside ' + vceEsc(s.name)
+      + '" data-vce-enter="add-in-go" data-vce-typed="in" value="' + vceEsc(VCE.typed['in'] || '') + '"' + vceK('new-in') + '>'
+      + '<button type="button" class="vce-btn go" data-vce="add-in-go"' + vceK('add-in-go') + '>Add</button><button type="button" class="vce-btn" data-vce="add-in" data-id=""' + vceK('add-in-no') + '>Cancel</button></div>';
+  });
+  h += '<div class="vce-new sub"><input id="vceNewSub" type="text" placeholder="New sub-category" aria-label="New sub-category name" data-vce-enter="add-sub" data-vce-typed="sub" value="' + vceEsc(VCE.typed.sub || '') + '"' + vceK('new-sub') + '>'
+    + '<button type="button" class="vce-btn" data-vce="add-sub"' + vceK('add-sub') + '>Add sub-category</button></div>';
+  return h;
+}
+function vceChanges(){
+  var r = VCE.res, n = r.changes.length, refiled = r.refiled.items || r.refiled.models, can = !!VCE_HOST.apply && (n || r.added.length) && !r.care.length;
+  var h = '<div class="vce-bh"><h3 class="vce-hd">Changes</h3><span class="vce-sum">' + (n || 'None') + '</span></div>';
+  if(VCE.gone.length) h += '<div class="vce-care"><p>The kit has changed since this plan was started. ' + (VCE.gone.length === 1 ? 'One step no longer fits and has' : VCE.gone.length + ' steps no longer fit and have') + ' been left out:</p><ul>'
+    + VCE.gone.map(function(x){ return '<li>' + vceEsc(x) + '</li>'; }).join('') + '</ul><button type="button" class="vce-btn sm" data-vce="gone-clear"' + vceK('gone-clear') + '>Dismiss</button></div>';
+  if(!n) h += '<p class="vce-calm">Nothing changed yet.</p>';
+  else {
+    h += '<p class="vce-tot">' + (refiled ? vceCap(vceSay(r.refiled)) + ' will be re-filed.' : 'No kit needs re-filing.') + '</p>';
+    if(r.care.length) h += '<div class="vce-care">' + r.care.map(function(x){ return '<p>' + vceEsc(x) + '</p>'; }).join('') + '</div>';
+    h += '<ol class="vce-list">' + r.changes.map(function(x){ return '<li>' + vceEsc(x) + '</li>'; }).join('') + '</ol>';
+  }
+  if(r.added.length) h += '<p class="vce-note">' + (r.added.length === 1 ? 'One name has' : r.added.length + ' names have') + ' kit filed under ' + (r.added.length === 1 ? 'it' : 'them')
+    + ' without being on the list. ' + (r.added.length === 1 ? 'It is' : 'They are') + ' marked “Not on the list yet” and will be added: ' + vceEsc(r.added.join(', ')) + '.</p>';
+  if(VCE_HOST.apply){
+    if(VCE.asking === 'apply' && can) h += '<div class="vce-foot ask"><p>' + (n ? 'Apply ' + (n === 1 ? 'this change' : 'these ' + n + ' changes') : 'Add ' + (r.added.length === 1 ? 'this name' : 'these ' + r.added.length + ' names') + ' to the list')
+      + ' for everyone? ' + (refiled ? vceCap(vceSay(r.refiled)) + ' will be re-filed.' : 'No kit needs re-filing.') + '</p><button type="button" class="vce-btn go" data-vce="apply-yes"' + vceK('apply-yes') + '>Apply</button>'
+      + '<button type="button" class="vce-btn" data-vce="ask-no"' + vceK('ask-no') + '>Cancel</button></div>';
+    else h += '<div class="vce-foot"><button type="button" class="vce-btn go" data-vce="apply"' + (can ? '' : ' disabled') + vceK('apply') + '>Apply changes</button>'
+      + '<p class="vce-note">Nothing changes for anyone until you choose Apply changes. The plan is kept in this browser as you go.</p></div>';
+  }
+  var last = VCE_HOST.last ? VCE_HOST.last() : null;
+  if(last){
+    if(VCE.asking === 'back') h += '<div class="vce-foot ask"><p>Put the categories and the filing back as they were before the last Apply?</p><button type="button" class="vce-btn go" data-vce="back-yes"' + vceK('back-yes') + '>Put back</button>'
+      + '<button type="button" class="vce-btn" data-vce="ask-no"' + vceK('ask-no') + '>Cancel</button></div>';
+    else h += '<div class="vce-foot last"><button type="button" class="vce-btn" data-vce="back"' + vceK('back') + '>Put back</button><p class="vce-note">Last applied on ' + vceEsc(vceWhen(last.at)) + ': '
+      + (last.changes === 1 ? '1 change' : last.changes + ' changes') + ', ' + vceSay({items: last.items, models: last.models}) + ' re-filed.</p></div>';
+  }
+  return h;
+}
+function vceHtml(){
+  var acts = VCE.asking === 'again'
+    ? '<span class="vce-sum">Clear the plan and start again from the categories as they are?</span><button type="button" class="vce-btn go" data-vce="again-yes"' + vceK('again-yes') + '>Clear the plan</button>'
+      + '<button type="button" class="vce-btn" data-vce="ask-no"' + vceK('ask-no') + '>Cancel</button>'
+    : '<button type="button" class="vce-btn" data-vce="undo"' + (VCE.log.length || VCE.undone ? '' : ' disabled') + vceK('undo') + '>Undo</button>'
+      + '<button type="button" class="vce-btn" data-vce="again"' + (VCE.log.length ? '' : ' disabled') + vceK('again') + '>Start again</button>';
+  VCE.sig = vceSig();
+  return '<div class="vce-top"><p class="vce-lead">' + vceCap(vceSay(VCE.counts.total)) + ' are filed under these categories. Changes are made as a plan first.</p><div class="vce-acts">' + acts + '</div></div>'
+    + '<p class="vce-msg" role="status" aria-live="polite">' + vceEsc(VCE.msg) + '</p>'
+    + '<section class="vce-box vce-chg">' + vceChanges() + '</section>'
+    + '<div class="vce-cols"><section class="vce-box vce-rail">' + vceRail() + '</section><section class="vce-box vce-main">' + vceMain() + '</section></div>';
+}
+/* drawn after the click or the key that asked for it has finished, so the keyboard's place is known and kept */
+function vceShow(){
+  if(VCE_HOST.sync){ vceDraw(); return; }
+  if(VCE.due) return;
+  VCE.due = setTimeout(function(){ VCE.due = 0; vceDraw(); }, 0);
+}
+function vceDraw(){
+  var root = document.getElementById(VCE_HOST.root); if(!root || !VCE.st) return;
+  if(!root._vce){ root._vce = true; vceListen(root); }
+  var a = document.activeElement, k = a && a !== root && root.contains(a) ? a.getAttribute('data-k') : '';
+  root.innerHTML = vceHtml();
+  if(!k) return;
+  var els = root.querySelectorAll('[data-k]');
+  for(var i = 0; i < els.length; i++) if(els[i].getAttribute('data-k') === k){ if(!els[i].disabled) els[i].focus(); break; }
+}
+/* the editor is opened, or comes back into view */
+function vceOpen(){
+  if(!VCE.read){ VCE.read = true; vceRead(); }
+  var was = VCE.log.slice(), left = vceMake();
+  left.forEach(function(x){ VCE.gone.push(vceSayStep(x.step, was)); });
+  if(left.length) vceKeep();
+  vceDraw();
+}
+function vceFocus(id){ var el = document.getElementById(id); if(el) el.focus(); }
+function vceAct(act, el){
+  var raw = el.getAttribute('data-id') || '', id = raw.replace('#own', ''), addr = VCE.rp.addrOf[id] || '';
+  if(act === 'pick'){
+    VCE.sel = addr; VCE.msg = ''; VCE.adding = false; VCE.addIn = ''; VCE.asking = '';
+    vceKeep(); vceDraw();
+    /* on a narrow screen the category is below the list, so it is brought into view */
+    var root = document.getElementById(VCE_HOST.root), rail = root.querySelector('.vce-rail'), main = root.querySelector('.vce-main');
+    if(rail && main && main.offsetTop > rail.offsetTop && main.scrollIntoView) main.scrollIntoView({block: 'start'});
+  }
+  else if(act === 'undo') vceUndo();
+  else if(act === 'again' || act === 'apply' || act === 'back'){
+    /* asked first, in the screen itself; and the numbers asked about are today's */
+    if(act !== 'again'){ var was = VCE.log.slice(); vceMake().forEach(function(x){ VCE.gone.push(vceSayStep(x.step, was)); }); }
+    VCE.asking = act; VCE.msg = ''; vceDraw();
+    var yes = document.getElementById(VCE_HOST.root).querySelector('[data-vce="' + act + '-yes"]'); if(yes) yes.focus();
+  }
+  else if(act === 'ask-no'){ VCE.asking = ''; vceDraw(); }
+  else if(act === 'again-yes') vceAgain();
+  else if(act === 'apply-yes') vceApply();
+  else if(act === 'back-yes') vceBack();
+  else if(act === 'gone-clear'){ VCE.gone = []; vceDraw(); }
+  else if(act === 'open'){ var key = addr + (raw.indexOf('#own') > 0 ? '#own' : ''); VCE.open[key] = !VCE.open[key]; vceDraw(); }
+  else if(act === 'add-cat-open'){ VCE.adding = !VCE.adding; vceDraw(); vceFocus('vceNewCat'); }
+  else if(act === 'add-cat'){ if(vceDo({a: 'add', to: '', name: VCE.typed.cat || ''}).ok){ VCE.sel = 'n' + (VCE.seq - 1); VCE.adding = false; VCE.typed.cat = ''; vceMake(); vceKeep(); vceDraw(); } }
+  else if(act === 'add-sub'){ if(vceDo({a: 'add', to: VCE.sel, name: VCE.typed.sub || ''}).ok) VCE.typed.sub = ''; vceDraw(); vceFocus('vceNewSub'); }
+  else if(act === 'add-in'){ VCE.addIn = VCE.addIn === addr ? '' : addr; VCE.typed['in'] = ''; vceDraw(); vceFocus('vceNewIn'); }
+  else if(act === 'add-in-go'){ if(vceDo({a: 'add', to: VCE.addIn, name: VCE.typed['in'] || ''}).ok) VCE.typed['in'] = ''; vceDraw(); vceFocus('vceNewIn'); }
+  else if(act === 'up' || act === 'down') vceDo({a: 'shift', p: addr, by: act === 'up' ? -1 : 1});
+  else if(act === 'del') vceDo({a: 'del', p: addr});
+  else if(act === 'tick-all'){
+    var f = vceFind(VCE.st, id), refs = f ? vceThings(VCE.st, f.place, VCE.counts).filter(function(r){ return VCE.clip.indexOf(r) < 0; }) : [];
+    var all = refs.length && refs.every(function(r){ return VCE.tick[r]; });
+    refs.forEach(function(r){ if(all) delete VCE.tick[r]; else VCE.tick[r] = 1; });
+    vceDraw();
+  }
+  else if(act === 'cut'){
+    var g = vceFind(VCE.st, id), here = g ? vceThings(VCE.st, g.place, VCE.counts).filter(function(r){ return VCE.tick[r]; }) : [];
+    here.forEach(function(r){ if(VCE.clip.indexOf(r) < 0) VCE.clip.push(r); delete VCE.tick[r]; });
+    VCE.msg = ''; vceDraw();
+  }
+  else if(act === 'clip-clear'){ VCE.clip = []; vceDraw(); }
+  else if(act === 'paste'){
+    var clip = VCE.clip.slice();
+    if(vceDo({a: 'put', refs: clip, to: addr}, vceCap(vceSay(vceTally(clip, VCE.counts))) + ' pasted into ' + vceName(VCE.st, id) + '.').ok){ VCE.clip = []; vceShow(); }
+  }
+}
+function vceChange(what, el){
+  var id = el.getAttribute('data-id') || '', addr = VCE.rp.addrOf[id] || '', v = el.value;
+  if(what === 'tick'){ var ref = el.getAttribute('data-ref'); if(el.checked) VCE.tick[ref] = 1; else delete VCE.tick[ref]; vceShow(); }
+  else if(what === 'rename'){ var f = vceFind(VCE.st, id); if(f && vceNorm(v) !== f.place.name) vceDo({a: 'rename', p: addr, name: v}); else vceShow(); }
+  else if(what === 'move' && v) vceDo({a: 'move', p: addr, to: v === '@top' ? '' : VCE.rp.addrOf[v]});
+  else if(what === 'merge' && v) vceDo({a: 'merge', p: addr, to: VCE.rp.addrOf[v], own: false});
+  else if(what === 'merge-own' && v) vceDo({a: 'merge', p: addr, to: VCE.rp.addrOf[v], own: true});
+}
+/* the editor listens on its own box and nowhere else */
+function vceListen(root){
+  root.addEventListener('click', function(e){
+    var el = e.target.closest ? e.target.closest('[data-vce]') : null;
+    if(el && root.contains(el) && !el.disabled) vceAct(el.getAttribute('data-vce'), el);
+  });
+  root.addEventListener('change', function(e){
+    var what = e.target.getAttribute && e.target.getAttribute('data-vce-chg');
+    if(what) vceChange(what, e.target);
+  });
+  /* what is typed into a new name is kept, so drawing the screen again does not lose it */
+  root.addEventListener('input', function(e){
+    var which = e.target.getAttribute && e.target.getAttribute('data-vce-typed');
+    if(which) VCE.typed[which] = e.target.value;
+  });
+  root.addEventListener('keydown', function(e){
+    var el = e.target, what = el.getAttribute && el.getAttribute('data-vce-enter');
+    if(e.key !== 'Enter') return;
+    if(what){ e.preventDefault(); vceAct(what, el); }
+    /* Enter in a name takes the name, as leaving the box does */
+    else if(el.classList && el.classList.contains('vce-name')) el.blur();
+  });
+}
+/* The category editor in the dashboard: how the categories are loaded and
+   saved, where the editor's kit comes from, and what Apply and Put back do.
+
+   A sub-category can sit inside another. That is only a grouping: kit is still
+   filed under a category and a sub-category, so nothing on a job page changes.
+   KIT_SUBCATS stays one flat list for each category, a group followed by what
+   is inside it, and KIT_SUBGROUPS says which names sit inside which. */
+var KIT_SUBGROUPS = {}, _vsKcOrder = null, _vsKcKept;
+var VS_KC_BEFORE = 'vsKcBefore.v1';
+
+/* The saved list of categories is the whole list. It used to be laid over the
+   built-in one, so a built-in category that had been renamed or removed came
+   back on the next load. The built-in list is now only what a dashboard with
+   nothing saved starts from. */
+function _vsKcLoaded(v){
+  if(!v || typeof v !== 'object' || Array.isArray(v) || !Object.keys(v).length) return;
+  var had = Object.keys(KIT_SUBCATS), seq = [];
+  (_vsKcOrder || []).concat(had, Object.keys(v)).forEach(function(k){ if(Object.prototype.hasOwnProperty.call(v, k) && seq.indexOf(k) < 0) seq.push(k); });
+  had.forEach(function(k){ delete KIT_SUBCATS[k]; });
+  seq.forEach(function(k){ KIT_SUBCATS[k] = Array.isArray(v[k]) ? v[k] : []; });
+  /* the Audio pickers on a job need these five */
+  if(!KIT_SUBCATS.Audio) KIT_SUBCATS.Audio = [];
+  ['Desks', 'Hydras', 'Mics', 'Radio Mics', 'Playout'].forEach(function(s){ if(KIT_SUBCATS.Audio.indexOf(s) < 0) KIT_SUBCATS.Audio.push(s); });
+  cats = Object.keys(KIT_SUBCATS);
+}
+/* The database does not keep the order of a list of names, so the order of
+   the categories is saved on its own (kitCatOrder) and put back here. */
+function _vsKcOrderLoaded(v){
+  if(!Array.isArray(v)) return;
+  _vsKcOrder = v.filter(function(x){ return typeof x === 'string'; });
+  var now = Object.keys(KIT_SUBCATS), keep = {}, seq = [];
+  _vsKcOrder.concat(now).forEach(function(k){ if(now.indexOf(k) >= 0 && seq.indexOf(k) < 0) seq.push(k); });
+  now.forEach(function(k){ keep[k] = KIT_SUBCATS[k]; delete KIT_SUBCATS[k]; });
+  seq.forEach(function(k){ KIT_SUBCATS[k] = keep[k]; });
+  cats = Object.keys(KIT_SUBCATS);
+}
+/* which sub-categories sit inside another: saved as rows of [category, sub-category, [the ones inside it]] */
+function _vsKcGroupsLoaded(v){
+  var g = {};
+  (Array.isArray(v) ? v : []).forEach(function(r){
+    if(!Array.isArray(r) || typeof r[0] !== 'string' || typeof r[1] !== 'string' || !Array.isArray(r[2])) return;
+    var inside = r[2].filter(function(x){ return typeof x === 'string'; });
+    if(inside.length) (g[r[0]] = g[r[0]] || {})[r[1]] = inside;
+  });
+  KIT_SUBGROUPS = g;
+}
+/* the groups as they are saved: only names the list still has, each inside one group, and no group inside a group */
+function _vsKcGroupsOut(){
+  var out = [], all = KIT_SUBGROUPS || {};
+  Object.keys(KIT_SUBCATS).forEach(function(c){
+    var list = KIT_SUBCATS[c] || [], g = all[c] || {}, taken = {};
+    list.forEach(function(s){
+      if(!g[s] || taken[s]) return;
+      var inside = [];
+      g[s].forEach(function(x){ if(x !== s && list.indexOf(x) >= 0 && !g[x] && !taken[x]){ taken[x] = 1; inside.push(x); } });
+      if(inside.length) out.push([c, s, inside]);
+    });
+  });
+  return out;
+}
+/* the sub-category a sub-category sits inside, or '' */
+function _vsKcGroupOf(cat, sub){
+  var hit = '';
+  _vsKcGroupsOut().forEach(function(r){ if(r[0] === cat && r[2].indexOf(sub) >= 0) hit = r[1]; });
+  return hit;
+}
+/* the structure and its groups, as one string: has anything about them changed? */
+function _vsKcSig(){
+  return JSON.stringify([Object.keys(KIT_SUBCATS).map(function(c){ return [c, KIT_SUBCATS[c]]; }), _vsKcGroupsOut()]);
+}
+/* a colour for a category that has none, always the same one for the same name */
+function _vsKcColour(name){
+  var n = 0, s = String(name), i, hex = function(v){ return ('0' + Math.round(v * 255).toString(16)).slice(-2); };
+  for(i = 0; i < s.length; i++) n = (n * 31 + s.charCodeAt(i)) % 360;
+  var f = function(k){ var a = (k + n / 30) % 12; return .38 - .21 * Math.max(-1, Math.min(a - 3, 9 - a, 1)); };
+  return '#' + hex(f(0)) + hex(f(8)) + hex(f(4));
+}
+
+/* the kit as the editor reads it: every inventory item and Kit List model with where it is filed */
+function vsKcData(){
+  var structure = {}, groups = {};
+  Object.keys(KIT_SUBCATS).forEach(function(c){ structure[c] = (KIT_SUBCATS[c] || []).filter(function(s){ return typeof s === 'string'; }); });
+  _vsKcGroupsOut().forEach(function(r){ (groups[r[0]] = groups[r[0]] || {})[r[1]] = r[2]; });
+  return {structure: structure, groups: groups,
+    items: (typeof kit !== 'undefined' ? kit : []).filter(Boolean).map(function(k){
+      return {id: k.id, n: k.name, c: vceNorm(k.cat), s: vceNorm(k.subcat), m: (k.modelId == null || k.modelId === '') ? null : k.modelId}; }),
+    models: (typeof hiredCatalogue !== 'undefined' ? hiredCatalogue : []).filter(Boolean).map(function(h){
+      return {id: h.id, n: h.name, c: vceNorm(h.cat), s: vceNorm(h.subcat)}; })};
+}
+function _vsKcMay(){
+  if(typeof _appReady !== 'undefined' && !_appReady) return 'The dashboard is still loading. Try again in a moment.';
+  if(typeof _vsJobOnlyId === 'function' && _vsJobOnlyId() !== null) return 'This login cannot change the categories.';
+  return '';
+}
+/* Apply: every model and item the plan moves is re-filed, an item linked to a
+   model going where its model goes, and the list of categories, its groups and
+   its order become the plan's. What each thing was filed under before is kept
+   in this browser, so the last Apply can be put back. */
+function vsKcApply(res){
+  var no = _vsKcMay(); if(no) return {ok: false, why: no};
+  if(res.care.length) return {ok: false, why: res.care[0]};
+  var where = vceWhere(res), lead = {}, from = {}, went = {}, order = res.order.filter(function(c){ return c !== ''; });
+  var before = {at: new Date().toISOString(), changes: res.changes.length, items: [], models: [], colours: [],
+    subcats: JSON.parse(JSON.stringify(KIT_SUBCATS)), order: Object.keys(KIT_SUBCATS), groups: _vsKcGroupsOut()};
+  hiredCatalogue.forEach(function(h){ if(h && h.id != null){ lead[h.id] = h; from[h.id] = [vceNorm(h.cat), vceNorm(h.subcat)]; } });
+  hiredCatalogue.forEach(function(h){
+    if(!h) return;
+    var to = where('m' + h.id, vceNorm(h.cat), vceNorm(h.subcat));
+    if(!to) return;
+    before.models.push([h.id, h.cat, h.subcat, to.c, to.s]);
+    h.cat = to.c; h.subcat = to.s; went[h.id] = 1;
+  });
+  kit.forEach(function(k){
+    if(!k) return;
+    var h = (k.modelId == null || k.modelId === '') ? null : lead[k.modelId];
+    var to = h ? where('i' + k.id, from[h.id][0], from[h.id][1]) : where('i' + k.id, vceNorm(k.cat), vceNorm(k.subcat));
+    if(!to || (k.cat === to.c && (k.subcat || '') === to.s)) return;
+    before.items.push([k.id, k.cat, k.subcat, to.c, to.s]);
+    k.cat = to.c; k.subcat = to.s;
+  });
+  Object.keys(KIT_SUBCATS).forEach(function(c){ delete KIT_SUBCATS[c]; });
+  order.forEach(function(c){ KIT_SUBCATS[c] = res.structure[c].slice(); });
+  KIT_SUBGROUPS = JSON.parse(JSON.stringify(res.groups)); delete KIT_SUBGROUPS[''];
+  /* a category that has a new name takes its colour with it, and a new one is given a colour */
+  res.renamedCats.forEach(function(r){ if(CAT_COLORS[r.from] && !CAT_COLORS[r.to]){ CAT_COLORS[r.to] = CAT_COLORS[r.from]; before.colours.push(r.to); } });
+  order.forEach(function(c){ if(!CAT_COLORS[c]){ CAT_COLORS[c] = _vsKcColour(c); before.colours.push(c); } });
+  cats = Object.keys(KIT_SUBCATS); _vsKcOrder = cats.slice();
+  before.sig = _vsKcSig(); _vsKcKept = before;
+  try{ localStorage.setItem(VS_KC_BEFORE, JSON.stringify(before)); }catch(e){}
+  saveData();
+  _vsKcSelects();
+  var n = {items: before.items.length, models: before.models.length};
+  return {ok: true, said: 'The categories have been updated' + (n.items || n.models ? ', and ' + vceSay(n) + ' re-filed.' : '.')};
+}
+/* the last Apply made in this browser, while the categories are still as it left them */
+function _vsKcBeforeRead(){
+  if(_vsKcKept === undefined){
+    _vsKcKept = null;
+    try{ _vsKcKept = JSON.parse(localStorage.getItem(VS_KC_BEFORE) || 'null'); }catch(e){}
+  }
+  var b = _vsKcKept;
+  return (b && b.sig && Array.isArray(b.items) && Array.isArray(b.models) && b.subcats && Array.isArray(b.order) && b.sig === _vsKcSig()) ? b : null;
+}
+function vsKcLast(){
+  var b = _vsKcBeforeRead();
+  return b ? {at: b.at, changes: b.changes, items: b.items.length, models: b.models.length} : null;
+}
+/* Put back: each thing the last Apply re-filed goes back where it was, unless
+   someone has re-filed it since, and the list is as it was before. */
+function vsKcBack(){
+  var no = _vsKcMay(); if(no) return {ok: false, why: no};
+  var b = _vsKcBeforeRead(), n = {items: 0, models: 0}, since = 0;
+  if(!b) return {ok: false, why: 'The categories have changed since, so that can no longer be put back.'};
+  var undo = function(list, rows, kind){
+    var by = {};
+    list.forEach(function(x){ if(x && x.id != null) (by[x.id] = by[x.id] || []).push(x); });
+    rows.forEach(function(r){ (by[r[0]] || []).forEach(function(x){
+      if(x.cat === r[3] && (x.subcat || '') === r[4]){ x.cat = r[1] == null ? '' : r[1]; x.subcat = r[2] == null ? '' : r[2]; n[kind]++; } else since++;
+    }); });
+  };
+  undo(hiredCatalogue, b.models, 'models'); undo(kit, b.items, 'items');
+  Object.keys(KIT_SUBCATS).forEach(function(c){ delete KIT_SUBCATS[c]; });
+  b.order.forEach(function(c){ KIT_SUBCATS[c] = b.subcats[c] || []; });
+  _vsKcGroupsLoaded(b.groups);
+  (b.colours || []).forEach(function(c){ delete CAT_COLORS[c]; });
+  cats = Object.keys(KIT_SUBCATS); _vsKcOrder = cats.slice();
+  _vsKcKept = null;
+  try{ localStorage.removeItem(VS_KC_BEFORE); }catch(e){}
+  saveData();
+  _vsKcSelects();
+  return {ok: true, said: 'The categories are back as they were' + (n.items || n.models ? ', and ' + vceSay(n) + ' re-filed.' : '.')
+    + (since ? ' ' + since + (since === 1 ? ' had been re-filed since and was left where it is.' : ' had been re-filed since and were left where they are.') : '')};
+}
+/* the category pickers elsewhere in the dashboard follow the list */
+function _vsKcSelects(){
+  try{ if(typeof populateCatSelect === 'function'){ populateCatSelect('nkCat'); populateCatSelect('fCat'); } }catch(e){}
+}
+/* Admin's Kit Categories: the editor, drawn when that is the tab on show */
+function vsKcAdmin(){
+  if(!document.getElementById('vce') || (typeof _admTab !== 'undefined' && _admTab !== 'cats')) return;
+  VCE_HOST.root = 'vce'; VCE_HOST.store = 'vsKcPlan.v1';
+  VCE_HOST.data = vsKcData; VCE_HOST.apply = vsKcApply; VCE_HOST.last = vsKcLast; VCE_HOST.back = vsKcBack;
+  vceOpen();
+}
+/* what a refused save or someone else's change is called */
+if(typeof VS_KEY_LABEL !== 'undefined') VS_KEY_LABEL.kitSubcats = VS_KEY_LABEL.kitSubgroups = VS_KEY_LABEL.kitCatOrder = 'the kit categories';
+/* ── end of kit categories in Admin ── */
 function renderCats() {
-  document.getElementById('catList').innerHTML=cats.map((c,i)=>'<div class="cat-row"><div class="cat-nm">'+c+'</div><div style="display:flex;gap:6px"><button class="ibtn del" onclick="delCat('+i+')">Remove</button></div></div>').join('');
+  try{ vsKcAdmin(); }catch(e){ console.warn('category editor failed', e); }
   populateCatSelect('nkCat');
   populateCatSelect('fCat');
   document.getElementById('fCat').innerHTML='<option value="">All Categories</option>'+cats.map(c=>'<option>'+c+'</option>').join('');
