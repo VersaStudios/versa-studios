@@ -11,16 +11,36 @@
   logos from logos/) or a soft tint from the job's own colour; a full notes page for each card
   with its own pad; drag and drop, Arrange mode, dark mode (remembered), full width, phone first.
 
+  Meetings: a boxed Meetings panel under This week (the latest four, upcoming first; the search
+  finds meetings too), the Meetings page (#meetings: its own search, a Showing picker, grouped by
+  month with Upcoming first) and a page for each meeting (#meeting-<id>, its notes in full page at
+  #meeting-<id>/full). A meeting's cover carries its title, date, time, what it is for (General, a
+  section or a show; it takes that one's colours) and its attendees; its notes are a pad (File
+  line… files a line as an action); its Actions box lists the items made from it, which carry its
+  id and keep their show if the meeting is deleted. Each card has a quiet "Meetings · 3 · latest
+  Tue 29 Sep" line under "Notes page", and each notes page a Meetings box.
+  Deadlines: a to do or a to print can carry a day it is due, set while the item is open or from
+  any add field's "Deadline" (for the next item only). It shows at the row's end in place of the
+  date it was made ("Due Fri 2 Oct", "Due today", "Overdue · Mon 28 Sep" in the danger colour),
+  and This week puts what is overdue or due this week first and counts what is overdue.
+
   Its record: the whole board is ONE app_data row, key "notesboard_" + the signed-in email
   lower-cased with every character outside a-z and 0-9 turned into "_"
   (notesboard_andrew_rowell_versastudios_com). The value is
-    {v:1, items:[{id, kind, text, scope, pinned, done, order, createdAt, updatedAt, doneAt?, deleted?}],
-     sections:[{id, name, tint, updatedAt, deleted?}], pages:{<scope>:{text, edited, updatedAt}},
+    {v:2, items:[{id, kind, text, scope, pinned, done, order, createdAt, updatedAt, meeting?, due?,
+       doneAt?, deleted?}],
+     sections:[{id, name, tint, updatedAt, deleted?}],
+     meetings:[{id, title, date:'YYYY-MM-DD'|'', time:'HH:MM'|'', who, scope, text, edited, updatedAt, deleted?}],
+     pages:{<scope>:{text, edited, updatedAt}},
      notepad:{text, updatedAt}, cardOrder:{list, updatedAt}, shown:{list, updatedAt},
      names:{<scope>: last known name}}
   Scopes: "me" (General), "sec:<id>", "job:<the Dashboard's job id>". Ids are time + random, so
   two devices never clash. A deletion is a tombstone (deleted:true + updatedAt), pruned after 30
-  days, so a merge never brings a deleted thing back.
+  days, so a merge never brings a deleted thing back. v:2 added meetings, and an item's meeting
+  and due; a v1 board is read and upgraded (with no meetings), and is written as v2 at its next
+  save. A board saved in a later format than the page knows is never written over: a copy of the
+  page that only knows v1, left open on another device, stops at a v2 board (it says the notes
+  were saved by a newer version) instead of dropping the meetings.
 
   The jobs: read only, with a JSON-path select (name, status, colour, dates; never a whole job
   row), refreshed on focus and every few minutes. "Add a show…" and the pickers offer the
@@ -32,8 +52,8 @@
     this device, if there is one) with a Retry, and never saves.
   - Every write is conditional on the version it was based on (PATCH …&updated_at=eq.<version>).
     If another device saved first, the page reads the latest, merges record by record (newer
-    wins; a pad both devices changed keeps this device's words and adds the other's new lines)
-    and tries again. The first save uses POST with resolution=ignore-duplicates, never an upsert.
+    wins, field by field against the version both last agreed; a pad or a meeting's notes both
+    devices changed keeps this device's words and adds the other's new lines) and tries again. The first save uses POST with resolution=ignore-duplicates, never an upsert.
   - Saves follow edits by ~0.7s (pads ~1.2s after typing stops) and on leaving the page; every
     unsaved change is also kept in this browser until it is saved, and merged in on the next load
     if the tab closed first.
@@ -62,6 +82,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#ededed">
 <title>Notes — Versa</title>
+<!-- the icon: the Versa V mark and "Notes", white on near-black (drawn in _notes-icons/icon.html).
+     Safari's File > Add to Dock takes the apple-touch-icon; the browser tab takes the icon. -->
+<link rel="apple-touch-icon" href="versa-notes-icon.png">
+<link rel="icon" type="image/png" sizes="512x512" href="versa-notes-icon.png">
+<meta name="apple-mobile-web-app-title" content="Notes">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -132,7 +157,7 @@ img{border:0}
 .kw:focus-visible,.fl:focus-visible,.act:focus-visible,.theme:focus-visible,.hd:focus-visible,
 .txt:focus-visible,.lnk:focus-visible,.undo:focus-visible,.wk-it:focus-visible,.wk-tail:focus-visible,
 .wk-name a:focus-visible,.back:focus-visible,.pgl:focus-visible,.as-a:focus-visible,.pc-act:focus-visible,.tog:focus-visible,
-.tba:focus-visible{border-radius:6px}
+.tba:focus-visible,.mt-row:focus-visible{border-radius:6px}
 textarea:focus-visible,input:focus-visible,select:focus-visible{outline:none}
 
 /* the page takes the full width of the window, with 24px gutters */
@@ -183,15 +208,19 @@ html.gated .lead,html.gated .sentinel,html.gated .dock,html.gated .fline,html.ga
 html.gated #grid,html.gated #none{display:none!important}
 /* read-only: the copy last seen on this device, with nothing that would change it */
 html.ro #addBtn,html.ro #arrBtn,html.ro #arrBtnPg,html.ro .foot,html.ro .addshow,html.ro .np-acts,
-html.ro #pgAdd,html.ro .pc-acts > *,html.ro .grip{display:none!important}
+html.ro #pgAdd,html.ro .pc-acts > *,html.ro .grip,html.ro .mt-new,html.ro .mt-del,html.ro #mpAdd,
+html.ro .dl-t,html.ro .dl-row{display:none!important}
 html.ro .tick{cursor:default}
 /* the foot of the page: who is signed in, and Sign out */
 .pfoot{display:flex;flex-wrap:wrap;align-items:center;gap:0 4px;margin-top:28px;font-size:13px;line-height:18px;color:var(--muted)}
 .pfoot span{min-width:0;overflow-wrap:anywhere}
 .pf-out{height:44px;padding:0 8px;font-size:13px;font-weight:600;color:var(--ink-2)}
 
-/* ── lead: the notepad beside this week, each in its own box ────────────── */
+/* ── lead: the notepad beside this week and meetings, each in its own box ── */
 .lead{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:14px;align-items:stretch;margin-bottom:14px}
+/* the right-hand column: This week, and under it Meetings, which takes whatever height is left so
+   the column ends level with the Notepad */
+.lead-side{display:flex;flex-direction:column;gap:14px;min-width:0}
 
 /* the notepad: one component for the main page and every notes page */
 /* a writing pad has real definition: a solid 1.5px edge (darker while you write in it), and a
@@ -219,6 +248,9 @@ html.ro .tick{cursor:default}
 .np-ta::placeholder{color:var(--muted);opacity:1}
 /* the main pad grows with what is written (--np-h, set as you type) up to the cap, then scrolls */
 #npText{min-height:max(200px,var(--np-h,0px));max-height:min(500px,60vh)}
+/* beside This week and Meetings the cap is kept by --np-h alone (autosize caps it), so when that
+   column is the taller the pad still fills the band down to its foot */
+@media (min-width:960px){ #npText{max-height:none} }
 /* a panel that opens inside the pad, just above its footer */
 .np-panel{flex:none;margin:0 8px 8px;padding:6px 6px 2px 12px;border-radius:14px;background:var(--surface-2)}
 .np-q{
@@ -274,6 +306,11 @@ html.ro .tick{cursor:default}
 .wk-clear{margin-top:10px;padding-top:8px;border-top:1px solid var(--hair);font-size:13.5px;line-height:21px;color:var(--muted)}
 .wk-clear .lnk{color:var(--ink-2);font-weight:600}
 .week h2 + .wk-clear{margin-top:0;padding-top:0;border-top:0}
+/* a to do's deadline after its words, when it is overdue or due this week; the heading's count of
+   what is overdue in the danger colour (plain text, no badge) */
+.wk-due{font-size:12.5px;font-weight:600;color:var(--muted);white-space:nowrap}
+.wk-due.near{color:var(--ink)}
+.wk-due.over,.week h2 .wk-over{color:var(--danger)}
 
 /* ── "+ Add": the composer, a boxed panel that opens under the toolbar ──── */
 /* It sits in the sticky dock, so it opens directly under the toolbar wherever you are on the page;
@@ -404,8 +441,8 @@ html.ro .tick{cursor:default}
 .grid.solo{max-width:720px}
 .col{display:flex;flex-direction:column;gap:var(--gap);min-width:0}
 
-.card,#pg{--wash:var(--wash-l);--flash:var(--flash-l)}
-:root[data-theme="dark"] .card,:root[data-theme="dark"] #pg{--wash:var(--wash-d);--flash:var(--flash-d)}
+.card,#pg,#mpg{--wash:var(--wash-l);--flash:var(--flash-l)}
+:root[data-theme="dark"] .card,:root[data-theme="dark"] #pg,:root[data-theme="dark"] #mpg{--wash:var(--wash-d);--flash:var(--flash-d)}
 .card{border-radius:var(--r);min-width:0;scroll-margin-top:calc(var(--dockh,52px) + 12px)}
 .card.card-in{animation:arrive .36s cubic-bezier(.2,.7,.2,1) both}
 .card.ping{animation:ping 1.1s ease-out}
@@ -541,9 +578,9 @@ mark{background:none;color:inherit;font-weight:600;text-decoration:underline;tex
 }
 .opts{display:grid;grid-template-rows:0fr;opacity:0;visibility:hidden;transition:grid-template-rows .22s ease,opacity .18s ease,visibility 0s .22s}
 .foot.on .opts{grid-template-rows:1fr;opacity:1;visibility:visible;transition:grid-template-rows .22s ease,opacity .18s ease .04s,visibility 0s}
-.opts > div{min-height:0;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.opts > div{min-height:0;overflow:hidden;display:flex;flex-wrap:wrap;align-items:center;column-gap:8px}
 .opts .kinds{margin-left:-8px}
-.opts .keys{font-size:12px;color:var(--muted);white-space:nowrap}
+.opts .keys{margin-left:auto;font-size:12px;color:var(--muted);white-space:nowrap}
 @container (max-width:380px){.opts .keys{display:none}}
 
 /* the end of the grid: add a show, or start a new section */
@@ -592,7 +629,7 @@ mark{background:none;color:inherit;font-weight:600;text-decoration:underline;tex
 /* arrange mode: the covers come down to a slim header (grip, name, count, arrows); the pads, the
    add fields, This week and everything else that is not being arranged step aside */
 html.arr .lead,html.arr .bar,html.arr .fline,html.arr #comp,html.arr .foot,html.arr .pgl,html.arr .addshow,
-html.arr .go,html.arr .pg-np,html.arr #pgAdd,html.arr #pgDone,html.arr .pc-acts,html.arr .secslot,html.arr .igrip{display:none!important}
+html.arr .go,html.arr .pg-np,html.arr #pgAdd,html.arr #pgDone,html.arr #pgMeet,html.arr .pc-acts,html.arr .secslot,html.arr .igrip{display:none!important}
 html.arr .arrbar{display:flex}
 html.arr .pg-top > :not(.arrbar){display:none}
 html.arr .card{--r:14px}
@@ -643,7 +680,10 @@ html.dragging,html.dragging *{cursor:grabbing!important;-webkit-user-select:none
   background:var(--ground);visibility:hidden;transform:translateX(100%);
   transition:transform .4s var(--ease),visibility 0s .4s;
 }
-html.layer .pg{transform:none;visibility:visible;transition:transform .4s var(--ease),visibility 0s}
+/* two such screens: a notes page (#pg), and over it the meetings (#mpg: the Meetings page or a
+   meeting); each is shown by its own "on" */
+.pg.on{transform:none;visibility:visible;transition:transform .4s var(--ease),visibility 0s}
+#mpg{z-index:31}
 .pg:focus,.pg:focus-visible{outline:none}
 .page{transition:transform .4s var(--ease),opacity .4s ease}
 html.layer .page{transform:translateX(-16%);opacity:.5}
@@ -658,6 +698,8 @@ html.instant .pg,html.instant .page{transition:none!important}
 }
 .back{display:inline-flex;align-items:center;gap:6px;height:44px;min-width:44px;padding:0 14px 0 2px;margin-left:-2px;font-size:16px;font-weight:700;color:var(--ink);text-decoration:none}
 .back svg{flex:none}
+/* a meeting's "‹ Morning Live" keeps to one line however long the name */
+.back span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pg-tr{display:flex;align-items:center}
 .pg-tr .tba{color:var(--ink-2)}
 .pg-top > .arrbar{flex:1 1 auto;min-width:0}
@@ -702,6 +744,105 @@ html.instant .pg,html.instant .page{transition:none!important}
 .tog{display:flex;align-items:center;gap:8px;width:100%;min-height:var(--hit);padding:0 10px;font-size:14px;font-weight:600;color:var(--ink-2)}
 .tog svg{color:var(--muted)}
 
+/* ── deadlines: a day a to do or a to print is due ──────────────────────── */
+/* at the row's end, where the date it was made sits: plain text, ink when it is today or
+   tomorrow, the danger colour when it has gone by; it may take two lines rather than squeeze the words */
+.when.due{white-space:normal;text-align:right;max-width:7.6em}
+.when.near{color:var(--ink);font-weight:600}
+.when.over{color:var(--danger);font-weight:600}
+.row .from,.row .dl-row{grid-column:2 / -1}
+/* an item made in a meeting says so while it is open: "From: Production meeting" */
+.from{margin:0;font-size:13px;line-height:18px}
+.from .lnk{display:inline-flex;align-items:center;min-height:var(--hit);color:var(--muted);font-weight:600}
+/* the Deadline row: a date, and the quick choices as plain words */
+.dl-row{display:flex;flex-wrap:wrap;align-items:center;gap:2px 4px;min-width:0;margin-top:2px}
+.dl-l{margin-right:6px;font-size:12.5px;line-height:16px;font-weight:600;color:var(--muted)}
+.dl-in{
+  height:var(--hit);min-width:132px;max-width:100%;border:1px solid var(--edge);border-radius:9px;background:var(--surface);
+  color:var(--ink);font-size:14px;font-weight:600;padding:0 8px;margin-right:2px;-webkit-appearance:none;appearance:none;
+}
+.dl-in:focus{border-color:var(--edge-hi)}
+.dl-in::-webkit-date-and-time-value{text-align:left}
+.dl-qs{display:flex;flex-wrap:wrap;min-width:0}
+.act.dl-q{padding:0 8px;color:var(--ink-2)}
+.act.dl-q[data-q="clear"]{color:var(--muted)}
+.act.dl-q[aria-pressed="true"]{color:var(--k-action);text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:6px}
+/* an add field's quiet "Deadline": it opens the same row, for the next item only */
+.act.dl-t{padding:0 8px;color:var(--muted)}
+.act.dl-t[aria-expanded="true"]{color:var(--ink)}
+.opts .dl-row{flex:0 0 100%;margin:0 0 4px}
+.comp .dl-row{padding-left:4px;margin-bottom:2px}
+
+/* ── meetings: the panel under This week, a meeting's row, the Meetings page, a meeting ── */
+.mtp{flex:1 1 auto;min-width:0;background:var(--surface);border:1px solid var(--box);border-radius:20px;padding:11px 16px 0}
+.mtp h2{font-size:18px;line-height:24px;font-weight:800;letter-spacing:-.03em;margin:0 0 4px}
+.mtp h2 > span{margin-left:8px;font-size:14px;font-weight:600;letter-spacing:-.01em;color:var(--muted)}
+.mt-none{font-size:13.5px;line-height:20px;color:var(--muted);padding:4px 0 8px}
+.mt-foot{display:flex;flex-wrap:wrap;gap:0 18px;margin-top:2px;border-top:1px solid var(--hair)}
+.mt-foot .lnk{display:inline-flex;align-items:center;min-height:var(--hit);font-size:13.5px;font-weight:600;color:var(--ink-2)}
+/* one meeting: its date (and time) on the left; the title, what it is for, who and its open actions beside */
+.mt-list{display:flex;flex-direction:column}
+.mt-row{
+  display:grid;grid-template-columns:80px minmax(0,1fr);column-gap:10px;align-items:start;
+  min-height:var(--hit);padding:6px 0;border-top:1px solid var(--hair);color:var(--ink);text-decoration:none;cursor:pointer;
+}
+.mt-list > .mt-row:first-child{border-top:0}
+.mt-d{font-size:13px;line-height:19px;font-weight:600;color:var(--ink-2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.mt-d span{display:block;font-weight:500;color:var(--muted)}
+.mt-b{min-width:0}
+.mt-t{display:block;font-size:14px;line-height:19px;font-weight:700;overflow-wrap:anywhere}
+.mt-m,.mt-w,.mt-q{display:block;font-size:12.5px;line-height:18px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mt-q{color:var(--ink-2)}
+.mt-m .sep{margin:0 6px}
+/* what it is for, in its own colour (taken deeper on white and lighter on dark, so it reads) */
+.mc{--mc:var(--mc-l)}
+:root[data-theme="dark"] .mc{--mc:var(--mc-d)}
+.mt-s{font-weight:600;color:var(--mc)}
+.mt-s .dot{width:7px;height:7px;margin-right:5px;vertical-align:0}
+.mt-a{font-weight:600;color:var(--k-action)}
+/* the Meetings page: a heading, its own search and Showing, New meeting, then a box for each month */
+.ml{max-width:880px;padding-bottom:48px}
+.ml-h{display:flex;align-items:baseline;gap:10px;margin:4px 0 6px;font-size:30px;line-height:36px;font-weight:800;letter-spacing:-.045em}
+.ml-h span{font-size:15px;font-weight:600;letter-spacing:-.01em;color:var(--muted);font-variant-numeric:tabular-nums}
+.ml-bar{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;margin-bottom:12px}
+.ml-bar .search{flex:0 1 320px}
+.ml-bar .tba{margin-left:auto}
+.ml-grps{display:flex;flex-direction:column;gap:12px}
+.ml-grp{padding-bottom:4px}
+/* a meeting's page: the cover carries the title and its details, each a plain field with a small label */
+.pcov.mcov{display:block;min-height:0;padding:12px 16px 14px 20px}
+.mt-title{
+  display:block;width:calc(100% + 16px);margin:0 -8px;padding:2px 8px;border:0;border-radius:10px;background:transparent;
+  color:var(--cink);font-size:30px;line-height:40px;font-weight:800;letter-spacing:-.04em;-webkit-appearance:none;appearance:none;
+}
+.mt-title::placeholder{color:var(--cmute);opacity:1}
+.mt-title:focus{background:var(--cfill)}
+.mc-row{display:flex;flex-wrap:wrap;align-items:flex-end;gap:8px 12px;margin-top:8px}
+.mc-l{display:flex;flex-direction:column;min-width:0;font-size:12.5px;line-height:16px;font-weight:600;color:var(--cmute)}
+.mc-l > span{padding:0 0 3px 2px}
+.mc-in{
+  height:var(--hit);min-width:0;max-width:100%;border:0;border-radius:9px;background-color:var(--cfill);color:var(--cink);
+  font-size:14px;font-weight:600;padding:0 10px;-webkit-appearance:none;appearance:none;color-scheme:light;
+}
+.mcov.branded .mc-in{color-scheme:dark}
+.mc-in:focus{background-color:var(--cfill-hi)}
+.mc-in::placeholder{color:var(--cmute);opacity:1}
+.mc-in::-webkit-date-and-time-value{text-align:left}
+.mc-in[type="date"]{min-width:140px}
+.mc-in[type="time"]{min-width:96px}
+select.mc-in{
+  max-width:260px;padding-right:28px;text-overflow:ellipsis;cursor:pointer;
+  background-image:var(--chev);background-repeat:no-repeat;background-position:right 9px center;background-size:12px;
+}
+.mc-in:disabled{opacity:1;cursor:default}
+.mc-who{flex:1 1 220px}
+.mc-who .mc-in{width:100%}
+/* the Actions box: its open actions, the add field, then the completed ones folded away */
+#mpAdd{margin-top:6px}
+#mpDone{margin-top:4px;padding-top:2px;border-top:1px solid var(--hair)}
+.mt-del{margin:-4px 0 0;padding-left:calc(var(--in) + var(--bx) - 10px)}
+.mt-del .act{color:var(--muted)}
+
 /* ── undo bar ───────────────────────────────────────────────────────────── */
 .snack{
   position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));z-index:60;
@@ -743,7 +884,7 @@ html.instant .pg,html.instant .page{transition:none!important}
   .np-acts .np-clear:not([aria-disabled="true"]):hover,.pgb .pgb-h .act:hover{color:var(--ink)}
   .hd:hover,.undo:hover,.back:hover span,.pc-act:hover,.tog:hover span,.toplink:hover,.pf-out:hover{text-decoration:underline;text-underline-offset:3px}
   .toplink:hover{color:var(--ink)}
-  .wk-it:hover,.wk-tail:hover,.lnk:hover,.wk-name a:hover,.pgl:hover b{text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
+  .wk-it:hover,.wk-tail:hover,.lnk:hover,.wk-name a:hover,.pgl:hover b,.mt-row:hover .mt-t{text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
   .wk-sw:hover{transform:translateY(-2px)}
   .go:hover i{background:var(--cfill-hi)}
   .cl:not(.flex):hover,.cl.flex:hover .nm{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:4px}
@@ -782,6 +923,7 @@ html.instant .pg,html.instant .page{transition:none!important}
   .wk-it,.wk-tail,.wk-clear .lnk{padding:5px 0}
   .wk-name{line-height:22px}
   .wk-name a{padding:11px 0}
+  .dl-in,.mc-in{font-size:16px;border-radius:10px}
   .pc-act::after{top:-4px;bottom:-4px}
   .np:not(.fp) .act.np-fp{height:36px}
   .np:not(.fp) .act.np-fp::after{content:"";position:absolute;left:0;right:0;top:-4px;bottom:-4px}
@@ -800,7 +942,7 @@ html.instant .pg,html.instant .page{transition:none!important}
 /* a tablet's width: the page slides a little and fades, instead of crossing the whole screen */
 @media (min-width:720px){
   .pg{transform:translateX(48px);opacity:0;transition:transform .32s var(--ease),opacity .24s ease,visibility 0s .32s}
-  html.layer .pg{opacity:1;transition:transform .32s var(--ease),opacity .24s ease,visibility 0s}
+  .pg.on{opacity:1;transition:transform .32s var(--ease),opacity .24s ease,visibility 0s}
   html.layer .page{transform:none;opacity:1}
 }
 
@@ -826,6 +968,9 @@ html.instant .pg,html.instant .page{transition:none!important}
   .np-acts .act{padding:0 8px}
   .week{border-radius:18px;padding:10px 14px 10px}
   .week h2{margin-bottom:8px}
+  .lead-side{gap:12px}
+  .mtp{border-radius:18px;padding:10px 14px 0}
+  .mt-row{grid-template-columns:78px minmax(0,1fr);column-gap:8px}
   .comp{padding:6px 6px 2px;border-radius:13px}
   .comp .kinds{flex:0 0 calc(100% + 8px)}
   .comp-row{gap:0 10px}
@@ -892,6 +1037,11 @@ html.instant .pg,html.instant .page{transition:none!important}
   .pg-grid{margin-top:12px;gap:12px}
   .pg-np{border-radius:18px}
   .pgb{border-radius:16px}
+  .pcov.mcov{padding:8px 12px 12px 14px}
+  .mt-title{font-size:23px;line-height:34px;letter-spacing:-.035em}
+  .mc-row{gap:8px 10px;margin-top:6px}
+  .ml-h{font-size:24px;line-height:30px;margin-top:0}
+  .ml-bar{gap:4px 10px}
 }
 
 /* ── full page: one pad over the whole screen ───────────────────────────── */
@@ -969,7 +1119,7 @@ html.fp .snack.show{transform:translate(-50%,-100%)}
   /* no transition at all on the notes page or anything in it: the rule above would give every
      element a .01ms transition of its inherited visibility, leaving "‹ Notes" hidden (and so not
      focusable) at the instant the page opens and hands it focus */
-  .pg,.pg *,html.layer .pg,.page,html.layer .page{transition:none!important}
+  .pg,.pg *,.pg.on,.page,html.layer .page{transition:none!important}
 }
 
 /* ── inside the Dashboard ───────────────────────────────────────────────── */
@@ -1001,7 +1151,10 @@ if (/[?&]embed=1(&|$)/.test(location.search) || window.self !== window.top) docu
 
   <div class="lead">
     <section class="np" id="np" data-pad="main" aria-labelledby="nph"></section>
-    <section class="week" id="week" aria-labelledby="wkh"></section>
+    <div class="lead-side">
+      <section class="week" id="week" aria-labelledby="wkh"></section>
+      <section class="mtp" id="mtp" aria-labelledby="mth"></section>
+    </div>
   </div>
 
   <div class="sentinel" id="sentinel"></div>
@@ -1030,6 +1183,7 @@ if (/[?&]embed=1(&|$)/.test(location.search) || window.self !== window.top) docu
       <div class="comp-row">
         <div class="kinds" id="topKinds" role="group" aria-label="Kind"></div>
         <div class="dest"><span aria-hidden="true">in</span><i class="dot" id="topDot" aria-hidden="true"></i><select id="topDest" aria-label="Add to"></select></div>
+        <button type="button" class="act dl-t" data-act="duetoggle" aria-expanded="false" hidden>Deadline</button>
         <span class="comp-go">
           <span class="keys">Enter adds</span>
           <button type="button" class="act np-cancel" data-act="compclose">Cancel</button>
@@ -1071,13 +1225,70 @@ if (/[?&]embed=1(&|$)/.test(location.search) || window.self !== window.top) docu
               <textarea rows="1" data-comp=""></textarea>
               <button type="button" class="add empty" data-act="add" aria-label="Add"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg></button>
             </div>
-            <div class="opts"><div><div class="kinds" role="group" aria-label="Kind"></div><span class="keys">Enter adds</span></div></div>
+            <div class="opts"><div><div class="kinds" role="group" aria-label="Kind"></div><button type="button" class="act dl-t" data-act="duetoggle" aria-expanded="false" hidden>Deadline</button><span class="keys">Enter adds</span></div></div>
           </div>
         </div>
         <section class="pgb" id="pgTodo" data-flip="todo" data-grp="action" aria-label="To do"></section>
         <section class="pgb" id="pgPrint" data-flip="print" data-grp="print" aria-label="To print"></section>
         <section class="pgb" id="pgNotes" data-flip="notes" data-grp="free" aria-label="Notes"></section>
+        <section class="pgb" id="pgMeet" aria-label="Meetings"></section>
         <section class="pgb" id="pgDone" data-flip="done" aria-label="Completed"></section>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- the meetings: the Meetings page (#meetings) or one meeting (#meeting-<id>), over the main page or
+     over the notes page it was opened from -->
+<div class="pg cv" id="mpg" role="region" aria-label="Meetings" tabindex="-1" inert>
+  <div class="pg-in">
+    <div class="pg-top">
+      <a class="back" id="mpBack" href="#" data-act="mtback" data-fkey="mtback" aria-label="Back to Notes"><svg width="10" height="16" viewBox="0 0 10 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 2.5 2 8l5.5 5.5"/></svg><span>Notes</span></a>
+      <span class="pg-tr">
+        <button type="button" class="theme" data-act="theme" aria-label="Switch to dark">Dark</button>
+      </span>
+    </div>
+    <div class="ml" id="mlView" hidden>
+      <h1 class="ml-h">Meetings<span id="mlN"></span></h1>
+      <div class="ml-bar">
+        <div class="search">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="7" cy="7" r="4.6"/><path d="m10.5 10.5 3 3"/></svg>
+          <input type="search" id="mlQ" placeholder="Search meetings" aria-label="Search meetings" autocomplete="off" enterkeyhint="search">
+          <button type="button" class="qx" id="mlQx" data-act="clearmq" aria-label="Clear search" hidden><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M3.5 3.5l7 7M10.5 3.5l-7 7"/></svg></button>
+        </div>
+        <span class="dest"><span aria-hidden="true">Showing</span><i class="dot" id="mlDot" aria-hidden="true" hidden></i><select id="mlSel" aria-label="Showing"></select></span>
+        <button type="button" class="tba mt-new" data-act="newmeeting" data-fkey="mlnew"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg><span>New meeting</span></button>
+      </div>
+      <div class="ml-grps" id="mlList"></div>
+    </div>
+    <div id="mtView" hidden>
+      <header class="pcov mcov" id="mpCover">
+        <input class="mt-title mt-f" id="mtTitle" type="text" maxlength="200" placeholder="Meeting title" aria-label="Meeting title" autocomplete="off" autocapitalize="sentences" enterkeyhint="done" data-fkey="mttitle">
+        <div class="mc-row">
+          <label class="mc-l"><span>Date</span><input class="mc-in mt-f" id="mtDate" type="date" data-fkey="mtdate"></label>
+          <label class="mc-l"><span>Time</span><input class="mc-in mt-f" id="mtTime" type="time" data-fkey="mttime"></label>
+          <label class="mc-l"><span>For</span><select class="mc-in mt-f" id="mtFor" data-fkey="mtfor"></select></label>
+          <label class="mc-l mc-who"><span>Attendees</span><input class="mc-in mt-f" id="mtWho" type="text" maxlength="400" placeholder="Who was there" autocomplete="off" autocapitalize="words" enterkeyhint="done" data-fkey="mtwho"></label>
+        </div>
+      </header>
+      <div class="secslot solo under" data-slot="mfor"></div>
+      <div class="pg-grid">
+        <section class="np pg-np" id="mpPad" data-pad="meet" aria-labelledby="mpPadH"></section>
+        <div class="pg-side" id="mpSide">
+          <section class="pgb" id="mpActs" data-flip="macts" aria-labelledby="mpActsH">
+            <div class="pgb-h"><h3 id="mpActsH">Actions</h3></div>
+            <div id="mpList"></div>
+            <div class="foot on keep" id="mpAdd">
+              <div class="field">
+                <textarea rows="1" data-comp="" data-mt="" placeholder="Add an action…" aria-label="Add an action"></textarea>
+                <button type="button" class="add empty" data-act="add" aria-label="Add action"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg></button>
+              </div>
+              <div class="opts"><div><button type="button" class="act dl-t" data-act="duetoggle" aria-expanded="false">Deadline</button><span class="keys">Enter adds</span></div></div>
+            </div>
+            <div id="mpDone" hidden></div>
+          </section>
+          <p class="mt-del"><button type="button" class="act" data-act="mtdelete" data-fkey="mtdelete">Delete meeting</button></p>
+        </div>
       </div>
     </div>
   </div>
@@ -1105,14 +1316,20 @@ if (/[?&]embed=1(&|$)/.test(location.search) || window.self !== window.top) docu
   'use strict';
   const KINDS = ['note', 'action', 'print', 'decision', 'issue'];
   const TOMB_DAYS = 30;
+  /* the record's format. 2 added meetings, and an item's meeting and due. A board saved in a later
+     format than this is never written over (the page stops instead of dropping what it cannot read) */
+  const V = 2;
   const isObj = x => !!x && typeof x === 'object' && !Array.isArray(x);
   const str = x => typeof x === 'string' ? x : (x == null ? '' : String(x));
   const iso = x => (typeof x === 'string' && x && !isNaN(Date.parse(x))) ? x : null;
   const tms = x => { const t = Date.parse(x || ''); return isNaN(t) ? 0 : t; };
   const idOk = x => (typeof x === 'string' || typeof x === 'number') && /^[A-Za-z0-9_-]{1,80}$/.test(String(x));
+  /* a day as a date field writes it, and a time of day */
+  const dayOk = x => typeof x === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(x);
+  const hmOk = x => typeof x === 'string' && /^\d{2}:\d{2}$/.test(x);
 
   function empty(){
-    return {v: 1, items: [], sections: [], pages: {}, notepad: {text: '', updatedAt: null},
+    return {v: V, items: [], sections: [], meetings: [], pages: {}, notepad: {text: '', updatedAt: null},
       cardOrder: {list: [], updatedAt: null}, shown: {list: [], updatedAt: null}, names: {}};
   }
   /* every record in one shape, keys always in the same order (so equal records are equal strings) */
@@ -1123,6 +1340,9 @@ if (/[?&]embed=1(&|$)/.test(location.search) || window.self !== window.top) docu
     const r = {id, kind: KINDS.includes(x.kind) ? x.kind : 'note', text: str(x.text), scope: str(x.scope) || 'me',
       pinned: !!x.pinned, done: !!x.done, order: Number.isFinite(+x.order) ? +x.order : 0,
       createdAt: iso(x.createdAt) || iso(x.updatedAt), updatedAt: iso(x.updatedAt)};
+    // the meeting it was made in (kept if that meeting goes: the link then points at nothing), and its deadline
+    if (x.meeting != null && idOk(x.meeting)) r.meeting = String(x.meeting);
+    if (dayOk(x.due)) r.due = x.due;
     if (r.done && iso(x.doneAt)) r.doneAt = x.doneAt;
     return r;
   }
@@ -1131,6 +1351,13 @@ if (/[?&]embed=1(&|$)/.test(location.search) || window.self !== window.top) docu
     const id = String(x.id);
     if (x.deleted) return {id, deleted: true, updatedAt: iso(x.updatedAt)};
     return {id, name: str(x.name).trim() || 'Untitled section', tint: str(x.tint), updatedAt: iso(x.updatedAt)};
+  }
+  function normMeeting(x){
+    if (!isObj(x) || !idOk(x.id)) return null;
+    const id = String(x.id);
+    if (x.deleted) return {id, deleted: true, updatedAt: iso(x.updatedAt)};
+    return {id, title: str(x.title), date: dayOk(x.date) ? x.date : '', time: hmOk(x.time) ? x.time : '',
+      who: str(x.who), scope: str(x.scope) || 'me', text: str(x.text), edited: iso(x.edited), updatedAt: iso(x.updatedAt)};
   }
   function normPage(x){
     if (!isObj(x)) return null;
@@ -1158,6 +1385,8 @@ if (/[?&]embed=1(&|$)/.test(location.search) || window.self !== window.top) docu
     const byKey = (a, b) => a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
     d.items = Array.from(byId(x.items, normItem).values()).sort(byKey);
     d.sections = Array.from(byId(x.sections, normSection).values()).sort(byKey);
+    // a v1 board has none
+    d.meetings = Array.from(byId(x.meetings, normMeeting).values()).sort(byKey);
     if (isObj(x.pages)) Object.keys(x.pages).sort().forEach(k => { const p = normPage(x.pages[k]); if (p) d.pages[k] = p; });
     if (isObj(x.notepad)) d.notepad = {text: str(x.notepad.text), updatedAt: iso(x.notepad.updatedAt)};
     if (isObj(x.cardOrder)) d.cardOrder = {list: normList(x.cardOrder.list), updatedAt: iso(x.cardOrder.updatedAt)};
@@ -1192,9 +1421,11 @@ if (/[?&]embed=1(&|$)/.test(location.search) || window.self !== window.top) docu
      rather than one side dropped. opts.now is the merge's own moment (later than both). */
   /* what a record says, leaving out when it was said */
   const body = x => { if (!x) return null; const o = Object.assign({}, x); delete o.updatedAt; delete o.edited; return JSON.stringify(o); };
-  /* the parts of a record two devices can change independently (grouped where they go together) */
-  const ITEM_FIELDS = [['kind'], ['text'], ['scope', 'order'], ['pinned'], ['done', 'doneAt']];
+  /* the parts of a record two devices can change independently (grouped where they go together);
+     a meeting's notes are not among them: both changed, they are combined as a pad's are */
+  const ITEM_FIELDS = [['kind'], ['text'], ['scope', 'order'], ['pinned'], ['done', 'doneAt'], ['meeting'], ['due']];
   const SECTION_FIELDS = [['name'], ['tint']];
+  const MEETING_FIELDS = [['title'], ['date', 'time'], ['who'], ['scope']];
 
   function mergeDocs(local, remote, opts){
     opts = opts || {};
@@ -1228,12 +1459,28 @@ if (/[?&]embed=1(&|$)/.test(location.search) || window.self !== window.top) docu
       }
       return pick(l, r);
     }
-    const merge = (a, b, c, fields) => {
+    /* A meeting: as an item (tombstones, the copy that changed it, part by part when both did),
+       except that notes both copies changed since they agreed keep this copy's words and add the
+       other's new lines, as a pad does. */
+    function meet(l, r, b){
+      if (!l || !r || !b || l.deleted || r.deleted || b.deleted) return one(l, r, b);
+      const lb = body(l), rb = body(r), bb = body(b);
+      if (lb === rb || lb === bb || rb === bb) return one(l, r, b);
+      const o = one(l, r, b, MEETING_FIELDS);
+      o.text = (l.text === r.text || r.text === b.text) ? l.text
+        : l.text === b.text ? r.text
+        : mergePadText(b.text, l.text, r.text, opts.label);
+      const ed = [l.edited, r.edited].filter(Boolean);
+      o.edited = ed.length ? later(...ed) : null;
+      return o;
+    }
+    const merge = (a, b, c, fields, fn) => {
       const A = new Map(a.map(x => [x.id, x])), Bm = new Map(b.map(x => [x.id, x])), Cm = new Map((c || []).map(x => [x.id, x]));
-      return Array.from(new Set([...A.keys(), ...Bm.keys()])).map(id => one(A.get(id), Bm.get(id), c ? Cm.get(id) || null : null, fields));
+      return Array.from(new Set([...A.keys(), ...Bm.keys()])).map(id => (fn || one)(A.get(id), Bm.get(id), c ? Cm.get(id) || null : null, fields));
     };
     out.items = merge(L.items, R.items, B && B.items, ITEM_FIELDS);
     out.sections = merge(L.sections, R.sections, B && B.sections, SECTION_FIELDS);
+    out.meetings = merge(L.meetings, R.meetings, B && B.meetings, null, meet);
     /* a pad (a notes page, or the Notepad) both copies changed keeps this copy's words and adds the
        other's new lines; a notes page one copy deleted (its section went) while the other wrote on
        it keeps the words (the page then brings them to General) */
@@ -1281,15 +1528,18 @@ if (/[?&]embed=1(&|$)/.test(location.search) || window.self !== window.top) docu
     const keep = x => !x.deleted || tms(x.updatedAt) >= cut;
     d.items = d.items.filter(keep);
     d.sections = d.sections.filter(keep);
+    d.meetings = d.meetings.filter(keep);
     Object.keys(d.pages).forEach(k => { if (!keep(d.pages[k])) delete d.pages[k]; });
     return d;
   }
 
-  /* the records of two boards that differ, by key: i:<id>, s:<id>, p:<scope>, notepad, cardOrder, shown, names */
+  /* the records of two boards that differ, by key: i:<id>, s:<id>, m:<id>, p:<scope>, notepad,
+     cardOrder, shown, names */
   function recMap(doc){
     const d = normDoc(doc), m = new Map();
     d.items.forEach(x => m.set('i:' + x.id, x));
     d.sections.forEach(x => m.set('s:' + x.id, x));
+    d.meetings.forEach(x => m.set('m:' + x.id, x));
     Object.keys(d.pages).forEach(k => m.set('p:' + k, d.pages[k]));
     m.set('notepad', d.notepad); m.set('cardOrder', d.cardOrder); m.set('shown', d.shown); m.set('names', d.names);
     return m;
@@ -1305,9 +1555,10 @@ if (/[?&]embed=1(&|$)/.test(location.search) || window.self !== window.top) docu
   }
   /* a board with only the named records (the rest left out, so a merge takes them from the other side) */
   function partial(doc, keys){
-    const d = normDoc(doc), want = new Set(keys), out = {v: 1, items: [], sections: [], pages: {}, names: {}};
+    const d = normDoc(doc), want = new Set(keys), out = {v: V, items: [], sections: [], meetings: [], pages: {}, names: {}};
     out.items = d.items.filter(x => want.has('i:' + x.id));
     out.sections = d.sections.filter(x => want.has('s:' + x.id));
+    out.meetings = d.meetings.filter(x => want.has('m:' + x.id));
     Object.keys(d.pages).forEach(k => { if (want.has('p:' + k)) out.pages[k] = d.pages[k]; });
     if (want.has('notepad')) out.notepad = d.notepad;
     if (want.has('cardOrder')) out.cardOrder = d.cardOrder;
@@ -1315,7 +1566,7 @@ if (/[?&]embed=1(&|$)/.test(location.search) || window.self !== window.top) docu
     if (want.has('names')) out.names = d.names;
     return out;
   }
-  return {KINDS, TOMB_DAYS, empty, normDoc, normItem, normSection, normPage, pick, mergeDocs, mergePadText, prune, diffKeys, partial, tms};
+  return {KINDS, TOMB_DAYS, V, empty, normDoc, normItem, normSection, normMeeting, normPage, pick, mergeDocs, mergePadText, prune, diffKeys, partial, tms};
 });
 </script>
 <script>
@@ -1400,6 +1651,17 @@ const clockNow = () => new Date();
 const hhmm = d => String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
 const sameDay = (a, b) => a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
 const fmtDate = x => { const d = new Date(x); return d.getDate() + ' ' + MON[d.getMonth()] + (d.getFullYear() !== new Date().getFullYear() ? ' ' + d.getFullYear() : ''); };
+/* a day as the date fields write it (YYYY-MM-DD, on this device's own calendar), and back */
+const p2 = n => String(n).padStart(2, '0');
+const ymd = d => d.getFullYear() + '-' + p2(d.getMonth() + 1) + '-' + p2(d.getDate());
+const dOf = s => new Date(s + 'T12:00:00');
+const isDay = s => typeof s === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s) && !isNaN(dOf(s));
+const todayYMD = () => ymd(new Date());
+const addDays = (s, n) => { const d = dOf(s); d.setDate(d.getDate() + n); return ymd(d); };
+/* the last day of this week: the coming Sunday (today, on a Sunday) */
+const weekEnd = () => { const d = new Date(); return addDays(ymd(d), (7 - d.getDay()) % 7); };
+/* "Tue 29 Sep", with the year when it is not this one */
+const dayLabel = s => { const d = dOf(s); return WDAYS[d.getDay()].slice(0, 3) + ' ' + d.getDate() + ' ' + MON[d.getMonth()] + (d.getFullYear() !== new Date().getFullYear() ? ' ' + d.getFullYear() : ''); };
 /* every change is stamped with a moment later than any this page has seen, so an edit made here
    after reading another device's work always counts as the newer (a clock a little behind can not
    quietly lose it); a stamp from a clock more than a day ahead is not followed */
@@ -1509,7 +1771,7 @@ function isShown(s){
   if (s === 'me') return true;
   if (isSec(s)) return !!secOf(s);
   if (!isJob(s)) return false;
-  if (S.shown.has(s) || items.some(i => i.scope === s)) return true;
+  if (S.shown.has(s) || items.some(i => i.scope === s) || MEETINGS.some(m => m.scope === s)) return true;
   const p = PAGES[s];
   return !!(p && p.text && p.text.trim());
 }
@@ -1518,6 +1780,7 @@ function jobScopes(){
   const set = new Set(JOBS.filter(j => j.offered).map(j => j.scope));
   S.shown.forEach(s => { if (isJob(s)) set.add(s); });
   items.forEach(i => { if (isJob(i.scope)) set.add(i.scope); });
+  MEETINGS.forEach(m => { if (isJob(m.scope)) set.add(m.scope); });
   Object.keys(PAGES).forEach(s => { if (isJob(s) && PAGES[s].text && PAGES[s].text.trim()) set.add(s); });
   return Array.from(set).sort((a, b) => nameOf(a).localeCompare(nameOf(b), 'en', {sensitivity: 'base'}) || (a < b ? -1 : 1));
 }
@@ -1665,6 +1928,22 @@ const get = id => items.find(i => i.id === id);
 const inScope = s => items.filter(i => i.scope === s);
 const openIn = s => items.filter(i => i.scope === s && !i.done);
 
+/* Meetings: each its own page (a title, a day and a time, who attended, what it is for, and its
+   notes). The items made from one carry its id (meeting); they keep their show if it is deleted,
+   and the link then simply points at nothing. Kept in place like the items. */
+const MEETINGS = [];
+const meetOf = id => (id && MEETINGS.find(m => m.id === id)) || null;
+const meetTitle = m => String(m.title || '').trim() || 'Untitled meeting';
+const actsOf = id => items.filter(i => i.meeting === id);
+/* newest first: by day, then time (a meeting with no day goes last) */
+const mKey = m => (m.date || '0000-00-00') + ' ' + (m.time || '00:00') + ' ' + m.id;
+const mNewest = (a, b) => { const x = mKey(a), y = mKey(b); return x > y ? -1 : x < y ? 1 : 0; };
+/* those dated after today, soonest first, then the rest, newest first */
+function meetSplit(list){
+  const t = todayYMD();
+  return {up: list.filter(m => m.date > t).sort((a, b) => mNewest(b, a)), past: list.filter(m => !(m.date > t)).sort(mNewest)};
+}
+
 /* Manual order: every item carries an order number, and a list sorts open before completed,
    pinned first, then by it. A new item (or one moved in with Move to…) goes to the top of its
    list's unpinned group. The lists are a card's notes (notes, decisions and issues together),
@@ -1686,7 +1965,7 @@ const MAINPAD = {text: '', edited: null};
 let NAMES = {};
 /* when the arranged order and the set of cards last changed */
 const META = {cardOrderAt: null, shownAt: null};
-const TOMBS = {items: new Map(), sections: new Map(), pages: new Map()};
+const TOMBS = {items: new Map(), sections: new Map(), pages: new Map(), meetings: new Map()};
 
 /* ── state ─────────────────────────────────────────────────────────────── */
 const S = {
@@ -1703,6 +1982,13 @@ const S = {
   doneOpen: new Set(),           // notes pages whose Completed list is open
   arr: false,                    // arrange mode
   stale: false,                  // a change from another device is waiting for an open edit to close
+  ml: false,                     // the Meetings page is open (or is under the meeting that is)
+  mid: null,                     // the meeting whose page is open
+  mq: '', mf: 'all',             // the Meetings page's own search, and its Showing
+  mlY: 0,                        // where the Meetings page was scrolled to when a meeting opened over it
+  mdOpen: new Set(),             // meetings whose completed actions are showing
+  due: {},                       // a deadline chosen in an add field for its next item, by field
+  dueOpen: new Set(),            // add fields whose Deadline row is open
 };
 /* a drag in progress (st), a render it has held back, and when the last one ended */
 const DR = {st: null, pending: false, swallow: 0};
@@ -1719,8 +2005,14 @@ const pageHit = s => {
   const w = qWords(), t = PAGES[s] ? PAGES[s].text.toLowerCase() : '';
   return !!w.length && !!t && w.every(x => t.includes(x));
 };
-function hl(line){
-  const w = qWords();
+/* a meeting is found by its title, who attended, its notes, and what it is for */
+const meetMatch = (m, w) => {
+  const hay = (m.title + ' ' + m.who + ' ' + m.text + ' ' + nameOf(m.scope)).toLowerCase();
+  return w.every(x => hay.includes(x));
+};
+/* the words found, marked (w: other words than the toolbar's, as the Meetings page's own search) */
+function hl(line, w){
+  w = w || qWords();
   if (!w.length) return esc(line);
   const re = new RegExp('(' + w.map(reEsc).join('|') + ')', 'gi');
   return line.split(re).map((p, i) => i % 2 ? '<mark>' + esc(p) + '</mark>' : esc(p)).join('');
@@ -1757,13 +2049,117 @@ function scopeOptions(cur){
     '<option value="__new">New section…</option>';
 }
 
-/* ── item markup (ctx: 'g' on the grid, 'p' on a notes page) ───────────── */
-const vctx = () => S.page ? 'p' : 'g';
+/* ── item markup (ctx: 'g' on the grid, 'p' on a notes page, 'm' on a meeting's page) ── */
+const vctx = () => S.mid ? 'm' : S.page ? 'p' : 'g';
+const ctxRoot = () => S.mid ? $('#mpg') : S.page ? $('#pg') : $('#main');
 const isOpen = (it, ctx) => S.openId === it.id && ctx === vctx();
-const iid = (it, ctx) => (ctx === 'p' ? 'pi-' : 'i-') + it.id;
+const iid = (it, ctx) => (ctx === 'p' ? 'pi-' : ctx === 'm' ? 'mi-' : 'i-') + it.id;
+
+/* ── deadlines ─────────────────────────────────────────────────────────── */
+/* A to do or a to print can carry the day it is due. It shows at the row's end, where the date it
+   was made sits: "Due Fri 2 Oct"; "Due today" and "Due tomorrow" in ink; "Overdue · Mon 28 Sep" in
+   the danger colour. A completed item shows none of it. */
+const DUE_Q = [['today', 'Today'], ['tomorrow', 'Tomorrow'], ['friday', 'Friday'], ['nextweek', 'Next week'], ['clear', 'Clear']];
+/* a quick choice's day: Friday is this week's (today, on a Friday); Next week is next Monday */
+function dueFor(q){
+  const d = new Date(), t = ymd(d), day = d.getDay();
+  return q === 'today' ? t : q === 'tomorrow' ? addDays(t, 1) : q === 'friday' ? addDays(t, (12 - day) % 7)
+    : q === 'nextweek' ? addDays(t, (8 - day) % 7 || 7) : '';
+}
+const hasDue = it => !!it.due && !it.done && KINDS[it.kind].check;
+function dueInfo(it){
+  if (!hasDue(it)) return null;
+  const t = todayYMD(), d = it.due;
+  if (d < t) return {cls: ' over', html: '<span class="nw">Overdue ·</span> <span class="nw">' + dayLabel(d) + '</span>'};
+  if (d === t) return {cls: ' near', html: 'Due today'};
+  if (d === addDays(t, 1)) return {cls: ' near', html: 'Due tomorrow'};
+  return {cls: '', html: 'Due <span class="nw">' + dayLabel(d) + '</span>'};
+}
+/* the row's end: its deadline, or else the date it was made */
+function whenHTML(it){
+  const d = dueInfo(it);
+  return d
+    ? '<time class="when due' + d.cls + '" datetime="' + esc(it.due) + '">' + d.html + '</time>'
+    : '<time class="when" datetime="' + esc(it.createdAt) + '">' + fmtDate(it.createdAt) + '</time>';
+}
+/* the open item's row end, redrawn alone (while its date is being typed the list is left as it is) */
+function paintWhen(it){
+  const el = document.getElementById(iid(it, vctx()));
+  const w = el ? el.querySelector(':scope > .when') : null;
+  if (w) w.outerHTML = whenHTML(it);
+}
+/* in This week, after the words: only what is overdue or due by Sunday */
+function weekDue(it){
+  if (!hasDue(it) || it.due > weekEnd()) return '';
+  const t = todayYMD(), d = it.due, tm = addDays(t, 1);
+  const w = d < t ? 'overdue' : d === t ? 'due today' : d === tm ? 'due tomorrow' : 'due ' + WDAYS[dOf(d).getDay()].slice(0, 3);
+  return ' <span class="wk-due' + (d < t ? ' over' : d <= tm ? ' near' : '') + '">' + w + '</span>';
+}
+/* the Deadline row: a date field and the quick choices. key says whose it is: 'i:<id>' an open
+   item's; 'top', 'c:<scope>', 'p:<scope>' or 'm:<meeting id>' an add field's, for its next item */
+function dueRowHTML(key, v, label, hidden){
+  const fk = 'due:' + key;
+  return '<div class="dl-row" data-due="' + esc(key) + '" role="group" aria-label="Deadline"' + (hidden ? ' hidden' : '') + '>' +
+    (label ? '<span class="dl-l" aria-hidden="true">Deadline</span>' : '') +
+    '<input class="dl-in" type="date" value="' + esc(v || '') + '" aria-label="Deadline" data-fkey="' + esc(fk) + ':in">' +
+    '<span class="dl-qs">' + DUE_Q.map(([q, w]) =>
+      '<button type="button" class="act dl-q" data-act="dueq" data-q="' + q + '" data-fkey="' + esc(fk) + ':' + q + '"' +
+        (q === 'clear' ? ' aria-label="Clear deadline"' : ' aria-pressed="' + (!!v && dueFor(q) === v) + '"') + '>' + w + '</button>').join('') +
+    '</span>' +
+  '</div>';
+}
+/* an add field's Deadline: shown for a to do or a to print; its row open while it is asked for or
+   holds a day */
+function paintDueField(root, key, kind){
+  const t = root ? $('.dl-t', root) : null, row = root ? $('.dl-row', root) : null;
+  if (!t || !row) return;
+  const ok = !!(KINDS[kind] && KINDS[kind].check), v = S.due[key] || '';
+  const open = ok && (!!v || S.dueOpen.has(key));
+  t.dataset.due = key;
+  row.dataset.due = key;
+  t.hidden = !ok;
+  t.setAttribute('aria-expanded', String(open));
+  row.hidden = !open;
+  const inp = $('.dl-in', row);
+  inp.dataset.fkey = 'due:' + key + ':in';
+  if (document.activeElement !== inp && inp.value !== v) inp.value = v;
+  $$('.dl-q', row).forEach(b => {
+    b.dataset.fkey = 'due:' + key + ':' + b.dataset.q;
+    if (b.dataset.q !== 'clear') b.setAttribute('aria-pressed', String(!!v && dueFor(b.dataset.q) === v));
+  });
+}
+function paintDues(){
+  paintDueField($('#comp'), 'top', S.topKind);
+  cardEls.forEach((el, s) => paintDueField($('.foot', el), 'c:' + s, footKind(s)));
+  if (S.page) paintDueField($('#pgAdd'), 'p:' + S.page, footKind(S.page));
+  if (S.mid) paintDueField($('#mpAdd'), 'm:' + S.mid, 'action');
+}
+/* which add field a text box is: the composer, a card's, a notes page's, or a meeting's Actions */
+const dueKeyOf = ta => ta.id === 'topText' ? 'top' : ta.dataset.mt ? 'm:' + ta.dataset.mt : (ta.closest('#pg') ? 'p:' : 'c:') + ta.dataset.comp;
+/* a deadline set: on an open item it is the item's; in an add field it waits for the next item */
+function applyDue(key, v, typed){
+  v = isDay(v) ? v : '';
+  if (/^i:/.test(key)){
+    const it = get(key.slice(2));
+    if (!it) return;
+    if (v) it.due = v; else delete it.due;
+    // a date being typed keeps its field (the list is not redrawn under it); the rest follows it
+    if (typed){ paintWhen(it); renderWeek(); commitSoon(); }
+    else render();
+    return;
+  }
+  if (v) S.due[key] = v;
+  else { delete S.due[key]; if (!typed) S.dueOpen.delete(key); }
+  paintDues();
+}
+
 function actsHTML(it, ctx){
   const free = !KINDS[it.kind].check, k = ctx + ':' + it.id;
-  return '<div class="acts">' +
+  // made in a meeting (and that meeting still there): a way back to it, except on its own page
+  const mt = it.meeting && ctx !== 'm' ? meetOf(it.meeting) : null;
+  return (mt ? '<p class="from"><a class="lnk" href="#meeting-' + mt.id + '" data-act="meeting" data-id="' + mt.id + '" data-fkey="from:' + k + '">From: ' + esc(short(meetTitle(mt), 60)) + '</a></p>' : '') +
+    (free || it.done ? '' : dueRowHTML('i:' + it.id, it.due, true)) +
+    '<div class="acts">' +
     (free ? '<button type="button" class="act" data-act="done" data-fkey="done:' + k + '">' + (it.done ? 'Reopen' : 'Mark complete') + '</button>' : '') +
     (free ? '<button type="button" class="act" data-act="pin" data-fkey="pin:' + k + '">' + (it.pinned ? 'Unpin' : 'Pin') + '</button>' : '') +
     '<label class="act move"><span>Move to…</span><select data-act="move" data-fkey="move:' + k + '" aria-label="Move to">' +
@@ -1777,17 +2173,18 @@ function textPart(it, open, ctx){
   const label = KINDS[it.kind].label, k = ctx + ':' + it.id;
   return open
     ? '<textarea class="edit" rows="1" data-fkey="edit:' + k + '" aria-label="Edit ' + esc(label.toLowerCase()) + '" enterkeyhint="' + (mqFine.matches ? 'done' : 'enter') + '">' + esc(it.text) + '</textarea>'
-    : '<div class="txt" role="button" tabindex="0" aria-expanded="false" data-fkey="txt:' + k + '"' + (it.done ? '' : ' aria-keyshortcuts="Alt+ArrowUp Alt+ArrowDown"') + '>' + txtHTML(it.text, ctx === 'g') + '</div>';
+    : '<div class="txt" role="button" tabindex="0" aria-expanded="false" data-fkey="txt:' + k + '"' + (it.done || ctx === 'm' ? '' : ' aria-keyshortcuts="Alt+ArrowUp Alt+ArrowDown"') + '>' + txtHTML(it.text, ctx === 'g') + '</div>';
 }
-/* the grip at the left of an open item's row (shown with a mouse on hover or keyboard focus) */
-const gripFor = (it, open) => (it.done || open) ? '' : '<span class="grip igrip" data-grip="item" aria-hidden="true">' + I_GRIP_S + '</span>';
+/* the grip at the left of an open item's row (shown with a mouse on hover or keyboard focus); a
+   meeting's Actions keep the order of their own lists, so they have none */
+const gripFor = (it, open, ctx) => (it.done || open || ctx === 'm') ? '' : '<span class="grip igrip" data-grip="item" aria-hidden="true">' + I_GRIP_S + '</span>';
 const mvBtn = (act, fkey, label, icon, off) => '<button type="button" class="mv" data-act="' + act + '" data-fkey="' + fkey + '" aria-label="' + esc(label) + '"' + (off ? ' aria-disabled="true"' : '') + '>' + icon + '</button>';
 /* where an item sits among the open items of its list: all of them, and those showing (a search
    on the main page shows some); the arrows and Alt+↑/↓ move it past the next one showing */
 function orderCtx(it){
   const full = items.filter(x => x.scope === it.scope && grpOf(x) === grpOf(it) && !x.done).sort(byOrder);
   let vis = full;
-  if (!S.page && qWords().length){ const v = new Set(visibleIn(it.scope)); vis = full.filter(x => v.has(x)); }
+  if (!S.page && !S.mid && qWords().length){ const v = new Set(visibleIn(it.scope)); vis = full.filter(x => v.has(x)); }
   return {full, vis, vi: vis.indexOf(it)};
 }
 const canMove = (it, dir) => { const c = orderCtx(it), nb = c.vis[c.vi + dir]; return !!nb && nb.pinned === it.pinned; };
@@ -1807,7 +2204,7 @@ function fxClass(it){ return FX.fresh === it.id ? ' arrive' : FX.landed === it.i
 function freeHTML(it, ctx){
   const open = isOpen(it, ctx);
   return '<article class="it free k-' + it.kind + (it.pinned ? ' pinned' : '') + (it.done ? ' done' : '') + (open ? ' open' : '') + fxClass(it) + '" data-id="' + it.id + '" id="' + iid(it, ctx) + '">' +
-    gripFor(it, open) +
+    gripFor(it, open, ctx) +
     '<div class="meta"><span class="kind">' + KINDS[it.kind].label + '</span>' +
       (it.pinned ? '<span class="state">' + I_PIN + 'Pinned</span>' : '') +
       (it.done ? '<span class="state"><i></i>Completed</span>' : '') +
@@ -1818,10 +2215,10 @@ function freeHTML(it, ctx){
 function rowHTML(it, ctx){
   const open = isOpen(it, ctx), k = ctx + ':' + it.id;
   return '<div class="it row k-' + it.kind + (it.done ? ' done' : '') + (open ? ' open' : '') + fxClass(it) + '" data-id="' + it.id + '" id="' + iid(it, ctx) + '">' +
-    gripFor(it, open) +
+    gripFor(it, open, ctx) +
     '<button type="button" class="tick" data-act="tick" data-fkey="tick:' + k + '" aria-pressed="' + it.done + '" aria-label="' + (it.done ? 'Reopen: ' : 'Complete: ') + esc(short(it.text, 60)) + '"><span class="box">' + I_TICK + '</span></button>' +
     textPart(it, open, ctx) +
-    '<time class="when" datetime="' + esc(it.createdAt) + '">' + fmtDate(it.createdAt) + '</time>' +
+    whenHTML(it) +
     (open ? actsHTML(it, ctx) : '') +
   '</div>';
 }
@@ -1905,6 +2302,7 @@ function makeCard(s){
     '</header>' +
     '<div class="body"><div class="pad">' +
       '<a class="pgl" href="#' + hashOf(s) + '" data-act="page" data-scope="' + s + '" data-fkey="pgl:' + s + '" hidden></a>' +
+      '<a class="pgl mtl" href="#' + hashOf(s) + '" data-act="pagemeet" data-scope="' + s + '" data-fkey="mtl:' + s + '" hidden></a>' +
       '<div class="list"></div>' +
       '<div class="foot">' +
         '<div class="field">' +
@@ -1913,7 +2311,9 @@ function makeCard(s){
         '</div>' +
         '<div class="opts"><div>' +
           '<div class="kinds" role="group" aria-label="Kind">' + kindButtons(footKind(s)) + '</div>' +
+          '<button type="button" class="act dl-t" data-act="duetoggle" aria-expanded="false" hidden>Deadline</button>' +
           '<span class="keys">Enter adds</span>' +
+          dueRowHTML('c:' + s, '', false, true) +
         '</div></div>' +
       '</div>' +
     '</div></div>';
@@ -1951,6 +2351,15 @@ function pageLineHTML(s){
   }
   return '<b>Notes page</b><span class="sep" aria-hidden="true">·</span><span class="pgl-x">' + tail + '</span>';
 }
+/* "Meetings · 3 · latest Tue 29 Sep" (or "next Tue 6 Oct" while one is still to come), under it */
+function meetLineHTML(s){
+  const ms = MEETINGS.filter(m => m.scope === s);
+  if (!ms.length) return '';
+  const {up, past} = meetSplit(ms.filter(m => m.date));
+  const tail = up.length ? 'next ' + dayLabel(up[0].date) : past.length ? 'latest ' + dayLabel(past[0].date) : '';
+  return '<b>Meetings</b><span class="sep" aria-hidden="true">·</span><span class="pgl-x">' + ms.length +
+    (tail ? '<span class="sep" aria-hidden="true">·</span>' + tail : '') + '</span>';
+}
 function updateCard(el, s){
   const n = openIn(s).length;
   const num = $('.num', el);
@@ -1960,6 +2369,9 @@ function updateCard(el, s){
   const pl = $('.pgl', el), ph = pageLineHTML(s);
   pl.hidden = !ph;
   if (ph) pl.innerHTML = ph;
+  const ml = $('.mtl', el), mh = meetLineHTML(s);
+  ml.hidden = !mh;
+  if (mh) ml.innerHTML = mh;
   fill($('.list', el), listHTML(s));
   const k = footKind(s);
   $$('.foot .kw', el).forEach(b => b.setAttribute('aria-pressed', String(b.dataset.kind === k)));
@@ -2058,24 +2470,31 @@ function renderCards(){
 /* ── this week ─────────────────────────────────────────────────────────── */
 function renderWeek(){
   const rows = [], clear = [];
-  let nTodo = 0, nPrint = 0, nIssue = 0;
+  let nTodo = 0, nPrint = 0, nIssue = 0, nOver = 0;
+  const t = todayYMD(), end = weekEnd();
+  const soon = i => !!i.due && i.due <= end;
+  const byDue = (a, b) => a.due < b.due ? -1 : a.due > b.due ? 1 : 0;
   orderedScopes().forEach(s => {
     const open = openIn(s);
-    const todo = open.filter(i => i.kind === 'action').sort(byOrder);
+    const all = open.filter(i => i.kind === 'action').sort(byOrder);
+    // what is overdue or due this week comes first, soonest first; the rest keep their own order
+    const todo = all.filter(soon).sort(byDue).concat(all.filter(i => !soon(i)));
     const pr = open.filter(i => i.kind === 'print').length;
     const iss = open.filter(i => i.kind === 'issue').length;
     nTodo += todo.length; nPrint += pr; nIssue += iss;
+    nOver += open.filter(i => hasDue(i) && i.due < t).length;
     if (todo.length || pr || iss) rows.push({s, todo, pr, iss});
     else if (isShown(s) && s !== 'me') clear.push(s);
   });
-  const head = [nTodo && plural(nTodo, 'action'), nPrint && plural(nPrint, 'print'), nIssue && plural(nIssue, 'issue')].filter(Boolean);
+  const head = [nTodo && plural(nTodo, 'action'), nPrint && plural(nPrint, 'print'), nIssue && plural(nIssue, 'issue'),
+    nOver && '<span class="wk-over">' + nOver + ' overdue</span>'].filter(Boolean);
   let h = '<h2 id="wkh">This week<span>' + (head.length ? head.map(x => '<span class="nw">' + x + '</span>').join(' · ') : 'No open items') + '</span></h2>';
   // each gets a small cover with its open to dos as the numeral; the cover and the name open its
   // notes page, the to dos themselves go to the item on the grid
   if (rows.length) h += '<div class="wk-list">' + rows.map(r => {
     const n = r.todo.length, nm = esc(nameOf(r.s)), pg = '#' + hashOf(r.s), card = '#' + domId(r.s);
     const bits = r.todo.slice(0, 3).map(i =>
-      '<a class="wk-it" href="#i-' + i.id + '" data-act="jumpitem" data-id="' + i.id + '" data-fkey="wki:' + i.id + '">' + esc(short(i.text, 90)) + '</a>');
+      '<a class="wk-it" href="#i-' + i.id + '" data-act="jumpitem" data-id="' + i.id + '" data-fkey="wki:' + i.id + '">' + esc(short(i.text, 90)) + '</a>' + weekDue(i));
     if (r.todo.length > 3) bits.push('<a class="wk-tail k-action" href="' + card + '" data-act="jump" data-scope="' + r.s + '">' + (r.todo.length - 3) + ' more</a>');
     if (!n) bits.push('<span class="wk-none">No open to dos</span>');
     if (r.pr) bits.push('<a class="wk-tail k-print" href="' + card + '" data-act="jump" data-scope="' + r.s + '">' + plural(r.pr, 'print') + '</a>');
@@ -2095,6 +2514,75 @@ function renderWeek(){
     h += '<p class="wk-clear">No open to dos: ' + names.join(', ') + '</p>';
   }
   $('#week').innerHTML = h;
+}
+
+/* ── meetings: a row, the panel under This week, a notes page's box ────── */
+/* what a meeting is for, in its own colour: the dot at full strength, the words taken deeper on
+   white and lighter on dark so they read */
+const forVars = s => { const f = place(s).full; return '--full:' + f + ';--mc-l:' + mix(f, '#0d0d0d', .68) + ';--mc-d:' + mix(f, '#f4f4f5', .55); };
+const openActs = id => items.filter(i => i.meeting === id && !i.done && KINDS[i.kind].check).length;
+/* One meeting as a row: its day and time; its title; then, as asked (o), what it is for, its open
+   actions, who attended, and while searching (o.words) the line of its notes that matched */
+function meetRowHTML(m, o){
+  o = o || {};
+  const w = o.words || [];
+  const mark = x => w.length ? hl(x, w) : esc(x);
+  const n = o.acts ? openActs(m.id) : 0;
+  const meta = [];
+  if (o.scope) meta.push('<span class="mt-s mc" style="' + forVars(m.scope) + '"><i class="dot" aria-hidden="true"></i>' + mark(nameOf(m.scope)) + '</span>');
+  if (n) meta.push('<span class="mt-a">' + n + ' open action' + (n === 1 ? '' : 's') + '</span>');
+  let snip = '';
+  if (w.length){
+    const title = m.title.toLowerCase();
+    if (!w.every(x => title.includes(x))){
+      const line = m.text.split('\n').find(l => { const x = l.toLowerCase(); return w.some(q => x.includes(q)); });
+      if (line) snip = '<span class="mt-q">“' + hl(short(line.replace(BULLET, ''), 70), w) + '”</span>';
+    }
+  }
+  // the day on one line ("Tue 29 Sep"); under it the time, and the year when it is not this one
+  const d = m.date ? dOf(m.date) : null;
+  const under = [d && d.getFullYear() !== new Date().getFullYear() ? String(d.getFullYear()) : '', m.time].filter(Boolean).join(' · ');
+  return '<a class="mt-row" href="#meeting-' + m.id + '" data-act="meeting" data-id="' + m.id + '" data-fkey="' + (o.fk || 'mtr') + ':' + m.id + '">' +
+    '<span class="mt-d">' + (d ? WDAYS[d.getDay()].slice(0, 3) + ' ' + d.getDate() + ' ' + MON[d.getMonth()] : 'No date') +
+      (under ? '<span>' + esc(under) + '</span>' : '') + '</span>' +
+    '<span class="mt-b"><span class="mt-t">' + mark(meetTitle(m)) + '</span>' +
+      (meta.length ? '<span class="mt-m">' + meta.join('<span class="sep" aria-hidden="true">·</span>') + '</span>' : '') +
+      (o.who && m.who.trim() ? '<span class="mt-w">' + mark(m.who.trim()) + '</span>' : '') +
+      snip +
+    '</span></a>';
+}
+/* The panel under This week: the latest four (those still to come first), or while searching the
+   meetings that match; New meeting, and All meetings */
+function renderMeetPanel(){
+  const w = qWords();
+  let h;
+  if (w.length){
+    const hits = MEETINGS.filter(m => meetMatch(m, w)).sort(mNewest);
+    h = '<h2 id="mth">Meetings<span>' + (hits.length ? hits.length + ' found' : 'None found') + '</span></h2>' +
+      (hits.length
+        ? '<div class="mt-list">' + hits.slice(0, 6).map(m => meetRowHTML(m, {scope: true, words: w, fk: 'mtp'})).join('') + '</div>'
+        : '<p class="mt-none">No meetings match.</p>');
+  } else {
+    const {up, past} = meetSplit(MEETINGS);
+    const list = up.concat(past).slice(0, 4);
+    h = '<h2 id="mth">Meetings' + (MEETINGS.length ? '<span>' + MEETINGS.length + '</span>' : '') + '</h2>' +
+      (list.length
+        ? '<div class="mt-list">' + list.map(m => meetRowHTML(m, {scope: true, fk: 'mtp'})).join('') + '</div>'
+        : '<p class="mt-none">No meetings yet.</p>');
+  }
+  h += '<p class="mt-foot">' +
+    '<a class="lnk mt-new" href="#" data-act="newmeeting" data-fkey="mtpnew">New meeting</a>' +
+    '<a class="lnk" href="#meetings" data-act="meetings" data-fkey="mtall">All meetings</a></p>';
+  fill($('#mtp'), h);
+}
+/* a notes page's Meetings box: that page's meetings, newest first, and New meeting (for it) */
+function meetBoxHTML(s){
+  const ms = MEETINGS.filter(m => m.scope === s).sort(mNewest);
+  return '<div class="pgb-h"><h3>Meetings' + (ms.length ? '<span class="n">' + ms.length + '</span>' : '') + '</h3>' +
+      '<button type="button" class="act mt-new" data-act="newmeeting" data-scope="' + s + '" data-fkey="pgmnew">New meeting</button></div>' +
+    (ms.length
+      ? '<div class="mt-list">' + ms.map(m => meetRowHTML(m, {who: true, acts: true, fk: 'mtb'})).join('') + '</div>'
+      : '<p class="empty">No meetings yet.</p>');
 }
 
 /* ── filters and the completed switch ──────────────────────────────────── */
@@ -2135,7 +2623,8 @@ function foldFilters(){
 /* ── a notes page ──────────────────────────────────────────────────────── */
 const BASE_TITLE = document.title;
 /* a show's card can come off the board once there is nothing on it (no items, an empty notes page) */
-const removable = s => isJob(s) && !items.some(i => i.scope === s) && !(PAGES[s] && PAGES[s].text && PAGES[s].text.trim());
+const removable = s => isJob(s) && !items.some(i => i.scope === s) && !MEETINGS.some(m => m.scope === s) &&
+  !(PAGES[s] && PAGES[s].text && PAGES[s].text.trim());
 const pageSig = s => chromeSig(s) + '|' + removable(s);
 function paintPageChrome(s){
   const p = place(s), pg = $('#pg');
@@ -2192,6 +2681,7 @@ function renderPage(){
     (pr.length ? pr.map(one(rowHTML)).join('') : '<p class="empty">No items to print.</p>') : '');
   fill($('#pgNotes'), head('Notes', cnt(notes)) +
     (notes.length ? notes.map(one(freeHTML)).join('') : '<p class="empty">No notes yet.</p>'));
+  fill($('#pgMeet'), meetBoxHTML(s));
   const dn = $('#pgDone'), openD = S.doneOpen.has(s);
   dn.hidden = !done.length;
   dn.classList.toggle('done-shut', !!done.length && !openD);
@@ -2203,21 +2693,115 @@ function renderPage(){
   const k = footKind(s);
   $$('#pgAdd .kw').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.kind === k)));
 }
-/* on a desktop the pad fills the screen below the cover */
+/* on a desktop a pad fills the screen below its cover: a notes page's, and a meeting's */
 function sizePad(){
-  const np = $('#pgPad');
   if (FP.on) return;   // measured again when full page closes
-  if (!S.page || !mqWide.matches){ np.style.removeProperty('--pg-h'); return; }
-  const pane = $('#pg');
+  fitPad($('#pgPad'), $('#pg'), !!S.page);
+  fitPad($('#mpPad'), $('#mpg'), !!S.mid);
+}
+function fitPad(np, pane, on){
+  if (!on || !mqWide.matches){ np.style.removeProperty('--pg-h'); return; }
   const top = np.getBoundingClientRect().top - pane.getBoundingClientRect().top + pane.scrollTop;
   // down to the page's own bottom margin, so a short page does not scroll
-  const foot = parseFloat(getComputedStyle($('.pg-in')).paddingBottom) || 0;
+  const foot = parseFloat(getComputedStyle($('.pg-in', pane)).paddingBottom) || 0;
   np.style.setProperty('--pg-h', Math.max(420, Math.floor(pane.clientHeight - top - foot)) + 'px');
+}
+
+/* ── the meetings screen: the Meetings page, or one meeting ────────────── */
+/* its "‹" goes back to where it was opened from: the Meetings page, a notes page, or Notes */
+function renderMeetLayer(){
+  if (!S.mid && !S.ml) return;
+  const to = S.mid && S.ml ? 'Meetings' : S.page ? nameOf(S.page) : 'Notes';
+  const bk = $('#mpBack');
+  $('span', bk).textContent = to;
+  bk.setAttribute('aria-label', 'Back to ' + to);
+  if (S.mid) renderMeeting(); else renderMeetList();
+}
+/* The Meetings page: its own search and Showing, then the meetings in a box for each month, newest
+   first, with those still to come at the top under "Upcoming" */
+let mlKey = '';
+function renderMeetList(){
+  if (S.mf !== 'all' && !validScope(S.mf)) S.mf = 'all';
+  const opts = [['all', 'Everything', MEETINGS.length]]
+    .concat(allScopes().filter(isShown).map(s => [s, labelOf(s), MEETINGS.filter(m => m.scope === s).length]));
+  const key = opts.map(x => x.join('|')).join(';'), sel = $('#mlSel');
+  if (key !== mlKey){
+    sel.innerHTML = opts.map(([v, n, c]) => '<option value="' + esc(v) + '">' + esc(n) + (c ? ' · ' + c : '') + '</option>').join('');
+    mlKey = key;
+  }
+  sel.value = S.mf;
+  fitSelect(sel);
+  const dot = $('#mlDot');
+  dot.hidden = S.mf === 'all';
+  if (S.mf !== 'all') dot.style.setProperty('--full', place(S.mf).full);
+  $('#mlN').textContent = MEETINGS.length ? String(MEETINGS.length) : '';
+  const w = S.mq.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  const list = MEETINGS.filter(m => (S.mf === 'all' || m.scope === S.mf) && (!w.length || meetMatch(m, w)));
+  const {up, past} = meetSplit(list), groups = [];
+  if (up.length) groups.push(['Upcoming', up]);
+  past.forEach(m => {
+    const label = m.date ? MONTHS[+m.date.slice(5, 7) - 1] + ' ' + m.date.slice(0, 4) : 'No date';
+    const g = groups[groups.length - 1];
+    if (g && g[0] === label) g[1].push(m); else groups.push([label, [m]]);
+  });
+  const row = m => meetRowHTML(m, {scope: true, who: true, acts: true, words: w, fk: 'mll'});
+  fill($('#mlList'), groups.length
+    ? groups.map(([label, ms]) => '<section class="pgb ml-grp" aria-label="' + esc(label) + '">' +
+        '<div class="pgb-h"><h3>' + esc(label) + '<span class="n">' + ms.length + '</span></h3></div>' +
+        '<div class="mt-list">' + ms.map(row).join('') + '</div></section>').join('')
+    : '<p class="mt-none">' + (w.length ? 'No meetings match “' + esc(S.mq.trim()) + '”.'
+        : MEETINGS.length ? 'No meetings for ' + esc(nameOf(S.mf)) + ' yet.' : 'No meetings yet.') + '</p>');
+}
+/* A meeting's page: the cover (in the colours of what it is for) with its title and details, the
+   notes pad, and its Actions. The cover's fields are the page's own, filled in, never redrawn, so
+   a change from another device never lands in a field being typed in. */
+function renderMeeting(){
+  const m = meetOf(S.mid);
+  if (!m) return;
+  const pane = $('#mpg'), cov = $('#mpCover'), sig = chromeSig(m.scope);
+  if (pane._sig !== sig){
+    pane._sig = sig;
+    pane.style.cssText = coverStyle(m.scope) + tintVars(place(m.scope));
+    cov.classList.toggle('branded', !!brandOf(m.scope));
+  }
+  pane.setAttribute('aria-label', meetTitle(m));
+  document.title = meetTitle(m) + ' — Versa';
+  const put = (el, v) => { if (document.activeElement !== el && el.value !== v) el.value = v; };
+  put($('#mtTitle'), m.title);
+  put($('#mtDate'), m.date);
+  put($('#mtTime'), m.time);
+  put($('#mtWho'), m.who);
+  const f = $('#mtFor');
+  if (f.value !== m.scope) f.value = m.scope;
+  fitSelect(f);
+  // read-only (the copy last seen on this device): the fields show, and change nothing
+  $$('.mt-f', cov).forEach(x => { if (x.tagName === 'SELECT') x.disabled = !SYNC.loaded; else x.readOnly = !SYNC.loaded; });
+  const fx = $('.np-fixed', $('#mpPad'));
+  if (fx) fx.textContent = nameOf(m.scope);
+  // Actions: the open ones in their own order, then the completed ones, folded away
+  const all = actsOf(m.id);
+  const live = all.filter(i => !i.done || i.id === S.linger).sort(byOrder);
+  const done = all.filter(i => i.done && i.id !== S.linger).sort((a, b) => ts(b) - ts(a));
+  const n = live.filter(i => !i.done && KINDS[i.kind].check).length;
+  $('#mpActsH').innerHTML = 'Actions' + (n ? '<span class="n">' + n + '</span>' : '');
+  fill($('#mpList'), live.length ? live.map(i => itemHTML(i, 'm')).join('') : '<p class="empty">No actions yet.</p>');
+  const dn = $('#mpDone'), openD = S.mdOpen.has(m.id);
+  dn.hidden = !done.length;
+  fill(dn, !done.length ? '' : openD
+    ? '<div class="pgb-h"><h3>Completed<span class="n">' + done.length + '</span></h3>' +
+        '<button type="button" class="act" data-act="mdoneopen" data-fkey="mdoneopen" aria-expanded="true">Hide</button></div>' +
+        done.map(i => itemHTML(i, 'm')).join('')
+    : '<button type="button" class="tog" data-act="mdoneopen" data-fkey="mdoneopen" aria-expanded="false"><span>Show ' + done.length + ' completed</span>' + I_DOWN + '</button>');
+  // the add field makes a to do in the meeting's show, carrying the meeting
+  const ta = $('#mpAdd textarea');
+  if (ta.dataset.mt !== m.id){ ta.value = ''; autosize(ta); syncAdd(ta); }
+  ta.dataset.mt = m.id;
+  ta.dataset.comp = m.scope;
 }
 
 /* ── render, with a FLIP so things slide rather than jump ──────────────── */
 let booted = false;
-const flipRoot = () => S.page ? $('#pgSide') : $('#grid');
+const flipRoot = () => S.mid ? $('#mpSide') : S.page ? $('#pgSide') : $('#grid');
 function snapshot(){
   const m = new Map();
   $$('.it[data-id]', flipRoot()).forEach(el => {
@@ -2265,13 +2849,18 @@ function render(o){
   GUARD = o.remote && ae && /^(TEXTAREA|SELECT|INPUT)$/.test(ae.tagName) && ae.closest('.it') ? ae : null;
   if (!GUARD) S.stale = false;
   const fk = ae && ae.dataset ? ae.dataset.fkey : null;
-  const sel = fk && (ae.tagName === 'TEXTAREA' || ae.tagName === 'INPUT') ? [ae.selectionStart, ae.selectionEnd] : null;
+  // (a date field has no caret: its selection reads as null)
+  let sel = null;
+  if (fk && (ae.tagName === 'TEXTAREA' || ae.tagName === 'INPUT')) try { sel = [ae.selectionStart, ae.selectionEnd]; } catch (e) {}
   FX = {fresh: o.fresh, landed: o.landed, ticked: o.ticked};
 
   renderWeek();
+  renderMeetPanel();
   renderFilters();
   renderCards();
   renderPage();
+  renderMeetLayer();
+  paintDues();
   mountSecForm();
   $$('.edit').forEach(autosize);
 
@@ -2279,11 +2868,11 @@ function render(o){
     const again = document.contains(ae) ? ae : document.querySelector('[data-fkey="' + fk + '"]');
     if (again){
       again.focus({preventScroll: true});
-      if (sel && again.setSelectionRange) try { again.setSelectionRange(sel[0], sel[1]); } catch (e) {}
+      if (sel && sel[0] != null && again.setSelectionRange) try { again.setSelectionRange(sel[0], sel[1]); } catch (e) {}
     }
   }
   if (before) flip(before);
-  if (S.page) sizePad();
+  if (S.page || S.mid) sizePad();
   FX = {};
   GUARD = null;
   // whatever changed is saved shortly (a render that changed nothing saves nothing)
@@ -2301,7 +2890,9 @@ function autosize(ta){
     const top = ta.scrollTop;
     ta.style.setProperty('--np-h', '0px');
     ta.style.height = '0px';
-    const cap = parseFloat(getComputedStyle(ta).maxHeight) || Infinity;
+    // the cap is the pad's max-height; on a desktop, where the pad may stretch to the column beside
+    // it, the same min(500px, 60vh) is kept here instead
+    const cap = parseFloat(getComputedStyle(ta).maxHeight) || Math.min(500, window.innerHeight * .6);
     const h = Math.min(ta.scrollHeight, cap);
     ta.style.height = '';
     ta.style.setProperty('--np-h', h + 'px');
@@ -2326,14 +2917,21 @@ function addItem(kind, scope, text){
 }
 function submit(ta){
   const top = ta.id === 'topText';
+  // a meeting's Actions field: always a to do, in the meeting's show, carrying the meeting
+  const mt = !top && ta.dataset.mt ? ta.dataset.mt : null;
+  if (mt && !meetOf(mt)) return;
   const scope = top ? S.topScope : ta.dataset.comp;
-  const kind = top ? S.topKind : footKind(scope);
+  const kind = top ? S.topKind : mt ? 'action' : footKind(scope);
   const text = cleanText(ta.value);
   if (!text.trim()){ ta.focus(); return; }
   if (S.openId) closeOpen();
-  const host = top ? null : ta.closest('.card, #pg');
+  const host = top ? null : ta.closest('.card, #pg, #mpg');
   const it = addItem(kind, scope, text);
-  if (!top) S.footKind[scope] = kind;
+  if (mt) it.meeting = mt;
+  // a deadline chosen in the field goes to this item, and the field forgets it
+  const dk = dueKeyOf(ta), due = KINDS[kind].check ? S.due[dk] : null;
+  if (due){ it.due = due; delete S.due[dk]; S.dueOpen.delete(dk); }
+  if (!top && !mt) S.footKind[scope] = kind;
   ta.value = '';
   autosize(ta);
   syncAdd(ta);
@@ -2355,7 +2953,7 @@ function openItem(id, focus){
   S.openId = id;
   S.openOrig = it.text;
   render();
-  const ta = $('.it[data-id="' + id + '"] .edit', S.page ? $('#pg') : $('#main'));
+  const ta = $('.it[data-id="' + id + '"] .edit', ctxRoot());
   if (ta){
     autosize(ta);
     if (focus){ ta.focus({preventScroll: true}); ta.setSelectionRange(ta.value.length, ta.value.length); }
@@ -2372,7 +2970,7 @@ function closeOpen(revert){
 
 /* a completed item leaves the list it was in (the grid with "Hide completed", or a notes page's
    To do while its Completed list is shut), so it lingers a moment and offers Undo */
-const leavesOnDone = () => S.page ? !S.doneOpen.has(S.page) : S.hideDone;
+const leavesOnDone = () => S.mid ? !S.mdOpen.has(S.mid) : S.page ? !S.doneOpen.has(S.page) : S.hideDone;
 function tick(id){
   const it = get(id);
   if (!it) return;
@@ -2451,7 +3049,7 @@ function replay(el, cls){
   setTimeout(() => el.classList.remove(cls), 2300);
 }
 function jump(s, id){
-  if (S.page) return;
+  if (S.page || S.mid || S.ml) return;
   let dirty = false;
   if (S.filter !== 'all' && S.filter !== s){ S.filter = 'all'; dirty = true; }
   if (id && qWords().length && !itemHit(get(id))){ S.q = ''; $('#q').value = ''; $('#qx').hidden = true; dirty = true; }
@@ -2517,12 +3115,12 @@ function openSecForm(o){
 }
 function mountSecForm(){
   if (!SF.o) return;
-  const root = S.page ? $('#pg') : $('#main');
+  const root = (S.mid || S.ml) ? $('#mpg') : S.page ? $('#pg') : $('#main');
   const slot = root.querySelector('[data-slot="' + SF.o.slot + '"]');
   if (!slot){ closeSecForm(true); return; }
   if (SF.el.parentNode !== slot){
     slot.appendChild(SF.el);
-    if (S.page) sizePad();   // a form under the cover moves the pad down; it still ends at the screen's foot
+    if (S.page || S.mid) sizePad();   // a form under the cover moves the pad down; it still ends at the screen's foot
   }
   $$('.addshow').forEach(a => a.classList.toggle('forming', a.contains(SF.el)));
 }
@@ -2538,7 +3136,7 @@ function closeSecForm(quiet){
   const had = SF.el.contains(document.activeElement);
   SF.el.remove();
   $$('.addshow.forming').forEach(a => a.classList.remove('forming'));
-  if (S.page) sizePad();
+  if (S.page || S.mid) sizePad();
   // the control that opened the form may have been redrawn (a colour preview repaints the cover),
   // so look for it again by its key
   const back = o.back && (o.back.isConnected ? o.back : o.back.dataset.fkey ? document.querySelector('[data-fkey="' + o.back.dataset.fkey + '"]') : null);
@@ -2592,13 +3190,19 @@ function refreshPickers(){
   P.fs = fix(P.fs); P.fileScope = fix(P.fileScope); P.ss = fix(P.ss);
   const fd = $('.np-dest', P.root), sd = $('.np-sdest', P.root);
   // the options are only rebuilt when they have changed (a picker open on a phone stays open)
-  if (opts !== pickKey){ td.innerHTML = opts; fd.innerHTML = opts; sd.innerHTML = opts; pickKey = opts; }
+  const mf = $('#mtFor');
+  if (opts !== pickKey){ td.innerHTML = opts; fd.innerHTML = opts; sd.innerHTML = opts; mf.innerHTML = opts; pickKey = opts; }
   td.value = S.topScope; fitSelect(td); paintTop();
   fd.value = P.fs;
   sd.value = P.ss;
   if (P.file) paintFile(P);
   if (P.save) paintSave(P);
+  // a meeting's For picker shows what it is for
+  const m = meetOf(S.mid);
+  if (m){ mf.value = m.scope; fitSelect(mf); }
+  if (pads.meet && pads.meet.file) paintFile(pads.meet);
   if (S.filter !== 'all' && !validScope(S.filter)) S.filter = 'all';
+  if (S.mf !== 'all' && !validScope(S.mf)) S.mf = 'all';
   fselKey = '';
 }
 /* deleting a section moves its items, and its notes page under "From <name>", into General */
@@ -2613,6 +3217,9 @@ function deleteSection(s){
   const wasOrd = new Map(moved.map(id => [id, get(id).order]));
   const gEnd = items.filter(i => i.scope === 'me').reduce((m, i) => Math.max(m, i.order), -1);
   moved.forEach((id, k) => { const it = get(id); it.scope = 'me'; it.order = gEnd + 1 + k; });
+  // its meetings are for General from now on
+  const movedM = MEETINGS.filter(m => m.scope === s);
+  movedM.forEach(m => { m.scope = 'me'; });
   syncOrder();
   const oi = CARD_ORDER.indexOf(s);
   if (oi >= 0) CARD_ORDER.splice(oi, 1);
@@ -2639,6 +3246,7 @@ function deleteSection(s){
     S.shown.add(s);
     if (!CARD_ORDER.includes(s)) CARD_ORDER.splice(Math.min(Math.max(oi, 0), CARD_ORDER.length), 0, s);
     moved.forEach(id => { const it = get(id); if (it && it.scope === 'me'){ it.scope = s; it.order = wasOrd.get(id); } });
+    movedM.forEach(m => { if (m.scope === 'me') m.scope = s; });
     if (block){
       if (g.text === gAfter){ g.text = gWas; g.edited = gWasEd; }
       else {
@@ -2655,38 +3263,67 @@ function deleteSection(s){
   }});
 }
 
-/* ── moving between the main page and a notes page ─────────────────────── */
-/* each place has an address: the main page (no hash), a notes page (#show-3), and either of
-   those with its pad in full page (#notepad/full, #show-3/full). S.depth counts the entries
-   pushed since the main page, full page included, so Back always unwinds one step at a time */
+/* ── moving between the main page, a notes page and the meetings ───────── */
+/* each place has an address: the main page (no hash), a notes page (#show-3), the Meetings page
+   (#meetings), a meeting (#meeting-<id>), and those with a pad in full page (#notepad/full,
+   #show-3/full, #meeting-<id>/full). S.depth counts the entries pushed since the main page, full
+   page included, so Back always unwinds one step at a time. A meeting's entry also says what it
+   was opened over (pg: a notes page; ml: the Meetings page), so Back and Forward put that back
+   underneath it. The routes: 'home', a scope, 'meetings', 'mt:<meeting id>'. */
+const viewHash = v => v === 'meetings' ? 'meetings' : /^mt:/.test(v) ? 'meeting-' + v.slice(3) : hashOf(v);
 const H = {
-  set(how, v, d, full){
-    const st = {nv: v, d: d, full: !!full};
+  set(how, v, d, full, x){
+    const st = Object.assign({nv: v, d: d, full: !!full}, x || null);
     const url = v === 'home'
       ? location.pathname + location.search + (full ? '#notepad/full' : '')
-      : '#' + hashOf(v) + (full ? '/full' : '');
+      : '#' + viewHash(v) + (full ? '/full' : '');
     try { history[how](st, '', url); return true; }
     catch (e){ try { history[how](st, ''); return true; } catch (e2){ return false; } }
   },
 };
+/* the route of the place a pad is on (for its full page's entry) */
+const padRoute = P => P.key === 'main' ? {v: 'home'}
+  : P.key === 'meet' ? {v: 'mt:' + S.mid, x: {pg: S.page, ml: S.ml}} : {v: S.page};
 function routeOfHash(h){
   h = String(h || '').replace(/^#/, '');
   const full = /\/full$/.test(h);
   if (full) h = h.slice(0, -5);
+  if (h === 'meetings') return {v: 'meetings', full: false};
+  const m = /^meeting-([A-Za-z0-9_-]+)$/.exec(h);
+  if (m) return {v: 'mt:' + m[1], full};
   const s = scopeOfHash(h);
   return {v: s || 'home', full: full && (!!s || h === 'notepad')};
 }
+/* where a route leads: the notes page underneath (page), the Meetings page (ml), the meeting (mid);
+   null when it leads nowhere any more (its section or its meeting deleted since) */
+function routeTarget(r){
+  const v = r.v || 'home', pg = r.pg && validScope(r.pg) ? r.pg : null;
+  if (v === 'home') return {v, page: null, ml: false, mid: null, full: !!r.full};
+  if (v === 'meetings') return {v, page: pg, ml: true, mid: null, full: false};
+  if (/^mt:/.test(v)) return meetOf(v.slice(3)) ? {v, page: pg, ml: !!r.ml, mid: v.slice(3), full: !!r.full} : null;
+  return validScope(v) ? {v, page: v, ml: false, mid: null, full: !!r.full} : null;
+}
+const HOME = {v: 'home', page: null, ml: false, mid: null, full: false};
+/* which screens show: a notes page, and over it (or over the main page) the meetings screen, with
+   either the Meetings page or a meeting in it; only the top one can be used */
 function applyLayer(){
-  const on = !!S.page;
-  document.documentElement.classList.toggle('layer', on);
-  $('#main').inert = on;
-  $('#pg').inert = !on;
+  const pg = !!S.page, mt = !!(S.mid || S.ml);
+  document.documentElement.classList.toggle('layer', pg || mt);
+  $('#main').inert = pg || mt;
+  $('#pg').inert = !pg || mt;
+  $('#mpg').inert = !mt;
+  $('#pg').classList.toggle('on', pg);
+  $('#mpg').classList.toggle('on', mt);
+  $('#mlView').hidden = !(S.ml && !S.mid);
+  $('#mtView').hidden = !S.mid;
 }
 function openPage(s, o){
   o = o || {};
   if (!validScope(s)) return;
   if (S.arr) setArrange(false, {quiet: true});
   if (FP.on) exitFull({replace: true, quiet: true});
+  // opened on its own, a notes page comes out from under any meeting (o.under: one is going over it)
+  if (!o.under && (S.mid || S.ml)) closeMeetLayer({quiet: true});
   const was = S.page;
   if (was === s) return;
   if (S.openId) closeOpen();
@@ -2702,7 +3339,12 @@ function openPage(s, o){
   pane.scrollTop = 0;
   sizePad();
   if (was && !reduced()){
-    $('.pg-in').animate([{opacity: 0, transform: 'translateX(28px)'}, {opacity: 1, transform: 'none'}], {duration: 300, easing: EASE});
+    $('.pg-in', pane).animate([{opacity: 0, transform: 'translateX(28px)'}, {opacity: 1, transform: 'none'}], {duration: 300, easing: EASE});
+  }
+  // a card's Meetings line opens the page at its Meetings box
+  if (o.to === 'meet'){
+    const mb = $('#pgMeet');
+    if (mb && !mb.hidden) pane.scrollTop = Math.max(0, mb.getBoundingClientRect().top - pane.getBoundingClientRect().top + pane.scrollTop - $('.pg-top', pane).offsetHeight - 8);
   }
   // with a keyboard the caret lands on "‹ Notes"; otherwise the page itself takes focus, quietly
   const bk = $('#pg .back');
@@ -2740,26 +3382,181 @@ function back(){
 }
 window.addEventListener('popstate', e => {
   const st = e.state || {};
-  const r = st.nv ? {v: st.nv, full: !!st.full} : routeOfHash(location.hash);
-  let v = r.v || 'home', full = r.full;
-  if (v !== 'home' && !validScope(v)){ v = 'home'; full = false; H.set('replaceState', 'home', 0); }
-  S.depth = (v === 'home' && !full) ? 0 : (typeof st.d === 'number' ? st.d : S.depth + 1);
-  // full page goes first (Back from #show-3/full is #show-3), then the page, then full page again
-  // if this entry has it (Forward)
-  const want = full ? (v === 'home' ? 'main' : 'page') : null;
-  const moving = v === 'home' ? !!S.page : v !== S.page;
+  const r = st.nv ? {v: st.nv, full: !!st.full, pg: st.pg || null, ml: !!st.ml} : routeOfHash(location.hash);
+  let t = routeTarget(r);
+  if (!t){ t = HOME; H.set('replaceState', 'home', 0); }
+  S.depth = (t.v === 'home' && !t.full) ? 0 : (typeof st.d === 'number' ? st.d : S.depth + 1);
+  // full page goes first (Back from #show-3/full is #show-3), then the screens, then full page
+  // again if this entry has it (Forward)
+  const want = t.full ? (t.mid ? 'meet' : t.page ? 'page' : 'main') : null;
+  const moving = t.page !== S.page || t.mid !== S.mid || t.ml !== S.ml;
   if (FP.on && (moving || FP.P.key !== want)) exitFull({fromHistory: true, how: 'history', quiet: moving});
-  if (v === 'home'){ if (S.page) leavePage(); }
-  else if (v !== S.page) openPage(v, {push: false});
+  showLayers(t);
   if (want && !FP.on) enterFull(pads[want], {push: false});
 });
+/* bring the screens to a route without touching the address (Back, Forward): the notes page
+   underneath first, then the meetings screen over it */
+function showLayers(t){
+  if (t.page !== S.page){
+    if (t.page) openPage(t.page, {push: false, under: !!(t.mid || t.ml)});
+    else if (S.page) leavePage();
+  }
+  if (t.mid) openMeeting(t.mid, {push: false, ml: t.ml});
+  else if (t.ml) openMeetList({push: false});
+  else closeMeetLayer();
+}
+
+/* ── the meetings screen: opening and leaving ──────────────────────────── */
+/* A meeting opens over wherever it was asked for (the main page, a notes page, the Meetings page),
+   and "‹" goes back there. o.ml: whether the Meetings page is under it (by default, whether it is
+   showing now); o.title: the title field takes the caret (a new meeting) */
+function openMeeting(id, o){
+  o = o || {};
+  if (!meetOf(id)) return;
+  if (S.arr) setArrange(false, {quiet: true});
+  if (FP.on) exitFull({replace: true, quiet: true});
+  const ml = o.ml !== undefined ? !!o.ml : (S.ml && !S.mid);
+  if (S.mid === id && S.ml === ml) return;
+  if (S.openId) closeOpen();
+  closeSecForm(true);
+  const was = S.mid, listed = S.ml && !S.mid, pane = $('#mpg'), shown = pane.classList.contains('on');
+  if (was){ closeFile(pads.meet); dropBlank(was); }
+  if (listed) S.mlY = pane.scrollTop;
+  S.mid = id;
+  S.ml = ml;
+  padLoad(pads.meet);
+  if (o.push !== false && H.set('pushState', 'mt:' + id, S.depth + 1, false, {pg: S.page, ml: S.ml})) S.depth++;
+  applyLayer();
+  render();
+  pane.scrollTop = 0;
+  sizePad();
+  // from the Meetings page (or another meeting) the page changes in place, with a short slide
+  if (shown && !reduced()) $('.pg-in', pane).animate([{opacity: 0, transform: 'translateX(28px)'}, {opacity: 1, transform: 'none'}], {duration: 300, easing: EASE});
+  if (o.title) $('#mtTitle').focus({preventScroll: true});
+  else if (o.byKey) $('#mpBack').focus({preventScroll: true});
+  else pane.focus({preventScroll: true});
+}
+/* the Meetings page (from the main page's panel); back from a meeting it is where it was */
+function openMeetList(o){
+  o = o || {};
+  if (S.arr) setArrange(false, {quiet: true});
+  if (FP.on) exitFull({replace: true, quiet: true});
+  if (S.ml && !S.mid) return;
+  if (S.openId) closeOpen();
+  closeSecForm(true);
+  const was = S.mid, pane = $('#mpg'), shown = pane.classList.contains('on');
+  if (was){ closeFile(pads.meet); dropBlank(was); }
+  S.mid = null;
+  S.ml = true;
+  if (o.push !== false && H.set('pushState', 'meetings', S.depth + 1, false, {pg: S.page})) S.depth++;
+  applyLayer();
+  render();
+  document.title = 'Meetings — Versa';
+  pane.setAttribute('aria-label', 'Meetings');
+  pane.scrollTop = was ? S.mlY : 0;
+  if (shown && !reduced()) $('.pg-in', pane).animate([{opacity: 0, transform: 'translateX(-28px)'}, {opacity: 1, transform: 'none'}], {duration: 300, easing: EASE});
+  const row = was ? $('.mt-row[data-id="' + was + '"]', pane) : null;
+  if (row) row.focus({preventScroll: true});
+  else if (o.byKey) $('#mpBack').focus({preventScroll: true});
+  else pane.focus({preventScroll: true});
+}
+/* the meetings screen goes; what was under it is as it was, and focus goes back to the row (or the
+   link) that opened it */
+function closeMeetLayer(o){
+  o = o || {};
+  if (!S.mid && !S.ml) return;
+  if (FP.on) exitFull({fromHistory: true, quiet: true});   // the caller looks after the address
+  const id = S.mid;
+  if (S.openId) closeOpen();
+  closeSecForm(true);
+  closeFile(pads.meet);
+  S.mid = null;
+  S.ml = false;
+  if (id) dropBlank(id);
+  document.title = S.page ? place(S.page).name + ' notes — Versa' : BASE_TITLE;
+  applyLayer();
+  render();
+  if (o.quiet) return;
+  const root = S.page ? $('#pg') : $('#main');
+  const el = id ? $('.mt-row[data-id="' + id + '"]', root) : $('[data-fkey="mtall"]', root);
+  if (el && el.getClientRects().length) el.focus({preventScroll: true});
+}
+/* "‹", Escape, a deleted meeting: one step back, to wherever it was opened from (with a full page
+   open, two: its entry and the meeting's) */
+function mtBack(){
+  if (!S.mid && !S.ml) return;
+  let n = 1;
+  if (FP.on){ if (FP.pushed) n = 2; exitFull({fromHistory: true, quiet: true}); }
+  if (S.depth >= n){ history.go(-n); return; }
+  // nothing to go back to (the address was pasted or pushing failed): straight to what is under it
+  const t = S.mid && S.ml ? {v: 'meetings', page: S.page, ml: true, mid: null, full: false}
+    : S.page ? {v: S.page, page: S.page, ml: false, mid: null, full: false} : HOME;
+  S.depth = 0;
+  H.set('replaceState', t.v, 0, false, t.v === 'meetings' ? {pg: S.page} : null);
+  showLayers(t);
+}
+/* a new meeting left without a word on it (no title, attendees, notes or actions) is let go */
+function dropBlank(id){
+  const m = meetOf(id);
+  if (!m || !m.fresh) return;
+  delete m.fresh;
+  if (m.title.trim() || m.who.trim() || m.text.trim() || items.some(i => i.meeting === id)) return;
+  MEETINGS.splice(MEETINGS.indexOf(m), 1);
+}
+/* New meeting: dated today, for the show or section it was started from (else General), open at
+   its title */
+function newMeeting(scope){
+  if (!SYNC.loaded) return;
+  const s = validScope(scope) ? scope : 'me';
+  if (S.openId) closeOpen();
+  // (fresh: not a record until something is written on it, and let go if left blank)
+  const m = {id: uid('m'), title: '', date: todayYMD(), time: '', who: '', scope: s, text: '', edited: null, fresh: true};
+  MEETINGS.push(m);
+  openMeeting(m.id, {title: true});
+}
+/* what a meeting is for changes: its actions still in the old place go with it (Undo puts both back) */
+function setMeetScope(id, to){
+  const m = meetOf(id);
+  if (!m || !to || to === m.scope || !validScope(to)) return;
+  const from = m.scope;
+  const moved = items.filter(i => i.meeting === id && i.scope === from).sort(byOrder);
+  const was = new Map(moved.map(i => [i.id, i.order]));
+  const base = topOrder() - moved.length + 1;
+  m.scope = to;
+  moved.forEach((i, k) => { i.scope = to; i.order = base + k; });
+  S.shown.add(to);
+  render();
+  const n = moved.length;
+  snack('Meeting for ' + nameOf(to) + (n ? ' · ' + n + (n === 1 ? ' action' : ' actions') + ' moved' : ''), {scope: to, undo: () => {
+    if (!validScope(from)) return;
+    m.scope = from;
+    moved.forEach(i => { if (i.scope === to){ i.scope = from; i.order = was.get(i.id); } });
+    render();
+  }});
+}
+/* Delete meeting: with Undo. Its actions stay where they are; their link to it points at nothing */
+function deleteMeeting(id){
+  const idx = MEETINGS.findIndex(m => m.id === id);
+  if (idx < 0) return;
+  const m = MEETINGS[idx];
+  if (S.openId) closeOpen();
+  delete m.fresh;
+  MEETINGS.splice(idx, 1);
+  if (S.mid === id) mtBack();
+  render();
+  snack('Deleted meeting “' + short(meetTitle(m), 30) + '”', {scope: m.scope, undo: () => {
+    if (!validScope(m.scope)) m.scope = 'me';
+    MEETINGS.splice(Math.min(idx, MEETINGS.length), 0, m);
+    render();
+  }});
+}
 
 /* ── full page ─────────────────────────────────────────────────────────── */
 /* One pad over the whole screen. The pad element itself is fixed over the screen (its text, caret,
    selection and undo history never move), a stand-in of the same height keeps its place in the
    page, and everything around it is made inert. The page's scroll is held and given back. */
 const FP = {on: false, P: null, hold: null, inert: [], pushed: false, byKey: false, esc: false,
-  anim: null, winY: 0, pgY: 0, vh: 0};
+  anim: null, winY: 0, pgY: 0, mpY: 0, vh: 0};
 const mqBar = mq2;   // from 720px the bar carries the footer's save state and actions
 
 /* where the caret's line sits inside a textarea, measured on a hidden copy of its text */
@@ -2859,7 +3656,7 @@ const fpFitSoon = () => { if (!FP.on) return; cancelAnimationFrame(fitT); fitT =
 
 function enterFull(P, o){
   o = o || {};
-  if (FP.on || S.arr || !P || (P.key === 'page' && !S.page)) return;
+  if (FP.on || S.arr || !P || (P.key === 'page' && !S.page) || (P.key === 'meet' && !meetOf(S.mid))) return;
   const el = P.root, ta = P.ta, root = document.documentElement;
   if (S.openId){ closeOpen(); render(); }
   if (SF.o && SF.o.slot !== 'pad:' + P.key) closeSecForm(true);
@@ -2873,6 +3670,7 @@ function enterFull(P, o){
   const r = el.getBoundingClientRect();
   FP.winY = window.scrollY;
   FP.pgY = $('#pg').scrollTop;
+  FP.mpY = $('#mpg').scrollTop;
   FP.byKey = !!o.byKey;
   FP.esc = false;
   FP.vh = 0;
@@ -2903,7 +3701,8 @@ function enterFull(P, o){
   ta.focus({preventScroll: true});
   if (shown) ensureCaret(ta);
   if (o.push !== false){
-    FP.pushed = H.set('pushState', P.key === 'main' ? 'home' : S.page, S.depth + 1, true);
+    const R = padRoute(P);
+    FP.pushed = H.set('pushState', R.v, S.depth + 1, true, R.x);
     if (FP.pushed) S.depth++;
   } else FP.pushed = true;   // arrived by Forward: the entry is already there
   if (motion){
@@ -2956,6 +3755,7 @@ function exitFull(o){
   if (P.key === 'main') autosize(ta); else sizePad();
   window.scrollTo(0, FP.winY);
   $('#pg').scrollTop = FP.pgY;
+  $('#mpg').scrollTop = FP.mpY;
   ta.scrollTop = at * ta.scrollHeight;
   if (!o.quiet){
     if (o.how === 'key' || (FP.byKey && o.how !== 'pointer')) btn.focus({preventScroll: true});
@@ -2973,7 +3773,7 @@ function exitFull(o){
     a.onfinish = a.oncancel = () => g.remove();
   }
   if (FP.pushed && !o.fromHistory){
-    if (o.replace) H.set('replaceState', P.key === 'main' ? 'home' : S.page, S.depth);
+    if (o.replace){ const R = padRoute(P); H.set('replaceState', R.v, S.depth, false, R.x); }
     else { S.depth = Math.max(0, S.depth - 1); history.back(); }
   }
   FP.pushed = false;
@@ -3508,15 +4308,19 @@ function setTopKind(k){
   S.topKind = k;
   $$('#topKinds .kw').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.kind === k)));
   $('#topText').placeholder = PROMPT[k];
+  paintDueField($('#comp'), 'top', k);
 }
 
-/* ── the pad: one component, for the main Notepad and every notes page ─── */
-/* free typing, kept in memory; nothing here becomes an item until a line is filed */
-function padHTML(main){
-  const h = main ? 'nph' : 'pgPadH';
-  return '<div class="np-top"><h2 class="np-h" id="' + h + '">' + (main ? 'Notepad' : '') + '</h2>' +
+/* ── the pad: one component, for the main Notepad, every notes page and every meeting ── */
+/* free typing, kept in memory; nothing here becomes an item until a line is filed. key: 'main',
+   'page' (the open notes page's) or 'meet' (the open meeting's notes) */
+function padHTML(key){
+  const main = key === 'main', meet = key === 'meet';
+  const h = main ? 'nph' : meet ? 'mpPadH' : 'pgPadH';
+  return '<div class="np-top"><h2 class="np-h" id="' + h + '">' + (main ? 'Notepad' : meet ? '<i class="dot np-hdot" aria-hidden="true"></i>Meeting notes' : '') + '</h2>' +
       '<button type="button" class="act np-fp" data-act="fullpage">' + I_GROW + '<span>Full page</span></button></div>' +
-    '<textarea class="np-ta" id="' + (main ? 'npText' : 'pgText') + '" aria-labelledby="' + h + '" placeholder="Start typing. Saved automatically." autocapitalize="sentences" enterkeyhint="enter"></textarea>' +
+    '<textarea class="np-ta" id="' + (main ? 'npText' : meet ? 'mpText' : 'pgText') + '" aria-labelledby="' + h + '" placeholder="' +
+      (meet ? 'Notes from the meeting. Saved automatically.' : 'Start typing. Saved automatically.') + '" autocapitalize="sentences" enterkeyhint="enter"></textarea>' +
     '<div class="np-panel np-file" role="group" aria-label="File a line" hidden>' +
       '<p class="np-q"></p>' +
       '<div class="np-fr">' +
@@ -3532,7 +4336,7 @@ function padHTML(main){
           '<span class="np-fgo"><button type="button" class="act np-cancel" data-act="savecancel">Cancel</button><button type="button" class="act np-go" data-act="savego">Save</button></span>' +
         '</div></div>'
       : '') +
-    '<div class="secslot" data-slot="pad:' + (main ? 'main' : 'page') + '"></div>' +
+    '<div class="secslot" data-slot="pad:' + key + '"></div>' +
     '<div class="np-foot"><span class="np-saved"></span><span class="np-acts">' +
       '<button type="button" class="act" data-act="fileline" aria-expanded="false">File line…</button>' +
       (main ? '<button type="button" class="act" data-act="saveto" aria-expanded="false">Save to…</button>' : '') +
@@ -3542,7 +4346,7 @@ function padHTML(main){
 const pads = {};
 function makePad(root){
   const key = root.dataset.pad;
-  root.innerHTML = padHTML(key === 'main');
+  root.innerHTML = padHTML(key);
   const P = {key, root, ta: $('.np-ta', root), sel: null, saveT: 0,
     file: false, fileText: null, fk: 'action', fs: 'me', fkPicked: false, fsPicked: false,
     fileKind: 'action', fileScope: 'me', save: false, ss: 'me'};
@@ -3553,10 +4357,12 @@ function makePad(root){
   return P;
 }
 const padOf = el => { const r = el && el.closest ? el.closest('.np') : null; return r ? pads[r.dataset.pad] : null; };
-const padKey = P => P.key === 'main' ? 'main' : S.page;
-const storeOf = k => k === 'main' ? MAINPAD : (k ? pageOf(k) : BLANK);
+/* what a pad writes on: 'main', a scope (a notes page), or 'mt:<id>' (a meeting's notes) */
+const padKey = P => P.key === 'main' ? 'main' : P.key === 'meet' ? (S.mid ? 'mt:' + S.mid : null) : S.page;
+const storeOf = k => k === 'main' ? MAINPAD : !k ? BLANK : /^mt:/.test(k) ? (meetOf(k.slice(3)) || BLANK) : pageOf(k);
 const padStore = P => storeOf(padKey(P));
-const padHome = P => P.key === 'main' ? null : S.page;   // a notes page files onto itself
+/* a notes page files onto itself, a meeting into what it is for */
+const padHome = P => P.key === 'main' ? null : P.key === 'meet' ? (meetOf(S.mid) ? meetOf(S.mid).scope : 'me') : S.page;
 const setDis = (b, off) => { if (b) b.setAttribute('aria-disabled', String(!!off)); };
 const isDis = b => b && b.getAttribute('aria-disabled') === 'true';
 
@@ -3572,7 +4378,7 @@ function padSet(P, v, at){
   ta.value = v;
   st.text = v;
   st.edited = clockNow();
-  if (P.key !== 'main' && v.trim()) S.shown.add(S.page);
+  if (P.key === 'page' && v.trim()) S.shown.add(S.page);
   if (at != null){
     P.sel = [at, at];
     if (document.activeElement === ta) ta.setSelectionRange(at, at);
@@ -3619,9 +4425,10 @@ function padTyped(P, e){
     if (m){ padInsert(ta, ls + m[1].length, a, '• '); return; }
   }
   const st = padStore(P);
+  if (st === BLANK) return;   // a meeting deleted a moment ago, its page on its way out
   st.text = ta.value;
   st.edited = clockNow();
-  if (P.key !== 'main' && st.text.trim()) S.shown.add(S.page);
+  if (P.key === 'page' && st.text.trim()) S.shown.add(S.page);
   $$('.np-acts .act', P.root).forEach(b => setDis(b, !ta.value.trim()));
   padNoteSel(P);
   if (P.save) paintSave(P);
@@ -3686,8 +4493,9 @@ function padGuess(text){
 }
 /* put words back on a pad (or straight into its page, if that page is not open any more) */
 function restoreText(k, fn){
-  if (k !== 'main' && !validScope(k)) return;
-  const P = k === 'main' ? pads.main : (S.page === k ? pads.page : null);
+  const mt = /^mt:/.test(k);
+  if (mt ? !meetOf(k.slice(3)) : (k !== 'main' && !validScope(k))) return;
+  const P = k === 'main' ? pads.main : mt ? (S.mid === k.slice(3) ? pads.meet : null) : (S.page === k ? pads.page : null);
   const st = storeOf(k);
   const r = fn(P ? P.ta.value : st.text);
   if (P) padSet(P, r.value, r.at);
@@ -3755,6 +4563,8 @@ function fileLine(P){
   P.fileKind = kind;
   if (!padHome(P)) P.fileScope = scope;
   const it = addItem(kind, scope, text);
+  // filed from a meeting's notes, it is one of that meeting's actions
+  if (P.key === 'meet' && S.mid) it.meeting = S.mid;
   const cut = padCut(before, t), after = cut.value;
   closeFile(P);
   padSet(P, after, cut.at);
@@ -3780,7 +4590,7 @@ function clearPad(P){
   closeSave(P);
   padSet(P, '', 0);
   if (mqFine.matches) P.ta.focus({preventScroll: true});
-  snack(k === 'main' ? 'Notepad cleared' : nameOf(k) + ' notes cleared', {undo: () => {
+  snack(k === 'main' ? 'Notepad cleared' : /^mt:/.test(k) ? 'Meeting notes cleared' : nameOf(k) + ' notes cleared', {undo: () => {
     restoreText(k, cur => ({value: cur.trim() ? before.replace(/\s+$/, '') + '\n' + cur : before, at: null}));
     render();
   }});
@@ -3856,7 +4666,8 @@ const isField = t => t && (t.tagName === 'TEXTAREA' || t.tagName === 'INPUT' || 
 
 /* what still works while the board is read-only (or not yet loaded): looking, not changing */
 const RO_OK = new Set(['theme', 'page', 'back', 'jump', 'jumpitem', 'filter', 'filterall', 'hidedone', 'doneopen',
-  'fullpage', 'clearq', 'snackact', 'compclose', 'arrdone', 'filecancel', 'savecancel', 'sfcancel']);
+  'fullpage', 'clearq', 'snackact', 'compclose', 'arrdone', 'filecancel', 'savecancel', 'sfcancel',
+  'meeting', 'meetings', 'mtback', 'pagemeet', 'mdoneopen', 'clearmq']);
 document.addEventListener('click', e => {
   const t = e.target;
   if (!(t instanceof Element)) return;
@@ -3908,6 +4719,7 @@ document.addEventListener('click', e => {
       else if (scope){
         S.footKind[scope] = k;
         $$('.foot .kw', host).forEach(b => b.setAttribute('aria-pressed', String(b.dataset.kind === k)));
+        paintDues();   // Deadline is offered for a to do or a to print
         const ta = $('textarea[data-comp]', host);
         if (ta) ta.focus({preventScroll: true});
       }
@@ -3938,6 +4750,44 @@ document.addEventListener('click', e => {
     case 'doneopen': {
       if (S.doneOpen.has(S.page)) S.doneOpen.delete(S.page); else S.doneOpen.add(S.page);
       render({flip: true}); dirty = false;
+      break;
+    }
+    case 'mdoneopen': {
+      if (S.mdOpen.has(S.mid)) S.mdOpen.delete(S.mid); else S.mdOpen.add(S.mid);
+      render({flip: true}); dirty = false;
+      break;
+    }
+    case 'meeting': if (dirty){ render(); dirty = false; } openMeeting(actEl.dataset.id, {byKey: e.detail === 0}); break;
+    case 'meetings': if (dirty){ render(); dirty = false; } openMeetList({byKey: e.detail === 0}); break;
+    case 'newmeeting': {
+      if (dirty){ render(); dirty = false; }
+      // for the show or section it was started from: a notes page's box says which; the Meetings
+      // page, what it is showing; the main page, what it is showing (else General)
+      const s = actEl.dataset.scope || (S.ml && !S.mid ? S.mf : !S.page && !S.mid ? S.filter : 'me');
+      newMeeting(s === 'all' ? 'me' : s);
+      break;
+    }
+    case 'mtback': mtBack(); break;
+    case 'mtdelete': deleteMeeting(S.mid); break;
+    case 'pagemeet': if (dirty){ render(); dirty = false; } openPage(actEl.dataset.scope || scope, {byKey: e.detail === 0, to: 'meet'}); break;
+    case 'clearmq': S.mq = ''; $('#mlQ').value = ''; $('#mlQx').hidden = true; renderMeetList(); $('#mlQ').focus(); break;
+    case 'duetoggle': {
+      const k = actEl.dataset.due;
+      if (!k) break;
+      // shut, the field forgets its day: what is hidden is never quietly given to the next item
+      if (S.dueOpen.has(k) || S.due[k]){ S.dueOpen.delete(k); delete S.due[k]; } else S.dueOpen.add(k);
+      paintDues();
+      break;
+    }
+    case 'dueq': {
+      const row = actEl.closest('.dl-row'), k = row ? row.dataset.due : null;
+      if (!k) break;
+      applyDue(k, dueFor(actEl.dataset.q));
+      // Clear shuts an add field's row: focus goes back to its "Deadline"
+      if (!/^i:/.test(k) && document.activeElement === actEl && !actEl.getClientRects().length){
+        const tg = row.parentElement.querySelector('.dl-t');
+        if (tg) tg.focus({preventScroll: true});
+      }
       break;
     }
     case 'fileline': if (!isDis(actEl)){ if (P.file) closeFile(P); else openFile(P, e.detail === 0); } break;
@@ -3984,9 +4834,10 @@ document.addEventListener('click', e => {
   if (dirty) render();
 });
 
-// keep the caret in the field when a kind word, an add button, a pad action or Full page is pressed
+// keep the caret in the field when a kind word, an add button, a pad action, Full page, Deadline or
+// one of its quick choices is pressed
 document.addEventListener('mousedown', e => {
-  const t = e.target instanceof Element ? e.target.closest('.kw,.add,.comp-add,.np-acts .act,.np-fp') : null;
+  const t = e.target instanceof Element ? e.target.closest('.kw,.add,.comp-add,.np-acts .act,.np-fp,.dl-t,.dl-q') : null;
   if (t) e.preventDefault();
 });
 
@@ -4006,11 +4857,24 @@ document.addEventListener('keydown', e => {
     if (esc && (P.file || P.save)){ e.preventDefault(); closeFile(P); closeSave(P); }
     else if (esc && FP.on && FP.P === P){ e.preventDefault(); exitFull({how: 'esc'}); }
     else if (esc && armed && S.page && P === pads.page){ e.preventDefault(); back(); }
+    else if (esc && armed && S.mid && P === pads.meet){ e.preventDefault(); mtBack(); }
     return;
   }
   if (t.id === 'sfName'){
     if (enter){ e.preventDefault(); sfSubmit(); }
     else if (e.key === 'Escape'){ e.preventDefault(); closeSecForm(); }
+    return;
+  }
+  // a meeting's own fields: Return (in a text field) or Escape puts the field down; the next
+  // Escape leaves the meeting
+  if (t.classList && t.classList.contains('mt-f')){
+    if (esc || (enter && t.tagName === 'INPUT' && t.type === 'text')){ e.preventDefault(); t.blur(); }
+    return;
+  }
+  // the Meetings page's search: Escape clears it, then puts it down
+  if (t.id === 'mlQ' && esc){
+    e.preventDefault();
+    if (t.value){ S.mq = ''; t.value = ''; $('#mlQx').hidden = true; renderMeetList(); } else t.blur();
     return;
   }
   if (e.key === 'Escape' && SF.o && SF.el.contains(t)){ e.preventDefault(); closeSecForm(); return; }
@@ -4044,7 +4908,7 @@ document.addEventListener('keydown', e => {
     return;
   }
   // Alt+↑ / Alt+↓ on an item moves it one place in its list; on a cover, the card among the cards
-  if (SYNC.loaded && e.altKey && !e.ctrlKey && !e.metaKey && (e.key === 'ArrowUp' || e.key === 'ArrowDown') && !isField(t) && !FP.on && t.closest){
+  if (SYNC.loaded && e.altKey && !e.ctrlKey && !e.metaKey && (e.key === 'ArrowUp' || e.key === 'ArrowDown') && !isField(t) && !FP.on && !S.mid && t.closest){
     const dir = e.key === 'ArrowUp' ? -1 : 1;
     const row = t.closest('.it[data-id]');
     if (row && !row.classList.contains('done')){ e.preventDefault(); moveItemBy(row.dataset.id, dir); return; }
@@ -4058,8 +4922,13 @@ document.addEventListener('keydown', e => {
     return;
   }
   if (e.key === 'Escape' && S.openId){ closeOpen(); render(); return; }
+  if (e.key === 'Escape' && (S.mid || S.ml) && !isField(t)){ e.preventDefault(); mtBack(); return; }
   if (e.key === 'Escape' && S.page && !isField(t)){ e.preventDefault(); back(); return; }
-  if (e.key === '/' && !isField(t) && !S.page && !FP.on && !S.arr){ e.preventDefault(); $('#q').focus(); return; }
+  if (e.key === '/' && !isField(t) && !FP.on && !S.arr){
+    // the Meetings page's own search there; the toolbar's on the main page
+    if (S.ml && !S.mid){ e.preventDefault(); $('#mlQ').focus(); return; }
+    if (!S.page && !S.mid){ e.preventDefault(); $('#q').focus(); return; }
+  }
   if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'z' && !isField(t) && snackUndo){ e.preventDefault(); doUndo(); }
 });
 
@@ -4067,7 +4936,7 @@ document.addEventListener('pointerdown', () => { FP.esc = false; }, true);
 
 document.addEventListener('beforeinput', e => {
   // nothing is typed into the board until it has loaded (read-only)
-  if (!SYNC.loaded && e.target.tagName === 'TEXTAREA'){ e.preventDefault(); return; }
+  if (!SYNC.loaded && (e.target.tagName === 'TEXTAREA' || (e.target.classList && e.target.classList.contains('mt-f')))){ e.preventDefault(); return; }
   if (e.target.classList && e.target.classList.contains('np-ta')) padBreak(e);
 });
 
@@ -4084,6 +4953,18 @@ document.addEventListener('input', e => {
     commitSoon(PAD_WAIT);
     return;
   }
+  // a meeting's title and attendees save as they are typed (the page is redrawn when the field is put down)
+  if (t.id === 'mtTitle' || t.id === 'mtWho'){
+    const m = meetOf(S.mid);
+    if (!m || !SYNC.loaded) return;
+    if (t.id === 'mtTitle'){ m.title = t.value; document.title = meetTitle(m) + ' — Versa'; }
+    else m.who = t.value;
+    SYNC.typed = true;
+    paintSync();
+    commitSoon(PAD_WAIT);
+    return;
+  }
+  if (t.id === 'mlQ'){ S.mq = t.value; $('#mlQx').hidden = !t.value; renderMeetList(); return; }
   if (t.id === 'topText' || t.dataset.comp !== undefined) syncAdd(t);
   if (t.id === 'q'){
     S.q = t.value;
@@ -4096,9 +4977,46 @@ document.addEventListener('input', e => {
 document.addEventListener('change', e => {
   const t = e.target;
   const isNew = t.value === '__new';
+  // the Meetings page's Showing (it only looks, so it works read-only too)
+  if (t.id === 'mlSel'){ S.mf = t.value; renderMeetList(); return; }
   // read-only: the Showing picker still shows; nothing else changes anything
   if (!SYNC.loaded){
     if (t.classList.contains('fsel')){ if (isNew){ t.value = S.filter; fitSelect(t); } else setFilter(t.value); }
+    return;
+  }
+  // a meeting's details: what it is for (and "New section…"), its day and time, its title and attendees
+  if (t.id === 'mtFor'){
+    const id = S.mid, m = meetOf(id);
+    if (!m) return;
+    if (isNew){
+      t.value = m.scope; fitSelect(t);
+      openSecForm({slot: 'mfor', back: t, onCreate: s => setMeetScope(id, s)});
+      return;
+    }
+    setMeetScope(id, t.value);
+    return;
+  }
+  if (t.id === 'mtDate' || t.id === 'mtTime'){
+    const m = meetOf(S.mid);
+    if (!m) return;
+    if (t.id === 'mtDate') m.date = isDay(t.value) ? t.value : '';
+    else m.time = /^\d{2}:\d{2}/.test(t.value) ? t.value.slice(0, 5) : '';
+    render();
+    return;
+  }
+  if (t.id === 'mtTitle' || t.id === 'mtWho'){
+    const m = meetOf(S.mid);
+    if (!m) return;
+    const v = t.value.replace(/\s+/g, ' ').trim();
+    if (t.id === 'mtTitle') m.title = v; else m.who = v;
+    if (t.value !== v) t.value = v;
+    render();
+    return;
+  }
+  // a Deadline field: an open item's, or an add field's for its next item
+  if (t.classList.contains('dl-in')){
+    const row = t.closest('.dl-row');
+    if (row && row.dataset.due) applyDue(row.dataset.due, t.value, true);
     return;
   }
   if (t.id === 'topDest'){
@@ -4180,7 +5098,7 @@ const relayout = () => {
 [mq4, mq3, mq2, mqWide].forEach(m => m.addEventListener ? m.addEventListener('change', relayout) : m.addListener(relayout));
 let rsT = 0;
 // the number of columns follows the window's width, not just the four breakpoints above
-window.addEventListener('resize', () => { cancelAnimationFrame(rsT); rsT = requestAnimationFrame(() => { if (colsNow() !== S.cols) relayout(); foldFilters(); if (S.page) sizePad(); }); fpFitSoon(); });
+window.addEventListener('resize', () => { cancelAnimationFrame(rsT); rsT = requestAnimationFrame(() => { if (colsNow() !== S.cols) relayout(); foldFilters(); if (S.page || S.mid) sizePad(); }); fpFitSoon(); });
 // full page follows what is visible: a phone's keyboard opening or closing, or the page panning under it
 if (window.visualViewport){
   visualViewport.addEventListener('resize', fpFitSoon);
@@ -4213,10 +5131,14 @@ const toISO = d => d ? (d instanceof Date ? d.toISOString() : String(d)) : null;
 const recItem = it => {
   const r = {id: it.id, kind: it.kind, text: String(it.text == null ? '' : it.text), scope: it.scope,
     pinned: !!it.pinned, done: !!it.done, order: Number.isFinite(+it.order) ? +it.order : 0, createdAt: it.createdAt || null};
+  if (it.meeting) r.meeting = it.meeting;
+  if (it.due) r.due = it.due;
   if (it.done && it.doneAt) r.doneAt = it.doneAt;
   return r;
 };
 const recSec = x => ({id: x.id, name: x.name, tint: x.tint});
+const recMeet = m => ({id: m.id, title: String(m.title == null ? '' : m.title), date: m.date || '', time: m.time || '',
+  who: String(m.who == null ? '' : m.who), scope: m.scope, text: String(m.text == null ? '' : m.text)});
 const shownList = () => Array.from(S.shown).filter(isJob).sort();
 const namesSorted = () => { const o = {}; Object.keys(NAMES).sort().forEach(k => { o[k] = NAMES[k]; }); return o; };
 /* what each record said when last stamped (or read): anything that differs now is an edit made here */
@@ -4248,6 +5170,12 @@ function stamp(){
     check('i:' + it.id, JSON.stringify(recItem(it)), t => { it.updatedAt = t; TOMBS.items.delete(it.id); });
   });
   SECTIONS.forEach(x => check('s:' + x.id, JSON.stringify(recSec(x)), t => { x.updatedAt = t; TOMBS.sections.delete(x.id); }));
+  MEETINGS.forEach(m => {
+    // a new meeting with nothing on it yet is not a record until something is (so a stray tap on
+    // New meeting saves nothing); once it has been one, it stays one
+    if (m.fresh && !LAST.has('m:' + m.id) && !m.title.trim() && !m.who.trim() && !m.text.trim() && !items.some(i => i.meeting === m.id)) return;
+    check('m:' + m.id, JSON.stringify(recMeet(m)), t => { m.updatedAt = t; TOMBS.meetings.delete(m.id); });
+  });
   Object.keys(PAGES).forEach(s => {
     const p = PAGES[s], k = 'p:' + s, text = String(p.text == null ? '' : p.text);
     // a page never written on is not a record (and an empty one never undoes a deletion)
@@ -4263,6 +5191,7 @@ function stamp(){
     const id = k.slice(2), t = now();
     if (k.startsWith('i:')) TOMBS.items.set(id, {id, deleted: true, updatedAt: t});
     else if (k.startsWith('s:')) TOMBS.sections.set(id, {id, deleted: true, updatedAt: t});
+    else if (k.startsWith('m:')) TOMBS.meetings.set(id, {id, deleted: true, updatedAt: t});
     else if (k.startsWith('p:')) TOMBS.pages.set(id, {deleted: true, updatedAt: t});
     else return;
     LAST.set(k, TOMB);
@@ -4277,11 +5206,14 @@ function stamp(){
 function buildDoc(forSave){
   if (forSave){
     const cut = Date.now() - NotesCore.TOMB_DAYS * 864e5, old = r => NotesCore.tms(r.updatedAt) < cut;
-    [TOMBS.items, TOMBS.sections, TOMBS.pages].forEach(m => m.forEach((r, k) => { if (old(r)) m.delete(k); }));
+    [TOMBS.items, TOMBS.sections, TOMBS.pages, TOMBS.meetings].forEach(m => m.forEach((r, k) => { if (old(r)) m.delete(k); }));
   }
-  const doc = {v: 1,
+  const doc = {v: NotesCore.V,
     items: items.map(it => Object.assign(recItem(it), {updatedAt: it.updatedAt || null})).concat(Array.from(TOMBS.items.values())),
     sections: SECTIONS.map(x => Object.assign(recSec(x), {updatedAt: x.updatedAt || null})).concat(Array.from(TOMBS.sections.values())),
+    // (a new meeting with nothing on it yet is not a record: stamp() has not taken it)
+    meetings: MEETINGS.filter(m => { const c = LAST.get('m:' + m.id); return c != null && c !== TOMB; })
+      .map(m => Object.assign(recMeet(m), {edited: toISO(m.edited), updatedAt: m.updatedAt || null})).concat(Array.from(TOMBS.meetings.values())),
     pages: {},
     notepad: {text: MAINPAD.text, updatedAt: MAINPAD.updatedAt || null},
     cardOrder: {list: CARD_ORDER.slice(), updatedAt: META.cardOrderAt},
@@ -4322,6 +5254,21 @@ function applyDoc(doc){
     ns.push(paint(x, r.tint));
   });
   SECTIONS.splice(0, SECTIONS.length, ...ns);
+  const mts = new Map(MEETINGS.map(m => [m.id, m])), nm = [], got = new Set();
+  TOMBS.meetings.clear();
+  d.meetings.forEach(r => {
+    seen(r.updatedAt);
+    got.add(r.id);
+    if (r.deleted){ TOMBS.meetings.set(r.id, r); return; }
+    const m = mts.get(r.id) || {};
+    Object.keys(m).forEach(k => { delete m[k]; });
+    Object.assign(m, r);
+    m.edited = r.edited ? new Date(r.edited) : null;
+    nm.push(m);
+  });
+  // a new meeting with nothing on it yet is not a record, so no board has it: it stays open here
+  MEETINGS.forEach(m => { if (m.fresh && !got.has(m.id)) nm.push(m); });
+  MEETINGS.splice(0, MEETINGS.length, ...nm);
   TOMBS.pages.clear();
   const live = new Set();
   Object.keys(d.pages).forEach(s => {
@@ -4347,6 +5294,7 @@ function applyDoc(doc){
   LAST.clear();
   d.items.forEach(r => LAST.set('i:' + r.id, r.deleted ? TOMB : JSON.stringify(recItem(r))));
   d.sections.forEach(r => LAST.set('s:' + r.id, r.deleted ? TOMB : JSON.stringify(recSec(r))));
+  d.meetings.forEach(r => LAST.set('m:' + r.id, r.deleted ? TOMB : JSON.stringify(recMeet(r))));
   Object.keys(d.pages).forEach(s => LAST.set('p:' + s, d.pages[s].deleted ? TOMB : JSON.stringify({text: d.pages[s].text})));
   LAST.set('notepad', MAINPAD.text);
   LAST.set('cardOrder', CARD_ORDER.join('\n'));
@@ -4355,6 +5303,8 @@ function applyDoc(doc){
   // an item whose section has gone (deleted on one device as it was moved there on another), or
   // whose place is unreadable, comes to General; the next save records the move
   items.forEach(it => { if (!(it.scope === 'me' || isJob(it.scope) || secOf(it.scope))) it.scope = 'me'; });
+  // and a meeting whose section has gone is for General
+  MEETINGS.forEach(m => { if (!(m.scope === 'me' || isJob(m.scope) || secOf(m.scope))) m.scope = 'me'; });
   // likewise a section's notes page written on one device as the section was deleted on another:
   // the lines General's page does not already have come to it under "From <section>" (nothing is
   // left on a page no card can open); the next save records both
@@ -4376,13 +5326,14 @@ function resetWorking(){
   if (S.openId) S.openId = null;
   items.splice(0, items.length);
   SECTIONS.splice(0, SECTIONS.length);
+  MEETINGS.splice(0, MEETINGS.length);
   Object.keys(PAGES).forEach(s => { delete PAGES[s]; });
   Object.assign(MAINPAD, {text: '', edited: null, updatedAt: null});
   CARD_ORDER.splice(0, CARD_ORDER.length);
   S.shown = new Set();
   NAMES = {};
   META.cardOrderAt = META.shownAt = null;
-  TOMBS.items.clear(); TOMBS.sections.clear(); TOMBS.pages.clear();
+  TOMBS.items.clear(); TOMBS.sections.clear(); TOMBS.pages.clear(); TOMBS.meetings.clear();
   LAST.clear();
 }
 
@@ -4606,8 +5557,9 @@ function mergeRemote(row){
   const value = row.value;
   // what has been typed here is stamped (and kept in this browser) before anything else happens
   stamp();
-  if (value && typeof value === 'object' && (+value.v || 0) > 1){
-    // saved by a newer version of this page: stop, rather than save over what it cannot read
+  if (value && typeof value === 'object' && (+value.v || 0) > NotesCore.V){
+    // saved by a newer version of this page: stop, rather than save over what it cannot read (a copy
+    // of the page that only knows v1 stops here at a v2 board, so its meetings are never dropped)
     SYNC.loaded = false;
     loadFailed(Object.assign(new Error('newer'), {newer: true}));
     throw Object.assign(new Error('newer'), {refused: true});
@@ -4643,10 +5595,12 @@ function afterRemote(){
     else if (ta && ta.value === S.openOrig && it.text !== ta.value){ ta.value = it.text; S.openOrig = it.text; autosize(ta); }
   }
   if (S.page && !validScope(S.page)) leaveNow();
+  // the meeting open here was deleted on another device: back to where it was opened from
+  else if (S.mid && !meetOf(S.mid)){ snack('A meeting open here was deleted on another device'); mtBack(); }
   if (S.filter !== 'all' && !validScope(S.filter)) S.filter = 'all';
   refreshPickers();
-  [pads.main, pads.page].forEach(P => {
-    if (P.key === 'page' && !S.page) return;
+  [pads.main, pads.page, pads.meet].forEach(P => {
+    if ((P.key === 'page' && !S.page) || (P.key === 'meet' && !meetOf(S.mid))) return;
     const want = padStore(P).text;
     if (P.ta.value !== want) padReplace(P, want);
   });
@@ -4773,7 +5727,8 @@ async function loadBoard(){
   SYNC.loading = false;
   const value = row ? row.value : null;
   if (row && (!value || typeof value !== 'object' || Array.isArray(value))){ loadFailed(new Error('The saved board is not readable')); return; }
-  if (row && (+value.v || 0) > 1){ loadFailed(Object.assign(new Error('newer'), {newer: true})); return; }
+  // a v1 or v2 board is read (v1 comes up with no meetings); a later one is never written over
+  if (row && (+value.v || 0) > NotesCore.V){ loadFailed(Object.assign(new Error('newer'), {newer: true})); return; }
   const remote = NotesCore.normDoc(value);
   // unsaved changes a closed tab left in this browser, merged in by when they were made
   const pend = readPendings();
@@ -4828,6 +5783,7 @@ function afterLoad(){
   refreshPickers();
   padLoad(pads.main);
   if (S.page){ if (validScope(S.page)) padLoad(pads.page); else leaveNow(); }
+  if (S.mid){ if (meetOf(S.mid)) padLoad(pads.meet); else mtBack(); }
   planKey = '';
   render({remote: true});
   paintSync();
@@ -4838,22 +5794,25 @@ function afterLoad(){
     (wait ? Promise.race([JOB.ready, sleep(6000)]) : Promise.resolve()).then(routeInitial);
   }
 }
-/* a reload or a shared link on a notes page opens it straight away, with the main page behind it,
-   and one on a full page (#notepad/full, #show-3/full) opens that pad in full page on top */
+/* a reload or a shared link on a notes page, the Meetings page or a meeting opens it straight away,
+   with the main page behind it, and one on a full page (#notepad/full, #show-3/full,
+   #meeting-<id>/full) opens that pad in full page on top */
 function routeInitial(){
-  const r0 = routeOfHash(HASH0), s0 = r0.v !== 'home' ? r0.v : null;
+  const t = routeTarget(routeOfHash(HASH0)) || HOME, on = t.v !== 'home';
   H.set('replaceState', 'home', 0);
-  if (s0 && S.page !== s0){
+  if (on && (S.page !== t.page || S.ml !== t.ml || S.mid !== t.mid)){
     document.documentElement.classList.add('instant');
-    S.page = s0;
-    paintPageChrome(s0);
-    padLoad(pads.page);
-    if (H.set('pushState', s0, 1)) S.depth = 1;
+    if (t.page){ S.page = t.page; paintPageChrome(t.page); padLoad(pads.page); }
+    S.ml = t.ml;
+    S.mid = t.mid;
+    if (t.mid) padLoad(pads.meet);
+    else if (t.ml) document.title = 'Meetings — Versa';
+    if (H.set('pushState', t.v, 1)) S.depth = 1;
   }
   applyLayer();
   render({remote: true});
-  if (r0.full) enterFull(s0 ? pads.page : pads.main, {instant: true});
-  if (s0) requestAnimationFrame(() => requestAnimationFrame(() => document.documentElement.classList.remove('instant')));
+  if (t.full) enterFull(t.mid ? pads.meet : t.page ? pads.page : pads.main, {instant: true});
+  if (on) requestAnimationFrame(() => requestAnimationFrame(() => document.documentElement.classList.remove('instant')));
 }
 
 /* ── the gate: loading, signing in, an account that may not, a failed load ── */
@@ -5116,6 +6075,11 @@ window.addEventListener('storage', e => { if (MODE === 'test' && e.key === TEST_
 /* ── boot ──────────────────────────────────────────────────────────────── */
 makePad($('#np'));
 makePad($('#pgPad'));
+makePad($('#mpPad'));
+// the add fields' Deadline rows: the composer's, a notes page's and a meeting's (a card makes its own)
+$('#comp .comp-row').insertAdjacentHTML('afterend', dueRowHTML('top', '', false, true));
+$('#pgAdd .opts > div').insertAdjacentHTML('beforeend', dueRowHTML('p:', '', false, true));
+$('#mpAdd .opts > div').insertAdjacentHTML('beforeend', dueRowHTML('m:', '', false, true));
 $('#topKinds').innerHTML = kindButtons(S.topKind);
 $('#pgAdd .kinds').innerHTML = kindButtons('note');
 refreshPickers();
