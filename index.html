@@ -1159,6 +1159,10 @@ html[data-theme="soft"] .jobs-grid,html[data-theme="softdark"] .jobs-grid{
   font-family:var(--font);transition:border-color .12s;
 }
 .vs-arch:hover{border-color:var(--border-l)}
+/* a previous job on the Jobs page: the same box, smaller */
+.vs-arch.vs-prev{padding:9px 12px 10px;border-radius:12px}
+.vs-prev .vs-arch-name{font-size:13.5px}
+.vs-prev .vs-arch-sub{font-size:11px;margin-top:2px}
 .vs-arch-name{font-size:16px;font-weight:800;letter-spacing:-.035em;color:var(--ink);
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .vs-arch-sub{font-size:11.5px;font-weight:500;color:var(--muted);margin-top:4px}
@@ -1465,6 +1469,19 @@ html[data-theme="soft"] .vs-grp-item .vs-kit-badge,html[data-theme="softdark"] .
   object-fit:contain;object-position:left bottom;
 }
 .vs-job-logo.vs-invert{filter:invert(1)}
+/* previous jobs on the Jobs page: the same cards as the current ones, smaller */
+html[data-theme="soft"] .jobs-grid.vs-prevgrid,html[data-theme="softdark"] .jobs-grid.vs-prevgrid{
+  grid-template-columns:repeat(auto-fill,minmax(150px,1fr))!important;gap:8px;margin-top:0;
+}
+.vs-prevgrid .vs-job{min-height:112px;padding:10px 11px 11px;border-radius:14px}
+.vs-prevgrid .vs-job-top{gap:6px}
+.vs-prevgrid .vs-mark,.vs-prevgrid .vs-month{font-size:10.5px}
+.vs-prevgrid .vs-go{width:22px;height:22px;font-size:10.5px}
+.vs-prevgrid .vs-job-name{font-size:15px;line-height:1.02}
+.vs-prevgrid .vs-job-sub{margin-top:4px;font-size:10px}
+.vs-prevgrid .vs-job-logo{max-height:54px}
+.vs-prevgrid .vs-job-mark{height:34px}
+.vs-prevgrid .vs-job-titlerow{gap:7px}
 
 /* ── typeface options (soft theme only) ───────────────────────────────── */
 html[data-theme="soft"][data-font="archivo"],html[data-theme="softdark"][data-font="archivo"]{
@@ -2541,6 +2558,116 @@ html[data-theme="softdark"] #kitPageTitle + div{margin-left:auto}
 .vsk-un{white-space:nowrap}
 .vsk-ut{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;font-weight:700;color:var(--muted)}
 .vsk-none{padding:34px 10px;text-align:center;font-size:13.5px;font-weight:600;color:var(--muted)}
+/* ── KIT ONE PAGE (begin) ── one line per model, Versa's own units inside it */
+.vko-sw{display:flex;align-items:center;gap:6px;margin:0 0 10px}
+.vko-sw button{background:var(--surface);border:1.5px solid var(--field-edge,rgba(13,13,13,.45));border-radius:7px;padding:5px 12px;
+  font-family:var(--font);font-size:12.5px;font-weight:800;letter-spacing:-.01em;color:var(--ink);cursor:pointer}
+.vko-sw button:hover{border-color:var(--field-edge-hi,rgba(13,13,13,.75))}
+.vko-sw button.on{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.vko-sw .vko-gap{flex:1;text-align:right;font-size:11.5px;font-weight:600;color:var(--muted)}
+/* the rail's other views, as plain lines under the categories */
+.vko-more{margin-top:12px;border-top:1px solid var(--border,rgba(13,13,13,.1))}
+.vko-more .vsk-rs{margin:10px 0 2px 4px}
+.vsk-r.vko-q{background:none;border:0;border-radius:5px;margin:0;padding:2px 4px;font-size:11.5px;font-weight:600;color:var(--subtle,#4a4a4a)}
+.vsk-r.vko-q em{font-size:10px}
+.vsk-r.vko-q:hover{background:var(--surface-2);color:var(--ink)}
+.vsk-r.vko-q.on{background:var(--surface-2);color:var(--ink);font-weight:800}
+.vsk-r.vko-q.on em{color:var(--ink)}
+.vko-sw .vko-add{background:none;border:0;border-radius:0;padding:0;margin-left:12px;font-weight:700;color:var(--muted)}
+.vko-sw .vko-add:hover{border:0;color:var(--ink);text-decoration:underline}
+.vko-box{background:var(--surface);border-radius:12px;padding:2px 0 6px;overflow:hidden}
+.vko-hd,.vko-row{display:grid;grid-template-columns:40px minmax(150px,1.5fr) 100px minmax(90px,1fr) 128px minmax(110px,1.2fr) 108px;
+  gap:10px;align-items:center;padding:0 14px}
+.vko-pics .vko-hd,.vko-pics .vko-row{grid-template-columns:45px 40px minmax(150px,1.5fr) 100px minmax(90px,1fr) 128px minmax(110px,1.2fr) 108px}
+.vko-num{font:600 11px ui-monospace,Menlo,monospace;color:var(--muted)}
+.vko-hd{font-size:9.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);
+  padding-top:9px;padding-bottom:6px;border-bottom:1px solid var(--border,rgba(13,13,13,.1))}
+.vko-hd span:last-child,.vko-row .vko-has{text-align:right}
+.vko-row{min-height:32px;width:100%;border:0;border-bottom:1px solid var(--border,rgba(13,13,13,.1));background:none;
+  font-family:var(--font);font-size:13px;color:var(--ink);text-align:left;cursor:pointer}
+.vko-row:hover{background:var(--surface-2)}
+.vko-row>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vko-th{display:block;width:45px;height:30px;border-radius:4px;overflow:hidden}
+.vko-th img{width:100%;height:100%;object-fit:contain;display:block;background:#fff}
+.vko-nm{font-weight:700}
+.vko-nm i{display:inline-block;width:13px;font-style:normal;font-size:10px;color:var(--muted)}
+.vko-dim{font-size:12.5px;color:var(--subtle,#4a4a4a)}
+.vko-sc{font-size:12px;color:var(--muted)}
+.vko-has b{font-size:14px;font-weight:800;font-variant-numeric:tabular-nums}
+.vko-has small{font-size:11px;font-weight:600;color:var(--muted);margin-right:7px}
+.vko-row.open{background:var(--surface-2);border-bottom-color:transparent}
+.vko-row.open .vko-nm i{color:var(--ink)}
+/* an opened model: what it is on the left, Versa's own on the right */
+.vko-in{display:grid;grid-template-columns:minmax(300px,1fr) minmax(0,1.2fr);gap:12px;background:var(--surface-2);
+  padding:4px 14px 14px;border-bottom:1px solid var(--border,rgba(13,13,13,.1))}
+.vko-pn{background:var(--surface);border-radius:10px;padding:11px 13px 12px;min-width:0}
+.vko-pt{display:flex;align-items:baseline;gap:9px;font-size:9.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:8px}
+.vko-pt b{font-size:13px;letter-spacing:-.01em;color:var(--ink)}
+.vko-pt span{margin-left:auto;letter-spacing:0;text-transform:none;font-size:11.5px;font-weight:600}
+/* photos down the left, the details beside them */
+.vko-abw{display:flex;gap:11px;align-items:flex-start}
+.vko-ph{flex:0 0 92px;display:flex;flex-direction:column;gap:5px}
+.vko-ph:empty{display:none}
+.vko-abr{flex:1;min-width:0}
+.vko-p{position:relative;display:block;width:92px;height:64px;border-radius:8px;border:1.5px solid var(--field-edge,rgba(13,13,13,.45));
+  background:#fff;overflow:hidden}
+.vko-p img{width:100%;height:100%;object-fit:contain;display:block}
+.vko-p.vko-pbad img{display:none}
+.vko-px{position:absolute;top:2px;right:2px;width:17px;height:17px;border:0;border-radius:4px;background:rgba(13,13,13,.62);color:#fff;
+  font-size:12px;line-height:17px;padding:0;cursor:pointer;opacity:0}
+.vko-p:hover .vko-px{opacity:1}
+.vko-pnew{display:flex;align-items:center;justify-content:center;text-align:center;border-style:dashed;
+  border-color:var(--muted);background:none;font-size:11.5px;font-weight:700;color:var(--muted);cursor:pointer}
+.vko-pnew:hover{color:var(--ink);border-color:var(--ink)}
+.vko-pnew input{display:none}
+.vko-lk{background:none;border:0;padding:0;font-family:var(--font);font-size:11px;font-weight:700;color:var(--muted);
+  cursor:pointer;text-align:left;text-decoration:underline}
+.vko-lk:hover{color:var(--ink)}
+.vko-rm{display:block;margin-top:9px}
+.vko-note{font-size:12px;color:var(--muted);margin:8px 0 6px}
+/* the details: small boxes side by side, each only as wide as what is in it */
+.vko-ab{display:flex;flex-wrap:wrap;gap:6px}
+.vko-f{display:block;border:1.5px solid var(--field-edge,rgba(13,13,13,.45));border-radius:8px;background:var(--surface);
+  padding:4px 9px 5px;max-width:100%;cursor:text}
+.vko-f:focus-within{border-color:var(--ink)}
+.vko-f b{display:block;font-size:8.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:1px}
+.vko-f input,.vko-f select,.vko-f textarea,.vko-f span{display:block;border:0;outline:0;background:none;padding:0;margin:0;
+  font-family:var(--font);font-size:13px;font-weight:700;line-height:1.3;color:var(--ink);box-shadow:none;border-radius:0}
+.vko-f input,.vko-f textarea{field-sizing:content;min-width:34px;max-width:100%}
+.vko-f select{appearance:none;-webkit-appearance:none;field-sizing:content;cursor:pointer;max-width:100%}
+.vko-f textarea{resize:none;overflow:hidden}
+.vko-f input::placeholder,.vko-f textarea::placeholder{color:var(--muted);font-weight:500}
+.vko-f.vko-t{max-width:250px}
+.vko-f.vko-t textarea{font-weight:500;font-size:12.5px;white-space:pre-wrap;overflow-wrap:anywhere;width:100%}
+.vko-f.vko-ro{cursor:default;background:var(--surface-2);border-color:var(--border-l,rgba(13,13,13,.16))}
+/* units: small tiles side by side */
+.vko-us{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:6px}
+.vko-u{display:block;min-height:54px;background:var(--surface);border:1.5px solid var(--field-edge,rgba(13,13,13,.45));border-radius:8px;
+  padding:6px 8px 7px;font-family:var(--font);color:var(--ink);text-align:left;cursor:pointer}
+.vko-u:hover{border-color:var(--ink)}
+.vko-u>span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vko-no{font-size:15px;font-weight:800;letter-spacing:-.03em;line-height:1.1}
+.vko-no i{float:right;font:600 10px ui-monospace,Menlo,monospace;letter-spacing:0;color:var(--muted);margin-top:3px}
+.vko-wh{font-size:11px;font-weight:600;color:var(--subtle,#4a4a4a);margin-top:1px}
+.vko-u .vko-st{display:flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;color:var(--muted);margin-top:2px}
+.vko-tg{font:600 10px ui-monospace,Menlo,monospace;color:var(--muted);margin-top:2px}
+.vko-unew{display:flex;align-items:center;justify-content:center;border-style:dashed;border-color:var(--muted);background:none;
+  font-size:12px;font-weight:700;color:var(--muted)}
+.vko-unew:hover{color:var(--ink)}
+@media (max-width:1000px){
+  .vko-hd,.vko-row{grid-template-columns:40px minmax(140px,1.5fr) 90px minmax(80px,1fr) 110px 100px}
+  .vko-pics .vko-hd,.vko-pics .vko-row{grid-template-columns:45px 40px minmax(140px,1.5fr) 90px minmax(80px,1fr) 110px 100px}
+  .vko-hd span:nth-last-child(2),.vko-row>span:nth-last-child(2){display:none}
+  .vko-in{grid-template-columns:1fr}
+}
+@media (max-width:640px){
+  .vko-hd{display:none}
+  .vko-row{grid-template-columns:40px 1fr 100px}
+  .vko-pics .vko-row{grid-template-columns:45px 40px 1fr 100px}
+  .vko-row>.vko-dim,.vko-row>.vko-sc{display:none}
+}
+/* ── KIT ONE PAGE (end) ── */
 @media (max-width:900px){
   #vsKitWrap{flex-direction:column}
   .vsk-rail{flex:none;width:100%;position:static;display:flex;flex-wrap:wrap;gap:4px}
@@ -2590,7 +2717,7 @@ html[data-theme="softdark"] #jdContent .jd-hodcard{display:block!important}
 .vsc-add{white-space:nowrap;font-size:12px;padding:7px 13px}
 .vsc-count{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
   color:var(--muted);margin:0 0 6px}
-.vsc-hd,.vsc-row{display:grid;grid-template-columns:1.4fr 130px 140px 1.4fr 1.4fr 22px;gap:9px;align-items:center}
+.vsc-hd,.vsc-row{display:grid;grid-template-columns:1.6fr 92px 128px 108px 122px 1.1fr 1.1fr 22px;gap:9px;align-items:center}
 .vsc-hd{font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
   color:var(--muted);padding:0 8px 5px;border-bottom:1px solid var(--field-edge)}
 .vsc-row{padding:2px 8px;border-bottom:1px solid var(--hairline,rgba(0,0,0,.06))}
@@ -2616,13 +2743,13 @@ html[data-theme="softdark"] #jdContent .jd-hodcard{display:block!important}
 .vsc-row:hover .vsc-grip{opacity:1}
 .vsc-grip:active{cursor:grabbing}
 /* the picture of a model, in a list where any model has one */
-.vsc-pics .vsc-hd,.vsc-pics .vsc-row{grid-template-columns:45px 1.4fr 130px 140px 1.4fr 1.4fr 22px}
+.vsc-pics .vsc-hd,.vsc-pics .vsc-row{grid-template-columns:45px 1.6fr 92px 128px 108px 122px 1.1fr 1.1fr 22px}
 .vsc-ph{display:block;width:45px;height:30px;border-radius:4px;overflow:hidden;background:#fff}
 .vsc-ph img{width:100%;height:100%;object-fit:contain;display:block}
 .vsc-ph-none{background:none}
 /* how many Versa owns: a column that is only there when the list has some */
-.vsc-own .vsc-hd,.vsc-own .vsc-row{grid-template-columns:1.4fr 46px 130px 140px 1.4fr 1.4fr 22px}
-.vsc-own.vsc-pics .vsc-hd,.vsc-own.vsc-pics .vsc-row{grid-template-columns:45px 1.4fr 46px 130px 140px 1.4fr 1.4fr 22px}
+.vsc-own .vsc-hd,.vsc-own .vsc-row{grid-template-columns:1.6fr 46px 92px 128px 108px 122px 1.1fr 1.1fr 22px}
+.vsc-own.vsc-pics .vsc-hd,.vsc-own.vsc-pics .vsc-row{grid-template-columns:45px 1.6fr 46px 92px 128px 108px 122px 1.1fr 1.1fr 22px}
 .vsc-ownh,.vsc-ownn{text-align:right}
 .vsc-ownn{font-size:13px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
 .vsc-railsec{font-size:9px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;
@@ -2793,6 +2920,158 @@ html[data-theme="softdark"] #jdContent .jd-hodcard{display:block!important}
   text-transform:uppercase;color:var(--faint,#b4b4b8);white-space:nowrap}
 .vsd-empty{font-size:13px;color:var(--muted);padding:6px 0}
 @media(max-width:820px){ .vsd-todo{grid-column:auto} }
+/* ── the dashboard, 4 Oct 2026 ────────────────────────────────────────────
+   Jobs as small squares, the last engineering report from each show, this
+   week from the planner, then what is outstanding and the to-do list. Small
+   tiles side by side inside boxes; each section takes its colour from the
+   sidebar. Everything is under .vsw, so nothing here reaches another page. */
+.vsw{max-width:1260px;font-size:13.5px;line-height:1.4;letter-spacing:-.011em;color:var(--ink);
+  --w-muted:#666666;--w-subtle:#4a4a4a;--w-tile:#f3f3f3;--w-tile-h:#eaeaea;--w-row:#f4f4f4;
+  --w-red:#9a3535;--w-red-t:#f2d3ce;--w-red-th:#eecbc5;--w-ntr:#376245;--w-str:#784c1a;
+  --w-jobs:#013D5A;--w-jobs-t:#cad7df;--w-jobs-th:#c5d2db;--w-jobs-row:#e8edf1;--w-jobs-l:#36525f;
+  --w-studio:#708C69;--w-studio-t:#d4decf;--w-studio-th:#cedac9;--w-studio-row:#eef2ec;--w-studio-l:#455b40;
+  --w-kit:#DA6B51;--w-kit-t:#f5d9d2;--w-kit-th:#f3d3cb;--w-kit-row:#faebe7;--w-kit-l:#8a4636;
+  --w-over:#5B5F8D;--w-over-t:#dcddee;--w-over-th:#d6d7ec;--w-over-row:#ededf6;--w-over-l:#4f5278}
+html[data-theme="softdark"] .vsw{
+  --w-muted:#8d8d95;--w-subtle:#c8c8cf;--w-tile:#232327;--w-tile-h:#262629;--w-row:#202024;
+  --w-red:#e58a82;--w-red-t:#3e2321;--w-red-th:#452825;--w-ntr:#7cc497;--w-str:#dcaa66;
+  --w-jobs:#8ba3b5;--w-jobs-t:#283541;--w-jobs-th:#2c3a47;--w-jobs-row:#24262a;--w-jobs-l:#a2b5c4;
+  --w-studio:#9db394;--w-studio-t:#2e3b2c;--w-studio-th:#334231;--w-studio-row:#252827;--w-studio-l:#b1c2a9;
+  --w-kit:#c99280;--w-kit-t:#3d3230;--w-kit-th:#433634;--w-kit-row:#2a2425;--w-kit-l:#d4a899;
+  --w-over:#9a9dc2;--w-over-t:#33343e;--w-over-th:#383944;--w-over-row:#25252c;--w-over-l:#aeb1ce}
+.vsw .s-jobs{--c:var(--w-jobs);--ct:var(--w-jobs-t);--cth:var(--w-jobs-th);--crow:var(--w-jobs-row);--cl:var(--w-jobs-l)}
+.vsw .s-studio{--c:var(--w-studio);--ct:var(--w-studio-t);--cth:var(--w-studio-th);--crow:var(--w-studio-row);--cl:var(--w-studio-l)}
+.vsw .s-kit{--c:var(--w-kit);--ct:var(--w-kit-t);--cth:var(--w-kit-th);--crow:var(--w-kit-row);--cl:var(--w-kit-l)}
+.vsw .s-overview{--c:var(--w-over);--ct:var(--w-over-t);--cth:var(--w-over-th);--crow:var(--w-over-row);--cl:var(--w-over-l);
+  --cn:var(--nav-overview,#c6c8e4)}
+.vsw button{font:inherit;color:inherit;letter-spacing:inherit;background:none;border:0;cursor:pointer;text-align:left}
+.vsw button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.vsw img{display:block}
+.vsw .vsw-sec,.vsw > .vsw-grid{margin-bottom:12px;min-width:0}
+/* a section's name sits on a line in its colour, with the way in on the right */
+.vsw .vsw-rule{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;padding:0 2px 4px;
+  margin-bottom:7px;border-bottom:1.5px solid var(--c)}
+.vsw .vsw-rule h2{font-size:14px;font-weight:700;letter-spacing:-.018em;line-height:1.25;color:var(--ink)}
+.vsw .vsw-rule h2 span{margin-left:8px;font-size:13px;font-weight:500;color:var(--w-muted);letter-spacing:-.011em}
+.vsw .vsw-rule button{font-size:12.5px;font-weight:600;color:var(--w-muted);padding:1px 6px;margin:-1px -6px;
+  border-radius:6px;white-space:nowrap}
+.vsw .vsw-rule button:hover{color:var(--ink)}
+.vsw .vsw-grid{display:grid;gap:8px;align-items:start}
+.vsw .vsw-grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+/* job tabs: small squares, one click to the job */
+.vsw .vsw-tabs{display:flex;flex-wrap:wrap;gap:8px}
+.vsw .vsw-tab{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+  flex:none;width:124px;height:116px;padding:10px 10px 26px;border-radius:10px;color:#fff;overflow:hidden;
+  text-align:center;transition:filter .15s}
+.vsw .vsw-tab:hover{filter:brightness(1.06) saturate(1.04)}
+html[data-theme="softdark"] .vsw .vsw-tab{box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
+.vsw .vsw-tab img{max-width:96px;max-height:40px;width:auto;height:auto;flex:none}
+.vsw .vsw-tab img.vsw-mark{width:62px;height:62px;max-width:none;max-height:none;object-fit:contain;
+  filter:drop-shadow(0 1px 2px rgba(0,0,0,.25))}
+.vsw .vsw-name{font-size:14px;font-weight:800;letter-spacing:-.02em;line-height:1.2;min-width:0}
+.vsw .vsw-cap{position:absolute;left:8px;right:8px;bottom:8px;font-size:11.5px;font-weight:600;line-height:1.3;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* boxes, and the small tiles inside them: a label with its value underneath */
+.vsw .vsw-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 12px 12px;min-width:0}
+.vsw .vsw-box.alert{border-color:var(--w-red)}
+.vsw .vsw-bh{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.vsw .vsw-bh h3{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:700;color:var(--ink)}
+.vsw .vsw-bh h3 i{flex:none;width:14px;height:14px;border-radius:4px}
+/* the headline of a planner box is a block in the section's colour, as a row
+   of the sidebar is; in a week grid it sits in the corner, over the row names */
+.vsw .vsw-hd,.vsw .vsw-bh h3.vsw-hd{display:flex;align-items:center;min-height:26px;padding:3px 10px;border-radius:7px;
+  background:var(--cn,var(--w-tile));color:#0d0d0d;font-size:13px;font-weight:700;letter-spacing:-.015em;line-height:1.2}
+.vsw .vsw-bh.m{display:none}
+.vsw .vsw-tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:6px}
+/* engineering reports: a small box for each show, side by side, with small tiles */
+.vsw .vsw-reps{display:flex;flex-wrap:wrap;align-items:flex-start;gap:8px}
+.vsw .vsw-rep{flex:none;width:348px;max-width:100%}
+.vsw .vsw-rep .vsw-bh{margin-bottom:6px}
+.vsw .vsw-rep .vsw-bh h3{font-size:13px}
+.vsw .vsw-rep .vsw-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+/* the same small tiles for what is outstanding and the to-do list */
+.vsw .vsw-rep,.vsw .vsw-box.sm{padding:8px 10px 10px}
+.vsw .vsw-box.sm .vsw-tiles{grid-template-columns:repeat(auto-fill,minmax(164px,1fr))}
+.vsw .vsw-rep .vsw-tiles,.vsw .vsw-box.sm .vsw-tiles{gap:5px}
+.vsw .vsw-rep .vsw-t,.vsw .vsw-box.sm .vsw-t{padding:5px 8px 6px;border-radius:7px}
+.vsw .vsw-rep .vsw-l,.vsw .vsw-box.sm .vsw-l{font-size:11px}
+.vsw .vsw-rep .vsw-v,.vsw .vsw-box.sm .vsw-v{font-size:12.5px}
+.vsw .vsw-t{display:flex;flex-direction:column;gap:1px;min-width:0;background:var(--ct,var(--w-tile));border-radius:8px;
+  padding:7px 10px 8px;transition:background-color .12s}
+.vsw button.vsw-t:hover{background:var(--cth,var(--w-tile-h))}
+.vsw .vsw-l{font-size:11.5px;font-weight:500;color:var(--cl,var(--w-muted));line-height:1.3;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.vsw .vsw-v{font-size:13.5px;font-weight:600;line-height:1.3;min-width:0}
+.vsw .vsw-v.quiet{font-weight:500;color:var(--w-subtle)}
+.vsw .vsw-t.wide{grid-column:1 / -1}
+.vsw .vsw-t.wide .vsw-v{font-weight:500}
+.vsw .vsw-t.idle{background:var(--w-tile)}
+.vsw button.vsw-t.idle:hover{background:var(--w-tile-h)}
+.vsw .vsw-t.idle .vsw-l{color:var(--w-muted)}
+.vsw .vsw-t.red{background:var(--w-red-t)}
+.vsw button.vsw-t.red:hover{background:var(--w-red-th)}
+.vsw .vsw-t.red .vsw-l,.vsw .vsw-t.red .vsw-v{color:var(--w-red)}
+.vsw .vsw-clamp{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.vsw .vsw-mode{display:inline-flex;align-items:center;gap:6px;font-weight:700}
+.vsw .vsw-mode::before{content:"";flex:none;width:7px;height:7px;border-radius:50%;background:currentColor}
+.vsw .vsw-mode.ntr{color:var(--w-ntr)} .vsw .vsw-mode.str{color:var(--w-str)} .vsw .vsw-mode.urg{color:var(--w-red)}
+/* the week: a row for each studio or person, a column for each day, kept
+   small. The same entry on days in a row is one block across them, as the
+   planner draws it. A block is one line; hovering shows the whole of it. */
+.vsw .vsw-box.wk{padding:8px 10px 9px}
+.vsw .vsw-box.wk .vsw-bh{margin-bottom:5px}
+.vsw .vsw-box.wk .vsw-hd{min-height:22px;padding:2px 8px;font-size:12px}
+.vsw .vsw-wk{display:grid;grid-template-columns:118px repeat(7,minmax(0,1fr));gap:2px;align-items:stretch}
+.vsw .vsw-dh{align-self:center;font-size:11px;font-weight:600;color:var(--w-muted);padding:0 2px;white-space:nowrap}
+.vsw .vsw-dh.now{color:var(--c);font-weight:800}
+.vsw .vsw-rl{align-self:center;min-width:0;padding-right:8px;font-size:12px;font-weight:600;line-height:1.15}
+.vsw .vsw-wk > .vsw-hd{align-self:center;margin:0 8px 2px 0}
+.vsw .vsw-c{display:block;min-width:0;min-height:22px;border-radius:5px;padding:3px 6px;font-size:11px;font-weight:600;line-height:16px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:var(--ct);transition:background-color .12s,filter .12s}
+.vsw button.vsw-c:hover{background:var(--cth)}
+.vsw .vsw-c small{margin-left:6px;font-size:10.5px;font-weight:500;color:var(--cl)}
+/* an entry in the colour it has in the planner, with the planner's dark ink
+   on it in both themes; several on one day share the day's space side by side */
+.vsw .vsw-c.p,.vsw .vsw-ch.p{color:#111110}
+.vsw .vsw-c.p small,.vsw .vsw-ch.p small{color:rgba(17,17,16,.68)}
+.vsw button.vsw-c.p:hover,.vsw button.vsw-c.st:hover{filter:brightness(.95)}
+.vsw .vsw-c.st,.vsw button.vsw-c.st:hover{background:none}
+.vsw .vsw-c.st{display:flex;gap:2px;padding:0}
+.vsw .vsw-ch{flex:1 1 0;min-width:0;border-radius:5px;padding:3px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  background:var(--ct)}
+.vsw .vsw-c.e{background:none}
+.vsw .vsw-c.e.now{background:var(--crow)}
+/* the same week as a list by day, shown on a phone instead of the grid */
+.vsw .vsw-wkl{display:none}
+.vsw .vsw-wd{display:grid;grid-template-columns:52px minmax(0,1fr);gap:8px;padding:5px 0;align-items:start}
+.vsw .vsw-wd + .vsw-wd{border-top:1px solid var(--border)}
+.vsw .vsw-d{font-size:12.5px;font-weight:600;color:var(--w-muted);line-height:1.4}
+.vsw .vsw-wd.now .vsw-d{color:var(--c);font-weight:800}
+.vsw .vsw-it{display:block;font-size:13px;line-height:1.4}
+.vsw .vsw-it em{font-style:normal;color:var(--w-muted);margin-right:6px}
+.vsw .vsw-it small{color:var(--w-muted);margin-left:6px;font-size:12px}
+.vsw .vsw-sw{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:6px}
+.vsw .vsw-calm{font-size:13.5px;color:var(--w-muted);padding:6px 0}
+@media(max-width:760px){ .vsw .vsw-grid.two{grid-template-columns:minmax(0,1fr)} }
+@media(max-width:640px){
+  .vsw{font-size:14px}
+  .vsw .vsw-tabs{gap:6px}
+  .vsw .vsw-tab{width:calc((100% - 12px) / 3);height:104px}
+  .vsw .vsw-tab img{max-width:84px;max-height:34px}
+  .vsw .vsw-tab img.vsw-mark{width:54px;height:54px}
+  .vsw .vsw-name{font-size:13.5px}
+  .vsw .vsw-cap{font-size:12px;left:4px;right:4px}
+  .vsw .vsw-tiles,.vsw .vsw-rep .vsw-tiles,.vsw .vsw-box.sm .vsw-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .vsw .vsw-t{min-height:44px;justify-content:center;padding-left:8px;padding-right:8px}
+  .vsw .vsw-l{font-size:12px}
+  .vsw .vsw-rule{align-items:center;padding-bottom:3px}
+  .vsw .vsw-rule button{min-height:44px;display:flex;align-items:center;margin:-13px -6px -12px}
+  .vsw .vsw-wk{display:none}
+  .vsw .vsw-wkl{display:block}
+  .vsw .vsw-bh.m{display:flex}
+  .vsw .vsw-rep{width:100%}
+}
+@media(max-width:339px){ .vsw .vsw-tab{width:calc((100% - 6px) / 2)} }
 .vsh-title{font-size:30px;font-weight:800;letter-spacing:-.015em;line-height:1.1;
   color:var(--ink);margin:2px 0 18px}
 @media(max-width:760px){.vsh-title{font-size:24px}}
@@ -4970,8 +5249,8 @@ html[data-theme="softdark"] #kipRoot .kip-pv .kip-lnk{margin:6px 0 0 -6px}
       <div class="nav-item" data-pg="jobs" onclick="nav('jobs',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="12" height="11" rx="1"/><path d="M5 3V2M11 3V2M2 7h12"/></svg>Jobs</div>
       <div class="nav-item" data-pg="notes" onclick="nav('notes',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 1.5h7L13 4.5V14a.5.5 0 01-.5.5h-9A.5.5 0 013 14V2a.5.5 0 010-.5z"/><path d="M9.5 1.5V5h3.5"/><path d="M5.5 8h5M5.5 11h3"/></svg>Notes</div>
       <div class="nav-lbl" data-lbl="kit">Kit</div>
-      <div class="nav-item" data-pg="kit" onclick="nav('kit',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12v9a1 1 0 01-1 1H3a1 1 0 01-1-1V4z"/><path d="M5 4V3a1 1 0 011-1h4a1 1 0 011 1v1"/></svg>Inventory</div>
-      <div class="nav-item" data-pg="kitlist" onclick="nav('kitlist',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 4h9M5 8h9M5 12h9"/><circle cx="2.5" cy="4" r=".8" fill="currentColor" stroke="none"/><circle cx="2.5" cy="8" r=".8" fill="currentColor" stroke="none"/><circle cx="2.5" cy="12" r=".8" fill="currentColor" stroke="none"/></svg>Kit List</div>
+      <div class="nav-item" data-pg="kit" onclick="nav('kit',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12v9a1 1 0 01-1 1H3a1 1 0 01-1-1V4z"/><path d="M5 4V3a1 1 0 011-1h4a1 1 0 011 1v1"/></svg>Kit</div>
+      <div class="nav-item" data-pg="kitlist" hidden style="display:none" onclick="nav('kitlist',this)"><svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 4h9M5 8h9M5 12h9"/><circle cx="2.5" cy="4" r=".8" fill="currentColor" stroke="none"/><circle cx="2.5" cy="8" r=".8" fill="currentColor" stroke="none"/><circle cx="2.5" cy="12" r=".8" fill="currentColor" stroke="none"/></svg>Kit List</div>
       <!-- Maintenance, In repair, PAT testing and Suppliers are reached from
            the Inventory rail now; they are all questions about the kit. -->
       <!-- Bin hidden from nav, accessible via admin -->
@@ -6906,6 +7185,20 @@ var VS_READ_ONLY_KEYS = {
 var _saveTimer = null;
 var _appReady = false; // prevents saveData firing before loadData completes
 function saveData() {
+  /* A job-only login looks at its job and does not change it. Nothing it does
+     on the page is written back, and it is told so rather than left to think
+     the change was taken. */
+  if (_vsJobOnlyId() !== null) {
+    try{
+      var _sb=document.getElementById('unsavedBanner'); if(_sb) _sb.style.display='none';
+      if(typeof CU!=='undefined' && CU && CU.role==='Client' && typeof toast==='function'
+         && Date.now()-(window._vsViewOnlyAt||0)>4000){
+        window._vsViewOnlyAt=Date.now();
+        toast('View only. Changes are not saved.');
+      }
+    }catch(e){}
+    return;
+  }
   if (!_appReady) {
     /* Not loaded yet, so writing now would put defaults over the real data.
        Dropping it silently is what made an edit look as though it had been
@@ -7236,7 +7529,7 @@ function _vsRedrawFor(key){
       if(id === 'page-dashboard' && typeof renderDash === 'function'){ renderDash(); return; }
       return;
     }
-    if((key === 'kit' || key === 'kitSubcats') && id === 'page-kit' && typeof vsKitPage === 'function'){ vsKitPage(); return; }
+    if((key === 'kit' || key === 'kitSubcats' || key === 'hiredCatalogue') && id === 'page-kit' && typeof vsKitPage === 'function'){ vsKitPage(); return; }
     if(key === 'hiredCatalogue' && id === 'page-kitlist' && typeof vsCatPage === 'function'){ vsCatPage(); return; }
   } catch(e){ console.warn('redraw failed', e); }
 }
@@ -7997,6 +8290,16 @@ function _vsJobsCard(j,cat){
   card.addEventListener('click',function(){openJobDet(j.id,j.name);});
   return card;
 }
+/* A finished job, as a small box under the current ones on the Jobs page. */
+function _vsPrevCard(j){
+  var dates=(typeof fmtD==='function'&&j.start)?(fmtD(j.start)+(j.end?' \u2014 '+fmtD(j.end):'')):'';
+  var sub=[j.loc,j.studio,dates].filter(Boolean).join('  \u00b7  ');
+  var d=document.createElement('div');
+  d.className='vs-arch vs-prev';
+  d.innerHTML='<span class="vs-arch-name">'+_vsEsc(j.name)+'</span><span class="vs-arch-sub">'+_vsEsc(sub)+'</span>';
+  d.addEventListener('click',function(){openJobDet(j.id,j.name);});
+  return d;
+}
 function _vsArchCard(j){
   var dates=(typeof fmtD==='function'&&j.start)?(fmtD(j.start)+(j.end?' — '+fmtD(j.end):'')):'';
   var sub=[j.loc,j.studio,dates].filter(Boolean).join('  ·  ');
@@ -8331,6 +8634,13 @@ var _VS_SHOWS = {
   'dragonsden':  {src:'logos/dragons-den-white.png', tint:'#CFCFD4', tintDark:'#8E8E96',
                   full:'#232327', grad:'linear-gradient(135deg,#3a3a40 0%,#141417 100%)',
                   bg:'#3a3a40', bg2:'#141417',
+                  ink:'#ffffff', fixed:true, centre:true, heroLogo:true},
+  /* the show's own silver lettering with the copper pan, on a transparent
+     ground, so it sits on a dark warm charcoal. The key is a prefix, so last
+     year's job and "Cooking with the Stars 2027" both take it. */
+  'cookingwiththestars': {src:'logos/cooking-with-the-stars.png', tint:'#D8D1CB', tintDark:'#9A928B',
+                  full:'#2B2623', grad:'linear-gradient(135deg,#4A403A 0%,#1C1816 100%)',
+                  bg:'#4A403A', bg2:'#1C1816',
                   ink:'#ffffff', fixed:true, centre:true, heroLogo:true}
 };
 function _vsLogoKey(name){ return String(name||'').toLowerCase().replace(/[^a-z0-9]/g,''); }
@@ -8388,12 +8698,9 @@ function _vsJobTitle(name){
   var lg=_vsLogoFor(name);
   var safe=_vsEsc(name);
   if(!lg) return '<span class="vs-job-name">'+safe+'</span>';
-  if(lg.markAfter){
-    return '<span class="vs-job-titlerow">'
-         +   '<span class="vs-job-name">'+safe+'</span>'
-         +   '<img class="vs-job-mark" src="'+lg.src+'" alt="" onerror="this.remove()">'
-         + '</span>';
-  }
+  /* A round badge (Bullseye, Mock the Week) used to sit after the name set in
+     type. Andrew asked for the text to come off, so the badge stands alone
+     like any other logo; if the file fails to load, the name comes back. */
   return '<img class="vs-job-logo'+(lg.invert?' vs-invert':'')+'" src="'+lg.src+'" alt="'+safe+'"'
        + (lg.h?' style="height:'+lg.h+'px"':'')
        + ' onerror="_vsLogoFail(this)">';
@@ -10021,7 +10328,7 @@ function _initApp() {
   }
   // QR code deep-link: ?kit=ID opens the item drawer
   var qrParam=new URLSearchParams(window.location.search).get('kit');
-  if(qrParam){
+  if(qrParam && _vsJobOnlyId()===null){   // the inventory is not a job-only login's to open
     var qrId=parseInt(qrParam);
     if(qrId){
       setTimeout(function(){
@@ -10032,6 +10339,18 @@ function _initApp() {
   }
 }
 
+/* A job-only login (an email and PIN, given for one job) has that job and
+   nothing else, and it looks without changing. This is the id of its job, or
+   null for everyone else. nav(), the Jobs page, the job page and saveData()
+   all ask here, so the rule is kept in one place. */
+function _vsJobOnlyId(){
+  try{
+    if(typeof CU!=='undefined' && CU && CU.role==='Client') return String(CU.restrictedJobId==null ? '' : CU.restrictedJobId);
+    var s=sessionStorage.getItem('_vsRestrictedJobId');
+    return s ? String(s) : null;
+  }catch(e){ return null; }
+}
+
 function _applyNavPerms() {
   const p = ROLE_PERMS[CU.role] || ROLE_PERMS['Crew'];
   const hide = (pg) => { const el=document.querySelector('[data-pg="'+pg+'"]'); if(el) el.style.display='none'; };
@@ -10040,7 +10359,24 @@ function _applyNavPerms() {
   if (!p.viewFaults) hide('faults');
   if (CU.role === 'Client') {
     // Hide everything except Jobs
-    ['dashboard','kit','maintenance','faults','studios','engreport','calendar','admin','tools','info'].forEach(function(pg){ hide(pg); });
+    ['dashboard','kit','kitlist','notes','signin','maintenance','faults','studios','engreport','calendar','admin','tools','info'].forEach(function(pg){ hide(pg); });
+    /* The search box opens the inventory, and the bell lists kit, faults and
+       every running job, so neither is offered. Nor is a new job. */
+    ['.search-wrap','#notifBtn','#page-jobs .btn-add'].forEach(function(s){
+      var x=document.querySelector(s); if(x) x.style.display='none';
+    });
+    /* It looks; it does not change. saveData() already declines, and this
+       refuses anything else on the page that would write to the database.
+       It is only ever put in place for a job-only login. */
+    if(!window._vsFetchAsWas){
+      window._vsFetchAsWas=window.fetch;
+      window.fetch=function(u,o){
+        var m=String((o&&o.method)||'GET').toUpperCase();
+        if(m!=='GET' && m!=='HEAD' && String(u).indexOf('/rest/v1/')!==-1)
+          return Promise.resolve(new Response('[]',{status:403,headers:{'Content-Type':'application/json'}}));
+        return window._vsFetchAsWas.apply(window,arguments);
+      };
+    }
     // Hide sidebar user details / name for cleaner look
     setTimeout(function(){
       nav('jobs', document.querySelector('[data-pg="jobs"]'));
@@ -10087,7 +10423,7 @@ const ROLE_PERMS = {
   Crew:    {viewKit:true,editKit:false,viewJobs:true,editJobs:false,viewMaint:false,editMaint:false,viewAdmin:false,editAdmin:false,viewFaults:false,editFaults:false},
   Manager: {viewKit:true,editKit:true,viewJobs:true,editJobs:true,viewMaint:true,editMaint:false,viewAdmin:false,editAdmin:false,viewFaults:true,editFaults:false},
   Engineer:{viewKit:true,editKit:true,viewJobs:false,editJobs:false,viewMaint:true,editMaint:true,viewAdmin:false,editAdmin:false,viewFaults:true,editFaults:true},
-  Client:  {viewKit:false,editKit:false,viewJobs:true,editJobs:true,viewMaint:false,editMaint:false,viewAdmin:false,editAdmin:false,viewFaults:false,editFaults:false},
+  Client:  {viewKit:false,editKit:false,viewJobs:true,editJobs:false,viewMaint:false,editMaint:false,viewAdmin:false,editAdmin:false,viewFaults:false,editFaults:false},
 };
 const PERM_LABELS = {viewKit:'View Kit',editKit:'Edit Kit',viewJobs:'View Jobs',editJobs:'Edit Jobs',viewMaint:'View Maintenance',editMaint:'Edit Maintenance',viewFaults:'View Faults',editFaults:'Edit Faults',viewAdmin:'View Admin',editAdmin:'Edit Admin'};
 let users = [
@@ -11581,7 +11917,7 @@ function _vsCatMatch(h){
 function _vsCatQMatch(h){
   if(!_vsCatQ) return true;
   var q = _vsCatQ.toLowerCase();
-  return [h.name, h.subcat, h.cat, h.notes, h.compat].join(' ').toLowerCase().indexOf(q) > -1;
+  return [h.name, h.make, h.model, h.subcat, h.cat, h.notes, h.compat].join(' ').toLowerCase().indexOf(q) > -1;
 }
 
 /* Is this a place the inventory recognises? Anything else is unfiled \u2014 it
@@ -11802,7 +12138,7 @@ function vsCatList(){
   var owned = _vsCatOwned();
   var own = list.some(function(h){ return owned[h.id]; });
   el.classList.toggle('vsc-own', own);
-  var head = '<div class="vsc-hd">' + (pics ? '<span></span>' : '') + '<span>Model</span>' + (own ? '<span class="vsc-ownh" title="How many Versa has in the inventory">Owned</span>' : '') + '<span>Category</span><span>Sub-category</span><span>Notes</span><span>Works with</span><span></span></div>';
+  var head = '<div class="vsc-hd">' + (pics ? '<span></span>' : '') + '<span>Name</span>' + (own ? '<span class="vsc-ownh" title="How many Versa has in the inventory">Owned</span>' : '') + '<span>Make</span><span>Model</span><span>Category</span><span>Sub-category</span><span>Notes</span><span>Works with</span><span></span></div>';
   el.innerHTML = nag
     + '<div class="vsc-count">' + list.length + ' of ' + hiredCatalogue.length + '</div>'
     + adder
@@ -11823,6 +12159,13 @@ function vsCatList(){
           + 'onchange="vsCatSet(' + h.id + ',\'name\',this.value)">'
         + (own ? '<span class="vsc-ownn"' + (owned[h.id] ? ' title="Versa has ' + owned[h.id] + ' in the inventory"' : '') + '>'
           + (owned[h.id] || '') + '</span>' : '')
+        /* who makes it and its model number, kept apart from the name it goes by */
+        + '<input value="' + String(h.make||'').replace(/"/g,'&quot;') + '" placeholder="—" '
+          + 'title="' + String(h.make||'').replace(/"/g,'&quot;') + '" '
+          + 'onchange="this.title=this.value;vsCatSet(' + h.id + ',\'make\',this.value)">'
+        + '<input value="' + String(h.model||'').replace(/"/g,'&quot;') + '" placeholder="—" '
+          + 'title="' + String(h.model||'').replace(/"/g,'&quot;') + '" '
+          + 'onchange="this.title=this.value;vsCatSet(' + h.id + ',\'model\',this.value)">'
         + '<select class="vsc-sub" onchange="vsCatSet(' + h.id + ',\'cat\',this.value)">'
           + '<option value="">\u2014</option>'
           + Object.keys(KIT_SUBCATS).map(function(o){ return '<option' + (o===h.cat?' selected':'') + '>' + _vsEsc(o) + '</option>'; }).join('')
@@ -12203,7 +12546,10 @@ function saveHiredItem(){
     photos:((document.getElementById('hiredFormPhotos')||{value:''}).value||'').split('\n').map(function(s){return s.trim();}).filter(function(s){return s.length>5;}),
     dailyRate:parseFloat((document.getElementById('hiredFormRate')||{value:''}).value)||0
   };
-  if(id){var idx=hiredCatalogue.findIndex(function(x){return x.id===id;});if(idx>=0)hiredCatalogue[idx]=entry;}
+  if(id){var idx=hiredCatalogue.findIndex(function(x){return x.id===id;});if(idx>=0){
+    /* this form has no boxes for make and model, so they are carried over rather than lost */
+    var was=hiredCatalogue[idx];['make','model'].forEach(function(f){if(was[f]!==undefined)entry[f]=was[f];});
+    hiredCatalogue[idx]=entry;}}
   else hiredCatalogue.push(entry);
   saveData();cm('mHiredItem');
   // Re-render at current category level
@@ -13983,11 +14329,15 @@ function uname() { return CU ? CU.fn+' '+CU.ln : 'Unknown'; }
 function today() { return new Date().toISOString().split('T')[0]; }
 
 // ── NAVIGATION ────────────────────────────────────────────────────────────────
-const titles = {dashboard:'Dashboard',kit:'Versa Inventory',kitlist:'Kit List',maintenance:'Maintenance',holidays:'Staff Holidays',
+const titles = {dashboard:'Dashboard',kit:'Kit',kitlist:'Kit List',maintenance:'Maintenance',holidays:'Staff Holidays',
   faults:'Fault Log',bin:'Bin',studios:'Tech Log',jobs:'Jobs',crew:'Crew',
   jobdet:'Job Detail',calendar:'Planner',admin:'Admin',ops:'Ops Planner',tools:'Tools',
   engreport:'Eng Report',allcal:'All Reports',notes:'Notes',meetings:'Team Meetings',vault:'Vault'};
 function nav(page, el) {
+  /* A job-only login has the Jobs page and its own job. The sidebar hides the
+     rest, but the logo, links inside a job and addresses like #ops all arrive
+     here, so this is where they are turned back. */
+  if(_vsJobOnlyId()!==null && page!=='jobs' && page!=='jobdet'){ page='jobs'; el=null; }
   closeDrawer();
   // Hide admin-only nav items for non-admin users
   try {
@@ -15248,26 +15598,47 @@ async function vsDashboard(){
      job cards are kept — they are drawn in this one. */
   var grid=document.querySelector('#page-dashboard .dash-grid');
   if(grid) grid.style.display='none';
-  el.innerHTML=_vsDashBody();
-  if(_vsDashReports===null){
-    _vsDashReports={};
+  /* A job-only login has no dashboard. The sidebar does not offer it one, but
+     the logo still brings it here, so it is shown the way back to its job and
+     nothing else, and nothing is read on its behalf. */
+  if(_vsHomeJobOnly()){
+    _vsHomeHtml='';
+    el.innerHTML='<div class="vsw"><section class="vsw-sec s-jobs">'+_vsHomeRule('Jobs','Open your job',"nav('jobs')")+'</section></div>';
+    return;
+  }
+  _vsHomeDraw(el);
+  /* the reports: read on the first visit, and again once they are five
+     minutes old, so a dashboard left open all day does not go stale */
+  if(Date.now()-_vsHomeReportsAt>300000){
+    _vsHomeReportsAt=Date.now();
+    var got=false;
     try{
       var r=await fetch(_SB_URL+'/rest/v1/engineering_reports'
-        +'?select=show_name,show_date,summary_mode,summary_text,versa_tech_manager,urgent_action'
+        +'?select=show_name,show_date,summary_mode,summary_text,versa_tech_manager,bbc_tech_manager,urgent_action,urgent_details,tagged_kit_names'
         +'&order=show_date.desc,submitted_at.desc&limit=400',{headers:_sbHeaders()});
       var rows=await r.json();
       if(Array.isArray(rows)){
+        var fresh={};
         rows.forEach(function(x){
           /* a report with no show name is Morning Live's \u2014 skipping
              those is what raised the warning when nothing was late */
           var n=_vsShowCanon(x.show_name)||'Morning Live';
-          if(!_vsDashReports[n]) _vsDashReports[n]={last:x, dates:{}};
-          _vsDashReports[n].dates[x.show_date]=
+          if(!fresh[n]) fresh[n]={last:x, dates:{}};
+          fresh[n].dates[x.show_date]=
             (x.urgent_action==='Yes'?'urgent':(x.summary_mode||'').toLowerCase());
         });
+        _vsDashReports=fresh; got=true;
       }
     }catch(e){ console.warn('reports lookup failed', e); }
-    el.innerHTML=_vsDashBody();
+    /* a read that failed says so rather than "none filed", keeps whatever
+       was on screen, and is tried again in a minute */
+    if(!got){ if(_vsDashReports===null) _vsDashReports=false; _vsHomeReportsAt=Date.now()-240000; }
+    _vsHomeDraw(el);
+  }
+  /* this week, from the planner: read again when it is a minute old, or
+     when the week has turned */
+  if(!_vsHomeWeek || Date.now()-_vsHomeWeek.at>60000 || _vsHomeWeek.monday!==_vsHomeMonday()){
+    if(await _vsHomeWeekLoad()) _vsHomeDraw(el);
   }
 }
 
@@ -15440,6 +15811,624 @@ function _vsDashBody(){
 
   return html+'</div>';
 }
+
+/* ── The dashboard, as agreed on 4 Oct 2026 ───────────────────────────────────
+   Jobs across the top as small squares, the last engineering report from each
+   show that files one, this week from the planner, then what is outstanding
+   and the to-do list. Small tiles side by side inside boxes, and each section
+   takes its colour from the sidebar. vsDashboard() draws this; _vsDashBody
+   above is the layout it replaced and is no longer called. */
+var _vsHomeWeek = null;            // null: not asked yet · false: could not be read · {at, monday, data}
+var _vsHomeWeekWhy = '';           // why not: 'signin' (no session, or the read failed) · 'access' (not on the planner's list)
+var _vsHomeWeekBusy = false, _vsHomeReportsAt = 0;
+var _VS_HOME_MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var _VS_HOME_WD = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+/* Who is looking. A job-only login sees its job and nothing else; crew who
+   are limited to named jobs see only those, as on the Jobs page. */
+function _vsHomeJobOnly(){
+  var only=(typeof CU!=='undefined' && CU && CU.role==='Client');
+  try{ if(sessionStorage.getItem('_vsRestrictedJobId')) only=true; }catch(e){}
+  return only;
+}
+function _vsHomeMay(j){
+  if(typeof CU==='undefined' || !CU || CU.role!=='Crew' || !Array.isArray(CU.allowedJobs)) return true;
+  var nm=String((j&&j.name)||'').toLowerCase();
+  return CU.allowedJobs.some(function(a){ return nm.indexOf(String(a).toLowerCase())!==-1; });
+}
+function _vsHomeUtc(iso){ var a=String(iso).slice(0,10).split('-'); return Date.UTC(+a[0],+a[1]-1,+a[2]); }
+function _vsHomeIso(t){ var d=new Date(t); return d.getUTCFullYear()+'-'+('0'+(d.getUTCMonth()+1)).slice(-2)+'-'+('0'+d.getUTCDate()).slice(-2); }
+function _vsHomeAdd(iso,n){ return _vsHomeIso(_vsHomeUtc(iso)+n*864e5); }
+function _vsHomeMonday(){ var t=_vsHomeUtc(today()); return _vsHomeIso(t-((new Date(t).getUTCDay()+6)%7)*864e5); }
+/* a date for a caption: the day while it is close, the month once it is
+   further off or in another year */
+function _vsHomeDate(iso){
+  var t=_vsHomeUtc(today()), u=_vsHomeUtc(iso), d=new Date(u);
+  var far=Math.abs(u-t)>60*864e5 || d.getUTCFullYear()!==new Date(t).getUTCFullYear();
+  return far ? _VS_HOME_MON[d.getUTCMonth()]+' ’'+String(d.getUTCFullYear()).slice(-2)
+             : d.getUTCDate()+' '+_VS_HOME_MON[d.getUTCMonth()];
+}
+/* the day of a report, said the way you would say it */
+function _vsHomeDay(iso){
+  var t=today();
+  if(iso===t) return 'Today';
+  if(iso===_vsHomeAdd(t,-1)) return 'Yesterday';
+  var d=new Date(_vsHomeUtc(iso));
+  return _VS_HOME_WD[d.getUTCDay()]+' '+d.getUTCDate()+' '+_VS_HOME_MON[d.getUTCMonth()];
+}
+function _vsHomeDayLabel(iso){ var d=new Date(_vsHomeUtc(iso)); return _VS_HOME_WD[d.getUTCDay()]+' '+d.getUTCDate(); }
+/* a section's name on its line, with the way in to its page on the right */
+function _vsHomeRule(name, link, go, note){
+  return '<div class="vsw-rule"><h2>'+_vsEsc(name)+(note?'<span>'+_vsEsc(note)+'</span>':'')+'</h2>'
+    + (link?'<button type="button" onclick="'+go+'">'+_vsEsc(link)+' &rsaquo;</button>':'')+'</div>';
+}
+/* one small tile: a label with its value underneath. v is HTML. */
+function _vsHomeTile(l, v, o){
+  o=o||{};
+  var tag=o.go?'button':'div';
+  return '<'+tag+(o.go?' type="button" onclick="'+o.go+'"':'')+' class="vsw-t'+(o.cls?' '+o.cls:'')+'"'
+    + (o.title?' title="'+_vsEsc(o.title)+'"':'')+'>'
+    + '<span class="vsw-l">'+_vsEsc(l)+'</span><span class="vsw-v'+(o.vcls?' '+o.vcls:'')+'">'+v+'</span></'+tag+'>';
+}
+
+/* ---- jobs ---- */
+/* text on a job tab: white, or a dark ink where white would be hard to read
+   (Morning Live's orange, a gold job colour) */
+function _vsHomeInk(bg){
+  var hx=String(bg).match(/#[0-9a-f]{6}/ig); if(!hx) return '#fff';
+  var a=hx[0], b=hx[hx.length-1], w=[.2126,.7152,.0722], lum=0;
+  for(var i=0;i<3;i++){
+    var v=(parseInt(a.substr(1+i*2,2),16)+parseInt(b.substr(1+i*2,2),16))/510;
+    lum+=w[i]*(v<=.03928 ? v/12.92 : Math.pow((v+.055)/1.055,2.4));
+  }
+  return 1.05/(lum+.05)>=4.5 ? '#fff' : '#1c1204';
+}
+/* when a job finished: its end, or its last derig day if that is later */
+function _vsHomeEnded(j){
+  var e=String(j.end||'').slice(0,10);
+  (Array.isArray(j.drigDates)?j.drigDates:[]).forEach(function(d){
+    var x=String((typeof d==='string'?d:(d&&d.date))||'').slice(0,10); if(x && x>e) e=x;
+  });
+  return e;
+}
+/* where a running show is today: the planner's studio row if it names the
+   show, otherwise the studio on the job */
+function _vsHomeStudio(j){
+  var w=_vsHomeWeek&&_vsHomeWeek.data, k=_vsLogoKey(j.name).slice(0,6);
+  if(w && k){
+    var i=w.days.indexOf(today());
+    for(var s=0; i>-1 && s<w.studios.length; s++){
+      var c=w.studios[s].cells[i];
+      if(c && _vsLogoKey(c).indexOf(k)===0) return w.studios[s].name;
+    }
+  }
+  return j.studio||j.loc||'';
+}
+function _vsHomeTab(j, cap){
+  var nm=String(j.name||'Untitled job');
+  var sh=_vsLogoFor(nm), hex=function(c){ return /^#[0-9a-f]{3,8}$/i.test(String(c||''))?c:''; };
+  var c1=hex(j.color&&j.color.bg), c2=hex(j.color&&j.color.bg2)||c1;
+  var bg=(sh&&(sh.grad||sh.full)) || (c1?'linear-gradient(135deg,'+c1+' 0%,'+c2+' 100%)':'#484149');
+  var ink=_vsHomeInk(bg);
+  /* a show with a logo is its logo; one with a round mark is the mark alone */
+  var face=(sh&&sh.src)
+    ? '<img'+(sh.markAfter?' class="vsw-mark"':'')+' src="'+_vsEsc(sh.src)+'" alt="'+_vsEsc(nm)+'">'
+    : '<span class="vsw-name" style="color:'+ink+'">'+_vsEsc(nm)+'</span>';
+  return '<button type="button" class="vsw-tab" style="background:'+bg+'" onclick="openJobDet('+_vsEsc(JSON.stringify(j.id))+')"'
+    + ' title="'+_vsEsc(nm+(cap?' · '+cap:''))+'" aria-label="'+_vsEsc('Open '+nm)+'">'
+    + face+'<span class="vsw-cap" style="color:'+ink+'">'+_vsEsc(cap)+'</span></button>';
+}
+/* running jobs first (Morning Live and ShopOn leading), then what is coming
+   up, then anything that finished in the last fortnight */
+function _vsHomeJobs(){
+  /* a cancelled job is neither running, coming up nor finished; it stays on the Jobs page */
+  var t=today(), all=(typeof jobs!=='undefined'?jobs:[]).filter(function(j){
+    return j && !j.archived && j.status!=='Cancelled' && _vsHomeMay(j); });
+  var PIN=['morninglive','shopon'];
+  var rank=function(j){ var k=_vsLogoKey(j.name); for(var i=0;i<PIN.length;i++){ if(k.indexOf(PIN[i])===0) return i; } return PIN.length; };
+  var byStart=function(a,b){ return String(a.start||'').localeCompare(String(b.start||'')); };
+  var cur=all.filter(function(j){ return _jobCat(j)==='active'; }).sort(function(a,b){ return (rank(a)-rank(b)) || byStart(a,b); });
+  var up=all.filter(function(j){ return _jobCat(j)==='upcoming'; }).sort(byStart).slice(0,4);
+  var from=_vsHomeAdd(t,-14);
+  var fin=all.filter(function(j){ return _jobCat(j)==='past' && _vsHomeEnded(j)>=from; })
+             .sort(function(a,b){ return _vsHomeEnded(b).localeCompare(_vsHomeEnded(a)); });
+  var tabs=cur.map(function(j){ return _vsHomeTab(j, _vsHomeStudio(j)); })
+    .concat(up.map(function(j){ return _vsHomeTab(j, 'Starts '+_vsHomeDate(j.start)); }))
+    .concat(fin.map(function(j){ return _vsHomeTab(j, 'Ended '+_vsHomeDate(_vsHomeEnded(j))); }));
+  return '<section class="vsw-sec s-jobs">'+_vsHomeRule('Jobs','All jobs',"nav('jobs')")
+    + (tabs.length ? '<div class="vsw-tabs">'+tabs.join('')+'</div>'
+                   : '<div class="vsw-box"><div class="vsw-calm">No jobs running or coming up.</div></div>')
+    + '</section>';
+}
+
+/* ---- engineering reports ---- */
+/* ShopOn puts "[Temperature: OK | Delay: 5s]" at the front of its message */
+function _vsHomeParse(text){
+  var s=String(text||''), temp='', delay='';
+  var m=s.match(/\[\s*Temperature:\s*([^|\]]*?)\s*\|\s*Delay:\s*([^\]]*?)\s*\]/i);
+  if(m){ temp=m[1]; delay=m[2]; s=s.slice(0,m.index)+' '+s.slice(m.index+m[0].length); }
+  s=s.replace(/\s+/g,' ').replace(/^\s+|\s+$/g,'').replace(/^[—–-]\s*/,'').replace(/\s*[—–-]$/,'');
+  if(/^nothing to report\.?$/i.test(s)) s='';
+  if(s) s=s.charAt(0).toUpperCase()+s.slice(1);
+  return {temp:temp, delay:delay, msg:s};
+}
+/* A box for each show that files a report, holding what its last report
+   said. Details, an action and tagged kit appear only when the report has
+   them; a red tile appears only when a show has gone out since with no
+   report, counted the way _vsDashLate counts it. */
+function _vsHomeReports(){
+  var go="nav('engreport')";
+  var boxes=_vsDashShows().map(function(sh){
+    var rec=_vsDashReports && _vsDashReports[sh.key], r=rec&&rec.last, logo=_vsLogoFor(sh.name), h='';
+    var late=r?_vsDashLate(sh.key, r.show_date):null, stale=!!(late&&late.stale);
+    var since=r?_vsDashDaysSince(r.show_date):null;
+    var urgent=!!(r && r.urgent_action==='Yes' && since!==null && since<=6);
+    if(r){
+      var p=_vsHomeParse(r.summary_text), ntr=String(r.summary_mode||'').toLowerCase()==='ntr';
+      h+=_vsHomeTile('Last report', _vsEsc(_vsHomeDay(r.show_date)), {go:go});
+      h+=_vsHomeTile('Report', '<span class="vsw-mode '+(urgent?'urg':ntr?'ntr':'str')+'">'
+            +(urgent?'Urgent':ntr?'Nothing to report':'Something to report')+'</span>', {go:go});
+      h+=_vsHomeTile('Filed by', _vsEsc(r.versa_tech_manager||'Not recorded'), {go:go});
+      if(r.bbc_tech_manager) h+=_vsHomeTile('BBC tech manager', _vsEsc(r.bbc_tech_manager), {go:go});
+      else if(p.temp||p.delay) h+=_vsHomeTile('Temperature · Delay', _vsEsc([p.temp,p.delay].filter(Boolean).join(' · ')),
+            {go:go, cls:(p.temp && !/^ok$/i.test(p.temp))?'red':''});
+      if(stale) h+=_vsHomeTile('Late', _vsEsc(late.text.indexOf('show')>0 ? late.text : 'No report for '+late.text), {go:go, cls:'wide red'});
+      if(p.msg) h+=_vsHomeTile('Details', '<span class="vsw-clamp">'+_vsEsc(p.msg)+'</span>', {go:go, cls:'wide', title:p.msg});
+      if(urgent && r.urgent_details) h+=_vsHomeTile('Action', _vsEsc(r.urgent_details), {go:go, cls:'wide red'});
+      var kit=(Array.isArray(r.tagged_kit_names)?r.tagged_kit_names:[]).filter(Boolean);
+      if(kit.length) h+=_vsHomeTile('Kit', _vsEsc(kit.join(', ')), {go:go, cls:'wide'});
+    } else {
+      h+=_vsHomeTile('Last report', _vsDashReports===null?'Reading…':(_vsDashReports===false?'Could not be read':'None filed yet'),
+            {cls:'wide idle', vcls:'quiet'});
+    }
+    var sq=(logo&&(logo.grad||logo.full))||'var(--c)';
+    return '<article class="vsw-box vsw-rep'+((urgent||stale)?' alert':'')+'"><div class="vsw-bh"><h3>'
+      + '<i style="background:'+sq+'"></i>'+_vsEsc(sh.name)+'</h3></div><div class="vsw-tiles">'+h+'</div></article>';
+  }).join('');
+  return '<section class="vsw-sec s-studio">'+_vsHomeRule('Engineering reports','All reports',go)
+    + '<div class="vsw-reps">'+boxes+'</div></section>';
+}
+
+/* ---- this week, from the planner ---- */
+/* The planner's colours. An entry on the dashboard is the colour its box is
+   in the planner, worked out the way the planner's own page does it
+   (opsplanner.html: opsChip gives the box its class, _nsPastel its colour, and
+   time off is its orange). A rule changed there needs changing here; the tests
+   in _dashboard-build run the planner's own code beside this for every entry. */
+var _VS_PLAN = {
+  alert: '#f04b23', leave: '#f3e2a8', base: '#f4f2ee', cc0: '#d85a61',
+  picked: { 'ops-andrew':'#9fcf8a', 'ops-ian':'#93b8e6', 'ops-chris':'#eccb6a', 'ops-show':'#ec8f86', 'ops-prod':'#f5ac7a',
+            'ops-event':'#86cfc2', 'ops-note':'#f29fb0', 'ops-mint':'#bfe0c9', 'ops-sky':'#bcd6ec', 'ops-lav':'#d6c6e4',
+            'ops-rose':'#efc3cf', 'ops-sand':'#e6d6b8', 'ops-slate':'#c9d1da' },
+  byClass: { 'ops-mint':'#bfe0c9', 'ops-sky':'#bcd6ec', 'ops-lav':'#d6c6e4', 'ops-rose':'#efc3cf', 'ops-sand':'#e6d6b8',
+             'ops-slate':'#c9d1da', 'ops-show':'#f0b9b0', 'ops-prod':'#f2c3a6', 'ops-note':'#f3e2a8' },
+  people: { 'andrew rowell':'#c3cfb2', 'ian curry':'#b9cbe0', 'marcus lamb':'#d6c6e4', 'andy mclannahan':'#b5dbd3',
+            'james laishley':'#ecd0a8', 'james forshaw':'#e8c1d6', 'chris warden':'#ecd0a8', 'nik qerimi':'#f0b3ae',
+            'sam pickford':'#a9d8d2' },
+  shows: ['#c3cfb2','#e8c1d6','#f2c3a6','#f3e2a8','#c9d1da','#e6d6b8','#d9c4ea','#bfe0c9','#f5b8b8'],
+  soft: ['#c3cfb2','#b9cbe0','#d6c6e4','#b5dbd3','#ecd0a8','#e8c1d6','#d9d2c7','#f2c3a6'],
+  cc: { 'ops-andrew':'#3a8a55', 'ops-chris':'#b08a10', 'ops-ian':'#2060b0', 'ops-event':'#1a8a8a', 'ops-lav':'#8c6cc0',
+        'ops-ldn':'#1a4e8a', 'ops-mcr':'#2a6e3a', 'ops-mint':'#4aa874', 'ops-note':'#d85a61', 'ops-prod':'#c07326',
+        'ops-rose':'#c85a80', 'ops-sand':'#b89456', 'ops-show':'#c03030', 'ops-sky':'#4a8fc8', 'ops-slate':'#6a7c90',
+        'ops-so':'#8a3f8f', 'ops-ml':'#2d7dd2' }
+};
+/* the class the planner gives a box when no colour was chosen for it */
+function _vsPlannerChip(t){
+  var u = String(t == null ? '' : t).toUpperCase();
+  if (/^\[MCR\]/.test(u)) return 'ops-mcr';
+  if (/^\[LDN\]/.test(u)) return 'ops-ldn';
+  if (/DRAGON/.test(u)) return 'ops-andrew';
+  if (/MORNING LIVE|\bML\b/.test(u)) return 'ops-ian';
+  if (/SHOP.?ON|DRAG.RACE|RUPAUL/.test(u)) return 'ops-show';
+  if (/RIG|DERIG|REHEAR|CAMERA RIG/.test(u)) return 'ops-prod';
+  if (/\bRX\s*\d|\bDARK\b/.test(u)) return 'ops-prod';
+  if (/MEET|RECCE|EVENT/.test(u)) return 'ops-event';
+  return 'ops-note';
+}
+/* The colour of a planner box.
+   tx    what the box says in the planner
+   pick  the colour chosen by hand for the entry, if one was
+   cls   the class on the box
+   row   the planner row it sits on
+   own   a colour stored on the entry itself (old records) */
+function _vsPlannerTint(tx, pick, cls, row, own){
+  var C = _VS_PLAN, t = String(tx == null ? '' : tx).replace(/^\s+|\s+$/g, ''), i;
+  if (!t) return '';
+  /* time off is orange in the planner whatever else is set on it */
+  if (/^(day off|leave|holiday|sick)\b/i.test(t)) return C.alert;
+  var u = t.toLowerCase().replace(/[–-]\s*\w{3}–\w{3}$/, '').replace(/^\s+|\s+$/g, '');
+  if (/annual\s*leave/.test(u)) return C.leave;
+  if (pick && C.picked.hasOwnProperty(pick)) return C.picked[pick];
+  if (/^(day off|leave|holiday|sick)/.test(u)){
+    /* nearly time off ("Holidays"): the planner has no colour of its own for
+       it and washes the box in its class colour instead */
+    var cc = /^#[0-9a-f]{6}$/i.test(String(own || '')) ? String(own) : (C.cc.hasOwnProperty(cls) ? C.cc[cls] : C.cc0), mix = '#';
+    for (i = 0; i < 3; i++){
+      var x = Math.round(parseInt(cc.substr(1 + i * 2, 2), 16) * .4 + parseInt(C.base.substr(1 + i * 2, 2), 16) * .6);
+      mix += (x < 16 ? '0' : '') + x.toString(16);
+    }
+    return mix;
+  }
+  /* the Guarantee rota on Nik's or Sam's own row is that person's colour */
+  if (u === 'morning live guarantee' && row === 'nik') return C.people['nik qerimi'];
+  if (u === 'morning live guarantee' && row === 'sam') return C.people['sam pickford'];
+  /* show names come before task words, so every box for a show is one colour */
+  if (/morning live/.test(u)) return '#b9cbe0';
+  if (/shop\s?on/.test(u)) return '#f0b9b0';
+  if (/dragon/.test(u)) return '#b5dbd3';
+  if (/bullseye/.test(u)) return '#ecd0a8';
+  if (/rupaul|drag race/.test(u)) return '#d6c6e4';
+  if (C.people.hasOwnProperty(u)) return C.people[u];
+  /* any other show: its name with the task words taken off ("Mock the Week
+     S & L Rig" and "Mock the Week Record 1" are both "mock the week") */
+  var s = u.split(/\s[—–-]\s|\s·\s|:|\(/)[0];
+  var m = s.search(/\b(de-?rig|rig|record(?:ing)?|rx\s*\d*|reh(?:earsals?)?|s\s*&\s*l|lx|lighting|audio|sound|cameras?|scenic|truss|floor\s?paint|paint|build|fit.?up|tech|pilot|set|filming|shoot|prep|strike|load.?(?:in|out)|ep\s*\d+|episode|tx|xmas)\b/);
+  if (m >= 0) s = s.slice(0, m);
+  var sk = s.replace(/[\d&\s]+$/, '').replace(/^\s+|\s+$/g, '');
+  if (sk.length >= 3 && !/^(office|admin|meet|recce|visit|training|workshop|fire|alarm|maint|dark|day off|holiday|sick|leave|weekend|break)|\btest\b/.test(sk)){
+    var hs = 2166136261;
+    for (i = 0; i < sk.length; i++){ hs ^= sk.charCodeAt(i); hs = Math.imul(hs, 16777619) >>> 0; }
+    return C.shows[hs % C.shows.length];
+  }
+  if (cls && C.byClass.hasOwnProperty(cls)) return C.byClass[cls];
+  if (/office|admin/.test(u)) return '#d9d2c7';
+  if (/\brig\b|derig|reh|build|fit.?up/.test(u)) return '#f2c3a6';
+  if (/\bdark\b/.test(u)) return '#cfcdc7';
+  if (/meet|recce|visit|training|workshop/.test(u)) return '#b5dbd3';
+  if (/fire|alarm|test|maint/.test(u)) return '#f3e2a8';
+  var h = 0;
+  for (i = 0; i < u.length; i++) h = (h * 31 + u.charCodeAt(i)) >>> 0;
+  return C.soft[h % C.soft.length];
+}
+/* The planner's record as seven days of rows. P is planner_data 'opsPlanner':
+   one key per cell, '<Month YYYY>|<day>|<row>' -> a list of entries, each a
+   string or {text, span, ...}. A stretched entry is stored on its first day
+   only and stops at the end of its month, exactly as the planner draws it.
+   The studio, team and rota lists mirror the planner's own (OPS_STUDIOS,
+   NS_TEAM); a row added there needs adding here. Checked against the
+   planner's day view for every row and day from March 2026 to May 2027. */
+function _vsWeekFromPlanner(P, mondayIso, breaks){
+  P = (P && typeof P === 'object') ? P : {};
+  var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var STUDIOS = ['Studio 12','Studio 8','Studio 7','Studio 5','Studio 4','ABC','Campfield','London S1','Titan'];
+  var SITE = {'Studio 12':'Manchester','Studio 8':'Manchester','Studio 7':'Manchester','Studio 5':'Manchester',
+              'Studio 4':'Manchester','ABC':'Manchester','Campfield':'Manchester','London S1':'London','Titan':'London'};
+  var TEAM = [['andrew','Andrew Rowell'],['chris','Chris Warden'],['esther','Esther Brazil'],['ian','Ian Curry'],
+              ['lily','Lily Britten'],['nik','Nik Qerimi'],['sam','Sam Pickford'],['zoe','Zoe Evans']];
+  var ROTAS = [['ml','Morning Live TM'],['mlg','Morning Live Guarantee'],['shopon','ShopOn Engineer']];
+  var OFF = 'Break / Off Air', SEP = ', ';
+
+  function pad(n){ return (n < 10 ? '0' : '') + n; }
+  function trim(s){ return String(s == null ? '' : s).replace(/^\s+|\s+$/g, ''); }
+
+  /* the seven days, in UTC so a clock change cannot move one */
+  var a = String(mondayIso).split('-'), t0 = Date.UTC(+a[0], +a[1] - 1, +a[2]), D = [], i;
+  for (i = 0; i < 7; i++){
+    var dt = new Date(t0 + i * 864e5);
+    D.push({ iso: dt.getUTCFullYear() + '-' + pad(dt.getUTCMonth() + 1) + '-' + pad(dt.getUTCDate()),
+             month: MONTHS[dt.getUTCMonth()] + ' ' + dt.getUTCFullYear(),
+             day: dt.getUTCDate(),
+             last: new Date(Date.UTC(dt.getUTCFullYear(), dt.getUTCMonth() + 1, 0)).getUTCDate() });
+  }
+
+  function og(month, day, row){ var v = P[month + '|' + day + '|' + row]; return Array.isArray(v) ? v : []; }
+  function textOf(v){ return trim(typeof v === 'string' ? v : (v && typeof v.text === 'string' ? v.text : '')); }
+  /* a stretched entry: an object with span > 1 and some text */
+  function isBlock(v){ return !!(v && typeof v === 'object' && v.span > 1 && trim(v.text)); }
+  function firstBlock(vals){ for (var j = 0; j < vals.length; j++) if (isBlock(vals[j])) return vals[j]; return null; }
+
+  /* Which days of a month sit under a block that started earlier in that row.
+     The planner walks the month left to right: a covered day is not looked at
+     for a block of its own, only the first block in a cell stretches, and a
+     block stops at the end of its month. */
+  var covMemo = {};
+  function coverage(d, row){
+    var k = d.month + '|' + row;
+    if (covMemo[k]) return covMemo[k];
+    var cov = {}, day, n;
+    for (day = 1; day <= d.last; day++){
+      if (cov[day]) continue;
+      var b = firstBlock(og(d.month, day, row));
+      if (!b) continue;
+      var len = Math.min(b.span, d.last - day + 1);
+      for (n = 1; n < len; n++) cov[day + n] = b;
+    }
+    return (covMemo[k] = cov);
+  }
+
+  /* The colour the planner gives an entry. Its box holds the entry's text and
+     then its "In London" tag and crew count, and a one-off under a block on a
+     team row is followed by the day number, so the planner's rule reads all of
+     that. kind is how the planner draws it: 'block' a stretched entry, 'plain'
+     an ordinary one (which takes its row's class on Andrew's, Chris's, Ian's
+     and the ShopOn row), 'under' a one-off on a day a block already covers. */
+  var ROWCLS = { andrew: 'ops-andrew', chris: 'ops-chris', ian: 'ops-ian', shopon: 'ops-so' };
+  function tint(v, kind, d, row, studio){
+    var o = (v && typeof v === 'object') ? v : null, raw = typeof v === 'string' ? v : (o && typeof o.text === 'string' ? o.text : '');
+    var pick = (o && o.cls) ? String(o.cls) : '';
+    var cls = pick || ((kind === 'plain' && !studio && ROWCLS[row]) ? ROWCLS[row] : _vsPlannerChip(raw));
+    var tx = raw + (o && o.loc ? o.loc : '') + (o && o.crew && o.crew.length ? o.crew.length : '')
+           + ((kind === 'under' && !studio) ? ' ' + d.day : '');
+    return _vsPlannerTint(tx, pick, cls, row, (studio && kind === 'under') ? '' : (o && o.color));
+  }
+
+  /* What shows in a row on one day, in the order the planner stacks it */
+  function shown(d, row, studio){
+    var own = og(d.month, d.day, row), over = coverage(d, row)[d.day], out = [], seen = {}, j;
+    function add(v, kind){
+      var t = textOf(v);
+      if (t && !seen[t]){ seen[t] = 1; out.push({ text: t, v: v, c: tint(v, kind, d, row, studio) }); }
+    }
+    if (over){
+      add(over, 'block');                                    /* the block carrying on from an earlier day */
+      for (j = 0; j < own.length; j++){
+        if (studio && own[j] && typeof own[j] === 'object' && own[j].span > 1) continue;   /* studio rows drop a block inside a block */
+        add(own[j], 'under');                                /* one-offs on a covered day still show */
+      }
+    } else {
+      var b = firstBlock(own);
+      if (b) add(b, 'block');                                /* the block is drawn first */
+      for (j = 0; j < own.length; j++) if (own[j] !== b) add(own[j], 'plain');
+    }
+    return out;
+  }
+  function joined(list){ var s = []; for (var j = 0; j < list.length; j++) s.push(list[j].text); return s.join(SEP); }
+  /* the same entries one by one, each with its planner colour */
+  function parts(list){ var p = []; for (var j = 0; j < list.length; j++) p.push({ t: list[j].text, c: list[j].c }); return p; }
+
+  function inBreak(iso){
+    if (!breaks || !breaks.length) return false;
+    for (var j = 0; j < breaks.length; j++){ var b = breaks[j]; if (b && b.start && b.end && iso >= b.start && iso <= b.end) return true; }
+    return false;
+  }
+  /* Morning Live TM: one value a day and no stretching. Older values are {person,text}. */
+  function mlText(d){
+    if (inBreak(d.iso)) return OFF;
+    var v = og(d.month, d.day, 'ml')[0];
+    return trim(typeof v === 'string' ? v : (v && typeof v === 'object' ? (v.person || v.text || '') : '')) || null;
+  }
+
+  /* cells is what each day says; tints is the same day entry by entry, each
+     {t, c} with c the planner's colour for it */
+  var out = { days: [], studios: [], team: [], rotas: [] }, r, cells, tints, list;
+  for (i = 0; i < 7; i++) out.days.push(D[i].iso);
+
+  for (r = 0; r < STUDIOS.length; r++){
+    cells = []; tints = [];
+    for (i = 0; i < 7; i++){
+      list = shown(D[i], 'st_' + STUDIOS[r], true);
+      cells.push(joined(list) || null); tints.push(list.length ? parts(list) : null);
+    }
+    out.studios.push({ name: STUDIOS[r], site: SITE[STUDIOS[r]] || 'Other', cells: cells, tints: tints });
+  }
+
+  for (r = 0; r < TEAM.length; r++){
+    cells = [];
+    for (i = 0; i < 7; i++){
+      var row = TEAM[r][0], text;
+      list = shown(D[i], row, false); text = joined(list);
+      var lv = og(D[i].month, D[i].day, row + '_loc'), loc = lv.length ? (textOf(lv[0]) || 'London') : '';   /* the day's "In London" marker */
+      for (var j = 0; !loc && j < list.length; j++) if (list[j].v && typeof list[j].v === 'object' && list[j].v.loc) loc = String(list[j].v.loc);
+      var hotel = og(D[i].month, D[i].day, row + '_htl').length > 0;   /* a hotel booked for the night after this day */
+      cells.push((text || loc || hotel) ? { text: text, loc: loc, hotel: hotel, tints: parts(list) } : null);
+    }
+    out.team.push({ row: TEAM[r][0], name: TEAM[r][1], cells: cells });
+  }
+
+  for (r = 0; r < ROTAS.length; r++){
+    cells = []; tints = [];
+    for (i = 0; i < 7; i++){
+      if (ROTAS[r][0] === 'ml'){
+        var who = mlText(D[i]);
+        cells.push(who); tints.push(who ? [{ t: who, c: who === OFF ? '' : _vsPlannerTint(who, '', 'ops-ml', 'ml') }] : null);
+      } else {
+        list = shown(D[i], ROTAS[r][0], false);
+        cells.push(joined(list) || null); tints.push(list.length ? parts(list) : null);
+      }
+    }
+    out.rotas.push({ row: ROTAS[r][0], name: ROTAS[r][1], cells: cells, tints: tints });
+  }
+  return out;
+}
+/* Read the planner as the signed-in person and keep this week of it. The
+   planner's tables answer nothing to the public key, so this only works for
+   someone signed in who is on the planner's list; anyone else is told why
+   they do not see it. Returns false when a read is already under way. */
+async function _vsHomeWeekLoad(){
+  if(_vsHomeWeekBusy) return false;
+  /* a job-only login has no business with the planner, even if a staff
+     session is still sitting in this browser */
+  if(_vsHomeJobOnly()){ _vsHomeWeek=false; return true; }
+  _vsHomeWeekBusy=true;
+  var got=false;
+  try{
+    var rows=await _vsPlannerGet('planner_data?select=key,value&key=in.(opsPlanner,opsBrk)'), P=null, B=null;
+    (Array.isArray(rows)?rows:[]).forEach(function(r){ if(r.key==='opsPlanner') P=r.value; else if(r.key==='opsBrk') B=r.value; });
+    if(typeof P==='string'){ try{ P=JSON.parse(P); }catch(e){ P=null; } }
+    if(P && typeof P==='object'){
+      var mon=_vsHomeMonday();
+      _vsHomeWeek={at:Date.now(), monday:mon, data:_vsWeekFromPlanner(P, mon, Array.isArray(B)?B:null)};
+      _vsHomeWeekWhy='';
+      got=true;
+    } else {
+      /* an answer with nothing in it is the planner saying this account is
+         not on its list; no answer is no session, or a read that failed */
+      _vsHomeWeekWhy=Array.isArray(rows)?'access':'signin';
+      /* signed out, or taken off the list: nothing of the planner stays on screen */
+      if(Array.isArray(rows) || !(typeof _vsSessRead==='function' && _vsSessRead())) _vsHomeWeek=false;
+    }
+  }catch(e){ console.warn('planner week failed', e); _vsHomeWeekWhy='signin'; }
+  /* a week already on screen stays if a refresh merely fails, unless it is last week's */
+  if(!got && (!_vsHomeWeek || _vsHomeWeek.monday!==_vsHomeMonday())) _vsHomeWeek=false;
+  _vsHomeWeekBusy=false;
+  return true;
+}
+/* a row's cells as {t, sub, parts} or nothing, ready to draw. parts is the day
+   entry by entry, each with the colour it has in the planner. */
+function _vsHomeCells(rows, kind){
+  return rows.map(function(r){
+    return {name:r.name, cells:r.cells.map(function(c, i){
+      if(!c) return null;
+      if(kind==='team'){
+        var t=c.text||'Working';
+        return {t:t, sub:[c.loc?'In '+c.loc:'', c.hotel?'Hotel':''].filter(Boolean).join(', '),
+                parts:(c.tints&&c.tints.length)?c.tints:[{t:t, c:''}]};
+      }
+      if(kind==='rota' && /break|off air/i.test(c)) return null;
+      return {t:String(c), sub:'', parts:(r.tints&&r.tints[i]&&r.tints[i].length)?r.tints[i]:[{t:String(c), c:''}]};
+    })};
+  });
+}
+function _vsHomeHex(x){ return /^#[0-9a-f]{6}$/i.test(String(x||''))?String(x):''; }
+/* One day's entry as a block, or several side by side, in the planner's
+   colours. A block is a single line, so the whole of it is also its title. */
+function _vsHomeBlock(c, n, go){
+  var sub=c.sub?'<small>'+_vsEsc(c.sub)+'</small>':'', span=n>1?'grid-column:span '+n:'';
+  var tip=' title="'+_vsEsc(c.parts.map(function(p){ return p.t; }).join(', ')+(c.sub?' · '+c.sub:''))+'"';
+  if(c.parts.length===1){
+    var bg=_vsHomeHex(c.parts[0].c), css=[span, bg?'background:'+bg:''].filter(Boolean).join(';');
+    return '<button type="button" class="vsw-c'+(bg?' p':'')+'"'+(css?' style="'+css+'"':'')+tip+' onclick="'+go+'">'
+      + _vsEsc(c.parts[0].t)+sub+'</button>';
+  }
+  return '<button type="button" class="vsw-c st"'+(span?' style="'+span+'"':'')+tip+' onclick="'+go+'">'
+    + c.parts.map(function(p, i){
+        var b=_vsHomeHex(p.c);
+        return '<span class="vsw-ch'+(b?' p':'')+'"'+(b?' style="background:'+b+'"':'')+'>'+_vsEsc(p.t)+(i===0?sub:'')+'</span>';
+      }).join('')+'</button>';
+}
+function _vsHomeUsed(rows){ return rows.filter(function(r){ return r.cells.some(Boolean); }); }
+/* the grid: a row for each studio or person, a column for each day, with the
+   box's headline in its corner */
+function _vsHomeWeekGrid(days, rows, head){
+  var t=today(), go="nav('calendar')";
+  var same=function(c){ return c.sub+'\n'+c.parts.map(function(p){ return p.t+'\t'+p.c; }).join('\n'); };
+  var h='<div class="vsw-wk"><h3 class="vsw-hd">'+_vsEsc(head)+'</h3>'+days.map(function(d){
+    return '<span class="vsw-dh'+(d===t?' now':'')+'">'+_vsHomeDayLabel(d)+'</span>'; }).join('');
+  rows.forEach(function(row){
+    h+='<span class="vsw-rl">'+_vsEsc(row.name)+'</span>';
+    for(var i=0;i<7;){
+      var c=row.cells[i];
+      if(!c){ h+='<span class="vsw-c e'+(days[i]===t?' now':'')+'"></span>'; i++; continue; }
+      /* the same thing on days in a row is one block across them */
+      var n=1, k=same(c);
+      while(i+n<7 && row.cells[i+n] && same(row.cells[i+n])===k) n++;
+      h+=_vsHomeBlock(c, n, go);
+      i+=n;
+    }
+  });
+  return h+'</div>';
+}
+/* the same week as a list by day, which is what a phone shows */
+function _vsHomeWeekList(days, rows){
+  var t=today(), h='<div class="vsw-wkl">';
+  days.forEach(function(d,i){
+    var items=[];
+    rows.forEach(function(row){
+      var c=row.cells[i];
+      /* each entry behind a small square of its planner colour */
+      if(c) items.push('<span class="vsw-it"><em>'+_vsEsc(row.name)+'</em>'+c.parts.map(function(p){
+          var bg=_vsHomeHex(p.c);
+          return (bg?'<i class="vsw-sw" style="background:'+bg+'"></i>':'')+_vsEsc(p.t);
+        }).join(', ')+(c.sub?'<small>'+_vsEsc(c.sub)+'</small>':'')+'</span>');
+    });
+    if(items.length) h+='<div class="vsw-wd'+(d===t?' now':'')+'"><span class="vsw-d">'+_vsHomeDayLabel(d)+'</span><span>'+items.join('')+'</span></div>';
+  });
+  return h+'</div>';
+}
+function _vsHomeThisWeek(){
+  if(_vsHomeJobOnly()) return '';
+  var go="nav('calendar')", open='<section class="vsw-sec s-overview">';
+  if(!_vsHomeWeek){
+    return open+_vsHomeRule('This week','Planner',go)+'<div class="vsw-box"><div class="vsw-calm">'
+      + (_vsHomeWeek===null ? 'Reading the planner…'
+          : _vsHomeWeekWhy==='access' ? 'This account does not have access to the planner.'
+          : 'The planner could not be read. Sign in again to see this week.')
+      + '</div></div></section>';
+  }
+  var w=_vsHomeWeek.data, a=new Date(_vsHomeUtc(w.days[0])), b=new Date(_vsHomeUtc(w.days[6]));
+  var range=a.getUTCDate()+(a.getUTCMonth()!==b.getUTCMonth()?' '+_VS_HOME_MON[a.getUTCMonth()]:'')
+    + ' – '+b.getUTCDate()+' '+_VS_HOME_MON[b.getUTCMonth()];
+  /* Three boxes, each a week of its own: the studios, the team and the rotas.
+     A row is only there when it has something in it. A box's headline is a
+     block, as a row of the sidebar is: where a grid follows, the grid carries
+     it in its corner, and the copy above it is only for a phone, which shows
+     the list instead. */
+  var box=function(name, rows, empty){
+    return '<section class="vsw-box wk"><div class="vsw-bh'+(rows.length?' m':'')+'"><h3 class="vsw-hd">'+name+'</h3></div>'
+      + (rows.length ? _vsHomeWeekGrid(w.days,rows,name)+_vsHomeWeekList(w.days,rows) : '<div class="vsw-calm">'+empty+'</div>')+'</section>';
+  };
+  return open+_vsHomeRule('This week','Planner',go,range)+'<div class="vsw-grid">'
+    + box('Studios', _vsHomeUsed(_vsHomeCells(w.studios,'studio')), 'Nothing booked in any studio this week.')
+    + box('Team', _vsHomeUsed(_vsHomeCells(w.team,'team')), 'Nothing entered for the team this week.')
+    + box('Rotas', _vsHomeUsed(_vsHomeCells(w.rotas,'rota')), 'Nothing on the rotas this week.')
+    + '</div></section>';
+}
+
+/* ---- outstanding, and the to-do list ---- */
+/* Small tiles, as the report boxes have: what it is about on top, what is
+   outstanding underneath. Four at most, then one that says how many more. */
+function _vsHomeLists(){
+  var out=[];
+  _vsDashRunning().forEach(function(j){
+    if(j.status==='Cancelled' || !_vsHomeMay(j)) return;
+    var hods=Array.isArray(j.hods)?j.hods:[];
+    var gaps=hods.filter(function(x){ return !x || !String(x.name||'').replace(/\s+/g,''); }).length;
+    if(gaps) out.push({l:'Heads of department', v:(j.name||'Untitled job')+': '+gaps+' of '+hods.length+' empty', go:'openJobDet('+_vsEsc(JSON.stringify(j.id))+')'});
+  });
+  try{
+    var live=_vsKitLive();
+    var noPat=live.filter(function(k){ return !k.patNA && typeof kitPatStatus==='function' && kitPatStatus(k).label==='NO DATE'; }).length;
+    var strays=live.filter(function(k){ return !_vsKitFiled(k); }).length;
+    if(noPat) out.push({l:'PAT testing', v:noPat+(noPat===1?' item':' items')+' never tested', go:"nav('kit')"});
+    if(strays) out.push({l:'Categories', v:strays+(strays===1?' item':' items')+' without a category', go:"nav('kit')"});
+  }catch(e){}
+  var todos=(typeof _vsTodoAll==='function')?_vsTodoAll('action').filter(function(t){ return t && t.n && !t.n.done; }):[];
+  /* a to-do that is not filed against a show is General */
+  var td=todos.map(function(t){ return {l:t.where||'General', v:t.n.text||'', go:"nav('notes')"}; });
+  var box=function(cls,name,link,go,list,empty){
+    var tiles=list.slice(0,4).map(function(it){
+      return _vsHomeTile(it.l, '<span class="vsw-clamp">'+_vsEsc(it.v)+'</span>', {go:it.go, title:it.v});
+    }).join('');
+    if(list.length>4) tiles+=_vsHomeTile('More', (list.length-4)+' more', {go:go, cls:'idle', vcls:'quiet'});
+    return '<section class="vsw-sec '+cls+'">'+_vsHomeRule(name,link,go)+'<div class="vsw-box sm">'
+      + (list.length?'<div class="vsw-tiles">'+tiles+'</div>':'<div class="vsw-calm">'+empty+'</div>')+'</div></section>';
+  };
+  return '<div class="vsw-grid two">'+box('s-kit','Outstanding','Inventory',"nav('kit')",out,'Nothing outstanding.')
+    + box('s-overview','To do','Notes',"nav('notes')",td,'Nothing on the list.')+'</div>';
+}
+/* one section failing on an odd record must not take the others with it */
+function _vsHomePart(draw){
+  try{ return draw(); }
+  catch(e){
+    console.warn('dashboard section failed', e);
+    return '<section class="vsw-sec"><div class="vsw-box"><div class="vsw-calm">This section could not be drawn.</div></div></section>';
+  }
+}
+function _vsHomeBody(){
+  return '<div class="vsw">'+_vsHomePart(_vsHomeJobs)+_vsHomePart(_vsHomeReports)+_vsHomePart(_vsHomeThisWeek)
+    + _vsHomePart(_vsHomeLists)+'</div>';
+}
+/* Drawn only when something has changed, so a refresh does not take the
+   keyboard focus, or a click half made, away from whoever is using the page. */
+var _vsHomeHtml = '';
+function _vsHomeDraw(el){
+  var h=_vsHomeBody();
+  if(h===_vsHomeHtml && el.firstChild) return;
+  _vsHomeHtml=h; el.innerHTML=h;
+}
+/* A dashboard left open keeps itself current: every five minutes while it is
+   the page on screen, and when the tab comes back into view. Nothing is asked
+   for while it is hidden, on another page, or signed out. */
+function _vsHomeTick(){
+  try{
+    if(document.hidden || !_authToken) return;
+    if(!(typeof _vsIsSoft==='function' && _vsIsSoft())) return;
+    var pg=document.getElementById('page-dashboard');
+    if(pg && pg.classList.contains('active')) vsDashboard();
+  }catch(e){}
+}
+setInterval(_vsHomeTick, 300000);
+document.addEventListener('visibilitychange', function(){ if(!document.hidden) _vsHomeTick(); });
 
 function renderDash() {
   _vsApplyShowColours();
@@ -15849,6 +16838,9 @@ function vsKitRail(){
     var sc=(k.subcat||'').trim();
     if(sc) subs[c][sc]=(subs[c][sc]||0)+1;
   });
+  /* looking at every model on the Kit List, not only Versa's: count models */
+  var _ko=(typeof _vsKoAll==='function' && _vsKoAll()) ? _vsKoRailCounts() : null;
+  if(_ko){ cats=_ko.cats; subs=_ko.subs; }
   var row=function(type,value,label,count,cls){
     var on=(_vsKitSel.type===type&&_vsKitSel.value===value&&!_vsKitSel.sub);
     var v=encodeURIComponent(String(value));
@@ -15890,24 +16882,27 @@ function vsKitRail(){
     return out;
   }).join('');
 
+  /* The Overview, then the categories, which are what the list is chosen by.
+     The other views that used to stand in boxes above and below them are
+     still here, as plain lines underneath, so the categories are what shows. */
+  var hiredN=live.filter(function(k){return !!k.isHired;}).length;
+  var strayN=_ko ? _ko.stray : live.filter(function(k){return !_vsKitFiled(k);}).length;
   el.innerHTML=row('home','','Overview',null,'')
-    +row('own','','Versa\u2019s own kit',live.filter(function(k){return !k.isHired;}).length,'')
-    +row('hire','','Hired in for a show',live.filter(function(k){return !!k.isHired;}).length,'')
-    +row('all','','Everything',live.length)
-    +sec('Categories')+catRows
-    +sec('Where')
-    +Object.keys(locs).sort().map(function(l){return row('loc',l,l,locs[l]);}).join('')
-    +(function(){
-      var n=live.filter(function(k){return !_vsKitFiled(k);}).length;
-      return n ? sec('Not in the inventory tree')+row('stray','','Needs a category',n) : '';
-     })()
-    +sec('Maintenance')
-    +row('maint','rec','Service records',null)
-    +row('maint','repair','In repair',null)
-    +row('maint','pat','PAT testing',null)
-    +row('maint','sup','Suppliers',null)
-    +sec('Movements')
-    +row('maint','log','Logistics',null);
+    +sec('Categories')
+    +row('all','','All',_ko ? _ko.total : live.length)
+    +catRows
+    +'<div class="vko-more">'
+      +sec('Location')
+      +Object.keys(locs).sort().map(function(l){return row('loc',l,l,locs[l],'vko-q');}).join('')
+      +(strayN ? sec('Uncategorised')+row('stray','','Needs a category',strayN,'vko-q') : '')
+      +(hiredN ? sec('Hired in')+row('hire','','Hired in for a show',hiredN,'vko-q') : '')
+      +sec('Maintenance')
+      +row('maint','rec','Service records',null,'vko-q')
+      +row('maint','repair','In repair',null,'vko-q')
+      +row('maint','pat','PAT testing',null,'vko-q')
+      +row('maint','sup','Suppliers',null,'vko-q')
+      +row('maint','log','Logistics',null,'vko-q')
+    +'</div>';
 }
 
 /* Does this sit somewhere the inventory recognises? */
@@ -16212,6 +17207,9 @@ function vsKitList(){
   }
   var cnt=document.getElementById('vsKitCount');
   if(cnt) cnt.textContent=live.length+(live.length===1?' item':' items');
+  /* the plain lists are drawn one line per model, with Versa's units inside
+     it; a job, the hired-in list and the gaps keep their own layout */
+  if(typeof vsKoList==='function' && vsKoWants()){ vsKoList(el, live, _strayNote); return; }
   if(!live.length){
     el.innerHTML=_strayNote+'<div class="vsk-none">'+(q?'Nothing matches that.':'Nothing in here yet.')+'</div>';
     return;
@@ -16355,7 +17353,9 @@ function _vsKitThumb(items){
 }
 /* "Sony \u00b7 Radio TX" \u2014 who made it, then what it is. */
 function _vsKitWhat(k){
-  return [String(k.make||'').trim(), String(k.subcat||k.cat||'').trim()]
+  /* the make as the Kit List has it for this model, where the item is linked */
+  var h=_vsKitEntry(k);
+  return [String((h&&h.make)||k.make||'').trim(), String(k.subcat||k.cat||'').trim()]
     .filter(Boolean).join(' \u00b7 ');
 }
 function _vsKitCard(k){
@@ -16513,6 +17513,350 @@ function vsKitAddSub(cat,el){
       if(typeof toast==='function') toast('Added \u2014 drag kit onto it to fill it');
     }});
 }
+/* ── KIT ONE PAGE (begin) ──────────────────────────────────────────────
+   The Inventory page's lists, drawn as one line per model with Versa's own
+   units inside it. A model is a Kit List entry (hiredCatalogue); a unit is an
+   inventory item (kit) that points at its model by number (modelId). An item
+   that has not been linked yet stands as a model of its own, under its own
+   name, until it is. The rail, the Overview, the job views and Maintenance
+   are the Inventory page's own and are not touched. Every name here starts
+   vsKo / vko-. ?kitcards=1 puts the old cards back.                       */
+var _vsKoMode='own', _vsKoOpen='', _vsKoRows=[];
+/* the Kit List is one record, and a save of much more than this is cancelled */
+var VS_KO_ROW_MAX=1500000;
+
+/* which of the page's views are drawn this way */
+function vsKoWants(){
+  try{ if(/[?&]kitcards=1/.test(location.search)) return false; }catch(e){}
+  var t=_vsKitSel.type;
+  return t==='all'||t==='own'||t==='cat'||t==='loc'||t==='stray';
+}
+/* every model on the Kit List, not only the ones Versa has */
+function _vsKoAll(){
+  var t=_vsKitSel.type;
+  return _vsKoMode==='all' && vsKoWants() && (t==='all'||t==='cat'||t==='stray');
+}
+function _vsKoEntry(id){
+  return (typeof hiredCatalogue!=='undefined'?hiredCatalogue:[]).find(function(h){return h&&h.id===id;})||null;
+}
+function _vsKoKeyOf(k){
+  var h=_vsKitEntry(k);
+  return h ? 'm'+h.id : 'n'+(_vsKitSplitName(k).model+'|'+(k.cat||'')+'|'+(k.subcat||'')).toLowerCase();
+}
+function _vsKoOfEntry(h){
+  return {key:'m'+h.id, h:h, units:[], name:String(h.name||''), make:String(h.make||''), model:String(h.model||''),
+    cat:String(h.cat||''), sub:String(h.subcat||'').trim(), compat:String(h.compat||''), notes:String(h.notes||'')};
+}
+/* the items in hand, gathered under their models */
+function _vsKoFromItems(items){
+  var out=[], by={};
+  items.forEach(function(k){
+    var key=_vsKoKeyOf(k), m=by[key];
+    if(!m){
+      var h=_vsKitEntry(k);
+      m=by[key]=h ? _vsKoOfEntry(h) : {key:key, h:null, units:[], name:_vsKitSplitName(k).model,
+        make:String(k.make||''), model:String(k.model||''), cat:String(k.cat||''), sub:String(k.subcat||'').trim(), compat:'', notes:''};
+      out.push(m);
+    }
+    m.units.push(k);
+  });
+  return out;
+}
+/* every model: the ones Versa has, then the rest of the Kit List */
+function _vsKoEverything(){
+  var models=_vsKoFromItems(_vsKitLive()), has={};
+  models.forEach(function(m){ if(m.h) has[m.h.id]=true; });
+  (typeof hiredCatalogue!=='undefined'?hiredCatalogue:[]).forEach(function(h){
+    if(h&&!has[h.id]) models.push(_vsKoOfEntry(h));
+  });
+  return models;
+}
+/* filed by the inventory's own rule, so a model and an item are judged alike */
+function _vsKoFiled(m){ return _vsKitFiled({cat:m.cat, subcat:m.sub}); }
+/* what the rail counts when it is counting models */
+function _vsKoRailCounts(){
+  var cats={}, subs={}, stray=0, all=_vsKoEverything();
+  all.forEach(function(m){
+    var c=m.cat||'Uncategorised';
+    cats[c]=(cats[c]||0)+1;
+    if(!subs[c]) subs[c]={};
+    if(m.sub) subs[c][m.sub]=(subs[c][m.sub]||0)+1;
+    if(!_vsKoFiled(m)) stray++;
+  });
+  return {cats:cats, subs:subs, stray:stray, total:all.length};
+}
+function _vsKoPic(m){
+  var p=m.h&&m.h.photos&&m.h.photos[0];
+  if(p) return p;
+  for(var i=0;i<m.units.length;i++){ var u=m.units[i].photos&&m.units[i].photos[0]; if(u) return u; }
+  return '';
+}
+/* free, out or down, and the word that goes with it */
+function _vsKoState(k){
+  if(k.status==='Maintenance'||k.status==='Fault'||k.status==='In Repair') return {k:'maint', t:k.status};
+  var job=_vsKitJobName(k);
+  if(job) return {k:'busy', t:job};
+  if(k.inUse||k.status==='In Use') return {k:'busy', t:'In use'};
+  return {k:'ok', t:(!k.status||k.status==='Available')?'Available':k.status};
+}
+function _vsKoRedraw(){ vsKitRail(); vsKitList(); }
+/* "433 items \u00b7 ABC 314 \u00b7 Manchester 119" */
+function _vsKoSummary(){
+  var live=_vsKitLive(), loc={};
+  live.forEach(function(k){ var l=k.loc||'No location'; loc[l]=(loc[l]||0)+1; });
+  return live.length+(live.length===1?' item':' items')+Object.keys(loc).sort().map(function(l){ return ' \u00b7 '+_vsEsc(l)+' '+loc[l]; }).join('');
+}
+
+/* ── the list ── */
+function vsKoList(el, live, note){
+  var all=_vsKoAll(), t=_vsKitSel.type, q=_vsKitQ.trim().toLowerCase(), models;
+  if(_vsKoMode==='all' && !all) _vsKoMode='own';      /* a view of Versa's own items was asked for */
+  if(all){
+    models=_vsKoEverything().filter(function(m){
+      if(t==='cat'){
+        if((m.cat||'Uncategorised')!==_vsKitSel.value) return false;
+        if(_vsKitSel.sub && m.sub!==_vsKitSel.sub) return false;
+      } else if(t==='stray'){ if(_vsKoFiled(m)) return false; }
+      if(!q) return true;
+      return (m.name+' '+m.make+' '+m.model+' '+m.cat+' '+m.sub+' '+m.compat+' '+m.notes+' '
+        +m.units.map(function(k){return (k.name||'')+' '+(k.tag||'')+' '+(k.serial||'');}).join(' ')).toLowerCase().indexOf(q)>-1;
+    });
+    var cnt=document.getElementById('vsKitCount');
+    if(cnt) cnt.textContent=models.length+(models.length===1?' model':' models');
+  } else models=_vsKoFromItems(live);
+  var catView=(t==='cat');
+  models.sort(function(a,b){
+    return (catView ? (_vsKitSel.sub?0:String(a.sub).localeCompare(String(b.sub))) : String(a.cat).localeCompare(String(b.cat)))
+      || String(a.name).localeCompare(String(b.name),undefined,{numeric:true});
+  });
+  _vsKoRows=models;
+  var pics=models.some(function(m){ return !!_vsKoPic(m); });
+  var sw='<div class="vko-sw">'
+    +'<button class="'+(all?'':'on')+'" onclick="vsKoSetMode(\'own\')">Inventory</button>'
+    +'<button class="'+(all?'on':'')+'" onclick="vsKoSetMode(\'all\')">Everything</button>'
+    +'<span class="vko-gap">'+(all?'':_vsKoSummary())+'</span>'
+    +(all?'':'<button class="vko-add" onclick="vsKitViewCsv()">Export CSV</button>')
+    +'<button class="vko-add" onclick="vsKoAddModel(this)">+ Add a model</button>'
+  +'</div>';
+  var head='<div class="vko-hd">'+(pics?'<span></span>':'')+'<span>No.</span><span>Name</span><span>Make</span><span>Model</span>'
+    +'<span>'+(catView?'Sub-category':'Category')+'</span><span>Works with</span><span>Inventory</span></div>';
+  var rows=models.map(function(m,i){
+    var free=0; m.units.forEach(function(k){ if(_vsKoState(k).k==='ok') free++; });
+    var open=(_vsKoOpen===m.key), p=pics?_vsKoPic(m):'';
+    return '<button class="vko-row'+(open?' open':'')+'" onclick="vsKoToggle('+i+')">'
+      +(pics?'<span class="vko-th">'+(p?'<img src="'+_vsEsc(p)+'" alt="" loading="lazy" onerror="this.remove()">':'')+'</span>':'')
+      +'<span class="vko-num">'+(m.h?m.h.id:'')+'</span>'
+      +'<span class="vko-nm"><i>'+(open?'▾':'▸')+'</i>'+_vsEsc(m.name)+'</span>'
+      +'<span class="vko-dim">'+_vsEsc(m.make)+'</span><span class="vko-dim">'+_vsEsc(m.model)+'</span>'
+      +'<span class="vko-sc">'+_vsEsc(catView?(m.sub||'—'):(m.cat||'—'))+'</span>'
+      +'<span class="vko-dim">'+_vsEsc(m.compat)+'</span>'
+      +'<span class="vko-has">'+(m.units.length?('<small>'+free+' available</small><b>'+m.units.length+'</b>'):'')+'</span>'
+    +'</button>'+(open?_vsKoInside(m,i):'');
+  }).join('');
+  el.innerHTML=(note||'')+sw
+    +'<div class="vko-box'+(pics?' vko-pics':'')+'">'+head
+    +(rows||'<div class="vsk-none">'+(q?'No matches.':'No models in this category.')+'</div>')+'</div>';
+}
+
+/* an opened model: what it is on the left, Versa's own on the right */
+function _vsKoInside(m,i){
+  var h=m.h, box=function(label,inner,cls){ return '<label class="vko-f'+(cls?' '+cls:'')+'"><b>'+label+'</b>'+inner+'</label>'; };
+  var about, photos='';
+  if(h){
+    var id=h.id, cats=(typeof KIT_SUBCATS!=='undefined')?Object.keys(KIT_SUBCATS):[];
+    if(h.cat&&cats.indexOf(h.cat)<0) cats.push(h.cat);
+    var subs=((typeof KIT_SUBCATS!=='undefined'&&KIT_SUBCATS[h.cat])?KIT_SUBCATS[h.cat]:[]).slice();
+    if(m.sub&&subs.indexOf(m.sub)<0) subs.push(m.sub);
+    var txt=function(f,v){ return '<input value="'+_vsEsc(v)+'" placeholder="—" onchange="vsKoSet('+id+',\''+f+'\',this.value)">'; };
+    var area=function(f,v){ return '<textarea rows="1" placeholder="—" onchange="vsKoSet('+id+',\''+f+'\',this.value)">'+_vsEsc(v)+'</textarea>'; };
+    photos=(Array.isArray(h.photos)?h.photos:[]).map(function(p,pi){
+        return '<span class="vko-p"><img src="'+_vsEsc(p)+'" alt="" loading="lazy" onerror="this.parentNode.classList.add(\'vko-pbad\')">'
+          +'<button class="vko-px" title="Remove this photo" onclick="vsKoPhotoRemove('+id+','+pi+')">×</button></span>';
+      }).join('')
+      +'<label class="vko-p vko-pnew" title="Choose a photo from this computer or phone">+ Add a photo'
+        +'<input type="file" accept="image/*" onchange="vsKoPhotoAdd('+id+',this.files&&this.files[0]);this.value=\'\'"></label>'
+      +'<button class="vko-lk" onclick="vsKoPhotoLink('+id+',this)">Add a link</button>';
+    about='<div class="vko-ab">'
+      +box('Name',txt('name',m.name))+box('Make',txt('make',m.make))+box('Model',txt('model',m.model))
+      +box('Category','<select onchange="vsKoSetCat('+id+',\'cat\',this.value)"><option value="">—</option>'
+        +cats.map(function(c){return '<option'+(c===h.cat?' selected':'')+'>'+_vsEsc(c)+'</option>';}).join('')+'</select>')
+      +box('Sub-category','<select onchange="vsKoSetCat('+id+',\'subcat\',this.value)"><option value="">—</option>'
+        +subs.map(function(s){return '<option'+(s===m.sub?' selected':'')+'>'+_vsEsc(s)+'</option>';}).join('')+'</select>')
+      +box('Works with',area('compat',m.compat),'vko-t')+box('Notes',area('notes',m.notes),'vko-t')
+      +'</div>'
+      +(m.units.length?'':'<button class="vko-lk vko-rm" onclick="vsKoRemove('+id+')">Remove this model</button>');
+  } else {
+    var ro=function(v){ return '<span>'+(_vsEsc(v)||'—')+'</span>'; };
+    var up=_vsKoPic(m);
+    photos=up?'<span class="vko-p"><img src="'+_vsEsc(up)+'" alt="" loading="lazy" onerror="this.parentNode.classList.add(\'vko-pbad\')"></span>':'';
+    about='<div class="vko-ab">'+box('Name',ro(m.name),'vko-ro')+box('Make',ro(m.make),'vko-ro')+box('Model',ro(m.model),'vko-ro')
+      +box('Category',ro(m.cat),'vko-ro')+box('Sub-category',ro(m.sub),'vko-ro')+'</div>'
+      +'<div class="vko-note">Not yet on the Kit List.</div>'
+      +'<button class="vko-lk" onclick="vsKoAdopt('+i+')">Add to the Kit List</button>';
+  }
+  var free=0, out=0, down=0, tiles=m.units.slice().sort(function(a,b){
+      return String(a.name||'').localeCompare(String(b.name||''),undefined,{numeric:true});
+    }).map(function(k,ui){
+      var st=_vsKoState(k), no=_vsKitSplitName(k).no||String(ui+1);
+      if(st.k==='ok') free++; else if(st.k==='maint') down++; else out++;
+      return '<button class="vko-u" draggable="true" ondragstart="vsKitDrag(event,\'item\','+k.id+')" onclick="openDrawer('+k.id+')" title="'+_vsEsc(k.name||'')+'">'
+        +'<span class="vko-no">'+_vsEsc(no)+'<i>No. '+k.id+'</i></span><span class="vko-wh">'+_vsEsc(k.loc||'No location')+'</span>'
+        +'<span class="vko-st"><span class="vsk-dot k-'+st.k+'"></span>'+_vsEsc(st.t)+'</span>'
+        +((k.tag||k.serial)?'<span class="vko-tg">'+_vsEsc(k.tag||k.serial)+'</span>':'')+'</button>';
+    }).join('');
+  var n=m.units.length;
+  return '<div class="vko-in">'
+    +'<div class="vko-pn"><div class="vko-pt">Model details</div><div class="vko-abw">'
+      +'<div class="vko-ph">'+photos+'</div><div class="vko-abr">'+about+'</div></div></div>'
+    +'<div class="vko-pn"><div class="vko-pt">Inventory <b>'+n+'</b>'+(n?'<span>'+[free?free+' available':'', out?out+' in use':'', down?down+' in maintenance':''].filter(Boolean).join(' · ')+'</span>':'')+'</div>'
+      +(n?'':'<div class="vko-note">None in the inventory.</div>')
+      +'<div class="vko-us">'+tiles+(h?'<button class="vko-u vko-unew" onclick="vsKoAddUnit('+h.id+')">+ Add an item</button>':'')+'</div></div>'
+  +'</div>';
+}
+
+/* ── what the page does ── */
+function vsKoSetMode(mode){
+  _vsKoMode=(mode==='all')?'all':'own'; _vsKoOpen='';
+  if(_vsKoMode==='all'){ var t=_vsKitSel.type; if(!(t==='all'||t==='cat'||t==='stray')) _vsKitSel={type:'all',value:'',sub:''}; }
+  _vsKoRedraw();
+}
+function vsKoToggle(i){
+  var m=_vsKoRows[i]; if(!m) return;
+  _vsKoOpen=(_vsKoOpen===m.key)?'':m.key;
+  vsKitList();
+}
+/* The model's own details live on the Kit List entry and nowhere else, so a
+   change here is the change everywhere the model is named. */
+function vsKoSet(id,field,val){
+  var h=_vsKoEntry(id); if(!h) return;
+  val=String(val==null?'':val).trim();
+  if(field==='name'&&!val){ vsKitList(); return; }       /* a model has to be called something */
+  if(String(h[field]==null?'':h[field])===val) return;
+  h[field]=val;
+  saveData(); _vsKoRedraw();
+}
+/* Where a model is filed is where its units are filed: the rest of the
+   Dashboard sorts items by their own category, so they move with it. */
+function vsKoSetCat(id,field,val){
+  var h=_vsKoEntry(id); if(!h) return;
+  val=String(val||'');
+  if(field==='cat'){
+    if((h.cat||'')===val) return;
+    h.cat=val;
+    if(h.subcat && ((typeof KIT_SUBCATS!=='undefined'&&KIT_SUBCATS[val])||[]).indexOf(h.subcat)<0) h.subcat='';
+  } else {
+    if((h.subcat||'')===val) return;
+    h.subcat=val;
+  }
+  (typeof kit!=='undefined'?kit:[]).forEach(function(k){ if(k&&k.modelId===id){ k.cat=h.cat; k.subcat=h.subcat||''; } });
+  saveData(); _vsKoRedraw();
+}
+function vsKoAddModel(el){
+  var t=_vsKitSel.type, cat=(t==='cat')?_vsKitSel.value:'', sub=(t==='cat')?(_vsKitSel.sub||''):'';
+  if(!cat || typeof KIT_SUBCATS==='undefined' || !KIT_SUBCATS[cat]){
+    try{ toast('Select a category first'); }catch(e){}
+    return;
+  }
+  vsAsk({label:'New model', value:'', placeholder:'Canon CJ25ex7.6B…', anchor:el, okLabel:'Add',
+    hint:'Category: '+cat+(sub?' · '+sub:''), onOk:function(name){
+      name=(name||'').trim(); if(!name) return;
+      var id=_vsCatNextId();
+      hiredCatalogue.push({id:id, cat:cat, subcat:sub, name:name, make:'', model:'', notes:'', compat:''});
+      _vsKoMode='all'; _vsKoOpen='m'+id;      /* Versa has none yet, so it is only in the full list */
+      saveData(); _vsKoRedraw();
+    }});
+}
+/* Only a model Versa has none of can go, and the undo is the safety. */
+function vsKoRemove(id){
+  var i=hiredCatalogue.findIndex(function(h){return h&&h.id===id;}); if(i<0) return;
+  if((typeof kit!=='undefined'?kit:[]).some(function(k){return k&&k.modelId===id;})) return;
+  _vsCatTopId();   /* its number stays taken */
+  var gone=hiredCatalogue.splice(i,1)[0];
+  _vsKoOpen='';
+  saveData(); _vsKoRedraw();
+  _vsUndoBar('Removed '+(gone.name||'it'), function(){
+    hiredCatalogue.splice(Math.min(i,hiredCatalogue.length),0,gone);
+    saveData(); _vsKoRedraw();
+  });
+}
+/* A new unit is made inside its model, so it is linked from the start. */
+function vsKoAddUnit(id){
+  var h=_vsKoEntry(id); if(!h) return;
+  var mine=kit.filter(function(k){return k&&k.modelId===id;}), top=0;
+  mine.forEach(function(k){ var n=parseInt(_vsKitSplitName(k).no,10); if(n>top) top=n; });
+  if(!top) top=mine.length;
+  var k={id:nextKid++, name:String(h.name||'Item')+' '+(top+1), cat:h.cat||'', subcat:h.subcat||'', loc:'',
+    make:h.make||'', model:h.model||'', serial:'', tag:'', status:'Available', cond:'Good', notes:'',
+    history:[], tl:[], isHired:false, modelId:id};
+  kit.push(k);
+  try{ activity.unshift({icon:'➕',text:'Added: '+k.name,time:'Just now'}); }catch(e){}
+  saveData(); _vsKoRedraw();
+  try{ openDrawer(k.id); }catch(e){}
+}
+/* Put an unlinked model on the Kit List, and link every unit of it. */
+function vsKoAdopt(i){
+  var m=_vsKoRows[i]; if(!m||m.h||!m.units.length) return;
+  var first=m.units[0], id=_vsCatNextId(), mk=String(first.make||'').trim();
+  if(/^n\/a$/i.test(mk)) mk='';
+  hiredCatalogue.push({id:id, cat:first.cat||'', subcat:String(first.subcat||'').trim(), name:m.name, make:mk, model:'', notes:'', compat:''});
+  kit.forEach(function(k){ if(k&&!k.modelId&&_vsKoKeyOf(k)===m.key) k.modelId=id; });
+  _vsKoOpen='m'+id;
+  saveData(); _vsKoRedraw();
+}
+function _vsKoPhotoPush(id,src){
+  var h=_vsKoEntry(id); if(!h) return false;
+  if(!Array.isArray(h.photos)) h.photos=[];
+  if(h.photos.length>=4){ try{ toast('A model can have four photos. Remove one to add another.'); }catch(e){} return false; }
+  var size=0; try{ size=JSON.stringify(hiredCatalogue).length; }catch(e){}
+  if(size+src.length>VS_KO_ROW_MAX){ try{ toast('Photo not added: the Kit List has reached its size limit. Add a link instead.'); }catch(e){} return false; }
+  h.photos.push(src);
+  saveData(); vsKitList();
+  return true;
+}
+/* A photo from a file is made small before it is kept: 800 across at most. */
+function vsKoPhotoAdd(id,file){
+  if(!file) return;
+  var r=new FileReader();
+  r.onerror=function(){ try{ toast('That file could not be read.'); }catch(e){} };
+  r.onload=function(){
+    var im=new Image();
+    im.onerror=function(){ try{ toast('That file is not a readable image.'); }catch(e){} };
+    im.onload=function(){
+      var url='';
+      try{
+        var w=im.naturalWidth||im.width, hh=im.naturalHeight||im.height, sc=Math.min(1,800/Math.max(w,hh,1));
+        var cv=document.createElement('canvas'); cv.width=Math.max(1,Math.round(w*sc)); cv.height=Math.max(1,Math.round(hh*sc));
+        var cx=cv.getContext('2d');
+        cx.fillStyle='#fff'; cx.fillRect(0,0,cv.width,cv.height);
+        cx.drawImage(im,0,0,cv.width,cv.height);
+        url=cv.toDataURL('image/jpeg',0.72);
+      }catch(e){ url=''; }
+      if(url.indexOf('data:image/jpeg')!==0){ try{ toast('The photo could not be processed.'); }catch(e){} return; }
+      _vsKoPhotoPush(id,url);
+    };
+    im.src=r.result;
+  };
+  r.readAsDataURL(file);
+}
+function vsKoPhotoLink(id,el){
+  vsAsk({label:'Photo link', value:'', placeholder:'https://…', anchor:el, okLabel:'Add', onOk:function(v){
+    v=(v||'').trim(); if(!v) return;
+    if(!/^https?:\/\//i.test(v)){ try{ toast('Enter a link starting with https://'); }catch(e){} return; }
+    _vsKoPhotoPush(id,v);
+  }});
+}
+function vsKoPhotoRemove(id,i){
+  var h=_vsKoEntry(id); if(!h||!Array.isArray(h.photos)||i<0||i>=h.photos.length) return;
+  var gone=h.photos.splice(i,1)[0];
+  saveData(); vsKitList();
+  _vsUndoBar('Photo removed', function(){
+    var h2=_vsKoEntry(id); if(!h2) return;
+    if(!Array.isArray(h2.photos)) h2.photos=[];
+    h2.photos.splice(Math.min(i,h2.photos.length),0,gone);
+    saveData(); vsKitList();
+  });
+}
+/* ── KIT ONE PAGE (end) ── */
 var _vsKitOpen='';
 function vsKitToggleGroup(key){
   /* the key arrives encoded, because a model name can hold a quote \u2014
@@ -17014,15 +18358,15 @@ function vsKitHome(){
       + '</div>'
     + '</div>';
 
-  var checks = stat(noTag,'without an asset number','vsKitSelect(\'gap\',\'tag\')')
+  var checks = stat(noTag,'No asset number','vsKitSelect(\'gap\',\'tag\')')
              + stat(patOver,'PAT overdue','vsKitSelect(\'gap\',\'patover\')')
              + stat(patSoon,'PAT due within a month','vsKitSelect(\'gap\',\'patsoon\')')
-             + stat(patNone,'never PAT tested','vsKitSelect(\'gap\',\'patnone\')')
-             + stat(noMakeModel,'no make or model','vsKitSelect(\'gap\',\'make\')')
-             + stat(noPhoto,'no photograph','vsKitSelect(\'gap\',\'photo\')');
-  if(checks) html+='<div class="vsh-sec">Worth a look</div><div class="vsh-stats">'+checks+'</div>';
+             + stat(patNone,'No PAT test recorded','vsKitSelect(\'gap\',\'patnone\')')
+             + stat(noMakeModel,'No make or model','vsKitSelect(\'gap\',\'make\')')
+             + stat(noPhoto,'No photograph','vsKitSelect(\'gap\',\'photo\')');
+  var checksHtml=checks ? '<div class="vsh-sec">Records to complete</div><div class="vsh-stats">'+checks+'</div>' : '';
 
-  html+='<div class="vsh-sec">Categories</div><div class="vsh-wbs">'
+  var catsHtml='<div class="vsh-sec">Categories</div><div class="vsh-wbs">'
     + Object.keys(cats).sort(function(a,b){ return cats[b]-cats[a]; }).map(function(c){
         return '<button class="vsh-wb" onclick="vsKitSelect(\'cat\',\''+encodeURIComponent(String(c))+'\')">'
           +'<span class="vsh-wl">'+_vsEsc(c)+'</span>'
@@ -17048,7 +18392,7 @@ function vsKitHome(){
   };
   var onJobs=_vsJobsWithKit();
   if(onJobs.length){
-    html+='<div class="vsh-sec">Allocation</div><div class="vsh-wbs vsh-jobs">'
+    html+='<div class="vsh-sec">Jobs</div><div class="vsh-wbs vsh-jobs">'
       + onJobs.map(function(x){ return jobBox(x,false); }).join('')
       + '</div>';
   }
@@ -17058,28 +18402,30 @@ function vsKitHome(){
     .filter(function(x){ return x.items.length; })
     .sort(function(a,b){ return String(b.job.end||'').localeCompare(String(a.job.end||'')); });
   if(doneJobs.length){
-    html+='<div class="vsh-sec">Previous allocations</div><div class="vsh-wbs vsh-jobs">'
+    html+='<div class="vsh-sec">Previous jobs</div><div class="vsh-wbs vsh-jobs">'
       + doneJobs.map(function(x){ return jobBox(x,true); }).join('')
       + '</div>';
   }
 
-  html+='<div class="vsh-sec">Where it is</div><div class="vsh-wbs">'
+  /* the jobs come first; then what there is, where it is, and what the records lack */
+  html+=catsHtml+'<div class="vsh-sec">Location</div><div class="vsh-wbs">'
     + Object.keys(locs).sort(function(a,b){ return locs[b]-locs[a]
         || String(a).localeCompare(String(b)); }).map(function(l){
         /* an empty store says so rather than showing a nought */
         return '<button class="vsh-wb'+(locs[l]?'':' vsh-empty')+'" '
           +'onclick="vsKitSelect(\'loc\',\''+encodeURIComponent(String(l))+'\')">'
           +'<span class="vsh-wl">'+_vsEsc(l)+'</span>'
-          +'<span class="vsh-wn">'+(locs[l]||'Nothing here')+'</span>'
+          +'<span class="vsh-wn">'+(locs[l]||'None')+'</span>'
         +'</button>';
       }).join('')
     +'</div>';
 
+  html+=checksHtml;
   var strays=live.filter(function(k){ return !_vsKitFiled(k); }).length;
   if(strays){
-    html+='<div class="vsh-sec">Needs a category</div><div class="vsh-wbs">'
+    html+='<div class="vsh-sec">Uncategorised</div><div class="vsh-wbs">'
       +'<button class="vsh-wb" onclick="vsKitSelect(\'stray\',\'\')">'
-      +'<span class="vsh-wl">Not in the inventory tree</span>'
+      +'<span class="vsh-wl">Needs a category</span>'
       +'<span class="vsh-wn">'+strays+'</span></button></div>';
   }
 
@@ -20655,7 +22001,9 @@ function renderJobs() {
   var f=window._jobFilter||'active';
 
   // Base access filter — applied to every view
+  var _only=_vsJobOnlyId();
   function _passesAccess(j){
+    if(_only!==null && String(j.id)!==_only) return false;   // a job-only login has one job
     if(loc && j.loc!==loc) return false;
     if(CU && CU.role==='Crew' && CU.allowedJobs){
       var nm=(j.name||'').toLowerCase();
@@ -20707,6 +22055,10 @@ function renderJobs() {
 
   // Archived jobs sit under a divider beneath Past, and beneath All
   var extraArchived = (f==='past'||f==='all') ? cats.archived.slice() : [];
+  /* Previous jobs sit under the current and upcoming ones as small boxes: one
+     glance away without filling the page. The Past filter still shows them
+     at full size, with the archived ones. */
+  var extraPast = (f==='active') ? cats.past.slice() : [];
 
   var el=document.getElementById('jobsGrid');
   if(!el) return;
@@ -20737,7 +22089,7 @@ function renderJobs() {
   });
   if(_migrated)saveData();
 
-  if(!filtered.length && !extraArchived.length){
+  if(!filtered.length && !extraArchived.length && !extraPast.length){
     var empty=document.createElement('div');
     empty.className='empty'; empty.style.gridColumn='1/-1';
     var emptyMsg = {
@@ -20808,6 +22160,21 @@ function renderJobs() {
     });
     archSec.appendChild(archGrid);
     el.appendChild(archSec);
+  }
+  if(extraPast.length){
+    var pastSec=document.createElement('div');
+    pastSec.className='vs-prevsec';
+    pastSec.style.cssText='grid-column:1/-1;margin-top:24px;border-top:2px solid var(--border);padding-top:16px';
+    pastSec.innerHTML='<div style="font-family:var(--cond);font-size:14px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:12px">Previous jobs ('+extraPast.length+')</div>';
+    var pastGrid=document.createElement('div');
+    /* the same cards as the current jobs, drawn smaller (.vs-prevgrid); the
+       older themes have no such card, so they keep a plain small box */
+    var softPrev=(typeof _vsIsSoft==='function' && _vsIsSoft());
+    if(softPrev) pastGrid.className='jobs-grid vs-prevgrid';
+    else pastGrid.style.cssText='display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px';
+    extraPast.forEach(function(j){ pastGrid.appendChild(softPrev ? _vsJobsCard(j,'') : _vsPrevCard(j)); });
+    pastSec.appendChild(pastGrid);
+    el.appendChild(pastSec);
   }
 }
 
@@ -20895,6 +22262,42 @@ function archiveJob(jid){
 function unarchiveJob(jid){
   var j=jobs.find(function(x){return x.id===jid;});if(!j)return;
   j.archived=false;saveData();toast('Restored: '+j.name);renderJobs();
+}
+/* For a job that never happened. Archive is for one that did, and keeps it
+   under Past; this takes the job's row out of the database, with its pictures
+   and its notes, so only an admin is offered it and it asks first. Nothing is
+   called deleted until the database, asked again, no longer has the row:
+   otherwise the job goes back in the list and the page says so, rather than
+   showing as gone a job that returns on the next load. */
+async function deleteJob(jid){
+  if(!(CU && CU.role==='Admin') || _vsJobOnlyId()!==null) return;
+  var at=jobs.findIndex(function(x){return x && String(x.id)===String(jid);}); if(at<0) return;
+  var j=jobs[at], key=_vsJobKey(j.id);
+  if(!_appReady || _vsSaving){ toast((_appReady?'Still saving':'Still loading')+'. Try again in a moment.'); return; }
+  if(!confirm('Delete "'+j.name+'"?\n\nThis removes the job, its pictures and its notes for good. It cannot be undone.\n\nFor a job that took place, use Archive instead.')) return;
+  jobs.splice(at,1);   // out of the list first, so a save already on its way cannot write it back
+  var gone=false;
+  try{
+    await _sbDel(key);
+    var r=await fetch(_SB_URL+'/rest/v1/app_data?select=key&key=eq.'+encodeURIComponent(key),{headers:_sbHeaders()});
+    var d=r.ok ? await r.json() : null;
+    gone=Array.isArray(d) && d.length===0;
+  }catch(e){}
+  if(!gone){
+    jobs.splice(Math.min(at,jobs.length),0,j);
+    toast('"'+j.name+'" may not have been deleted. Reload the page to check.');
+    return;
+  }
+  delete _vsJobRowKeys[key]; delete _vsLastSaved[key]; delete _vsRowVer[key]; delete _vsConflicts[key];
+  /* its pictures have rows of their own, which nothing reads once the job has gone */
+  if(/^\d+$/.test(String(j.id))){
+    try{ fetch(_SB_URL+'/rest/v1/app_data?key=like.'+encodeURIComponent('pic:'+j.id+':*'),{method:'DELETE',headers:_sbHeaders()}).catch(function(){}); }catch(e){}
+  }
+  if(jobNotes && jobNotes[j.id]){ delete jobNotes[j.id]; saveData(); }
+  if(String(currentJid)===String(j.id)) currentJid=null;
+  if(_jdCurrentJob===j) _jdCurrentJob=null;
+  toast('Deleted: '+j.name);
+  nav('jobs', document.querySelector('[data-pg="jobs"]'));
 }
 // openJobDet now in job detail section
 function jobStatusBadge(s) {
@@ -21187,6 +22590,8 @@ var _auSub = 'setup'; // active Audio sub-tab
 var _mvSrcSel = null; // currently-selected source chip in the MV designer
 
 function openJobDet(id, _name) {
+  var _only=_vsJobOnlyId();
+  if(_only!==null && String(id)!==_only) return;   // a job-only login opens its own job and no other
   var j=_name?jobs.find(function(x){return x.id==id&&x.name==_name;}):null;
   if(!j)j=jobs.find(function(x){return x.id==id;}); if(!j) return;
   // Ensure extended fields
@@ -21205,11 +22610,13 @@ function openJobDet(id, _name) {
   closeDrawer();
   nav('jobdet', null);
   /* the hero already carries the job's name */
-  document.getElementById('topTitle').textContent = '';
+  document.getElementById('topTitle').textContent = _only!==null ? 'View only' : '';
   renderJobDet(j);
 }
 
 function renderJobDet(j) {
+  /* some buttons draw a job without going through openJobDet() */
+  if(_vsJobOnlyId()!==null && String(j&&j.id)!==_vsJobOnlyId()) return;
   _vsApplyShowColours();
   _jdCurrentJob = j; // track for async Trello re-renders
   /* its pictures are kept beside it: put back the ones already here and
@@ -22607,6 +24014,9 @@ function renderJobDet(j) {
   _jdActions.push({label:'Export job sheet', act:'vsJobExportSheet('+j.id+')'});
   if(isAdmin) _jdActions.push({label:'Export as plain text', act:'exportJobData('+j.id+')'});
   _jdActions.push({label:'Archive job',   act:'archiveJob('+j.id+')', danger:true});
+  if(isAdmin) _jdActions.push({label:'Delete job',    act:'deleteJob('+j.id+')', danger:true});
+  /* a job-only login looks, so it keeps the two that only read */
+  if(_vsJobOnlyId()!==null) _jdActions=_jdActions.filter(function(a){ return /^(printJobPDF|vsJobExportSheet)\(/.test(a.act); });
   var _jdHidden=hiddenCount||0;
   var _heroActions='<div class="vs-jd-tools">'
     +'<button class="vs-gear" type="button" aria-haspopup="true" aria-expanded="false"'

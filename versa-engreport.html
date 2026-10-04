@@ -701,7 +701,18 @@ function toast(m){var t=document.createElement('div');t.style.cssText='position:
 
 async function erSubmit(){
   const vtm=document.getElementById('erVTM').value.trim(),bbc=document.getElementById('erBBC').value,urgent=document.getElementById('erUrgent').value,urgTxt=document.getElementById('erUrgTxt').value.trim(),isSTR=_erSummaryMode==='str',sumTxt=isSTR?document.getElementById('erSummaryTxt').value.trim():'',tagNames=_erTags.map(id=>{const k=_erKitData.find(x=>x.id===id);return k?k.name+' ('+k.tag+')':'';}).filter(Boolean),showDate=_erUseTodayDate?new Date().toISOString().split('T')[0]:_erSelectedDate;
-  await erSaveReport({versa_tech_manager:vtm,bbc_tech_manager:bbc,show_date:showDate,show_name:(document.getElementById('erShowSel')?document.getElementById('erShowSel').value:'Morning Live (ABC)'),summary_mode:_erSummaryMode,summary_text:sumTxt,tagged_kit:_erTags,tagged_kit_names:tagNames,urgent_action:urgent,urgent_details:urgTxt,submitted_at:new Date().toISOString()});
+  /* The success screen used to appear whether or not the save worked, so a
+     report lost to a bad signal still read as submitted. */
+  const _btn=document.getElementById('erSubmitBtn');
+  if(_btn){_btn.disabled=true;_btn.textContent='Saving\u2026';}
+  const _saved=await erSaveReport({versa_tech_manager:vtm,bbc_tech_manager:bbc,show_date:showDate,show_name:((document.getElementById('erShowSel')||{}).value||'Morning Live'),summary_mode:_erSummaryMode,summary_text:sumTxt,tagged_kit:_erTags,tagged_kit_names:tagNames,urgent_action:urgent,urgent_details:urgTxt,submitted_at:new Date().toISOString()});
+  if(!_saved){
+    const _txt=document.getElementById('erStatusTxt');
+    if(_txt)_txt.textContent='Not saved \u2014 check the connection and submit again';
+    if(_btn){_btn.disabled=false;_btn.textContent='Not saved \u2014 submit again';}
+    toast('Report not saved. Nothing entered has been lost.');
+    return;
+  }
   if(isSTR)erSendEmail({show_date:showDate,versa_tech:vtm,bbc_tech:bbc,summary:sumTxt||'(no details)',urgent,urgent_details:urgTxt||'--',tagged_kit:tagNames.join(', ')||'None',submitted_at:new Date().toLocaleString('en-GB')});
   // Auto-create Tech Log entry for STR
   if(isSTR && sumTxt){
