@@ -36172,19 +36172,26 @@ function vceLists(){
   });
   return {move: move, merge: merge};
 }
+/* What is listed in a place: its Kit List models, and any inventory item that
+   is on no model. An item linked to a model is one of that model's, so it is
+   counted beside the model and not listed again on its own. */
+function vceShown(place){
+  var c = VCE.counts;
+  return vceThings(VCE.st, place, c).filter(function(r){ return !c.leader[r]; });
+}
 /* what is filed in a place, each with a box to tick, ready to be cut */
 function vceInside(place){
-  var refs = vceThings(VCE.st, place, VCE.counts), c = VCE.counts;
+  var refs = vceShown(place), c = VCE.counts;
   if(!refs.length) return '<div class="vce-in"><p class="vce-calm">Nothing is filed directly here.</p></div>';
   refs.sort(function(a, b){ return (c.kindOf[a] === c.kindOf[b] ? 0 : c.kindOf[a] === 'models' ? -1 : 1) || c.nameOf[a].localeCompare(c.nameOf[b]); });
   var ticked = refs.filter(function(r){ return VCE.tick[r]; }).length;
   var h = '<div class="vce-in"><div class="vce-inh"><button type="button" class="vce-btn sm" data-vce="tick-all" data-id="' + place.id + '"' + vceK(place.id + '|tick-all') + '>' + (ticked === refs.length ? 'Clear' : 'Select all') + '</button>'
     + '<button type="button" class="vce-btn sm go" data-vce="cut" data-id="' + place.id + '"' + (ticked ? '' : ' disabled') + vceK(place.id + '|cut') + '>Cut' + (ticked ? ' ' + ticked : '') + '</button>'
-    + '<span class="vce-sum">Tick what should move, choose Cut, then Paste on the place it should go.</span></div><div class="vce-tl">';
+    + '<span class="vce-sum">Tick what should move, choose Cut, then Paste on the place it should go. A model takes its inventory with it.</span></div><div class="vce-tl">';
   refs.forEach(function(r){
-    var cut = VCE.clip.indexOf(r) >= 0;
+    var cut = VCE.clip.indexOf(r) >= 0, has = (c.followers[r] || []).length;
     h += '<label class="vce-th' + (cut ? ' cut' : '') + '"><input type="checkbox" data-vce-chg="tick" data-ref="' + vceEsc(r) + '"' + (VCE.tick[r] ? ' checked' : '') + (cut ? ' disabled' : '') + vceK(r + '|tick') + '>'
-      + '<span>' + vceEsc(c.nameOf[r]) + '</span><small>' + (c.kindOf[r] === 'models' ? 'Kit List' : 'Inventory') + (cut ? ', cut' : '') + '</small></label>';
+      + '<span>' + vceEsc(c.nameOf[r]) + '</span><small>' + (c.kindOf[r] === 'models' ? (has ? has + ' in inventory' : 'Kit List') : 'Inventory, not on the Kit List') + (cut ? ', cut' : '') + '</small></label>';
   });
   return h + '</div></div>';
 }
@@ -36361,13 +36368,13 @@ function vceAct(act, el){
   else if(act === 'up' || act === 'down') vceDo({a: 'shift', p: addr, by: act === 'up' ? -1 : 1});
   else if(act === 'del') vceDo({a: 'del', p: addr});
   else if(act === 'tick-all'){
-    var f = vceFind(VCE.st, id), refs = f ? vceThings(VCE.st, f.place, VCE.counts).filter(function(r){ return VCE.clip.indexOf(r) < 0; }) : [];
+    var f = vceFind(VCE.st, id), refs = f ? vceShown(f.place).filter(function(r){ return VCE.clip.indexOf(r) < 0; }) : [];
     var all = refs.length && refs.every(function(r){ return VCE.tick[r]; });
     refs.forEach(function(r){ if(all) delete VCE.tick[r]; else VCE.tick[r] = 1; });
     vceDraw();
   }
   else if(act === 'cut'){
-    var g = vceFind(VCE.st, id), here = g ? vceThings(VCE.st, g.place, VCE.counts).filter(function(r){ return VCE.tick[r]; }) : [];
+    var g = vceFind(VCE.st, id), here = g ? vceShown(g.place).filter(function(r){ return VCE.tick[r]; }) : [];
     here.forEach(function(r){ if(VCE.clip.indexOf(r) < 0) VCE.clip.push(r); delete VCE.tick[r]; });
     VCE.msg = ''; vceDraw();
   }
