@@ -295,7 +295,7 @@ body.ops-drag-active .ops-chip::before,body.ops-drag-active .ops-chip::after{poi
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
 
 /* Stacked-month layout */
-.ops-ms2{padding:8px 0 14px;overflow-x:auto;-webkit-overflow-scrolling:touch;scroll-margin-top:12px;contain:layout style;content-visibility:auto;contain-intrinsic-size:auto 900px}
+.ops-ms2{padding:8px 0 14px;overflow-x:auto;-webkit-overflow-scrolling:touch;scroll-margin-top:12px;contain:layout style;content-visibility:auto;contain-intrinsic-size:auto 1600px}
 @media print{.ops-ms2{content-visibility:visible}}
 .ops-ms2:first-of-type{padding-top:0}
 
@@ -1949,6 +1949,32 @@ if(_SB_TEST){
       });
     });
   };
+})();
+
+// Scrolling diagnosis: ?perf=nosticky | noshadow | plain temporarily strips
+// the things most likely to make a long table expensive to scroll, so the
+// difference can be felt on the machine that has the problem.
+(function(){
+  var mode=(new URLSearchParams(location.search).get('perf')||'').toLowerCase();
+  if(!mode)return;
+  var css='';
+  if(mode==='nosticky'||mode==='plain'){
+    css+='.ops-tbl td.ops-rlbl,.ops-tbl tr.ops-mhdr > td,.ops-tbl tr.ops-mhdr > td > div,'
+       +'.ops-tbl tr.ops-dhdr > td:first-child,.ops-dhdr td{position:static!important}';
+  }
+  if(mode==='noshadow'||mode==='plain'){
+    css+='.ops-chip{box-shadow:none!important;-webkit-text-stroke:0!important}';
+  }
+  var add=function(){
+    var st=document.createElement('style');st.id='nsPerfMode';st.textContent=css;
+    document.head.appendChild(st);
+    var b=document.createElement('div');
+    b.textContent='PERF TEST: '+mode+' — remove ?perf= from the address to go back';
+    b.style.cssText='position:fixed;bottom:0;left:0;right:0;z-index:99999;background:#1f6feb;color:#fff;'
+      +'font:700 12px/1 system-ui;letter-spacing:.04em;text-transform:uppercase;padding:7px 12px;text-align:center;pointer-events:none';
+    document.body.appendChild(b);
+  };
+  if(document.body)add();else document.addEventListener('DOMContentLoaded',add);
 })();
 
 // ── MAIN-APP STUBS ───────────────────────────────────────────────────────────
@@ -3691,7 +3717,7 @@ function opsCk(td,dayOverride){
 }
 // Position the cell editor popup next to the given cell, picking the side
 // (below / above / pinned-top) that best fits in the visible viewport.
-var OPS_BUILD='2026-09-24 · b139';
+var OPS_BUILD='2026-10-03 · b142';
 console.log('%cOps Planner build '+OPS_BUILD,'color:#d85a61;font-weight:bold');
 document.addEventListener('DOMContentLoaded',function(){
   var b=document.createElement('div');
@@ -7138,12 +7164,29 @@ async function _nsAuthReq(method,path,body,tok){
     return{ok:r.ok,status:r.status,j:j};
   }catch(e){return{ok:false,status:0,j:null};}
 }
+// The Technical Dashboard shares this session (same site, same accounts), so
+// either page may have renewed it. A refresh token only works once: look at
+// the stored copy before spending ours, and again if ours is turned down.
+function _nsSessNewer(s){
+  var st=_nsSessRead();
+  if(st&&st.email===s.email&&st.access!==s.access&&st.exp-Date.now()>120000){_nsSess=st;return true;}
+  return false;
+}
 async function _nsRefresh(){
   var s=_nsSess;if(!s||!s.refresh)return false;
+  if(_nsSessNewer(s))return true;
   var r=await _nsAuthReq('POST','token?grant_type=refresh_token',{refresh_token:s.refresh});
-  if(!r.ok||!r.j||!r.j.access_token)return false;
+  if(!r.ok||!r.j||!r.j.access_token)return _nsSessNewer(s);
   _nsSessWrite(_nsSessOf(r.j,s.email));return true;
 }
+// Signing in or out on the Dashboard (or another planner tab) carries over.
+window.addEventListener('storage',function(e){
+  if(e.key!=='opsSess'||_nsAuthStage==='reset')return;
+  var st=_nsSessRead();
+  if(st&&_nsSess){if(st.email===_nsSess.email)_nsSess=st;else location.reload();return;}
+  if(st&&!_nsSess){location.reload();return;}   // only the sign-in screen is showing
+  if(!st&&_nsSess){_nsSess=null;_nsAuthStage='in';_nsShowLock();}
+});
 async function _nsAuthFresh(){
   if(!_nsSess)return false;
   if(_nsSess.exp-Date.now()>120000)return true;
@@ -7332,7 +7375,7 @@ document.addEventListener('DOMContentLoaded',async function(){
   if(_nsSess&&await _nsAuthFresh()){
     await _nsLoadPeople();
     if(_nsOnPlanner())return _nsEnter();
-    _nsSessDrop();_nsShowLock();
+    _nsSess=null;_nsShowLock();   // the stored session is the Dashboard's too: leave it
     return _nsAuthMsg('That account doesn\u2019t have access to the planner');
   }
   _nsSessDrop();_nsShowLock();
