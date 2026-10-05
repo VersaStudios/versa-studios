@@ -2497,6 +2497,8 @@ html[data-theme="softdark"] #kitPageTitle + div{margin-left:auto}
 .vsk-sub em{font-style:normal;font-size:10px;font-weight:700;flex:0 0 auto}
 .vsk-sub:hover{color:var(--ink)}
 .vsk-sub.on{color:var(--ink);font-weight:800;background:var(--surface-2)}
+/* a sub-category that sits inside the one above it */
+.vsk-sub.vsk-in{padding-left:16px}
 .vsk-main2{flex:1;min-width:0}
 .vsk-bar{display:flex;align-items:center;gap:16px;margin-bottom:11px}
 .vsk-q{
@@ -3137,7 +3139,7 @@ html[data-theme="softdark"] .vce{--e-muted:#8d8d95;--e-row:#202024;--e-care:#dca
 .vce-name:hover{border-color:var(--e-edge-hi)}
 /* a name the job pages look for cannot be typed over */
 .vce-name[readonly]{border-color:transparent;background:var(--e-row);cursor:default}
-.vce-sh,.vce-row{display:grid;grid-template-columns:40px minmax(150px,1.6fr) 58px 50px minmax(92px,.7fr) minmax(98px,.8fr) 140px;gap:6px;align-items:center}
+.vce-sh,.vce-row{display:grid;grid-template-columns:58px minmax(150px,1.6fr) 58px 50px minmax(92px,.7fr) minmax(98px,.8fr) 140px;gap:6px;align-items:center}
 .vce-sh{padding:8px 0 3px}
 .vce-sh span:nth-child(3),.vce-sh span:nth-child(4){text-align:right}
 .vce-row{padding:3px 0;border-top:1px solid var(--border)}
@@ -3153,8 +3155,19 @@ html[data-theme="softdark"] .vce{--e-muted:#8d8d95;--e-row:#202024;--e-care:#dca
 .vce-clip{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--nav-admin,#d3d0d4);color:#0d0d0d;border-radius:7px;padding:5px 10px;margin:6px 0 2px;font-weight:700;
   position:sticky;top:6px;z-index:5}
 .vce-clip .vce-btn{background:#fff;color:#0d0d0d;border-color:rgba(13,13,13,.45)}
+.vce-clipb{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+/* a sub-category that has been picked up, and the two places it can be put down on every other row */
+.vce-row.held{background:var(--e-row);border-radius:7px}
+.vce-row > .vce-btn{justify-self:start}
 .vce-nm{min-width:0}
-.vce-ud{display:flex;gap:2px}
+.vce-ud{display:flex;gap:2px;align-items:center}
+/* the handle a row is dragged by, and where it would land */
+.vce-grip{flex:none;width:16px;height:28px;line-height:28px;text-align:center;font-size:14px;font-weight:800;letter-spacing:-3px;color:var(--e-ink);opacity:.5;cursor:grab;user-select:none;-webkit-user-select:none;border-radius:5px}
+.vce-grip:hover{background:var(--e-row);opacity:1}
+.vce-row.over-in{background:var(--nav-admin,#d3d0d4);border-radius:7px;box-shadow:0 0 0 2px var(--e-ink)}
+.vce-row.over-above{box-shadow:inset 0 3px 0 var(--e-ink)}
+.vce-row.over-below{box-shadow:inset 0 -3px 0 var(--e-ink)}
+.vce-cat.over-in{box-shadow:0 0 0 2px var(--e-ink)}
 .vce-ud button{width:19px;height:28px;border:0;background:none;border-radius:5px;font-size:9px;color:var(--e-muted);padding:0}
 .vce-ud button:hover:not(:disabled){background:var(--e-row);color:var(--e-ink)}
 .vce-ud button:disabled{opacity:.25}
@@ -3168,7 +3181,7 @@ html[data-theme="softdark"] .vce{--e-muted:#8d8d95;--e-row:#202024;--e-care:#dca
 .vce-f.used{color:var(--e-care)}
 .vce-f.new{color:var(--e-new)}
 .vce-f.used::before,.vce-f.new::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
-.vce-in{background:var(--e-row);border-radius:7px;padding:7px 9px 8px;margin:0 0 5px 46px;font-size:12px;line-height:1.4}
+.vce-in{background:var(--e-row);border-radius:7px;padding:7px 9px 8px;margin:0 0 5px 64px;font-size:12px;line-height:1.4}
 .vce-inh{display:flex;align-items:center;gap:6px;margin-bottom:6px}
 .vce-inh .vce-sum{text-align:left;font-size:12px}
 .vce-tl{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1px 12px;max-height:300px;overflow:auto}
@@ -3178,8 +3191,8 @@ html[data-theme="softdark"] .vce{--e-muted:#8d8d95;--e-row:#202024;--e-care:#dca
 .vce-th small{flex:none;font-size:11px;color:var(--e-muted)}
 .vce-th.cut{opacity:.5}
 .vce-new{display:flex;gap:6px;margin-bottom:8px}
-.vce-new.sub{margin:8px 0 0 46px;max-width:420px}
-.vce-new.in{margin:3px 0 5px 74px;max-width:470px}
+.vce-new.sub{margin:8px 0 2px 64px;max-width:420px}
+.vce-new.in{margin:3px 0 5px 92px;max-width:470px}
 .vce-new input{flex:1;min-width:0;background:var(--e-surface);border:1.5px solid var(--e-edge);border-radius:7px;padding:3px 8px;min-height:30px;font-size:12.5px}
 .vce-calm{color:var(--e-muted);padding:4px 0}
 .vce-tot{font-weight:700;margin-bottom:6px}
@@ -3198,7 +3211,7 @@ html[data-theme="softdark"] .vce{--e-muted:#8d8d95;--e-row:#202024;--e-care:#dca
   .vce-rail{flex-basis:100%}
   .vce-main{flex-basis:100%}
   .vce-sh{display:none}
-  .vce-row{grid-template-columns:40px minmax(0,1fr) 44px 44px;row-gap:4px}
+  .vce-row{grid-template-columns:58px minmax(0,1fr) 44px 44px;row-gap:4px}
   .vce-row select{grid-column:2 / -1}
   .vce-row > .vce-ac{grid-column:2 / -1;justify-content:flex-start}
   .vce-in,.vce-new.sub,.vce-new.in{margin-left:0}
@@ -9201,7 +9214,7 @@ function vsCamPick(jid,ci,fkey,btn){
     sc=String(sc||'').trim();
     if(specBody) return sc==='Specialist Camera'||sc==='Mini Camera';
     if(sc&&sc===f.sub) return true;
-    if(f.key==='lens') return sc==='Lens Range'||sc==='Lens';
+    if(f.key==='lens') return sc==='Lens Range'||_vsKcIn(sc,'Lens');   /* Lens, or a sub-category inside it */
     if(f.key==='body') return /camera|body/i.test(sc);
     return false;
   };
@@ -16982,9 +16995,11 @@ function _vsKitLocs(){
 function _vsKitCatOrder(){
   var n={};
   _vsKitLive().forEach(function(k){ var c=k.cat||'Uncategorised'; n[c]=(n[c]||0)+1; });
+  /* the categories in the order they are kept in (Admin, Kit Categories),
+     then any that hold kit without being on that list, fullest first */
   var keys=(typeof KIT_SUBCATS!=='undefined')?Object.keys(KIT_SUBCATS):[];
-  Object.keys(n).forEach(function(c){ if(keys.indexOf(c)<0) keys.push(c); });
-  return keys.sort(function(a,b){ return (n[b]||0)-(n[a]||0); });
+  Object.keys(n).sort(function(a,b){ return (n[b]||0)-(n[a]||0); }).forEach(function(c){ if(keys.indexOf(c)<0) keys.push(c); });
+  return keys;
 }
 function vsKitRail(){
   var el=document.getElementById('vsKitRail'); if(!el) return;
@@ -17010,10 +17025,10 @@ function vsKitRail(){
       +'onclick="vsKitSelect(\''+type+'\',\''+v+'\')">'
       +'<span>'+_vsEsc(label)+'</span>'+(count==null?'':'<em>'+count+'</em>')+'</button>';
   };
-  var subRow=function(cat,sc,n){
+  var subRow=function(cat,sc,n,inner){
     var on=(_vsKitSel.type==='cat'&&_vsKitSel.value===cat&&_vsKitSel.sub===sc);
     var c2=encodeURIComponent(String(cat)), s2=encodeURIComponent(String(sc));
-    return '<button class="vsk-sub'+(on?' on':'')+'" '
+    return '<button class="vsk-sub'+(inner?' vsk-in':'')+(on?' on':'')+'" '
       +'ondragover="vsKitOver(event)" ondragleave="vsKitOut(event)" '
       +'ondrop="vsKitDrop(event,\'sub\',\''+c2+'\',\''+s2+'\')" '
       +'onclick="vsKitSelectSub(\''+c2+'\',\''+s2+'\')">'
@@ -17030,11 +17045,16 @@ function vsKitRail(){
       /* the ones in use, and the ones the category knows about but has
          nothing in yet, so a sub-category can be made before it is filled */
       var known=(typeof KIT_SUBCATS!=='undefined'&&KIT_SUBCATS[c])?KIT_SUBCATS[c]:[];
-      var names=Object.keys(sc);
-      known.forEach(function(n){ if(names.indexOf(n)<0) names.push(n); });
-      names.sort(function(a,b){ return (sc[b]||0)-(sc[a]||0) || String(a).localeCompare(String(b)); });
+      /* in the order the list keeps them (Admin, Kit Categories), then any
+         in use that it does not have. A sub-category inside another sits a
+         step in, and the one it is inside counts what is in both. */
+      var names=known.slice();
+      Object.keys(sc).sort(function(a,b){ return (sc[b]||0)-(sc[a]||0) || String(a).localeCompare(String(b)); })
+        .forEach(function(n){ if(names.indexOf(n)<0) names.push(n); });
+      var inside={}; names.forEach(function(n){ _vsKcMembers(c,n).forEach(function(m){ inside[m]=n; }); });
+      var all=function(n){ var t=sc[n]||0; names.forEach(function(m){ if(inside[m]===n) t+=sc[m]||0; }); return t; };
       out+='<div class="vsk-subs">'
-        +names.map(function(n){return subRow(c,n,sc[n]||0);}).join('')
+        +names.map(function(n){return subRow(c,n,all(n),!!inside[n]);}).join('')
         +'<button class="vsk-addsub" onclick="vsKitAddSub(\''+encodeURIComponent(String(c))+'\',this)">+ Sub-category</button>'
       +'</div>';
     }
@@ -17247,7 +17267,7 @@ function _vsKitListFiltered(){
   var live=_vsKitLive();
   if(_vsKitSel.type==='cat'){
     live=live.filter(function(k){return (k.cat||'Uncategorised')===_vsKitSel.value;});
-    if(_vsKitSel.sub) live=live.filter(function(k){return (k.subcat||'').trim()===_vsKitSel.sub;});
+    if(_vsKitSel.sub) live=live.filter(function(k){return _vsKcUnder(_vsKitSel.value,_vsKitSel.sub,k.subcat);});
   }
   else if(_vsKitSel.type==='loc') live=live.filter(function(k){return (k.loc||'Unknown')===_vsKitSel.value;});
   else if(_vsKitSel.type==='own') live=live.filter(function(k){return !k.isHired;});
@@ -17330,7 +17350,8 @@ function vsKitList(){
   }
   if(_vsKitSel.type==='cat'){
     live=live.filter(function(k){return (k.cat||'Uncategorised')===_vsKitSel.value;});
-    if(_vsKitSel.sub) live=live.filter(function(k){return (k.subcat||'').trim()===_vsKitSel.sub;});
+    /* a sub-category, and whatever sits inside it */
+    if(_vsKitSel.sub) live=live.filter(function(k){return _vsKcUnder(_vsKitSel.value,_vsKitSel.sub,k.subcat);});
   }
   else if(_vsKitSel.type==='loc') live=live.filter(function(k){return (k.loc||'Unknown')===_vsKitSel.value;});
   else if(_vsKitSel.type==='own') live=live.filter(function(k){return !k.isHired;});
@@ -17774,7 +17795,7 @@ function vsKoList(el, live, note){
     models=_vsKoEverything().filter(function(m){
       if(t==='cat'){
         if((m.cat||'Uncategorised')!==_vsKitSel.value) return false;
-        if(_vsKitSel.sub && m.sub!==_vsKitSel.sub) return false;
+        if(_vsKitSel.sub && !_vsKcUnder(_vsKitSel.value,_vsKitSel.sub,m.sub)) return false;
       } else if(t==='stray'){ if(_vsKoFiled(m)) return false; }
       if(!q) return true;
       return (m.name+' '+m.make+' '+m.model+' '+m.cat+' '+m.sub+' '+m.compat+' '+m.notes+' '
@@ -17784,9 +17805,10 @@ function vsKoList(el, live, note){
     if(cnt) cnt.textContent=models.length+(models.length===1?' model':' models');
   } else models=_vsKoFromItems(live);
   var catView=(t==='cat');
+  /* in the order the lists are kept in (Admin, Kit Categories), then by name */
+  var _rk={}; models.forEach(function(m){ _rk[m.key]=_vsKcRank(m.cat,catView?m.sub:''); });
   models.sort(function(a,b){
-    return (catView ? (_vsKitSel.sub?0:String(a.sub).localeCompare(String(b.sub))) : String(a.cat).localeCompare(String(b.cat)))
-      || String(a.name).localeCompare(String(b.name),undefined,{numeric:true});
+    return (_rk[a.key]-_rk[b.key]) || String(a.name).localeCompare(String(b.name),undefined,{numeric:true});
   });
   _vsKoRows=models;
   var pics=models.some(function(m){ return !!_vsKoPic(m); });
@@ -23187,7 +23209,7 @@ function renderJobDet(j) {
       // ── Always-visible Lens row ──────────────────────────────────────────
       if(!cd.lensData)cd.lensData={mode:'inv',kitId:null,hiredId:null};
       var ld=cd.lensData;
-      var lensInvItems=kit.filter(function(k){return (k.subcat==='Lens'||k.subcat==='Lens Range')&&k.status!=='Bin';});
+      var lensInvItems=kit.filter(function(k){return (_vsKcIn(k.subcat,'Lens')||k.subcat==='Lens Range')&&k.status!=='Bin';});
       var aLensKit=ld.kitId?kit.find(function(x){return x.id===ld.kitId;}):null;
       var aLensHired=ld.hiredCatId?hiredCatalogue.find(function(x){return x.id===ld.hiredCatId;}):null;
       var lensModeBar='<div style="display:flex;margin-bottom:3px">'+[['inv','Inventory'],['hired','Hired']].map(function(opt,oi){var active=(ld.mode||'inv')===opt[0];return '<button onclick="jdCamLensMode('+jid+','+i+',\''+opt[0]+'\')" style="padding:3px 10px;font-size:11px;font-family:var(--cond);font-weight:800;border:1.5px solid var(--border);'+(oi===0?'border-right:none;':'')+'background:'+(active?'rgba(74,158,255,.3)':'rgba(255,255,255,.04)')+';color:'+(active?'#4a9eff':'var(--muted)')+';cursor:pointer">'+opt[1]+'</button>';}).join('')+'</div>';
@@ -23206,7 +23228,7 @@ function renderJobDet(j) {
       } else {
         var lensInput='';
         if(ld.mode==='hired'){
-        var hiredLensCat=hiredCatalogue.filter(function(h){return h.subcat==='Lens'||h.subcat==='Lens Range';});
+        var hiredLensCat=hiredCatalogue.filter(function(h){return _vsKcIn(h.subcat,'Lens')||h.subcat==='Lens Range';});
         var hiredLensOpts='<option value="">-- select hired lens --</option>'
           +hiredLensCat.map(function(h){return '<option value="h'+h.id+'"'+(ld.hiredCatId===h.id?' selected':'')+'>'+h.name+'</option>';}).join('')
           +'<option value="custom" style="color:#2a6cb8;font-style:italic">+ Type custom...</option>';
@@ -29197,7 +29219,7 @@ function jdPickCamLens(jid,i){
   var ex=document.getElementById('camLensPicker'); if(ex) ex.remove();
   var allocMap=getAllocatedKitMap();
   var _lsc=['Lens','Lens Range','Cine Lens','Lens Adapter'];
-  var lensKit=kit.filter(function(k){return _lsc.indexOf(k.subcat)>=0&&k.status!=='Bin';});
+  var lensKit=kit.filter(function(k){return (_lsc.indexOf(k.subcat)>=0||_vsKcIn(k.subcat,'Lens'))&&k.status!=='Bin';});
   if(!lensKit.length) lensKit=kit.filter(function(k){return k.cat==='Camera'&&k.status!=='Bin'&&k.name.toLowerCase().indexOf('lens')>=0;});
 
   var html='<div id="camLensPicker" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1a1a1a;border:1px solid rgba(255,255,255,.2);border-radius:10px;z-index:99999;width:320px;max-height:65vh;display:flex;flex-direction:column;box-shadow:0 16px 64px rgba(0,0,0,.95)">'
@@ -35877,6 +35899,21 @@ function vceDelete(st, id, counts){
   f.list.splice(f.list.indexOf(f.place), 1);
   return vceOk();
 }
+/* A place is put inside another (or stays where it is) and set just above one
+   of the places there, or last. One step, so a sub-category can be picked up
+   and put down exactly where it should go. */
+function vcePlace(st, id, toId, beforeId){
+  var f = vceFind(st, id), t = vceFind(st, toId);
+  if(!f || !t) return vceNo('That is no longer there.');
+  var was = f.list.indexOf(f.place), same = f.list === t.place.kids;
+  if(!same){ var r = vceMove(st, id, toId); if(!r.ok) return r; }
+  var list = t.place.kids, i = list.indexOf(f.place);
+  list.splice(i, 1);
+  var j = beforeId ? list.map(function(x){ return x.id; }).indexOf(beforeId) : -1;
+  list.splice(j < 0 ? list.length : j, 0, f.place);
+  if(same && list.indexOf(f.place) === was) return vceNo('It is already there.');
+  return vceOk();
+}
 /* up or down among the places beside it; to: a position to go straight to */
 function vceShift(st, id, by, to){
   var f = vceFind(st, id);
@@ -35993,9 +36030,10 @@ function vceWhere(res){
    filing a place started as ('k' + its key), or the step that added it
    ('n' + that step's number).
 
-     {a: 'add',    n, to: place or '', name}      a new place; to '' is a category
+     {a: 'add',    n, to: place or '', name, at}  a new place; to '' is a category; at: where in the list
      {a: 'rename', p, name}
      {a: 'move',   p, to: place or ''}            to '' makes it a category
+     {a: 'place',  p, to, before: place or ''}    inside to, just above before (or last)
      {a: 'merge',  p, to, own: true or false}
      {a: 'put',    refs: [things], to}            cut and paste
      {a: 'del',    p}
@@ -36004,7 +36042,12 @@ function vceStep(st, counts, step, idOf){
   var gone = vceNo('That is no longer there.'), p = step.p == null ? '' : idOf[step.p], to = step.to ? idOf[step.to] : '';
   if(step.p != null && !p) return gone;
   if(step.to && !to) return gone;
-  if(step.a === 'add'){ var r = vceAdd(st, to, step.name); if(r.ok) idOf['n' + step.n] = r.id; return r; }
+  if(step.a === 'add'){
+    var r = vceAdd(st, to, step.name);
+    if(r.ok){ idOf['n' + step.n] = r.id; if(step.at != null) vceShift(st, r.id, 0, step.at); }
+    return r;
+  }
+  if(step.a === 'place') return to ? vcePlace(st, p, to, step.before ? idOf[step.before] : '') : gone;
   if(step.a === 'rename') return vceRename(st, p, step.name);
   if(step.a === 'move') return vceMove(st, p, to);
   if(step.a === 'merge') return to ? vceMerge(st, p, to, !!step.own, counts) : gone;
@@ -36036,6 +36079,7 @@ function vceSayStep(step, log){
   if(step.a === 'add') return 'Add ' + step.name + (step.to ? ' in ' + name(step.to) : '');
   if(step.a === 'rename') return 'Rename ' + name(step.p) + ' to ' + step.name;
   if(step.a === 'move') return step.to ? 'Move ' + name(step.p) + ' into ' + name(step.to) : 'Make ' + name(step.p) + ' a category';
+  if(step.a === 'place') return 'Put ' + name(step.p) + (step.before ? ' above ' + name(step.before) : ' last in ' + name(step.to));
   if(step.a === 'merge') return (step.own ? 'Move what is filed directly under ' : 'Merge ') + name(step.p) + ' into ' + name(step.to);
   if(step.a === 'put') return 'Paste ' + (step.refs || []).length + ((step.refs || []).length === 1 ? ' thing' : ' things') + ' into ' + name(step.to);
   if(step.a === 'del') return 'Delete ' + name(step.p);
@@ -36048,7 +36092,7 @@ function vceSayStep(step, log){
    is on screen is never an old reading. Nothing is changed for anyone until
    Apply. What the editor sits in (VCE_HOST) gives it the kit and says what
    Apply and Put back do. The plan's logic is above it (vceStart to vceReplay). */
-var VCE = {log: [], seq: 1, undone: null, sel: '', open: {}, tick: {}, clip: [], msg: '', gone: [], adding: false, addIn: '', asking: '', typed: {},
+var VCE = {log: [], seq: 1, undone: null, sel: '', open: {}, tick: {}, clip: [], pick: [], msg: '', gone: [], adding: false, addIn: '', asking: '', typed: {},
   rp: null, st: null, counts: null, data: null, res: null, sig: '', read: false, due: 0};
 var VCE_HOST = {root: 'vce', store: 'vcePlan.v3', data: null, apply: null, last: null, back: null, sync: false};
 
@@ -36077,6 +36121,7 @@ function vceMake(){
   }
   VCE.rp = rp; VCE.st = rp.st; VCE.counts = rp.counts;
   VCE.res = vceResult(rp.st, VCE.data);
+  VCE.pick = VCE.pick.filter(function(a){ return !!rp.idOf[a]; });
   /* the category on show: the one chosen, or the one it is now inside, or the first */
   var f = rp.idOf[VCE.sel] ? vceFind(rp.st, rp.idOf[VCE.sel]) : null;
   VCE.sel = f ? rp.addrOf[f.cat.id] : (rp.st.cats.length ? rp.addrOf[rp.st.cats[0].id] : '');
@@ -36096,17 +36141,29 @@ function vceDo(step, said){
   vceKeep(); vceShow();
   return mine ? {ok: false, why: mine.why} : {ok: true, id: step.a === 'add' ? VCE.rp.idOf['n' + step.n] : ''};
 }
+/* several steps made as one, as when sub-categories picked up together are put down: Undo takes them back together */
+function vceDoAll(steps, said){
+  var g = VCE.seq++, was = VCE.log.slice(), bad = [];
+  steps.forEach(function(st){ st.g = g; VCE.log.push(st); });
+  vceMake().forEach(function(x){ if(steps.indexOf(x.step) >= 0) bad.push(x); else VCE.gone.push(vceSayStep(x.step, was)); });
+  var done = steps.length - bad.length;
+  VCE.msg = (done ? said(done) : '') + (bad.length ? (done ? ' ' + bad.length + ' could not go: ' : '') + bad[0].why : '');
+  VCE.asking = '';
+  if(done) VCE.undone = null;
+  vceKeep(); vceShow();
+  return done;
+}
 function vceUndo(){
-  if(VCE.log.length) VCE.log.pop();
+  if(VCE.log.length){ var last = VCE.log.pop(); while(last.g != null && VCE.log.length && VCE.log[VCE.log.length - 1].g === last.g) VCE.log.pop(); }
   else if(VCE.undone){ VCE.log = VCE.undone; VCE.undone = null; }
   else return;
-  VCE.msg = ''; VCE.asking = ''; VCE.clip = []; VCE.tick = {};
+  VCE.msg = ''; VCE.asking = ''; VCE.clip = []; VCE.tick = {}; VCE.pick = [];
   vceMake(); vceKeep(); vceShow();
 }
 /* the plan is cleared; Undo straight afterwards brings it back */
 function vceAgain(){
   VCE.undone = VCE.log; VCE.log = [];
-  VCE.msg = 'The plan has been cleared. Undo brings it back.'; VCE.asking = ''; VCE.open = {}; VCE.clip = []; VCE.tick = {}; VCE.gone = [];
+  VCE.msg = 'The plan has been cleared. Undo brings it back.'; VCE.asking = ''; VCE.open = {}; VCE.clip = []; VCE.tick = {}; VCE.pick = []; VCE.gone = [];
   vceMake(); vceKeep(); vceShow();
 }
 /* Apply: the plan is made once more from the kit as it is this moment, and
@@ -36122,7 +36179,7 @@ function vceApply(){
   var r = VCE_HOST.apply ? VCE_HOST.apply(VCE.res, VCE.st, VCE.data) : null;
   if(!r || r.ok === false){ VCE.msg = (r && r.why) || 'The changes could not be applied.'; vceShow(); return; }
   /* the plan is now how things are, so there is nothing left of it */
-  VCE.log = []; VCE.undone = null; VCE.gone = []; VCE.clip = []; VCE.tick = {}; VCE.open = {};
+  VCE.log = []; VCE.undone = null; VCE.gone = []; VCE.clip = []; VCE.tick = {}; VCE.pick = []; VCE.open = {};
   if(on) VCE.sel = 'k' + vceKey(on.place.name, '');
   vceMake(); vceKeep();
   VCE.msg = r.said || 'The categories have been updated.';
@@ -36151,26 +36208,25 @@ function vceRail(){
   h += '<div class="vce-ch"><span>Category</span><span>Inventory</span><span>Kit List</span></div>';
   VCE.st.cats.forEach(function(c){
     var n = vceAllHolds(VCE.st, c, VCE.counts), on = VCE.rp.addrOf[c.id] === VCE.sel;
-    h += '<button type="button" class="vce-cat' + (on ? ' on' : '') + '" data-vce="pick" data-id="' + c.id + '"' + (on ? ' aria-current="true"' : '') + vceK(c.id + '|pick') + '>'
+    h += '<button type="button" class="vce-cat' + (on ? ' on' : '') + '" data-vce="pick" data-id="' + c.id + '" draggable="true" data-drag="' + c.id + '" data-drop="' + c.id + '" data-depth="1"'
+      + ' title="Drag onto another category to put it inside that one"' + (on ? ' aria-current="true"' : '') + vceK(c.id + '|pick') + '>'
       + '<span class="vce-cn" title="' + vceEsc(c.name || 'No category') + '">' + vceEsc(c.name || 'No category') + '</span>'
       + '<span class="vce-n">' + vceNum(n.items) + '</span><span class="vce-n">' + vceNum(n.models) + '</span></button>';
   });
   return h;
 }
-/* the two lists every row offers, made once for each drawing of the screen */
+/* the list of places a row can be merged into, made once for each drawing of the screen */
 function vceLists(){
-  var move = '<option value="">Choose</option><option value="@top">Make it a category</option>', merge = '<option value="">Choose</option>';
+  var merge = '<option value="">Choose</option>';
   VCE.st.cats.forEach(function(c){
-    var cn = vceEsc(c.name || 'No category'), mv = '<option value="' + c.id + '">As a sub-category of ' + cn + '</option>', mg = '<option value="' + c.id + '">' + cn + ' (no sub-category)</option>';
+    var cn = vceEsc(c.name || 'No category'), mg = '<option value="' + c.id + '">' + cn + ' (no sub-category)</option>';
     c.kids.forEach(function(s){
-      mv += '<option value="' + s.id + '">Inside ' + vceEsc(s.name) + '</option>';
       mg += '<option value="' + s.id + '">' + vceEsc(s.name) + '</option>';
       s.kids.forEach(function(x){ mg += '<option value="' + x.id + '">' + vceEsc(s.name) + ' › ' + vceEsc(x.name) + '</option>'; });
     });
-    move += '<optgroup label="' + cn + '">' + mv + '</optgroup>';
     merge += '<optgroup label="' + cn + '">' + mg + '</optgroup>';
   });
-  return {move: move, merge: merge};
+  return {merge: merge};
 }
 /* What is listed in a place: its Kit List models, and any inventory item that
    is on no model. An item linked to a model is one of that model's, so it is
@@ -36213,15 +36269,19 @@ function vceNameBox(place, big){
 function vceRow(place, depth, i, n, lists){
   var own = vceHolds(VCE.st, place, VCE.counts), all = place.kids.length ? vceAllHolds(VCE.st, place, VCE.counts) : own, pasting = VCE.clip.length > 0;
   var fixed = vceUsedPlace(place.orig), key = VCE.rp.addrOf[place.id], nm = vceEsc(place.name);
-  var h = '<div class="vce-row' + (depth === 3 ? ' in' : '') + '"><span class="vce-ud"><button type="button" data-vce="up" data-id="' + place.id + '"' + (i === 0 ? ' disabled' : '') + ' aria-label="Move ' + nm + ' up" title="Move up"' + vceK(place.id + '|up') + '>▲</button>'
+  var picking = VCE.pick.length > 0, held = VCE.pick.indexOf(key) >= 0;
+  var h = '<div class="vce-row' + (depth === 3 ? ' in' : '') + (held ? ' held' : '') + '" data-drop="' + place.id + '" data-depth="' + depth + '"' + (place.kids.length ? ' data-kids="1"' : '') + '><span class="vce-ud">'
+    + '<span class="vce-grip" draggable="true" data-drag="' + place.id + '" title="Drag onto another row to put ' + nm + ' inside it, or between rows to reorder">⋮⋮</span><button type="button" data-vce="up" data-id="' + place.id + '"' + (i === 0 ? ' disabled' : '') + ' aria-label="Move ' + nm + ' up" title="Move up"' + vceK(place.id + '|up') + '>▲</button>'
     + '<button type="button" data-vce="down" data-id="' + place.id + '"' + (i === n - 1 ? ' disabled' : '') + ' aria-label="Move ' + nm + ' down" title="Move down"' + vceK(place.id + '|down') + '>▼</button></span>'
-    + '<span class="vce-nm">' + vceNameBox(place, false) + vceFlags(place) + '</span>'
+    + '<span class="vce-nm">' + vceNameBox(place, false) + vceFlags(place) + (held ? '<span class="vce-fl"><span class="vce-f used">Picked up</span></span>' : '') + '</span>'
     + '<button type="button" class="vce-n" data-vce="open" data-id="' + place.id + '" title="Show what is filed here" aria-label="' + all.items + ' inventory items in ' + nm + '"' + vceK(place.id + '|open-i') + '>' + vceNum(all.items) + '</button>'
     + '<button type="button" class="vce-n" data-vce="open" data-id="' + place.id + '" title="Show what is filed here" aria-label="' + all.models + ' Kit List models in ' + nm + '"' + vceK(place.id + '|open-m') + '>' + vceNum(all.models) + '</button>'
-    + '<select aria-label="Move ' + nm + ' to" data-vce-chg="move" data-id="' + place.id + '"' + vceK(place.id + '|move') + '>' + lists.move + '</select>'
-    + '<select aria-label="Merge ' + nm + ' into" data-vce-chg="merge" data-id="' + place.id + '"'
-      + (place.kids.length ? ' disabled title="It has sub-categories of its own"' : fixed ? ' disabled title="The job pages look for this by name. Merge the other one into it instead"' : '') + vceK(place.id + '|merge') + '>' + lists.merge + '</select>'
-    + '<span class="vce-ac">' + (pasting ? '<button type="button" class="vce-btn sm go" data-vce="paste" data-id="' + place.id + '"' + vceK(place.id + '|paste') + '>Paste</button>'
+    + '<button type="button" class="vce-btn sm" data-vce="pick-up" data-id="' + place.id + '" title="' + (held ? 'Leave ' + nm + ' where it is' : 'Pick ' + nm + ' up, to put it above or inside another') + '"' + vceK(place.id + '|pick') + '>' + (held ? 'Put back' : 'Move') + '</button>'
+    + (held ? '<span></span>'
+      : picking ? '<button type="button" class="vce-btn sm go" data-vce="put-above" data-id="' + place.id + '" title="Put what is picked up just above ' + nm + '"' + vceK(place.id + '|above') + '>Above</button>'
+      : '<select aria-label="Merge ' + nm + ' into" data-vce-chg="merge" data-id="' + place.id + '"'
+        + (place.kids.length ? ' disabled title="It has sub-categories of its own"' : fixed ? ' disabled title="The job pages look for this by name. Merge the other one into it instead"' : '') + vceK(place.id + '|merge') + '>' + lists.merge + '</select>')
+    + '<span class="vce-ac">' + (picking ? ((held || depth !== 2) ? '' : '<button type="button" class="vce-btn sm go" data-vce="put-inside" data-id="' + place.id + '" title="Put what is picked up inside ' + nm + '"' + vceK(place.id + '|inside') + '>Inside</button>') : pasting ? '<button type="button" class="vce-btn sm go" data-vce="paste" data-id="' + place.id + '"' + vceK(place.id + '|paste') + '>Paste</button>'
         : (depth === 2 ? '<button type="button" class="vce-btn sm" data-vce="add-in" data-id="' + place.id + '" title="Add a sub-category inside ' + nm + '"' + vceK(place.id + '|add-in') + '>Add inside</button>' : '')
           + '<button type="button" class="vce-btn sm" data-vce="del" data-id="' + place.id + '"'
           + ((all.items || all.models) ? ' disabled title="Move or merge what is in it first"' : fixed ? ' disabled title="The job pages look for this by name"' : '') + vceK(place.id + '|del') + '>Delete</button>') + '</span></div>';
@@ -36256,7 +36316,15 @@ function vceMain(){
     + vceFlags(c);
   if(VCE.clip.length) h += '<div class="vce-clip"><span>' + vceCap(vceSay(vceTally(VCE.clip, VCE.counts))) + ' cut. Choose Paste on the place ' + (VCE.clip.length === 1 ? 'it' : 'they') + ' should go.</span>'
     + '<button type="button" class="vce-btn sm" data-vce="clip-clear"' + vceK('clip-clear') + '>Cancel</button></div>';
-  h += '<div class="vce-sh"><span></span><span>Sub-category</span><span>Inventory</span><span>Kit List</span><span>Move to</span><span>Merge into</span><span></span></div>';
+  if(VCE.pick.length) h += '<div class="vce-clip"><span>' + VCE.pick.length + (VCE.pick.length === 1 ? ' sub-category' : ' sub-categories') + ' picked up. Choose Above or Inside on the row where '
+    + (VCE.pick.length === 1 ? 'it goes' : 'they go') + ', or Move on another row to pick that up too.</span><span class="vce-clipb">'
+    + '<button type="button" class="vce-btn sm" data-vce="put-top"' + vceK('put-top') + '>To the top</button><button type="button" class="vce-btn sm" data-vce="put-bottom"' + vceK('put-bottom') + '>To the bottom</button>'
+    + '<button type="button" class="vce-btn sm" data-vce="put-cat" title="Make each one a category of its own"' + vceK('put-cat') + '>Make a category</button>'
+    + '<button type="button" class="vce-btn sm" data-vce="pick-clear"' + vceK('pick-clear') + '>Cancel</button></span></div>';
+  /* a new sub-category is typed here and joins at the top, where it can be seen */
+  h += '<div class="vce-new sub"><input id="vceNewSub" type="text" placeholder="New sub-category" aria-label="New sub-category name" data-vce-enter="add-sub" data-vce-typed="sub" value="' + vceEsc(VCE.typed.sub || '') + '"' + vceK('new-sub') + '>'
+    + '<button type="button" class="vce-btn" data-vce="add-sub"' + vceK('add-sub') + '>Add sub-category</button></div>';
+  h += '<div class="vce-sh"><span></span><span>Sub-category</span><span>Inventory</span><span>Kit List</span><span>Move</span><span>Merge into</span><span></span></div>';
   if(own.items || own.models || !c.kids.length || VCE.clip.length) h += vceOwnRow(c, 1, lists, 'No sub-category');
   c.kids.forEach(function(s, si){
     h += vceRow(s, 2, si, c.kids.length, lists);
@@ -36269,8 +36337,6 @@ function vceMain(){
       + '" data-vce-enter="add-in-go" data-vce-typed="in" value="' + vceEsc(VCE.typed['in'] || '') + '"' + vceK('new-in') + '>'
       + '<button type="button" class="vce-btn go" data-vce="add-in-go"' + vceK('add-in-go') + '>Add</button><button type="button" class="vce-btn" data-vce="add-in" data-id=""' + vceK('add-in-no') + '>Cancel</button></div>';
   });
-  h += '<div class="vce-new sub"><input id="vceNewSub" type="text" placeholder="New sub-category" aria-label="New sub-category name" data-vce-enter="add-sub" data-vce-typed="sub" value="' + vceEsc(VCE.typed.sub || '') + '"' + vceK('new-sub') + '>'
-    + '<button type="button" class="vce-btn" data-vce="add-sub"' + vceK('add-sub') + '>Add sub-category</button></div>';
   return h;
 }
 function vceChanges(){
@@ -36362,7 +36428,23 @@ function vceAct(act, el){
   else if(act === 'open'){ var key = addr + (raw.indexOf('#own') > 0 ? '#own' : ''); VCE.open[key] = !VCE.open[key]; vceDraw(); }
   else if(act === 'add-cat-open'){ VCE.adding = !VCE.adding; vceDraw(); vceFocus('vceNewCat'); }
   else if(act === 'add-cat'){ if(vceDo({a: 'add', to: '', name: VCE.typed.cat || ''}).ok){ VCE.sel = 'n' + (VCE.seq - 1); VCE.adding = false; VCE.typed.cat = ''; vceMake(); vceKeep(); vceDraw(); } }
-  else if(act === 'add-sub'){ if(vceDo({a: 'add', to: VCE.sel, name: VCE.typed.sub || ''}).ok) VCE.typed.sub = ''; vceDraw(); vceFocus('vceNewSub'); }
+  else if(act === 'add-sub'){ if(vceDo({a: 'add', to: VCE.sel, name: VCE.typed.sub || '', at: 0}).ok) VCE.typed.sub = ''; vceDraw(); vceFocus('vceNewSub'); }
+  else if(act === 'pick-up'){ var at = VCE.pick.indexOf(addr); if(at >= 0) VCE.pick.splice(at, 1); else if(addr) VCE.pick.push(addr); VCE.msg = ''; VCE.clip = []; vceDraw(); }
+  else if(act === 'pick-clear'){ VCE.pick = []; vceDraw(); }
+  else if(act === 'put-above' || act === 'put-inside' || act === 'put-top' || act === 'put-bottom' || act === 'put-cat'){
+    /* what is picked up is put down, in the order it was picked up */
+    var here = act === 'put-above' ? vceFind(VCE.st, id) : null, on = vceFind(VCE.st, VCE.rp.idOf[VCE.sel]), picked = VCE.pick.filter(function(a){ return a !== addr; }), where, steps;
+    if(act === 'put-inside'){ steps = picked.map(function(a){ return {a: 'move', p: a, to: addr}; }); where = 'inside ' + vceName(VCE.st, id); }
+    else if(act === 'put-above'){ var par = VCE.rp.addrOf[here.parent.id]; steps = picked.map(function(a){ return {a: 'place', p: a, to: par, before: addr}; }); where = 'above ' + here.place.name; }
+    else if(act === 'put-cat'){ steps = picked.map(function(a){ return {a: 'move', p: a, to: ''}; }); where = 'out, as ' + (picked.length === 1 ? 'a category' : 'categories'); }
+    else {
+      var first = act === 'put-top' && on ? on.place.kids.filter(function(k){ return VCE.pick.indexOf(VCE.rp.addrOf[k.id]) < 0; })[0] : null;
+      steps = picked.map(function(a){ return {a: 'place', p: a, to: VCE.sel, before: first ? VCE.rp.addrOf[first.id] : ''}; });
+      where = (act === 'put-top' ? 'to the top of ' : 'to the bottom of ') + (on ? on.place.name : '');
+    }
+    VCE.pick = [];
+    vceDoAll(steps, function(n){ return n + (n === 1 ? ' sub-category' : ' sub-categories') + ' moved ' + where + '.'; });
+  }
   else if(act === 'add-in'){ VCE.addIn = VCE.addIn === addr ? '' : addr; VCE.typed['in'] = ''; vceDraw(); vceFocus('vceNewIn'); }
   else if(act === 'add-in-go'){ if(vceDo({a: 'add', to: VCE.addIn, name: VCE.typed['in'] || ''}).ok) VCE.typed['in'] = ''; vceDraw(); vceFocus('vceNewIn'); }
   else if(act === 'up' || act === 'down') vceDo({a: 'shift', p: addr, by: act === 'up' ? -1 : 1});
@@ -36383,6 +36465,22 @@ function vceAct(act, el){
     var clip = VCE.clip.slice();
     if(vceDo({a: 'put', refs: clip, to: addr}, vceCap(vceSay(vceTally(clip, VCE.counts))) + ' pasted into ' + vceName(VCE.st, id) + '.').ok){ VCE.clip = []; vceShow(); }
   }
+}
+/* What was dragged is put down: inside the place it was dropped on, or just
+   above or below it. Anything already picked up goes with it. */
+function vceDropOn(drag, id, z){
+  var t = vceFind(VCE.st, id), addr = VCE.rp.addrOf[id];
+  var moving = [drag].concat(VCE.pick.filter(function(a){ return a !== drag; })).filter(function(a){ return a && a !== addr; });
+  if(!t || !moving.length) return;
+  var one = moving.length === 1 ? vceFind(VCE.st, VCE.rp.idOf[moving[0]]) : null, steps, where;
+  if(z === 'in' || !t.parent){ steps = moving.map(function(a){ return {a: 'move', p: a, to: addr}; }); where = 'inside ' + vceName(VCE.st, id); }
+  else {
+    var i = t.list.indexOf(t.place), next = z === 'below' ? t.list.slice(i + 1).filter(function(k){ return moving.indexOf(VCE.rp.addrOf[k.id]) < 0; })[0] : t.place;
+    steps = moving.map(function(a){ return {a: 'place', p: a, to: VCE.rp.addrOf[t.parent.id], before: next ? VCE.rp.addrOf[next.id] : ''}; });
+    where = (z === 'below' ? 'below ' : 'above ') + t.place.name;
+  }
+  VCE.pick = [];
+  vceDoAll(steps, function(n){ return (n === 1 && one ? one.place.name : n) + ' moved ' + where + '.'; });
 }
 function vceChange(what, el){
   var id = el.getAttribute('data-id') || '', addr = VCE.rp.addrOf[id] || '', v = el.value;
@@ -36406,6 +36504,41 @@ function vceListen(root){
   root.addEventListener('input', function(e){
     var which = e.target.getAttribute && e.target.getAttribute('data-vce-typed');
     if(which) VCE.typed[which] = e.target.value;
+  });
+  /* Dragging: a sub-category by its handle, or a category in the list on the
+     left. Dropped on the middle of a row it goes inside that row; near the
+     top or bottom edge it goes just above or below. On a category it becomes
+     one of that category's sub-categories. */
+  var over = null, clear = function(){ if(over){ over.el.classList.remove('over-in', 'over-above', 'over-below'); over = null; } };
+  var zone = function(el, e){
+    var d = el.getAttribute('data-depth'), b = el.getBoundingClientRect(), y = (e.clientY - b.top) / (b.height || 1);
+    if(d === '1') return 'in';
+    if(d === '3') return y < .5 ? 'above' : 'below';
+    return y < .3 ? 'above' : (y > .7 && !el.getAttribute('data-kids')) ? 'below' : 'in';
+  };
+  root.addEventListener('dragstart', function(e){
+    var g = e.target.closest ? e.target.closest('[data-drag]') : null;
+    if(!g || !VCE.rp){ return; }
+    VCE.drag = VCE.rp.addrOf[g.getAttribute('data-drag')] || '';
+    try{ e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', g.getAttribute('data-drag')); }catch(x){}
+  });
+  root.addEventListener('dragover', function(e){
+    if(!VCE.drag) return;
+    var el = e.target.closest ? e.target.closest('[data-drop]') : null;
+    if(!el || !root.contains(el)){ clear(); return; }
+    e.preventDefault();
+    var z = zone(el, e);
+    if(!over || over.el !== el || over.z !== z){ clear(); over = {el: el, z: z}; el.classList.add('over-' + z); }
+  });
+  root.addEventListener('dragleave', function(e){ if(over && e.relatedTarget && !over.el.contains(e.relatedTarget) && !root.contains(e.relatedTarget)) clear(); });
+  root.addEventListener('dragend', function(){ clear(); VCE.drag = ''; });
+  root.addEventListener('drop', function(e){
+    if(!VCE.drag) return;
+    var el = e.target.closest ? e.target.closest('[data-drop]') : null, drag = VCE.drag;
+    clear(); VCE.drag = '';
+    if(!el || !root.contains(el)) return;
+    e.preventDefault();
+    vceDropOn(drag, el.getAttribute('data-drop'), zone(el, e));
   });
   root.addEventListener('keydown', function(e){
     var el = e.target, what = el.getAttribute && el.getAttribute('data-vce-enter');
@@ -36480,6 +36613,36 @@ function _vsKcGroupOf(cat, sub){
   var hit = '';
   _vsKcGroupsOut().forEach(function(r){ if(r[0] === cat && r[2].indexOf(sub) >= 0) hit = r[1]; });
   return hit;
+}
+/* Is this sub-category the one named, or one that sits inside it? The job
+   pages find some kit by the name of its sub-category; a sub-category put
+   inside that one counts as it too, so "Studio Lens" inside "Lens" is still a
+   lens to a job. Only the lens pickers ask this so far: kit that any other
+   picker looks for has to stay filed directly under the name it looks for. */
+function _vsKcIn(sub, name){
+  sub = String(sub == null ? '' : sub).trim();
+  if(!sub) return false;
+  if(sub === name) return true;
+  var g = KIT_SUBGROUPS || {};
+  return Object.keys(g).some(function(c){ return !!(g[c] && g[c][name] && g[c][name].indexOf(sub) >= 0); });
+}
+/* the sub-categories that sit inside this one */
+function _vsKcMembers(cat, sub){
+  var out = [];
+  _vsKcGroupsOut().forEach(function(r){ if(r[0] === cat && r[1] === sub) out = r[2]; });
+  return out;
+}
+/* is this sub-category the chosen one, or one that sits inside it? */
+function _vsKcUnder(cat, chosen, sub){
+  sub = String(sub == null ? '' : sub).trim();
+  return sub === chosen || _vsKcMembers(cat, chosen).indexOf(sub) >= 0;
+}
+/* Where a filing comes in the order the lists are kept in: the categories in
+   their order, and each one's sub-categories in theirs. The Kit page sorts by
+   this, so it shows the order set on Admin's Kit Categories tab. */
+function _vsKcRank(cat, sub){
+  var ci = Object.keys(KIT_SUBCATS).indexOf(cat), si = (sub && ci >= 0) ? (KIT_SUBCATS[cat] || []).indexOf(sub) : -1;
+  return (ci < 0 ? 999 : ci) * 1000 + (sub ? (si < 0 ? 998 : si + 1) : 0);
 }
 /* the structure and its groups, as one string: has anything about them changed? */
 function _vsKcSig(){
