@@ -3176,6 +3176,9 @@ html[data-theme="softdark"] .vce{--e-muted:#8d8d95;--e-row:#202024;--e-care:#dca
 .vce-row select{background:var(--e-surface);border:1.5px solid var(--e-edge);border-radius:7px;padding:3px 6px;min-height:28px;width:100%;min-width:0;font-size:12px;color:var(--e-muted)}
 .vce-row select:hover:not(:disabled){border-color:var(--e-edge-hi);color:var(--e-ink)}
 .vce-row select:disabled{opacity:.42}
+/* "Move all of these to…", on the row for what is filed directly in a place: wide enough to read */
+.vce-row.own select.vce-all{color:var(--e-ink);font-weight:700}
+@media(min-width:761px){ .vce-row.own select.vce-all{grid-column:5 / 7} }
 .vce-fl{display:flex;flex-wrap:wrap;gap:2px 12px;padding:2px 9px 0}
 .vce-f{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--e-muted)}
 .vce-f.used{color:var(--e-care)}
@@ -36269,7 +36272,8 @@ function vceNameBox(place, big){
 function vceRow(place, depth, i, n, lists){
   var own = vceHolds(VCE.st, place, VCE.counts), all = place.kids.length ? vceAllHolds(VCE.st, place, VCE.counts) : own, pasting = VCE.clip.length > 0;
   var fixed = vceUsedPlace(place.orig), key = VCE.rp.addrOf[place.id], nm = vceEsc(place.name);
-  var picking = VCE.pick.length > 0, held = VCE.pick.indexOf(key) >= 0;
+  /* kit that has been cut comes first: while it is waiting to be pasted, nothing is picked up */
+  var picking = VCE.pick.length > 0 && !pasting, held = picking && VCE.pick.indexOf(key) >= 0;
   var h = '<div class="vce-row' + (depth === 3 ? ' in' : '') + (held ? ' held' : '') + '" data-drop="' + place.id + '" data-depth="' + depth + '"' + (place.kids.length ? ' data-kids="1"' : '') + '><span class="vce-ud">'
     + '<span class="vce-grip" draggable="true" data-drag="' + place.id + '" title="Drag onto another row to put ' + nm + ' inside it, or between rows to reorder">⋮⋮</span><button type="button" data-vce="up" data-id="' + place.id + '"' + (i === 0 ? ' disabled' : '') + ' aria-label="Move ' + nm + ' up" title="Move up"' + vceK(place.id + '|up') + '>▲</button>'
     + '<button type="button" data-vce="down" data-id="' + place.id + '"' + (i === n - 1 ? ' disabled' : '') + ' aria-label="Move ' + nm + ' down" title="Move down"' + vceK(place.id + '|down') + '>▼</button></span>'
@@ -36294,7 +36298,10 @@ function vceOwnRow(place, depth, lists, label){
   var h = '<div class="vce-row own' + (depth === 2 ? ' in' : '') + '"><span></span><span class="vce-nm">' + vceEsc(label) + '</span>'
     + '<button type="button" class="vce-n" data-vce="open" data-id="' + place.id + '#own" title="Show what is filed here"' + vceK(place.id + '#own|open-i') + '>' + vceNum(own.items) + '</button>'
     + '<button type="button" class="vce-n" data-vce="open" data-id="' + place.id + '#own" title="Show what is filed here"' + vceK(place.id + '#own|open-m') + '>' + vceNum(own.models) + '</button>'
-    + '<span></span><select aria-label="Merge these into" data-vce-chg="merge-own" data-id="' + place.id + '"' + ((own.items || own.models) ? '' : ' disabled') + vceK(place.id + '#own|merge') + '>' + lists.merge + '</select>'
+    + '<select class="vce-all" aria-label="Move all of these to" data-vce-chg="merge-own" data-id="' + place.id + '"' + ((own.items || own.models) ? '' : ' disabled') + vceK(place.id + '#own|merge') + '>'
+      + '<option value="">Move all of these to…</option>'
+      + (depth === 2 && place.kids.length ? '<optgroup label="Inside ' + vceEsc(place.name) + '">' + place.kids.map(function(k){ return '<option value="' + k.id + '">' + vceEsc(k.name) + '</option>'; }).join('') + '</optgroup>' : '')
+      + lists.merge.replace('<option value="">Choose</option>', '') + '</select>'
     + '<span class="vce-ac">' + (VCE.clip.length ? '<button type="button" class="vce-btn sm go" data-vce="paste" data-id="' + place.id + '"' + vceK(place.id + '#own|paste') + '>Paste</button>' : '') + '</span></div>';
   if(VCE.open[key]) h += vceInside(place);
   return h;
@@ -36316,7 +36323,7 @@ function vceMain(){
     + vceFlags(c);
   if(VCE.clip.length) h += '<div class="vce-clip"><span>' + vceCap(vceSay(vceTally(VCE.clip, VCE.counts))) + ' cut. Choose Paste on the place ' + (VCE.clip.length === 1 ? 'it' : 'they') + ' should go.</span>'
     + '<button type="button" class="vce-btn sm" data-vce="clip-clear"' + vceK('clip-clear') + '>Cancel</button></div>';
-  if(VCE.pick.length) h += '<div class="vce-clip"><span>' + VCE.pick.length + (VCE.pick.length === 1 ? ' sub-category' : ' sub-categories') + ' picked up. Choose Above or Inside on the row where '
+  if(VCE.pick.length && !VCE.clip.length) h += '<div class="vce-clip"><span>' + VCE.pick.length + (VCE.pick.length === 1 ? ' sub-category' : ' sub-categories') + ' picked up. Choose Above or Inside on the row where '
     + (VCE.pick.length === 1 ? 'it goes' : 'they go') + ', or Move on another row to pick that up too.</span><span class="vce-clipb">'
     + '<button type="button" class="vce-btn sm" data-vce="put-top"' + vceK('put-top') + '>To the top</button><button type="button" class="vce-btn sm" data-vce="put-bottom"' + vceK('put-bottom') + '>To the bottom</button>'
     + '<button type="button" class="vce-btn sm" data-vce="put-cat" title="Make each one a category of its own"' + vceK('put-cat') + '>Make a category</button>'
@@ -36458,6 +36465,8 @@ function vceAct(act, el){
   else if(act === 'cut'){
     var g = vceFind(VCE.st, id), here = g ? vceShown(g.place).filter(function(r){ return VCE.tick[r]; }) : [];
     here.forEach(function(r){ if(VCE.clip.indexOf(r) < 0) VCE.clip.push(r); delete VCE.tick[r]; });
+    /* any sub-category that was picked up is put back, so every row offers Paste */
+    if(VCE.clip.length) VCE.pick = [];
     VCE.msg = ''; vceDraw();
   }
   else if(act === 'clip-clear'){ VCE.clip = []; vceDraw(); }

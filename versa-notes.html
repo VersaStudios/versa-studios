@@ -3271,12 +3271,32 @@ function deleteSection(s){
    was opened over (pg: a notes page; ml: the Meetings page), so Back and Forward put that back
    underneath it. The routes: 'home', a scope, 'meetings', 'mt:<meeting id>'. */
 const viewHash = v => v === 'meetings' ? 'meetings' : /^mt:/.test(v) ? 'meeting-' + v.slice(3) : hashOf(v);
+/* Shown inside the Dashboard, this page shares the browser's history with every other page framed
+   there (the engineering reports, the planner). A step back made here was sometimes taken by one
+   of those instead: that page went back while this one stayed where it was. So when it is framed
+   the page keeps its own trail of where it has been and leaves the browser's history alone. On
+   its own address nothing changes: Back and Forward work as they always have. */
+const FRAMED = window.self !== window.top;
+const TRAIL = {list: [{}], at: 0};
+function trailSet(how, st){
+  if (how === 'pushState'){ TRAIL.list.length = TRAIL.at + 1; TRAIL.list.push(st); TRAIL.at++; }
+  else TRAIL.list[TRAIL.at] = st;
+}
+/* n steps back along whichever history is in use */
+function hgo(n){
+  if (!FRAMED){ history.go(n); return; }
+  const to = Math.max(0, Math.min(TRAIL.list.length - 1, TRAIL.at + n));
+  if (to === TRAIL.at) return;
+  TRAIL.at = to;
+  setTimeout(() => onPop(TRAIL.list[to]), 0);   // after this turn, as the browser's own would be
+}
 const H = {
   set(how, v, d, full, x){
     const st = Object.assign({nv: v, d: d, full: !!full}, x || null);
     const url = v === 'home'
       ? location.pathname + location.search + (full ? '#notepad/full' : '')
       : '#' + viewHash(v) + (full ? '/full' : '');
+    if (FRAMED){ trailSet(how, st); return true; }
     try { history[how](st, '', url); return true; }
     catch (e){ try { history[how](st, ''); return true; } catch (e2){ return false; } }
   },
@@ -3372,16 +3392,18 @@ function leaveNow(){
   const d = S.depth;
   S.depth = 0;
   leavePage();
-  if (d > 0) history.go(-d); else H.set('replaceState', 'home', 0);
+  if (d > 0) hgo(-d); else H.set('replaceState', 'home', 0);
 }
 function back(){
   if (!S.page) return;
   if (FP.on) exitFull({replace: true, quiet: true});
-  if (S.depth > 0) history.go(-S.depth);
+  if (S.depth > 0) hgo(-S.depth);
   else { H.set('replaceState', 'home', 0); leavePage(); }
 }
-window.addEventListener('popstate', e => {
-  const st = e.state || {};
+window.addEventListener('popstate', e => { if (!FRAMED) onPop(e.state); });
+/* a step back or forward has been taken: show the place it leads to */
+function onPop(st){
+  st = st || {};
   const r = st.nv ? {v: st.nv, full: !!st.full, pg: st.pg || null, ml: !!st.ml} : routeOfHash(location.hash);
   let t = routeTarget(r);
   if (!t){ t = HOME; H.set('replaceState', 'home', 0); }
@@ -3393,7 +3415,7 @@ window.addEventListener('popstate', e => {
   if (FP.on && (moving || FP.P.key !== want)) exitFull({fromHistory: true, how: 'history', quiet: moving});
   showLayers(t);
   if (want && !FP.on) enterFull(pads[want], {push: false});
-});
+}
 /* bring the screens to a route without touching the address (Back, Forward): the notes page
    underneath first, then the meetings screen over it */
 function showLayers(t){
@@ -3487,7 +3509,7 @@ function mtBack(){
   if (!S.mid && !S.ml) return;
   let n = 1;
   if (FP.on){ if (FP.pushed) n = 2; exitFull({fromHistory: true, quiet: true}); }
-  if (S.depth >= n){ history.go(-n); return; }
+  if (S.depth >= n){ hgo(-n); return; }
   // nothing to go back to (the address was pasted or pushing failed): straight to what is under it
   const t = S.mid && S.ml ? {v: 'meetings', page: S.page, ml: true, mid: null, full: false}
     : S.page ? {v: S.page, page: S.page, ml: false, mid: null, full: false} : HOME;
@@ -3774,7 +3796,7 @@ function exitFull(o){
   }
   if (FP.pushed && !o.fromHistory){
     if (o.replace){ const R = padRoute(P); H.set('replaceState', R.v, S.depth, false, R.x); }
-    else { S.depth = Math.max(0, S.depth - 1); history.back(); }
+    else { S.depth = Math.max(0, S.depth - 1); hgo(-1); }
   }
   FP.pushed = false;
 }
