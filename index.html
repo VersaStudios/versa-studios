@@ -2707,10 +2707,65 @@ html[data-theme="softdark"] #kitPageTitle + div{margin-left:auto}
 /* ── KIT ONE PAGE (end) ── */
 @media (max-width:900px){
   #vsKitWrap{flex-direction:column}
-  .vsk-rail{flex:none;width:100%;position:static;display:flex;flex-wrap:wrap;gap:4px}
+  .vsk-rail{flex:none;width:100%;position:static;display:flex;flex-wrap:wrap;align-items:flex-start;gap:4px}
   .vsk-r{width:auto}
   .vsk-rs{width:100%;margin-left:0}
+  .vsk-subs{flex:0 0 100%}
   .vsk-cat,.vsk-tag,.vsk-loc{display:none}
+}
+/* ── the Kit page on a phone, 5 Oct 2026: the search first ────────────────
+   One search box, full width, held at the top of the page while the list
+   moves under it. The left-hand list becomes one line of boxes that slides
+   sideways, and the sub-categories of the chosen category a second line
+   (#vsKitSubs, which vsKitRail fills), so the list starts near the top. The
+   box in the top bar is put away on this page: it would be a second search. */
+.vsk-substrip{display:none}
+@media (max-width:700px){
+  #vsKitWrap{gap:8px}
+  #vsKitWrap .vsk-main2{display:contents}
+  #vsKitWrap .vsk-bar{order:1;display:flex!important;align-items:center;gap:10px;width:100%;margin:-12px 0 0;padding:12px 0 8px;
+    position:sticky;top:-12px;z-index:6;background:var(--black)}
+  html[data-theme="soft"] #vsKitWrap .vsk-q,html[data-theme="softdark"] #vsKitWrap .vsk-q{
+    flex:1 1 auto;min-width:0;height:50px;box-sizing:border-box;-webkit-appearance:none;appearance:none;
+    background:var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%238b8b8b' stroke-width='1.6' stroke-linecap='round'%3E%3Ccircle cx='7' cy='7' r='5'/%3E%3Cpath d='M11 11l3.2 3.2'/%3E%3C/svg%3E") no-repeat 14px 50%/17px 17px!important;
+    border:1.5px solid var(--field-edge)!important;border-radius:10px!important;
+    padding:0 14px 0 42px!important;font-size:17px!important;font-weight:600!important}
+  html[data-theme="soft"] #vsKitWrap .vsk-q:focus,html[data-theme="softdark"] #vsKitWrap .vsk-q:focus{border-color:var(--ink)!important}
+  #vsKitWrap .vsk-count{position:absolute;right:14px;top:37px;transform:translateY(-50%);pointer-events:none}
+  #vsKitWrap .vsk-count:empty{display:none}
+  #vsKitRail,#vsKitSubs{flex:none;width:100%;position:static;display:flex;flex-wrap:nowrap;align-items:center;gap:5px;
+    overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  #vsKitRail::-webkit-scrollbar,#vsKitSubs::-webkit-scrollbar{display:none}
+  #vsKitRail{order:2}
+  #vsKitSubs{order:3}
+  #vsKitSubs:empty{display:none}
+  #vsKitRail .vsk-r,#vsKitRail .vsk-r.vko-q{flex:0 0 auto;width:auto;margin:0;padding:8px 12px;border-radius:7px;
+    background:var(--surface);border:1.5px solid var(--field-edge);font-size:13px;font-weight:800;color:var(--ink)}
+  #vsKitRail .vsk-r em,#vsKitRail .vsk-r.vko-q em{font-size:11px;color:var(--muted)}
+  #vsKitRail .vsk-r.on,#vsKitRail .vsk-r.vko-q.on{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+  #vsKitRail .vsk-r.on em,#vsKitRail .vsk-r.vko-q.on em{color:inherit;opacity:.6}
+  #vsKitRail .vsk-r.vsk-part{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+  #vsKitRail .vsk-subs,#vsKitRail>.vsk-rs{display:none}
+  #vsKitRail .vko-more{display:contents}
+  #vsKitRail .vko-more .vsk-rs{flex:0 0 auto;width:auto;margin:0 1px 0 10px;white-space:nowrap}
+  #vsKitSubs .vsk-sub{flex:0 0 auto;width:auto;gap:7px;padding:7px 10px;border-radius:7px;background:var(--surface);
+    font-size:12.5px;color:var(--subtle,var(--ink))}
+  #vsKitSubs .vsk-sub.on{background:var(--ink);color:var(--surface)}
+  #vsKitRows{order:4;width:100%;min-width:0}
+  #vsKitRows .vkc-boxes{display:none}
+  #vsKitSeek,#vsKitRows .vsh-title{display:none}
+  .vsh-seek{margin:2px 0 16px}
+  /* a row is the picture, the name on as many lines as it needs, and how many there are */
+  .vko-hd,.vko-row>.vko-num,.vko-row>.vko-dim,.vko-row>.vko-sc,.vko-row>.vko-as{display:none}
+  .vko-row,.vko-own .vko-row{grid-template-columns:minmax(0,1fr) auto;min-height:46px}
+  .vko-pics .vko-row,.vko-own.vko-pics .vko-row{grid-template-columns:45px minmax(0,1fr) auto}
+  .vko-row>.vko-nm{white-space:normal;overflow-wrap:anywhere;line-height:1.25;padding:7px 0 7px 14px;text-indent:-14px;font-size:14px}
+  .vko-row>.vko-has{white-space:nowrap}
+}
+@media (max-width:700px){
+  html[data-theme="soft"] .main:has(#page-kit.active #vsKitWrap) .search-wrap,
+  html[data-theme="softdark"] .main:has(#page-kit.active #vsKitWrap) .search-wrap{display:none}
+  #vsKitWrap .vsk-bar:has(.vsk-count:not(:empty)) .vsk-q{padding-right:104px!important}
 }
 
 /* Compact: the boxes carry a role and a name, so they do not need the
@@ -8845,6 +8900,15 @@ var _VS_SHOWS = {
   'cookingwiththestars': {src:'logos/cooking-with-the-stars.png', tint:'#D8D1CB', tintDark:'#9A928B',
                   full:'#2B2623', grad:'linear-gradient(135deg,#4A403A 0%,#1C1816 100%)',
                   bg:'#4A403A', bg2:'#1C1816',
+                  ink:'#ffffff', fixed:true, centre:true, heroLogo:true},
+  /* Cloud Imperium Games, for the job "CIG Hornet". The supplied logo is grey
+     lettering under a blue block, drawn for a white page (it is kept as
+     logos/cloud-imperium-games.svg). Here the lettering is white and the block
+     keeps its blue, on a deep navy. The key is a prefix, and punctuation is
+     ignored, so "CIG - Hornet" takes it too. */
+  'cighornet':   {src:'logos/cloud-imperium-games-white.svg', tint:'#C3CCDB', tintDark:'#8A95A8',
+                  full:'#111B30', grad:'linear-gradient(135deg,#1D2C4A 0%,#0E1729 100%)',
+                  bg:'#1D2C4A', bg2:'#0E1729',
                   ink:'#ffffff', fixed:true, centre:true, heroLogo:true}
 };
 function _vsLogoKey(name){ return String(name||'').toLowerCase().replace(/[^a-z0-9]/g,''); }
@@ -17010,8 +17074,31 @@ function vsKitSelect(type,value){
   try{ showKitTab('inv'); }catch(e){}
   vsKitPage();
 }
+/* The search box in the top bar. In the soft themes it feeds this page's own
+   list, across everything, in place of the older list view, which drew
+   squeezed rows on a phone and lost its results at the next refresh. Where
+   the top box is put away once this page is open (a phone), the typing
+   carries on in this page's own box. */
+function vsKitTopSearch(v){
+  v=String(v==null?'':v);
+  var kp=document.getElementById('page-kit');
+  var here=!!(kp && kp.classList.contains('active') && document.getElementById('vsKitWrap'));
+  if(!v.trim()){ if(here && _vsKitQ) vsKitSearch(''); return; }
+  if(!here){ try{ nav('kit',document.querySelector('[data-pg="kit"]')); }catch(e){} }
+  /* as a search from the Overview is: every item, and clearing it goes back to the Overview */
+  if(!here || _vsKitSel.type!=='home'){ _vsKitSel={type:'home',value:'',sub:''}; _vsKitQ=v; vsKitPage(); }
+  else vsKitSearch(v);
+  var top=document.getElementById('gSearch'), q=document.querySelector('#vsKitWrap .vsk-q');
+  if(q && q.value!==v) q.value=v;
+  if(top && q && top.offsetParent===null){
+    top.value='';
+    try{ q.focus(); q.setSelectionRange(v.length,v.length); }catch(e){}
+  }
+}
 function vsKitSearch(v){
   _vsKitQ=v||'';
+  var _top=document.getElementById('gSearch');
+  if(_top && _top.value && _top.value!==_vsKitQ && document.activeElement!==_top) _top.value='';
   /* typing is a way out of the landing, and clearing it is the way back */
   var bar=document.querySelector('#vsKitWrap .vsk-bar');
   if(_vsKitSel.type==='home' && !_vsKitQ){
@@ -17053,6 +17140,9 @@ function _vsKitCatOrder(){
 }
 function vsKitRail(){
   var el=document.getElementById('vsKitRail'); if(!el) return;
+  /* on a phone the rail is one line that slides sideways, and the chosen category's sub-categories are a
+     second line: where each had been slid to is kept across the redraw */
+  var _strip='', _line=document.getElementById('vsKitSubs'), _at=[el.scrollLeft, _line?_line.scrollLeft:0];
   var live=_vsKitLive(), cats={}, locs=_vsKitLocs(), subs={};
   live.forEach(function(k){
     var c=k.cat||'Uncategorised';
@@ -17067,11 +17157,13 @@ function vsKitRail(){
   if(_ko){ cats=_ko.cats; subs=_ko.subs; }
   var row=function(type,value,label,count,cls){
     var on=(_vsKitSel.type===type&&_vsKitSel.value===value&&!_vsKitSel.sub);
+    /* the category a chosen sub-category is in: marked on a phone, where its list is a line of its own */
+    var part=(type==='cat'&&_vsKitSel.type==='cat'&&_vsKitSel.value===value&&!!_vsKitSel.sub);
     var v=encodeURIComponent(String(value));
     var drop=(type==='cat'||type==='loc')
       ? ' ondragover="vsKitOver(event)" ondragleave="vsKitOut(event)" ondrop="vsKitDrop(event,\''+type+'\',\''+v+'\')"'
       : '';
-    return '<button class="vsk-r'+(cls?' '+cls:'')+(on?' on':'')+'"'+drop+' '
+    return '<button class="vsk-r'+(cls?' '+cls:'')+(on?' on':'')+(part?' vsk-part':'')+'"'+drop+' '
       +'onclick="vsKitSelect(\''+type+'\',\''+v+'\')">'
       +'<span>'+_vsEsc(label)+'</span>'+(count==null?'':'<em>'+count+'</em>')+'</button>';
   };
@@ -17113,9 +17205,10 @@ function vsKitRail(){
       var shown=Object.create(null), hasIn=Object.create(null), any=false;
       for(var up=_vsKitSel.sub||'', hop=0; up&&hop<9; up=inside[up], hop++) shown[up]=1;
       names.forEach(function(n){ if(inside[n]){ hasIn[inside[n]]=1; any=true; } });
+      _strip=names.filter(function(n){ return !inside[n]||shown[inside[n]]; })
+          .map(function(n){return subRow(c,n,all(n),deep(n),any?(hasIn[n]?(shown[n]?2:1):0):null);}).join('');
       out+='<div class="vsk-subs">'
-        +names.filter(function(n){ return !inside[n]||shown[inside[n]]; })
-          .map(function(n){return subRow(c,n,all(n),deep(n),any?(hasIn[n]?(shown[n]?2:1):0):null);}).join('')
+        +_strip
         +'<button class="vsk-addsub" onclick="vsKitAddSub(\''+encodeURIComponent(String(c))+'\',this)">+ Sub-category</button>'
       +'</div>';
     }
@@ -17143,6 +17236,18 @@ function vsKitRail(){
       +row('maint','sup','Suppliers',null,'vko-q')
       +row('maint','log','Logistics',null,'vko-q')
     +'</div>';
+  if(_line){
+    if(_line.getAttribute('data-cat')!==(_vsKitSel.type==='cat'?_vsKitSel.value:'')) _at[1]=0;
+    _line.setAttribute('data-cat',_vsKitSel.type==='cat'?_vsKitSel.value:'');
+    _line.innerHTML=_strip;
+  }
+  [el,_line].forEach(function(box,i){
+    if(!box || box.scrollWidth<=box.clientWidth+1) return;      /* only where it is a line that slides */
+    box.scrollLeft=_at[i];
+    var lit=box.querySelector('.on,.vsk-part'); if(!lit) return;
+    var a=box.getBoundingClientRect(), b=lit.getBoundingClientRect();
+    if(b.left<a.left+4 || b.right>a.right-4) box.scrollLeft+=(b.left-a.left)-(a.width-b.width)/2;
+  });
 }
 
 /* Does this sit somewhere the inventory recognises? */
@@ -17538,10 +17643,11 @@ function vsKitList(){
     if(g.items.length===1) return _vsKitCard(g.items[0]);
     var open=(_vsKitOpen===g.key);
     var free=0,out=0,down=0;
+    /* one rule for what an item is doing, the list's own (_vsKoState), so an item marked In Use is not counted free */
     g.items.forEach(function(k){
-      var job=_vsKitJobName(k);
-      if(k.status==='Maintenance'||k.status==='Fault') down++;
-      else if(job||k.inUse) out++; else free++;
+      var s=_vsKoState(k).k;
+      if(s==='maint') down++;
+      else if(s==='busy') out++; else free++;
     });
     var bits=[];
     if(free) bits.push(free+' free');
@@ -17564,8 +17670,7 @@ function vsKitList(){
         +'</span>'
       +'</button>'
       +(open?('<div class="vsk-units">'+g.items.map(function(k){
-          var job=_vsKitJobName(k);
-          var kind=job?'busy':(k.status==='Maintenance'||k.status==='Fault'?'maint':'ok');
+          var kind=_vsKoState(k).k;
           return '<button class="vsk-unit" draggable="true" '
             +'ondragstart="vsKitDrag(event,\'item\','+k.id+')" '
             +'onclick="openDrawer('+k.id+')">'
@@ -17602,7 +17707,7 @@ function _vsKitWhat(k){
 function _vsKitCard(k){
   var job=_vsKitJobName(k);
   var st=job?('On job \u00b7 '+job):(k.status||'');
-  var kind=job?'busy':(k.status==='Maintenance'||k.status==='Fault'?'maint':'ok');
+  var kind=_vsKoState(k).k;
   return '<button class="vsk-card" draggable="true" '
     +'ondragstart="vsKitDrag(event,\'item\','+k.id+')" '
     +'onclick="openDrawer('+k.id+')">'
@@ -18186,9 +18291,11 @@ function vsKitPage(){
     var wrap=document.createElement('div');
     wrap.id='vsKitWrap';
     wrap.innerHTML='<div id="vsKitRail" class="vsk-rail"></div>'
+      +'<div id="vsKitSubs" class="vsk-substrip"></div>'
       +'<div class="vsk-main2">'
         +'<div class="vsk-bar">'
-          +'<input class="fi vsk-q" placeholder="Search by name, model, tag or serial…" '
+          +'<input class="fi vsk-q" placeholder="'+((window.matchMedia&&window.matchMedia('(max-width:700px)').matches)?'Search kit':'Search by name, model, tag or serial…')+'" '
+            +'autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" '
             +'oninput="vsKitSearch(this.value)"/>'
           +'<span class="vsk-count" id="vsKitCount"></span>'
         +'</div>'
@@ -19430,6 +19537,8 @@ function toggleGrp(id) {
   b.classList.toggle('open'); c.classList.toggle('open');
 }
 function doSearch(q) {
+  /* the soft themes have one list for the kit, the Kit page's own */
+  if(typeof _vsIsSoft==='function' && _vsIsSoft() && typeof vsKitTopSearch==='function'){ vsKitTopSearch(q); return; }
   if(!q.trim()) { 
     var kb=document.getElementById('kitBody');
     if(kb) renderKit();
