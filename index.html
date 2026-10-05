@@ -2652,6 +2652,10 @@ html[data-theme="softdark"] #kitPageTitle + div{margin-left:auto}
 .vko-lk{background:none;border:0;padding:0;font-family:var(--font);font-size:11px;font-weight:700;color:var(--muted);
   cursor:pointer;text-align:left;text-decoration:underline}
 .vko-lk:hover{color:var(--ink)}
+/* a name in Works with that is another entry on the Kit List: a link to it (the kit categories block) */
+.vko-go{text-decoration:underline;text-underline-offset:2px;color:var(--ink);cursor:pointer}
+.vko-go:hover{text-decoration-thickness:2px}
+.vko-gos{display:flex;flex-wrap:wrap;gap:1px 9px;align-items:baseline;margin-top:4px;font-size:11px;font-weight:600;color:var(--muted);cursor:default}
 .vko-rm{display:block;margin-top:9px}
 .vko-note{font-size:12px;color:var(--muted);margin:8px 0 6px}
 /* the details: small boxes side by side, each only as wide as what is in it */
@@ -17878,13 +17882,13 @@ function vsKoList(el, live, note){
   var rows=models.map(function(m,i){
     var free=0; m.units.forEach(function(k){ if(_vsKoState(k).k==='ok') free++; });
     var open=(_vsKoOpen===m.key), p=pics?_vsKoPic(m):'';
-    return '<button class="vko-row'+(open?' open':'')+'" onclick="vsKoToggle('+i+')">'
+    return '<button class="vko-row'+(open?' open':'')+'" onclick="vsKcRow(event,'+i+')">'
       +(pics?'<span class="vko-th">'+(p?'<img src="'+_vsEsc(p)+'" alt="" loading="lazy" onerror="this.remove()">':'')+'</span>':'')
       +'<span class="vko-num">'+(m.h?m.h.id:'')+'</span>'
       +'<span class="vko-nm"><i>'+(open?'▾':'▸')+'</i>'+_vsEsc(m.name)+'</span>'
       +'<span class="vko-dim">'+_vsEsc(m.make)+'</span><span class="vko-dim">'+_vsEsc(m.model)+'</span>'
       +'<span class="vko-sc">'+_vsEsc(catView?(m.sub||'—'):(m.cat||'—'))+'</span>'
-      +'<span class="vko-dim">'+_vsEsc(m.compat)+'</span>'
+      +'<span class="vko-dim">'+_vsKcLinks(m)+'</span>'
       +(all?'':_vsKoAssetCell(m))
       +'<span class="vko-has">'+(m.units.length?('<small>'+free+' available</small><b>'+m.units.length+'</b>'):'')+'</span>'
     +'</button>'+(open?_vsKoInside(m,i):'');
@@ -17958,7 +17962,7 @@ function _vsKoInside(m,i){
         +cats.map(function(c){return '<option'+(c===h.cat?' selected':'')+'>'+_vsEsc(c)+'</option>';}).join('')+'</select>')
       +box('Sub-category','<select onchange="vsKoSetCat('+id+',\'subcat\',this.value)"><option value="">—</option>'
         +subs.map(function(s){return '<option'+(s===m.sub?' selected':'')+'>'+_vsEsc(s)+'</option>';}).join('')+'</select>')
-      +box('Works with',area('compat',m.compat),'vko-t')+box('Notes',area('notes',m.notes),'vko-t')
+      +box('Works with',area('compat',m.compat)+_vsKcGoLine(m),'vko-t')+box('Notes',area('notes',m.notes),'vko-t')
       +'</div>'
       +(m.units.length?'':'<button class="vko-lk vko-rm" onclick="vsKoRemove('+id+')">Remove this model</button>');
   } else {
@@ -36816,6 +36820,68 @@ function vsKcPick(cat, sub){
   try{ cat = decodeURIComponent(cat); sub = decodeURIComponent(sub); }catch(e){}
   _vsKitSel = {type: 'cat', value: cat, sub: sub};
   vsKitRail(); vsKitList();
+}
+/* Works with, as links. A model's Works with is read as a list: names apart
+   by a comma, a semicolon, a new line or a full stop. A part that is exactly
+   the name of another entry on the Kit List (capitals aside) is a link to that
+   entry; anything else stays as it was typed. */
+var _vsKcNm = null;
+function _vsKcNames(){
+  if(_vsKcNm) return _vsKcNm;
+  var by = Object.create(null);
+  (typeof hiredCatalogue !== 'undefined' ? hiredCatalogue : []).forEach(function(h){
+    var n = h && String(h.name == null ? '' : h.name).replace(/\s+/g, ' ').trim().toLowerCase();
+    if(n) (by[n] = by[n] || []).push(h);
+  });
+  /* kept for the drawing in hand only: the list may be different by the next one */
+  if(typeof setTimeout === 'function'){ _vsKcNm = by; setTimeout(function(){ _vsKcNm = null; }, 0); }
+  return by;
+}
+/* the entry a name leads to: never the model itself, and one in the same category first */
+function _vsKcTarget(list, m){
+  var own = m && m.h ? m.h.id : null, ok = (list || []).filter(function(h){ return h.id !== own; });
+  return ok.filter(function(h){ return m && h.cat === m.cat; })[0] || ok[0] || null;
+}
+/* the text in its parts, each with the entry it names, if it names one */
+function _vsKcWorks(m){
+  var names = _vsKcNames();
+  return String((m && m.compat) || '').split(/([,;\n]+|\.(?=\s|$))/).map(function(part, i){
+    var core = part.replace(/\s+/g, ' ').trim();
+    return {t: part, h: (i % 2 || !core) ? null : _vsKcTarget(names[core.toLowerCase()], m)};
+  });
+}
+/* for the list: the text as it is, with each name that is an entry marked as a link */
+function _vsKcLinks(m){
+  return _vsKcWorks(m).map(function(p){
+    if(!p.h) return _vsEsc(p.t);
+    var core = p.t.trim(), a = p.t.indexOf(core);
+    return _vsEsc(p.t.slice(0, a)) + '<span class="vko-go" data-go="' + p.h.id + '" title="Go to ' + _vsEsc(p.h.name) + '">' + _vsEsc(core) + '</span>' + _vsEsc(p.t.slice(a + core.length));
+  }).join('');
+}
+/* for the opened model: the same names as buttons, under the box they are typed in */
+function _vsKcGoLine(m){
+  var seen = {}, hits = _vsKcWorks(m).filter(function(p){ if(!p.h || seen[p.h.id]) return false; seen[p.h.id] = 1; return true; });
+  if(!hits.length) return '';
+  return '<div class="vko-gos">Go to' + hits.map(function(p){
+    return '<button type="button" class="vko-lk" onclick="vsKcGo(' + p.h.id + ')">' + _vsEsc(p.h.name) + '</button>'; }).join('') + '</div>';
+}
+/* a row is clicked: on a name that is a link, go there; anywhere else, open or shut the row */
+function vsKcRow(e, i){
+  var t = e && e.target && e.target.closest ? e.target.closest('[data-go]') : null;
+  if(t) vsKcGo(+t.getAttribute('data-go')); else vsKoToggle(i);
+}
+/* Go to an entry: its own sub-category on the Kit page, with its row open and
+   in view. If the view in hand does not hold it (Inventory, for a model Versa
+   has none of), Everything is shown. */
+function vsKcGo(id){
+  var h = _vsKoEntry(id); if(!h) return;
+  _vsKitSel = {type: 'cat', value: h.cat || 'Uncategorised', sub: String(h.subcat || '').trim()};
+  _vsKitQ = ''; var q = document.querySelector('.vsk-q'); if(q) q.value = '';
+  _vsKoOpen = 'm' + h.id;
+  var draw = function(){ vsKitRail(); vsKitList(); return document.querySelector('#vsKitRows .vko-row.open'); };
+  var row = draw();
+  if(!row && _vsKoMode !== 'all'){ _vsKoMode = 'all'; row = draw(); }
+  if(row && row.scrollIntoView) row.scrollIntoView({block: 'center'});
 }
 /* the structure and its groups, as one string: has anything about them changed? */
 function _vsKcSig(){
