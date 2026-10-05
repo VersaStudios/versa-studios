@@ -5157,7 +5157,7 @@ html[data-theme="softdark"] #kipRoot .kip-pv .kip-lnk{margin:6px 0 0 -6px}
       <div class="ff"><label class="flbl">Location</label><select class="fi" id="nkLoc" style="width:100%"><option>Manchester</option><option>London</option><option>ABC</option></select></div>
       <div class="ff"><label class="flbl">Manufacturer</label><input class="fi" id="nkMake" placeholder="e.g. Sony, Canon"/></div>
       <div class="ff"><label class="flbl">Serial Number</label><input class="fi" id="nkSerial" placeholder="SN-0001"/></div>
-      <div class="ff"><label class="flbl">Asset Tag</label><input class="fi" id="nkTag" placeholder="VS-CAM-001"/></div>
+      <div class="ff"><label class="flbl">Asset Tag</label><input class="fi" id="nkTag" placeholder="Leave blank for the next number"/></div>
       <div class="ff"><label class="flbl">Status</label><select class="fi" id="nkStatus" style="width:100%"><option>Available</option><option>In Use</option><option>Maintenance</option><option>Fault</option></select></div>
       <div class="ff"><label class="flbl">Condition</label><select class="fi" id="nkCond" style="width:100%" onchange="if(this.value==='__custom__'){var v=prompt('Enter custom condition:');if(v){var o=document.createElement('option');o.value=v;o.textContent=v;o.selected=true;this.insertBefore(o,this.options[this.options.length-1]);}else{this.value='Good';}}"><option>Excellent</option><option>Like New</option><option>Good</option><option>Fair</option><option>Refurbished</option><option>Poor</option><option>Damaged</option><option value="__custom__">Custom…</option></select></div>
       <div class="ff"><label class="flbl">Quantity</label><input class="fi" id="nkQty" type="number" min="1" max="50" value="1" style="width:100%" title="Create multiple identical items. Tag/serial will auto-increment if they end in a number."/></div>
@@ -7333,6 +7333,8 @@ function _getDataMap() {
        (the kit categories block, above renderCats). Saved as kitSubtree since
        5 Oct 2026; kitSubgroups is the older record and is no longer written. */
     kitSubtree: _vsKcGroupsOut(), kitCatOrder: Object.keys(KIT_SUBCATS),
+    /* the highest asset number issued for each kind of kit (the kit categories block) */
+    assetCounters: _vsAssetOut(),
     /* a template made from a job carries that job's pictures: saved as
        stand-ins too, so the templates record stays small */
     jobTemplates: _vsPicPack(jobTemplates), longTermHired: longTermHired,
@@ -7903,6 +7905,7 @@ function _vsApplyRow(row){
           }
           else if(row.key==='catColors'&&v&&typeof v==='object'){Object.keys(v).forEach(function(k){CAT_COLORS[k]=v[k];});}
           else if(row.key==='kitSubtree'){_vsKcGroupsLoaded(v,true);}
+          else if(row.key==='assetCounters'){_vsAssetLoaded(v);}
           /* the same as it was saved until 5 Oct 2026: read only while there is no kitSubtree */
           else if(row.key==='kitSubgroups'){_vsKcGroupsLoaded(v,false);}
           else if(row.key==='kitCatOrder'){_vsKcOrderLoaded(v);}
@@ -17903,10 +17906,11 @@ function vsKoList(el, live, note){
    item's asset tag where one is recorded, and otherwise its own number (the
    "No." on its tile), shown plainly. Numbers that run on are closed up: 38\u201347. */
 function _vsKoAssets(m){
-  var tags=[], nums=[];
+  var tags=[], nums=[], coded={};
   (m.units||[]).forEach(function(k){
-    var t=String(k.tag||'').trim();
-    if(t) tags.push(t);
+    var t=String(k.tag||'').trim(), c=/^([A-Z]{3})-(\d{4,})$/.exec(t);
+    if(c) (coded[c[1]]=coded[c[1]]||[]).push(c[2]);      /* an asset number: its code and its digits */
+    else if(t) tags.push(t);
     else if(typeof k.id==='number'&&isFinite(k.id)) nums.push(k.id);
     else if(k.id!=null) tags.push(String(k.id));
   });
@@ -17917,7 +17921,17 @@ function _vsKoAssets(m){
     var j=i; while(j+1<nums.length&&nums[j+1]===nums[j]+1) j++;
     runs.push(j>i?nums[i]+'\u2013'+nums[j]:String(nums[i])); i=j+1;
   }
-  return {short:tags.concat(runs).join(', '), full:tags.concat(nums.map(String)).join(', ')};
+  /* asset numbers that run on are closed up too: CAM-0005\u20130014 */
+  var cshort=[], cfull=[];
+  Object.keys(coded).sort().forEach(function(p){
+    var list=coded[p].sort(function(a,b){return a-b;}), x=0;
+    while(x<list.length){
+      var y=x; while(y+1<list.length&&(+list[y+1])===(+list[y])+1) y++;
+      cshort.push(p+'-'+list[x]+(y>x?'\u2013'+list[y]:'')); x=y+1;
+    }
+    list.forEach(function(n){ cfull.push(p+'-'+n); });
+  });
+  return {short:cshort.concat(tags,runs).join(', '), full:cfull.concat(tags,nums.map(String)).join(', ')};
 }
 function _vsKoAssetCell(m){
   var a=_vsKoAssets(m);
@@ -18069,6 +18083,7 @@ function vsKoAddUnit(id){
     make:h.make||'', model:h.model||'', serial:'', tag:'', status:'Available', cond:'Good', notes:'',
     history:[], tl:[], isHired:false, modelId:id};
   kit.push(k);
+  try{ _vsAssetGive(k); }catch(e){}      /* its asset number */
   try{ activity.unshift({icon:'➕',text:'Added: '+k.name,time:'Just now'}); }catch(e){}
   saveData(); _vsKoRedraw();
   try{ openDrawer(k.id); }catch(e){}
@@ -21881,6 +21896,7 @@ function addKit() {
       hireCompany:(document.getElementById('nkHireCo').value||'').trim(),
       extAssetNo:(document.getElementById('nkExtAsset').value||'').trim()};
     kit.push(k);
+    try{ _vsAssetGive(k); }catch(e){}    /* the next asset number, unless one was typed or it is hired in */
     maybeAutoAllocateToML(k);
   }
   activity.unshift({icon:'➕',text:'Added: '+name+(qty>1?' ×'+qty:''),time:'Just now'});
@@ -36883,6 +36899,60 @@ function vsKcGo(id){
   if(!row && _vsKoMode !== 'all'){ _vsKoMode = 'all'; row = draw(); }
   if(row && row.scrollIntoView) row.scrollIntoView({block: 'center'});
 }
+/* Asset numbers. Every inventory item of Versa's own has one: a three-letter
+   code for the kind of kit and a four-digit number (CAM-0001), kept in the
+   item's asset tag. Agreed with Andrew on 5 Oct 2026. There is no site in the
+   number, because kit moves between sites. The code comes from where the item
+   is filed at the moment its number is issued; after that the number never
+   changes, and it is never given out twice: the highest number issued for each
+   code is saved (assetCounters), so a number stays taken even after its item
+   has been deleted for good. */
+var VS_ASSET_BYCAT = {Audio: 'AUD', Comms: 'COM', Vision: 'VIS', Monitors: 'MON', 'Floor Monitors': 'MON', Glue: 'GLU', Converters: 'CNV', Systems: 'SYS', PC: 'SYS',
+  Engineering: 'ENG', Connectivity: 'CON', 'Record/Playback': 'REC', 'Off Air': 'OFA', Power: 'PWR', Lighting: 'LGT', Cables: 'CBL', Pods: 'POD', 'Grip & Support': 'GRP', Other: 'MSC'};
+/* Camera is split by kind: lenses and cameras by their sub-category or the one it sits inside, the rest by name */
+var VS_ASSET_CAM = {LNS: ['Lens', 'Lens Range', 'Lens Adapter'], CAM: ['Studio Camera', 'Cine Camera', 'Specialist Camera', 'Mini Camera', 'PTZ Camera', 'Camera Body'],
+  CCU: ['CCU', 'RCP', 'RCP / Control', 'Control', 'MCS', 'Remote Panel'], GRP: ['Pedestal', 'Head', 'Grip & Track', 'Grip', 'Support', 'Riser', 'Mount Support']};
+var VS_ASSET_RE = /^([A-Z]{3})-(\d{4,})$/;
+var _vsAssetTop = {};
+function _vsAssetCode(cat, sub){
+  cat = String(cat == null ? '' : cat).trim(); sub = String(sub == null ? '' : sub).trim();
+  if(cat === 'Camera' || cat === 'Hardware Spares'){
+    var inside = function(code){ return VS_ASSET_CAM[code].some(function(n){ return _vsKcIn(sub, n); }); };
+    if(inside('LNS')) return 'LNS';
+    if(cat === 'Hardware Spares') return 'MSC';
+    if(inside('CAM')) return 'CAM';
+    if(VS_ASSET_CAM.CCU.indexOf(sub) >= 0) return 'CCU';
+    if(VS_ASSET_CAM.GRP.indexOf(sub) >= 0) return 'GRP';
+    return 'CAC';
+  }
+  return Object.prototype.hasOwnProperty.call(VS_ASSET_BYCAT, cat) ? VS_ASSET_BYCAT[cat] : 'MSC';
+}
+/* the next number for a code: above every one in the inventory, in the bin, and ever issued */
+function _vsAssetNext(code){
+  var top = Number(_vsAssetTop[code]) || 0;
+  var see = function(k){ var m = VS_ASSET_RE.exec(String((k && k.tag) || '').trim()); if(m && m[1] === code && +m[2] > top) top = +m[2]; };
+  (typeof kit !== 'undefined' ? kit : []).forEach(see);
+  (typeof binItems !== 'undefined' ? binItems : []).forEach(function(b){ see(b && b.item); });
+  top++;
+  _vsAssetTop[code] = top;
+  return code + '-' + (top < 10000 ? ('000' + top).slice(-4) : String(top));
+}
+/* a new item is given its number, unless it came with an asset tag or is hired in */
+function _vsAssetGive(k){
+  if(!k || String(k.tag == null ? '' : k.tag).trim() || k.isHired || k.hired) return '';
+  k.tag = _vsAssetNext(_vsAssetCode(k.cat, k.subcat));
+  return k.tag;
+}
+/* the highest numbers as they are saved, the codes in the order the database keeps them, so a save is only made when one has moved */
+function _vsAssetOut(){
+  var out = {};
+  Object.keys(_vsAssetTop).sort().forEach(function(c){ if(/^[A-Z]{3}$/.test(c) && _vsAssetTop[c] > 0) out[c] = _vsAssetTop[c]; });
+  return out;
+}
+function _vsAssetLoaded(v){
+  if(!v || typeof v !== 'object' || Array.isArray(v)) return;
+  Object.keys(v).forEach(function(c){ var n = Math.floor(Number(v[c])); if(/^[A-Z]{3}$/.test(c) && n > (Number(_vsAssetTop[c]) || 0)) _vsAssetTop[c] = n; });
+}
 /* the structure and its groups, as one string: has anything about them changed? */
 function _vsKcSig(){
   return JSON.stringify([Object.keys(KIT_SUBCATS).map(function(c){ return [c, KIT_SUBCATS[c]]; }), _vsKcGroupsOut()]);
@@ -37003,6 +37073,7 @@ function vsKcAdmin(){
 }
 /* what a refused save or someone else's change is called */
 if(typeof VS_KEY_LABEL !== 'undefined') VS_KEY_LABEL.kitSubcats = VS_KEY_LABEL.kitSubgroups = VS_KEY_LABEL.kitSubtree = VS_KEY_LABEL.kitCatOrder = 'the kit categories';
+if(typeof VS_KEY_LABEL !== 'undefined') VS_KEY_LABEL.assetCounters = 'the asset numbers';
 /* ── end of kit categories in Admin ── */
 function renderCats() {
   try{ vsKcAdmin(); }catch(e){ console.warn('category editor failed', e); }
@@ -37247,7 +37318,7 @@ function prevImport() {
     +'<div style="font-size:17px;color:var(--white)">'+importRows.slice(0,3).map(r=>r.name).join(', ')+(importRows.length>3?'...':'')+'</div>';
   document.getElementById('importBtn').style.display=importRows.length?'':'none';
 }
-function doImport(){if(!importRows.length)return;importRows.forEach(r=>{r.id=nextKid++;kit.push(r);if(typeof maybeAutoAllocateToML==='function')maybeAutoAllocateToML(r);});saveData();toast('Imported '+importRows.length+' items');cm('mImport');renderKit();renderDash();}
+function doImport(){if(!importRows.length)return;importRows.forEach(r=>{r.id=nextKid++;kit.push(r);try{_vsAssetGive(r);}catch(e){}if(typeof maybeAutoAllocateToML==='function')maybeAutoAllocateToML(r);});saveData();toast('Imported '+importRows.length+' items');cm('mImport');renderKit();renderDash();}
 
 // ── SIGN-IN ───────────────────────────────────────────────────────────────────
 function pwStr(){
