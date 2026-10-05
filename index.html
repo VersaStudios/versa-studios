@@ -2499,6 +2499,9 @@ html[data-theme="softdark"] #kitPageTitle + div{margin-left:auto}
 .vsk-sub.on{color:var(--ink);font-weight:800;background:var(--surface-2)}
 /* a sub-category that sits inside the one above it */
 .vsk-sub.vsk-in{padding-left:16px}
+.vsk-sub.vsk-in2{padding-left:28px}
+/* the mark beside a sub-category that has others inside it: shut until it is chosen */
+.vsk-tw{display:inline-block;width:11px;font-style:normal;font-size:9px;line-height:1}
 /* boxes for the sub-categories of what is chosen, above the list; the one on show is filled */
 .vkc-boxes{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:6px;margin:0 0 10px}
 .vkc-b{display:flex;align-items:baseline;justify-content:space-between;gap:8px;min-width:0;background:var(--surface);
@@ -3176,6 +3179,7 @@ html[data-theme="softdark"] .vce{--e-muted:#8d8d95;--e-row:#202024;--e-care:#dca
 .vce-row.in{border-top:0;padding:2px 0}
 .vce-row.in .vce-nm{margin-left:18px;padding-left:10px;border-left:2px solid var(--border-l,var(--border))}
 .vce-row.in.own .vce-nm{padding-left:19px}
+.vce-row.in2 .vce-nm{margin-left:40px}
 .vce-ac{display:flex;gap:4px;justify-content:flex-end}
 .vce-into{background:var(--e-surface);border:1.5px solid var(--e-edge);border-radius:7px;padding:3px 6px;min-height:30px;max-width:150px;font-size:12.5px;font-weight:700}
 .vce-into:disabled{opacity:.42}
@@ -3224,6 +3228,7 @@ html[data-theme="softdark"] .vce{--e-muted:#8d8d95;--e-row:#202024;--e-care:#dca
 .vce-new{display:flex;gap:6px;margin-bottom:8px}
 .vce-new.sub{margin:8px 0 2px 64px;max-width:420px}
 .vce-new.in{margin:3px 0 5px 92px;max-width:470px}
+.vce-new.in2{margin-left:114px}
 .vce-new input{flex:1;min-width:0;background:var(--e-surface);border:1.5px solid var(--e-edge);border-radius:7px;padding:3px 8px;min-height:30px;font-size:12.5px}
 .vce-calm{color:var(--e-muted);padding:4px 0}
 .vce-tot{font-weight:700;margin-bottom:6px}
@@ -3245,7 +3250,9 @@ html[data-theme="softdark"] .vce{--e-muted:#8d8d95;--e-row:#202024;--e-care:#dca
   .vce-row{grid-template-columns:58px minmax(0,1fr) 44px 44px;row-gap:4px}
   .vce-row select{grid-column:2 / -1}
   .vce-row > .vce-ac{grid-column:2 / -1;justify-content:flex-start}
-  .vce-in,.vce-new.sub,.vce-new.in{margin-left:0}
+  .vce-in,.vce-new.sub,.vce-new.in,.vce-new.in2{margin-left:0}
+  .vce-row.in .vce-nm{margin-left:4px}
+  .vce-row.in2 .vce-nm{margin-left:18px}
   .vce-btn,.vce-cat,.vce-name,.vce-row select,.vce-new input{min-height:40px}
 }
 /* ── end of kit categories in Admin ── */
@@ -7319,8 +7326,9 @@ function _getDataMap() {
     patTesters: patTesters, suppliers: suppliers, freelanceCrew: VERSA_FREELANCE, kitPreppers: KIT_PREPPERS, kitTransports: KIT_TRANSPORTS,
     kitSubcats: JSON.parse(JSON.stringify(KIT_SUBCATS)), catColors: Object.assign({}, CAT_COLORS),
     /* which sub-categories sit inside another, and the order of the categories
-       (the kit categories block, above renderCats) */
-    kitSubgroups: _vsKcGroupsOut(), kitCatOrder: Object.keys(KIT_SUBCATS),
+       (the kit categories block, above renderCats). Saved as kitSubtree since
+       5 Oct 2026; kitSubgroups is the older record and is no longer written. */
+    kitSubtree: _vsKcGroupsOut(), kitCatOrder: Object.keys(KIT_SUBCATS),
     /* a template made from a job carries that job's pictures: saved as
        stand-ins too, so the templates record stays small */
     jobTemplates: _vsPicPack(jobTemplates), longTermHired: longTermHired,
@@ -7362,7 +7370,9 @@ var VS_READ_ONLY_KEYS = {
   jobs:1, crew_contacts:1, ml_tech_managers:1, bank_holidays:1, crew_list:1,
   team_pins:1, networking:1, trello_config:1, trello_cards:1, control_minutes:1,
   vault_versa_studios:1, tech_log_abc:1, tech_log_london:1, tech_log_manchester:1,
-  notes_andrew_rowell_versastudios_com:1
+  notes_andrew_rowell_versastudios_com:1,
+  /* the kit categories' groups as they were saved until 5 Oct 2026 (kitSubtree now) */
+  kitSubgroups:1
 };
 
 var _saveTimer = null;
@@ -7888,7 +7898,9 @@ function _vsApplyRow(row){
             });
           }
           else if(row.key==='catColors'&&v&&typeof v==='object'){Object.keys(v).forEach(function(k){CAT_COLORS[k]=v[k];});}
-          else if(row.key==='kitSubgroups'){_vsKcGroupsLoaded(v);}
+          else if(row.key==='kitSubtree'){_vsKcGroupsLoaded(v,true);}
+          /* the same as it was saved until 5 Oct 2026: read only while there is no kitSubtree */
+          else if(row.key==='kitSubgroups'){_vsKcGroupsLoaded(v,false);}
           else if(row.key==='kitCatOrder'){_vsKcOrderLoaded(v);}
           else if(row.key==='jobTemplates'&&Array.isArray(v)){jobTemplates=v;}
           else if(row.key==='job_access'&&Array.isArray(v)){_jobAccessGrants.length=0;v.forEach(function(x){_jobAccessGrants.push(x);});}
@@ -17056,14 +17068,15 @@ function vsKitRail(){
       +'onclick="vsKitSelect(\''+type+'\',\''+v+'\')">'
       +'<span>'+_vsEsc(label)+'</span>'+(count==null?'':'<em>'+count+'</em>')+'</button>';
   };
-  var subRow=function(cat,sc,n,inner){
+  var subRow=function(cat,sc,n,inner,tw){
     var on=(_vsKitSel.type==='cat'&&_vsKitSel.value===cat&&_vsKitSel.sub===sc);
     var c2=encodeURIComponent(String(cat)), s2=encodeURIComponent(String(sc));
-    return '<button class="vsk-sub'+(inner?' vsk-in':'')+(on?' on':'')+'" '
+    return '<button class="vsk-sub'+(inner?' vsk-in':'')+(inner>1?' vsk-in2':'')+(on?' on':'')+'" '
+      +(tw>0?'aria-expanded="'+(tw>1?'true':'false')+'" ':'')
       +'ondragover="vsKitOver(event)" ondragleave="vsKitOut(event)" '
       +'ondrop="vsKitDrop(event,\'sub\',\''+c2+'\',\''+s2+'\')" '
       +'onclick="vsKitSelectSub(\''+c2+'\',\''+s2+'\')">'
-      +'<span>'+_vsEsc(sc)+'</span><em>'+n+'</em></button>';
+      +'<span>'+(tw==null?'':'<i class="vsk-tw">'+(tw>1?'▾':tw>0?'▸':'')+'</i>')+_vsEsc(sc)+'</span><em>'+n+'</em></button>';
   };
   var sec=function(t){ return '<div class="vsk-rs">'+t+'</div>'; };
 
@@ -17078,14 +17091,24 @@ function vsKitRail(){
       var known=(typeof KIT_SUBCATS!=='undefined'&&KIT_SUBCATS[c])?KIT_SUBCATS[c]:[];
       /* in the order the list keeps them (Admin, Kit Categories), then any
          in use that it does not have. A sub-category inside another sits a
-         step in, and the one it is inside counts what is in both. */
+         step in, one inside that a step further, and each counts everything
+         inside it. */
       var names=known.slice();
       Object.keys(sc).sort(function(a,b){ return (sc[b]||0)-(sc[a]||0) || String(a).localeCompare(String(b)); })
         .forEach(function(n){ if(names.indexOf(n)<0) names.push(n); });
-      var inside={}; names.forEach(function(n){ _vsKcMembers(c,n).forEach(function(m){ inside[m]=n; }); });
-      var all=function(n){ var t=sc[n]||0; names.forEach(function(m){ if(inside[m]===n) t+=sc[m]||0; }); return t; };
+      var inside=Object.create(null); names.forEach(function(n){ _vsKcMembers(c,n).forEach(function(m){ inside[m]=n; }); });
+      var deep=function(n){ var d=0; while(inside[n]&&d<9){ n=inside[n]; d++; } return d; };
+      var all=function(n){ var t=sc[n]||0; names.forEach(function(m){ if(inside[m]===n) t+=all(m); }); return t; };
+      /* A sub-category with others inside it opens when it is chosen, or
+         when anything inside it is, and is shut otherwise, so the list stays
+         short. The mark beside its name says which (tw: 1 shut, 2 open, 0
+         nothing inside; no mark at all in a category that has none). */
+      var shown=Object.create(null), hasIn=Object.create(null), any=false;
+      for(var up=_vsKitSel.sub||'', hop=0; up&&hop<9; up=inside[up], hop++) shown[up]=1;
+      names.forEach(function(n){ if(inside[n]){ hasIn[inside[n]]=1; any=true; } });
       out+='<div class="vsk-subs">'
-        +names.map(function(n){return subRow(c,n,all(n),!!inside[n]);}).join('')
+        +names.filter(function(n){ return !inside[n]||shown[inside[n]]; })
+          .map(function(n){return subRow(c,n,all(n),deep(n),any?(hasIn[n]?(shown[n]?2:1):0):null);}).join('')
         +'<button class="vsk-addsub" onclick="vsKitAddSub(\''+encodeURIComponent(String(c))+'\',this)">+ Sub-category</button>'
       +'</div>';
     }
@@ -35710,8 +35733,9 @@ function delUser(id){if(id===CU.id){toast('Cannot remove yourself');return;}if(!
    Kit is filed under a category and a sub-category. A sub-category can sit
    inside another one, which is only a way of grouping: what is filed under
    "Studio Camera" stays filed under "Studio Camera" whether or not that sits
-   inside "Cameras". So the tree is three levels deep, and a sub-category's
-   name is its own within the whole category.
+   inside "Cameras". One sub-category can sit inside another that is itself
+   inside one, so the tree is four levels deep (Camera, Lens, Cine Lens, Cooke
+   S4/i), and a sub-category's name is its own within the whole category.
 
    The plan starts as the structure the dashboard has now, with everything
    that is filed under it. Each place in the tree remembers which of the
@@ -35728,7 +35752,7 @@ function delUser(id){if(id===CU.id){toast('Cannot remove yourself');return;}if(!
 
      a place = { id, name, orig: {c, s} or null if new, src: [keys], listed, kids: [places] }
      a thing = 'i' + an inventory item's id, or 'm' + a Kit List model's id                      */
-var VCE_SEP = String.fromCharCode(1), VCE_DEEP = 3;
+var VCE_SEP = String.fromCharCode(1), VCE_DEEP = 4;
 function vceNorm(s){ return String(s == null ? '' : s).replace(/\s+/g, ' ').replace(/^ | $/g, ''); }
 function vceKey(c, s){ return (c == null ? '' : String(c)) + VCE_SEP + (s == null ? '' : String(s)); }
 function vceSplit(k){ var p = String(k).split(VCE_SEP); return {c: p[0] || '', s: p[1] || ''}; }
@@ -35814,14 +35838,18 @@ function vceStart(data){
     list.push(p); at[k] = p; return p;
   }
   Object.keys(data.structure || {}).forEach(function(c){
-    var cat = place(st.cats, c, '', true), groups = (data.groups && data.groups[c]) || {}, parentOf = {}, names = {};
+    var cat = place(st.cats, c, '', true), groups = (data.groups && data.groups[c]) || {}, parentOf = {}, names = {}, made = {};
     (data.structure[c] || []).forEach(function(s){ names[vceNorm(s)] = 1; });
-    Object.keys(groups).forEach(function(g){ if(names[g]) (groups[g] || []).forEach(function(s){ s = vceNorm(s); if(names[s] && s !== g && !parentOf[s] && !groups[s]) parentOf[s] = g; }); });
-    (data.structure[c] || []).forEach(function(s){
-      s = vceNorm(s); if(!s) return;
-      if(parentOf[s]) place(place(cat.kids, c, parentOf[s], true).kids, c, s, true);
-      else place(cat.kids, c, s, true);
-    });
+    /* each sub-category sits inside one other at most, and never inside itself, however far down */
+    Object.keys(groups).forEach(function(g){ if(names[g]) (groups[g] || []).forEach(function(s){
+      s = vceNorm(s);
+      if(!names[s] || s === g || parentOf[s]) return;
+      for(var up = g; up; up = parentOf[up]) if(up === s) return;
+      parentOf[s] = g;
+    }); });
+    /* the place for a sub-category, with the one it sits inside made first */
+    var put = function(s){ return made[s] || (made[s] = place(parentOf[s] ? put(parentOf[s]).kids : cat.kids, c, s, true)); };
+    (data.structure[c] || []).forEach(function(s){ s = vceNorm(s); if(s) put(s); });
   });
   Object.keys(counts.things).forEach(function(k){
     if(at[k]) return;
@@ -35854,7 +35882,7 @@ function vceTrail(st, id){ var out = null; vceWalk(st.cats, function(p, parent, 
 function vceName(st, id){ var t = vceTrail(st, id); return t.map(function(n, i){ return n || (i ? '' : 'No category'); }).join(' › '); }
 function vceWord(depth){ return depth === 1 ? 'category' : 'sub-category'; }
 function vceSame(a, b){ return vceNorm(a).toLowerCase() === vceNorm(b).toLowerCase(); }
-/* every sub-category name in a category, at either depth, except those in skip */
+/* every sub-category name in a category (or inside a place), however deep, except those in skip */
 function vceNamesIn(cat, skip){
   var out = [];
   (function walk(list){ list.forEach(function(p){ if(skip && skip === p) return; out.push(p.name); walk(p.kids); }); })(cat.kids);
@@ -35879,7 +35907,7 @@ function vceAdd(st, parentId, name){
   var f = parentId ? vceFind(st, parentId) : null, depth = f ? f.depth + 1 : 1;
   name = vceNorm(name);
   if(parentId && !f) return vceNo('That is no longer there.');
-  if(depth > VCE_DEEP) return vceNo('Sub-categories go three levels deep and no further.');
+  if(depth > VCE_DEEP) return vceNo('Sub-categories go four levels deep and no further.');
   if(!name) return vceNo('A ' + vceWord(depth) + ' needs a name.');
   if(!f){ if(st.cats.some(function(c){ return vceSame(c.name, name); })) return vceNo('There is already a category called ' + name + '.'); }
   else if(vceClash(vceNamesIn(f.cat), [name])) return vceNo((f.cat.name || 'This category') + ' already has a sub-category called ' + name + '.');
@@ -35894,7 +35922,7 @@ function vceRename(st, id, name){
   if(vceFixed(f)) return vceNo(vceWhy(f, 'name'));
   if(!name) return vceNo('A ' + vceWord(f.depth) + ' needs a name.');
   if(f.depth === 1){ if(st.cats.some(function(c){ return c !== f.place && vceSame(c.name, name); })) return vceNo('There is already a category called ' + name + '.'); }
-  else if(vceClash(vceNamesIn(f.cat, f.place).concat(f.place.kids.map(function(k){ return k.name; })), [name]))
+  else if(vceClash(vceNamesIn(f.cat, f.place).concat(vceNamesIn(f.place)), [name]))
     return vceNo((f.cat.name || 'This category') + ' already has a sub-category called ' + name + '. Merge them instead.');
   f.place.name = name; return vceOk();
 }
@@ -35911,11 +35939,12 @@ function vceMove(st, id, toId){
   if(held.length && (!t || t.cat !== f.cat || f.depth === 1)) return vceNo(vceWhy(held[0], 'move'));
   if(depth + vceTall(f.place) > VCE_DEEP) return vceNo(f.place.kids.length
     ? f.place.name + ' has sub-categories of its own, so it cannot go that deep. Move or merge those first.'
-    : 'Sub-categories go three levels deep and no further.');
+    : 'Sub-categories go four levels deep and no further.');
   if(!t){ if(st.cats.some(function(c){ return vceSame(c.name, f.place.name); })) return vceNo('There is already a category called ' + f.place.name + '. Merge them instead.'); }
   else if(t.cat !== f.cat || f.depth === 1){
-    var hit = vceClash(vceNamesIn(t.cat), [f.place.name].concat(vceNamesIn(f.place)));
+    var mine = vceNamesIn(f.place), hit = vceClash(vceNamesIn(t.cat), [f.place.name].concat(mine));
     if(hit) return vceNo((t.cat.name || 'That category') + ' already has a sub-category called ' + hit + '. Merge them instead.');
+    if(vceClash(mine, [f.place.name])) return vceNo(f.place.name + ' has a sub-category with the same name, and a category cannot hold two with one name. Rename one of them first.');
   }
   f.list.splice(f.list.indexOf(f.place), 1); dest.push(f.place);
   return vceOk();
@@ -36009,13 +36038,14 @@ function vceResult(st, data){
     placeTo[p.id] = to;
     p.src.forEach(function(k){ where[k] = to; });
   });
-  /* the structure as the dashboard keeps it: each category's sub-categories in one flat list, a group followed by what is inside it */
+  /* the structure as the dashboard keeps it: each category's sub-categories in one flat list, each one followed by what is inside it, however deep */
   var structure = {}, groups = {}, tree = [];
   st.cats.forEach(function(c){
     var flat = [], g = {};
-    c.kids.forEach(function(s){ flat.push(s.name); if(s.kids.length){ g[s.name] = s.kids.map(function(x){ return x.name; }); flat = flat.concat(g[s.name]); } });
+    (function walk(list){ list.forEach(function(s){ flat.push(s.name); if(s.kids.length){ g[s.name] = s.kids.map(function(x){ return x.name; }); walk(s.kids); } }); })(c.kids);
     structure[c.name] = flat; if(Object.keys(g).length) groups[c.name] = g;
-    tree.push({name: c.name, subs: c.kids.map(function(s){ return {name: s.name, subs: s.kids.map(function(x){ return x.name; })}; })});
+    var nest = function(list){ return list.map(function(s){ return {name: s.name, subs: nest(s.kids)}; }); };
+    tree.push({name: c.name, subs: nest(c.kids)});
   });
   var refiled = {items: 0, models: 0}, lost = [], same = function(a, b){ return a.c === b.c && a.s === b.s; };
   Object.keys(counts.things).forEach(function(k){
@@ -36292,10 +36322,11 @@ function vceLists(){
   var merge = '<option value="">Choose</option>';
   VCE.st.cats.forEach(function(c){
     var cn = vceEsc(c.name || 'No category'), mg = '<option value="' + c.id + '">' + cn + ' (no sub-category)</option>';
-    c.kids.forEach(function(s){
-      mg += '<option value="' + s.id + '">' + vceEsc(s.name) + '</option>';
-      s.kids.forEach(function(x){ mg += '<option value="' + x.id + '">' + vceEsc(s.name) + ' › ' + vceEsc(x.name) + '</option>'; });
-    });
+    (function walk(list, trail){ list.forEach(function(s){
+      var t = trail.concat([s.name]);
+      mg += '<option value="' + s.id + '">' + vceEsc(t.join(' › ')) + '</option>';
+      walk(s.kids, t);
+    }); })(c.kids, []);
     merge += '<optgroup label="' + cn + '">' + mg + '</optgroup>';
   });
   return {merge: merge};
@@ -36343,7 +36374,7 @@ function vceRow(place, depth, i, n, lists){
   var fixed = vceUsedPlace(place.orig), key = VCE.rp.addrOf[place.id], nm = vceEsc(place.name);
   /* kit that has been cut comes first: while it is waiting to be pasted, nothing is picked up */
   var picking = VCE.pick.length > 0 && !pasting, held = picking && VCE.pick.indexOf(key) >= 0;
-  var h = '<div class="vce-row' + (depth === 3 ? ' in' : '') + (held ? ' held' : '') + '" data-drop="' + place.id + '" data-depth="' + depth + '"' + (place.kids.length ? ' data-kids="1"' : '') + '><span class="vce-ud">'
+  var h = '<div class="vce-row' + (depth > 2 ? ' in' : '') + (depth > 3 ? ' in2' : '') + (held ? ' held' : '') + '" data-drop="' + place.id + '" data-depth="' + depth + '"' + (place.kids.length ? ' data-kids="1"' : '') + '><span class="vce-ud">'
     + '<span class="vce-grip" draggable="true" data-drag="' + place.id + '" title="Drag onto another row to put ' + nm + ' inside it, or between rows to reorder">⋮⋮</span><button type="button" data-vce="up" data-id="' + place.id + '"' + (i === 0 ? ' disabled' : '') + ' aria-label="Move ' + nm + ' up" title="Move up"' + vceK(place.id + '|up') + '>▲</button>'
     + '<button type="button" data-vce="down" data-id="' + place.id + '"' + (i === n - 1 ? ' disabled' : '') + ' aria-label="Move ' + nm + ' down" title="Move down"' + vceK(place.id + '|down') + '>▼</button></span>'
     + '<span class="vce-nm">' + vceNameBox(place, false) + vceFlags(place) + (held ? '<span class="vce-fl"><span class="vce-f used">Picked up</span></span>' : '') + '</span>'
@@ -36354,8 +36385,8 @@ function vceRow(place, depth, i, n, lists){
       : picking ? '<button type="button" class="vce-btn sm go" data-vce="put-above" data-id="' + place.id + '" title="Put what is picked up just above ' + nm + '"' + vceK(place.id + '|above') + '>Above</button>'
       : '<select aria-label="Merge ' + nm + ' into" data-vce-chg="merge" data-id="' + place.id + '"'
         + (place.kids.length ? ' disabled title="It has sub-categories of its own"' : fixed ? ' disabled title="The job pages look for this by name. Merge the other one into it instead"' : '') + vceK(place.id + '|merge') + '>' + lists.merge + '</select>')
-    + '<span class="vce-ac">' + (picking ? ((held || depth !== 2) ? '' : '<button type="button" class="vce-btn sm go" data-vce="put-inside" data-id="' + place.id + '" title="Put what is picked up inside ' + nm + '"' + vceK(place.id + '|inside') + '>Inside</button>') : pasting ? '<button type="button" class="vce-btn sm go" data-vce="paste" data-id="' + place.id + '"' + vceK(place.id + '|paste') + '>Paste</button>'
-        : (depth === 2 ? '<button type="button" class="vce-btn sm" data-vce="add-in" data-id="' + place.id + '" title="Add a sub-category inside ' + nm + '"' + vceK(place.id + '|add-in') + '>Add inside</button>' : '')
+    + '<span class="vce-ac">' + (picking ? ((held || depth >= VCE_DEEP) ? '' : '<button type="button" class="vce-btn sm go" data-vce="put-inside" data-id="' + place.id + '" title="Put what is picked up inside ' + nm + '"' + vceK(place.id + '|inside') + '>Inside</button>') : pasting ? '<button type="button" class="vce-btn sm go" data-vce="paste" data-id="' + place.id + '"' + vceK(place.id + '|paste') + '>Paste</button>'
+        : (depth < VCE_DEEP ? '<button type="button" class="vce-btn sm" data-vce="add-in" data-id="' + place.id + '" title="Add a sub-category inside ' + nm + '"' + vceK(place.id + '|add-in') + '>Add inside</button>' : '')
           + '<button type="button" class="vce-btn sm" data-vce="del" data-id="' + place.id + '"'
           + ((all.items || all.models) ? ' disabled title="Move or merge what is in it first"' : fixed ? ' disabled title="The job pages look for this by name"' : '') + vceK(place.id + '|del') + '>Delete</button>') + '</span></div>';
   if(VCE.open[key]) h += vceInside(place);
@@ -36364,12 +36395,12 @@ function vceRow(place, depth, i, n, lists){
 /* the kit that sits in a place with nothing more specific */
 function vceOwnRow(place, depth, lists, label){
   var own = vceHolds(VCE.st, place, VCE.counts), key = VCE.rp.addrOf[place.id] + '#own';
-  var h = '<div class="vce-row own' + (depth === 2 ? ' in' : '') + '"><span></span><span class="vce-nm">' + vceEsc(label) + '</span>'
+  var h = '<div class="vce-row own' + (depth > 1 ? ' in' : '') + (depth > 2 ? ' in2' : '') + '"><span></span><span class="vce-nm">' + vceEsc(label) + '</span>'
     + '<button type="button" class="vce-n" data-vce="open" data-id="' + place.id + '#own" title="Show what is filed here"' + vceK(place.id + '#own|open-i') + '>' + vceNum(own.items) + '</button>'
     + '<button type="button" class="vce-n" data-vce="open" data-id="' + place.id + '#own" title="Show what is filed here"' + vceK(place.id + '#own|open-m') + '>' + vceNum(own.models) + '</button>'
     + '<select class="vce-all" aria-label="Move all of these to" data-vce-chg="merge-own" data-id="' + place.id + '"' + ((own.items || own.models) ? '' : ' disabled') + vceK(place.id + '#own|merge') + '>'
       + '<option value="">Move all of these to…</option>'
-      + (depth === 2 && place.kids.length ? '<optgroup label="Inside ' + vceEsc(place.name) + '">' + place.kids.map(function(k){ return '<option value="' + k.id + '">' + vceEsc(k.name) + '</option>'; }).join('') + '</optgroup>' : '')
+      + (depth > 1 && place.kids.length ? '<optgroup label="Inside ' + vceEsc(place.name) + '">' + place.kids.map(function(k){ return '<option value="' + k.id + '">' + vceEsc(k.name) + '</option>'; }).join('') + '</optgroup>' : '')
       + lists.merge.replace('<option value="">Choose</option>', '') + '</select>'
     + '<span class="vce-ac">' + (VCE.clip.length ? '<button type="button" class="vce-btn sm go" data-vce="paste" data-id="' + place.id + '"' + vceK(place.id + '#own|paste') + '>Paste</button>' : '') + '</span></div>';
   if(VCE.open[key]) h += vceInside(place);
@@ -36402,17 +36433,18 @@ function vceMain(){
     + '<button type="button" class="vce-btn" data-vce="add-sub"' + vceK('add-sub') + '>Add sub-category</button></div>';
   h += '<div class="vce-sh"><span></span><span>Sub-category</span><span>Inventory</span><span>Kit List</span><span>Move</span><span>Merge into</span><span></span></div>';
   if(own.items || own.models || !c.kids.length || VCE.clip.length) h += vceOwnRow(c, 1, lists, 'No sub-category');
-  c.kids.forEach(function(s, si){
-    h += vceRow(s, 2, si, c.kids.length, lists);
+  /* each sub-category, then the kit filed directly in it and the sub-categories inside it */
+  (function rows(list, depth){ list.forEach(function(s, si){
+    h += vceRow(s, depth, si, list.length, lists);
     if(s.kids.length){
       var o = vceHolds(VCE.st, s, VCE.counts);
-      if(o.items || o.models || VCE.clip.length) h += vceOwnRow(s, 2, lists, 'Directly in ' + s.name);
-      s.kids.forEach(function(x, xi){ h += vceRow(x, 3, xi, s.kids.length, lists); });
+      if(o.items || o.models || VCE.clip.length) h += vceOwnRow(s, depth, lists, 'Directly in ' + s.name);
+      rows(s.kids, depth + 1);
     }
-    if(VCE.addIn === VCE.rp.addrOf[s.id]) h += '<div class="vce-new in"><input id="vceNewIn" type="text" placeholder="New sub-category inside ' + vceEsc(s.name) + '" aria-label="New sub-category inside ' + vceEsc(s.name)
+    if(VCE.addIn === VCE.rp.addrOf[s.id]) h += '<div class="vce-new in' + (depth > 2 ? ' in2' : '') + '"><input id="vceNewIn" type="text" placeholder="New sub-category inside ' + vceEsc(s.name) + '" aria-label="New sub-category inside ' + vceEsc(s.name)
       + '" data-vce-enter="add-in-go" data-vce-typed="in" value="' + vceEsc(VCE.typed['in'] || '') + '"' + vceK('new-in') + '>'
       + '<button type="button" class="vce-btn go" data-vce="add-in-go"' + vceK('add-in-go') + '>Add</button><button type="button" class="vce-btn" data-vce="add-in" data-id=""' + vceK('add-in-no') + '>Cancel</button></div>';
-  });
+  }); })(c.kids, 2);
   return h;
 }
 function vceChanges(){
@@ -36591,7 +36623,7 @@ function vceListen(root){
   var zone = function(el, e){
     var d = el.getAttribute('data-depth'), b = el.getBoundingClientRect(), y = (e.clientY - b.top) / (b.height || 1);
     if(d === '1') return 'in';
-    if(d === '3') return y < .5 ? 'above' : 'below';
+    if(+d >= VCE_DEEP) return y < .5 ? 'above' : 'below';
     return y < .3 ? 'above' : (y > .7 && !el.getAttribute('data-kids')) ? 'below' : 'in';
   };
   root.addEventListener('dragstart', function(e){
@@ -36629,11 +36661,13 @@ function vceListen(root){
 /* The category editor in the dashboard: how the categories are loaded and
    saved, where the editor's kit comes from, and what Apply and Put back do.
 
-   A sub-category can sit inside another. That is only a grouping: kit is still
+   A sub-category can sit inside another, and that one inside another again
+   (Camera, Lens, Cine Lens, Cooke S4/i). That is only a grouping: kit is still
    filed under a category and a sub-category, so nothing on a job page changes.
-   KIT_SUBCATS stays one flat list for each category, a group followed by what
-   is inside it, and KIT_SUBGROUPS says which names sit inside which. */
-var KIT_SUBGROUPS = {}, _vsKcOrder = null, _vsKcKept;
+   KIT_SUBCATS stays one flat list for each category, each sub-category
+   followed by what is inside it, and KIT_SUBGROUPS says which names sit
+   inside which. */
+var KIT_SUBGROUPS = {}, _vsKcOrder = null, _vsKcKept, _vsKcTree = false;
 var VS_KC_BEFORE = 'vsKcBefore.v1';
 
 /* The saved list of categories is the whole list. It used to be laid over the
@@ -36662,8 +36696,8 @@ function _vsKcOrderLoaded(v){
   seq.forEach(function(k){ KIT_SUBCATS[k] = keep[k]; });
   cats = Object.keys(KIT_SUBCATS);
 }
-/* which sub-categories sit inside another: saved as rows of [category, sub-category, [the ones inside it]] */
-function _vsKcGroupsLoaded(v){
+/* which sub-categories sit inside another: rows of [category, sub-category, [the ones inside it]] */
+function _vsKcGroupsSet(v){
   var g = {};
   (Array.isArray(v) ? v : []).forEach(function(r){
     if(!Array.isArray(r) || typeof r[0] !== 'string' || typeof r[1] !== 'string' || !Array.isArray(r[2])) return;
@@ -36672,15 +36706,30 @@ function _vsKcGroupsLoaded(v){
   });
   KIT_SUBGROUPS = g;
 }
-/* the groups as they are saved: only names the list still has, each inside one group, and no group inside a group */
+/* They are saved as kitSubtree. Until 5 Oct 2026 they were saved as
+   kitSubgroups, when a sub-category that held others could not itself sit
+   inside one. A browser still showing that older page saves them back that
+   way, which would undo the deeper level, so the arrangement now has a record
+   that an older page never writes. kitSubgroups is left as it was and is read
+   only while there is no kitSubtree. */
+function _vsKcGroupsLoaded(v, tree){
+  if(tree) _vsKcTree = true;
+  else if(_vsKcTree) return;
+  _vsKcGroupsSet(v);
+}
+/* the groups as they are saved: only names the list still has, each inside one sub-category at most and never inside itself */
 function _vsKcGroupsOut(){
   var out = [], all = KIT_SUBGROUPS || {};
   Object.keys(KIT_SUBCATS).forEach(function(c){
-    var list = KIT_SUBCATS[c] || [], g = all[c] || {}, taken = {};
+    var list = KIT_SUBCATS[c] || [], g = all[c] || {}, up = Object.create(null);
     list.forEach(function(s){
-      if(!g[s] || taken[s]) return;
+      if(!Object.prototype.hasOwnProperty.call(g, s) || !Array.isArray(g[s])) return;
       var inside = [];
-      g[s].forEach(function(x){ if(x !== s && list.indexOf(x) >= 0 && !g[x] && !taken[x]){ taken[x] = 1; inside.push(x); } });
+      g[s].forEach(function(x){
+        if(x === s || list.indexOf(x) < 0 || up[x] !== undefined) return;
+        for(var a = s; a !== undefined; a = up[a]) if(a === x) return;
+        up[x] = s; inside.push(x);
+      });
       if(inside.length) out.push([c, s, inside]);
     });
   });
@@ -36692,28 +36741,44 @@ function _vsKcGroupOf(cat, sub){
   _vsKcGroupsOut().forEach(function(r){ if(r[0] === cat && r[2].indexOf(sub) >= 0) hit = r[1]; });
   return hit;
 }
-/* Is this sub-category the one named, or one that sits inside it? The job
-   pages find some kit by the name of its sub-category; a sub-category put
-   inside that one counts as it too, so "Studio Lens" inside "Lens" is still a
-   lens to a job. Only the lens pickers ask this so far: kit that any other
+/* Is this sub-category the one named, or one that sits inside it, however far
+   down? The job pages find some kit by the name of its sub-category; a
+   sub-category put inside that one counts as it too, so "Studio Lens" inside
+   "Lens" is still a lens to a job, and so is "Cooke S4/i" inside "Cine Lens"
+   inside "Lens". Only the lens pickers ask this so far: kit that any other
    picker looks for has to stay filed directly under the name it looks for. */
 function _vsKcIn(sub, name){
   sub = String(sub == null ? '' : sub).trim();
   if(!sub) return false;
   if(sub === name) return true;
   var g = KIT_SUBGROUPS || {};
-  return Object.keys(g).some(function(c){ return !!(g[c] && g[c][name] && g[c][name].indexOf(sub) >= 0); });
+  return Object.keys(g).some(function(c){
+    var gc = g[c] || {}, seen = [];
+    return (function down(n){
+      var kids = Object.prototype.hasOwnProperty.call(gc, n) && Array.isArray(gc[n]) ? gc[n] : null;
+      if(!kids || seen.indexOf(n) >= 0) return false;
+      seen.push(n);
+      return kids.indexOf(sub) >= 0 || kids.some(function(x){ return down(x); });
+    })(name);
+  });
 }
-/* the sub-categories that sit inside this one */
+/* the sub-categories that sit directly inside this one */
 function _vsKcMembers(cat, sub){
   var out = [];
   _vsKcGroupsOut().forEach(function(r){ if(r[0] === cat && r[1] === sub) out = r[2]; });
   return out;
 }
+/* every sub-category inside this one, however far down, in the order of the list */
+function _vsKcAllIn(cat, sub){
+  var kids = Object.create(null), out = [];
+  _vsKcGroupsOut().forEach(function(r){ if(r[0] === cat) kids[r[1]] = r[2]; });
+  (function down(n){ (kids[n] || []).forEach(function(x){ out.push(x); down(x); }); })(sub);
+  return out;
+}
 /* is this sub-category the chosen one, or one that sits inside it? */
 function _vsKcUnder(cat, chosen, sub){
   sub = String(sub == null ? '' : sub).trim();
-  return sub === chosen || _vsKcMembers(cat, chosen).indexOf(sub) >= 0;
+  return sub === chosen || _vsKcAllIn(cat, chosen).indexOf(sub) >= 0;
 }
 /* Where a filing comes in the order the lists are kept in: the categories in
    their order, and each one's sub-categories in theirs. The Kit page sorts by
@@ -36724,9 +36789,9 @@ function _vsKcRank(cat, sub){
 }
 /* Boxes for the sub-categories of what is chosen on the Kit page, above its
    list. A category shows its sub-categories. A sub-category with others inside
-   it shows itself and those, and so does any one of them, so they work as tabs.
-   The numbers are what the page is counting: items in Inventory, models in
-   Everything. */
+   it shows itself and those, and so does any one of them that has none of its
+   own, so they work as tabs. A box counts everything inside it. The numbers
+   are what the page is counting: items in Inventory, models in Everything. */
 function _vsKcBoxes(){
   if(typeof _vsKitSel === 'undefined' || !_vsKitSel || _vsKitSel.type !== 'cat') return '';
   var cat = _vsKitSel.value, sub = _vsKitSel.sub || '', list = (KIT_SUBCATS[cat] || []).slice(), n = {};
@@ -36734,14 +36799,14 @@ function _vsKcBoxes(){
   else _vsKitLive().forEach(function(k){ if((k.cat || 'Uncategorised') === cat){ var s = (k.subcat || '').trim(); if(s) n[s] = (n[s] || 0) + 1; } });
   /* anything in use that the list does not have goes last, fullest first */
   Object.keys(n).sort(function(a, b){ return n[b] - n[a] || String(a).localeCompare(String(b)); }).forEach(function(s){ if(list.indexOf(s) < 0) list.push(s); });
-  var kids = {}, inside = {};
+  var kids = Object.create(null), inside = Object.create(null);
   _vsKcGroupsOut().forEach(function(r){ if(r[0] === cat){ kids[r[1]] = r[2]; r[2].forEach(function(m){ inside[m] = r[1]; }); } });
-  var whole = function(s){ var t = n[s] || 0; (kids[s] || []).forEach(function(m){ t += n[m] || 0; }); return t; };
+  var whole = function(s){ var t = n[s] || 0; (kids[s] || []).forEach(function(m){ t += whole(m); }); return t; };
   var top = sub ? (kids[sub] ? sub : inside[sub]) : '', names = sub ? (top ? [top].concat(kids[top]) : []) : list.filter(function(s){ return !inside[s]; });
   if(!names.length) return '';
   var arg = function(v){ return encodeURIComponent(String(v)).replace(/'/g, '%27'); };
   return '<div class="vkc-boxes">' + names.map(function(s){
-    var count = (s === top || !sub) ? whole(s) : (n[s] || 0);
+    var count = whole(s);
     return '<button type="button" class="vkc-b' + (s === sub ? ' on' : '') + (count ? '' : ' none') + '" onclick="vsKcPick(\'' + arg(cat) + '\',\'' + arg(s) + '\')">'
       + '<span>' + _vsEsc(s === top ? 'All ' + s : s) + '</span><em>' + count + '</em></button>';
   }).join('') + '</div>';
@@ -36808,7 +36873,7 @@ function vsKcApply(res){
   });
   Object.keys(KIT_SUBCATS).forEach(function(c){ delete KIT_SUBCATS[c]; });
   order.forEach(function(c){ KIT_SUBCATS[c] = res.structure[c].slice(); });
-  KIT_SUBGROUPS = JSON.parse(JSON.stringify(res.groups)); delete KIT_SUBGROUPS[''];
+  KIT_SUBGROUPS = JSON.parse(JSON.stringify(res.groups)); delete KIT_SUBGROUPS['']; _vsKcTree = true;
   /* a category that has a new name takes its colour with it, and a new one is given a colour */
   res.renamedCats.forEach(function(r){ if(CAT_COLORS[r.from] && !CAT_COLORS[r.to]){ CAT_COLORS[r.to] = CAT_COLORS[r.from]; before.colours.push(r.to); } });
   order.forEach(function(c){ if(!CAT_COLORS[c]){ CAT_COLORS[c] = _vsKcColour(c); before.colours.push(c); } });
@@ -36849,7 +36914,7 @@ function vsKcBack(){
   undo(hiredCatalogue, b.models, 'models'); undo(kit, b.items, 'items');
   Object.keys(KIT_SUBCATS).forEach(function(c){ delete KIT_SUBCATS[c]; });
   b.order.forEach(function(c){ KIT_SUBCATS[c] = b.subcats[c] || []; });
-  _vsKcGroupsLoaded(b.groups);
+  _vsKcGroupsLoaded(b.groups, true);
   (b.colours || []).forEach(function(c){ delete CAT_COLORS[c]; });
   cats = Object.keys(KIT_SUBCATS); _vsKcOrder = cats.slice();
   _vsKcKept = null;
@@ -36871,7 +36936,7 @@ function vsKcAdmin(){
   vceOpen();
 }
 /* what a refused save or someone else's change is called */
-if(typeof VS_KEY_LABEL !== 'undefined') VS_KEY_LABEL.kitSubcats = VS_KEY_LABEL.kitSubgroups = VS_KEY_LABEL.kitCatOrder = 'the kit categories';
+if(typeof VS_KEY_LABEL !== 'undefined') VS_KEY_LABEL.kitSubcats = VS_KEY_LABEL.kitSubgroups = VS_KEY_LABEL.kitSubtree = VS_KEY_LABEL.kitCatOrder = 'the kit categories';
 /* ── end of kit categories in Admin ── */
 function renderCats() {
   try{ vsKcAdmin(); }catch(e){ console.warn('category editor failed', e); }
