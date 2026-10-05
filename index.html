@@ -2760,6 +2760,7 @@ html[data-theme="softdark"] #kitPageTitle + div{margin-left:auto}
   .vko-row,.vko-own .vko-row{grid-template-columns:minmax(0,1fr) auto;min-height:46px}
   .vko-pics .vko-row,.vko-own.vko-pics .vko-row{grid-template-columns:45px minmax(0,1fr) auto}
   .vko-row>.vko-nm{white-space:normal;overflow-wrap:anywhere;line-height:1.25;padding:7px 0 7px 14px;text-indent:-14px;font-size:14px}
+  .vko-row>.vko-nm i{text-indent:0}
   .vko-row>.vko-has{white-space:nowrap}
 }
 @media (max-width:700px){
@@ -17242,7 +17243,7 @@ function vsKitRail(){
     _line.innerHTML=_strip;
   }
   [el,_line].forEach(function(box,i){
-    if(!box || box.scrollWidth<=box.clientWidth+1) return;      /* only where it is a line that slides */
+    if(!box || !box.querySelector || !(box.scrollWidth>box.clientWidth+1)) return;      /* only where it is a line that slides */
     box.scrollLeft=_at[i];
     var lit=box.querySelector('.on,.vsk-part'); if(!lit) return;
     var a=box.getBoundingClientRect(), b=lit.getBoundingClientRect();
