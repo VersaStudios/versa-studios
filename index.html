@@ -2499,6 +2499,18 @@ html[data-theme="softdark"] #kitPageTitle + div{margin-left:auto}
 .vsk-sub.on{color:var(--ink);font-weight:800;background:var(--surface-2)}
 /* a sub-category that sits inside the one above it */
 .vsk-sub.vsk-in{padding-left:16px}
+/* boxes for the sub-categories of what is chosen, above the list; the one on show is filled */
+.vkc-boxes{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:6px;margin:0 0 10px}
+.vkc-b{display:flex;align-items:baseline;justify-content:space-between;gap:8px;min-width:0;background:var(--surface);
+  border:1.5px solid var(--field-edge,rgba(13,13,13,.45));border-radius:7px;cursor:pointer;text-align:left;padding:7px 10px;
+  font-family:var(--font);font-size:12.5px;font-weight:800;letter-spacing:-.01em;color:var(--ink)}
+.vkc-b span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vkc-b em{font-style:normal;font-size:11px;font-weight:700;color:var(--muted);flex:0 0 auto}
+.vkc-b:hover{border-color:var(--field-edge-hi,rgba(13,13,13,.75))}
+.vkc-b.none span{font-weight:600;color:var(--muted)}
+.vkc-b.on{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.vkc-b.on span{color:inherit;font-weight:800}
+.vkc-b.on em{color:inherit;opacity:.6}
 .vsk-main2{flex:1;min-width:0}
 .vsk-bar{display:flex;align-items:center;gap:16px;margin-bottom:11px}
 .vsk-q{
@@ -2581,6 +2593,17 @@ html[data-theme="softdark"] #kitPageTitle + div{margin-left:auto}
 .vko-hd,.vko-row{display:grid;grid-template-columns:40px minmax(150px,1.5fr) 100px minmax(90px,1fr) 128px minmax(110px,1.2fr) 108px;
   gap:10px;align-items:center;padding:0 14px}
 .vko-pics .vko-hd,.vko-pics .vko-row{grid-template-columns:45px 40px minmax(150px,1.5fr) 100px minmax(90px,1fr) 128px minmax(110px,1.2fr) 108px}
+/* Inventory shows the asset numbers of Versa's own units: beside Works with
+   where there is room for both, and in its place where there is not, so the
+   last column is never pushed off the side */
+.vko-own .vko-hd,.vko-own .vko-row{grid-template-columns:40px minmax(150px,1.5fr) 100px minmax(90px,1fr) 128px minmax(100px,1fr) minmax(110px,1fr) 108px}
+.vko-own.vko-pics .vko-hd,.vko-own.vko-pics .vko-row{grid-template-columns:45px 40px minmax(150px,1.5fr) 100px minmax(90px,1fr) 128px minmax(100px,1fr) minmax(110px,1fr) 108px}
+.vko-as{font:600 11px ui-monospace,Menlo,monospace;color:var(--subtle,#4a4a4a);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media (max-width:1500px){
+  .vko-own .vko-hd,.vko-own .vko-row{grid-template-columns:40px minmax(150px,1.5fr) 100px minmax(90px,1fr) 128px minmax(110px,1.2fr) 108px}
+  .vko-own.vko-pics .vko-hd,.vko-own.vko-pics .vko-row{grid-template-columns:45px 40px minmax(150px,1.5fr) 100px minmax(90px,1fr) 128px minmax(110px,1.2fr) 108px}
+  .vko-own .vko-hd span:nth-last-child(3),.vko-own .vko-row>span:nth-last-child(3){display:none}
+}
 .vko-num{font:600 11px ui-monospace,Menlo,monospace;color:var(--muted)}
 .vko-hd{font-size:9.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);
   padding-top:9px;padding-bottom:6px;border-bottom:1px solid var(--border,rgba(13,13,13,.1))}
@@ -2661,6 +2684,9 @@ html[data-theme="softdark"] #kitPageTitle + div{margin-left:auto}
   .vko-hd,.vko-row{grid-template-columns:40px minmax(140px,1.5fr) 90px minmax(80px,1fr) 110px 100px}
   .vko-pics .vko-hd,.vko-pics .vko-row{grid-template-columns:45px 40px minmax(140px,1.5fr) 90px minmax(80px,1fr) 110px 100px}
   .vko-hd span:nth-last-child(2),.vko-row>span:nth-last-child(2){display:none}
+  /* the same columns in Inventory as in Everything at this width: the asset numbers are on each item's tile */
+  .vko-own .vko-hd,.vko-own .vko-row{grid-template-columns:40px minmax(140px,1.5fr) 90px minmax(80px,1fr) 110px 100px}
+  .vko-own.vko-pics .vko-hd,.vko-own.vko-pics .vko-row{grid-template-columns:45px 40px minmax(140px,1.5fr) 90px minmax(80px,1fr) 110px 100px}
   .vko-in{grid-template-columns:1fr}
 }
 @media (max-width:640px){
@@ -2668,6 +2694,8 @@ html[data-theme="softdark"] #kitPageTitle + div{margin-left:auto}
   .vko-row{grid-template-columns:40px 1fr 100px}
   .vko-pics .vko-row{grid-template-columns:45px 40px 1fr 100px}
   .vko-row>.vko-dim,.vko-row>.vko-sc{display:none}
+  .vko-own .vko-row{grid-template-columns:40px 1fr 100px}
+  .vko-own.vko-pics .vko-row{grid-template-columns:45px 40px 1fr 100px}
 }
 /* ── KIT ONE PAGE (end) ── */
 @media (max-width:900px){
@@ -17823,7 +17851,7 @@ function vsKoList(el, live, note){
     +'<button class="vko-add" onclick="vsKoAddModel(this)">+ Add a model</button>'
   +'</div>';
   var head='<div class="vko-hd">'+(pics?'<span></span>':'')+'<span>No.</span><span>Name</span><span>Make</span><span>Model</span>'
-    +'<span>'+(catView?'Sub-category':'Category')+'</span><span>Works with</span><span>Inventory</span></div>';
+    +'<span>'+(catView?'Sub-category':'Category')+'</span><span>Works with</span>'+(all?'':'<span>Asset numbers</span>')+'<span>Inventory</span></div>';
   var rows=models.map(function(m,i){
     var free=0; m.units.forEach(function(k){ if(_vsKoState(k).k==='ok') free++; });
     var open=(_vsKoOpen===m.key), p=pics?_vsKoPic(m):'';
@@ -17834,14 +17862,51 @@ function vsKoList(el, live, note){
       +'<span class="vko-dim">'+_vsEsc(m.make)+'</span><span class="vko-dim">'+_vsEsc(m.model)+'</span>'
       +'<span class="vko-sc">'+_vsEsc(catView?(m.sub||'—'):(m.cat||'—'))+'</span>'
       +'<span class="vko-dim">'+_vsEsc(m.compat)+'</span>'
+      +(all?'':_vsKoAssetCell(m))
       +'<span class="vko-has">'+(m.units.length?('<small>'+free+' available</small><b>'+m.units.length+'</b>'):'')+'</span>'
     +'</button>'+(open?_vsKoInside(m,i):'');
   }).join('');
-  el.innerHTML=(note||'')+sw
-    +'<div class="vko-box'+(pics?' vko-pics':'')+'">'+head
+  /* boxes for the sub-categories of what is chosen (the kit categories block), then the list */
+  el.innerHTML=(note||'')+sw+_vsKcBoxes()
+    +'<div class="vko-box'+(pics?' vko-pics':'')+(all?'':' vko-own')+'">'+head
     +(rows||'<div class="vsk-none">'+(q?'No matches.':'No models in this category.')+'</div>')+'</div>';
 }
 
+/* The asset numbers of a model's own units, for the Inventory list: each
+   item's asset tag where one is recorded, and otherwise its own number (the
+   "No." on its tile), shown plainly. Numbers that run on are closed up: 38\u201347. */
+function _vsKoAssets(m){
+  var tags=[], nums=[];
+  (m.units||[]).forEach(function(k){
+    var t=String(k.tag||'').trim();
+    if(t) tags.push(t);
+    else if(typeof k.id==='number'&&isFinite(k.id)) nums.push(k.id);
+    else if(k.id!=null) tags.push(String(k.id));
+  });
+  nums.sort(function(a,b){return a-b;});
+  tags.sort(function(a,b){return String(a).localeCompare(String(b),undefined,{numeric:true});});
+  var runs=[], i=0;
+  while(i<nums.length){
+    var j=i; while(j+1<nums.length&&nums[j+1]===nums[j]+1) j++;
+    runs.push(j>i?nums[i]+'\u2013'+nums[j]:String(nums[i])); i=j+1;
+  }
+  return {short:tags.concat(runs).join(', '), full:tags.concat(nums.map(String)).join(', ')};
+}
+function _vsKoAssetCell(m){
+  var a=_vsKoAssets(m);
+  return '<span class="vko-as" title="'+_vsEsc(a.full)+'">'+_vsEsc(a.short)+'</span>';
+}
+/* The photos Versa's own units of a model carry, once each. The row already
+   shows the first of them when the model has none of its own; the model's
+   panel shows them in its photo section too. They stay on the item. */
+function _vsKoUnitPhotos(m){
+  var seen={}, out=[];
+  ((m.h&&Array.isArray(m.h.photos))?m.h.photos:[]).forEach(function(p){ seen[p]=1; });
+  (m.units||[]).forEach(function(k){
+    (Array.isArray(k.photos)?k.photos:[]).forEach(function(p){ if(p&&!seen[p]&&out.length<8){ seen[p]=1; out.push({p:p,k:k}); } });
+  });
+  return out;
+}
 /* an opened model: what it is on the left, Versa's own on the right */
 function _vsKoInside(m,i){
   var h=m.h, box=function(label,inner,cls){ return '<label class="vko-f'+(cls?' '+cls:'')+'"><b>'+label+'</b>'+inner+'</label>'; };
@@ -17857,6 +17922,10 @@ function _vsKoInside(m,i){
         return '<span class="vko-p"><img src="'+_vsEsc(p)+'" alt="" loading="lazy" onerror="this.parentNode.classList.add(\'vko-pbad\')">'
           +'<button class="vko-px" title="Remove this photo" onclick="vsKoPhotoRemove('+id+','+pi+')">×</button></span>';
       }).join('')
+      +_vsKoUnitPhotos(m).map(function(x){
+          return '<span class="vko-p" title="From the inventory item '+_vsEsc(x.k.name||'')+'. It is changed on the item.">'
+            +'<img src="'+_vsEsc(x.p)+'" alt="" loading="lazy" onerror="this.parentNode.classList.add(\'vko-pbad\')"></span>';
+        }).join('')
       +'<label class="vko-p vko-pnew" title="Choose a photo from this computer or phone">+ Add a photo'
         +'<input type="file" accept="image/*" onchange="vsKoPhotoAdd('+id+',this.files&&this.files[0]);this.value=\'\'"></label>'
       +'<button class="vko-lk" onclick="vsKoPhotoLink('+id+',this)">Add a link</button>';
@@ -36652,6 +36721,36 @@ function _vsKcUnder(cat, chosen, sub){
 function _vsKcRank(cat, sub){
   var ci = Object.keys(KIT_SUBCATS).indexOf(cat), si = (sub && ci >= 0) ? (KIT_SUBCATS[cat] || []).indexOf(sub) : -1;
   return (ci < 0 ? 999 : ci) * 1000 + (sub ? (si < 0 ? 998 : si + 1) : 0);
+}
+/* Boxes for the sub-categories of what is chosen on the Kit page, above its
+   list. A category shows its sub-categories. A sub-category with others inside
+   it shows itself and those, and so does any one of them, so they work as tabs.
+   The numbers are what the page is counting: items in Inventory, models in
+   Everything. */
+function _vsKcBoxes(){
+  if(typeof _vsKitSel === 'undefined' || !_vsKitSel || _vsKitSel.type !== 'cat') return '';
+  var cat = _vsKitSel.value, sub = _vsKitSel.sub || '', list = (KIT_SUBCATS[cat] || []).slice(), n = {};
+  if(typeof _vsKoAll === 'function' && _vsKoAll()){ var rc = _vsKoRailCounts(); n = (rc.subs && rc.subs[cat]) || {}; }
+  else _vsKitLive().forEach(function(k){ if((k.cat || 'Uncategorised') === cat){ var s = (k.subcat || '').trim(); if(s) n[s] = (n[s] || 0) + 1; } });
+  /* anything in use that the list does not have goes last, fullest first */
+  Object.keys(n).sort(function(a, b){ return n[b] - n[a] || String(a).localeCompare(String(b)); }).forEach(function(s){ if(list.indexOf(s) < 0) list.push(s); });
+  var kids = {}, inside = {};
+  _vsKcGroupsOut().forEach(function(r){ if(r[0] === cat){ kids[r[1]] = r[2]; r[2].forEach(function(m){ inside[m] = r[1]; }); } });
+  var whole = function(s){ var t = n[s] || 0; (kids[s] || []).forEach(function(m){ t += n[m] || 0; }); return t; };
+  var top = sub ? (kids[sub] ? sub : inside[sub]) : '', names = sub ? (top ? [top].concat(kids[top]) : []) : list.filter(function(s){ return !inside[s]; });
+  if(!names.length) return '';
+  var arg = function(v){ return encodeURIComponent(String(v)).replace(/'/g, '%27'); };
+  return '<div class="vkc-boxes">' + names.map(function(s){
+    var count = (s === top || !sub) ? whole(s) : (n[s] || 0);
+    return '<button type="button" class="vkc-b' + (s === sub ? ' on' : '') + (count ? '' : ' none') + '" onclick="vsKcPick(\'' + arg(cat) + '\',\'' + arg(s) + '\')">'
+      + '<span>' + _vsEsc(s === top ? 'All ' + s : s) + '</span><em>' + count + '</em></button>';
+  }).join('') + '</div>';
+}
+/* a box is pressed: that sub-category is the one on show */
+function vsKcPick(cat, sub){
+  try{ cat = decodeURIComponent(cat); sub = decodeURIComponent(sub); }catch(e){}
+  _vsKitSel = {type: 'cat', value: cat, sub: sub};
+  vsKitRail(); vsKitList();
 }
 /* the structure and its groups, as one string: has anything about them changed? */
 function _vsKcSig(){
