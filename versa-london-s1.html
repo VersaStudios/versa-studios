@@ -1174,23 +1174,51 @@ function formatDate(iso){
   catch(e){ return iso; }
 }
 
-async function fetchJobs(){
+// Each job is a row of its own ('job:<id>') since the Dashboard split the
+// combined 'jobs' record in September 2026. That old record is no longer kept
+// up to date, so this page reads and writes the job's own row. Every write
+// carries the updated_at it read: if someone has saved the job since, nothing
+// is written and the save is tried again from a fresh read.
+var jobRowVer = null;
+function jobRowKey(id){ return 'job:' + id; }
+async function fetchJobRow(id){
+  // the job (an object); false when there is no such row; null when the database could not be reached
   try {
-    const r = await fetch(SB_URL+'/rest/v1/app_data?key=eq.jobs&select=value', { headers: SB_HEADERS });
+    const r = await fetch(SB_URL+'/rest/v1/app_data?key=eq.'+encodeURIComponent(jobRowKey(id))+'&select=value,updated_at', { headers: SB_HEADERS });
     if(!r.ok) throw new Error('HTTP '+r.status);
     const rows = await r.json();
-    if(rows && rows[0] && Array.isArray(rows[0].value)) return rows[0].value;
-    return [];
-  } catch(e){ console.error('fetchJobs error:', e); return null; }
+    if(rows && rows[0] && rows[0].value && typeof rows[0].value === 'object'){
+      jobRowVer = rows[0].updated_at || null;
+      return rows[0].value;
+    }
+    return false;
+  } catch(e){ console.error('fetchJobRow error:', e); return null; }
 }
-async function saveJobsRow(jobsArr){
+async function fetchJobIndex(){
+  // id and name of every job, for ?job=name lookups; the rows themselves can run to megabytes
   try {
-    const r = await fetch(SB_URL+'/rest/v1/app_data', {
-      method: 'POST', headers: SB_HEADERS,
-      body: JSON.stringify([{ key:'jobs', value: jobsArr, updated_at: new Date().toISOString() }])
+    const r = await fetch(SB_URL+'/rest/v1/app_data?key=like.job:*&select=key,id:value-%3E%3Eid,name:value-%3E%3Ename', { headers: SB_HEADERS });
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const rows = await r.json();
+    return Array.isArray(rows) ? rows : [];
+  } catch(e){ console.error('fetchJobIndex error:', e); return null; }
+}
+async function saveJobRow(id, job){
+  // true when written; false when the row has moved on since it was read, or the write failed
+  try {
+    const now = new Date().toISOString();
+    let q = SB_URL+'/rest/v1/app_data?key=eq.'+encodeURIComponent(jobRowKey(id));
+    if(jobRowVer) q += '&updated_at=eq.'+encodeURIComponent(jobRowVer);
+    const r = await fetch(q, {
+      method: 'PATCH',
+      headers: Object.assign({}, SB_HEADERS, { 'Prefer': 'return=representation' }),
+      body: JSON.stringify({ value: job, updated_at: now })
     });
-    return r.ok;
-  } catch(e){ console.error('saveJobsRow error:', e); return false; }
+    if(!r.ok) return false;
+    const d = await r.json();
+    if(Array.isArray(d) && d.length){ jobRowVer = d[0].updated_at || now; return true; }
+    return false;
+  } catch(e){ console.error('saveJobRow error:', e); return false; }
 }
 
 function posState(id){
@@ -1301,17 +1329,29 @@ async function loadAndRender(){
   }
 
   setStatus('Loading', 'saving');
-  const jobs = await fetchJobs();
-  if(!jobs){
+  const failed = () => {
     document.getElementById('content').innerHTML = '<div class="error-state"><strong>Connection failed</strong>Could not reach the database. Check your connection and reload.</div>';
     document.getElementById('commsContent').innerHTML = '<div class="error-state"><strong>Connection failed</strong>Could not reach the database.</div>';
-    setStatus('Error', 'error'); return;
-  }
+    setStatus('Error', 'error');
+  };
+  // ?j=<id> reads that job's own row; ?job=<name> finds the id in the short
+  // id-and-name index first, then reads the row.
   let j = null;
-  if(jParam) j = jobs.find(x => String(x.id) === String(jParam));
+  if(jParam){
+    j = await fetchJobRow(jParam);
+    if(j === null){ failed(); return; }
+  }
   if(!j && nParam){
-    const rx = new RegExp(nParam, 'i');
-    j = jobs.find(x => rx.test(x.name||''));
+    const index = await fetchJobIndex();
+    if(index === null){ failed(); return; }
+    let rx = null;
+    try { rx = new RegExp(nParam, 'i'); } catch(e){}
+    const want = String(nParam).toLowerCase();
+    const hit = index.find(x => rx ? rx.test(x.name||'') : String(x.name||'').toLowerCase().indexOf(want) >= 0);
+    if(hit){
+      j = await fetchJobRow(hit.id);
+      if(j === null){ failed(); return; }
+    }
   }
   if(!j){
     const msg = '<div class="error-state"><strong>No matching job</strong>Append <code>?j=1</code> (job ID) or <code>?job=name</code> to the URL, or open with no parameters for <code>Preview</code> mode.</div>';
@@ -1689,15 +1729,8 @@ function queueSave(){
   clearTimeout(saveTimer);
   saveTimer = setTimeout(doSave, 1200);
 }
-async function doSave(){
-  if(isPreview) return;
-  if(saving){ saveTimer = setTimeout(doSave, 300); return; }
-  saving = true;
-  setStatus('Saving', 'saving');
-  const freshJobs = await fetchJobs();
-  if(!freshJobs){ setStatus('Save failed', 'error'); saving = false; return; }
-  const target = freshJobs.find(x => x.id === currentJobId);
-  if(!target){ setStatus('Job no longer exists', 'error'); saving = false; return; }
+// Only this page's fields go into the row; everything else in the job stays as read.
+function putPageFields(target){
   target.galleryS1 = currentJob.galleryS1 || { positions: {} };
   if(!target.comms) target.comms = {};
   target.comms.people         = currentJob.comms.people         || [];
@@ -1705,7 +1738,23 @@ async function doSave(){
   target.comms.boleroChannels = currentJob.comms.boleroChannels || [];
   target.comms.supervisor     = currentJob.comms.supervisor     || '';
   target.comms.supplier       = currentJob.comms.supplier       || '';
-  const ok = await saveJobsRow(freshJobs);
+  return target;
+}
+async function doSave(){
+  if(isPreview) return;
+  if(saving){ saveTimer = setTimeout(doSave, 300); return; }
+  saving = true;
+  setStatus('Saving', 'saving');
+  // Re-read the job's own row just before writing, so anything changed in the
+  // Dashboard meanwhile is kept. A write refused because someone saved in
+  // between is tried once more from a fresh read.
+  let ok = false;
+  for(let attempt = 0; attempt < 2 && !ok; attempt++){
+    const target = await fetchJobRow(currentJobId);
+    if(target === null) break;
+    if(!target){ setStatus('Job no longer exists', 'error'); saving = false; return; }
+    ok = await saveJobRow(currentJobId, putPageFields(target));
+  }
   setStatus(ok ? 'Saved' : 'Save failed', ok ? 'saved' : 'error');
   saving = false;
 }
