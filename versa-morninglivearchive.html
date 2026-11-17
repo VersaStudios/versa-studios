@@ -437,6 +437,19 @@ html[data-theme="softdark"] .er-mopt:hover{background:rgba(255,255,255,.06)}
 .er-dcell.urgent{background:var(--st-possible);box-shadow:inset 0 0 0 2px var(--st-urgent)}
 .er-dcell.today .er-dnum::after{content:"";display:inline-block;width:5px;height:5px;border-radius:50%;
   background:currentColor;margin-left:5px;vertical-align:middle}
+/* 17 Nov: an edge round every day, a bigger date, the engineer's name in capitals beside it */
+.er-dgrid{gap:8px}
+.er-dgrid > .er-dcell:not(.empty){box-shadow:inset 0 0 0 1.5px rgba(13,13,13,.16)}
+html[data-theme="softdark"] .er-dgrid > .er-dcell:not(.empty):not(.has){box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.16)}
+.er-dgrid > .er-dcell.has{box-shadow:inset 0 0 0 1.5px rgba(13,13,13,.22)}
+.er-dgrid > .er-dcell.urgent{box-shadow:inset 0 0 0 2px var(--st-urgent)}
+.er-dhead{display:flex;align-items:center;gap:9px;min-width:0;min-height:26px}
+.er-dgrid > .er-dcell .er-dnum{font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1;flex:none;opacity:1}
+.er-dgrid:not(.vs-weekend) > :nth-child(7n+6) .er-dnum,
+.er-dgrid:not(.vs-weekend) > :nth-child(7n+7) .er-dnum{font-size:19px;opacity:.6}
+.er-deng{min-width:0;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;line-height:1.2;
+  color:var(--on-ink);overflow-wrap:anywhere}
+.er-dcell.today .er-dnum::after{width:7px;height:7px;margin-left:6px}
 
 .er-dentry{cursor:pointer;border-radius:7px;margin:0 -4px;padding:4px;transition:background .08s;min-width:0}
 .er-dentry:hover{background:rgba(13,13,13,.09)}
@@ -476,6 +489,46 @@ html[data-theme="softdark"] .er-dentry:hover{background:rgba(13,13,13,.14)}
 ::-webkit-scrollbar{width:6px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--border-l);border-radius:3px}
+
+/* ── 17 Nov, later: months as keys with an edge, the chosen one solid, a rule where the year turns ── */
+.er-mstrip{gap:4px;padding:5px;box-shadow:inset 0 0 0 1px var(--border)}
+.er-mopt{background:var(--surface);border:1px solid var(--border-l);border-radius:8px;padding:7px 8px;font-size:13px;font-weight:700;color:var(--ink)}
+.er-mopt:hover{background:var(--surface);border-color:var(--ink)}
+.er-mopt.is-on,.er-mopt.is-on:hover,html[data-theme="softdark"] .er-mopt.is-on:hover{background:var(--ink);border-color:var(--ink);color:var(--ground);box-shadow:none}
+.er-mopt em{font-size:10.5px;letter-spacing:.02em;margin-left:2px}
+.er-mopt.is-on em{color:inherit;opacity:.7}
+.er-mopt.newyear{margin-left:10px;position:relative}
+.er-mopt.newyear::before{content:"";position:absolute;left:-9px;top:4px;bottom:4px;width:2px;border-radius:1px;background:var(--border-l)}
+/* a day's report line shows only what it has: no STR/NTR token, so it can be empty */
+.er-dmeta:empty{display:none}
+
+/* ── 17 Nov, later: the opened report as boxes, without the numbering ── */
+#modalDoc{padding:16px 22px 18px}
+.rp-head{display:flex;align-items:center;gap:14px;padding:2px 38px 13px 0;border-bottom:2px solid var(--ink)}
+.rp-show{display:block;height:34px;width:auto;filter:var(--showlogo-filter)}
+.rp-showname{display:none;font-size:20px;font-weight:800;letter-spacing:-.04em;color:var(--ink)}
+.rp-title{font-size:15px;font-weight:600;letter-spacing:-.02em;color:var(--muted)}
+.rp-versa{display:block;margin-left:auto;width:62px;height:auto;filter:var(--logo-filter);opacity:var(--logo-op)}
+.rp-facts{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) minmax(0,1fr);gap:8px;margin-top:14px}
+.rp-box{background:var(--surface-2);border:1px solid var(--border-l);border-radius:12px;padding:11px 13px 12px;min-width:0;margin-top:8px}
+.rp-facts .rp-box{margin-top:0}
+.rp-lbl{font-size:11.5px;font-weight:700;letter-spacing:.01em;color:var(--muted);line-height:1.2}
+.rp-val{margin-top:5px;font-size:15.5px;font-weight:700;letter-spacing:-.025em;color:var(--ink);line-height:1.25;overflow-wrap:anywhere}
+.rp-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.rp-state{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;font-weight:700;letter-spacing:-.015em;color:var(--ink)}
+.rp-state::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--muted);flex:none}
+.rp-state.ntr::before,.rp-state.no::before{background:var(--dot-ntr)}
+.rp-state.str::before,.rp-state.other::before{background:var(--dot-str)}
+.rp-state.yes::before{background:var(--dot-urgent)}
+.rp-text{margin-top:9px;font-size:14.5px;font-weight:400;line-height:1.55;color:var(--ink);white-space:pre-wrap;overflow-wrap:anywhere}
+.rp-kit{margin-top:6px;font-size:14px;font-weight:500;line-height:1.5;color:var(--ink)}
+.rp-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;padding-top:13px;border-top:2px solid var(--ink)}
+.rp-meta{font-size:11.5px;font-weight:500;color:var(--muted);line-height:1.5}
+@media(max-width:620px){
+  #modalDoc{padding:12px 14px 16px}
+  .rp-facts{grid-template-columns:1fr}
+  .rp-title{display:none}
+}
 </style>
 </head>
 <body>
@@ -511,8 +564,6 @@ html[data-theme="softdark"] .er-dentry:hover{background:rgba(13,13,13,.14)}
       <div class="er-sbody">
         <div class="er-btnrow">
           <div class="er-hwbtn er-hwbtn-sm er-active" data-filter="all" onclick="setFilter('all')">All</div>
-          <div class="er-hwbtn er-hwbtn-sm" data-filter="str" onclick="setFilter('str')">STR</div>
-          <div class="er-hwbtn er-hwbtn-sm" data-filter="ntr" onclick="setFilter('ntr')">NTR</div>
           <div class="er-hwbtn er-hwbtn-sm er-hwbtn-red" data-filter="urgent" onclick="setFilter('urgent')">Urgent</div>
         </div>
       </div>
@@ -627,44 +678,30 @@ function openReport(idx){
   var urgentLow=urgent.toLowerCase();
   var kitNames=r.tagged_kit_names||[];
   var modeClass=isSTR?'str':'ntr';
-  var modeLabel=isSTR?'STR · Something To Report':'NTR · Nothing To Report';
-  var chNum=4;
+  var modeLabel=isSTR?'Something to report':'Nothing to report';
+  var urgentCls=urgentLow==='yes'?'yes':urgentLow==='other'?'other':'no';
+  function box(label,value){return '<div class="rp-box"><div class="rp-lbl">'+label+'</div><div class="rp-val">'+esc(value)+'</div></div>';}
 
-  var html='<div class="er-face">'
-    +'<div class="er-face-left">'
-      +'<div class="er-brand">Versa Studios</div>'
-      +'<img class="er-showlogo" src="logos/morning-live.png" alt="Morning Live" onerror="this.style.display=\'none\';var n=this.parentNode.querySelector(\'.er-showname\');if(n)n.style.display=\'block\'"/><div class="er-showname">Morning Live</div>'
-      +'<div class="er-title">Engineering Report</div>'
+  var html='<div class="rp-head">'
+      +'<img class="rp-show" src="logos/morning-live.png" alt="Morning Live" onerror="this.style.display=\'none\';var n=this.parentNode.querySelector(\'.rp-showname\');if(n)n.style.display=\'block\'"/><div class="rp-showname">Morning Live</div>'
+      +'<div class="rp-title">Engineering Report</div>'
+      +'<img class="rp-versa" alt="Versa Studios" src="data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMzY2IDk2Mi45MiI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiNmZmY7fTwvc3R5bGU+PC9kZWZzPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTE5NC4xNiw1MDcuMzN2LTE0LjdjOS4wOSw0LjQ1LDIzLjQsOS42NywzOC42Nyw5LjY3LDE4LjE3LDAsMzIuMDktOC4xMiwzMi4wOS0yMi4yM3MtNy41NC0yMS42NS0zMi4wOS0zMC4zNWMtMjcuNjQtOS44Ni0zOS4wNS0yMS42Ni0zOS4wNS00MS43NiwwLTIzLDE5LjcyLTM2LjE1LDQ0LjY2LTM2LjE1QTg2LjYsODYuNiwwLDAsMSwyNzIuMjcsMzc5djE0LjMxYy03LjU0LTMuODctMjAuODgtOC4xMy0zMy4yNS04LjEzLTE3Ljc5LDAtMzAuNzQsOC43MS0zMC43NCwyMi4yNCwwLDEyLjU3LDYuNzcsMjEuMjYsMzEuNywzMC4zNSwyNy44NCw5Ljg2LDM5LjQ0LDIxLjA3LDM5LjQ0LDQxLjM3LDAsMjMtMTguNTYsMzYuNTQtNDUuODIsMzYuNTRBOTkuMiw5OS4yLDAsMCwxLDE5NC4xNiw1MDcuMzNaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMzcxLjgzLDM4Ni41VjUxMy4zMkgzNTcuMTRWMzg2LjVIMzE0LjQyVjM3NC4xM0g0MTQuNzVWMzg2LjVaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNNTY1Ljc1LDQ2NS4zOGMwLDMxLjUxLTE5LjUzLDUwLjI2LTUyLjIsNTAuMjYtMzIuNDgsMC01Mi0xOC43NS01Mi01MC4yNlYzNzQuMTNoMTQuNjlWNDY0LjZjMCwyMy40LDEzLjkyLDM3LjMyLDM3LjMyLDM3LjMyczM3LjUtMTMuOTIsMzcuNS0zNy4zMlYzNzQuMTNoMTQuN1oiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik02MjguNTgsNTEzLjMyVjM3NC4xM2gzOC40N2M0MS41NiwwLDczLjQ2LDI2LjY4LDczLjQ2LDY5LjZTNzA5LDUxMy4zMiw2NjcuODIsNTEzLjMyWk02NDMuMjcsMzg2LjVWNTAxaDI0LjU1YzMyLjY4LDAsNTcuNjEtMjIuMjMsNTcuNjEtNTcuMjJTNzAwLjMsMzg2LjUsNjY2Ljg2LDM4Ni41WiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTc5NS4yMyw1MTMuMzJWMzc0LjEzaDE0LjY5VjUxMy4zMloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik05MzguMSwzNzEuODFjNDAsMCw3MC43NiwzMS43LDcwLjc2LDcxLjkyLDAsNDAuNC0zMC4zNiw3MS45MS03MC43Niw3MS45MS00MC4yMSwwLTcwLjc2LTMxLjUxLTcwLjc2LTcxLjkxQzg2Ny4zNCw0MDMuOSw4OTcuODksMzcxLjgxLDkzOC4xLDM3MS44MVptMCwxMzAuMTFjMzIuNDgsMCw1NS42OC0yNS4xNCw1NS42OC01OC4xOXMtMjMuMi01OC4yLTU1LjY4LTU4LjJjLTMyLjI5LDAtNTUuODcsMjUuMTQtNTUuODcsNTguMlM5MDUuODEsNTAxLjkyLDkzOC4xLDUwMS45MloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0xMDU1LjI1LDUwNy4zM3YtMTQuN2M5LjA5LDQuNDUsMjMuNCw5LjY3LDM4LjY3LDkuNjcsMTguMTcsMCwzMi4wOS04LjEyLDMyLjA5LTIyLjIzcy03LjU0LTIxLjY1LTMyLjA5LTMwLjM1Yy0yNy42NC05Ljg2LTM5LjA1LTIxLjY2LTM5LjA1LTQxLjc2LDAtMjMsMTkuNzItMzYuMTUsNDQuNjYtMzYuMTVhODYuNiw4Ni42LDAsMCwxLDMzLjgzLDcuMTV2MTQuMzFjLTcuNTQtMy44Ny0yMC44OC04LjEzLTMzLjI1LTguMTMtMTcuNzksMC0zMC43NCw4LjcxLTMwLjc0LDIyLjI0LDAsMTIuNTcsNi43NywyMS4yNiwzMS43LDMwLjM1LDI3Ljg0LDkuODYsMzkuNDQsMjEuMDcsMzkuNDQsNDEuMzcsMCwyMy0xOC41NiwzNi41NC00NS44MiwzNi41NEE5OS4yLDk5LjIsMCwwLDEsMTA1NS4yNSw1MDcuMzNaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMTMxLjIzLDI3MC44MmgtMi4xOEwwLDUuMDlINjEuMDdMOTUuMjQsODAuN2MxMy40NSwzMC4xNywyNS40NCw1NiwzNC41Myw4MS40M0MxMzcuNCwxNDMuNTgsMTUzLjQsMTA2LjUxLDE2NSw4MC43TDE5OS4yLDUuMDloNjAuNzFaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMzM0Ljc3LDI2Ni44MlY1LjA5SDUwMy4wOFY1MkgzOTAuNzVWMTExLjZINDg2djQ1LjA3SDM5MC43NXY2My4yNUg1MDguNTN2NDYuOVoiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik02OTEuMzYsNS4wOWM2MC43MSwwLDEwMSwzMC4xNywxMDEsODYuMTUsMCwzOC4xNy0yMS40NCw2My4yNS00OS44LDc0LjUyTDc5Ny41LDI2Ni44Mkg3MzguMjVsLTQ2LjE2LTkxLjYxSDY1NC4yOHY5MS42MUg1OTkuMzlWNS4wOVpNNjU0LjI4LDUydjc4LjE2aDQwYzI0LjcyLDAsNDEuOC0xMi4zNiw0MS44LTM4LjksMC0yNi4xNy0xNy44MS0zOS4yNi00My4yNi0zOS4yNloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik04NzUuNjQsMjU3VjIwMy4yYzE4LjE4LDkuNDUsNDIuMTcsMTcuNDUsNjUuOCwxOC45MWE5NS4wOCw5NS4wOCwwLDAsMCwyMy4yNi0xLjQ2YzIwLTIuOTEsMzEuNjMtMTAuNTQsMzEuNjMtMjMuMjYsMC0xNy40NS0xNS42My0yNi41NC01MS42Mi0zOS42My00NS44LTE2LjcyLTcyLjctMzYtNzIuNy04MS40MkM4NzIsMjkuODEsOTEwLjU0LDAsOTY2Ljg4LDBjMjYuMTgsMCw1Miw1LjgyLDY4LjM0LDEzLjA5VjY0LjcxYy0xNS4yNi05LjA5LTQwLTE2LTY0LTE2LTI2LjksMC00NC4zNSwxMC41NC00NC4zNSwyNy4yNywwLDE1LjI2LDE0LjE3LDI1LjgsNDkuOCwzOS4yNSw0NS44LDE3LjgxLDc0LjE1LDM3LjA4LDc0LjE1LDgxLjA3LDAsNDcuMjUtMzUuNjIsNzUuNjEtOTcuNDIsNzUuNjFDOTIzLjYzLDI3MS45MSw4OTQuNTQsMjY1LjM2LDg3NS42NCwyNTdaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMTIzOC43NywxLjA5aC0yLjE4TDExMDkuNzMsMjY2LjgyaDU4LjUybDEyLTI3LjIyYzExLTI0LjgxLDUwLjE3LTExNy44NCw1Ny43OS0xMzYsOCwyMi45LDQ4LjgxLDExNy4wNiw2MC44MSwxNDQuMzJoMGw4LjYyLDE4LjlIMTM2NloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik03NzQuNDYsNzA2Ljc4bC0zMS44OS02NS42NWgtMi42NGwtODYuMjIsMTc4LTUuNCwxMS4xNmMtMTEtMzAuNTEtMjUuMzUtNjEuNDktNDEuNDctOTcuNjVsLTQxLjM4LTkxLjU2aC03NEw2MTUuOSw4OTcuMjdsMzEuODgsNjUuNjVoMi42NGw4Ni4yMi0xNzgsNS40MS0xMS4xNmMxMSwzMC41LDI1LjM1LDYxLjQ5LDQxLjQ2LDk3LjY1bDQxLjM4LDkxLjU2aDc0WiIvPjwvc3ZnPg=="/>'
     +'</div>'
-    +'<div style="display:flex;align-items:center;gap:12px">'
-      +'<div class="er-leds">'
-        +'<div class="er-led '+(urgentLow==='yes'?'or':'of')+'"></div>'
-        +'<div class="er-led '+(urgentLow==='other'?'or':'of')+'"></div>'
-        +'<div class="er-led '+(urgentLow==='yes'?'of':'gn')+'"></div>'
-      +'</div>'
-      +'<img class="er-logo" src="data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMzY2IDk2Mi45MiI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiNmZmY7fTwvc3R5bGU+PC9kZWZzPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTE5NC4xNiw1MDcuMzN2LTE0LjdjOS4wOSw0LjQ1LDIzLjQsOS42NywzOC42Nyw5LjY3LDE4LjE3LDAsMzIuMDktOC4xMiwzMi4wOS0yMi4yM3MtNy41NC0yMS42NS0zMi4wOS0zMC4zNWMtMjcuNjQtOS44Ni0zOS4wNS0yMS42Ni0zOS4wNS00MS43NiwwLTIzLDE5LjcyLTM2LjE1LDQ0LjY2LTM2LjE1QTg2LjYsODYuNiwwLDAsMSwyNzIuMjcsMzc5djE0LjMxYy03LjU0LTMuODctMjAuODgtOC4xMy0zMy4yNS04LjEzLTE3Ljc5LDAtMzAuNzQsOC43MS0zMC43NCwyMi4yNCwwLDEyLjU3LDYuNzcsMjEuMjYsMzEuNywzMC4zNSwyNy44NCw5Ljg2LDM5LjQ0LDIxLjA3LDM5LjQ0LDQxLjM3LDAsMjMtMTguNTYsMzYuNTQtNDUuODIsMzYuNTRBOTkuMiw5OS4yLDAsMCwxLDE5NC4xNiw1MDcuMzNaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMzcxLjgzLDM4Ni41VjUxMy4zMkgzNTcuMTRWMzg2LjVIMzE0LjQyVjM3NC4xM0g0MTQuNzVWMzg2LjVaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNNTY1Ljc1LDQ2NS4zOGMwLDMxLjUxLTE5LjUzLDUwLjI2LTUyLjIsNTAuMjYtMzIuNDgsMC01Mi0xOC43NS01Mi01MC4yNlYzNzQuMTNoMTQuNjlWNDY0LjZjMCwyMy40LDEzLjkyLDM3LjMyLDM3LjMyLDM3LjMyczM3LjUtMTMuOTIsMzcuNS0zNy4zMlYzNzQuMTNoMTQuN1oiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik02MjguNTgsNTEzLjMyVjM3NC4xM2gzOC40N2M0MS41NiwwLDczLjQ2LDI2LjY4LDczLjQ2LDY5LjZTNzA5LDUxMy4zMiw2NjcuODIsNTEzLjMyWk02NDMuMjcsMzg2LjVWNTAxaDI0LjU1YzMyLjY4LDAsNTcuNjEtMjIuMjMsNTcuNjEtNTcuMjJTNzAwLjMsMzg2LjUsNjY2Ljg2LDM4Ni41WiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTc5NS4yMyw1MTMuMzJWMzc0LjEzaDE0LjY5VjUxMy4zMloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik05MzguMSwzNzEuODFjNDAsMCw3MC43NiwzMS43LDcwLjc2LDcxLjkyLDAsNDAuNC0zMC4zNiw3MS45MS03MC43Niw3MS45MS00MC4yMSwwLTcwLjc2LTMxLjUxLTcwLjc2LTcxLjkxQzg2Ny4zNCw0MDMuOSw4OTcuODksMzcxLjgxLDkzOC4xLDM3MS44MVptMCwxMzAuMTFjMzIuNDgsMCw1NS42OC0yNS4xNCw1NS42OC01OC4xOXMtMjMuMi01OC4yLTU1LjY4LTU4LjJjLTMyLjI5LDAtNTUuODcsMjUuMTQtNTUuODcsNTguMlM5MDUuODEsNTAxLjkyLDkzOC4xLDUwMS45MloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0xMDU1LjI1LDUwNy4zM3YtMTQuN2M5LjA5LDQuNDUsMjMuNCw5LjY3LDM4LjY3LDkuNjcsMTguMTcsMCwzMi4wOS04LjEyLDMyLjA5LTIyLjIzcy03LjU0LTIxLjY1LTMyLjA5LTMwLjM1Yy0yNy42NC05Ljg2LTM5LjA1LTIxLjY2LTM5LjA1LTQxLjc2LDAtMjMsMTkuNzItMzYuMTUsNDQuNjYtMzYuMTVhODYuNiw4Ni42LDAsMCwxLDMzLjgzLDcuMTV2MTQuMzFjLTcuNTQtMy44Ny0yMC44OC04LjEzLTMzLjI1LTguMTMtMTcuNzksMC0zMC43NCw4LjcxLTMwLjc0LDIyLjI0LDAsMTIuNTcsNi43NywyMS4yNiwzMS43LDMwLjM1LDI3Ljg0LDkuODYsMzkuNDQsMjEuMDcsMzkuNDQsNDEuMzcsMCwyMy0xOC41NiwzNi41NC00NS44MiwzNi41NEE5OS4yLDk5LjIsMCwwLDEsMTA1NS4yNSw1MDcuMzNaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMTMxLjIzLDI3MC44MmgtMi4xOEwwLDUuMDlINjEuMDdMOTUuMjQsODAuN2MxMy40NSwzMC4xNywyNS40NCw1NiwzNC41Myw4MS40M0MxMzcuNCwxNDMuNTgsMTUzLjQsMTA2LjUxLDE2NSw4MC43TDE5OS4yLDUuMDloNjAuNzFaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMzM0Ljc3LDI2Ni44MlY1LjA5SDUwMy4wOFY1MkgzOTAuNzVWMTExLjZINDg2djQ1LjA3SDM5MC43NXY2My4yNUg1MDguNTN2NDYuOVoiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik02OTEuMzYsNS4wOWM2MC43MSwwLDEwMSwzMC4xNywxMDEsODYuMTUsMCwzOC4xNy0yMS40NCw2My4yNS00OS44LDc0LjUyTDc5Ny41LDI2Ni44Mkg3MzguMjVsLTQ2LjE2LTkxLjYxSDY1NC4yOHY5MS42MUg1OTkuMzlWNS4wOVpNNjU0LjI4LDUydjc4LjE2aDQwYzI0LjcyLDAsNDEuOC0xMi4zNiw0MS44LTM4LjksMC0yNi4xNy0xNy44MS0zOS4yNi00My4yNi0zOS4yNloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik04NzUuNjQsMjU3VjIwMy4yYzE4LjE4LDkuNDUsNDIuMTcsMTcuNDUsNjUuOCwxOC45MWE5NS4wOCw5NS4wOCwwLDAsMCwyMy4yNi0xLjQ2YzIwLTIuOTEsMzEuNjMtMTAuNTQsMzEuNjMtMjMuMjYsMC0xNy40NS0xNS42My0yNi41NC01MS42Mi0zOS42My00NS44LTE2LjcyLTcyLjctMzYtNzIuNy04MS40MkM4NzIsMjkuODEsOTEwLjU0LDAsOTY2Ljg4LDBjMjYuMTgsMCw1Miw1LjgyLDY4LjM0LDEzLjA5VjY0LjcxYy0xNS4yNi05LjA5LTQwLTE2LTY0LTE2LTI2LjksMC00NC4zNSwxMC41NC00NC4zNSwyNy4yNywwLDE1LjI2LDE0LjE3LDI1LjgsNDkuOCwzOS4yNSw0NS44LDE3LjgxLDc0LjE1LDM3LjA4LDc0LjE1LDgxLjA3LDAsNDcuMjUtMzUuNjIsNzUuNjEtOTcuNDIsNzUuNjFDOTIzLjYzLDI3MS45MSw4OTQuNTQsMjY1LjM2LDg3NS42NCwyNTdaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMTIzOC43NywxLjA5aC0yLjE4TDExMDkuNzMsMjY2LjgyaDU4LjUybDEyLTI3LjIyYzExLTI0LjgxLDUwLjE3LTExNy44NCw1Ny43OS0xMzYsOCwyMi45LDQ4LjgxLDExNy4wNiw2MC44MSwxNDQuMzJoMGw4LjYyLDE4LjlIMTM2NloiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik03NzQuNDYsNzA2Ljc4bC0zMS44OS02NS42NWgtMi42NGwtODYuMjIsMTc4LTUuNCwxMS4xNmMtMTEtMzAuNTEtMjUuMzUtNjEuNDktNDEuNDctOTcuNjVsLTQxLjM4LTkxLjU2aC03NEw2MTUuOSw4OTcuMjdsMzEuODgsNjUuNjVoMi42NGw4Ni4yMi0xNzgsNS40MS0xMS4xNmMxMSwzMC41LDI1LjM1LDYxLjQ5LDQxLjQ2LDk3LjY1bDQxLjM4LDkxLjU2aDc0WiIvPjwvc3ZnPg==" alt="VS"/>'
+    +'<div class="rp-facts">'
+      +box('Show Date',fmtDateLong(r.show_date))
+      +box('Versa Tech Manager',r.versa_tech_manager||'Not specified')
+      +box('BBC Tech Manager',r.bbc_tech_manager||'Not specified')
     +'</div>'
-  +'</div>'
-  +'<div class="er-statusbar" style="margin-top:10px"><div class="er-statusled"></div><div class="er-statustxt">'+esc(refOf(r))+'</div></div>'
-  +'<div class="er-pbody">'
-    +'<div class="er-sec"><div class="er-shead"><span class="er-snum">01</span><span class="er-stitle">Versa Tech Manager</span></div>'
-    +'<div class="er-sbody"><span class="er-mval-name">'+esc(r.versa_tech_manager||'Not specified')+'</span></div></div>'
-    +'<div class="er-sec"><div class="er-shead"><span class="er-snum">02</span><span class="er-stitle">Show Date</span></div>'
-    +'<div class="er-sbody"><span class="er-mval-date">'+esc(fmtDateLong(r.show_date))+'</span></div></div>'
-    +'<div class="er-sec"><div class="er-shead"><span class="er-snum">03</span><span class="er-stitle">BBC Tech Manager</span></div>'
-    +'<div class="er-sbody"><span class="er-mval-name">'+esc(r.bbc_tech_manager||'Not specified')+'</span></div></div>'
-    +'<div class="er-sec"><div class="er-shead"><span class="er-snum">04</span><span class="er-stitle">Daily Summary</span></div>'
-    +'<div class="er-sbody"><span class="er-mval-mode '+modeClass+'">'+esc(modeLabel)+'</span>'
-    +(r.summary_text?'<div class="er-mval-summary">'+esc(r.summary_text)+'</div>':'')
-    +'</div></div>'
-    +(kitNames.length?'<div class="er-sec"><div class="er-shead"><span class="er-snum">0'+(++chNum)+'</span><span class="er-stitle">Tagged Kit</span></div>'
-    +'<div class="er-sbody"><div class="er-mval-kit">'+kitNames.map(function(k){return '<span class="er-mval-kit-chip">'+esc(k)+'</span>';}).join('')+'</div></div></div>':'')
-    +'<div class="er-sec"><div class="er-shead"><span class="er-snum">0'+(++chNum)+'</span><span class="er-stitle">Urgent Action Required</span></div>'
-    +'<div class="er-sbody"><span class="er-mval-urgent '+(urgentLow==='yes'?'yes':urgentLow==='other'?'other':'no')+'">'+esc(urgent)+'</span>'
-    +(r.urgent_details?'<div class="er-mval-urgent-text">'+esc(r.urgent_details)+'</div>':'')
-    +'</div></div>'
-  +'</div>'
-  +'<div class="er-mfoot"><div class="er-mfoot-meta">Submitted '+esc(fmtDT(r.submitted_at))+'</div><button class="er-mfoot-btn" onclick="closeModal()">Close</button></div>';
+    +'<div class="rp-box">'
+      +'<div class="rp-row"><div class="rp-lbl">Daily Summary</div><div class="rp-state '+modeClass+'">'+modeLabel+'</div></div>'
+      +(r.summary_text?'<div class="rp-text">'+esc(r.summary_text)+'</div>':'')
+    +'</div>'
+    +(kitNames.length?'<div class="rp-box"><div class="rp-lbl">Tagged Kit</div><div class="rp-kit">'+kitNames.map(function(k){return '<div>'+esc(k)+'</div>';}).join('')+'</div></div>':'')
+    +'<div class="rp-box">'
+      +'<div class="rp-row"><div class="rp-lbl">Urgent Action Required</div><div class="rp-state '+urgentCls+'">'+esc(urgent)+'</div></div>'
+      +(r.urgent_details?'<div class="rp-text">'+esc(r.urgent_details)+'</div>':'')
+    +'</div>'
+    +'<div class="rp-foot"><div class="rp-meta">Submitted '+esc(fmtDT(r.submitted_at))+'</div><button class="er-mfoot-btn" onclick="closeModal()">Close</button></div>';
 
   document.getElementById('modalContent').innerHTML=html;
   document.getElementById('modal').classList.add('open');
@@ -686,15 +723,23 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()
     if(items.some(function(x){return (x.r.urgent_action||'').toLowerCase()==='yes';})) return 'urgent';
     return items.some(function(x){return (x.r.summary_mode||'').toLowerCase()==='str';})?'str':'ntr';
   }
-  function entry(x){
+  /* the engineers on a day, each once, for the line beside the day number */
+  function engineers(items){
+    var seen={},out=[];
+    (items||[]).forEach(function(x){
+      var n=String(x.r.versa_tech_manager||'').trim(),k=n.toLowerCase();
+      if(n&&!seen[k]){seen[k]=1;out.push(n);}
+    });
+    return out;
+  }
+  function entry(x,noEng){
     var mode=(x.r.summary_mode||'').toLowerCase();
     var urgent=(x.r.urgent_action||'').toLowerCase()==='yes';
     var txt=x.r.summary_text||(mode==='ntr'?'Nothing to report':'');
     var kit=(x.r.tagged_kit_names||[]).length;
     return '<div class="er-dentry" onclick="event.stopPropagation();openReport('+x.i+')">'
       +'<div class="er-dmeta">'
-        +'<span>'+mode.toUpperCase()+'</span>'
-        +'<span>'+esc(initials(x.r.versa_tech_manager))+'</span>'
+        +(noEng===true?'':'<span>'+esc(initials(x.r.versa_tech_manager))+'</span>')
         +(kit?'<span>'+kit+' kit</span>':'')
         +(urgent?'<span class="er-durg">Urgent</span>':'')
       +'</div>'
@@ -737,9 +782,9 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()
       var d=new Date(k+'-01T12:00:00');
       var yr=k.slice(0,4), newYear=(yr!==lastYear); lastYear=yr;
       var u=urgentIn(k);
-      return '<button class="er-mopt'+(n===idx?' is-on':'')+'" type="button" onclick="vsCalGo('+n+')">'
+      return '<button class="er-mopt'+(n===idx?' is-on':'')+(newYear&&n>0?' newyear':'')+'" type="button" onclick="vsCalGo('+n+')">'
         +d.toLocaleDateString('en-GB',{month:'short'}).replace('Sept','Sep')
-        +(newYear?'<em>'+yr.slice(2)+'</em>':'')
+        +(newYear?'<em>'+yr+'</em>':'')
         +(u?'<i title="'+u+' urgent"></i>':'')
       +'</button>';
     }).join('');
@@ -778,10 +823,15 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()
       var items=days[d];
       if(items){ var wd=new Date(y,m-1,d).getDay(); if(wd===0||wd===6) weekendUsed=true; }
       var isToday=(k===todayKey && d===today.getDate())?' today':'';
-      if(!items){ grid+='<div class="er-dcell'+isToday+'"><div class="er-dnum">'+d+'</div></div>'; continue; }
+      if(!items){ grid+='<div class="er-dcell'+isToday+'"><div class="er-dhead"><div class="er-dnum">'+d+'</div></div></div>'; continue; }
+      /* the engineer's name sits beside the day number; the initials stay in the
+         report line only when one day has reports from more than one engineer */
+      var engs=engineers(items), oneEng=engs.length<2;
       grid+='<div class="er-dcell has '+stateOf(items)+(items.length>1?' multi':'')+isToday+'">'
-        +'<div class="er-dnum">'+d+'</div>'
-        +items.map(entry).join('')
+        +'<div class="er-dhead"><div class="er-dnum">'+d+'</div>'
+          +(engs.length?'<div class="er-deng">'+engs.map(esc).join('<br>')+'</div>':'')
+        +'</div>'
+        +items.map(function(x){return entry(x,oneEng);}).join('')
         +(items.length>2?'<button class="er-dmore" type="button" onclick="vsCalMore(this)">+'+(items.length-2)+' more</button>':'')
       +'</div>';
     }
