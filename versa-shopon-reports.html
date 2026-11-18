@@ -599,6 +599,35 @@ body.sc-formview .wrap{max-width:1040px !important}
 .sc-dgrid .sc-dbox.notes:focus-within{border-color:var(--so-blue); box-shadow:0 0 0 1px var(--so-blue)}
 /* days outside the month keep the grid's shape */
 .sc-dgrid > .sc-dcell.empty{background:rgba(20,20,20,.035) !important; box-shadow:inset 0 0 0 1.5px rgba(20,20,20,.09) !important; border:0 !important}
+/* phones: the same day boxes as the wide calendar, one per line */
+.sc-dwd{display:none}
+@media (max-width:900px){
+  .sc-dlist{display:none !important}
+  .sc-dgrid{display:grid !important; grid-template-columns:minmax(0,1fr) !important; gap:8px !important}
+  .sc-dgrid > .sc-ddow, .sc-dgrid > .sc-dcell.empty{display:none !important}
+  .sc-dgrid > .sc-dcell:not(.empty){display:grid !important; grid-template-columns:minmax(0,1fr) minmax(0,1fr); grid-template-areas:"head head" "tape tape" "rep notes" "mark mark";
+    gap:6px 8px; min-height:0 !important; padding:10px !important}
+  .sc-dgrid .sc-dhead{grid-area:head; display:flex; align-items:baseline; gap:8px; margin:0}
+  .sc-dgrid .sc-dwd{display:block; font-size:15px; font-weight:700; color:var(--ink)}
+  .sc-dgrid .sc-ddir{margin-left:auto; text-align:right}
+  .sc-dgrid .sc-dtape{grid-area:tape; justify-self:start}
+  .sc-dgrid .sc-dbox.report{grid-area:rep; margin:0}
+  .sc-dgrid .sc-dbox.notes{grid-area:notes; margin:0}
+  .sc-dgrid .sc-dmark{grid-area:mark; margin:0}
+  #scTitle{white-space:normal !important; font-size:22px !important; line-height:1.15; padding:0 !important}
+  .sc-mcol{min-width:0; width:100%}
+  .sc-mnote{width:100% !important; box-sizing:border-box}
+}
+</style>
+<script>if(/[?&]embed=1/.test(location.search))document.documentElement.classList.add('embed');</script>
+<style>
+/* ?embed=1: inside Versa Control's Calendar tab (18 Nov, "it looks like a box in a box"): no page padding, dark frame or header */
+html.embed,html.embed body{background:transparent !important}
+html.embed body{padding:0 !important; min-height:0}
+html.embed .wrap{max-width:none !important; padding:0 !important; margin:0 !important}
+html.embed .card{background:none !important; padding:0 !important; border-radius:0 !important; box-shadow:none !important}
+html.embed .hd{display:none !important}
+html.embed .list-sec{background:none !important; padding:0 2px 8px !important; border-radius:0 !important}
 </style>
 </head>
 <body>
@@ -966,7 +995,7 @@ function scRenderCal(rows){
           +'<textarea class="sc-dnotein" data-iso="'+iso+'" rows="2" onblur="scNoteBlur(this)" onkeydown="if(event.key===\'Escape\')this.blur()">'+escHtml(rec.note||'')+'</textarea>'
         +'</div>';
     grid+='<div class="'+cls.join(' ')+'" data-iso="'+iso+'" ondragover="scDragOver(event)" ondragleave="scDragOff(event)" ondrop="scDrop(event,\''+iso+'\')" onclick="scPick(\''+iso+'\')">'
-      +'<div class="sc-dhead"><div class="sc-dnum">'+d+'</div>'
+      +'<div class="sc-dhead"><div class="sc-dnum">'+d+'</div><div class="sc-dwd">'+new Date(y,m-1,d).toLocaleDateString('en-GB',{weekday:'long'})+'</div>'
         +(dirs.length?'<div class="sc-ddir">'+dirs.map(escHtml).join('<br>')+'</div>':'')
       +'</div>'
       +(rec.tape?'<span class="sc-dtape" draggable="true" ondragstart="scDragMove(event,\''+iso+'\')">Tape playout<button type="button" class="sc-dtapex" title="Remove" onclick="event.stopPropagation();scRemoveTape(\''+iso+'\')">\u00d7</button></span>':'')
